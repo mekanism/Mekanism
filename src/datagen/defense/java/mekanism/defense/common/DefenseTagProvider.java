@@ -1,9 +1,9 @@
 package mekanism.defense.common;
 
-import javax.annotation.Nullable;
 import mekanism.common.tag.BaseTagProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.Nullable;
 
 public class DefenseTagProvider extends BaseTagProvider {
 

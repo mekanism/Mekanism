@@ -8,8 +8,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
@@ -41,10 +39,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class QIOItemViewerContainer extends MekanismContainer implements ISlotClickHandler {
 
@@ -54,11 +55,11 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     public static int getSlotsYMax() {
         int maxY = (int) Math.ceil(Minecraft.getInstance().getWindow().getGuiScaledHeight() * 0.05 - 8) + 1;
-        return Math.max(Math.min(maxY, SLOTS_Y_MAX), SLOTS_Y_MIN);
+        return Mth.clamp(maxY, SLOTS_Y_MIN, SLOTS_Y_MAX);
     }
 
-    private ListSortType sortType = MekanismConfig.client.qioItemViewerSortType.get();
-    private SortDirection sortDirection = MekanismConfig.client.qioItemViewerSortDirection.get();
+    private ListSortType sortType;
+    private SortDirection sortDirection;
 
     private Object2LongMap<UUIDAwareHashedItem> cachedInventory = new Object2LongOpenHashMap<>();
     private long cachedCountCapacity;
@@ -88,6 +89,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             return;
         }
         if (remote) {
+            this.sortType = MekanismConfig.client.qioItemViewerSortType.get();
+            this.sortDirection = MekanismConfig.client.qioItemViewerSortDirection.get();
             //Validate the max size when we are on the client, and fix it if it is incorrect
             int maxY = getSlotsYMax();
             if (MekanismConfig.client.qioItemViewerSlotsY.get() > maxY) {
@@ -95,8 +98,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                 // save the updated config info
                 MekanismConfig.client.save();
             }
-        }
-        if (!remote) {
+        } else {
+            this.sortType = ListSortType.NAME;
+            this.sortDirection = SortDirection.ASCENDING;
             craftingGridInputSlots = new List[IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS];
         }
     }
@@ -126,12 +130,14 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     @Override
     protected int getInventoryYOffset() {
-        return SLOTS_START_Y + MekanismConfig.client.qioItemViewerSlotsY.get() * 18 + 15;
+        //Use get or default as server side these configs don't exist but the config should be just fine
+        return SLOTS_START_Y + MekanismConfig.client.qioItemViewerSlotsY.getOrDefault() * 18 + 15;
     }
 
     @Override
     protected int getInventoryXOffset() {
-        return super.getInventoryXOffset() + (MekanismConfig.client.qioItemViewerSlotsX.get() - 8) * 18 / 2;
+        //Use get or default as server side these configs don't exist but the config should be just fine
+        return super.getInventoryXOffset() + (MekanismConfig.client.qioItemViewerSlotsX.getOrDefault() - 8) * 18 / 2;
     }
 
     @Override
@@ -157,7 +163,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     @Override
-    protected void openInventory(@Nonnull Inventory inv) {
+    protected void openInventory(@NotNull Inventory inv) {
         super.openInventory(inv);
         if (isRemote()) {
             Mekanism.packetHandler().sendToServer(PacketGuiItemDataRequest.qioItemViewer());
@@ -165,7 +171,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     @Override
-    protected void closeInventory(@Nonnull Player player) {
+    protected void closeInventory(@NotNull Player player) {
         super.closeInventory(player);
         if (!player.level.isClientSide()) {
             QIOFrequency freq = getFrequency();
@@ -229,9 +235,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         return craftingGridSlots;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ItemStack quickMoveStack(@Nonnull Player player, int slotID) {
+    public ItemStack quickMoveStack(@NotNull Player player, int slotID) {
         Slot currentSlot = slots.get(slotID);
         if (currentSlot == null) {
             return ItemStack.EMPTY;
@@ -349,6 +355,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         }
     }
 
+    /**
+     * @apiNote Only call this client side
+     */
     public void setSortDirection(SortDirection sortDirection) {
         this.sortDirection = sortDirection;
         MekanismConfig.client.qioItemViewerSortDirection.set(sortDirection);
@@ -360,6 +369,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         return sortDirection;
     }
 
+    /**
+     * @apiNote Only call this client side
+     */
     public void setSortType(ListSortType sortType) {
         this.sortType = sortType;
         MekanismConfig.client.qioItemViewerSortType.set(sortType);
@@ -470,7 +482,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         } else if (button == 1) {
             if (heldItem.isEmpty() && slot != null) {
                 //Cap it out at the max stack size of the item, but try to take half of what is stored (taking at least one if it is a single item)
-                int toTake = Math.min(slot.getItem().getStack().getMaxStackSize(), Math.max(1, MathUtils.clampToInt(slot.getCount() / 2)));
+                int toTake = Mth.clamp(MathUtils.clampToInt(slot.getCount() / 2), 1, slot.getItem().getStack().getMaxStackSize());
                 Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.take(slot.getItemUUID(), toTake));
             } else if (!heldItem.isEmpty()) {
                 Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.put(1));

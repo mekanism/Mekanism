@@ -3,12 +3,12 @@ package mekanism.common.recipe;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface IMekanismRecipeTypeProvider<RECIPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache> {
 
@@ -27,7 +27,7 @@ public interface IMekanismRecipeTypeProvider<RECIPE extends MekanismRecipe, INPU
         return getRecipeType().getInputCache();
     }
 
-    @Nonnull
+    @NotNull
     default List<RECIPE> getRecipes(@Nullable Level world) {
         return getRecipeType().getRecipes(world);
     }

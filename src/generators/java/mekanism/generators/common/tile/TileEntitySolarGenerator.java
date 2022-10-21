@@ -1,12 +1,11 @@
 package mekanism.generators.common.tile;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -26,11 +25,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator {
 
     private boolean seesSun;
-    protected FloatingLong peakOutput = FloatingLong.ZERO;
     private FloatingLong lastProductionAmount = FloatingLong.ZERO;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
@@ -38,14 +38,14 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     protected SolarCheck solarCheck;
 
     public TileEntitySolarGenerator(BlockPos pos, BlockState state) {
-        this(GeneratorsBlocks.SOLAR_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.solarGeneration.get().multiply(2));
+        this(GeneratorsBlocks.SOLAR_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.solarGeneration);
     }
 
-    protected TileEntitySolarGenerator(IBlockProvider blockProvider, BlockPos pos, BlockState state, @Nonnull FloatingLong output) {
-        super(blockProvider, pos, state, output);
+    protected TileEntitySolarGenerator(IBlockProvider blockProvider, BlockPos pos, BlockState state, @NotNull FloatingLongSupplier maxOutput) {
+        super(blockProvider, pos, state, maxOutput);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
@@ -84,7 +84,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
             return;
         }
         solarCheck = new SolarCheck(level, worldPosition);
-        peakOutput = getConfiguredMax().multiply(solarCheck.getPeakMultiplier());
+        updateMaxOutputRaw(getConfiguredMax().multiply(solarCheck.getPeakMultiplier()));
     }
 
     protected boolean checkCanSeeSun() {
@@ -104,7 +104,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return getConfiguredMax().multiply(brightness * solarCheck.getGenerationMultiplier());
     }
 
-    protected float getBrightnessMultiplier(@Nonnull Level world) {
+    protected float getBrightnessMultiplier(@NotNull Level world) {
         //Get the brightness of the sun; note that there are some implementations that depend on the base
         // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
         //TODO: Galacticraft solar energy multiplier (see TileEntitySolarGenerator 1.12 branch).
@@ -121,11 +121,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return MekanismGeneratorsConfig.generators.solarGeneration.get();
     }
 
-    @Override
-    public FloatingLong getMaxOutput() {
-        return peakOutput;
-    }
-
     @ComputerMethod(nameOverride = "getProductionRate")
     public FloatingLong getLastProductionAmount() {
         return lastProductionAmount;
@@ -135,7 +130,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(this::canSeeSun, value -> seesSun = value));
-        container.track(SyncableFloatingLong.create(this::getMaxOutput, value -> peakOutput = value));
+        container.track(syncableMaxOutput());
         container.track(SyncableFloatingLong.create(this::getLastProductionAmount, value -> lastProductionAmount = value));
     }
 

@@ -18,6 +18,7 @@ import mekanism.common.inventory.container.SelectedWindowData.WindowPosition;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.Color;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.lwjgl.glfw.GLFW;
 
@@ -92,6 +93,10 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         addChild(new GuiCloseButton(gui(), relativeX + 6, relativeY + 6, this));
     }
 
+    public final InteractionStrategy getInteractionStrategy() {
+        return interactionStrategy;
+    }
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         boolean ret = super.mouseClicked(mouseX, mouseY, button);
@@ -120,12 +125,12 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     @Override
-    public void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
-        super.onDrag(mouseX, mouseY, mouseXOld, mouseYOld);
+    public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
+        super.onDrag(mouseX, mouseY, deltaX, deltaY);
         if (dragging) {
             int newDX = (int) Math.round(mouseX - dragX), newDY = (int) Math.round(mouseY - dragY);
-            int changeX = Math.max(-x, Math.min(minecraft.getWindow().getGuiScaledWidth() - (x + width), newDX - prevDX));
-            int changeY = Math.max(-y, Math.min(minecraft.getWindow().getGuiScaledHeight() - (y + height), newDY - prevDY));
+            int changeX = Mth.clamp(newDX - prevDX, -x, minecraft.getWindow().getGuiScaledWidth() - (x + width));
+            int changeY = Mth.clamp(newDY - prevDY, -y, minecraft.getWindow().getGuiScaledHeight() - (y + height));
             prevDX = newDX;
             prevDY = newDY;
             move(changeX, changeY);
@@ -238,11 +243,11 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         CONTAINER,
         ALL;
 
-        boolean allowContainer() {
+        public boolean allowContainer() {
             return this != NONE;
         }
 
-        boolean allowAll() {
+        public boolean allowAll() {
             return this == ALL;
         }
     }

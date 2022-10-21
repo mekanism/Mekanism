@@ -2,35 +2,35 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewoodxbyg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
         },
         {
-          "modid": "byg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "byg"
         },
         {
-          "modid": "ilikewood_beds",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_beds"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "input": {
     "ingredient": {
-      "item": "ilikewood:blue_ebony_bed"
+      "item": "ilikewood:byg_blue_ebony_bed"
     }
   },
   "mainOutput": {
-    "item": "byg:ebony_planks",
-    "count": 3
+    "count": 3,
+    "item": "byg:ebony_planks"
   },
+  "secondaryChance": 1.0,
   "secondaryOutput": {
-    "item": "minecraft:blue_wool",
-    "count": 3
-  },
-  "secondaryChance": 1.0
+    "count": 3,
+    "item": "minecraft:blue_wool"
+  }
 }

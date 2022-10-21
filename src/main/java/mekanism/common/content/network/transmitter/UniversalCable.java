@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
@@ -30,6 +28,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, EnergyNetwork, FloatingLong, UniversalCable> implements IMekanismStrictEnergyHandler,
       IUpgradeableTransmitter<UniversalCableUpgradeData> {
@@ -84,7 +84,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
         return getCapacityAsFloatingLong().min(buffer.getNeeded());
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         if (hasTransmitterNetwork()) {
@@ -105,19 +105,19 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     }
 
     @Override
-    public boolean dataTypeMatches(@Nonnull TransmitterUpgradeData data) {
+    public boolean dataTypeMatches(@NotNull TransmitterUpgradeData data) {
         return data instanceof UniversalCableUpgradeData;
     }
 
     @Override
-    public void parseUpgradeData(@Nonnull UniversalCableUpgradeData data) {
+    public void parseUpgradeData(@NotNull UniversalCableUpgradeData data) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
         buffer.setEnergy(data.buffer.getEnergy());
     }
 
     @Override
-    public void read(@Nonnull CompoundTag nbtTags) {
+    public void read(@NotNull CompoundTag nbtTags) {
         super.read(nbtTags);
         if (nbtTags.contains(NBTConstants.ENERGY_STORED, Tag.TAG_STRING)) {
             try {
@@ -131,9 +131,9 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
         buffer.setEnergy(lastWrite);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CompoundTag write(@Nonnull CompoundTag nbtTags) {
+    public CompoundTag write(@NotNull CompoundTag nbtTags) {
         super.write(nbtTags);
         if (hasTransmitterNetwork()) {
             getTransmitterNetwork().validateSaveShares(this);
@@ -161,7 +161,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
         return new EnergyNetwork(networkID);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public FloatingLong releaseShare() {
         FloatingLong energy = buffer.getEnergy();
@@ -169,7 +169,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
         return energy;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public FloatingLong getShare() {
         return buffer.getEnergy();
@@ -180,7 +180,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
         return getBufferWithFallback().isZero();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public FloatingLong getBufferWithFallback() {
         FloatingLong buffer = getShare();
@@ -202,7 +202,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
         }
     }
 
-    @Nonnull
+    @NotNull
     public FloatingLong getCapacityAsFloatingLong() {
         return tier.getCableCapacity();
     }
@@ -223,7 +223,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     }
 
     @Override
-    protected void handleContentsUpdateTag(@Nonnull EnergyNetwork network, @Nonnull CompoundTag tag) {
+    protected void handleContentsUpdateTag(@NotNull EnergyNetwork network, @NotNull CompoundTag tag) {
         super.handleContentsUpdateTag(network, tag);
         NBTUtils.setFloatingLongIfPresent(tag, NBTConstants.ENERGY_STORED, network.energyContainer::setEnergy);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.currentScale = scale);

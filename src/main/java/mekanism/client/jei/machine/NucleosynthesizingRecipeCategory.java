@@ -3,8 +3,6 @@ package mekanism.client.jei.machine;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
@@ -33,6 +31,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<NucleosynthesizingRecipe> {
 
@@ -74,9 +73,9 @@ public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<Nucleos
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, NucleosynthesizingRecipe recipe, @Nonnull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, NucleosynthesizingRecipe recipe, @NotNull IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
-        List<@NonNull GasStack> gasInputs = recipe.getChemicalInput().getRepresentations();
+        List<@NotNull GasStack> gasInputs = recipe.getChemicalInput().getRepresentations();
         initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, gasInput, gasInputs);
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
         List<ItemStack> gasItemProviders = new ArrayList<>();

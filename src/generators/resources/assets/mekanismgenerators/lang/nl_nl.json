@@ -38,12 +38,6 @@
   "description.mekanismgenerators.turbine_valve": "Een type Turbine Casing die een haven voor de overdracht van energie en stoom omvat.",
   "description.mekanismgenerators.turbine_vent": "Een type Turbine Casing met een geïntegreerde vent voor het vrijgeven van stoom. Deze moeten worden geplaatst op het Rotationeel Complex van de turbine.",
   "description.mekanismgenerators.wind_generator": "Een generator die de kracht van de wind gebruikt om energie te produceren, met een grotere efficiëntie op hogere niveaus.",
-  "fluid.mekanismgenerators.deuterium": "Vloeibaar Deuterium",
-  "fluid.mekanismgenerators.flowing_bioethanol": "Voert bio-ethanol",
-  "fluid.mekanismgenerators.flowing_deuterium": "Vloeistof Deuterium",
-  "fluid.mekanismgenerators.flowing_fusion_fuel": "Vloeistof D-T brandstof",
-  "fluid.mekanismgenerators.flowing_tritium": "Vloeistof Tritium",
-  "fluid.mekanismgenerators.fusion_fuel": "Vloeibare D-T brandstof",
   "gas.mekanismgenerators.fusion_fuel": "D-T brandstof",
   "item.mekanismgenerators.deuterium_bucket": "Vloeistof Deuterium Emmer",
   "item.mekanismgenerators.fusion_fuel_bucket": "Vloeibare D-T Brandstofemmer",
@@ -68,6 +62,7 @@
   "turbine.mekanismgenerators.stats.limiting": "(links)",
   "turbine.mekanismgenerators.stats.production": "Productie",
   "turbine.mekanismgenerators.stats.steam_flow": "Stoom Doorstroom",
+  "turbine.mekanismgenerators.steam_input": "Stoom Ingang: %1$s mB/t",
   "wind_generator.mekanismgenerators.no_wind": "Geen wind",
   "wind_generator.mekanismgenerators.sky_blocked": "Lucht geblokkeerd"
 }

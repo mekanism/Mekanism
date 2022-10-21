@@ -1,30 +1,36 @@
 package mekanism.common.registries;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.Mekanism;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 //Note: This isn't an actual registry but should make things a bit cleaner
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class MekanismDamageSource extends DamageSource implements IHasTranslationKey {
 
+    private static final List<MekanismDamageSource> INTERNAL_DAMAGE_SOURCES = new ArrayList<>();
+    public static final List<MekanismDamageSource> DAMAGE_SOURCES = Collections.unmodifiableList(INTERNAL_DAMAGE_SOURCES);
     public static final MekanismDamageSource LASER = new MekanismDamageSource("laser");
     public static final MekanismDamageSource RADIATION = new MekanismDamageSource("radiation").bypassArmor();
 
     private final String translationKey;
-
+    @Nullable
     private final Vec3 damageLocation;
 
 
-    public MekanismDamageSource(String damageType) {
+    private MekanismDamageSource(String damageType) {
         this(damageType, null);
+        INTERNAL_DAMAGE_SOURCES.add(this);
     }
 
-    private MekanismDamageSource(@Nonnull String damageType, @Nullable Vec3 damageLocation) {
+    private MekanismDamageSource(@NotNull String damageType, @Nullable Vec3 damageLocation) {
         super(Mekanism.MODID + "." + damageType);
         this.translationKey = "death.attack." + getMsgId();
         this.damageLocation = damageLocation;
@@ -33,7 +39,7 @@ public class MekanismDamageSource extends DamageSource implements IHasTranslatio
     /**
      * Gets a new instance of this damage source, that is positioned at the given location.
      */
-    public MekanismDamageSource fromPosition(@Nonnull Vec3 damageLocation) {
+    public MekanismDamageSource fromPosition(@NotNull Vec3 damageLocation) {
         return new MekanismDamageSource(getMsgId(), damageLocation);
     }
 

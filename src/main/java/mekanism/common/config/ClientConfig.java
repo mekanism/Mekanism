@@ -25,6 +25,7 @@ public class ClientConfig extends BaseMekanismConfig {
 
     public final CachedBooleanValue enablePlayerSounds;
     public final CachedBooleanValue enableMachineSounds;
+    public final CachedBooleanValue whiteRadialText;
     public final CachedBooleanValue holidays;
     public final CachedFloatValue baseSoundVolume;
     public final CachedBooleanValue opaqueTransmitters;
@@ -63,10 +64,12 @@ public class ClientConfig extends BaseMekanismConfig {
               .define("enablePlayerSounds", true));
         enableMachineSounds = CachedBooleanValue.wrap(this, builder.comment("If enabled machines play their sounds while running.")
               .define("enableMachineSounds", true));
+        whiteRadialText = CachedBooleanValue.wrap(this, builder.comment("If enabled tries to force all radial menu text to be white.")
+              .define("whiteRadialText", false));
         holidays = CachedBooleanValue.wrap(this, builder.comment("Should holiday greetings and easter eggs play for holidays (ex: Christmas and New Years).")
               .define("holidays", true));
         baseSoundVolume = CachedFloatValue.wrap(this, builder.comment("Adjust Mekanism sounds' base volume. < 1 is softer, higher is louder.")
-              .defineInRange("baseSoundVolume", 1, 0, Float.MAX_VALUE));
+              .defineInRange("baseSoundVolume", 1D, 0, 10));
         opaqueTransmitters = CachedBooleanValue.wrap(this, builder.comment("If true, don't render Cables/Pipes/Tubes as transparent and don't render their contents.")
               .define("opaqueTransmitters", false));
         allowModeScroll = CachedBooleanValue.wrap(this, builder.comment("Allow sneak + scroll to change item modes.")
@@ -88,9 +91,9 @@ public class ClientConfig extends BaseMekanismConfig {
         machineEffects = CachedBooleanValue.wrap(this, builder.comment("Show particles when machines active.")
               .define("machineEffects", true));
         radiationParticleRadius = CachedIntValue.wrap(this, builder.comment("How far (in blocks) from the player radiation particles can spawn.")
-              .define("radiationParticleRadius", 30));
+              .defineInRange("radiationParticleRadius", 30, 2, 64));
         radiationParticleCount = CachedIntValue.wrap(this, builder.comment("How many particles spawn when rendering radiation effects (scaled by radiation level).")
-              .define("radiationParticleCount", 100));
+              .defineInRange("radiationParticleCount", 100, 0, 1_000));
         renderMagneticAttractionParticles = CachedBooleanValue.wrap(this, builder.comment("Show bolts when the Magnetic Attraction Unit is pulling items.")
               .define("magneticAttraction", true));
         renderToolAOEParticles = CachedBooleanValue.wrap(this, builder.comment("Show bolts for various AOE tool behaviors such as tilling, debarking, and vein mining.")
@@ -100,6 +103,8 @@ public class ClientConfig extends BaseMekanismConfig {
         builder.comment("GUI Config").push(GUI_CATEGORY);
         hudOpacity = CachedFloatValue.wrap(this, builder.comment("Opacity of HUD used by MekaSuit.")
               .defineInRange("hudOpacity", 0.4F, 0, 1));
+        //TODO - 1.20: Add ranges on these colors to clamp to RGB rather than ARGB as the alpha isn't actually used here,
+        // but there is no reason to potentially cause people's configs to reset partway through an MC version
         hudColor = CachedIntValue.wrap(this, builder.comment("Color of HUD used by MekaSuit.")
               .define("hudColor", 0x40F5F0));
         hudWarningColor = CachedIntValue.wrap(this, builder.comment("Color of warning HUD elements used by MekaSuit.")

@@ -2,19 +2,17 @@ package mekanism.common.capabilities.fluid;
 
 import java.util.Objects;
 import java.util.function.IntSupplier;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class FluidTankFluidTank extends BasicFluidTank {
 
     public static FluidTankFluidTank create(TileEntityFluidTank tile, @Nullable IContentsListener listener) {

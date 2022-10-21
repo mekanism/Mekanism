@@ -1,0 +1,31 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "byg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_barrels"
+        }
+      ]
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:byg_white_mangrove_barrel"
+    }
+  },
+  "mainOutput": {
+    "count": 7,
+    "item": "byg:white_mangrove_planks"
+  }
+}

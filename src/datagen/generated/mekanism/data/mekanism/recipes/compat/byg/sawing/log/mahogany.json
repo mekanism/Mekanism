@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/mahogany_logs"
+      "tag": "byg:mahogany_logs"
     }
   },
   "mainOutput": {

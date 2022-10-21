@@ -1,0 +1,78 @@
+{
+  "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:red"
+  },
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "byg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_beds"
+        }
+      ]
+    }
+  ],
+  "itemInput": {
+    "ingredient": [
+      {
+        "item": "ilikewood:byg_white_mahogany_bed"
+      },
+      {
+        "item": "ilikewood:byg_orange_mahogany_bed"
+      },
+      {
+        "item": "ilikewood:byg_magenta_mahogany_bed"
+      },
+      {
+        "item": "ilikewood:byg_light_blue_mahogany_bed"
+      },
+      {
+        "item": "ilikewood:byg_yellow_mahogany_bed"
+      },
+      {
+        "item": "ilikewood:byg_lime_mahogany_bed"
+      },
+      {
+        "item": "ilikewood:byg_pink_mahogany_bed"
+      },
+      {
+        "item": "ilikewood:byg_gray_mahogany_bed"
+      },
+      {
+        "item": "ilikewood:byg_light_gray_mahogany_bed"
+      },
+      {
+        "item": "ilikewood:byg_cyan_mahogany_bed"
+      },
+      {
+        "item": "ilikewood:byg_purple_mahogany_bed"
+      },
+      {
+        "item": "ilikewood:byg_blue_mahogany_bed"
+      },
+      {
+        "item": "ilikewood:byg_brown_mahogany_bed"
+      },
+      {
+        "item": "ilikewood:byg_green_mahogany_bed"
+      },
+      {
+        "item": "ilikewood:byg_black_mahogany_bed"
+      }
+    ]
+  },
+  "output": {
+    "item": "ilikewood:byg_red_mahogany_bed"
+  }
+}

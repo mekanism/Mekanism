@@ -6,8 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
@@ -19,8 +18,9 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.DifferenceIngredient;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public abstract class BaseRecipeProvider extends RecipeProvider {
 
     private final ExistingFileHelper existingFileHelper;
@@ -32,7 +32,7 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
         this.modid = modid;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return super.getName() + ": " + modid;

@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/imparius_logs"
+      "tag": "byg:imparius_logs"
     }
   },
   "mainOutput": {

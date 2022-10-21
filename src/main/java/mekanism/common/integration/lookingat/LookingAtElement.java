@@ -1,8 +1,6 @@
 package mekanism.common.integration.lookingat;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.render.MekanismRenderer;
@@ -10,6 +8,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class LookingAtElement {
 
@@ -21,7 +21,7 @@ public abstract class LookingAtElement {
         this.textColor = textColor;
     }
 
-    public void render(@Nonnull PoseStack matrix, int x, int y) {
+    public void render(@NotNull PoseStack matrix, int x, int y) {
         int width = getWidth();
         int height = getHeight();
         GuiComponent.fill(matrix, x, y, x + width - 1, y + 1, borderColor);
@@ -62,7 +62,7 @@ public abstract class LookingAtElement {
         return false;
     }
 
-    public static void renderScaledText(Minecraft mc, @Nonnull PoseStack matrix, float x, float y, int color, float maxWidth, Component component) {
+    public static void renderScaledText(Minecraft mc, @NotNull PoseStack matrix, float x, float y, int color, float maxWidth, Component component) {
         int length = mc.font.width(component);
         if (length <= maxWidth) {
             mc.font.draw(matrix, component, x, y, color);

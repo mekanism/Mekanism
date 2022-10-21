@@ -1,6 +1,5 @@
 package mekanism.common.block.basic;
 
-import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.common.block.prefab.BlockTile;
@@ -26,6 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityBin>> {
 
@@ -35,7 +35,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
 
     @Override
     @Deprecated
-    public void attack(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Player player) {
+    public void attack(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player) {
         if (!world.isClientSide) {
             TileEntityBin bin = WorldUtils.getTileEntity(TileEntityBin.class, world, pos);
             if (bin != null) {
@@ -72,21 +72,24 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
-    public InteractionResult use(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand,
-          @Nonnull BlockHitResult hit) {
+    public InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
+          @NotNull BlockHitResult hit) {
         TileEntityBin bin = WorldUtils.getTileEntity(TileEntityBin.class, world, pos);
         if (bin == null) {
             return InteractionResult.PASS;
         } else if (bin.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return InteractionResult.SUCCESS;
+        }
+        ItemStack stack = player.getItemInHand(hand);
+        if (stack.isEmpty() && player.isShiftKeyDown() && hit.getDirection() == bin.getDirection()) {
+            return bin.toggleLock() ? InteractionResult.sidedSuccess(world.isClientSide) : InteractionResult.FAIL;
         } else if (!world.isClientSide) {
             BinInventorySlot binSlot = bin.getBinSlot();
             int binMaxSize = binSlot.getLimit(binSlot.getStack());
             if (binSlot.getCount() < binMaxSize) {
-                ItemStack stack = player.getItemInHand(hand);
                 if (bin.addTicks == 0) {
                     if (!stack.isEmpty()) {
                         ItemStack remain = binSlot.insertItem(stack, Action.EXECUTE, AutomationType.MANUAL);

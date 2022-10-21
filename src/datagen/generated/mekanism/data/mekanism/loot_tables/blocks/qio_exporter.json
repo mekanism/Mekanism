@@ -41,6 +41,11 @@
                 },
                 {
                   "op": "replace",
+                  "source": "color",
+                  "target": "mekData.color"
+                },
+                {
+                  "op": "replace",
                   "source": "filters",
                   "target": "mekData.filters"
                 },

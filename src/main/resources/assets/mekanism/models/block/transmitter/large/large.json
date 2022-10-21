@@ -2,7 +2,7 @@
   "parent": "block/block",
   "loader": "mekanism:transmitter",
   "model": "mekanism:models/block/transmitter_large.obj.mek",
-  "flip-v": true,
+  "flip_v": true,
   "textures": {
     "particle": "#center_down",
     "center_up": "#center_down",

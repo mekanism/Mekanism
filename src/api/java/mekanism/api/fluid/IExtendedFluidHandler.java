@@ -1,16 +1,14 @@
 package mekanism.api.fluid;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 /**
  * Extended version of {@link IFluidHandler} to make it easier to integrate with Mekanism
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public interface IExtendedFluidHandler extends IFluidHandler {
 
     /**

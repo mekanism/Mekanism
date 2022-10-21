@@ -1,6 +1,5 @@
 package mekanism.client.model;
 
-import javax.annotation.Nonnull;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.impl.FluidDeferredRegister;
@@ -13,8 +12,9 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
-import net.minecraftforge.client.model.generators.loaders.DynamicBucketModelBuilder;
+import net.minecraftforge.client.model.generators.loaders.DynamicFluidContainerModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseItemModelProvider extends ItemModelProvider {
 
@@ -22,7 +22,7 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
         super(generator, modid, existingFileHelper);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return "Item model provider: " + modid;
@@ -94,7 +94,7 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
     //Note: This isn't the best way to do this in terms of model file validation, but it works
     protected void registerBucket(FluidRegistryObject<?, ?, ?, ?, ?> fluidRO) {
         withExistingParent(RegistryUtils.getPath(fluidRO.getBucket()), new ResourceLocation("forge", "item/bucket"))
-              .customLoader(DynamicBucketModelBuilder::begin)
+              .customLoader(DynamicFluidContainerModelBuilder::begin)
               .fluid(fluidRO.getStillFluid());
     }
 }

@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -16,14 +17,18 @@ import net.minecraft.resources.ResourceLocation;
 public class MekanismRenderType extends RenderType {
 
     //Ignored
-    private MekanismRenderType(String name, VertexFormat format, Mode drawMode, int bufferSize, boolean useDelegate, boolean needsSorting, Runnable runnablePre, Runnable runnablePost) {
-        super(name, format, drawMode, bufferSize, useDelegate, needsSorting, runnablePre, runnablePost);
+    private MekanismRenderType(String name, VertexFormat format, Mode mode, int bufferSize, boolean affectsCrumbling, boolean sortOnUpload, Runnable setupState,
+          Runnable clearState) {
+        super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
     }
 
     private static final RenderStateShard.TransparencyStateShard BLADE_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("mek_blade_transparency", () -> {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(SourceFactor.ONE, DestFactor.ONE_MINUS_SRC_ALPHA);
-    }, RenderSystem::disableBlend);
+    }, () -> {
+        RenderSystem.disableBlend();
+        RenderSystem.defaultBlendFunc();
+    });
     private static final RenderStateShard.TransparencyStateShard PARTICLE_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("mek_particle_transparency", () -> {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -32,23 +37,30 @@ public class MekanismRenderType extends RenderType {
 
     public static final RenderType MEK_LIGHTNING = create("mek_lightning", DefaultVertexFormat.POSITION_COLOR, Mode.QUADS, 256,
           false, true, RenderType.CompositeState.builder()
-                .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
+                .setShaderState(RENDERTYPE_LIGHTNING_SHADER)
                 .setTransparencyState(LIGHTNING_TRANSPARENCY)
                 .createCompositeState(false)
     );
 
-    public static RenderType standard(ResourceLocation resourceLocation) {
-        return STANDARD.apply(resourceLocation);
-    }
+    public static final Function<ResourceLocation, RenderType> STANDARD = Util.memoize(resourceLocation ->
+          createStandard("mek_standard", resourceLocation, UnaryOperator.identity(), false));
+    public static final Function<ResourceLocation, RenderType> STANDARD_TRANSLUCENT_TARGET = Util.memoize(resourceLocation ->
+          createStandard("mek_standard_translucent_target", resourceLocation, state -> state.setOutputState(RenderType.TRANSLUCENT_TARGET), true));
+    public static final Function<ResourceLocation, RenderType> ALARM = Util.memoize(resourceLocation ->
+          createStandard("mek_alarm", resourceLocation, state -> state.setCullState(NO_CULL).setOutputState(RenderType.TRANSLUCENT_TARGET), true));
+    //Similar to mekStandard but blurs the texture
+    public static final Function<ResourceLocation, RenderType> JETPACK_GLASS = Util.memoize(resourceLocation -> createStandard("mek_jetpack_glass", resourceLocation,
+          state -> state.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, true, false)), false));
 
-    private static final Function<ResourceLocation, RenderType> STANDARD = Util.memoize(resourceLocation -> {
-        RenderType.CompositeState state = RenderType.CompositeState.builder()
-              .setShaderState(RenderStateShard.NEW_ENTITY_SHADER)
+    private static RenderType createStandard(String name, ResourceLocation resourceLocation, UnaryOperator<RenderType.CompositeState.CompositeStateBuilder> stateModifier,
+          boolean sortOnUpload) {
+        RenderType.CompositeState state = stateModifier.apply(RenderType.CompositeState.builder()
+              .setShaderState(NEW_ENTITY_SHADER)
               .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
               .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-              .createCompositeState(true);
-        return create("mek_standard", DefaultVertexFormat.NEW_ENTITY, Mode.QUADS, 256, true, false, state);
-    });
+        ).createCompositeState(true);
+        return create(name, DefaultVertexFormat.NEW_ENTITY, Mode.QUADS, 256, true, sortOnUpload, state);
+    }
 
     public static final Function<ResourceLocation, RenderType> BLADE = Util.memoize(resourceLocation -> {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
@@ -77,20 +89,22 @@ public class MekanismRenderType extends RenderType {
                 .createCompositeState(false)
     );
 
-    public static final RenderType MEKASUIT = create("mekasuit", DefaultVertexFormat.BLOCK, Mode.QUADS, 131_072, true, true,
+    public static final RenderType MEKASUIT = create("mekasuit", DefaultVertexFormat.NEW_ENTITY, Mode.QUADS, 131_072, true, false,
           RenderType.CompositeState.builder()
                 .setShaderState(MekanismShaders.MEKASUIT.shard)
                 .setTextureState(BLOCK_SHEET)
                 .setLightmapState(LIGHTMAP)
+                .setOverlayState(OVERLAY)
                 .createCompositeState(true)
     );
 
     public static final Function<ResourceLocation, RenderType> SPS = Util.memoize(resourceLocation -> {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
-              .setShaderState(RenderStateShard.POSITION_COLOR_TEX_SHADER)
+              .setShaderState(MekanismShaders.SPS.shard)
               .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
               .setTransparencyState(LIGHTNING_TRANSPARENCY)
+              .setOutputState(RenderType.TRANSLUCENT_TARGET)
               .createCompositeState(true);
-        return create("mek_sps", DefaultVertexFormat.POSITION_COLOR_TEX, Mode.QUADS, 256, true, false, state);
+        return create("mek_sps", DefaultVertexFormat.POSITION_COLOR_TEX, Mode.QUADS, 256, true, true, state);
     });
 }

@@ -1,8 +1,8 @@
 package mekanism.tools.common.material;
 
-import javax.annotation.Nonnull;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
+import org.jetbrains.annotations.NotNull;
 
 abstract class IItemTierHelper implements Tier {
 
@@ -29,7 +29,7 @@ abstract class IItemTierHelper implements Tier {
      * @apiNote Both {@link #getItemRepairMaterial()} and {@link IArmorMaterialHelper#getArmorRepairMaterial()} are wrapped back into a single method in {@link
      * BaseMekanismMaterial}
      */
-    @Nonnull
+    @NotNull
     @Override
     public Ingredient getRepairIngredient() {
         return getItemRepairMaterial();

@@ -1,32 +1,36 @@
 package mekanism.client.render.data;
 
-import javax.annotation.Nonnull;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.SlurryStack;
+import java.util.Objects;
+import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.slurry.Slurry;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
 //TODO - 1.18: Make it possible for chemicals to define a "glow/light" value and then use that here
-public abstract class ChemicalRenderData<STACK extends ChemicalStack<?>> extends RenderData {
+@NothingNullByDefault
+public abstract class ChemicalRenderData<CHEMICAL extends Chemical<CHEMICAL>> extends RenderData {
 
-    @Nonnull
-    public final STACK chemicalType;
+    public final CHEMICAL chemical;
 
-    protected ChemicalRenderData(@Nonnull STACK chemicalType) {
-        this.chemicalType = chemicalType;
+    protected ChemicalRenderData(BlockPos renderLocation, int width, int height, int length, CHEMICAL chemical) {
+        super(renderLocation, width, height, length);
+        this.chemical = chemical;
     }
 
     @Override
     public int getColorARGB(float scale) {
-        return MekanismRenderer.getColorARGB(chemicalType, scale, isGaseous());
+        return MekanismRenderer.getColorARGB(chemical, scale, isGaseous());
     }
 
     @Override
     public TextureAtlasSprite getTexture() {
-        return MekanismRenderer.getChemicalTexture(chemicalType.getType());
+        return MekanismRenderer.getChemicalTexture(chemical);
     }
 
     @Override
@@ -36,26 +40,23 @@ public abstract class ChemicalRenderData<STACK extends ChemicalStack<?>> extends
 
     @Override
     public int hashCode() {
-        int code = super.hashCode();
-        code = 31 * code + chemicalType.getType().hashCode();
-        return code;
+        return Objects.hash(super.hashCode(), chemical);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == this) {
             return true;
-        }
-        if (o == null || getClass() != o.getClass() || !super.equals(o)) {
+        } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
             return false;
         }
-        return chemicalType.getType() == ((ChemicalRenderData<?>) o).chemicalType.getType();
+        return chemical == ((ChemicalRenderData<?>) o).chemical;
     }
 
-    public static class GasRenderData extends ChemicalRenderData<GasStack> {
+    public static class GasRenderData extends ChemicalRenderData<Gas> {
 
-        public GasRenderData(@Nonnull GasStack chemicalType) {
-            super(chemicalType);
+        public GasRenderData(BlockPos renderLocation, int width, int height, int length, Gas gas) {
+            super(renderLocation, width, height, length, gas);
         }
 
         @Override
@@ -64,24 +65,24 @@ public abstract class ChemicalRenderData<STACK extends ChemicalStack<?>> extends
         }
     }
 
-    public static class InfusionRenderData extends ChemicalRenderData<InfusionStack> {
+    public static class InfusionRenderData extends ChemicalRenderData<InfuseType> {
 
-        public InfusionRenderData(@Nonnull InfusionStack chemicalType) {
-            super(chemicalType);
+        public InfusionRenderData(BlockPos renderLocation, int width, int height, int length, InfuseType infuseType) {
+            super(renderLocation, width, height, length, infuseType);
         }
     }
 
-    public static class PigmentRenderData extends ChemicalRenderData<PigmentStack> {
+    public static class PigmentRenderData extends ChemicalRenderData<Pigment> {
 
-        public PigmentRenderData(@Nonnull PigmentStack chemicalType) {
-            super(chemicalType);
+        public PigmentRenderData(BlockPos renderLocation, int width, int height, int length, Pigment pigment) {
+            super(renderLocation, width, height, length, pigment);
         }
     }
 
-    public static class SlurryRenderData extends ChemicalRenderData<SlurryStack> {
+    public static class SlurryRenderData extends ChemicalRenderData<Slurry> {
 
-        public SlurryRenderData(@Nonnull SlurryStack chemicalType) {
-            super(chemicalType);
+        public SlurryRenderData(BlockPos renderLocation, int width, int height, int length, Slurry slurry) {
+            super(renderLocation, width, height, length, slurry);
         }
     }
 }

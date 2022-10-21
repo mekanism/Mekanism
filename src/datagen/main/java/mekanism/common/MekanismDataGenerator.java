@@ -8,6 +8,8 @@ import mekanism.client.state.MekanismBlockStateProvider;
 import mekanism.client.texture.PrideRobitTextureProvider;
 import mekanism.common.advancements.MekanismAdvancementProvider;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
+import mekanism.common.integration.crafttweaker.MekanismCrTExampleProvider;
+import mekanism.common.integration.projecte.MekanismCustomConversions;
 import mekanism.common.loot.MekanismLootProvider;
 import mekanism.common.recipe.impl.MekanismRecipeProvider;
 import mekanism.common.tag.MekanismTagProvider;
@@ -15,12 +17,12 @@ import mekanism.common.world_modifier.MekanismBiomeModifierProvider;
 import mekanism.patchouli.MekanismMainBookProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ConfigTracker;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 @EventBusSubscriber(modid = Mekanism.MODID, bus = Bus.MOD)
 public class MekanismDataGenerator {
@@ -49,10 +51,8 @@ public class MekanismDataGenerator {
         gen.addProvider(event.includeServer(), new MekanismBiomeModifierProvider(gen));
         gen.addProvider(event.includeServer(), new MekanismRecipeProvider(gen, existingFileHelper));
         gen.addProvider(event.includeServer(), new MekanismAdvancementProvider(gen, existingFileHelper));
-        //TODO - 1.19: Re-enable when ProjectE updates and then disable it in the persisting data providers
-        //gen.addProvider(event.includeServer(), new MekanismCustomConversions(gen));
-        //TODO - 1.19: Re-enable when CrT updates and then disable it in the persisting data providers
-        //gen.addProvider(event.includeServer(), new MekanismCrTExampleProvider(gen, existingFileHelper));
+        gen.addProvider(event.includeServer(), new MekanismCustomConversions(gen));
+        gen.addProvider(event.includeServer(), new MekanismCrTExampleProvider(gen, existingFileHelper));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         gen.addProvider(true, new PersistingDisabledProvidersProvider(gen));
          //Patchouli is used on both (but server only _needs_ the base book json)

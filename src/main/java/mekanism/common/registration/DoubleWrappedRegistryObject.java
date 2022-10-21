@@ -1,12 +1,9 @@
 package mekanism.common.registration;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraftforge.registries.RegistryObject;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class DoubleWrappedRegistryObject<PRIMARY, SECONDARY> implements INamedEntry {
 
     protected final RegistryObject<PRIMARY> primaryRO;
@@ -17,12 +14,10 @@ public class DoubleWrappedRegistryObject<PRIMARY, SECONDARY> implements INamedEn
         this.secondaryRO = secondaryRO;
     }
 
-    @Nonnull
     public PRIMARY getPrimary() {
         return primaryRO.get();
     }
 
-    @Nonnull
     public SECONDARY getSecondary() {
         return secondaryRO.get();
     }

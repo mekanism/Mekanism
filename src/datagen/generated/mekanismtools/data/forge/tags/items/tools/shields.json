@@ -1,0 +1,10 @@
+{
+  "values": [
+    "#forge:tools/shields/bronze",
+    "#forge:tools/shields/lapis_lazuli",
+    "#forge:tools/shields/osmium",
+    "#forge:tools/shields/refined_glowstone",
+    "#forge:tools/shields/refined_obsidian",
+    "#forge:tools/shields/steel"
+  ]
+}

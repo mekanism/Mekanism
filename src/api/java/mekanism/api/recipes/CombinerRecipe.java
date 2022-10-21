@@ -4,16 +4,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Main Input: ItemStack
@@ -24,10 +21,8 @@ import org.jetbrains.annotations.Contract;
  *
  * @apiNote Combiners and Combining Factories can process this recipe type.
  */
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-public abstract class CombinerRecipe extends MekanismRecipe implements BiPredicate<@NonNull ItemStack, @NonNull ItemStack> {
+@NothingNullByDefault
+public abstract class CombinerRecipe extends MekanismRecipe implements BiPredicate<@NotNull ItemStack, @NotNull ItemStack> {
 
     private final ItemStackIngredient mainInput;
     private final ItemStackIngredient extraInput;
@@ -51,7 +46,7 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
     }
 
     @Override
-    public boolean test(@Nonnull ItemStack input, @Nonnull ItemStack extra) {
+    public boolean test(ItemStack input, ItemStack extra) {
         return mainInput.test(input) && extraInput.test(extra);
     }
 
@@ -82,11 +77,11 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
      * @implNote The passed in inputs should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_, _ -> new", pure = true)
-    public ItemStack getOutput(@Nonnull ItemStack input, @Nonnull ItemStack extra) {
+    public ItemStack getOutput(@NotNull ItemStack input, @NotNull ItemStack extra) {
         return output.copy();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack getResultItem() {
         return output.copy();

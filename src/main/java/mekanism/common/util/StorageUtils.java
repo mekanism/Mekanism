@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
@@ -40,17 +38,19 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class StorageUtils {
 
     private StorageUtils() {
     }
 
-    public static void addStoredEnergy(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap) {
+    public static void addStoredEnergy(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap) {
         addStoredEnergy(stack, tooltip, showMissingCap, MekanismLang.STORED_ENERGY);
     }
 
-    public static void addStoredEnergy(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, ILangEntry langEntry) {
+    public static void addStoredEnergy(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, ILangEntry langEntry) {
         Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY).resolve();
         if (capability.isPresent()) {
             IStrictEnergyHandler energyHandlerItem = capability.get();
@@ -64,11 +64,11 @@ public class StorageUtils {
         }
     }
 
-    public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, boolean showAttributes) {
+    public static void addStoredGas(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, boolean showAttributes) {
         addStoredGas(stack, tooltip, showMissingCap, showAttributes, MekanismLang.NO_GAS);
     }
 
-    public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, boolean showAttributes,
+    public static void addStoredGas(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, boolean showAttributes,
           ILangEntry emptyLangEntry) {
         addStoredChemical(stack, tooltip, showMissingCap, showAttributes, emptyLangEntry, stored -> {
             if (stored.isEmpty()) {
@@ -80,7 +80,7 @@ public class StorageUtils {
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
-    void addStoredChemical(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, boolean showAttributes, ILangEntry emptyLangEntry,
+    void addStoredChemical(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, boolean showAttributes, ILangEntry emptyLangEntry,
           Function<STACK, Component> storedFunction, Capability<HANDLER> capability) {
         Optional<HANDLER> cap = stack.getCapability(capability).resolve();
         if (cap.isPresent()) {
@@ -97,11 +97,11 @@ public class StorageUtils {
         }
     }
 
-    public static void addStoredFluid(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap) {
+    public static void addStoredFluid(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap) {
         addStoredFluid(stack, tooltip, showMissingCap, MekanismLang.NO_FLUID_TOOLTIP);
     }
 
-    public static void addStoredFluid(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, ILangEntry emptyLangEntry) {
+    public static void addStoredFluid(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, ILangEntry emptyLangEntry) {
         addStoredFluid(stack, tooltip, showMissingCap, emptyLangEntry, stored -> {
             if (stored.isEmpty()) {
                 return emptyLangEntry.translateColored(EnumColor.GRAY);
@@ -111,7 +111,7 @@ public class StorageUtils {
         });
     }
 
-    public static void addStoredFluid(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, ILangEntry emptyLangEntry,
+    public static void addStoredFluid(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, ILangEntry emptyLangEntry,
           Function<FluidStack, Component> storedFunction) {
         Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack).resolve();
         if (cap.isPresent()) {
@@ -127,7 +127,7 @@ public class StorageUtils {
     /**
      * @implNote Assumes there is only one "tank"
      */
-    public static void addStoredSubstance(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean isCreative) {
+    public static void addStoredSubstance(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean isCreative) {
         FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
         GasStack gasStack = StorageUtils.getStoredGasFromNBT(stack);
         InfusionStack infusionStack = StorageUtils.getStoredInfusionFromNBT(stack);
@@ -175,7 +175,7 @@ public class StorageUtils {
      * Gets the fluid if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a fluid handler
      * attached to our item, but it may have stored data in its tank from when it was a block
      */
-    @Nonnull
+    @NotNull
     public static FluidStack getStoredFluidFromNBT(ItemStack stack) {
         BasicFluidTank tank = BasicFluidTank.create(Integer.MAX_VALUE, null);
         ItemDataUtils.readContainers(stack, NBTConstants.FLUID_TANKS, Collections.singletonList(tank));
@@ -186,7 +186,7 @@ public class StorageUtils {
      * Gets the gas if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a gas handler
      * attached to our item, but it may have stored data in its tank from when it was a block
      */
-    @Nonnull
+    @NotNull
     public static GasStack getStoredGasFromNBT(ItemStack stack) {
         return getStoredChemicalFromNBT(stack, ChemicalTankBuilder.GAS.createDummy(Long.MAX_VALUE), NBTConstants.GAS_TANKS);
     }
@@ -195,7 +195,7 @@ public class StorageUtils {
      * Gets the infuse type if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have an infusion
      * handler attached to our item, but it may have stored data in its tank from when it was a block
      */
-    @Nonnull
+    @NotNull
     public static InfusionStack getStoredInfusionFromNBT(ItemStack stack) {
         return getStoredChemicalFromNBT(stack, ChemicalTankBuilder.INFUSION.createDummy(Long.MAX_VALUE), NBTConstants.INFUSION_TANKS);
     }
@@ -204,7 +204,7 @@ public class StorageUtils {
      * Gets the pigment if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a pigment handler
      * attached to our item, but it may have stored data in its tank from when it was a block
      */
-    @Nonnull
+    @NotNull
     public static PigmentStack getStoredPigmentFromNBT(ItemStack stack) {
         return getStoredChemicalFromNBT(stack, ChemicalTankBuilder.PIGMENT.createDummy(Long.MAX_VALUE), NBTConstants.PIGMENT_TANKS);
     }
@@ -213,12 +213,12 @@ public class StorageUtils {
      * Gets the slurry if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a slurry handler
      * attached to our item, but it may have stored data in its tank from when it was a block
      */
-    @Nonnull
+    @NotNull
     public static SlurryStack getStoredSlurryFromNBT(ItemStack stack) {
         return getStoredChemicalFromNBT(stack, ChemicalTankBuilder.SLURRY.createDummy(Long.MAX_VALUE), NBTConstants.SLURRY_TANKS);
     }
 
-    @Nonnull
+    @NotNull
     private static <STACK extends ChemicalStack<?>> STACK getStoredChemicalFromNBT(ItemStack stack, IChemicalTank<?, STACK> tank, String tag) {
         ItemDataUtils.readContainers(stack, tag, Collections.singletonList(tank));
         return tank.getStack();
@@ -343,20 +343,70 @@ public class StorageUtils {
         return capacity == 0 ? 1 : amount / (double) capacity;
     }
 
-    public static void mergeTanks(IExtendedFluidTank tank, IExtendedFluidTank mergeTank) {
-        if (tank.isEmpty()) {
-            tank.setStack(mergeTank.getFluid());
-        } else if (!mergeTank.isEmpty() && tank.isFluidEqual(mergeTank.getFluid())) {
-            tank.growStack(mergeTank.getFluidAmount(), Action.EXECUTE);
+    public static void mergeFluidTanks(List<IExtendedFluidTank> tanks, List<IExtendedFluidTank> toAdd, List<FluidStack> rejects) {
+        if (tanks.size() != toAdd.size()) {
+            throw new IllegalArgumentException("Mismatched tank count");
+        }
+        for (int i = 0; i < toAdd.size(); i++) {
+            IExtendedFluidTank mergeTank = toAdd.get(i);
+            if (!mergeTank.isEmpty()) {
+                IExtendedFluidTank tank = tanks.get(i);
+                FluidStack mergeStack = mergeTank.getFluid();
+                if (tank.isEmpty()) {
+                    int capacity = tank.getCapacity();
+                    if (mergeStack.getAmount() <= capacity) {
+                        tank.setStack(mergeStack);
+                    } else {
+                        tank.setStack(new FluidStack(mergeStack, capacity));
+                        int remaining = mergeStack.getAmount() - capacity;
+                        if (remaining > 0) {
+                            rejects.add(new FluidStack(mergeStack, remaining));
+                        }
+                    }
+                } else if (tank.isFluidEqual(mergeStack)) {
+                    int amount = tank.growStack(mergeStack.getAmount(), Action.EXECUTE);
+                    int remaining = mergeStack.getAmount() - amount;
+                    if (remaining > 0) {
+                        rejects.add(new FluidStack(mergeStack, remaining));
+                    }
+                } else {
+                    rejects.add(mergeStack);
+                }
+            }
         }
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void mergeTanks(IChemicalTank<CHEMICAL, STACK> tank,
-          IChemicalTank<CHEMICAL, STACK> mergeTank) {
-        if (tank.isEmpty()) {
-            tank.setStack(mergeTank.getStack());
-        } else if (!mergeTank.isEmpty() && tank.isTypeEqual(mergeTank.getStack())) {
-            tank.growStack(mergeTank.getStored(), Action.EXECUTE);
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> void mergeTanks(
+          List<TANK> tanks, List<TANK> toAdd, List<STACK> rejects) {
+        if (tanks.size() != toAdd.size()) {
+            throw new IllegalArgumentException("Mismatched tank count");
+        }
+        for (int i = 0; i < toAdd.size(); i++) {
+            TANK mergeTank = toAdd.get(i);
+            if (!mergeTank.isEmpty()) {
+                TANK tank = tanks.get(i);
+                STACK mergeStack = mergeTank.getStack();
+                if (tank.isEmpty()) {
+                    long capacity = tank.getCapacity();
+                    if (mergeStack.getAmount() <= capacity) {
+                        tank.setStack(mergeStack);
+                    } else {
+                        tank.setStack(ChemicalUtil.copyWithAmount(mergeStack, capacity));
+                        long remaining = mergeStack.getAmount() - capacity;
+                        if (remaining > 0) {
+                            rejects.add(ChemicalUtil.copyWithAmount(mergeStack, remaining));
+                        }
+                    }
+                } else if (tank.isTypeEqual(mergeStack)) {
+                    long amount = tank.growStack(mergeStack.getAmount(), Action.EXECUTE);
+                    long remaining = mergeStack.getAmount() - amount;
+                    if (remaining > 0) {
+                        rejects.add(ChemicalUtil.copyWithAmount(mergeStack, remaining));
+                    }
+                } else {
+                    rejects.add(mergeStack);
+                }
+            }
         }
     }
 

@@ -1,12 +1,13 @@
 package mekanism.tools.common.material;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.tools.common.MekanismTools;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.Nullable;
 
+@MethodsReturnNonnullByDefault
 public abstract class BaseMekanismMaterial extends IItemTierHelper implements IArmorMaterialHelper, IPaxelMaterial {
 
     @Nullable
@@ -72,7 +73,6 @@ public abstract class BaseMekanismMaterial extends IItemTierHelper implements IA
         return getCommonEnchantability();
     }
 
-    @Nonnull
     public abstract String getRegistryPrefix();
 
     //Recombine the methods that are split in such a way as to make it so the compiler can reobfuscate them properly
@@ -92,22 +92,18 @@ public abstract class BaseMekanismMaterial extends IItemTierHelper implements IA
         return getCommonEnchantability();
     }
 
-    @Nonnull
     public abstract Ingredient getCommonRepairMaterial();
 
-    @Nonnull
     @Override
     public Ingredient getItemRepairMaterial() {
         return getCommonRepairMaterial();
     }
 
-    @Nonnull
     @Override
     public Ingredient getArmorRepairMaterial() {
         return getCommonRepairMaterial();
     }
 
-    @Nonnull
     @Override
     public String getName() {
         return MekanismTools.MODID + ":" + getRegistryPrefix();

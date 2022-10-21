@@ -13,6 +13,7 @@
     }
   },
   "display": {
+    "announce_to_chat": false,
     "description": {
       "translate": "advancements.mekanismadditions.glow_in_the_dark.description"
     },

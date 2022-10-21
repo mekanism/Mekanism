@@ -1,6 +1,5 @@
 package mekanism.common.tile.machine;
 
-import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -37,11 +36,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     private float soundScale = 1;
     private double lastEnvironmentLoss;
+    private double lastTransferLoss;
 
     private ResistiveHeaterEnergyContainer energyContainer;
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
@@ -54,7 +55,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
@@ -62,7 +63,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
@@ -70,7 +71,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
@@ -93,11 +94,17 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         setActive(!toUse.isZero());
         HeatTransfer transfer = simulate();
         lastEnvironmentLoss = transfer.environmentTransfer();
+        lastTransferLoss = transfer.adjacentTransfer();
         float newSoundScale = toUse.divide(100_000).floatValue();
         if (Math.abs(newSoundScale - soundScale) > 0.01) {
             soundScale = newSoundScale;
             sendUpdatePacket();
         }
+    }
+
+    @ComputerMethod(nameOverride = "getTransferLoss")
+    public double getLastTransferLoss() {
+        return lastTransferLoss;
     }
 
     @ComputerMethod(nameOverride = "getEnvironmentalLoss")
@@ -135,10 +142,11 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
+        container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
         container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
@@ -147,7 +155,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SOUND_SCALE, value -> soundScale = value);
     }

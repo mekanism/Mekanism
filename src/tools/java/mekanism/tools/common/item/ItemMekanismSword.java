@@ -3,8 +3,6 @@ package mekanism.tools.common.item;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.tools.common.IHasRepairType;
@@ -22,6 +20,8 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemMekanismSword extends SwordItem implements IHasRepairType, IAttributeRefresher {
 
@@ -35,7 +35,7 @@ public class ItemMekanismSword extends SwordItem implements IHasRepairType, IAtt
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, world, tooltip, flag);
         ToolsUtils.addDurability(tooltip, stack);
     }
@@ -45,7 +45,7 @@ public class ItemMekanismSword extends SwordItem implements IHasRepairType, IAtt
         return material.getSwordDamage() + getTier().getAttackDamageBonus();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Ingredient getRepairMaterial() {
         return getTier().getRepairIngredient();
@@ -61,10 +61,10 @@ public class ItemMekanismSword extends SwordItem implements IHasRepairType, IAtt
         return getTier().getUses() > 0;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlot slot, @Nonnull ItemStack stack) {
-        return slot == EquipmentSlot.MAINHAND ? attributeCache.getAttributes() : ImmutableMultimap.of();
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, @NotNull ItemStack stack) {
+        return slot == EquipmentSlot.MAINHAND ? attributeCache.get() : ImmutableMultimap.of();
     }
 
     @Override

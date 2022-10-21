@@ -1,10 +1,8 @@
 package mekanism.common.tag;
 
-import biomesoplenty.api.entity.BOPEntities;
 import com.google.common.collect.Table.Cell;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nullable;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
@@ -51,11 +49,11 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
-import potionstudios.byg.common.entity.BYGEntities;
+import org.jetbrains.annotations.Nullable;
 
 public class MekanismTagProvider extends BaseTagProvider {
 
-    public static final TagKey<EntityType<?>> PVI_COMPAT = TagUtils.createKey(ForgeRegistries.ENTITIES, new ResourceLocation("per-viam-invenire", "replace_vanilla_navigator"));
+    public static final TagKey<EntityType<?>> PVI_COMPAT = TagUtils.createKey(ForgeRegistries.ENTITY_TYPES, new ResourceLocation("per-viam-invenire", "replace_vanilla_navigator"));
     public static final TagKey<Fluid> CREATE_NO_INFINITE_FLUID = FluidTags.create(new ResourceLocation("create", "no_infinite_draining"));
 
     public MekanismTagProvider(DataGenerator gen, @Nullable ExistingFileHelper existingFileHelper) {
@@ -72,7 +70,8 @@ public class MekanismTagProvider extends BaseTagProvider {
         addProcessedResources();
         addBeaconTags();
         addBoxBlacklist();
-        addWrenches();
+        addTools();
+        addArmor();
         addToTag(MekanismTags.Items.BATTERIES, MekanismItems.ENERGY_TABLET);
         addToTag(MekanismTags.Items.YELLOW_CAKE_URANIUM, MekanismItems.YELLOW_CAKE_URANIUM);
         addRods();
@@ -125,20 +124,6 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(EntityTypeTags.POWDER_SNOW_WALKABLE_MOBS, MekanismEntityTypes.ROBIT);
         addToTag(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES, MekanismEntityTypes.ROBIT);
         addToTag(PVI_COMPAT, MekanismEntityTypes.ROBIT);
-        getBuilder(TagType.ENTITY_TYPE, MekanismTags.Entities.HURTABLE_VEHICLES).add(
-                    EntityType.BOAT,
-                    EntityType.CHEST_BOAT,
-                    EntityType.MINECART,
-                    EntityType.CHEST_MINECART,
-                    EntityType.COMMAND_BLOCK_MINECART,
-                    EntityType.FURNACE_MINECART,
-                    EntityType.HOPPER_MINECART,
-                    EntityType.SPAWNER_MINECART,
-                    EntityType.TNT_MINECART
-              )
-              .addOptional(BOPEntities.BOAT.get(), BOPEntities.CHEST_BOAT.get())
-              .addOptional(BYGEntities.BOAT.get(), BYGEntities.CHEST_BOAT.get())
-        ;
     }
 
     private void addProcessedResources() {
@@ -199,6 +184,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR,
               MekanismBlocks.MODIFICATION_STATION,
               MekanismBlocks.ISOTOPIC_CENTRIFUGE,
+              MekanismBlocks.PIGMENT_MIXER,
               //Don't allow blocks that may have a radioactive substance in them to be picked up as it
               // will effectively dupe the radiation and also leak out into the atmosphere which is not
               // what people want, and means that it is likely someone miss-clicked.
@@ -220,6 +206,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTileEntityTypes.SOLAR_NEUTRON_ACTIVATOR,
               MekanismTileEntityTypes.MODIFICATION_STATION,
               MekanismTileEntityTypes.ISOTOPIC_CENTRIFUGE,
+              MekanismTileEntityTypes.PIGMENT_MIXER,
               //Don't allow blocks that may have a radioactive substance in them to be picked up as it
               // will effectively dupe the radiation and also leak out into the atmosphere which is not
               // what people want, and means that it is likely someone miss-clicked.
@@ -236,11 +223,28 @@ public class MekanismTagProvider extends BaseTagProvider {
               .add(MekanismTags.TileEntityTypes.IMMOVABLE, MekanismTags.TileEntityTypes.RELOCATION_NOT_SUPPORTED);
     }
 
+    private void addTools() {
+        addWrenches();
+        addToTag(Tags.Items.TOOLS_BOWS, MekanismItems.ELECTRIC_BOW);
+    }
+
     private void addWrenches() {
         addToTag(MekanismTags.Items.WRENCHES, MekanismItems.CONFIGURATOR);
-        getItemBuilder(MekanismTags.Items.TOOLS).add(MekanismTags.Items.TOOLS_WRENCH);
+        getItemBuilder(Tags.Items.TOOLS).add(MekanismTags.Items.TOOLS_WRENCH);
         addToTag(MekanismTags.Items.TOOLS_WRENCH, MekanismItems.CONFIGURATOR);
         getItemBuilder(MekanismTags.Items.CONFIGURATORS).add(MekanismTags.Items.WRENCHES, MekanismTags.Items.TOOLS_WRENCH);
+    }
+
+    private void addArmor() {
+        getItemBuilder(Tags.Items.ARMORS_HELMETS).add(MekanismTags.Items.ARMORS_HELMETS_HAZMAT);
+        getItemBuilder(Tags.Items.ARMORS_CHESTPLATES).add(MekanismTags.Items.ARMORS_CHESTPLATES_HAZMAT);
+        getItemBuilder(Tags.Items.ARMORS_LEGGINGS).add(MekanismTags.Items.ARMORS_LEGGINGS_HAZMAT);
+        getItemBuilder(Tags.Items.ARMORS_BOOTS).add(MekanismTags.Items.ARMORS_BOOTS_HAZMAT);
+
+        addToTag(MekanismTags.Items.ARMORS_HELMETS_HAZMAT, MekanismItems.HAZMAT_MASK);
+        addToTag(MekanismTags.Items.ARMORS_CHESTPLATES_HAZMAT, MekanismItems.HAZMAT_GOWN);
+        addToTag(MekanismTags.Items.ARMORS_LEGGINGS_HAZMAT, MekanismItems.HAZMAT_PANTS);
+        addToTag(MekanismTags.Items.ARMORS_BOOTS_HAZMAT, MekanismItems.HAZMAT_BOOTS);
     }
 
     private void addRods() {
@@ -482,8 +486,10 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addGameEvents() {
-        addToTag(GameEventTags.VIBRATIONS, MekanismGameEvents.SEISMIC_VIBRATION);
-        addToTag(GameEventTags.WARDEN_CAN_LISTEN, MekanismGameEvents.SEISMIC_VIBRATION);
+        addToTag(GameEventTags.VIBRATIONS, MekanismGameEvents.SEISMIC_VIBRATION, MekanismGameEvents.JETPACK_BURN, MekanismGameEvents.GRAVITY_MODULATE,
+              MekanismGameEvents.GRAVITY_MODULATE_BOOSTED);
+        addToTag(GameEventTags.WARDEN_CAN_LISTEN, MekanismGameEvents.SEISMIC_VIBRATION, MekanismGameEvents.JETPACK_BURN, MekanismGameEvents.GRAVITY_MODULATE,
+              MekanismGameEvents.GRAVITY_MODULATE_BOOSTED);
     }
 
     private void addGasTags() {

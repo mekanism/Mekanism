@@ -3,26 +3,21 @@ package mekanism.common.inventory.slot;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiPredicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.Upgrade;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import mekanism.common.item.interfaces.IUpgradeItem;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class UpgradeInventorySlot extends BasicInventorySlot {
 
     public static UpgradeInventorySlot input(@Nullable IContentsListener listener, Set<Upgrade> supportedTypes) {
@@ -41,12 +36,12 @@ public class UpgradeInventorySlot extends BasicInventorySlot {
         return new UpgradeInventorySlot(listener, internalOnly);
     }
 
-    private UpgradeInventorySlot(@Nullable IContentsListener listener, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert) {
+    private UpgradeInventorySlot(@Nullable IContentsListener listener, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert) {
         super(manualOnly, canInsert, stack -> stack.getItem() instanceof IUpgradeItem, listener, 0, 0);
         setSlotOverlay(SlotOverlay.UPGRADE);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public VirtualInventoryContainerSlot createContainerSlot() {
         return new VirtualInventoryContainerSlot(this, new SelectedWindowData(WindowType.UPGRADE), getSlotOverlay(), this::setStackUnchecked);

@@ -5,13 +5,9 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.CriterionTriggerInstance;
@@ -24,14 +20,13 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base recipe builder that declares various common methods between our different builders.
  */
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilder<BUILDER>> {
 
     protected static ResourceLocation mekSerializer(String name) {
@@ -157,7 +152,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
             return jsonObject;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public RecipeSerializer<?> getType() {
             //Note: This may be null if something is screwed up but this method isn't actually used, so it shouldn't matter
@@ -166,7 +161,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
             return ForgeRegistries.RECIPE_SERIALIZERS.getValue(serializerName);
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public ResourceLocation getId() {
             return this.id;

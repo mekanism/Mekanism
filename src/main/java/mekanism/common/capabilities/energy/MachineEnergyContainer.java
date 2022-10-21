@@ -2,25 +2,21 @@ package mekanism.common.capabilities.energy;
 
 import java.util.Objects;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.Upgrade;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends BasicEnergyContainer {
 
     public static <TILE extends TileEntityMekanism> MachineEnergyContainer<TILE> input(TILE tile, @Nullable IContentsListener listener) {
@@ -47,8 +43,8 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
     private FloatingLong currentMaxEnergy;
     protected FloatingLong currentEnergyPerTick;
 
-    protected MachineEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, Predicate<@NonNull AutomationType> canExtract,
-          Predicate<@NonNull AutomationType> canInsert, TILE tile, @Nullable IContentsListener listener) {
+    protected MachineEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, Predicate<@NotNull AutomationType> canExtract,
+          Predicate<@NotNull AutomationType> canInsert, TILE tile, @Nullable IContentsListener listener) {
         super(maxEnergy, canExtract, canInsert, listener);
         this.baseEnergyPerTick = energyPerTick.copyAsConst();
         this.tile = tile;

@@ -3,9 +3,9 @@ package mekanism.api.recipes.ingredients;
 import com.google.gson.JsonElement;
 import java.util.List;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Interface describing the base methods common to all inputs of our recipes.
@@ -20,7 +20,7 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      *
      * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
      */
-    boolean testType(@Nonnull TYPE type);
+    boolean testType(@NotNull TYPE type);
 
     /**
      * Gets a copy of the internal instance that matches the given argument.

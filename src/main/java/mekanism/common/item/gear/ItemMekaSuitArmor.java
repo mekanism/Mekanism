@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +11,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
@@ -36,8 +33,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
+import mekanism.common.capabilities.chemical.item.ChemicalTankSpec;
 import mekanism.common.capabilities.chemical.item.RateLimitMultiTankGasHandler;
-import mekanism.common.capabilities.chemical.item.RateLimitMultiTankGasHandler.GasTankSpec;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.capabilities.fluid.item.RateLimitMultiTankFluidHandler;
@@ -64,6 +61,7 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -76,17 +74,18 @@ import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IModeItem, IJetpackItem, IAttributeRefresher {
 
@@ -105,8 +104,10 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     private final AttributeCache attributeCache;
     //TODO: Expand this system so that modules can maybe define needed tanks?
-    private final Set<GasTankSpec> gasTankSpecs = new HashSet<>();
-    private final Set<FluidTankSpec> fluidTankSpecs = new HashSet<>();
+    private final List<ChemicalTankSpec<Gas>> gasTankSpecs = new ArrayList<>();
+    private final List<ChemicalTankSpec<Gas>> gasTankSpecsView = Collections.unmodifiableList(gasTankSpecs);
+    private final List<FluidTankSpec> fluidTankSpecs = new ArrayList<>();
+    private final List<FluidTankSpec> fluidTankSpecsView = Collections.unmodifiableList(fluidTankSpecs);
     private final float absorption;
     //Full laser dissipation causes 3/4 of the energy to be dissipated and the remaining energy to be refracted
     private final double laserDissipation;
@@ -117,15 +118,14 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         CachedIntValue armorConfig;
         if (slot == EquipmentSlot.HEAD) {
             fluidTankSpecs.add(FluidTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
-                  (gas, automationType, stack) -> hasModule(stack, MekanismModules.NUTRITIONAL_INJECTION_UNIT),
-                  fluid -> fluid.getFluid() == MekanismFluids.NUTRITIONAL_PASTE.getFluid()));
+                  fluid -> fluid.getFluid() == MekanismFluids.NUTRITIONAL_PASTE.getFluid(), stack -> hasModule(stack, MekanismModules.NUTRITIONAL_INJECTION_UNIT)));
             absorption = 0.15F;
             laserDissipation = 0.15;
             laserRefraction = 0.2;
             armorConfig = MekanismConfig.gear.mekaSuitHelmetArmor;
         } else if (slot == EquipmentSlot.CHEST) {
-            gasTankSpecs.add(GasTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, MekanismConfig.gear.mekaSuitJetpackMaxStorage,
-                  (gas, automationType, stack) -> hasModule(stack, MekanismModules.JETPACK_UNIT), gas -> gas == MekanismGases.HYDROGEN.get()));
+            gasTankSpecs.add(ChemicalTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, MekanismConfig.gear.mekaSuitJetpackMaxStorage,
+                  gas -> gas == MekanismGases.HYDROGEN.get(), stack -> hasModule(stack, MekanismModules.JETPACK_UNIT)));
             absorption = 0.4F;
             laserDissipation = 0.3;
             laserRefraction = 0.4;
@@ -147,7 +147,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
+    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
         consumer.accept(RenderPropertiesProvider.mekaSuit());
     }
 
@@ -158,7 +158,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             addModuleDetails(stack, tooltip);
         } else {
@@ -174,34 +174,39 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public boolean makesPiglinsNeutral(@Nonnull ItemStack stack, @Nonnull LivingEntity wearer) {
+    public boolean makesPiglinsNeutral(@NotNull ItemStack stack, @NotNull LivingEntity wearer) {
         return true;
     }
 
     @Override
-    public boolean isEnderMask(@Nonnull ItemStack stack, @Nonnull Player player, @Nonnull EnderMan enderman) {
+    public boolean isEnderMask(@NotNull ItemStack stack, @NotNull Player player, @NotNull EnderMan enderman) {
         return getSlot() == EquipmentSlot.HEAD;
     }
 
     @Override
-    public boolean canWalkOnPowderedSnow(@Nonnull ItemStack stack, @Nonnull LivingEntity wearer) {
+    public boolean canWalkOnPowderedSnow(@NotNull ItemStack stack, @NotNull LivingEntity wearer) {
         return getSlot() == EquipmentSlot.FEET;
     }
 
     @Override
-    public boolean isBarVisible(@Nonnull ItemStack stack) {
+    public boolean isBarVisible(@NotNull ItemStack stack) {
         return true;
     }
 
     @Override
-    public int getBarWidth(@Nonnull ItemStack stack) {
-        //TODO: Eventually look into making it so that we can have a "secondary durability" bar for rendering things like stored gas
+    public int getBarWidth(@NotNull ItemStack stack) {
         return StorageUtils.getEnergyBarWidth(stack);
     }
 
     @Override
-    public int getBarColor(@Nonnull ItemStack stack) {
+    public int getBarColor(@NotNull ItemStack stack) {
         return MekanismConfig.client.energyColor.get();
+    }
+
+    @Override
+    public boolean isNotReplaceableByPickAction(ItemStack stack, Player player, int inventorySlot) {
+        //Try to avoid replacing this item if there are any modules currently installed
+        return super.isNotReplaceableByPickAction(stack, player, inventorySlot) || ItemDataUtils.hasData(stack, NBTConstants.MODULES, Tag.TAG_COMPOUND);
     }
 
     @Override
@@ -222,7 +227,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
+    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
         if (allowedIn(group)) {
             ItemStack stack = new ItemStack(this);
@@ -236,11 +241,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         for (Module<?> module : getModules(stack)) {
             module.tick(player);
         }
-    }
-
-    @Override
-    public int getDefaultTooltipHideFlags(@Nonnull ItemStack stack) {
-        return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
     }
 
     @Override
@@ -262,7 +262,15 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         }
     }
 
-    @Nonnull
+    public List<ChemicalTankSpec<Gas>> getGasTankSpecs() {
+        return gasTankSpecsView;
+    }
+
+    public List<FluidTankSpec> getFluidTankSpecs() {
+        return fluidTankSpecsView;
+    }
+
+    @NotNull
     public GasStack useGas(ItemStack stack, Gas type, long amount) {
         Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER).resolve();
         if (capability.isPresent()) {
@@ -301,7 +309,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void changeMode(@Nonnull Player player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, boolean displayChangeMessage) {
         for (Module<?> module : getModules(stack)) {
             if (module.handlesModeChange()) {
                 module.changeMode(player, stack, shift, displayChangeMessage);
@@ -311,7 +319,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public boolean supportsSlotType(ItemStack stack, @Nonnull EquipmentSlot slotType) {
+    public boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
+        //Note: We ignore radial modes as those are just for the Meka-Tool currently
         return slotType == getSlot() && getModules(stack).stream().anyMatch(Module::handlesModeChange);
     }
 
@@ -380,10 +389,10 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return module == null ? MekanismConfig.gear.mekaSuitBaseChargeRate.get() : module.getCustomInstance().getChargeRate(module);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlot slot, @Nonnull ItemStack stack) {
-        return slot == getSlot() ? attributeCache.getAttributes() : ImmutableMultimap.of();
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, @NotNull ItemStack stack) {
+        return slot == getSlot() ? attributeCache.get() : ImmutableMultimap.of();
     }
 
     @Override
@@ -554,7 +563,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     protected static class MekaSuitMaterial extends BaseSpecialArmorMaterial {
 
         @Override
-        public int getDefenseForSlot(@Nonnull EquipmentSlot slot) {
+        public int getDefenseForSlot(@NotNull EquipmentSlot slot) {
             return switch (slot) {
                 case FEET -> MekanismConfig.gear.mekaSuitBootsArmor.getOrDefault();
                 case LEGS -> MekanismConfig.gear.mekaSuitPantsArmor.getOrDefault();
@@ -574,7 +583,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             return MekanismConfig.gear.mekaSuitKnockbackResistance.getOrDefault();
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public String getName() {
             return Mekanism.MODID + ":mekasuit";

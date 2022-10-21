@@ -1,7 +1,8 @@
 package mekanism.common.tile.qio;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Collection;
-import javax.annotation.Nonnull;
+import java.util.Map;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
@@ -14,15 +15,19 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFrequencyHolder {
+public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFrequencyHolder, ISustainedData {
 
+    @Nullable
     private EnumColor lastColor;
 
     public TileEntityQIOComponent(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
@@ -31,6 +36,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
+    @Nullable
     public EnumColor getColor() {
         return lastColor;
     }
@@ -49,7 +55,29 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         }
     }
 
-    @Nonnull
+    @Override
+    public void writeSustainedData(CompoundTag dataMap) {
+        if (lastColor != null) {
+            NBTUtils.writeEnum(dataMap, NBTConstants.COLOR, lastColor);
+        }
+    }
+
+    @Override
+    public void readSustainedData(CompoundTag dataMap) {
+        EnumColor color = dataMap.contains(NBTConstants.COLOR, Tag.TAG_INT) ? EnumColor.byIndexStatic(dataMap.getInt(NBTConstants.COLOR)) : null;
+        if (lastColor != color) {
+            lastColor = color;
+        }
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
+        remap.put(NBTConstants.COLOR, NBTConstants.COLOR);
+        return remap;
+    }
+
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
@@ -60,14 +88,13 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
-        if (tag.contains(NBTConstants.COLOR, Tag.TAG_INT)) {
-            lastColor = EnumColor.byIndexStatic(tag.getInt(NBTConstants.COLOR));
-        } else {
-            lastColor = null;
+        EnumColor color = tag.contains(NBTConstants.COLOR, Tag.TAG_INT) ? EnumColor.byIndexStatic(tag.getInt(NBTConstants.COLOR)) : null;
+        if (lastColor != color) {
+            lastColor = color;
+            WorldUtils.updateBlock(getLevel(), getBlockPos(), getBlockState());
         }
-        WorldUtils.updateBlock(getLevel(), getBlockPos(), getBlockState());
     }
 
     //Methods relating to IComputerTile

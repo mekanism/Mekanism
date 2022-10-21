@@ -1,13 +1,11 @@
 package mekanism.common.recipe.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ItemStackToFluidRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.RegistryUtils;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -15,8 +13,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class NutritionalLiquifierIRecipe extends ItemStackToFluidRecipe {
 
     public NutritionalLiquifierIRecipe(Item item, ItemStackIngredient input, FluidStack output) {
@@ -31,25 +28,21 @@ public class NutritionalLiquifierIRecipe extends ItemStackToFluidRecipe {
         // the network and always exist, but we should improve this so that they do get properly implemented
     }
 
-    @Nonnull
     @Override
     public RecipeType<ItemStackToFluidRecipe> getType() {
         return null;
     }
 
-    @Nonnull
     @Override
     public RecipeSerializer<ItemStackToFluidRecipe> getSerializer() {
         return null;
     }
 
-    @Nonnull
     @Override
     public String getGroup() {
         return MekanismBlocks.NUTRITIONAL_LIQUIFIER.getName();
     }
 
-    @Nonnull
     @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.NUTRITIONAL_LIQUIFIER.getItemStack();

@@ -5,9 +5,9 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.GuiArrowSelection;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismButton;
@@ -18,12 +18,20 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BubbleColumnBlock;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.IFluidBlock;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
@@ -79,22 +87,45 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         int currentLayer = blockList.size() - scrollBar.getCurrentSelection() - 1;
         //Render the layer text scaled, so that it does not start overlapping past 100
         drawTextScaledBound(matrix, TextComponentUtil.build(minHeight + currentLayer), 111, 87, screenTextColor(), 13);
 
         //TODO - V11: Eventually instead of just rendering the item stacks, it would be nice to be able to render the actual vertical column of blocks
-        //Render the item stacks
+        //Render the item stacks or fluids
         for (int i = 0; i < 9; i++) {
             int layer = currentLayer + (i - 4);
             if (0 <= layer && layer < blockList.size()) {
                 BlockState state = blockList.get(layer);
                 ItemStack stack = new ItemStack(state.getBlock());
+                RenderTarget renderTarget;
+                if (stack.isEmpty()) {
+                    Fluid fluid = Fluids.EMPTY;
+                    if (state.getBlock() instanceof LiquidBlock liquidBlock) {
+                        fluid = liquidBlock.getFluid();
+                    } else if (state.getBlock() instanceof IFluidBlock fluidBlock) {
+                        fluid = fluidBlock.getFluid();
+                    } else if (state.getBlock() instanceof BubbleColumnBlock bubbleColumn) {
+                        fluid = bubbleColumn.getFluidState(state).getType();
+                    }
+                    if (fluid == Fluids.EMPTY) {
+                        continue;
+                    }
+                    IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(fluid);
+                    renderTarget = (poseStack, x, y) -> {
+                        MekanismRenderer.color(properties.getTintColor());
+                        TextureAtlasSprite texture = MekanismRenderer.getSprite(properties.getStillTexture());
+                        GuiUtils.drawSprite(poseStack, x, y, 16, 16, getBlitOffset(), texture);
+                        MekanismRenderer.resetColor();
+                    };
+                } else {
+                    renderTarget = (poseStack, x, y) -> renderItem(poseStack, stack, x, y);
+                }
                 int renderX = 92;
-                int renderY = 147 - 16 * i;
+                int renderY = 146 - 16 * i;
                 if (i == 4) {
-                    renderItem(matrix, stack, renderX, renderY);
+                    renderTarget.render(matrix, renderX, renderY);
                 } else {
                     matrix.pushPose();
                     matrix.translate(renderX, renderY, 0);
@@ -104,7 +135,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                         matrix.translate(1.5F, 0, 0);
                     }
                     matrix.scale(0.8F, 0.8F, 0.8F);
-                    renderItem(matrix, stack, 0, 0);
+                    renderTarget.render(matrix, 0, 0);
                     matrix.popPose();
                 }
             }
@@ -125,5 +156,11 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         return super.mouseScrolled(mouseX, mouseY, delta) || scrollBar.adjustScroll(delta);
+    }
+
+    @FunctionalInterface
+    private interface RenderTarget {
+
+        void render(PoseStack poseStack, int x, int y);
     }
 }

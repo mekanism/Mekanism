@@ -1,11 +1,14 @@
 package mekanism.common.network.to_server;
 
 import java.util.List;
+import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.config.ModuleBooleanData;
+import mekanism.api.gear.config.ModuleColorData;
 import mekanism.api.gear.config.ModuleConfigData;
 import mekanism.api.gear.config.ModuleEnumData;
+import mekanism.api.gear.config.ModuleIntegerData;
 import mekanism.api.math.MathUtils;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
@@ -22,10 +25,13 @@ import net.minecraftforge.network.NetworkEvent;
 public class PacketUpdateModuleSettings implements IMekanismPacket {
 
     public static PacketUpdateModuleSettings create(int slotId, ModuleData<?> moduleType, int dataIndex, ModuleConfigData<?> configData) {
-        if (configData instanceof ModuleBooleanData) {
-            return new PacketUpdateModuleSettings(slotId, moduleType, dataIndex, ModuleDataType.BOOLEAN, configData.get());
-        } else if (configData instanceof ModuleEnumData<?> enumData) {
+        if (configData instanceof ModuleEnumData<?> enumData) {
             return new PacketUpdateModuleSettings(slotId, moduleType, dataIndex, ModuleDataType.ENUM, enumData.get().ordinal());
+        }
+        for (ModuleDataType type : ModuleDataType.VALUES) {
+            if (type.typeMatches(configData)) {
+                return new PacketUpdateModuleSettings(slotId, moduleType, dataIndex, type, configData.get());
+            }
         }
         throw new IllegalArgumentException("Unknown config data type.");
     }
@@ -61,13 +67,13 @@ public class PacketUpdateModuleSettings implements IMekanismPacket {
         }
     }
 
-    //Very dirty in terms of the unchecked casts but the various details are actually checked relatively accurately
     private <TYPE> void setValue(ModuleConfigItem<TYPE> moduleConfigItem) {
         ModuleConfigData<TYPE> configData = moduleConfigItem.getData();
-        if (configData instanceof ModuleBooleanData && dataType == ModuleDataType.BOOLEAN) {
-            ((ModuleConfigItem<Boolean>) moduleConfigItem).set((boolean) value);
-        } else if (configData instanceof ModuleEnumData && dataType == ModuleDataType.ENUM) {
+        if (configData instanceof ModuleEnumData && dataType == ModuleDataType.ENUM) {
             moduleConfigItem.set((TYPE) MathUtils.getByIndexMod(((ModuleEnumData<?>) configData).getEnums(), (int) value));
+        } else if (dataType.typeMatches(configData)) {
+            //noinspection unchecked
+            moduleConfigItem.set((TYPE) value);
         }
     }
 
@@ -79,7 +85,9 @@ public class PacketUpdateModuleSettings implements IMekanismPacket {
         buffer.writeEnum(dataType);
         switch (dataType) {
             case BOOLEAN -> buffer.writeBoolean((boolean) value);
-            case ENUM -> buffer.writeVarInt((int) value);
+            //Don't convert to var int for colors as we often will use the full range
+            case COLOR -> buffer.writeInt((int) value);
+            case INTEGER, ENUM -> buffer.writeVarInt((int) value);
         }
     }
 
@@ -90,13 +98,30 @@ public class PacketUpdateModuleSettings implements IMekanismPacket {
         ModuleDataType dataType = buffer.readEnum(ModuleDataType.class);
         Object data = switch (dataType) {
             case BOOLEAN -> buffer.readBoolean();
-            case ENUM -> buffer.readVarInt();
+            case COLOR -> buffer.readInt();
+            case INTEGER, ENUM -> buffer.readVarInt();
         };
         return new PacketUpdateModuleSettings(slotId, moduleType, dataIndex, dataType, data);
     }
 
     private enum ModuleDataType {
-        BOOLEAN,
-        ENUM
+        BOOLEAN(data -> data instanceof ModuleBooleanData),
+        //Must be above integer so it uses the color type
+        COLOR(data -> data instanceof ModuleColorData),
+        INTEGER(data -> data instanceof ModuleIntegerData),
+        ENUM(data -> data instanceof ModuleEnumData);
+
+        //DO NOT MODIFY
+        private static final ModuleDataType[] VALUES = values();
+
+        private final Predicate<ModuleConfigData<?>> configDataPredicate;
+
+        ModuleDataType(Predicate<ModuleConfigData<?>> configDataPredicate) {
+            this.configDataPredicate = configDataPredicate;
+        }
+
+        public boolean typeMatches(ModuleConfigData<?> data) {
+            return configDataPredicate.test(data);
+        }
     }
 }

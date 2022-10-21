@@ -8,7 +8,7 @@ import net.minecraftforge.gradle.common.util.RunConfig
 import net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace
 
 plugins {
-    id 'org.ajoberstar.grgit' version '4.1.1'//'5.0.0'//Can't use 5.0.0 yet as our jenkins uses java 8 to run gradle
+    id 'org.ajoberstar.grgit' version '5.0.0'
     id "com.matthewprenger.cursegradle" version '1.4.0'
     id "com.modrinth.minotaur" version "2.+"
     id 'java'
@@ -22,7 +22,7 @@ plugins {
 
 tasks.named('wrapper', Wrapper).configure {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '7.4.2'
+    gradleVersion = '7.5.1'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -82,6 +82,9 @@ sourceSets.api.kotlin.srcDirs.removeAll()
 sourceSets.main.kotlin.srcDirs.removeAll()
 sourceSets.test.kotlin.srcDirs.removeAll()
 
+//Add all extra source sets that the main sourceSet should have
+setupExtraSourceSets(sourceSets.main)
+
 configurations {
     //Make sure all our sub source set stuff extends the proper base methods so that
     // they can see all the dependencies we have in dependencies including forge
@@ -90,9 +93,6 @@ configurations {
     extendConfigurations(runtimeOnly, apiRuntimeOnly)
     kotlinLibrary
 }
-
-//Add all extra source sets that the main sourceSet should have
-setupExtraSourceSets(sourceSets.main)
 
 //Create sourceSets and configurations for each of the additional modules in src/$name and adds a reference to
 // the corresponding data gen's resource directory excluding the cache. It also adds the api and main mekanism
@@ -112,6 +112,9 @@ for (def name : secondaryModules) {
     //Create all secondary sourceSets for this module
     setupExtraSourceSets(sourceSet)
 }
+
+//Setup the UPDATE_SOURCESET property in case we are doing any remappings
+project.ext."UPDATE_SOURCESETS" = project.sourceSets.collect { it.name }.join(';')
 
 def setupExtraSourceSets(SourceSet base) {
     //Expose the base module to junit
@@ -272,7 +275,11 @@ kotlin {
 }
 
 minecraft {
-    mappings channel: "${mappings_channel}", version: "${mappings_version}"
+    if (mappings_channel == "parchment_previous") {
+        mappings channel: 'parchment', version: "${previous_minecraft_version}-${mappings_version}"
+    } else {
+        mappings channel: "${mappings_channel}", version: "${mappings_version}"
+    }
 
     accessTransformers.from(file('src/main/resources/META-INF/accesstransformer.cfg'),
             file('src/additions/resources/META-INF/accesstransformer.cfg'))
@@ -398,6 +405,13 @@ repositories {
         }
     }
     maven {
+        name 'ComputerCraft'
+        url "https://squiddev.cc/maven/"
+        content {
+            includeGroup 'org.squiddev'
+        }
+    }
+    maven {
         name 'CurseMaven'
         url 'https://www.cursemaven.com'
         content {
@@ -427,6 +441,7 @@ repositories {
                         excludeGroup 'com.blamejared.crafttweaker'
                         excludeGroup 'vazkii.patchouli'
                         excludeGroup 'com.blamejared.jeitweaker'
+                        excludeGroup 'org.squiddev'
                         excludeGroup 'top.theillusivec4.curios'
                     }
                     println("Adding exclusions to ${url}")
@@ -442,7 +457,6 @@ test {
     useJUnitPlatform()
 }
 
-//TODO - 1.19: Re-enable dependencies as they update
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
@@ -453,14 +467,11 @@ dependencies {
     //We use https://github.com/quicktheories/QuickTheories to allow for implementing property based testing
     testImplementation "org.quicktheories:quicktheories:${quicktheories_version}"
 
-    compileOnly "org.jetbrains:annotations:${jb_annotations}"
-
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
-    //TODO: Re-enable in dev once https://github.com/Chisel-Team/ConnectedTexturesMod/issues/174 is fixed
+    //TODO - 1.19: Re-enable once this is updated
     //runtimeOnly fg.deobf("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
 
     //TODO: Remove having to specify these as non transitive once https://github.com/McJtyMods/TheOneProbe/issues/548 is fixed
@@ -474,8 +485,8 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
     compileOnly fg.deobf("curse.maven:wthit-455982:${wthit_id}")
 
-    //TODO - 1.19: Switch back to implementation once these update
-    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${previous_minecraft_version}:${crafttweaker_version}")
+    implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
+    //TODO - 1.19: Switch back to implementation once this updates
     compileOnly fg.deobf("com.blamejared.jeitweaker:JEITweaker-${previous_minecraft_version}:${jeitweaker_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
@@ -483,7 +494,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}:api")
     compileOnly fg.deobf("curse.maven:opencomputers2-437654:${oc2_id}")
-    def cc = fg.deobf("curse.maven:cc-tweaked-282001:${cc_tweaked_id}")
+    def cc = fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${cc_tweaked_version}:api")
     compileOnly cc
     //We require cc tweaked so that our CCArgumentWrapper tests can load, so expose it to the test runtime
     testRuntimeOnly cc
@@ -493,49 +504,20 @@ dependencies {
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
 
     //Dependencies for data generators for mod compat reference
-    //TODO - 1.19: datagenMainImplementation once ae2 update
-    datagenMainCompileOnly fg.deobf("appeng:appliedenergistics2:${ae2_version}")
+    datagenMainImplementation fg.deobf("appeng:appliedenergistics2:${ae2_version}")
     datagenMainCompileOnly fg.deobf("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
     datagenMainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
     datagenMainRuntimeOnly fg.deobf("curse.maven:terrablender-563928:${terrablender_id}")
     datagenMainImplementation fg.deobf("curse.maven:biomes-youll-go-247560:${byg_id}")
-    //TODO - 1.19: datagenmainImplementation once these update
-    datagenMainCompileOnly fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
-    datagenMainCompileOnly fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
-    datagenMainCompileOnly fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
-    //TODO - 1.19: Re-enable when these update
-    //datagenMainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
+    datagenMainImplementation fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
+    datagenMainImplementation fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
+    datagenMainImplementation fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
+    datagenMainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
 
     kotlinLibrary("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlin_version}") {
         //Exclude annotations as they are already present
         exclude group: "org.jetbrains", module: "annotations"
     }
-}
-
-if (project.hasProperty('UPDATE_MAPPINGS')) {
-    //If the project has the update mappings property, configure it to be able to target all our extra sourceSets as well
-    // so that whenever we need to update mappings it is quick and easy to do so.
-    // Note: This needs to be below the dependencies and minecraft blocks so that it can properly read the mappings value
-    // and also read and find the minecraft dep
-    def extraSourceSets = [sourceSets.api, sourceSets.test, sourceSets.datagenMain, sourceSets.gameTestMain]
-    for (def name : secondaryModules) {
-        def base = sourceSets.getByName(name)
-        extraSourceSets.add(base)
-        for (def extraType : extraTypes) {
-            extraSourceSets.add(getExtraSourceSet(base, extraType))
-        }
-    }
-    Set<File> allExtraDirs = new HashSet<>()
-    for (def sourceSet : extraSourceSets) {
-        allExtraDirs.addAll(sourceSet.java.srcDirs)
-    }
-    extractRangeMap {
-        sources.from(allExtraDirs)
-    }
-    applyRangeMap {
-        sources.from(allExtraDirs)
-    }
-    allExtraDirs.each { extractMappedNew.addTarget it }
 }
 
 def getManifestAttributes(String title) {
@@ -952,6 +934,7 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
                 new ModDependency("gu7yAYhd", "optional"),//CC: Tweaked
                 new ModDependency("uE1WpIAk", "optional"),//Oh the Biomes You'll Go
                 new ModDependency("bcOsQHnC", "optional"),//Wildfire's Female Gender Mod
+                new ModDependency("6AQIaxuO", "optional"),//WTHIT
         ]
     }
 }

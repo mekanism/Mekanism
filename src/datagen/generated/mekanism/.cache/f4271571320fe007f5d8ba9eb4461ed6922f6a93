@@ -1,4 +1,4 @@
-// 1.19	2022-06-22T21:52:34.9433329	Tags: mekanism
+// 1.19.2	2022-10-21T11:46:18.7853427	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluids/no_infinite_draining.json
 b6ed3f4920042490a8f14b25e1284bb270aafaea data/forge/tags/blocks/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/forge/tags/blocks/barrels/personal.json
@@ -16,7 +16,7 @@ bdef9393495153de01627733023e68ba7926b8ca data/forge/tags/blocks/ores_in_ground/d
 71e00f3a8275cb4686baa73f9769b8d3edd3c9ab data/forge/tags/blocks/ores_in_ground/stone.json
 2c28a9632e9fa332edbee490f2af9c692116e762 data/forge/tags/blocks/ore_rates/dense.json
 08e34b68e9bf00dd897e558c3d9c6fae627e3df9 data/forge/tags/blocks/ore_rates/singular.json
-8407a8b8f073d473310785f7383265fb459bd840 data/forge/tags/blocks/relocation_not_supported.json
+ee00801b53537cb20f528ed1c67b7b82ad457d09 data/forge/tags/blocks/relocation_not_supported.json
 706868327253ddafa426092e953fea9e2a7d25f3 data/forge/tags/blocks/storage_blocks.json
 7e24e57065c2a7f28a9aeba722eb014549505c86 data/forge/tags/blocks/storage_blocks/bronze.json
 4ec1accbc8394730982006a33945f05b701572d6 data/forge/tags/blocks/storage_blocks/charcoal.json
@@ -32,8 +32,8 @@ a2316de7395edfd30bb8271ff596240f453f2986 data/forge/tags/blocks/storage_blocks/r
 f5cef9314ee390feebf4b2036219d1c3df23e351 data/forge/tags/blocks/storage_blocks/steel.json
 65a28a53b7a60e660859cecfa32ce0c8f7771b30 data/forge/tags/blocks/storage_blocks/tin.json
 8e745c5f7a6a8b0bc07f373181a241c6c2ea9a01 data/forge/tags/blocks/storage_blocks/uranium.json
-8407a8b8f073d473310785f7383265fb459bd840 data/forge/tags/block_entity_type/immovable.json
-8407a8b8f073d473310785f7383265fb459bd840 data/forge/tags/block_entity_type/relocation_not_supported.json
+ee00801b53537cb20f528ed1c67b7b82ad457d09 data/forge/tags/block_entity_type/immovable.json
+ee00801b53537cb20f528ed1c67b7b82ad457d09 data/forge/tags/block_entity_type/relocation_not_supported.json
 88a67aad1e1becece2f0fa1763e5491173a9a577 data/forge/tags/fluids/brine.json
 f84e9ea02956bff6cb8a6f42a996f4fd76b5b6e9 data/forge/tags/fluids/chlorine.json
 f8df38beb1c963a31c812b4be0d083f39613ae41 data/forge/tags/fluids/ethene.json
@@ -56,6 +56,14 @@ f0537f1936148e32495131ccb13289c7c2bd9d82 data/forge/tags/fluids/uranium_hexafluo
 cdac7eca7cb7c07e861fc05c673143b1222eef80 data/forge/tags/items/alloys/advanced.json
 a8642dda8d9bdd8df8ad4b81c8e4e61c46c0b80d data/forge/tags/items/alloys/elite.json
 7a1dd799ddfe4fe9175f1c879443b0035e0341fe data/forge/tags/items/alloys/ultimate.json
+aba1afa9533f4988f739be3a61b86b1da0034984 data/forge/tags/items/armors/armors/hazmat.json
+816f00146cda08da61ce8eb511e7bba1360e7a2c data/forge/tags/items/armors/boots.json
+9262339b3cb1ebb7ea1a533763e27705259699ac data/forge/tags/items/armors/boots/hazmat.json
+50ae8f822dd279e70ddf97cc0dcba65fb98d4117 data/forge/tags/items/armors/chestplates.json
+7a509189cfba132e0fc7c95cd738ac0f41ab5486 data/forge/tags/items/armors/chestplates/hazmat.json
+2e0046c9160e09e1ced8cb23e70d2b295373c996 data/forge/tags/items/armors/helmets.json
+4e7957e891fede3029f9fdb66e7773d0223bb2e1 data/forge/tags/items/armors/leggings.json
+fea456a28f6aa80c0e17c1efa71a2835390669e6 data/forge/tags/items/armors/leggings/hazmat.json
 32044e00ba3bebe9f195bc943e1104e2142516ed data/forge/tags/items/batteries.json
 79e300c1f0f904984117247a9ba06f59a61464c6 data/forge/tags/items/circuits.json
 d90f13ff142511cbdadaac5813ae8cd3f02dc23e data/forge/tags/items/circuits/advanced.json
@@ -147,6 +155,7 @@ f5cef9314ee390feebf4b2036219d1c3df23e351 data/forge/tags/items/storage_blocks/st
 65a28a53b7a60e660859cecfa32ce0c8f7771b30 data/forge/tags/items/storage_blocks/tin.json
 8e745c5f7a6a8b0bc07f373181a241c6c2ea9a01 data/forge/tags/items/storage_blocks/uranium.json
 3e65a1f943cae7927da2f45388efe248474e5397 data/forge/tags/items/tools.json
+98c2bd0ffddf16fb66fd75e274145f45ca022846 data/forge/tags/items/tools/bows.json
 a0e1d0be802d6dafd3d9be7540058fffce14f805 data/forge/tags/items/tools/wrench.json
 a0e1d0be802d6dafd3d9be7540058fffce14f805 data/forge/tags/items/wrenches.json
 fc2b2dd5fbf2bde4bc6c245bae31790b24f54f7f data/forge/tags/items/yellow_cake_uranium.json
@@ -155,7 +164,6 @@ fc2b2dd5fbf2bde4bc6c245bae31790b24f54f7f data/forge/tags/items/yellow_cake_urani
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanism/tags/blocks/miner_blacklist.json
 f38d75ae22ae01d504bba4c88d0d1dd19fa4b485 data/mekanism/tags/blocks/personal_storage.json
 890446b036d7f08c93b84681f06ee9a04f1ccd15 data/mekanism/tags/block_entity_type/cardboard_blacklist.json
-657b2c9c8300b9f1675ed2a3b057f1b3b0695275 data/mekanism/tags/entity_types/hurtable_vehicles.json
 ab7a3106f18b6b47d54a87a099ddd43adfa77368 data/mekanism/tags/items/alloys.json
 04c1c012b37c20d74587d644525f0beec6b23f5f data/mekanism/tags/items/alloys/atomic.json
 5db69586b6c50b2befacf44de1aedc4a5af092fe data/mekanism/tags/items/alloys/basic.json
@@ -239,8 +247,8 @@ b79a9a1e0ddcf1344df98002024bc070480b51d7 data/minecraft/tags/blocks/sculk_replac
 903060898e7790a3059ae8734191a498ce75e0cb data/minecraft/tags/entity_types/freeze_immune_entity_types.json
 0fb43bed38ff396827c6a2fbc65bebb2a2ea0b7f data/minecraft/tags/entity_types/impact_projectiles.json
 903060898e7790a3059ae8734191a498ce75e0cb data/minecraft/tags/entity_types/powder_snow_walkable_mobs.json
-2bc3de25d031ac21311c46b9746693bdfc56586e data/minecraft/tags/game_events/vibrations.json
-2bc3de25d031ac21311c46b9746693bdfc56586e data/minecraft/tags/game_events/warden_can_listen.json
+3635f41821d6a87cdc96aaf56dcf688a3e4a94c9 data/minecraft/tags/game_events/vibrations.json
+3635f41821d6a87cdc96aaf56dcf688a3e4a94c9 data/minecraft/tags/game_events/warden_can_listen.json
 a46023671870eab3c0bd4a8ec44916a873f1378c data/minecraft/tags/items/beacon_payment_items.json
 f6bbab17ecd58eef0855b7776fdc3f663ca1f3a3 data/minecraft/tags/items/cluster_max_harvestables.json
 2c03bddd45e9e642954da6bc7bf4e9a1c996c27c data/minecraft/tags/items/freeze_immune_wearables.json

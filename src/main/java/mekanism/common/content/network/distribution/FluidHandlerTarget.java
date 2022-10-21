@@ -1,26 +1,25 @@
 package mekanism.common.content.network.distribution;
 
 import java.util.Collection;
-import javax.annotation.Nonnull;
-import mekanism.api.annotations.NonNull;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import org.jetbrains.annotations.NotNull;
 
-public class FluidHandlerTarget extends Target<IFluidHandler, Integer, @NonNull FluidStack> {
+public class FluidHandlerTarget extends Target<IFluidHandler, Integer, @NotNull FluidStack> {
 
-    public FluidHandlerTarget(@Nonnull FluidStack type) {
+    public FluidHandlerTarget(@NotNull FluidStack type) {
         this.extra = type;
     }
 
-    public FluidHandlerTarget(@Nonnull FluidStack type, Collection<IFluidHandler> allHandlers) {
+    public FluidHandlerTarget(@NotNull FluidStack type, Collection<IFluidHandler> allHandlers) {
         super(allHandlers);
         this.extra = type;
     }
 
-    public FluidHandlerTarget(@Nonnull FluidStack type, int expectedSize) {
+    public FluidHandlerTarget(@NotNull FluidStack type, int expectedSize) {
         super(expectedSize);
         this.extra = type;
     }
@@ -31,7 +30,7 @@ public class FluidHandlerTarget extends Target<IFluidHandler, Integer, @NonNull 
     }
 
     @Override
-    protected Integer simulate(IFluidHandler handler, @Nonnull FluidStack fluidStack) {
+    protected Integer simulate(IFluidHandler handler, @NotNull FluidStack fluidStack) {
         return handler.fill(fluidStack, FluidAction.SIMULATE);
     }
 }

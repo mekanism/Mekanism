@@ -2,7 +2,8 @@ package mekanism.common.content.gear.mekasuit;
 
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
@@ -23,15 +24,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class ModuleMagneticAttractionUnit implements ICustomModule<ModuleMagneticAttractionUnit> {
 
     private IModuleConfigItem<Range> range;
 
     @Override
     public void init(IModule<ModuleMagneticAttractionUnit> module, ModuleConfigItemCreator configItemCreator) {
-        range = configItemCreator.createConfigItem("range", MekanismLang.MODULE_RANGE,
-              new ModuleEnumData<>(Range.class, module.getInstalledCount() + 1, Range.LOW));
+        range = configItemCreator.createConfigItem("range", MekanismLang.MODULE_RANGE, new ModuleEnumData<>(Range.LOW, module.getInstalledCount() + 1));
     }
 
     @Override
@@ -86,6 +86,7 @@ public class ModuleMagneticAttractionUnit implements ICustomModule<ModuleMagneti
         module.toggleEnabled(player, MekanismLang.MODULE_MAGNETIC_ATTRACTION.translate());
     }
 
+    @NothingNullByDefault
     public enum Range implements IHasTextComponent {
         OFF(0),
         LOW(1F),

@@ -7,8 +7,7 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer;
@@ -22,10 +21,10 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -42,13 +41,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporterBase> {
 
     private static final Map<Direction, Model3D> cachedOverlays = new EnumMap<>(Direction.class);
+    private static final int DIVERSION_OVERLAY_ARGB = MekanismRenderer.getColorARGB(255, 255, 255, 0.8F);
+    @Nullable
     private static SpriteInfo gunpowderIcon;
+    @Nullable
     private static SpriteInfo torchOffIcon;
+    @Nullable
     private static SpriteInfo torchOnIcon;
     private final ModelTransporterBox modelBox;
     private final LazyItemRenderer itemRenderer = new LazyItemRenderer();
@@ -85,7 +89,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 itemRenderer.renderAsStack(matrix, renderer, stack.itemStack);
                 matrix.popPose();
                 if (stack.color != null) {
-                    modelBox.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, stackPos[0], stackPos[1], stackPos[2], stack.color);
+                    modelBox.render(matrix, renderer, LightTexture.FULL_BRIGHT, overlayLight, stackPos[0], stackPos[1], stackPos[2], stack.color);
                 }
             }
             matrix.popPose();
@@ -101,7 +105,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     matrix.scale(0.5F, 0.5F, 0.5F);
                     matrix.translate(0.5, 0.5, 0.5);
                     MekanismRenderer.renderObject(getOverlayModel(diversionTransporter, side), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
-                          MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT, overlayLight, FaceDisplay.FRONT);
+                          DIVERSION_OVERLAY_ARGB, LightTexture.FULL_BRIGHT, overlayLight, FaceDisplay.FRONT, getCamera());
                     matrix.popPose();
                 }
             }
@@ -131,23 +135,16 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 
     private Model3D getOverlayModel(DiversionTransporter transporter, Direction side) {
         //Get the model or set it up if needed
-        Model3D model = cachedOverlays.computeIfAbsent(side, face -> {
-            Model3D m = new Model3D();
-            MekanismRenderer.prepSingleFaceModelSize(m, face);
-            for (Direction direction : EnumUtils.DIRECTIONS) {
-                m.setSideRender(direction, direction == face);
-            }
-            return m;
-        });
-        // and then figure out which texture we need to use
-        SpriteInfo icon = switch (transporter.modes[side.ordinal()]) {
+        Model3D model = cachedOverlays.computeIfAbsent(side, face -> new Model3D()
+              .prepSingleFaceModelSize(face)
+              .setSideRender(direction -> direction == face)
+        );
+        //set the proper side to the texture we need to use
+        return model.setTexture(side, switch (transporter.modes[side.ordinal()]) {
             case DISABLED -> gunpowderIcon;
             case HIGH -> torchOnIcon;
             case LOW -> torchOffIcon;
-        };
-        // and set that proper side to that texture
-        model.setTexture(side, icon);
-        return model;
+        });
     }
 
     private static class TransportInformation {
@@ -207,7 +204,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entityItem);
                 }
                 entityItem.setItem(stack);
-                renderer.render(entityItem, 0, 0, matrix, buffer, MekanismRenderer.FULL_LIGHT);
+                renderer.render(entityItem, 0, 0, matrix, buffer, LightTexture.FULL_BRIGHT);
             }
         }
     }

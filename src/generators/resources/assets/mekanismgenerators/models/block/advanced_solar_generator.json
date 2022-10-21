@@ -1,19 +1,17 @@
 {
-	"loader": "mekanism:mekanism",
 	"credit": "Model by CyanideX",
-	"texture_size": [64, 64],
 	"textures": {
 		"0": "mekanismgenerators:block/model/advanced_solar_generator",
 		"1": "mekanism:block/models/ports",
 		"2": "mekanism:block/models/ports_led",
 		"particle": "mekanismgenerators:block/model/advanced_solar_generator"
 	},
+	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"name": "pole",
 			"from": [6, -4, 6],
 			"to": [10, 25, 10],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, -2, 8]},
 			"faces": {
 				"north": {"uv": [11, 0, 10, 7.25], "texture": "#0"},
 				"east": {"uv": [10, 0, 9, 7.25], "texture": "#0"},
@@ -25,7 +23,6 @@
 			"name": "tube1",
 			"from": [4, 22, 2],
 			"to": [6, 24, 14],
-			"rotation": {"angle": 0, "axis": "y", "origin": [5, 23, 8]},
 			"faces": {
 				"north": {"uv": [12, 5.25, 12.5, 5.75], "texture": "#0"},
 				"east": {"uv": [12.5, 5.25, 15, 5.75], "texture": "#0"},
@@ -39,7 +36,6 @@
 			"name": "tube2",
 			"from": [10, 22, 2],
 			"to": [12, 24, 14],
-			"rotation": {"angle": 0, "axis": "y", "origin": [11, 23, 8]},
 			"faces": {
 				"north": {"uv": [12, 5.25, 12.5, 5.75], "texture": "#0"},
 				"east": {"uv": [12.5, 5.25, 15, 5.75], "texture": "#0"},
@@ -53,7 +49,6 @@
 			"name": "barrel",
 			"from": [4, 25, 5],
 			"to": [12, 31, 11],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, -1, 8]},
 			"faces": {
 				"north": {"uv": [13.5, 0, 15.5, 1.5], "texture": "#0"},
 				"east": {"uv": [12, 0, 13.5, 1.5], "texture": "#0"},
@@ -67,7 +62,6 @@
 			"name": "ring1",
 			"from": [5, 24, 4],
 			"to": [6, 32, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [5.5, 28, 8]},
 			"faces": {
 				"north": {"uv": [14, 6, 14.25, 8], "texture": "#0"},
 				"east": {"uv": [12, 6, 14, 8], "texture": "#0"},
@@ -80,7 +74,6 @@
 			"name": "ring2",
 			"from": [10, 24, 4],
 			"to": [11, 32, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [10.5, 28, 8]},
 			"faces": {
 				"north": {"uv": [14, 6, 14.25, 8], "texture": "#0"},
 				"east": {"uv": [12, 6, 14, 8], "texture": "#0"},
@@ -93,7 +86,6 @@
 			"name": "connector",
 			"from": [5, -11, 1],
 			"to": [11, -5, 4],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, -16, 8]},
 			"faces": {
 				"east": {"uv": [12.75, 10.5, 13.5, 12], "texture": "#0"},
 				"west": {"uv": [12, 10.5, 12.75, 12], "texture": "#0"},
@@ -102,24 +94,54 @@
 			}
 		},
 		{
-			"name": "base",
+			"name": "base_north",
 			"from": [0, -16, 0],
-			"to": [16, -14, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, -16, 8]},
+			"to": [16, -14, 4],
 			"faces": {
-				"north": {"uv": [4, 12, 4.5, 16], "rotation": 90, "texture": "#0"},
-				"east": {"uv": [4, 12, 4.5, 16], "rotation": 90, "texture": "#0"},
-				"south": {"uv": [4, 12, 4.5, 16], "rotation": 90, "texture": "#0"},
-				"west": {"uv": [4, 12, 4.5, 16], "rotation": 90, "texture": "#0"},
-				"up": {"uv": [0, 12, 4, 16], "rotation": 90, "texture": "#0"},
-				"down": {"uv": [4.5, 12, 8.5, 16], "rotation": 90, "texture": "#0"}
+				"north": {"uv": [4, 12, 4.5, 16], "rotation": 90, "texture": "#0", "cullface": "north"},
+				"east": {"uv": [4, 12, 4.5, 13], "rotation": 90, "texture": "#0", "cullface": "east"},
+				"west": {"uv": [4, 15, 4.5, 16], "rotation": 90, "texture": "#0", "cullface": "west"},
+				"up": {"uv": [0, 12, 1, 16], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [7.5, 12, 8.5, 16], "rotation": 90, "texture": "#0", "cullface": "down"}
+			}
+		},
+		{
+			"name": "base_south",
+			"from": [0, -16, 12],
+			"to": [16, -14, 16],
+			"faces": {
+				"east": {"uv": [4, 15, 4.5, 16], "rotation": 90, "texture": "#0", "cullface": "east"},
+				"south": {"uv": [4, 12, 4.5, 16], "rotation": 90, "texture": "#0", "cullface": "south"},
+				"west": {"uv": [4, 12, 4.5, 13], "rotation": 90, "texture": "#0", "cullface": "west"},
+				"up": {"uv": [3, 12, 4, 16], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [4.5, 12, 5.5, 16], "rotation": 90, "texture": "#0", "cullface": "down"}
+			}
+		},
+		{
+			"name": "base_east",
+			"from": [12, -16, 4],
+			"to": [16, -14, 12],
+			"faces": {
+				"east": {"uv": [4, 13, 4.5, 15], "rotation": 90, "texture": "#0", "cullface": "east"},
+				"up": {"uv": [1, 12, 3, 13], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [5.5, 12, 7.5, 13], "rotation": 90, "texture": "#0", "cullface": "down"}
+			}
+		},
+		{
+			"name": "base_west",
+			"from": [0, -16, 4],
+			"to": [4, -14, 12],
+			"faces": {
+				"east": {"uv": [4, 12, 4.5, 16], "rotation": 90, "texture": "#0", "cullface": "east"},
+				"west": {"uv": [4, 13, 4.5, 15], "rotation": 90, "texture": "#0", "cullface": "west"},
+				"up": {"uv": [1, 15, 3, 16], "rotation": 90, "texture": "#0"},
+				"down": {"uv": [5.5, 15, 7.5, 16], "rotation": 90, "texture": "#0", "cullface": "down"}
 			}
 		},
 		{
 			"name": "base2",
 			"from": [3, -14, 3],
 			"to": [13, -12, 13],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, -15, 8]},
 			"faces": {
 				"north": {"uv": [9, 11.5, 11.5, 12], "texture": "#0"},
 				"east": {"uv": [9, 11.5, 11.5, 12], "texture": "#0"},
@@ -132,7 +154,6 @@
 			"name": "base3",
 			"from": [4, -12, 4],
 			"to": [12, -4, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, -14, 8]},
 			"faces": {
 				"north": {"uv": [12, 3, 14, 5], "texture": "#0"},
 				"east": {"uv": [12, 3, 14, 5], "texture": "#0"},
@@ -145,57 +166,43 @@
 			"name": "port",
 			"from": [4, -12, 0],
 			"to": [12, -4, 1],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, -16, 8]},
 			"faces": {
-				"north": {"uv": [8, 8, 16, 16], "texture": "#1"},
-				"east": {"uv": [15, 8, 16, 16], "texture": "#1"},
+				"north": {"uv": [0, 0, 8, 8], "texture": "#1", "cullface": "north"},
+				"east": {"uv": [7, 0, 8, 8], "texture": "#1"},
 				"south": {"uv": [0, 8, 8, 16], "texture": "#1"},
-				"west": {"uv": [8, 8, 9, 16], "texture": "#1"},
-				"up": {"uv": [8, 8, 16, 9], "texture": "#1"},
-				"down": {"uv": [8, 15, 16, 16], "texture": "#1"}
+				"west": {"uv": [0, 0, 1, 8], "texture": "#1"},
+				"up": {"uv": [0, 0, 8, 1], "texture": "#1"},
+				"down": {"uv": [0, 7, 8, 8], "texture": "#1"}
 			}
 		},
 		{
-			"name": "port_led1",
-			"from": [5, -6, -0.005],
-			"to": [11, -5, -0.005],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, -16, 8]},
+			"name": "port_led",
+			"from": [4, -12, 0],
+			"to": [12, -4, 0],
 			"faces": {
-				"north": {"uv": [9, 9, 15, 10], "texture": "#2", "lightLevel": 15}
+				"north": {"uv": [8, 8, 16, 16], "texture": "#2", "cullface": "north", "emissivity": 15}
 			}
 		},
 		{
-			"name": "port_led2",
-			"from": [5, -11, -0.005],
-			"to": [11, -10, -0.005],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, -21, 8]},
+			"name": "port_down",
+			"from": [4, -16, 4],
+			"to": [12, -16, 12],
 			"faces": {
-				"north": {"uv": [9, 14, 15, 15], "texture": "#2", "lightLevel": 15}
+				"down": {"uv": [0, 0, 8, 8], "texture": "#1", "cullface": "down"}
 			}
 		},
 		{
-			"name": "port_led3",
-			"from": [10, -10, -0.005],
-			"to": [11, -6, -0.005],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, -17, 8]},
+			"name": "port_down_led",
+			"from": [4, -16, 4],
+			"to": [12, -16, 12],
 			"faces": {
-				"north": {"uv": [9, 10, 10, 14], "texture": "#2", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_led4",
-			"from": [5, -10, -0.005],
-			"to": [6, -6, -0.005],
-			"rotation": {"angle": 0, "axis": "y", "origin": [3, -17, 8]},
-			"faces": {
-				"north": {"uv": [14, 10, 15, 14], "texture": "#2", "lightLevel": 15}
+				"down": {"uv": [8, 8, 16, 16], "texture": "#2", "cullface": "down", "emissivity": 15}
 			}
 		},
 		{
 			"name": "solar_panel_east",
 			"from": [14, 30, -16],
 			"to": [32, 31, 32],
-			"rotation": {"angle": 0, "axis": "y", "origin": [23, 30.5, 8]},
 			"faces": {
 				"north": {"uv": [0, 11.75, 4.5, 12], "texture": "#0"},
 				"east": {"uv": [0, 0, 0.25, 12], "rotation": 90, "texture": "#0"},
@@ -209,7 +216,6 @@
 			"name": "solar_panel_east_base",
 			"from": [15, 29, -15],
 			"to": [31, 30, 31],
-			"rotation": {"angle": 0, "axis": "y", "origin": [23, 29.5, 8]},
 			"faces": {
 				"north": {"uv": [4.75, 0.25, 8.75, 0.5], "texture": "#0"},
 				"east": {"uv": [4.75, 0.25, 5, 11.75], "rotation": 90, "texture": "#0"},
@@ -222,7 +228,6 @@
 			"name": "solar_panel_east_arm",
 			"from": [12, 27, 7],
 			"to": [28, 29, 9],
-			"rotation": {"angle": 0, "axis": "y", "origin": [20, 28, 8]},
 			"faces": {
 				"north": {"uv": [15.5, 6.5, 16, 10.5], "rotation": 270, "texture": "#0"},
 				"east": {"uv": [15.5, 6, 16, 6.5], "rotation": 270, "texture": "#0"},
@@ -235,7 +240,6 @@
 			"name": "solar_panel_west",
 			"from": [-16, 30, -16],
 			"to": [2, 31, 32],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-7, 30.5, 8]},
 			"faces": {
 				"north": {"uv": [0, 11.75, 4.5, 12], "texture": "#0"},
 				"east": {"uv": [0, 0, 0.25, 12], "rotation": 90, "texture": "#0"},
@@ -249,7 +253,6 @@
 			"name": "solar_panel_west_base",
 			"from": [-15, 29, -15],
 			"to": [1, 30, 31],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-7, 29.5, 8]},
 			"faces": {
 				"north": {"uv": [4.75, 11.5, 8.75, 11.75], "texture": "#0"},
 				"east": {"uv": [4.75, 0.25, 5, 11.75], "rotation": 90, "texture": "#0"},
@@ -262,7 +265,6 @@
 			"name": "solar_panel_west_arm",
 			"from": [-12, 27, 7],
 			"to": [4, 29, 9],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-4, 28, 8]},
 			"faces": {
 				"north": {"uv": [15.5, 6.5, 16, 10.5], "rotation": 90, "texture": "#0"},
 				"south": {"uv": [15.5, 6.5, 16, 10.5], "rotation": 270, "texture": "#0"},
@@ -307,17 +309,5 @@
 			"translation": [0, -4.75, -0.5],
 			"scale": [0.3, 0.3, 0.3]
 		}
-	},
-	"groups": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-		{
-			"name": "port",
-			"origin": [8, 0, 8],
-			"children": [10, 11, 12, 13, 14]
-		},
-		{
-			"name": "panels",
-			"origin": [20, 44, 8],
-			"children": [15, 16, 17, 18, 19, 20]
-		}
-	]
+	}
 }

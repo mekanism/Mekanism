@@ -1,7 +1,6 @@
 {
 	"credit": "Model by CyanideX",
 	"parent": "block/cube_all",
-	"texture_size": [32, 32],
 	"textures": {
 		"particle": "mekanism:block/models/chemical_tank",
 		"body": "mekanism:block/models/chemical_tank"
@@ -26,18 +25,17 @@
 				"east": {"uv": [14, 8, 13.5, 9.5], "texture": "#body"},
 				"south": {"uv": [13.5, 8, 13, 9.5], "texture": "#body"},
 				"west": {"uv": [11, 8, 10.5, 9.5], "texture": "#body"},
-				"up": {"uv": [13, 8, 14, 8.5], "texture": "#body"}
+				"up": {"uv": [13, 8, 14, 8.5], "texture": "#body", "cullface": "up"}
 			}
 		},
 		{
 			"name": "rim2",
 			"from": [11, 13, 5],
 			"to": [12, 16, 11],
-			"rotation": {"angle": 0, "axis": "y", "origin": [11.5, 14.5, 8]},
 			"faces": {
 				"east": {"uv": [10.5, 8, 13.5, 9.5], "texture": "#body"},
 				"west": {"uv": [10.5, 8, 13.5, 9.5], "texture": "#body"},
-				"up": {"uv": [10.5, 8, 13.5, 8.5], "rotation": 90, "texture": "#body"}
+				"up": {"uv": [10.5, 8, 13.5, 8.5], "rotation": 90, "texture": "#body", "cullface": "up"}
 			}
 		},
 		{
@@ -49,7 +47,7 @@
 				"east": {"uv": [14.5, 10, 15, 11.5], "texture": "#body"},
 				"south": {"uv": [10.5, 10, 14.5, 11.5], "texture": "#body"},
 				"west": {"uv": [14.5, 10, 15, 11.5], "texture": "#body"},
-				"up": {"uv": [10.5, 10, 14.5, 10.5], "texture": "#body"}
+				"up": {"uv": [10.5, 10, 14.5, 10.5], "texture": "#body", "cullface": "up"}
 			}
 		},
 		{
@@ -59,7 +57,7 @@
 			"faces": {
 				"east": {"uv": [10.5, 8, 13.5, 9.5], "texture": "#body"},
 				"west": {"uv": [10.5, 8, 13.5, 9.5], "texture": "#body"},
-				"up": {"uv": [10.5, 8, 13.5, 8.5], "rotation": 90, "texture": "#body"}
+				"up": {"uv": [10.5, 8, 13.5, 8.5], "rotation": 90, "texture": "#body", "cullface": "up"}
 			}
 		},
 		{
@@ -71,7 +69,7 @@
 				"east": {"uv": [13.5, 8, 14, 9.5], "texture": "#body"},
 				"south": {"uv": [13.5, 8, 14, 9.5], "texture": "#body"},
 				"west": {"uv": [13.5, 8, 14, 9.5], "texture": "#body"},
-				"up": {"uv": [14, 8, 13, 8.5], "texture": "#body"}
+				"up": {"uv": [14, 8, 13, 8.5], "texture": "#body", "cullface": "up"}
 			}
 		},
 		{
@@ -91,13 +89,12 @@
 			"name": "tankBase",
 			"from": [4, 0, 4],
 			"to": [12, 1, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 7, 8]},
 			"faces": {
 				"north": {"uv": [10.5, 0.5, 14.5, 1], "texture": "#body"},
 				"east": {"uv": [10.5, 0.5, 14.5, 1], "texture": "#body"},
 				"south": {"uv": [10.5, 0.5, 14.5, 1], "texture": "#body"},
 				"west": {"uv": [10.5, 0.5, 14.5, 1], "texture": "#body"},
-				"down": {"uv": [10.5, 0.5, 14.5, 4.5], "texture": "#body"}
+				"down": {"uv": [10.5, 0.5, 14.5, 4.5], "texture": "#body", "cullface": "down"}
 			}
 		},
 		{
@@ -117,7 +114,6 @@
 			"name": "valveBase",
 			"from": [7, 12, 7],
 			"to": [9, 14, 9],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 7, 8]},
 			"faces": {
 				"north": {"uv": [10.5, 6, 11.5, 7], "texture": "#body"},
 				"east": {"uv": [10.5, 6, 11.5, 7], "texture": "#body"},

@@ -5,11 +5,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.common.Mekanism;
+import mekanism.common.CreativeTabMekanism;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.WrappedDeferredRegister;
@@ -20,8 +19,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
+
+    private static final CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
 
     private final List<IItemProvider> allItems = new ArrayList<>();
 
@@ -30,7 +32,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
     }
 
     public static Item.Properties getMekBaseProperties() {
-        return new Item.Properties().tab(Mekanism.tabMekanism);
+        return new Item.Properties().tab(tabMekanism);
     }
 
     public ItemRegistryObject<Item> register(String name) {
@@ -47,9 +49,9 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 
     public ItemRegistryObject<Item> register(String name, EnumColor color) {
         return register(name, properties -> new Item(properties) {
-            @Nonnull
+            @NotNull
             @Override
-            public Component getName(@Nonnull ItemStack stack) {
+            public Component getName(@NotNull ItemStack stack) {
                 return TextComponentUtil.build(color, super.getName(stack));
             }
         });

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nullable;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
@@ -35,6 +34,7 @@ import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraftforge.common.util.Lazy;
+import org.jetbrains.annotations.Nullable;
 
 //Note: Do not use any classes from JEI here as this is to allow us to safely keep JEI optional while referencing from our GUIs
 //Note: the lazy uid is only lazy before any lookups by rl have been performed, and afterwards it is assumed everything is initialized

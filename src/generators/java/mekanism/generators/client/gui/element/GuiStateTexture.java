@@ -3,12 +3,12 @@ package mekanism.generators.client.gui.element;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiStateTexture extends GuiTexturedElement {
 
@@ -26,7 +26,7 @@ public class GuiStateTexture extends GuiTexturedElement {
     }
 
     @Override
-    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShaderTexture(0, getResource());
         blit(matrix, x, y, 0, 0, width, height, width, height);
         RenderSystem.setShaderTexture(0, onSupplier.getAsBoolean() ? onTexture : offTexture);

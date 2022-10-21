@@ -2,10 +2,7 @@ package mekanism.api.recipes.cache;
 
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
@@ -13,18 +10,19 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class to help implement handling of reaction recipes.
  */
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedReactionRecipe> {
 
-    private final IOutputHandler<@NonNull PressurizedReactionRecipeOutput> outputHandler;
-    private final IInputHandler<@NonNull ItemStack> itemInputHandler;
-    private final IInputHandler<@NonNull FluidStack> fluidInputHandler;
-    private final IInputHandler<@NonNull GasStack> gasInputHandler;
+    private final IOutputHandler<@NotNull PressurizedReactionRecipeOutput> outputHandler;
+    private final IInputHandler<@NotNull ItemStack> itemInputHandler;
+    private final IInputHandler<@NotNull FluidStack> fluidInputHandler;
+    private final IInputHandler<@NotNull GasStack> gasInputHandler;
 
     private ItemStack recipeItem = ItemStack.EMPTY;
     private FluidStack recipeFluid = FluidStack.EMPTY;
@@ -42,9 +40,9 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
      * @param gasInputHandler   Gas input handler.
      * @param outputHandler     Output handler, handles both the item and gas outputs.
      */
-    public PressurizedReactionCachedRecipe(PressurizedReactionRecipe recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NonNull ItemStack> itemInputHandler,
-          IInputHandler<@NonNull FluidStack> fluidInputHandler, IInputHandler<@NonNull GasStack> gasInputHandler,
-          IOutputHandler<@NonNull PressurizedReactionRecipeOutput> outputHandler) {
+    public PressurizedReactionCachedRecipe(PressurizedReactionRecipe recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> itemInputHandler,
+          IInputHandler<@NotNull FluidStack> fluidInputHandler, IInputHandler<@NotNull GasStack> gasInputHandler,
+          IOutputHandler<@NotNull PressurizedReactionRecipeOutput> outputHandler) {
         super(recipe, recheckAllErrors);
         this.itemInputHandler = Objects.requireNonNull(itemInputHandler, "Item input handler cannot be null.");
         this.fluidInputHandler = Objects.requireNonNull(fluidInputHandler, "Fluid input handler cannot be null.");

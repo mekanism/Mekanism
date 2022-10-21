@@ -2,11 +2,8 @@ package mekanism.common.capabilities.proxy;
 
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
@@ -30,12 +27,11 @@ import mekanism.api.chemical.slurry.ISlurryHandler.ISidedSlurryHandler;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.capabilities.holder.IHolder;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public abstract class ProxyChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       SIDED_HANDLER extends ISidedChemicalHandler<CHEMICAL, STACK>> extends ProxyHandler implements IChemicalHandler<CHEMICAL, STACK> {
 
@@ -111,28 +107,28 @@ public abstract class ProxyChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, 
 
     public static class ProxyGasHandler extends ProxyChemicalHandler<Gas, GasStack, ISidedGasHandler> implements IGasHandler {
 
-        public ProxyGasHandler(@Nonnull ISidedGasHandler gasHandler, @Nullable Direction side, @Nullable IHolder holder) {
+        public ProxyGasHandler(@NotNull ISidedGasHandler gasHandler, @Nullable Direction side, @Nullable IHolder holder) {
             super(gasHandler, side, holder);
         }
     }
 
     public static class ProxyInfusionHandler extends ProxyChemicalHandler<InfuseType, InfusionStack, ISidedInfusionHandler> implements IInfusionHandler {
 
-        public ProxyInfusionHandler(@Nonnull ISidedInfusionHandler infusionHandler, @Nullable Direction side, @Nullable IHolder holder) {
+        public ProxyInfusionHandler(@NotNull ISidedInfusionHandler infusionHandler, @Nullable Direction side, @Nullable IHolder holder) {
             super(infusionHandler, side, holder);
         }
     }
 
     public static class ProxyPigmentHandler extends ProxyChemicalHandler<Pigment, PigmentStack, ISidedPigmentHandler> implements IPigmentHandler {
 
-        public ProxyPigmentHandler(@Nonnull ISidedPigmentHandler pigmentHandler, @Nullable Direction side, @Nullable IHolder holder) {
+        public ProxyPigmentHandler(@NotNull ISidedPigmentHandler pigmentHandler, @Nullable Direction side, @Nullable IHolder holder) {
             super(pigmentHandler, side, holder);
         }
     }
 
     public static class ProxySlurryHandler extends ProxyChemicalHandler<Slurry, SlurryStack, ISidedSlurryHandler> implements ISlurryHandler {
 
-        public ProxySlurryHandler(@Nonnull ISidedSlurryHandler slurryHandler, @Nullable Direction side, @Nullable IHolder holder) {
+        public ProxySlurryHandler(@NotNull ISidedSlurryHandler slurryHandler, @Nullable Direction side, @Nullable IHolder holder) {
             super(slurryHandler, side, holder);
         }
     }

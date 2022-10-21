@@ -1,7 +1,5 @@
 package mekanism.api.recipes.ingredients;
 
-import javax.annotation.Nonnull;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
@@ -12,11 +10,12 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Base implementation for how Mekanism handle's ChemicalStack Ingredients.
  */
-public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends InputIngredient<@NonNull STACK> {
+public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends InputIngredient<@NotNull STACK> {
 
     /**
      * Evaluates this predicate on the given argument, ignoring any size data.
@@ -25,7 +24,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      *
      * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
      */
-    boolean testType(@Nonnull CHEMICAL chemical);
+    boolean testType(@NotNull CHEMICAL chemical);
 
     /**
      * Base implementation for how Mekanism handle's GasStack Ingredients.

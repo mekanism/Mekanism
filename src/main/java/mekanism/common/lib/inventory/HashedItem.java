@@ -1,11 +1,11 @@
 package mekanism.common.lib.inventory;
 
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.util.StackUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A wrapper of an ItemStack which tests equality and hashes based on item type and NBT data, ignoring stack size.
@@ -14,7 +14,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
  */
 public class HashedItem {
 
-    public static HashedItem create(@Nonnull ItemStack stack) {
+    public static HashedItem create(@NotNull ItemStack stack) {
         return new HashedItem(StackUtils.size(stack, 1));
     }
 
@@ -24,15 +24,15 @@ public class HashedItem {
      * @apiNote When using this, you should be very careful to not accidentally modify the backing stack, this is mainly for use where we want to use an {@link ItemStack}
      * as a key in a map that is local to a single method, and don't want the overhead of copying the stack when it is not needed.
      */
-    public static HashedItem raw(@Nonnull ItemStack stack) {
+    public static HashedItem raw(@NotNull ItemStack stack) {
         return new HashedItem(stack);
     }
 
-    @Nonnull
+    @NotNull
     private final ItemStack itemStack;
     private final int hashCode;
 
-    protected HashedItem(@Nonnull ItemStack stack) {
+    protected HashedItem(@NotNull ItemStack stack) {
         this.itemStack = stack;
         this.hashCode = initHashCode();
     }
@@ -42,12 +42,12 @@ public class HashedItem {
         this.hashCode = other.hashCode;
     }
 
-    @Nonnull
+    @NotNull
     public ItemStack getStack() {
         return itemStack;
     }
 
-    @Nonnull
+    @NotNull
     public ItemStack createStack(int size) {
         return StackUtils.size(itemStack, size);
     }

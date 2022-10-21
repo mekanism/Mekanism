@@ -6,11 +6,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.function.Consumer;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.RenderTickHandler;
-import mekanism.client.render.lib.Quad;
-import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.lib.Vertex;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.block.attribute.Attribute;
@@ -22,8 +21,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPigmentMixer> implements IWireFrameRenderer {
 
     private static final List<Vertex[]> vertices = new ArrayList<>();
@@ -40,22 +40,24 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     @Override
     protected void render(TileEntityPigmentMixer tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
           ProfilerFiller profiler) {
-        //We only actually need to do rendering if the tile is active as that means we are using the active model
-        // which has no shaft
-        if (tile.getActive()) {
-            performTranslations(tile, partialTick, matrix);
-            Pose entry = matrix.last();
+        renderTranslated(tile, partialTick, matrix, poseStack -> {
+            Pose entry = poseStack.last();
             VertexConsumer buffer = renderer.getBuffer(Sheets.solidBlockSheet());
-            for (BakedQuad quad : MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel().getQuads(null, null, tile.getLevel().random)) {
-                buffer.putBulkData(entry, quad, 1F, 1F, 1F, 1F, light, overlayLight);
+            for (BakedQuad quad : MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getQuads(tile.getLevel().random)) {
+                buffer.putBulkData(entry, quad, 1, 1, 1, light, overlayLight);
             }
-            matrix.popPose();
-        }
+        });
     }
 
     @Override
     protected String getProfilerSection() {
         return ProfilerConstants.PIGMENT_MIXER;
+    }
+
+    @Override
+    public boolean shouldRender(TileEntityPigmentMixer tile, Vec3 camera) {
+        //We only actually need to do rendering if the tile is active as that means we are using the active model which has no shaft
+        return tile.getActive() && super.shouldRender(tile, camera);
     }
 
     @Override
@@ -69,23 +71,17 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     }
 
     @Override
-    public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, float red, float green, float blue, float alpha) {
+    public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, int red, int green, int blue, int alpha) {
         if (tile instanceof TileEntityPigmentMixer mixer) {
-            performTranslations(mixer, partialTick, matrix);
             if (vertices.isEmpty()) {
-                for (Quad quad : QuadUtils.unpack(MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel().getQuads(null, null, tile.getLevel().random))) {
-                    vertices.add(quad.getVertices());
-                }
+                MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.collectQuadVertices(vertices, tile.getLevel().random);
             }
-            RenderTickHandler.renderVertexWireFrame(vertices, buffer, matrix.last().pose(), red, green, blue, alpha);
-            matrix.popPose();
+            renderTranslated(mixer, partialTick, matrix, poseStack -> RenderTickHandler.renderVertexWireFrame(vertices, buffer, poseStack.last().pose(),
+                  red, green, blue, alpha));
         }
     }
 
-    /**
-     * Make sure to call {@link PoseStack#popPose()} afterwards
-     */
-    private void performTranslations(TileEntityPigmentMixer tile, float partialTick, PoseStack matrix) {
+    private void renderTranslated(TileEntityPigmentMixer tile, float partialTick, PoseStack matrix, Consumer<PoseStack> renderer) {
         matrix.pushPose();
         switch (tile.getDirection()) {
             case NORTH -> matrix.translate(7 / 16F, 0, 6 / 16F);
@@ -97,5 +93,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
         matrix.translate(shift, 0, shift);
         matrix.mulPose(Vector3f.YN.rotationDegrees((tile.getLevel().getGameTime() + partialTick) * SHAFT_SPEED % 360));
         matrix.translate(-shift, 0, -shift);
+        renderer.accept(matrix);
+        matrix.popPose();
     }
 }

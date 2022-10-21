@@ -1,12 +1,12 @@
 package mekanism.tools.common.material.impl.vanilla;
 
-import javax.annotation.Nonnull;
 import mekanism.tools.common.material.VanillaPaxelMaterial;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.Tiers;
 
+@MethodsReturnNonnullByDefault
 public class GoldPaxelMaterialDefaults extends VanillaPaxelMaterial {
 
-    @Nonnull
     @Override
     public Tiers getVanillaTier() {
         return Tiers.GOLD;

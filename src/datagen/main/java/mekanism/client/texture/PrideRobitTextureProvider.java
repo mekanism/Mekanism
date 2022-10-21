@@ -1,21 +1,14 @@
 package mekanism.client.texture;
 
+import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
-import com.google.common.hash.HashingOutputStream;
-import cpw.mods.modlauncher.api.LamdbaExceptionUtils;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.WritableRaster;
-import java.io.ByteArrayOutputStream;
+import com.mojang.blaze3d.platform.NativeImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.imageio.ImageIO;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.RobitPrideSkinData;
+import mekanism.common.lib.Color;
 import mekanism.common.registries.MekanismRobitSkins;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
@@ -25,6 +18,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 
 public class PrideRobitTextureProvider implements DataProvider {
 
@@ -40,66 +34,51 @@ public class PrideRobitTextureProvider implements DataProvider {
 
     @Override
     @SuppressWarnings("UnstableApiUsage")
-    public void run(@Nonnull CachedOutput cache) throws IOException {
+    public void run(@NotNull CachedOutput cache) throws IOException {
         PathProvider pathProvider = generator.createPathProvider(Target.RESOURCE_PACK, ROBIT_SKIN_PATH);
         Resource resource = helper.getResource(MekanismRobitSkins.BASE.getRegistryName(), PackType.CLIENT_RESOURCES, ".png", ROBIT_SKIN_PATH);
-        try (InputStream inputStream = resource.open()) {
-            BufferedImage image = ImageIO.read(inputStream);
+        try (InputStream inputStream = resource.open();
+             NativeImage sourceImage = NativeImage.read(inputStream);
+             NativeImage writableImage = new NativeImage(sourceImage.format(), sourceImage.getWidth(), sourceImage.getHeight(), false)) {
+            //Set initial image data, we can just use one writable version as we always edit the same pixels,
+            // so we will overwrite any changes we make. In theory, we could just edit the loaded source directly,
+            // but it is a bit safer to just copy it into its own spot in memory
+            writableImage.copyFrom(sourceImage);
             for (RobitPrideSkinData skinData : RobitPrideSkinData.values()) {
-                transform(() -> {
-                          ColorModel cm = image.getColorModel();
-                          boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-                          WritableRaster raster = image.copyData(null);
-                          return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
-                      }, skinData, LamdbaExceptionUtils.rethrowBiConsumer((prideTexture, index) -> {
-                          String fileName = skinData.lowerCaseName();
-                          if (++index != 1) {
-                              fileName += index;
-                          }
-                          Path path = pathProvider.file(Mekanism.rl(fileName), "png");
-                          try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                               HashingOutputStream hashingOutputStream = new HashingOutputStream(Hashing.sha1(), outputStream)) {
-                              ImageIO.write(prideTexture, "png", hashingOutputStream);
-                              cache.writeIfNeeded(path, outputStream.toByteArray(), hashingOutputStream.hash());
-                          }
-                      })
-                );
-            }
-        }
-    }
-
-    private void transform(Supplier<BufferedImage> basicRobitTextureFactory, RobitPrideSkinData data, BiConsumer<BufferedImage, Integer> saveImageCallback) {
-        //generate all textures
-        for (int rotationIndex = 0; rotationIndex < data.getColor().length; rotationIndex++) {
-            BufferedImage image = basicRobitTextureFactory.get();
-            for (int chainIndex = 0; chainIndex < 4; chainIndex++) {
-                int maxStripeIndex = 9;
-                if (chainIndex == 1 || chainIndex == 3) {
-                    maxStripeIndex = 3;
-                }
-                for (int stripeIndex = 0; stripeIndex < maxStripeIndex; stripeIndex++) {
-                    int x = 0;
-                    int y = 0;
-                    switch (chainIndex) {
-                        case 0 -> {
-                            x = 8 - stripeIndex;
-                            y = 4;
-                        }
-                        case 1 -> {
-                            x = 2 - stripeIndex;
-                            y = 2;
-                        }
-                        case 2 -> x = stripeIndex;
-                        case 3 -> {
-                            x = stripeIndex + 6;
-                            y = 2;
+                String baseFileName = skinData.lowerCaseName();
+                //generate all textures
+                for (int rotationIndex = 0; rotationIndex < skinData.getColor().length; rotationIndex++) {
+                    for (int chainIndex = 0; chainIndex < 4; chainIndex++) {
+                        int maxStripeIndex = chainIndex == 1 || chainIndex == 3 ? 3 : 9;
+                        int y = switch (chainIndex) {
+                            case 0 -> 4;
+                            case 2 -> 0;
+                            default -> 2;
+                        };
+                        for (int stripeIndex = 0; stripeIndex < maxStripeIndex; stripeIndex++) {
+                            int x = 15 + switch (chainIndex) {
+                                case 0 -> 8 - stripeIndex;
+                                case 1 -> 2 - stripeIndex;
+                                default -> stripeIndex;
+                                case 3 -> stripeIndex + 6;
+                            };
+                            int abgr = abgr(stripeIndex, chainIndex, rotationIndex, skinData);
+                            writableImage.setPixelRGBA(x, y, abgr);
+                            writableImage.setPixelRGBA(x, y + 1, abgr);
                         }
                     }
-                    x += 15;
-                    paintStripe(image, rgb(stripeIndex, chainIndex, rotationIndex, data), x, y);
+                    //Save the image
+                    String fileName = baseFileName;
+                    if (rotationIndex != 0) {
+                        fileName += rotationIndex + 1;
+                    }
+                    Path path = pathProvider.file(Mekanism.rl(fileName), "png");
+                    byte[] bytes = writableImage.asByteArray();
+                    Hasher hasher = Hashing.sha1().newHasher();
+                    hasher.putBytes(bytes);
+                    cache.writeIfNeeded(path, bytes, hasher.hash());
                 }
             }
-            saveImageCallback.accept(image, rotationIndex);
         }
     }
 
@@ -109,7 +88,7 @@ public class PrideRobitTextureProvider implements DataProvider {
      *
      * @return Color at that position
      */
-    private int rgb(int stripeIndex, int chainIndex, int rotationIndex, RobitPrideSkinData data) {
+    private int abgr(int stripeIndex, int chainIndex, int rotationIndex, RobitPrideSkinData data) {
         //offset it by 12, so the pride flag always starts at the top by default
         int index = stripeIndex + rotationIndex + 12;
         if (chainIndex > 2) {
@@ -121,15 +100,11 @@ public class PrideRobitTextureProvider implements DataProvider {
         if (chainIndex > 0) {
             index += 9;
         }
-        return data.getColor()[index % data.getColor().length];
+        int[] colors = data.getColor();
+        return Color.argbToFromABGR(colors[index % colors.length]);
     }
 
-    private void paintStripe(BufferedImage robit, int colorRGB, int x, int y) {
-        robit.setRGB(x, y, colorRGB);
-        robit.setRGB(x, y + 1, colorRGB);
-    }
-
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return "Texture Provider";

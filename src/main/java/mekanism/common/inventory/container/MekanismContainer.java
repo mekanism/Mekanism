@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
@@ -63,6 +61,8 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class MekanismContainer extends AbstractContainerMenu implements ISecurityContainer {
 
@@ -110,9 +110,9 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         return inv.player.getUUID();
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    protected Slot addSlot(@Nonnull Slot slot) {
+    protected Slot addSlot(@NotNull Slot slot) {
         super.addSlot(slot);
         if (slot instanceof IHasExtraData hasExtraData) {
             //If the slot has any extra data, allow it to add any trackers it may have
@@ -156,14 +156,14 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     }
 
     @Override
-    public boolean stillValid(@Nonnull Player player) {
+    public boolean stillValid(@NotNull Player player) {
         //Is this the proper default
         //TODO: Re-evaluate this and maybe add in some distance based checks??
         return true;
     }
 
     @Override
-    public boolean canTakeItemForPickAll(@Nonnull ItemStack stack, @Nonnull Slot slot) {
+    public boolean canTakeItemForPickAll(@NotNull ItemStack stack, @NotNull Slot slot) {
         if (slot instanceof IInsertableSlot insertableSlot) {
             if (!insertableSlot.canMergeWith(stack)) {
                 return false;
@@ -175,18 +175,18 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     }
 
     @Override
-    public void removed(@Nonnull Player player) {
+    public void removed(@NotNull Player player) {
         super.removed(player);
         closeInventory(player);
     }
 
-    protected void closeInventory(@Nonnull Player player) {
+    protected void closeInventory(@NotNull Player player) {
         if (!player.level.isClientSide()) {
             clearSelectedWindow(player.getUUID());
         }
     }
 
-    protected void openInventory(@Nonnull Inventory inv) {
+    protected void openInventory(@NotNull Inventory inv) {
     }
 
     protected int getInventoryYOffset() {
@@ -197,7 +197,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         return 8;
     }
 
-    protected void addInventorySlots(@Nonnull Inventory inv) {
+    protected void addInventorySlots(@NotNull Inventory inv) {
         if (this instanceof IEmptyContainer) {
             //Don't include the player's inventory slots
             return;
@@ -215,7 +215,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
-    protected void addArmorSlots(@Nonnull Inventory inv, int x, int y, int offhandOffset) {
+    protected void addArmorSlots(@NotNull Inventory inv, int x, int y, int offhandOffset) {
         for (int index = 0; index < inv.armor.size(); index++) {
             final EquipmentSlot slotType = EnumUtils.EQUIPMENT_SLOT_TYPES[2 + inv.armor.size() - index - 1];
             addSlot(new ArmorSlot(inv, 36 + inv.armor.size() - index - 1, x, y, slotType));
@@ -226,7 +226,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
-    protected HotBarSlot createHotBarSlot(@Nonnull Inventory inv, int index, int x, int y) {
+    protected HotBarSlot createHotBarSlot(@NotNull Inventory inv, int index, int x, int y) {
         return new HotBarSlot(inv, index, x, y);
     }
 
@@ -250,9 +250,9 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
      *
      * @return The contents in this slot AFTER transferring items away.
      */
-    @Nonnull
+    @NotNull
     @Override
-    public ItemStack quickMoveStack(@Nonnull Player player, int slotID) {
+    public ItemStack quickMoveStack(@NotNull Player player, int slotID) {
         Slot currentSlot = slots.get(slotID);
         if (currentSlot == null || !currentSlot.hasItem()) {
             return ItemStack.EMPTY;
@@ -317,7 +317,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
      *
      * @return Remainder
      */
-    public static <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @Nonnull ItemStack stack, @Nullable SelectedWindowData selectedWindow) {
+    public static <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @NotNull ItemStack stack, @Nullable SelectedWindowData selectedWindow) {
         stack = insertItem(slots, stack, true, selectedWindow);
         return insertItem(slots, stack, false, selectedWindow);
     }
@@ -330,7 +330,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
      *
      * @return Remainder
      */
-    public static <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @Nonnull ItemStack stack, boolean ignoreEmpty,
+    public static <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @NotNull ItemStack stack, boolean ignoreEmpty,
           @Nullable SelectedWindowData selectedWindow) {
         return insertItem(slots, stack, ignoreEmpty, selectedWindow, Action.EXECUTE);
     }
@@ -343,8 +343,8 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
      *
      * @return Remainder
      */
-    @Nonnull
-    public static <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @Nonnull ItemStack stack, boolean ignoreEmpty,
+    @NotNull
+    public static <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @NotNull ItemStack stack, boolean ignoreEmpty,
           @Nullable SelectedWindowData selectedWindow, Action action) {
         return insertItem(slots, stack, ignoreEmpty, false, selectedWindow, action);
     }
@@ -358,8 +358,8 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
      *
      * @return Remainder
      */
-    @Nonnull
-    public static <SLOT extends Slot & IInsertableSlot> ItemStack insertItemCheckAll(List<SLOT> slots, @Nonnull ItemStack stack,
+    @NotNull
+    public static <SLOT extends Slot & IInsertableSlot> ItemStack insertItemCheckAll(List<SLOT> slots, @NotNull ItemStack stack,
           @Nullable SelectedWindowData selectedWindow, Action action) {
         //Ignore empty is ignored when check all is true
         return insertItem(slots, stack, false, true, selectedWindow, action);
@@ -374,8 +374,8 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
      *
      * @return Remainder
      */
-    @Nonnull
-    public static <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @Nonnull ItemStack stack, boolean ignoreEmpty, boolean checkAll,
+    @NotNull
+    public static <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @NotNull ItemStack stack, boolean ignoreEmpty, boolean checkAll,
           @Nullable SelectedWindowData selectedWindow, Action action) {
         if (stack.isEmpty()) {
             //Skip doing anything if the stack is already empty.
@@ -398,8 +398,8 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         return stack;
     }
 
-    @Nonnull
-    protected ItemStack transferSuccess(@Nonnull Slot currentSlot, @Nonnull Player player, @Nonnull ItemStack slotStack, @Nonnull ItemStack stackToInsert) {
+    @NotNull
+    protected ItemStack transferSuccess(@NotNull Slot currentSlot, @NotNull Player player, @NotNull ItemStack slotStack, @NotNull ItemStack stackToInsert) {
         int difference = slotStack.getCount() - stackToInsert.getCount();
         ItemStack newStack = currentSlot.remove(difference);
         currentSlot.onTake(player, newStack);
@@ -455,9 +455,9 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         trackedData.add(data);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    protected DataSlot addDataSlot(@Nonnull DataSlot referenceHolder) {
+    protected DataSlot addDataSlot(@NotNull DataSlot referenceHolder) {
         //Override vanilla's int tracking so that if for some reason this method gets called for our container
         // it properly adds it to our tracking
         track(SyncableInt.create(referenceHolder::get, referenceHolder::set));
@@ -573,14 +573,14 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
-    public void handleWindowProperty(short property, @Nonnull ItemStack value) {
+    public void handleWindowProperty(short property, @NotNull ItemStack value) {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableItemStack syncable) {
             syncable.set(value);
         }
     }
 
-    public void handleWindowProperty(short property, @Nonnull FluidStack value) {
+    public void handleWindowProperty(short property, @NotNull FluidStack value) {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableFluidStack syncable) {
             syncable.set(value);
@@ -594,14 +594,14 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
-    public <V> void handleWindowProperty(short property, @Nonnull V value) {
+    public <V> void handleWindowProperty(short property, @NotNull V value) {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableRegistryEntry) {
             ((SyncableRegistryEntry<V>) data).set(value);
         }
     }
 
-    public <STACK extends ChemicalStack<?>> void handleWindowProperty(short property, @Nonnull STACK value) {
+    public <STACK extends ChemicalStack<?>> void handleWindowProperty(short property, @NotNull STACK value) {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableGasStack syncable && value instanceof GasStack stack) {
             syncable.set(stack);
@@ -621,14 +621,14 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
-    public void handleWindowProperty(short property, @Nonnull FloatingLong value) {
+    public void handleWindowProperty(short property, @NotNull FloatingLong value) {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableFloatingLong syncable) {
             syncable.set(value);
         }
     }
 
-    public <TYPE> void handleWindowProperty(short property, @Nonnull List<TYPE> value) {
+    public <TYPE> void handleWindowProperty(short property, @NotNull List<TYPE> value) {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableList) {
             ((SyncableList<TYPE>) data).set(value);

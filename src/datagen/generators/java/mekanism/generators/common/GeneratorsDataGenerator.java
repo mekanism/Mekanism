@@ -9,10 +9,10 @@ import mekanism.generators.common.loot.GeneratorsLootProvider;
 import mekanism.patchouli.generators.GeneratorsBookProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 @EventBusSubscriber(modid = MekanismGenerators.MODID, bus = Bus.MOD)
 public class GeneratorsDataGenerator {

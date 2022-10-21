@@ -2,8 +2,6 @@ package mekanism.common.tile;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -49,6 +47,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISustainedData, ITileFilterHolder<SorterFilter<?>>, IHasSortableFilters {
 
@@ -70,7 +70,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
@@ -135,7 +135,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+    public void saveAdditional(@NotNull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
         if (rrTarget != null) {
             nbtTags.put(NBTConstants.ROUND_ROBIN_TARGET, rrTarget.serialize());
@@ -143,7 +143,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         if (nbt.contains(NBTConstants.ROUND_ROBIN_TARGET, Tag.TAG_COMPOUND)) {
             rrTarget = SidedBlockPos.deserialize(nbt.getCompound(NBTConstants.ROUND_ROBIN_TARGET));
@@ -212,7 +212,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         return TransporterUtils.isValidAcceptorOnSide(tile, oppositeDirection);
     }
 
-    @Nonnull
+    @NotNull
     public TransitResponse sendHome(TransitRequest request) {
         Direction oppositeDirection = getOppositeDirection();
         BlockEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(oppositeDirection));

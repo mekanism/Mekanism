@@ -1,6 +1,6 @@
 package mekanism.client.model.baked;
 
-import javax.annotation.Nullable;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadTransformation.TextureFilteredTransformation;
 import mekanism.common.Mekanism;
@@ -9,10 +9,13 @@ import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
+import org.jetbrains.annotations.Nullable;
 
+@NothingNullByDefault
 public class DigitalMinerBakedModel extends ExtensionBakedModel<Void> {
 
+    @Nullable
     private static TextureAtlasSprite AFD_SAD, AFD_TEXT, MAY_4TH;
 
     public static void preStitch(TextureStitchEvent.Pre event) {
@@ -39,7 +42,7 @@ public class DigitalMinerBakedModel extends ExtensionBakedModel<Void> {
 
     @Nullable
     @Override
-    protected QuadsKey<Void> createKey(QuadsKey<Void> key, IModelData data) {
+    protected QuadsKey<Void> createKey(QuadsKey<Void> key, ModelData data) {
         if (MekanismConfig.client.holidays.get()) {
             if (HolidayManager.MAY_4.isToday()) {
                 return key.transform(MAY_4TH_TRANSFORM);

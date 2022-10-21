@@ -1,11 +1,13 @@
 {
 	"credit": "Model by CyanideX",
 	"parent": "block/cube_all",
-	"texture_size": [32, 32],
 	"textures": {
+		"2": "mekanism:block/models/ports",
+		"3": "mekanism:block/models/ports_led",
 		"all": "mekanism:block/models/laser",
 		"particle": "mekanism:block/steel_casing"
 	},
+	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"name": "body",
@@ -24,12 +26,10 @@
 			"name": "wire",
 			"from": [8.995, 10, 7.5],
 			"to": [9.995, 13, 8.5],
-			"rotation": {"angle": 0, "axis": "y", "origin": [9, 8, 8]},
 			"faces": {
 				"north": {"uv": [6, 0, 6.5, 1.5], "texture": "#all"},
 				"east": {"uv": [6, 0, 6.5, 1.5], "texture": "#all"},
-				"south": {"uv": [6, 0, 6.5, 1.5], "texture": "#all"},
-				"west": {"uv": [6, 0, 6.5, 1.5], "texture": "#all"}
+				"south": {"uv": [6, 0, 6.5, 1.5], "texture": "#all"}
 			}
 		},
 		{
@@ -40,7 +40,6 @@
 				"north": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"east": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"south": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
-				"west": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"up": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"down": {"uv": [0, 4.5, 4, 5], "texture": "#all"}
 			}
@@ -49,12 +48,10 @@
 			"name": "fin2",
 			"from": [11, 6, 4],
 			"to": [12, 7, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 6, 8]},
 			"faces": {
 				"north": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"east": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"south": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
-				"west": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"up": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"down": {"uv": [0, 4.5, 4, 5], "texture": "#all"}
 			}
@@ -63,12 +60,10 @@
 			"name": "fin3",
 			"from": [11, 4, 4],
 			"to": [12, 5, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 4, 8]},
 			"faces": {
 				"north": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"east": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"south": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
-				"west": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"up": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"down": {"uv": [0, 4.5, 4, 5], "texture": "#all"}
 			}
@@ -77,12 +72,10 @@
 			"name": "fin4",
 			"from": [11, 2, 4],
 			"to": [12, 3, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 2, 8]},
 			"faces": {
 				"north": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"east": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"south": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
-				"west": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"up": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"down": {"uv": [0, 4.5, 4, 5], "texture": "#all"}
 			}
@@ -91,10 +84,8 @@
 			"name": "fin5",
 			"from": [4, 8, 4],
 			"to": [5, 9, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [1, 8, 8]},
 			"faces": {
 				"north": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
-				"east": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"south": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"west": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"up": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
@@ -105,10 +96,8 @@
 			"name": "fin6",
 			"from": [4, 6, 4],
 			"to": [5, 7, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [1, 6, 8]},
 			"faces": {
 				"north": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
-				"east": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"south": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"west": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"up": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
@@ -119,10 +108,8 @@
 			"name": "fin7",
 			"from": [4, 4, 4],
 			"to": [5, 5, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [1, 4, 8]},
 			"faces": {
 				"north": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
-				"east": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"south": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"west": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"up": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
@@ -133,10 +120,8 @@
 			"name": "fin8",
 			"from": [4, 2, 4],
 			"to": [5, 3, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [1, 2, 8]},
 			"faces": {
 				"north": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
-				"east": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"south": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"west": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
 				"up": {"uv": [0, 4.5, 4, 5], "texture": "#all"},
@@ -147,7 +132,6 @@
 			"name": "shaft",
 			"from": [5, 9, 5],
 			"to": [11, 10, 11],
-			"rotation": {"angle": 0, "axis": "y", "origin": [7, 7, 7]},
 			"faces": {
 				"north": {"uv": [0, 7.5, 3, 8], "texture": "#all"},
 				"east": {"uv": [0, 7.5, 3, 8], "texture": "#all"},
@@ -165,41 +149,35 @@
 				"east": {"uv": [4.5, 0, 5, 3], "texture": "#all"},
 				"south": {"uv": [4.5, 0, 5, 3], "texture": "#all"},
 				"west": {"uv": [4.5, 0, 5, 3], "texture": "#all"},
-				"up": {"uv": [4.5, 3, 6, 4.5], "texture": "#all"}
+				"up": {"uv": [4.5, 3, 6, 4.5], "texture": "#all", "cullface": "up"}
 			}
 		},
 		{
 			"name": "rod1",
 			"from": [10.995, 3, 9],
 			"to": [11.995, 8, 10],
-			"rotation": {"angle": 0, "axis": "y", "origin": [9, 8, 8]},
 			"faces": {
 				"north": {"uv": [6.5, 0, 7, 2.5], "texture": "#all"},
 				"east": {"uv": [6.5, 0, 7, 2.5], "texture": "#all"},
-				"south": {"uv": [6.5, 0, 7, 2.5], "texture": "#all"},
-				"west": {"uv": [6.5, 0, 7, 2.5], "texture": "#all"}
+				"south": {"uv": [6.5, 0, 7, 2.5], "texture": "#all"}
 			}
 		},
 		{
 			"name": "rod2",
 			"from": [10.995, 3, 6],
 			"to": [11.995, 8, 7],
-			"rotation": {"angle": 0, "axis": "y", "origin": [9, 8, 5]},
 			"faces": {
 				"north": {"uv": [6.5, 0, 7, 2.5], "texture": "#all"},
 				"east": {"uv": [6.5, 0, 7, 2.5], "texture": "#all"},
-				"south": {"uv": [6.5, 0, 7, 2.5], "texture": "#all"},
-				"west": {"uv": [6.5, 0, 7, 2.5], "texture": "#all"}
+				"south": {"uv": [6.5, 0, 7, 2.5], "texture": "#all"}
 			}
 		},
 		{
 			"name": "rod3",
 			"from": [4.005, 3, 6],
 			"to": [5.005, 8, 7],
-			"rotation": {"angle": 0, "axis": "y", "origin": [2, 8, 5]},
 			"faces": {
 				"north": {"uv": [6.5, 0, 7, 2.5], "texture": "#all"},
-				"east": {"uv": [6.5, 0, 7, 2.5], "texture": "#all"},
 				"south": {"uv": [6.5, 0, 7, 2.5], "texture": "#all"},
 				"west": {"uv": [6.5, 0, 7, 2.5], "texture": "#all"}
 			}
@@ -208,10 +186,8 @@
 			"name": "rod4",
 			"from": [4.005, 3, 9],
 			"to": [5.005, 8, 10],
-			"rotation": {"angle": 0, "axis": "y", "origin": [2, 8, 8]},
 			"faces": {
 				"north": {"uv": [6.5, 0, 7, 2.5], "texture": "#all"},
-				"east": {"uv": [6.5, 0, 7, 2.5], "texture": "#all"},
 				"south": {"uv": [6.5, 0, 7, 2.5], "texture": "#all"},
 				"west": {"uv": [6.5, 0, 7, 2.5], "texture": "#all"}
 			}
@@ -221,12 +197,12 @@
 			"from": [4, 0, 4],
 			"to": [12, 1, 12],
 			"faces": {
-				"north": {"uv": [0, 3.5, 4, 4], "texture": "#all"},
-				"east": {"uv": [0, 3.5, 4, 4], "texture": "#all"},
-				"south": {"uv": [0, 3.5, 4, 4], "texture": "#all"},
-				"west": {"uv": [0, 3.5, 4, 4], "texture": "#all"},
-				"up": {"uv": [11, 0, 15, 4], "texture": "#all"},
-				"down": {"uv": [0, 0, 4, 4], "texture": "#all"}
+				"north": {"uv": [0, 0, 8, 1], "texture": "#2"},
+				"east": {"uv": [0, 0, 8, 1], "texture": "#2"},
+				"south": {"uv": [0, 7, 8, 8], "texture": "#2"},
+				"west": {"uv": [0, 7, 8, 8], "texture": "#2"},
+				"up": {"uv": [8, 0, 16, 8], "texture": "#2"},
+				"down": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "down"}
 			}
 		},
 		{
@@ -257,7 +233,6 @@
 			"name": "ring2",
 			"from": [6, 11, 6],
 			"to": [10, 12, 10],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 6, 8]},
 			"faces": {
 				"north": {"uv": [0, 10, 2, 10.5], "texture": "#all"},
 				"east": {"uv": [0, 10, 2, 10.5], "texture": "#all"},
@@ -265,6 +240,14 @@
 				"west": {"uv": [0, 10, 2, 10.5], "texture": "#all"},
 				"up": {"uv": [0, 8.5, 2, 10.5], "texture": "#all"},
 				"down": {"uv": [0, 8.5, 2, 10.5], "texture": "#all"}
+			}
+		},
+		{
+			"name": "portLED",
+			"from": [4, 0, 4],
+			"to": [12, 0, 12],
+			"faces": {
+				"down": {"uv": [8, 8, 16, 16], "texture": "#3", "cullface": "down", "emissivity": 15}
 			}
 		}
 	],

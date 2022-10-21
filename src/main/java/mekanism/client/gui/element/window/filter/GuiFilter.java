@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
@@ -33,6 +31,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>> extends GuiWindow
       implements GuiFilterHelper<TILE> {
@@ -67,7 +67,8 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         if (!isFocusOverlay()) {
             if (isNew && hasFilterSelect()) {
                 //If it is a new filter, and we have a filter select screen add a back button instead of a close button
-                addChild(new MekanismImageButton(gui, relativeX + 6, relativeY + 6, 11, 14, getButtonLocation("back"), this::openFilterSelect));
+                addChild(new MekanismImageButton(gui, relativeX + 6, relativeY + 6, 11, 14, getButtonLocation("back"), this::openFilterSelect,
+                      getOnHover(MekanismLang.BACK)));
             } else {
                 super.addCloseButton();
             }
@@ -193,7 +194,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
 
     protected abstract ILangEntry getNoFilterSaveError();
 
-    @Nonnull
+    @NotNull
     protected abstract List<ItemStack> getRenderStacks();
 
     @Override

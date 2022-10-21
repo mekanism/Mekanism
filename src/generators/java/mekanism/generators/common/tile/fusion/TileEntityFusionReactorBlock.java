@@ -8,7 +8,9 @@ import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import mekanism.generators.common.registries.GeneratorsContainerTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityFusionReactorBlock extends TileEntityMultiblock<FusionReactorMultiblockData> {
@@ -39,16 +41,24 @@ public class TileEntityFusionReactorBlock extends TileEntityMultiblock<FusionRea
     public void setInjectionRateFromPacket(int rate) {
         FusionReactorMultiblockData multiblock = getMultiblock();
         if (multiblock.isFormed()) {
-            multiblock.setInjectionRate(Math.min(FusionReactorMultiblockData.MAX_INJECTION, Math.max(0, rate - (rate % 2))));
+            multiblock.setInjectionRate(Mth.clamp(rate - (rate % 2), 0, FusionReactorMultiblockData.MAX_INJECTION));
             markForSave();
         }
     }
 
-    public void addFuelTabContainerTrackers(MekanismContainer container) {
-        SyncMapper.INSTANCE.setup(container, FusionReactorMultiblockData.class, this::getMultiblock, "fuel");
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        if (container.getType() == GeneratorsContainerTypes.FUSION_REACTOR_FUEL.get()) {
+            addTabContainerTracker(container, FusionReactorMultiblockData.FUEL_TAB);
+        } else if (container.getType() == GeneratorsContainerTypes.FUSION_REACTOR_HEAT.get()) {
+            addTabContainerTracker(container, FusionReactorMultiblockData.HEAT_TAB);
+        } else if (container.getType() == GeneratorsContainerTypes.FUSION_REACTOR_STATS.get()) {
+            addTabContainerTracker(container, FusionReactorMultiblockData.STATS_TAB);
+        }
     }
 
-    public void addHeatTabContainerTrackers(MekanismContainer container) {
-        SyncMapper.INSTANCE.setup(container, FusionReactorMultiblockData.class, this::getMultiblock, "heat");
+    private void addTabContainerTracker(MekanismContainer container, String tab) {
+        SyncMapper.INSTANCE.setup(container, FusionReactorMultiblockData.class, this::getMultiblock, tab);
     }
 }

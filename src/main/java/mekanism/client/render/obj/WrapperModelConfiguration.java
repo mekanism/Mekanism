@@ -1,80 +1,78 @@
 package mekanism.client.render.obj;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.geometry.IModelGeometryPart;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.RenderTypeGroup;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class WrapperModelConfiguration implements IModelConfiguration {
+public class WrapperModelConfiguration implements IGeometryBakingContext {
 
-    protected final IModelConfiguration internal;
+    protected final IGeometryBakingContext internal;
 
-    protected WrapperModelConfiguration(IModelConfiguration internal) {
+    protected WrapperModelConfiguration(IGeometryBakingContext internal) {
         this.internal = internal;
     }
 
-    @Nullable
-    @Override
-    public UnbakedModel getOwnerModel() {
-        return internal.getOwnerModel();
-    }
-
-    @Nonnull
+    @NotNull
     @Override
     public String getModelName() {
         return internal.getModelName();
     }
 
     @Override
-    public boolean isTexturePresent(@Nonnull String name) {
-        return internal.isTexturePresent(name);
+    public boolean hasMaterial(@NotNull String name) {
+        return internal.hasMaterial(name);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Material resolveTexture(@Nonnull String name) {
-        return internal.resolveTexture(name);
-    }
-
-    @Override
-    public boolean isShadedInGui() {
-        return internal.isShadedInGui();
+    public Material getMaterial(@NotNull String name) {
+        return internal.getMaterial(name);
     }
 
     @Override
-    public boolean isSideLit() {
+    public boolean isGui3d() {
+        return internal.isGui3d();
+    }
+
+    @Override
+    public boolean useBlockLight() {
         return false;
     }
 
     @Override
-    public boolean useSmoothLighting() {
-        return internal.useSmoothLighting();
+    public boolean useAmbientOcclusion() {
+        return internal.useAmbientOcclusion();
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    @Deprecated
-    public ItemTransforms getCameraTransforms() {
-        return internal.getCameraTransforms();
-    }
-
-    @Nonnull
-    @Override
-    public ModelState getCombinedTransform() {
-        return internal.getCombinedTransform();
+    public ItemTransforms getTransforms() {
+        return internal.getTransforms();
     }
 
     @Override
-    public boolean getPartVisibility(@Nonnull IModelGeometryPart part, boolean fallback) {
-        return internal.getPartVisibility(part, fallback);
+    public Transformation getRootTransform() {
+        return internal.getRootTransform();
     }
 
     @Override
-    public boolean getPartVisibility(@Nonnull IModelGeometryPart part) {
-        return internal.getPartVisibility(part);
+    public boolean isComponentVisible(String component, boolean fallback) {
+        return internal.isComponentVisible(component, fallback);
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getRenderTypeHint() {
+        return internal.getRenderTypeHint();
+    }
+
+    @Override
+    public RenderTypeGroup getRenderType(ResourceLocation name) {
+        return internal.getRenderType(name);
     }
 }

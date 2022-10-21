@@ -2,8 +2,6 @@ package mekanism.client.gui.element.window.filter;
 
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostBlockItemConsumer;
@@ -15,6 +13,8 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.StackUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
       extends GuiFilter<FILTER, TILE> {
@@ -41,7 +41,7 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
         return MekanismLang.ITEM_FILTER_NO_ITEM;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected List<ItemStack> getRenderStacks() {
         if (filter.hasFilter()) {
@@ -62,7 +62,7 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
                super.mouseClicked(mouseX, mouseY, button);
     }
 
-    protected void setFilterStack(@Nonnull ItemStack stack) {
+    protected void setFilterStack(@NotNull ItemStack stack) {
         filter.setMaterialItem(stack);
         slotDisplay.updateStackList();
         playClickSound();

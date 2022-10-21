@@ -1,19 +1,17 @@
 package mekanism.common.capabilities.resolver;
 
 import java.util.List;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.ISecurityObject;
 import mekanism.common.capabilities.Capabilities;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullLazy;
 import net.minecraftforge.common.util.NonNullSupplier;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class BasicCapabilityResolver implements ICapabilityResolver {
 
     public static <T> BasicCapabilityResolver create(Capability<T> supportedCapability, NonNullSupplier<T> supplier) {
@@ -40,6 +38,7 @@ public class BasicCapabilityResolver implements ICapabilityResolver {
 
     private final List<Capability<?>> supportedCapability;
     private final NonNullSupplier<?> supplier;
+    @Nullable
     private LazyOptional<?> cachedCapability;
 
     @SafeVarargs

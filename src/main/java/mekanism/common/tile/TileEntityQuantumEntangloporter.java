@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.Gas;
@@ -69,6 +67,7 @@ import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.SlurryProxy;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -76,6 +75,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachine implements IChunkLoader {
 
@@ -109,7 +110,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         ejectorComponent = new TileComponentEjector(this);
         //Note: All eject types except for items is handled by the frequency
         //Only allow trying to eject if we have a frequency, because otherwise all our containers and sides will just be empty anyway
-        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM).setCanEject(type -> hasFrequency());
+        // also require that we can function before auto ejecting
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM).setCanEject(type -> hasFrequency() && MekanismUtils.canFunction(this));
 
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
         frequencyComponent.track(FrequencyType.INVENTORY, true, true, true);
@@ -127,49 +129,49 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
         return new QuantumEntangloporterChemicalTankHolder<>(this, TransmissionType.GAS, InventoryFrequency::getGasTanks);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks(IContentsListener listener) {
         return new QuantumEntangloporterChemicalTankHolder<>(this, TransmissionType.INFUSION, InventoryFrequency::getInfusionTanks);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks(IContentsListener listener) {
         return new QuantumEntangloporterChemicalTankHolder<>(this, TransmissionType.PIGMENT, InventoryFrequency::getPigmentTanks);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks(IContentsListener listener) {
         return new QuantumEntangloporterChemicalTankHolder<>(this, TransmissionType.SLURRY, InventoryFrequency::getSlurryTanks);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         return new QuantumEntangloporterFluidTankHolder(this);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         return new QuantumEntangloporterEnergyContainerHolder(this);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         return new QuantumEntangloporterHeatCapacitorHolder(this);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         return new QuantumEntangloporterInventorySlotHolder(this);
@@ -215,7 +217,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
     @Nullable
     @Override
-    public IHeatHandler getAdjacent(@Nonnull Direction side) {
+    public IHeatHandler getAdjacent(@NotNull Direction side) {
         if (hasFrequency()) {
             ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.HEAT, side);
             if (slotInfo != null && slotInfo.canInput()) {

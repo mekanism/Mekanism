@@ -1,7 +1,6 @@
 package mekanism.generators.common;
 
 import java.util.List;
-import javax.annotation.Nullable;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
@@ -16,6 +15,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.Nullable;
 
 public class GeneratorsTagProvider extends BaseTagProvider {
 
@@ -100,7 +100,7 @@ public class GeneratorsTagProvider extends BaseTagProvider {
               GeneratorsBlocks.WIND_GENERATOR,
               GeneratorsBlocks.TURBINE_ROTOR, GeneratorsBlocks.ROTATIONAL_COMPLEX, GeneratorsBlocks.ELECTROMAGNETIC_COIL, GeneratorsBlocks.TURBINE_CASING,
               GeneratorsBlocks.TURBINE_VALVE, GeneratorsBlocks.TURBINE_VENT, GeneratorsBlocks.SATURATING_CONDENSER,
-              GeneratorsBlocks.REACTOR_GLASS,
+              GeneratorsBlocks.REACTOR_GLASS, GeneratorsBlocks.LASER_FOCUS_MATRIX,
               GeneratorsBlocks.FISSION_REACTOR_CASING, GeneratorsBlocks.FISSION_REACTOR_PORT, GeneratorsBlocks.FISSION_REACTOR_LOGIC_ADAPTER,
               GeneratorsBlocks.FISSION_FUEL_ASSEMBLY, GeneratorsBlocks.CONTROL_ROD_ASSEMBLY,
               GeneratorsBlocks.FUSION_REACTOR_CONTROLLER, GeneratorsBlocks.FUSION_REACTOR_FRAME, GeneratorsBlocks.FUSION_REACTOR_PORT,

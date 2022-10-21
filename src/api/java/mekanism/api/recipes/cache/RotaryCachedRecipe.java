@@ -2,26 +2,24 @@ package mekanism.api.recipes.cache;
 
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Base class to help implement handling of rotary recipes.
  */
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
 
-    private final IOutputHandler<@NonNull GasStack> gasOutputHandler;
-    private final IOutputHandler<@NonNull FluidStack> fluidOutputHandler;
-    private final IInputHandler<@NonNull FluidStack> fluidInputHandler;
-    private final IInputHandler<@NonNull GasStack> gasInputHandler;
+    private final IOutputHandler<@NotNull GasStack> gasOutputHandler;
+    private final IOutputHandler<@NotNull FluidStack> fluidOutputHandler;
+    private final IInputHandler<@NotNull FluidStack> fluidInputHandler;
+    private final IInputHandler<@NotNull GasStack> gasInputHandler;
     private final BooleanSupplier modeSupplier;
 
     private FluidStack recipeFluid = FluidStack.EMPTY;
@@ -39,8 +37,8 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
      * @param fluidOutputHandler Fluid output handler.
      * @param modeSupplier       Machine handling mode. Returns {@code true} for fluid to gas, and {@code false} for gas to fluid.
      */
-    public RotaryCachedRecipe(RotaryRecipe recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NonNull FluidStack> fluidInputHandler,
-          IInputHandler<@NonNull GasStack> gasInputHandler, IOutputHandler<@NonNull GasStack> gasOutputHandler, IOutputHandler<@NonNull FluidStack> fluidOutputHandler,
+    public RotaryCachedRecipe(RotaryRecipe recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull FluidStack> fluidInputHandler,
+          IInputHandler<@NotNull GasStack> gasInputHandler, IOutputHandler<@NotNull GasStack> gasOutputHandler, IOutputHandler<@NotNull FluidStack> fluidOutputHandler,
           BooleanSupplier modeSupplier) {
         super(recipe, recheckAllErrors);
         this.fluidInputHandler = Objects.requireNonNull(fluidInputHandler, "Fluid input handler cannot be null.");

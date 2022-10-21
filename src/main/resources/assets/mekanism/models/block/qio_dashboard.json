@@ -1,6 +1,5 @@
 {
 	"credit": "Model by CyanideX",
-	"loader": "mekanism:mekanism",
 	"textures": {
 		"0": "mekanism:block/models/qio_dashboard",
 		"2": "mekanism:block/models/qio_dashboard_screen_led",
@@ -11,23 +10,21 @@
 			"name": "qio_dashboard",
 			"from": [1, 0, 1],
 			"to": [15, 1, 15],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 1, 8]},
 			"faces": {
 				"north": {"uv": [0, 13, 14, 14], "rotation": 180, "texture": "#0"},
 				"east": {"uv": [0, 0, 1, 12], "rotation": 270, "texture": "#0"},
 				"south": {"uv": [0, 0, 14, 1], "texture": "#0"},
 				"west": {"uv": [13, 0, 14, 12], "rotation": 90, "texture": "#0"},
 				"up": {"uv": [0, 0, 14, 14], "rotation": 180, "texture": "#0"},
-				"down": {"uv": [14, 1, 15, 2], "texture": "#0"}
+				"down": {"uv": [14, 1, 15, 2], "texture": "#0", "cullface": "down"}
 			}
 		},
 		{
 			"name": "qio_dashboard_screen_led",
 			"from": [2, 1.005, 2],
 			"to": [14, 1.005, 14],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 1, 8]},
 			"faces": {
-				"up": {"uv": [1, 1, 13, 13], "rotation": 180, "texture": "#2", "tintindex": 0, "lightLevel": 15}
+				"up": {"uv": [1, 1, 13, 13], "rotation": 180, "texture": "#2", "tintindex": 1, "emissivity": 15}
 			}
 		}
 	],

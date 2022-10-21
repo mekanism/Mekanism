@@ -1,0 +1,75 @@
+{
+  "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:orange"
+  },
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "mekanism:mod_version_loaded",
+          "minVersion": "1.19-9.0.1.0",
+          "modid": "ilikewood"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_beds"
+        }
+      ]
+    }
+  ],
+  "itemInput": {
+    "ingredient": [
+      {
+        "item": "ilikewood:white_mangrove_bed"
+      },
+      {
+        "item": "ilikewood:magenta_mangrove_bed"
+      },
+      {
+        "item": "ilikewood:light_blue_mangrove_bed"
+      },
+      {
+        "item": "ilikewood:yellow_mangrove_bed"
+      },
+      {
+        "item": "ilikewood:lime_mangrove_bed"
+      },
+      {
+        "item": "ilikewood:pink_mangrove_bed"
+      },
+      {
+        "item": "ilikewood:gray_mangrove_bed"
+      },
+      {
+        "item": "ilikewood:light_gray_mangrove_bed"
+      },
+      {
+        "item": "ilikewood:cyan_mangrove_bed"
+      },
+      {
+        "item": "ilikewood:purple_mangrove_bed"
+      },
+      {
+        "item": "ilikewood:blue_mangrove_bed"
+      },
+      {
+        "item": "ilikewood:brown_mangrove_bed"
+      },
+      {
+        "item": "ilikewood:green_mangrove_bed"
+      },
+      {
+        "item": "ilikewood:red_mangrove_bed"
+      },
+      {
+        "item": "ilikewood:black_mangrove_bed"
+      }
+    ]
+  },
+  "output": {
+    "item": "ilikewood:orange_mangrove_bed"
+  }
+}

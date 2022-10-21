@@ -2,8 +2,6 @@ package mekanism.generators.common.item;
 
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -26,6 +24,8 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemHohlraum extends CapabilityItem {
 
@@ -34,7 +34,7 @@ public class ItemHohlraum extends CapabilityItem {
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER).resolve();
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
@@ -57,22 +57,22 @@ public class ItemHohlraum extends CapabilityItem {
     }
 
     @Override
-    public boolean isBarVisible(@Nonnull ItemStack stack) {
+    public boolean isBarVisible(@NotNull ItemStack stack) {
         return true;
     }
 
     @Override
-    public int getBarWidth(@Nonnull ItemStack stack) {
+    public int getBarWidth(@NotNull ItemStack stack) {
         return StorageUtils.getBarWidth(stack);
     }
 
     @Override
-    public int getBarColor(@Nonnull ItemStack stack) {
+    public int getBarColor(@NotNull ItemStack stack) {
         return ChemicalUtil.getRGBDurabilityForDisplay(stack);
     }
 
     @Override
-    public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
+    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
         if (allowedIn(group)) {
             items.add(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismGeneratorsConfig.generators.hohlraumMaxGas.get(), GeneratorsGases.FUSION_FUEL));

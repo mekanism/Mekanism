@@ -2,7 +2,6 @@ package mekanism.common.lib.frequency;
 
 import java.util.Objects;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import mekanism.api.IFrequency;
 import mekanism.api.NBTConstants;
 import mekanism.api.security.SecurityMode;
@@ -12,6 +11,7 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class Frequency implements IFrequency {
 

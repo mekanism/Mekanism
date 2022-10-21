@@ -1,19 +1,19 @@
 package mekanism.common.network.to_client.container.property.chemical;
 
-import javax.annotation.Nonnull;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.PropertyType;
 import net.minecraft.network.FriendlyByteBuf;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class ChemicalStackPropertyData<STACK extends ChemicalStack<?>> extends PropertyData {
 
-    @Nonnull
+    @NotNull
     protected final STACK value;
 
-    public ChemicalStackPropertyData(PropertyType propertyType, short property, @Nonnull STACK value) {
+    public ChemicalStackPropertyData(PropertyType propertyType, short property, @NotNull STACK value) {
         super(propertyType, property);
         this.value = value;
     }

@@ -1,10 +1,7 @@
 package mekanism.tools.common.material;
 
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
@@ -14,9 +11,9 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeConfigSpec;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class MaterialCreator extends BaseMekanismMaterial {
 
     private final BaseMekanismMaterial fallBack;
@@ -279,13 +276,11 @@ public class MaterialCreator extends BaseMekanismMaterial {
         return toughness.getOrDefault();
     }
 
-    @Nonnull
     @Override
     public SoundEvent getEquipSound() {
         return fallBack.getEquipSound();
     }
 
-    @Nonnull
     @Override
     public Ingredient getCommonRepairMaterial() {
         return fallBack.getCommonRepairMaterial();
@@ -299,13 +294,11 @@ public class MaterialCreator extends BaseMekanismMaterial {
     /**
      * Only used on the client in vanilla
      */
-    @Nonnull
     @Override
     public String getName() {
         return fallBack.getName();
     }
 
-    @Nonnull
     @Override
     public String getRegistryPrefix() {
         return fallBack.getRegistryPrefix();

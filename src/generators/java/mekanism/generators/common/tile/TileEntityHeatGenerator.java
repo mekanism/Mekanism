@@ -2,8 +2,6 @@ package mekanism.generators.common.tile;
 
 import java.util.Arrays;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -21,6 +19,7 @@ import mekanism.common.capabilities.holder.heat.HeatCapacitorHelper;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.config.listener.ConfigBasedCachedFLSupplier;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerHeatCapacitorWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -48,12 +47,19 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityHeatGenerator extends TileEntityGenerator {
 
     public static final int MAX_FLUID = 24_000;
     private static final double THERMAL_EFFICIENCY = 0.5;
-    private static final FloatingLong MAX_PRODUCTION = FloatingLong.createConst(500);
+    //Default configs this is 510 compared to the previous 500
+    private static final ConfigBasedCachedFLSupplier MAX_PRODUCTION = new ConfigBasedCachedFLSupplier(() -> {
+        FloatingLong passiveMax = MekanismGeneratorsConfig.generators.heatGenerationLava.get().multiply(EnumUtils.DIRECTIONS.length + 1);
+        passiveMax = passiveMax.plusEqual(MekanismGeneratorsConfig.generators.heatGenerationNether.get());
+        return passiveMax.plusEqual(MekanismGeneratorsConfig.generators.heatGeneration.get());
+    }, MekanismGeneratorsConfig.generators.heatGeneration, MekanismGeneratorsConfig.generators.heatGenerationLava, MekanismGeneratorsConfig.generators.heatGenerationNether);
 
     /**
      * The FluidTank for this generator.
@@ -72,10 +78,10 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     private EnergyInventorySlot energySlot;
 
     public TileEntityHeatGenerator(BlockPos pos, BlockState state) {
-        super(GeneratorsBlocks.HEAT_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.heatGeneration.get().multiply(2));
+        super(GeneratorsBlocks.HEAT_GENERATOR, pos, state, MAX_PRODUCTION);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
@@ -84,7 +90,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
@@ -96,7 +102,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
@@ -162,7 +168,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         return side == Direction.DOWN ? 0 : super.getInverseInsulation(capacitor, side);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public HeatTransfer simulate() {
         double ambientTemp = ambientTemperature.getAsDouble();
@@ -171,13 +177,14 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         double carnotEfficiency = 1 - Math.min(ambientTemp, temp) / Math.max(ambientTemp, temp);
         double heatLost = THERMAL_EFFICIENCY * (temp - ambientTemp);
         heatCapacitor.handleHeat(-heatLost);
-        getEnergyContainer().insert(MAX_PRODUCTION.min(FloatingLong.create(Math.abs(heatLost) * carnotEfficiency)), Action.EXECUTE, AutomationType.INTERNAL);
+        FloatingLong energyFromHeat = FloatingLong.create(Math.abs(heatLost) * carnotEfficiency);
+        getEnergyContainer().insert(energyFromHeat.min(MAX_PRODUCTION.get()), Action.EXECUTE, AutomationType.INTERNAL);
         return super.simulate();
     }
 
     @Nullable
     @Override
-    public IHeatHandler getAdjacent(@Nonnull Direction side) {
+    public IHeatHandler getAdjacent(@NotNull Direction side) {
         if (side == Direction.DOWN) {
             BlockEntity adj = WorldUtils.getTileEntity(getLevel(), worldPosition.below());
             return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER, side.getOpposite()).resolve().orElse(null);

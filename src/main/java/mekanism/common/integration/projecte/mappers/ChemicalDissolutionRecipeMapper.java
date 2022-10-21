@@ -1,7 +1,6 @@
 package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
@@ -17,6 +16,7 @@ import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
+import org.jetbrains.annotations.NotNull;
 
 @RecipeTypeMapper
 public class ChemicalDissolutionRecipeMapper implements IRecipeTypeMapper {
@@ -43,8 +43,8 @@ public class ChemicalDissolutionRecipeMapper implements IRecipeTypeMapper {
             return false;
         }
         boolean handled = false;
-        List<@NonNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
-        List<@NonNull GasStack> gasRepresentations = recipe.getGasInput().getRepresentations();
+        List<@NotNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
+        List<@NotNull GasStack> gasRepresentations = recipe.getGasInput().getRepresentations();
         for (GasStack gasRepresentation : gasRepresentations) {
             NSSGas nssGas = NSSGas.createGas(gasRepresentation);
             long gasAmount = gasRepresentation.getAmount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED;

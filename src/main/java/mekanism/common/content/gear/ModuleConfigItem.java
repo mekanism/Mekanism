@@ -2,15 +2,15 @@ package mekanism.common.content.gear;
 
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.gear.config.IModuleConfigItem;
 import mekanism.api.gear.config.ModuleBooleanData;
 import mekanism.api.gear.config.ModuleConfigData;
+import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.ILangEntry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
 
@@ -34,42 +34,31 @@ public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
         return data;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public TYPE get() {
         return data.get();
     }
 
     @Override
-    public void set(@Nonnull TYPE val) {
+    public void set(@NotNull TYPE val) {
         set(val, null);
     }
 
-    public void set(@Nonnull TYPE val, @Nullable Runnable callback) {
+    public void set(@NotNull TYPE val, @Nullable Runnable callback) {
         Objects.requireNonNull(val, "Value cannot be null.");
         data.set(val);
-        // validity checks
-        for (Module<?> m : ModuleHelper.INSTANCE.loadAll(module.getContainer())) {
-            boolean checkModeState;
-            if (name.equals(Module.ENABLED_KEY) && val == Boolean.TRUE) {
-                // disable other exclusive modules
-                if (m.getData() != module.getData() && m.getData().isExclusive(module.getData().getExclusiveFlags())) {
-                    m.setDisabledForce(callback != null);
-                }
-                //If enabled state of the module changes, recheck about mode changes
-                checkModeState = true;
-            } else {
-                checkModeState = name.equals(Module.HANDLE_MODE_CHANGE_KEY) && val == Boolean.TRUE;
-            }
-            // turn off mode change handling for other modules
-            if (checkModeState && module.handlesModeChange()) {
-                if (m.handlesModeChange() && m.getData() != module.getData()) {
-                    m.setModeHandlingDisabledForce();
-                }
-            }
-        }
+        // perform any validity checks such as disabling conflicting modules
+        checkValidity(val, callback);
         // finally, save this specific module with the callback (to send a packet)
         module.save(callback);
+    }
+
+    protected void checkValidity(@NotNull TYPE val, @Nullable Runnable callback) {
+    }
+
+    public boolean matches(IModuleDataProvider<?> moduleType, String name) {
+        return module.getData() == moduleType.getModuleData() && getName().equals(name);
     }
 
     public void read(CompoundTag tag) {
@@ -82,7 +71,7 @@ public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
         data.write(name, tag);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return name;
@@ -97,7 +86,7 @@ public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
             this.isConfigEnabled = isConfigEnabled;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public Boolean get() {
             return isConfigEnabled() && super.get();

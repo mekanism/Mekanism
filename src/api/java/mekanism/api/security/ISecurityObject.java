@@ -1,7 +1,7 @@
 package mekanism.api.security;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 /**
@@ -15,7 +15,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
  * the provider exposes a security capability.
  * @since 10.2.1
  */
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
+@AutoRegisterCapability
 public interface ISecurityObject extends IOwnerObject {
 
     /**
@@ -28,7 +29,6 @@ public interface ISecurityObject extends IOwnerObject {
      * @see ISecurityUtils#getSecurityMode(ICapabilityProvider, boolean)
      * @see ISecurityUtils#getEffectiveSecurityMode(ISecurityObject, boolean)
      */
-    @Nonnull
     SecurityMode getSecurityMode();
 
     /**

@@ -2,9 +2,9 @@ package mekanism.common.content.gear.mekasuit;
 
 import java.util.Map;
 import java.util.Optional;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.gear.ICustomModule;
@@ -28,7 +28,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.fluids.FluidType;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElectrolyticBreathingUnit> {
 
     private IModuleConfigItem<Boolean> fillHeld;

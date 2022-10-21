@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/nightshade_logs"
+      "tag": "byg:nightshade_logs"
     }
   },
   "mainOutput": {

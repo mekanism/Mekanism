@@ -1,16 +1,15 @@
 package mekanism.common.tier;
 
 import java.util.Locale;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedFloatingLongValue;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public enum EnergyCubeTier implements ITier, StringRepresentable {
     BASIC(BaseTier.BASIC, FloatingLong.createConst(4_000_000), FloatingLong.createConst(4_000)),
     ADVANCED(BaseTier.ADVANCED, FloatingLong.createConst(16_000_000), FloatingLong.createConst(16_000)),
@@ -21,7 +20,9 @@ public enum EnergyCubeTier implements ITier, StringRepresentable {
     private final FloatingLong baseMaxEnergy;
     private final FloatingLong baseOutput;
     private final BaseTier baseTier;
+    @Nullable
     private CachedFloatingLongValue storageReference;
+    @Nullable
     private CachedFloatingLongValue outputReference;
 
     EnergyCubeTier(BaseTier tier, FloatingLong max, FloatingLong out) {

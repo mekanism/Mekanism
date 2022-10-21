@@ -1,6 +1,6 @@
 package mekanism.generators.common.tile.fission;
 
-import javax.annotation.Nonnull;
+import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
@@ -15,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityFissionReactorCasing extends TileEntityMultiblock<FissionReactorMultiblockData> {
 
@@ -83,7 +84,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
         return multiblock.isFormed() && multiblock.isBurning() && handleSound;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
@@ -96,12 +97,35 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
+        FissionReactorMultiblockData multiblock = getMultiblock();
+        boolean prevFormedMaster = isMaster() && multiblock.isFormed();
+        UUID previousID = multiblock.inventoryID;
         super.handleUpdateTag(tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HANDLE_SOUND, value -> handleSound = value);
-        FissionReactorMultiblockData multiblock = getMultiblock();
+        boolean formedMaster = false;
+        boolean wasBurning = false;
         if (multiblock.isFormed()) {
+            formedMaster = isMaster();
+            wasBurning = multiblock.isBurning();
             NBTUtils.setDoubleIfPresent(tag, NBTConstants.BURNING, value -> multiblock.lastBurnRate = value);
         }
+        //TODO: At some point make use of this if we are able to use the FuelAssemblyBakedModel?
+        /*boolean sameID = Objects.equals(previousID, multiblock.inventoryID);
+        if (formedMaster != prevFormedMaster || !sameID) {
+            //If our master or formed status changed or our multiblock's id changed
+            if (prevFormedMaster || !sameID) {
+                // remove this block as being the master if it was formed or master and isn't now or if the id changed
+                TileEntityFissionAssembly.removeMultiblockMaster(previousID, this);
+            }
+            if (formedMaster) {
+                // add this block as being the master if it now is formed and the master and either wasn't before or had a different id
+                TileEntityFissionAssembly.updateMultiblockMaster(multiblock.inventoryID, this);
+            }
+        } else if (formedMaster && wasBurning != multiblock.isBurning()) {
+            // Otherwise, if we are the master and the burning status changed for this multiblock.
+            // Update the elements in it so that they change active/inactive state
+            TileEntityFissionAssembly.updateMultiblockMaster(multiblock.inventoryID, this);
+        }*/
     }
 }

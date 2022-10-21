@@ -10,29 +10,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Coord4D;
-import mekanism.api.IAlloyInteraction;
-import mekanism.api.IConfigCardAccess;
-import mekanism.api.IConfigurable;
-import mekanism.api.IEvaporationSolar;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismIMC;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.infuse.IInfusionHandler;
-import mekanism.api.chemical.pigment.IPigmentHandler;
-import mekanism.api.chemical.slurry.ISlurryHandler;
-import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.heat.IHeatHandler;
-import mekanism.api.lasers.ILaserDissipation;
-import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.providers.IItemProvider;
-import mekanism.api.radiation.capability.IRadiationEntity;
-import mekanism.api.radiation.capability.IRadiationShielding;
-import mekanism.api.security.IOwnerObject;
-import mekanism.api.security.ISecurityObject;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.IModModule;
 import mekanism.common.base.KeySync;
 import mekanism.common.base.MekFakePlayer;
+import mekanism.common.base.MekanismPermissions;
 import mekanism.common.base.PlayerState;
 import mekanism.common.base.TagCache;
 import mekanism.common.command.CommandMek;
@@ -119,15 +104,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.data.loading.DatagenModLoader;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModContainer;
@@ -182,10 +166,6 @@ public class Mekanism {
     public static final MultiblockManager<EvaporationMultiblockData> evaporationManager = new MultiblockManager<>("evaporation", MultiblockCache::new, EvaporationValidator::new);
     public static final MultiblockManager<SPSMultiblockData> spsManager = new MultiblockManager<>("sps", SPSCache::new, SPSValidator::new);
     /**
-     * Mekanism creative tab
-     */
-    public static final CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
-    /**
      * List of Mekanism modules loaded
      */
     public static final List<IModModule> modulesLoaded = new ArrayList<>();
@@ -216,9 +196,9 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
         MinecraftForge.EVENT_BUS.addListener(BinInsertRecipe::onCrafting);
         MinecraftForge.EVENT_BUS.addListener(this::onTagsReload);
+        MinecraftForge.EVENT_BUS.addListener(MekanismPermissions::registerPermissionNodes);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::registerCapabilities);
         modEventBus.addListener(this::onConfigLoad);
         modEventBus.addListener(this::imcQueue);
         modEventBus.addListener(this::imcHandle);
@@ -348,7 +328,7 @@ public class Mekanism {
         hooks.sendIMCMessages(event);
         //IMC messages that we are sending to ourselves
         MekanismIMC.addModulesToAll(MekanismModules.ENERGY_UNIT);
-        MekanismIMC.addMekaSuitModules(MekanismModules.LASER_DISSIPATION_UNIT, MekanismModules.RADIATION_SHIELDING_UNIT);
+        MekanismIMC.addMekaSuitModules(MekanismModules.COLOR_MODULATION_UNIT, MekanismModules.LASER_DISSIPATION_UNIT, MekanismModules.RADIATION_SHIELDING_UNIT);
         MekanismIMC.addMekaToolModules(MekanismModules.ATTACK_AMPLIFICATION_UNIT, MekanismModules.SILK_TOUCH_UNIT, MekanismModules.FORTUNE_UNIT, MekanismModules.BLASTING_UNIT, MekanismModules.VEIN_MINING_UNIT,
               MekanismModules.FARMING_UNIT, MekanismModules.SHEARING_UNIT, MekanismModules.TELEPORTATION_UNIT, MekanismModules.EXCAVATION_ESCALATION_UNIT);
         MekanismIMC.addMekaSuitHelmetModules(MekanismModules.ELECTROLYTIC_BREATHING_UNIT, MekanismModules.INHALATION_PURIFICATION_UNIT,
@@ -362,28 +342,6 @@ public class Mekanism {
 
     private void imcHandle(InterModProcessEvent event) {
         ModuleHelper.INSTANCE.processIMC();
-    }
-
-    private void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.register(IGasHandler.class);
-        event.register(IInfusionHandler.class);
-        event.register(IPigmentHandler.class);
-        event.register(ISlurryHandler.class);
-        event.register(IHeatHandler.class);
-        event.register(IStrictEnergyHandler.class);
-
-        event.register(IConfigurable.class);
-        event.register(IAlloyInteraction.class);
-        event.register(IConfigCardAccess.class);
-        event.register(IEvaporationSolar.class);
-        event.register(ILaserReceptor.class);
-        event.register(ILaserDissipation.class);
-
-        event.register(IRadiationShielding.class);
-        event.register(IRadiationEntity.class);
-
-        event.register(IOwnerObject.class);
-        event.register(ISecurityObject.class);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -469,17 +427,17 @@ public class Mekanism {
         }
     }
 
-    private void onWorldLoad(WorldEvent.Load event) {
-        playerState.init(event.getWorld());
+    private void onWorldLoad(LevelEvent.Load event) {
+        playerState.init(event.getLevel());
     }
 
-    private void onWorldUnload(WorldEvent.Unload event) {
+    private void onWorldUnload(LevelEvent.Unload event) {
         // Make sure the global fake player drops its reference to the World
         // when the server shuts down
-        if (event.getWorld() instanceof ServerLevel) {
-            MekFakePlayer.releaseInstance(event.getWorld());
+        if (event.getLevel() instanceof ServerLevel) {
+            MekFakePlayer.releaseInstance(event.getLevel());
         }
-        if (event.getWorld() instanceof Level level && MekanismConfig.general.validOredictionificatorFilters.hasInvalidationListeners()) {
+        if (event.getLevel() instanceof Level level && MekanismConfig.general.validOredictionificatorFilters.hasInvalidationListeners()) {
             //Remove any invalidation listeners that loaded oredictionificators might have added if the OD was in the given level
             MekanismConfig.general.validOredictionificatorFilters.removeInvalidationListenersMatching(listener ->
                   listener instanceof ODConfigValueInvalidationListener odListener && odListener.isIn(level));

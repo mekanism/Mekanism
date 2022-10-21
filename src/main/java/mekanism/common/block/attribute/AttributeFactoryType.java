@@ -1,7 +1,7 @@
 package mekanism.common.block.attribute;
 
-import javax.annotation.Nonnull;
 import mekanism.common.content.blocktype.FactoryType;
+import org.jetbrains.annotations.NotNull;
 
 public class AttributeFactoryType implements Attribute {
 
@@ -11,7 +11,7 @@ public class AttributeFactoryType implements Attribute {
         this.type = type;
     }
 
-    @Nonnull
+    @NotNull
     public FactoryType getFactoryType() {
         return type;
     }

@@ -1,7 +1,7 @@
 package mekanism.common;
 
 import java.util.Map;
-import javax.annotation.Nullable;
+import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
@@ -21,20 +21,19 @@ import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
-import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemScubaMask;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -42,6 +41,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -49,6 +49,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.jetbrains.annotations.Nullable;
 
 public class CommonPlayerTickHandler {
 
@@ -69,7 +70,7 @@ public class CommonPlayerTickHandler {
     public static float getStepBoost(Player player) {
         ItemStack stack = player.getItemBySlot(EquipmentSlot.FEET);
         if (!stack.isEmpty() && !player.isShiftKeyDown()) {
-            if (stack.getItem() instanceof ItemFreeRunners freeRunners && freeRunners.getMode(stack) == FreeRunnerMode.NORMAL) {
+            if (stack.getItem() instanceof ItemFreeRunners freeRunners && freeRunners.getMode(stack).providesStepBoost()) {
                 return 0.5F;
             }
             IModule<ModuleHydraulicPropulsionUnit> module = MekanismAPI.getModuleHelper().load(stack, MekanismModules.HYDRAULIC_PROPULSION_UNIT);
@@ -133,6 +134,9 @@ public class CommonPlayerTickHandler {
                         }
                     }
                     ((IJetpackItem) jetpack.getItem()).useJetpackFuel(jetpack);
+                    if (player.level.getGameTime() % 10 == 0) {
+                        player.gameEvent(MekanismGameEvents.JETPACK_BURN.get());
+                    }
                 }
             }
         }
@@ -170,7 +174,7 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void onEntityAttacked(LivingAttackEvent event) {
-        LivingEntity entity = event.getEntityLiving();
+        LivingEntity entity = event.getEntity();
         if (event.getAmount() <= 0 || !entity.isAlive()) {
             //If some mod does weird things and causes the damage value to be negative or zero then exit
             // as our logic assumes there is actually damage happening and can crash if someone tries to
@@ -210,7 +214,7 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event) {
-        LivingEntity entity = event.getEntityLiving();
+        LivingEntity entity = event.getEntity();
         if (event.getAmount() <= 0 || !entity.isAlive()) {
             //If some mod does weird things and causes the damage value to be negative or zero then exit
             // as our logic assumes there is actually damage happening and can crash if someone tries to
@@ -290,7 +294,7 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void onLivingJump(LivingJumpEvent event) {
-        if (event.getEntityLiving() instanceof Player player) {
+        if (event.getEntity() instanceof Player player) {
             IModule<ModuleHydraulicPropulsionUnit> module = MekanismAPI.getModuleHelper().load(player.getItemBySlot(EquipmentSlot.FEET), MekanismModules.HYDRAULIC_PROPULSION_UNIT);
             if (module != null && module.isEnabled() && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
                 float boost = module.getCustomInstance().getBoost();
@@ -317,7 +321,7 @@ public class CommonPlayerTickHandler {
         ItemStack feetStack = base.getItemBySlot(EquipmentSlot.FEET);
         if (!feetStack.isEmpty()) {
             if (feetStack.getItem() instanceof ItemFreeRunners boots) {
-                if (boots.getMode(feetStack) == FreeRunnerMode.NORMAL) {
+                if (boots.getMode(feetStack).preventsFallDamage()) {
                     return new FallEnergyInfo(StorageUtils.getEnergyContainer(feetStack, 0), MekanismConfig.gear.freeRunnerFallDamageRatio,
                           MekanismConfig.gear.freeRunnerFallEnergyCost);
                 }
@@ -334,28 +338,32 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void getBreakSpeed(BreakSpeed event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         float speed = event.getNewSpeed();
 
-        // Blasting item speed check
-        ItemStack mainHand = player.getMainHandItem();
-        if (!mainHand.isEmpty() && mainHand.getItem() instanceof IBlastingItem tool) {
-            Map<BlockPos, BlockState> blocks = tool.getBlastedBlocks(player.level, player, mainHand, event.getPos(), event.getState());
-            if (!blocks.isEmpty()) {
-                // Scales mining speed based on hardest block
-                // Does not take into account the tool check for those blocks or other mining speed changes that don't apply to the target block.
-                float targetHardness = event.getState().getDestroySpeed(player.level, event.getPos());
-                float maxHardness = blocks.entrySet().stream()
-                      .map(entry -> entry.getValue().getDestroySpeed(player.level, entry.getKey()))
-                      .reduce(targetHardness, Float::max);
-                speed *= (targetHardness / maxHardness);
+        Optional<BlockPos> position = event.getPosition();
+        if (position.isPresent()) {
+            BlockPos pos = position.get();
+            // Blasting item speed check
+            ItemStack mainHand = player.getMainHandItem();
+            if (!mainHand.isEmpty() && mainHand.getItem() instanceof IBlastingItem tool) {
+                Map<BlockPos, BlockState> blocks = tool.getBlastedBlocks(player.level, player, mainHand, pos, event.getState());
+                if (!blocks.isEmpty()) {
+                    // Scales mining speed based on hardest block
+                    // Does not take into account the tool check for those blocks or other mining speed changes that don't apply to the target block.
+                    float targetHardness = event.getState().getDestroySpeed(player.level, pos);
+                    float maxHardness = blocks.entrySet().stream()
+                          .map(entry -> entry.getValue().getDestroySpeed(player.level, entry.getKey()))
+                          .reduce(targetHardness, Float::max);
+                    speed *= (targetHardness / maxHardness);
+                }
             }
         }
 
         //Gyroscopic stabilization check
         ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
         if (!legs.isEmpty() && MekanismAPI.getModuleHelper().isEnabled(legs, MekanismModules.GYROSCOPIC_STABILIZATION_UNIT)) {
-            if (player.isEyeInFluid(FluidTags.WATER) && !EnchantmentHelper.hasAquaAffinity(player)) {
+            if (player.isEyeInFluidType(ForgeMod.WATER_TYPE.get()) && !EnchantmentHelper.hasAquaAffinity(player)) {
                 speed *= 5.0F;
             }
 

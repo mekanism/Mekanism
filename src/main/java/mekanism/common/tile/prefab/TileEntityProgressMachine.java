@@ -1,7 +1,6 @@
 package mekanism.common.tile.prefab;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.providers.IBlockProvider;
@@ -16,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> extends TileEntityRecipeMachine<RECIPE> {
 
@@ -53,13 +53,13 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> e
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         operatingTicks = nbt.getInt(NBTConstants.PROGRESS);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+    public void saveAdditional(@NotNull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
         nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
     }
@@ -72,8 +72,9 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> e
         }
     }
 
+    @NotNull
     @Override
-    public List<Component> getInfo(Upgrade upgrade) {
+    public List<Component> getInfo(@NotNull Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 

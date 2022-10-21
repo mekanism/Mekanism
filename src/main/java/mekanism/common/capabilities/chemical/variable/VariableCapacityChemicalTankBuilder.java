@@ -4,12 +4,9 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -31,11 +28,10 @@ import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class VariableCapacityChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
 
     public static final VariableCapacityChemicalTankBuilder<Gas, GasStack, IGasTank> GAS = new VariableCapacityChemicalTankBuilder<>(ChemicalTankBuilder.GAS, VariableCapacityGasTank::new);
@@ -56,13 +52,13 @@ public class VariableCapacityChemicalTankBuilder<CHEMICAL extends Chemical<CHEMI
         return tankCreator.create(capacity, tankBuilder.alwaysTrueBi, tankBuilder.alwaysTrueBi, tankBuilder.alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, listener);
     }
 
-    public TANK create(LongSupplier capacity, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract,
-          BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert, Predicate<@NonNull CHEMICAL> validator, @Nullable IContentsListener listener) {
+    public TANK create(LongSupplier capacity, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract,
+          BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert, Predicate<@NotNull CHEMICAL> validator, @Nullable IContentsListener listener) {
         return create(capacity, canExtract, canInsert, validator, null, listener);
     }
 
-    public TANK create(LongSupplier capacity, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract,
-          BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert, Predicate<@NonNull CHEMICAL> validator,
+    public TANK create(LongSupplier capacity, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract,
+          BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert, Predicate<@NotNull CHEMICAL> validator,
           @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
@@ -71,7 +67,7 @@ public class VariableCapacityChemicalTankBuilder<CHEMICAL extends Chemical<CHEMI
         return tankCreator.create(capacity, canExtract, canInsert, validator, attributeValidator, listener);
     }
 
-    public TANK output(LongSupplier capacity, Predicate<@NonNull CHEMICAL> validator, @Nullable IContentsListener listener) {
+    public TANK output(LongSupplier capacity, Predicate<@NotNull CHEMICAL> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Chemical validity check cannot be null");
         return tankCreator.create(capacity, tankBuilder.alwaysTrueBi, tankBuilder.internalOnly, validator, null, listener);
@@ -80,14 +76,14 @@ public class VariableCapacityChemicalTankBuilder<CHEMICAL extends Chemical<CHEMI
     @FunctionalInterface
     private interface VariableCapacityTankCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
 
-        TANK create(LongSupplier capacity, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert,
-              Predicate<@NonNull CHEMICAL> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener);
+        TANK create(LongSupplier capacity, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canExtract, BiPredicate<@NotNull CHEMICAL, @NotNull AutomationType> canInsert,
+              Predicate<@NotNull CHEMICAL> validator, @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener);
     }
 
     public static class VariableCapacityGasTank extends VariableCapacityChemicalTank<Gas, GasStack> implements IGasHandler, IGasTank {
 
-        protected VariableCapacityGasTank(LongSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
-              BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> validator, @Nullable ChemicalAttributeValidator attributeValidator,
+        protected VariableCapacityGasTank(LongSupplier capacity, BiPredicate<@NotNull Gas, @NotNull AutomationType> canExtract,
+              BiPredicate<@NotNull Gas, @NotNull AutomationType> canInsert, Predicate<@NotNull Gas> validator, @Nullable ChemicalAttributeValidator attributeValidator,
               @Nullable IContentsListener listener) {
             super(capacity, canExtract, canInsert, validator, attributeValidator, listener);
         }
@@ -95,8 +91,8 @@ public class VariableCapacityChemicalTankBuilder<CHEMICAL extends Chemical<CHEMI
 
     public static class VariableCapacityInfusionTank extends VariableCapacityChemicalTank<InfuseType, InfusionStack> implements IInfusionHandler, IInfusionTank {
 
-        protected VariableCapacityInfusionTank(LongSupplier capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract,
-              BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert, Predicate<@NonNull InfuseType> validator,
+        protected VariableCapacityInfusionTank(LongSupplier capacity, BiPredicate<@NotNull InfuseType, @NotNull AutomationType> canExtract,
+              BiPredicate<@NotNull InfuseType, @NotNull AutomationType> canInsert, Predicate<@NotNull InfuseType> validator,
               @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
             super(capacity, canExtract, canInsert, validator, attributeValidator, listener);
         }
@@ -104,8 +100,8 @@ public class VariableCapacityChemicalTankBuilder<CHEMICAL extends Chemical<CHEMI
 
     public static class VariableCapacityPigmentTank extends VariableCapacityChemicalTank<Pigment, PigmentStack> implements IPigmentHandler, IPigmentTank {
 
-        protected VariableCapacityPigmentTank(LongSupplier capacity, BiPredicate<@NonNull Pigment, @NonNull AutomationType> canExtract,
-              BiPredicate<@NonNull Pigment, @NonNull AutomationType> canInsert, Predicate<@NonNull Pigment> validator,
+        protected VariableCapacityPigmentTank(LongSupplier capacity, BiPredicate<@NotNull Pigment, @NotNull AutomationType> canExtract,
+              BiPredicate<@NotNull Pigment, @NotNull AutomationType> canInsert, Predicate<@NotNull Pigment> validator,
               @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
             super(capacity, canExtract, canInsert, validator, attributeValidator, listener);
         }
@@ -113,8 +109,8 @@ public class VariableCapacityChemicalTankBuilder<CHEMICAL extends Chemical<CHEMI
 
     public static class VariableCapacitySlurryTank extends VariableCapacityChemicalTank<Slurry, SlurryStack> implements ISlurryHandler, ISlurryTank {
 
-        protected VariableCapacitySlurryTank(LongSupplier capacity, BiPredicate<@NonNull Slurry, @NonNull AutomationType> canExtract,
-              BiPredicate<@NonNull Slurry, @NonNull AutomationType> canInsert, Predicate<@NonNull Slurry> validator,
+        protected VariableCapacitySlurryTank(LongSupplier capacity, BiPredicate<@NotNull Slurry, @NotNull AutomationType> canExtract,
+              BiPredicate<@NotNull Slurry, @NotNull AutomationType> canInsert, Predicate<@NotNull Slurry> validator,
               @Nullable ChemicalAttributeValidator attributeValidator, @Nullable IContentsListener listener) {
             super(capacity, canExtract, canInsert, validator, attributeValidator, listener);
         }

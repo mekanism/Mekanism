@@ -1,16 +1,17 @@
 package mekanism.common.registration.impl;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.providers.IFluidProvider;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.RegistryObject;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
+@MethodsReturnNonnullByDefault
 public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FLOWING extends Fluid, BLOCK extends LiquidBlock, BUCKET extends BucketItem>
       implements IFluidProvider {
 
@@ -61,7 +62,6 @@ public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FL
         this.bucketRO = Objects.requireNonNull(bucketRO);
     }
 
-    @Nonnull
     @Override
     public STILL getFluid() {
         //Default our fluid to being the still variant

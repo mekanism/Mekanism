@@ -1,8 +1,6 @@
 package mekanism.common.entity;
 
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemFlamethrower;
@@ -51,8 +49,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class EntityFlame extends Projectile implements IEntityAdditionalSpawnData {
 
@@ -155,7 +155,7 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
     }
 
     @Override
-    protected void onHitBlock(@Nonnull BlockHitResult blockRayTrace) {
+    protected void onHitBlock(@NotNull BlockHitResult blockRayTrace) {
         super.onHitBlock(blockRayTrace);
         BlockPos hitPos = blockRayTrace.getBlockPos();
         Direction hitSide = blockRayTrace.getDirection();
@@ -275,18 +275,18 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
     }
 
     @Override
-    public void readAdditionalSaveData(@Nonnull CompoundTag nbtTags) {
+    public void readAdditionalSaveData(@NotNull CompoundTag nbtTags) {
         super.readAdditionalSaveData(nbtTags);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.MODE, FlamethrowerMode::byIndexStatic, mode -> this.mode = mode);
     }
 
     @Override
-    public void addAdditionalSaveData(@Nonnull CompoundTag nbtTags) {
+    public void addAdditionalSaveData(@NotNull CompoundTag nbtTags) {
         super.addAdditionalSaveData(nbtTags);
         NBTUtils.writeEnum(nbtTags, NBTConstants.MODE, mode);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);

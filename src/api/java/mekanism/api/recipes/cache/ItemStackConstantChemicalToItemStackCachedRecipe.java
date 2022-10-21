@@ -3,10 +3,7 @@ package mekanism.api.recipes.cache;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.LongConsumer;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
@@ -15,20 +12,21 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class to help implement handling of chemical chemical to chemical recipes. Unlike {@link TwoInputCachedRecipe#itemChemicalToItem} this variant has constant
  * chemical usage.
  */
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class ItemStackConstantChemicalToItemStackCachedRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>>
       extends CachedRecipe<RECIPE> {
 
-    private final IOutputHandler<@NonNull ItemStack> outputHandler;
-    private final IInputHandler<@NonNull ItemStack> itemInputHandler;
-    private final ILongInputHandler<@NonNull STACK> chemicalInputHandler;
+    private final IOutputHandler<@NotNull ItemStack> outputHandler;
+    private final IInputHandler<@NotNull ItemStack> itemInputHandler;
+    private final ILongInputHandler<@NotNull STACK> chemicalInputHandler;
     private final ChemicalUsageMultiplier chemicalUsage;
     private final LongConsumer chemicalUsedSoFarChanged;
     private long chemicalUsageMultiplier;
@@ -49,9 +47,9 @@ public class ItemStackConstantChemicalToItemStackCachedRecipe<CHEMICAL extends C
      * @param chemicalUsedSoFarChanged Called when the number chemical usage so far changes.
      * @param outputHandler            Output handler.
      */
-    public ItemStackConstantChemicalToItemStackCachedRecipe(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NonNull ItemStack> itemInputHandler,
-          ILongInputHandler<@NonNull STACK> chemicalInputHandler, ChemicalUsageMultiplier chemicalUsage, LongConsumer chemicalUsedSoFarChanged,
-          IOutputHandler<@NonNull ItemStack> outputHandler) {
+    public ItemStackConstantChemicalToItemStackCachedRecipe(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> itemInputHandler,
+          ILongInputHandler<@NotNull STACK> chemicalInputHandler, ChemicalUsageMultiplier chemicalUsage, LongConsumer chemicalUsedSoFarChanged,
+          IOutputHandler<@NotNull ItemStack> outputHandler) {
         super(recipe, recheckAllErrors);
         this.itemInputHandler = Objects.requireNonNull(itemInputHandler, "Item input handler cannot be null.");
         this.chemicalInputHandler = Objects.requireNonNull(chemicalInputHandler, "Chemical input handler cannot be null.");

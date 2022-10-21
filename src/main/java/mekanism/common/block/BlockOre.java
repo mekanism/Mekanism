@@ -1,6 +1,5 @@
 package mekanism.common.block;
 
-import javax.annotation.Nonnull;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IHasDescription;
@@ -15,6 +14,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockOre extends Block implements IHasDescription {
 
@@ -30,6 +30,7 @@ public class BlockOre extends Block implements IHasDescription {
         this.ore = ore;
     }
 
+    @NotNull
     public String getDescriptionTranslationKey() {
         if (descriptionTranslationKey == null) {
             descriptionTranslationKey = Util.makeDescriptionId("description", Mekanism.rl(ore.getResource().getRegistrySuffix() + "_ore"));
@@ -37,7 +38,7 @@ public class BlockOre extends Block implements IHasDescription {
         return descriptionTranslationKey;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ILangEntry getDescription() {
         return this::getDescriptionTranslationKey;

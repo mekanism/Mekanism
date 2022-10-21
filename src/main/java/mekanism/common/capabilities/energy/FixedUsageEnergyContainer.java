@@ -2,20 +2,16 @@ package mekanism.common.capabilities.energy;
 
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class FixedUsageEnergyContainer<TILE extends TileEntityMekanism> extends MachineEnergyContainer<TILE> {
 
     public static <TILE extends TileEntityMekanism> FixedUsageEnergyContainer<TILE> input(TILE tile, BiFunction<FloatingLong, TILE, FloatingLong> baseEnergyCalculator,
@@ -26,8 +22,8 @@ public class FixedUsageEnergyContainer<TILE extends TileEntityMekanism> extends 
 
     private final BiFunction<FloatingLong, TILE, FloatingLong> baseEnergyCalculator;
 
-    protected FixedUsageEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, Predicate<@NonNull AutomationType> canExtract,
-          Predicate<@NonNull AutomationType> canInsert, TILE tile, BiFunction<FloatingLong, TILE, FloatingLong> baseEnergyCalculator, @Nullable IContentsListener listener) {
+    protected FixedUsageEnergyContainer(FloatingLong maxEnergy, FloatingLong energyPerTick, Predicate<@NotNull AutomationType> canExtract,
+          Predicate<@NotNull AutomationType> canInsert, TILE tile, BiFunction<FloatingLong, TILE, FloatingLong> baseEnergyCalculator, @Nullable IContentsListener listener) {
         super(maxEnergy, energyPerTick, canExtract, canInsert, tile, listener);
         this.baseEnergyCalculator = baseEnergyCalculator;
     }

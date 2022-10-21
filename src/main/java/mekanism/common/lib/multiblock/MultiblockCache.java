@@ -2,15 +2,17 @@ package mekanism.common.lib.multiblock;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalTankBuilder;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
+import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.IPigmentTank;
+import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.ISlurryTank;
+import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -36,6 +38,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MultiblockCache<T extends MultiblockData> implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, IMekanismHeatHandler,
       IGasTracker, IInfusionTracker, IPigmentTracker, ISlurryTracker {
@@ -93,40 +98,24 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         }
     }
 
-    public void merge(MultiblockCache<T> mergeCache, List<ItemStack> rejectedItems) {
+    public void merge(MultiblockCache<T> mergeCache, RejectContents rejectContents) {
         // prefab enough containers for each substance type to support the merge cache
         for (CacheSubstance<?, INBTSerializable<CompoundTag>> type : CacheSubstance.VALUES) {
             type.preHandleMerge(this, mergeCache);
         }
 
         // Items
-        rejectedItems.addAll(StackUtils.getMergeRejects(getInventorySlots(null), mergeCache.getInventorySlots(null)));
-        StackUtils.merge(getInventorySlots(null), mergeCache.getInventorySlots(null));
+        StackUtils.merge(getInventorySlots(null), mergeCache.getInventorySlots(null), rejectContents.rejectedItems);
         // Fluid
-        List<IExtendedFluidTank> cacheFluidTanks = getFluidTanks(null);
-        for (int i = 0; i < cacheFluidTanks.size(); i++) {
-            StorageUtils.mergeTanks(cacheFluidTanks.get(i), mergeCache.getFluidTanks(null).get(i));
-        }
+        StorageUtils.mergeFluidTanks(getFluidTanks(null), mergeCache.getFluidTanks(null), rejectContents.rejectedFluids);
         // Gas
-        List<IGasTank> cacheGasTanks = getGasTanks(null);
-        for (int i = 0; i < cacheGasTanks.size(); i++) {
-            StorageUtils.mergeTanks(cacheGasTanks.get(i), mergeCache.getGasTanks(null).get(i));
-        }
+        StorageUtils.mergeTanks(getGasTanks(null), mergeCache.getGasTanks(null), rejectContents.rejectedGases);
         // Infusion
-        List<IInfusionTank> cacheInfusionTanks = getInfusionTanks(null);
-        for (int i = 0; i < cacheInfusionTanks.size(); i++) {
-            StorageUtils.mergeTanks(cacheInfusionTanks.get(i), mergeCache.getInfusionTanks(null).get(i));
-        }
+        StorageUtils.mergeTanks(getInfusionTanks(null), mergeCache.getInfusionTanks(null), rejectContents.rejectedInfuseTypes);
         // Pigment
-        List<IPigmentTank> cachePigmentTanks = getPigmentTanks(null);
-        for (int i = 0; i < cachePigmentTanks.size(); i++) {
-            StorageUtils.mergeTanks(cachePigmentTanks.get(i), mergeCache.getPigmentTanks(null).get(i));
-        }
+        StorageUtils.mergeTanks(getPigmentTanks(null), mergeCache.getPigmentTanks(null), rejectContents.rejectedPigments);
         // Slurry
-        List<ISlurryTank> cacheSlurryTanks = getSlurryTanks(null);
-        for (int i = 0; i < cacheSlurryTanks.size(); i++) {
-            StorageUtils.mergeTanks(cacheSlurryTanks.get(i), mergeCache.getSlurryTanks(null).get(i));
-        }
+        StorageUtils.mergeTanks(getSlurryTanks(null), mergeCache.getSlurryTanks(null), rejectContents.rejectedSlurries);
         // Energy
         List<IEnergyContainer> cacheContainers = getEnergyContainers(null);
         for (int i = 0; i < cacheContainers.size(); i++) {
@@ -143,52 +132,62 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     public void onContentsChanged() {
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return inventorySlots;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         return fluidTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IGasTank> getGasTanks(@Nullable Direction side) {
         return gasTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
         return infusionTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
         return pigmentTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
         return slurryTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         return energyContainers;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IHeatCapacitor> getHeatCapacitors(Direction side) {
         return heatCapacitors;
+    }
+
+    public static class RejectContents {
+
+        public final List<ItemStack> rejectedItems = new ArrayList<>();
+        public final List<FluidStack> rejectedFluids = new ArrayList<>();
+        public final List<GasStack> rejectedGases = new ArrayList<>();
+        public final List<InfusionStack> rejectedInfuseTypes = new ArrayList<>();
+        public final List<PigmentStack> rejectedPigments = new ArrayList<>();
+        public final List<SlurryStack> rejectedSlurries = new ArrayList<>();
     }
 
     public abstract static class CacheSubstance<HANDLER, ELEMENT> {
@@ -200,8 +199,8 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
 
             @Override
-            protected List<IInventorySlot> containerList(IMekanismInventory iMekanismInventory) {
-                return iMekanismInventory.getInventorySlots(null);
+            protected List<IInventorySlot> containerList(IMekanismInventory inventory) {
+                return inventory.getInventorySlots(null);
             }
 
             @Override
@@ -217,8 +216,8 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
 
             @Override
-            protected List<IExtendedFluidTank> containerList(IMekanismFluidHandler iMekanismFluidHandler) {
-                return iMekanismFluidHandler.getFluidTanks(null);
+            protected List<IExtendedFluidTank> containerList(IMekanismFluidHandler fluidHandler) {
+                return fluidHandler.getFluidTanks(null);
             }
 
             @Override
@@ -234,8 +233,8 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
 
             @Override
-            protected List<IGasTank> containerList(IGasTracker holder) {
-                return holder.getGasTanks(null);
+            protected List<IGasTank> containerList(IGasTracker tracker) {
+                return tracker.getGasTanks(null);
             }
 
             @Override
@@ -251,8 +250,8 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
 
             @Override
-            protected List<IInfusionTank> containerList(IInfusionTracker holder) {
-                return holder.getInfusionTanks(null);
+            protected List<IInfusionTank> containerList(IInfusionTracker tracker) {
+                return tracker.getInfusionTanks(null);
             }
 
             @Override
@@ -268,8 +267,8 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
 
             @Override
-            protected List<IPigmentTank> containerList(IPigmentTracker holder) {
-                return holder.getPigmentTanks(null);
+            protected List<IPigmentTank> containerList(IPigmentTracker tracker) {
+                return tracker.getPigmentTanks(null);
             }
 
             @Override
@@ -285,8 +284,8 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
 
             @Override
-            protected List<ISlurryTank> containerList(ISlurryTracker holder) {
-                return holder.getSlurryTanks(null);
+            protected List<ISlurryTank> containerList(ISlurryTracker tracker) {
+                return tracker.getSlurryTanks(null);
             }
 
             @Override
@@ -302,8 +301,8 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
 
             @Override
-            protected List<IEnergyContainer> containerList(IMekanismStrictEnergyHandler holder) {
-                return holder.getEnergyContainers(null);
+            protected List<IEnergyContainer> containerList(IMekanismStrictEnergyHandler handler) {
+                return handler.getEnergyContainers(null);
             }
 
             @Override
@@ -319,8 +318,8 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
 
             @Override
-            protected List<IHeatCapacitor> containerList(IMekanismHeatHandler holder) {
-                return holder.getHeatCapacitors(null);
+            protected List<IHeatCapacitor> containerList(IMekanismHeatHandler handler) {
+                return handler.getHeatCapacitors(null);
             }
 
             @Override

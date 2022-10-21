@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/willow_logs"
+      "tag": "byg:willow_logs"
     }
   },
   "mainOutput": {

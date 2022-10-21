@@ -1,0 +1,78 @@
+{
+  "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:blue"
+  },
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "byg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_beds"
+        }
+      ]
+    }
+  ],
+  "itemInput": {
+    "ingredient": [
+      {
+        "item": "ilikewood:byg_white_cherry_bed"
+      },
+      {
+        "item": "ilikewood:byg_orange_cherry_bed"
+      },
+      {
+        "item": "ilikewood:byg_magenta_cherry_bed"
+      },
+      {
+        "item": "ilikewood:byg_light_blue_cherry_bed"
+      },
+      {
+        "item": "ilikewood:byg_yellow_cherry_bed"
+      },
+      {
+        "item": "ilikewood:byg_lime_cherry_bed"
+      },
+      {
+        "item": "ilikewood:byg_pink_cherry_bed"
+      },
+      {
+        "item": "ilikewood:byg_gray_cherry_bed"
+      },
+      {
+        "item": "ilikewood:byg_light_gray_cherry_bed"
+      },
+      {
+        "item": "ilikewood:byg_cyan_cherry_bed"
+      },
+      {
+        "item": "ilikewood:byg_purple_cherry_bed"
+      },
+      {
+        "item": "ilikewood:byg_brown_cherry_bed"
+      },
+      {
+        "item": "ilikewood:byg_green_cherry_bed"
+      },
+      {
+        "item": "ilikewood:byg_red_cherry_bed"
+      },
+      {
+        "item": "ilikewood:byg_black_cherry_bed"
+      }
+    ]
+  },
+  "output": {
+    "item": "ilikewood:byg_blue_cherry_bed"
+  }
+}

@@ -19,15 +19,12 @@ import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.base.MekFakePlayer;
@@ -83,12 +80,14 @@ import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -108,11 +107,13 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IBoundingBlock, ITileFilterHolder<MinerFilter<?>>,
       IHasSortableFilters, IHasVisualization {
@@ -157,10 +158,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         radius = DEFAULT_RADIUS;
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
         //Return some capabilities as disabled, and handle them with offset capabilities instead
-        addDisabledCapabilities(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        addDisabledCapabilities(ForgeCapabilities.ITEM_HANDLER);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
@@ -168,15 +169,15 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         mainSlots = new ArrayList<>();
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection, side -> side == RelativeSide.TOP, side -> side == RelativeSide.BACK);
         //Allow insertion manually or internally, or if it is a replace stack
-        BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert = (stack, automationType) -> automationType != AutomationType.EXTERNAL || isReplaceTarget(stack.getItem());
+        BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert = (stack, automationType) -> automationType != AutomationType.EXTERNAL || isReplaceTarget(stack.getItem());
         //Allow extraction if it is manual or if it is a replace stack
-        BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract = (stack, automationType) -> automationType == AutomationType.MANUAL || !isReplaceTarget(stack.getItem());
+        BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract = (stack, automationType) -> automationType == AutomationType.MANUAL || !isReplaceTarget(stack.getItem());
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 BasicInventorySlot slot = BasicInventorySlot.at(canExtract, canInsert, listener, 8 + slotX * 18, 92 + slotY * 18);
@@ -312,10 +313,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private void setSilkTouch(boolean newSilkTouch) {
-        boolean changed = silkTouch != newSilkTouch;
-        silkTouch = newSilkTouch;
-        if (changed && (hasLevel() && !isRemote())) {
-            energyContainer.updateMinerEnergyPerTick();
+        if (silkTouch != newSilkTouch) {
+            silkTouch = newSilkTouch;
+            if (hasLevel() && !isRemote()) {
+                energyContainer.updateMinerEnergyPerTick();
+            }
         }
     }
 
@@ -352,7 +354,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     public void setRadiusFromPacket(int newRadius) {
-        setRadius(Math.min(Math.max(0, newRadius), MekanismConfig.general.minerMaxRadius.get()));
+        setRadius(Mth.clamp(newRadius, 0, MekanismConfig.general.minerMaxRadius.get()));
         //Send a packet to update the visual renderer
         //TODO: Only do this if the renderer is actually active
         sendUpdatePacket();
@@ -360,18 +362,19 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private void setRadius(int newRadius) {
-        boolean changed = radius != newRadius;
-        radius = newRadius;
-        if (changed && (hasLevel() && !isRemote())) {
-            energyContainer.updateMinerEnergyPerTick();
-            // If the radius changed, and we're on the server, go ahead and refresh the chunk set
-            getChunkLoader().refreshChunkTickets();
+        if (radius != newRadius) {
+            radius = newRadius;
+            if (hasLevel() && !isRemote()) {
+                energyContainer.updateMinerEnergyPerTick();
+                // If the radius changed, and we're on the server, go ahead and refresh the chunk set
+                getChunkLoader().refreshChunkTickets();
+            }
         }
     }
 
     public void setMinYFromPacket(int newMinY) {
         if (level != null) {
-            setMinY(Math.min(Math.max(level.getMinBuildHeight(), newMinY), getMaxY()));
+            setMinY(Mth.clamp(newMinY, level.getMinBuildHeight(), getMaxY()));
             //Send a packet to update the visual renderer
             //TODO: Only do this if the renderer is actually active
             sendUpdatePacket();
@@ -380,16 +383,17 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private void setMinY(int newMinY) {
-        boolean changed = minY != newMinY;
-        minY = newMinY;
-        if (changed && (hasLevel() && !isRemote())) {
-            energyContainer.updateMinerEnergyPerTick();
+        if (minY != newMinY) {
+            minY = newMinY;
+            if (hasLevel() && !isRemote()) {
+                energyContainer.updateMinerEnergyPerTick();
+            }
         }
     }
 
     public void setMaxYFromPacket(int newMaxY) {
         if (level != null) {
-            setMaxY(Math.max(Math.min(newMaxY, level.getMaxBuildHeight() - 1), getMinY()));
+            setMaxY(Mth.clamp(newMaxY, getMinY(), level.getMaxBuildHeight() - 1));
             //Send a packet to update the visual renderer
             //TODO: Only do this if the renderer is actually active
             sendUpdatePacket();
@@ -398,10 +402,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private void setMaxY(int newMaxY) {
-        boolean changed = maxY != newMaxY;
-        maxY = newMaxY;
-        if (changed && (hasLevel() && !isRemote())) {
-            energyContainer.updateMinerEnergyPerTick();
+        if (maxY != newMaxY) {
+            maxY = newMaxY;
+            if (hasLevel() && !isRemote()) {
+                energyContainer.updateMinerEnergyPerTick();
+            }
         }
     }
 
@@ -729,7 +734,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         running = nbt.getBoolean(NBTConstants.RUNNING);
         delay = nbt.getInt(NBTConstants.DELAY);
@@ -750,14 +755,14 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public void setLevel(@Nonnull Level world) {
+    public void setLevel(@NotNull Level world) {
         super.setLevel(world);
         //Update miner energy as the world height is likely different compared to the old pre 1.18 values
         energyContainer.updateMinerEnergyPerTick();
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+    public void saveAdditional(@NotNull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
         nbtTags.putBoolean(NBTConstants.RUNNING, running);
         nbtTags.putInt(NBTConstants.DELAY, delay);
@@ -788,7 +793,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return redstone || numPowering > 0;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public AABB getRenderBoundingBox() {
         if (isClientRendering() && canDisplayVisuals()) {
@@ -898,8 +903,20 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @Override
     public void readSustainedData(CompoundTag dataMap) {
         setRadius(Math.min(dataMap.getInt(NBTConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
-        NBTUtils.setIntIfPresent(dataMap, NBTConstants.MIN, this::setMinY);
-        NBTUtils.setIntIfPresent(dataMap, NBTConstants.MAX, this::setMaxY);
+        NBTUtils.setIntIfPresent(dataMap, NBTConstants.MIN, newMinY -> {
+            if (hasLevel() && !isRemote()) {
+                setMinY(Math.max(newMinY, level.getMinBuildHeight()));
+            } else {
+                setMinY(newMinY);
+            }
+        });
+        NBTUtils.setIntIfPresent(dataMap, NBTConstants.MAX, newMaxY -> {
+            if (hasLevel() && !isRemote()) {
+                setMaxY(Math.min(newMaxY, level.getMaxBuildHeight() - 1));
+            } else {
+                setMaxY(newMaxY);
+            }
+        });
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.EJECT, eject -> doEject = eject);
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.PULL, pull -> doPull = pull);
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.SILK_TOUCH, this::setSilkTouch);
@@ -941,15 +958,16 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
     }
 
+    @NotNull
     @Override
-    public List<Component> getInfo(Upgrade upgrade) {
+    public List<Component> getInfo(@NotNull Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@Nonnull Capability<T> capability, Direction side, @Nonnull Vec3i offset) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+    public <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@NotNull Capability<T> capability, Direction side, @NotNull Vec3i offset) {
+        if (capability == ForgeCapabilities.ITEM_HANDLER) {
             //Get item handler cap directly from here as we disable it entirely for the main block as we only have it enabled from ports
             return itemHandlerManager.resolve(capability, side);
         }
@@ -958,11 +976,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, Direction side, @Nonnull Vec3i offset) {
+    public boolean isOffsetCapabilityDisabled(@NotNull Capability<?> capability, Direction side, @NotNull Vec3i offset) {
         if (!capability.isRegistered()) {
             //Short circuit if a capability that is not registered is being queried
             return true;
-        } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        } else if (capability == ForgeCapabilities.ITEM_HANDLER) {
             return notItemPort(side, offset);
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
             return notEnergyPort(side, offset);
@@ -1028,8 +1046,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         ChunkPos minerChunk = new ChunkPos(worldPosition);
         if (targetChunk != null) {
             //If we have a target check to make sure it is in the radius (most likely it is)
-            if ((worldPosition.getX() - radius) >> 4 <= targetChunk.x && targetChunk.x <= (worldPosition.getX() + radius) >> 4 &&
-                (worldPosition.getZ() - radius) >> 4 <= targetChunk.z && targetChunk.z <= (worldPosition.getZ() + radius) >> 4) {
+            if (SectionPos.blockToSectionCoord(worldPosition.getX() - radius) <= targetChunk.x &&
+                targetChunk.x <= SectionPos.blockToSectionCoord(worldPosition.getX() + radius) &&
+                SectionPos.blockToSectionCoord(worldPosition.getZ() - radius) <= targetChunk.z &&
+                targetChunk.z <= SectionPos.blockToSectionCoord(worldPosition.getZ() + radius)) {
                 // if it is, return the chunks we should be loading, provide the chunk the miner is in
                 // and the chunk that the miner is currently mining
                 Set<ChunkPos> chunks = new ObjectArraySet<>(2);
@@ -1103,7 +1123,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
@@ -1114,7 +1134,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setIntIfPresent(tag, NBTConstants.RADIUS, this::setRadius);//the client is allowed to use whatever server sends
         NBTUtils.setIntIfPresent(tag, NBTConstants.MIN, this::setMinY);

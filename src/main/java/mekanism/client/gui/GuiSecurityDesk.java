@@ -2,8 +2,6 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -33,6 +31,8 @@ import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, MekanismTileContainer<TileEntitySecurityDesk>> {
 
@@ -165,7 +165,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
         Component ownerComponent = OwnerDisplay.of(tile.getOwnerUUID(), tile.getOwnerName()).getTextComponent();
         drawString(matrix, ownerComponent, imageWidth - 7 - getStringWidth(ownerComponent), inventoryLabelY, titleTextColor());

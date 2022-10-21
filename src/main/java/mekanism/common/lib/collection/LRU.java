@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class LRU<T> extends AbstractCollection<T> {
 
@@ -91,7 +91,7 @@ public class LRU<T> extends AbstractCollection<T> {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public LRUIterator iterator() {
         return new LRUIterator();

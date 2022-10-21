@@ -1,16 +1,12 @@
 package mekanism.common.inventory.slot;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.slot.VirtualCraftingOutputSlot;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jetbrains.annotations.NotNull;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class CraftingWindowOutputInventorySlot extends CraftingWindowInventorySlot {
 
     public static CraftingWindowOutputInventorySlot create(QIOCraftingWindow window) {
@@ -21,7 +17,7 @@ public class CraftingWindowOutputInventorySlot extends CraftingWindowInventorySl
         super(manualOnly, internalOnly, window, null, null);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public VirtualInventoryContainerSlot createContainerSlot() {
         return new VirtualCraftingOutputSlot(this, getSlotOverlay(), this::setStackUnchecked, craftingWindow);

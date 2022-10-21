@@ -7,7 +7,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.SawmillRecipeBuilder;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -16,6 +16,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.recipe.RecipeProviderUtil;
+import mekanism.common.recipe.condition.ModVersionLoadedCondition;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismPigments;
@@ -40,7 +41,7 @@ import yamahari.ilikewood.registry.objecttype.WoodenBlockType;
 import yamahari.ilikewood.registry.objecttype.WoodenItemType;
 import yamahari.ilikewood.registry.woodtype.IWoodType;
 
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
 
     private static final FieldReflectionHelper<AndCondition, ICondition[]> EXPLODER = new FieldReflectionHelper<>(AndCondition.class, "children",
@@ -50,8 +51,11 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
     private static final Map<ILikeWoodConfig, String> KNOWN_CONFIGS = ILikeWoodConfig.getAll().collect(Collectors.toMap(Function.identity(),
           config -> String.format("%s_%s", yamahari.ilikewood.util.Constants.MOD_ID, config.name())));
 
+    private final ICondition mangroveVersion;
+
     public ILikeWoodRecipeProvider() {
         super(yamahari.ilikewood.util.Constants.MOD_ID);
+        mangroveVersion = new ModVersionLoadedCondition(modid, "1.19-9.0.1.0");
     }
 
     @Override
@@ -62,6 +66,8 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
         addWoodType(consumer, basePath, Blocks.DARK_OAK_PLANKS, Blocks.DARK_OAK_LOG, Blocks.DARK_OAK_FENCE, VanillaWoodTypes.DARK_OAK);
         addWoodType(consumer, basePath, Blocks.JUNGLE_PLANKS, Blocks.JUNGLE_LOG, Blocks.JUNGLE_FENCE, VanillaWoodTypes.JUNGLE);
         addWoodType(consumer, basePath, Blocks.OAK_PLANKS, Blocks.OAK_LOG, Blocks.OAK_FENCE, VanillaWoodTypes.OAK);
+        //TODO - 1.20: Remove this needing a separate condition
+        addWoodType(consumer, mangroveVersion, basePath, Blocks.MANGROVE_PLANKS, Blocks.MANGROVE_LOG, Blocks.MANGROVE_FENCE, VanillaWoodTypes.MANGROVE);
         addWoodType(consumer, basePath, Blocks.SPRUCE_PLANKS, Blocks.SPRUCE_LOG, Blocks.SPRUCE_FENCE, VanillaWoodTypes.SPRUCE);
         addWoodType(consumer, basePath, Blocks.WARPED_PLANKS, Blocks.WARPED_STEM, Blocks.WARPED_FENCE, VanillaWoodTypes.WARPED);
     }

@@ -14,6 +14,7 @@
     "mekanismgenerators:turbine_vent",
     "mekanismgenerators:saturating_condenser",
     "mekanismgenerators:reactor_glass",
+    "mekanismgenerators:laser_focus_matrix",
     "mekanismgenerators:fission_reactor_casing",
     "mekanismgenerators:fission_reactor_port",
     "mekanismgenerators:fission_reactor_logic_adapter",

@@ -6,11 +6,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.block.attribute.Attribute;
@@ -19,10 +17,13 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.IQIODriveItem.DriveMetadata;
+import mekanism.common.inventory.BinMekanismInventory;
+import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.recipe.upgrade.chemical.GasRecipeData;
 import mekanism.common.recipe.upgrade.chemical.InfusionRecipeData;
 import mekanism.common.recipe.upgrade.chemical.PigmentRecipeData;
 import mekanism.common.recipe.upgrade.chemical.SlurryRecipeData;
+import mekanism.common.tier.BinTier;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.factory.TileEntityFactory;
@@ -35,8 +36,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
 
     @Nullable
@@ -47,7 +50,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
      */
     boolean applyToStack(ItemStack stack);
 
-    @Nonnull
+    @NotNull
     static Set<RecipeUpgradeType> getSupportedTypes(ItemStack stack) {
         //TODO: Add more types of data that can be transferred such as side configs, auto sort, bucket mode, dumping mode
         if (stack.isEmpty()) {
@@ -100,6 +103,10 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             // there will be an owner one so given our security upgrade supports owner or security we only have to check for owner
             supportedTypes.add(RecipeUpgradeType.SECURITY);
         }
+        if (item instanceof ItemBlockBin bin && bin.getTier() != BinTier.CREATIVE) {
+            //If it isn't a creative bin try transferring the lock data
+            supportedTypes.add(RecipeUpgradeType.LOCK);
+        }
         if (tile instanceof TileEntityFactory) {
             supportedTypes.add(RecipeUpgradeType.SORTING);
         }
@@ -110,7 +117,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     }
 
     @Nullable
-    private static <TYPE extends RecipeUpgradeData<TYPE>> TYPE getContainerUpgradeData(@Nonnull ItemStack stack, String key, Function<ListTag, TYPE> creator) {
+    private static <TYPE extends RecipeUpgradeData<TYPE>> TYPE getContainerUpgradeData(@NotNull ItemStack stack, String key, Function<ListTag, TYPE> creator) {
         ListTag containers = ItemDataUtils.getList(stack, key);
         return containers.isEmpty() ? null : creator.apply(containers);
     }
@@ -119,7 +126,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
      * Make sure to validate with getSupportedTypes before calling this
      */
     @Nullable
-    static RecipeUpgradeData<?> getUpgradeData(@Nonnull RecipeUpgradeType type, @Nonnull ItemStack stack) {
+    static RecipeUpgradeData<?> getUpgradeData(@NotNull RecipeUpgradeType type, @NotNull ItemStack stack) {
         Item item = stack.getItem();
         return switch (type) {
             case ENERGY -> getContainerUpgradeData(stack, NBTConstants.ENERGY_CONTAINERS, EnergyRecipeData::new);
@@ -131,6 +138,11 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             case ITEM -> {
                 ListTag inventory = ((ISustainedInventory) item).getInventory(stack);
                 yield  inventory == null || inventory.isEmpty() ? null : new ItemRecipeData(inventory);
+            }
+            case LOCK -> {
+                BinMekanismInventory inventory = BinMekanismInventory.create(stack);
+                //If there is no inventory, or it isn't locked just skip
+                yield inventory == null || !inventory.getBinSlot().isLocked() ? null : new LockRecipeData(inventory);
             }
             case SECURITY -> {
                 UUID ownerUUID = MekanismAPI.getSecurityUtils().getOwnerUUID(stack);

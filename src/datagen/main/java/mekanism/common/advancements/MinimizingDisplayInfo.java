@@ -2,8 +2,6 @@ package mekanism.common.advancements;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.DataGenJsonConstants;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
@@ -11,6 +9,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MinimizingDisplayInfo extends DisplayInfo {
 
@@ -19,7 +19,7 @@ public class MinimizingDisplayInfo extends DisplayInfo {
         super(icon, title, description, background, frame, showToast, announceChat, hidden);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public JsonElement serializeToJson() {
         JsonObject json = super.serializeToJson().getAsJsonObject();

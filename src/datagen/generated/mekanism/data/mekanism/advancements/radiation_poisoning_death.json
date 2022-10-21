@@ -3,9 +3,10 @@
   "criteria": {
     "death": {
       "conditions": {
+        "damage": "mekanism.radiation",
         "killed": true
       },
-      "trigger": "mekanism:radiation_damage"
+      "trigger": "mekanism:damage"
     }
   },
   "display": {

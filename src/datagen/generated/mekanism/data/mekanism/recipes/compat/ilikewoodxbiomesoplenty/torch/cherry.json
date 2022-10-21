@@ -2,38 +2,38 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewoodxbiomesoplenty",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbiomesoplenty"
         },
         {
-          "modid": "biomesoplenty",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "biomesoplenty"
         },
         {
-          "modid": "ilikewood_sticks",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_sticks"
         },
         {
-          "modid": "ilikewood_torches",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_torches"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "input": {
     "amount": 4,
     "ingredient": {
-      "item": "ilikewood:cherry_torch"
+      "item": "ilikewood:biomesoplenty_cherry_torch"
     }
   },
   "mainOutput": {
-    "item": "ilikewood:cherry_stick"
+    "item": "ilikewood:biomesoplenty_cherry_stick"
   },
+  "secondaryChance": 1.0,
   "secondaryOutput": {
     "item": "minecraft:coal"
-  },
-  "secondaryChance": 1.0
+  }
 }

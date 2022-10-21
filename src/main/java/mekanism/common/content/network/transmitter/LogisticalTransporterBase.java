@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.IntConsumer;
-import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -35,8 +34,9 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler, InventoryNetwork, LogisticalTransporterBase> {
 
@@ -95,7 +95,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     @Override
     public boolean isValidAcceptor(BlockEntity tile, Direction side) {
-        return super.isValidAcceptor(tile, side) && getAcceptorCache().isAcceptorAndListen(tile, side, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        return super.isValidAcceptor(tile, side) && getAcceptorCache().isAcceptorAndListen(tile, side, ForgeCapabilities.ITEM_HANDLER);
     }
 
     public void onUpdateClient() {
@@ -270,7 +270,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         return new InventoryNetwork(networks);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag(CompoundTag updateTag) {
         updateTag = super.getReducedUpdateTag(updateTag);
@@ -288,7 +288,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         transit.clear();
         if (tag.contains(NBTConstants.ITEMS, Tag.TAG_LIST)) {
@@ -302,7 +302,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     @Override
-    public void read(@Nonnull CompoundTag nbtTags) {
+    public void read(@NotNull CompoundTag nbtTags) {
         super.read(nbtTags);
         readFromNBT(nbtTags);
     }
@@ -316,9 +316,9 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CompoundTag write(@Nonnull CompoundTag nbtTags) {
+    public CompoundTag write(@NotNull CompoundTag nbtTags) {
         super.write(nbtTags);
         writeToNBT(nbtTags);
         return nbtTags;
@@ -401,7 +401,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         return stack;
     }
 
-    @Nonnull
+    @NotNull
     private TransitResponse updateTransit(boolean doEmit, TransporterStack stack, TransitResponse response) {
         if (!response.isEmpty()) {
             stack.itemStack = response.getStack();

@@ -17,11 +17,11 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.minecraftforge.client.gui.IIngameOverlay;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.items.IItemHandler;
 
-public class MekaSuitHUD implements IIngameOverlay {
+public class MekaSuitHUD implements IGuiOverlay {
 
     private static final EquipmentSlot[] EQUIPMENT_ORDER = {EquipmentSlot.OFFHAND, EquipmentSlot.MAINHAND, EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS,
                                                             EquipmentSlot.FEET};
@@ -29,7 +29,7 @@ public class MekaSuitHUD implements IIngameOverlay {
     private static final HUDRenderer hudRenderer = new HUDRenderer();
 
     @Override
-    public void render(ForgeIngameGui gui, PoseStack poseStack, float partialTicks, int width, int height) {
+    public void render(ForgeGui gui, PoseStack poseStack, float partialTicks, int width, int height) {
         Minecraft minecraft = Minecraft.getInstance();
         if (!minecraft.options.hideGui && !minecraft.player.isSpectator() && MekanismConfig.client.enableHUD.get() && MekanismClient.renderHUD) {
             int count = 0;

@@ -2,16 +2,16 @@
   "type": "mekanismtools:paxel",
   "key": {
     "A": {
-      "item": "mekanismtools:bronze_axe"
+      "tag": "forge:tools/axes/bronze"
     },
     "P": {
-      "item": "mekanismtools:bronze_pickaxe"
+      "tag": "forge:tools/pickaxes/bronze"
     },
     "R": {
       "tag": "forge:rods/wooden"
     },
     "S": {
-      "item": "mekanismtools:bronze_shovel"
+      "tag": "forge:tools/shovels/bronze"
     }
   },
   "pattern": [

@@ -3,7 +3,6 @@ package mekanism.common.integration.crafttweaker;
 import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
 import java.util.Locale;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.slurry.Slurry;
@@ -24,9 +23,10 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTS
 import mekanism.common.integration.crafttweaker.example.BaseCrTExampleProvider;
 import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
 import mekanism.common.integration.crafttweaker.example.component.ICrTExampleComponent;
+import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalChemicalToChemicalRecipeManager.ChemicalInfuserRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalChemicalToChemicalRecipeManager.PigmentMixingRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalCrystallizerRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalDissolutionRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalInfuserRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.CombinerRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ElectrolysisRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.FluidSlurryToSlurryRecipeManager.ChemicalWasherRecipeManager;
@@ -47,7 +47,6 @@ import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToItemSt
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToItemStackRecipeManager.EnrichmentChamberRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToPigmentRecipeManager.PigmentExtractingRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.NucleosynthesizingRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.manager.PigmentMixingRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.PressurizedReactionRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.RotaryRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.manager.SawmillRecipeManager;
@@ -73,6 +72,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fluids.FluidType;
+import org.jetbrains.annotations.NotNull;
 
 public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
 
@@ -516,7 +516,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
           CrTImportsComponent imports, IChemicalProvider<CHEMICAL> chemicalProvider,
           Function<STACK, CommandStringDisplayable> describer) implements ICrTExampleComponent {
 
-        @Nonnull
+        @NotNull
         @Override
         public String asString() {
             return imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".hideIngredient(" +
@@ -542,7 +542,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
             this.color = color;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public String asString() {
             return type + '.' + constructor + "().color(0x" + Integer.toHexString(color).toUpperCase(Locale.ROOT) + ").build(\"" + name + "\");";

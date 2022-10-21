@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.math.Quaternion;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -21,18 +22,25 @@ public interface QuadTransformation {
                                      {Direction.WEST, Direction.WEST, Direction.WEST, Direction.EAST, Direction.SOUTH, Direction.NORTH},
                                      {Direction.EAST, Direction.EAST, Direction.EAST, Direction.WEST, Direction.NORTH, Direction.SOUTH}};
 
-    QuadTransformation identity = q -> {
-    };
+    QuadTransformation identity = q -> false;
 
-    QuadTransformation fullbright = light(1);
+    QuadTransformation fullbright = packedLight(LightTexture.FULL_BRIGHT);
     QuadTransformation filtered_fullbright = TextureFilteredTransformation.of(fullbright, rl -> rl.getPath().contains("led"));
 
     static QuadTransformation color(Color color) {
         return new ColorTransformation(color);
     }
 
-    static QuadTransformation light(float light) {
+    static QuadTransformation light(int light) {
         return new LightTransformation(light, light);
+    }
+
+    static QuadTransformation packedLight(int light) {
+        return new LightTransformation(LightTexture.block(light), LightTexture.sky(light));
+    }
+
+    static QuadTransformation translate(double xTranslation, double yTranslation, double zTranslation) {
+        return translate(new Vec3(xTranslation, yTranslation, zTranslation));
     }
 
     static QuadTransformation translate(Vec3 translation) {
@@ -73,11 +81,23 @@ public interface QuadTransformation {
         return new TextureTransformation(texture);
     }
 
+    //Bounds 0 to 16
+    static QuadTransformation uvShift(float uShift, float vShift) {
+        return new UVTransformation(uShift, vShift);
+    }
+
     static QuadTransformation list(QuadTransformation... transforms) {
         return TransformationList.of(transforms);
     }
 
-    void transform(Quad quad);
+    /**
+     * Transforms the given quad.
+     *
+     * @param quad Quad to transform.
+     *
+     * @return {@code true} if the quad was changed.
+     */
+    boolean transform(Quad quad);
 
     default QuadTransformation and(QuadTransformation other) {
         return list(this, other);
@@ -92,14 +112,22 @@ public interface QuadTransformation {
         }
 
         @Override
-        public void transform(Quad quad) {
+        public boolean transform(Quad quad) {
             if (side != null) {
-                quad.setSide(ROTATION_MATRIX[quad.getSide().ordinal()][side.ordinal()]);
+                Direction newSide = ROTATION_MATRIX[quad.getSide().ordinal()][side.ordinal()];
+                if (newSide != quad.getSide()) {
+                    quad.setSide(newSide);
+                    return true;
+                }
             }
+            return false;
         }
 
         @Override
         public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            }
             return o instanceof SideTransformation other && side == other.side;
         }
 
@@ -118,12 +146,16 @@ public interface QuadTransformation {
         }
 
         @Override
-        public void transform(Quad quad) {
+        public boolean transform(Quad quad) {
             quad.vertexTransform(v -> v.color(color));
+            return true;
         }
 
         @Override
         public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            }
             return o instanceof ColorTransformation other && color.equals(other.color);
         }
 
@@ -135,21 +167,25 @@ public interface QuadTransformation {
 
     class LightTransformation implements QuadTransformation {
 
-        private final float lightU;
-        private final float lightV;
+        private final int lightU;
+        private final int lightV;
 
-        public LightTransformation(float lightU, float lightV) {
+        public LightTransformation(int lightU, int lightV) {
             this.lightU = lightU;
             this.lightV = lightV;
         }
 
         @Override
-        public void transform(Quad quad) {
+        public boolean transform(Quad quad) {
             quad.vertexTransform(v -> v.light(lightU, lightV));
+            return true;
         }
 
         @Override
         public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            }
             return o instanceof LightTransformation other && lightU == other.lightU && lightV == other.lightV;
         }
 
@@ -171,11 +207,12 @@ public interface QuadTransformation {
         }
 
         @Override
-        public void transform(Quad quad) {
+        public boolean transform(Quad quad) {
             quad.vertexTransform(v -> {
                 v.pos(round(quaternion.rotate(v.getPos().subtract(0.5, 0.5, 0.5)).add(0.5, 0.5, 0.5)));
-                v.normal(round(quaternion.rotate(v.getNormal()).normalize()));
+                v.normal(round(quaternion.rotate(v.getNormalD()).normalize()));
             });
+            return true;
         }
 
         private static Vec3 round(Vec3 vec) {
@@ -184,6 +221,9 @@ public interface QuadTransformation {
 
         @Override
         public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            }
             return o instanceof RotationTransformation other && quaternion.equals(other.quaternion);
         }
 
@@ -202,18 +242,59 @@ public interface QuadTransformation {
         }
 
         @Override
-        public void transform(Quad quad) {
+        public boolean transform(Quad quad) {
             quad.vertexTransform(v -> v.pos(v.getPos().add(translation)));
+            return true;
         }
 
         @Override
         public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            }
             return o instanceof TranslationTransformation other && translation.equals(other.translation);
         }
 
         @Override
         public int hashCode() {
             return translation.hashCode();
+        }
+    }
+
+    class UVTransformation implements QuadTransformation {
+
+        private final float uShift;
+        private final float vShift;
+
+        protected UVTransformation(float uShift, float vShift) {
+            this.uShift = uShift;
+            this.vShift = vShift;
+        }
+
+        @Override
+        public boolean transform(Quad quad) {
+            //TODO: At some point we may want to add in some form of validation here about bounds and stuff
+            TextureAtlasSprite texture = quad.getTexture();
+            float uMin = texture.getU0(), uMax = texture.getU1();
+            float vMin = texture.getV0(), vMax = texture.getV1();
+            //Calculate how much of a shift it is based on the texture's scale
+            float uShift = this.uShift * (uMax - uMin) / 16F;
+            float vShift = this.vShift * (vMax - vMin) / 16F;
+            quad.vertexTransform(v -> v.texRaw(v.getTexU() + uShift, v.getTexV() + vShift));
+            return true;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            }
+            return o instanceof UVTransformation other && Float.compare(other.uShift, uShift) == 0 && Float.compare(other.vShift, vShift) == 0;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(uShift, vShift);
         }
     }
 
@@ -226,16 +307,20 @@ public interface QuadTransformation {
         }
 
         @Override
-        public void transform(Quad quad) {
-            if (texture == null) {
-                return;
+        public boolean transform(Quad quad) {
+            if (texture != null && quad.getTexture() != texture) {
+                QuadUtils.remapUVs(quad, texture);
+                quad.setTexture(texture);
+                return true;
             }
-            QuadUtils.remapUVs(quad, texture);
-            quad.setTexture(texture);
+            return false;
         }
 
         @Override
         public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            }
             return o instanceof TextureTransformation other && texture == other.texture;
         }
 
@@ -260,14 +345,15 @@ public interface QuadTransformation {
         }
 
         @Override
-        public void transform(Quad quad) {
-            if (verifier.test(quad.getTexture().getName())) {
-                quad.transform(v -> original.transform(quad));
-            }
+        public boolean transform(Quad quad) {
+            return verifier.test(quad.getTexture().getName()) && original.transform(quad);
         }
 
         @Override
         public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            }
             return o instanceof TextureFilteredTransformation other && verifier.equals(other.verifier);
         }
 
@@ -292,13 +378,12 @@ public interface QuadTransformation {
         }
 
         @Override
-        public void transform(Quad quad) {
-            list.forEach(transformation -> transformation.transform(quad));
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return o instanceof TransformationList other && list.equals(other.list);
+        public boolean transform(Quad quad) {
+            boolean transformed = false;
+            for (QuadTransformation transformation : list) {
+                transformed |= transformation.transform(quad);
+            }
+            return transformed;
         }
 
         @Override
@@ -306,6 +391,14 @@ public interface QuadTransformation {
             List<QuadTransformation> newList = new ArrayList<>(list);
             newList.add(other);
             return new TransformationList(newList);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            }
+            return o instanceof TransformationList other && list.equals(other.list);
         }
 
         @Override

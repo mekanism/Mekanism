@@ -1,8 +1,8 @@
 package mekanism.common.item;
 
-import javax.annotation.Nonnull;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemRefinedGlowstoneIngot extends Item {
 
@@ -11,7 +11,7 @@ public class ItemRefinedGlowstoneIngot extends Item {
     }
 
     @Override
-    public boolean isPiglinCurrency(@Nonnull ItemStack stack) {
+    public boolean isPiglinCurrency(@NotNull ItemStack stack) {
         return true;
     }
 }

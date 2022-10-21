@@ -2,7 +2,7 @@ package mekanism.common.recipe.impl;
 
 import java.util.List;
 import java.util.function.Consumer;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
@@ -14,8 +14,12 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
+import mekanism.common.recipe.compat.AE2RecipeProvider;
 import mekanism.common.recipe.compat.BYGRecipeProvider;
 import mekanism.common.recipe.compat.BiomesOPlentyRecipeProvider;
+import mekanism.common.recipe.compat.ILikeWoodBOPRecipeProvider;
+import mekanism.common.recipe.compat.ILikeWoodBYGRecipeProvider;
+import mekanism.common.recipe.compat.ILikeWoodRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.DoubleLine;
@@ -35,12 +39,13 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     static final char DIAMOND_CHAR = 'D';
     static final char GLASS_CHAR = 'G';
     static final char PERSONAL_STORAGE_CHAR = 'P';
+    static final char MIXING_CHAR = 'M';
     static final char ROBIT_CHAR = 'R';
     static final char SORTER_CHAR = 'S';
     static final char TELEPORTATION_CORE_CHAR = 'T';
@@ -107,13 +112,12 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               new TransmitterRecipeProvider(),
               new UpgradeRecipeProvider(),
               //Mod Compat Recipe providers
-              //TODO - 1.19: Re-enable as these update and then disable them from the persisting data providers
-              //new AE2RecipeProvider(),
+              new AE2RecipeProvider(),
               new BiomesOPlentyRecipeProvider(),
-              new BYGRecipeProvider()/*,
+              new BYGRecipeProvider(),
               new ILikeWoodRecipeProvider(),
               new ILikeWoodBOPRecipeProvider(),
-              new ILikeWoodBYGRecipeProvider()*/
+              new ILikeWoodBYGRecipeProvider()
         );
     }
 
@@ -1312,6 +1316,18 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ADVANCED)
               .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.LEAD))
+              .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
+              .build(consumer);
+        //Color Modulation Module
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_COLOR_MODULATION)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(MIXING_CHAR, Pattern.CONSTANT, MIXING_CHAR),
+                    TripleLine.of(Pattern.OTHER, Pattern.PREVIOUS, Pattern.OTHER),
+                    TripleLine.of(Pattern.HDPE_CHAR, Pattern.HDPE_CHAR, Pattern.HDPE_CHAR))
+              ).key(MIXING_CHAR, MekanismBlocks.PIGMENT_MIXER)
+              .key(Pattern.OTHER, MekanismBlocks.PAINTING_MACHINE)
+              .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, MekanismBlocks.LASER)
               .key(Pattern.HDPE_CHAR, MekanismItems.HDPE_SHEET)
               .build(consumer);
         //Charge Distribution Module

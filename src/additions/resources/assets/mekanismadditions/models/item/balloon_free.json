@@ -1,18 +1,15 @@
 {
-	"loader": "mekanism:mekanism",
 	"credit": "Model by CyanideX",
-	"parent": "block/cube_all",
+	"gui_light": "side",
 	"textures": {
 		"1": "mekanismadditions:entity/balloon_string",
-		"all": "mekanismadditions:entity/balloon",
-		"particle": "mekanismadditions:entity/balloon_string"
+		"all": "mekanismadditions:entity/balloon"
 	},
 	"elements": [
 		{
 			"name": "string",
 			"from": [4.5, 3, 8],
 			"to": [8.5, 19, 8],
-			"rotation": {"angle": 0, "axis": "y", "origin": [5, 3, 8]},
 			"faces": {
 				"north": {"uv": [12, 0, 16, 16], "texture": "#1"},
 				"south": {"uv": [16, 0, 12, 16], "texture": "#1"}
@@ -33,7 +30,6 @@
 			"name": "balloon_end",
 			"from": [7, 19, 7],
 			"to": [9, 20, 9],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 7, 8]},
 			"faces": {
 				"north": {"uv": [3, 7, 5, 8], "texture": "#all", "tintindex": 0},
 				"east": {"uv": [3, 7, 5, 8], "texture": "#all", "tintindex": 0},

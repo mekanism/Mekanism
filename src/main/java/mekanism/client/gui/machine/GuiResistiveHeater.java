@@ -1,9 +1,7 @@
 package mekanism.client.gui.machine;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -23,6 +21,7 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeater, MekanismTileContainer<TileEntityResistiveHeater>> {
 
@@ -44,8 +43,10 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer()));
         addRenderableWidget(new GuiHeatTab(this, () -> {
+            Component temp = MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true);
+            Component transfer = MekanismUtils.getTemperatureDisplay(tile.getLastTransferLoss(), TemperatureUnit.KELVIN, false);
             Component environment = MekanismUtils.getTemperatureDisplay(tile.getLastEnvironmentLoss(), TemperatureUnit.KELVIN, false);
-            return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
+            return List.of(MekanismLang.TEMPERATURE.translate(temp), MekanismLang.TRANSFERRED_RATE.translate(transfer), MekanismLang.DISSIPATED_RATE.translate(environment));
         }));
 
         energyUsageField = addRenderableWidget(new GuiTextField(this, 50, 51, 76, 12));
@@ -57,7 +58,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
         drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);

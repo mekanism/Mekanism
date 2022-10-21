@@ -3,8 +3,8 @@ package mekanism.common.capabilities.merged;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.NBTConstants;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.merged.MergedChemicalTank;
@@ -27,7 +27,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 /**
  * @apiNote Make sure to set the merged tank, and dynamic handlers
  */
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class MergedTankContentsHandler<MERGED extends MergedChemicalTank> extends ItemCapability {
 

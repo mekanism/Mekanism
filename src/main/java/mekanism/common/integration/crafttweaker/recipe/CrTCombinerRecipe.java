@@ -2,7 +2,6 @@ package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.item.MCItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.recipes.CombinerRecipe;
@@ -42,6 +41,6 @@ public class CrTCombinerRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
     public static List<IItemStack> getOutputs(CombinerRecipe _this) {
-        return CrTUtils.convert(_this.getOutputDefinition(), MCItemStack::new);
+        return CrTUtils.convertItems(_this.getOutputDefinition());
     }
 }

@@ -3,8 +3,6 @@ package mekanism.tools.common.item;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.tools.common.IHasRepairType;
@@ -41,6 +39,8 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemMekanismPaxel extends DiggerItem implements IHasRepairType, IAttributeRefresher {
 
@@ -63,7 +63,7 @@ public class ItemMekanismPaxel extends DiggerItem implements IHasRepairType, IAt
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, world, tooltip, flag);
         ToolsUtils.addDurability(tooltip, stack);
     }
@@ -80,7 +80,7 @@ public class ItemMekanismPaxel extends DiggerItem implements IHasRepairType, IAt
     }
 
     @Override
-    public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
+    public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
         return super.getDestroySpeed(stack, state) == 1 ? 1 : material.getPaxelEfficiency();
     }
 
@@ -89,7 +89,7 @@ public class ItemMekanismPaxel extends DiggerItem implements IHasRepairType, IAt
      *
      * Merged version of {@link AxeItem#useOn(UseOnContext)} and {@link net.minecraft.world.item.ShovelItem#useOn(UseOnContext)}
      */
-    @Nonnull
+    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level world = context.getLevel();
@@ -162,7 +162,7 @@ public class ItemMekanismPaxel extends DiggerItem implements IHasRepairType, IAt
         return material.getPaxelEnchantability();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Ingredient getRepairMaterial() {
         return getTier().getRepairIngredient();
@@ -178,10 +178,10 @@ public class ItemMekanismPaxel extends DiggerItem implements IHasRepairType, IAt
         return material.getPaxelMaxUses() > 0;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlot slot, @Nonnull ItemStack stack) {
-        return slot == EquipmentSlot.MAINHAND ? attributeCache.getAttributes() : ImmutableMultimap.of();
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, @NotNull ItemStack stack) {
+        return slot == EquipmentSlot.MAINHAND ? attributeCache.get() : ImmutableMultimap.of();
     }
 
     @Override

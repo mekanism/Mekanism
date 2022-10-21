@@ -2,8 +2,6 @@ package mekanism.common.item;
 
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
@@ -36,6 +34,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemConfigurationCard extends Item {
 
@@ -44,11 +44,11 @@ public class ItemConfigurationCard extends Item {
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, Level world, List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, Level world, List<Component> tooltip, @NotNull TooltipFlag flag) {
         tooltip.add(MekanismLang.CONFIG_CARD_HAS_DATA.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getConfigCardName(getData(stack))));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
@@ -71,7 +71,7 @@ public class ItemConfigurationCard extends Item {
                     String translationKey = configCardAccess.getConfigCardName();
                     CompoundTag data = configCardAccess.getConfigurationData(player);
                     data.putString(NBTConstants.DATA_NAME, translationKey);
-                    NBTUtils.writeRegistryEntry(data, NBTConstants.DATA_TYPE, ForgeRegistries.BLOCK_ENTITIES, configCardAccess.getConfigurationDataType());
+                    NBTUtils.writeRegistryEntry(data, NBTConstants.DATA_TYPE, ForgeRegistries.BLOCK_ENTITY_TYPES, configCardAccess.getConfigurationDataType());
                     ItemDataUtils.setCompound(stack, NBTConstants.DATA, data);
                     player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey))));
                     MekanismCriteriaTriggers.CONFIGURATION_CARD.trigger((ServerPlayer) player, true);
@@ -112,7 +112,7 @@ public class ItemConfigurationCard extends Item {
             return null;
         }
         ResourceLocation tileRegistryName = ResourceLocation.tryParse(data.getString(NBTConstants.DATA_TYPE));
-        return tileRegistryName == null ? null : ForgeRegistries.BLOCK_ENTITIES.getValue(tileRegistryName);
+        return tileRegistryName == null ? null : ForgeRegistries.BLOCK_ENTITY_TYPES.getValue(tileRegistryName);
     }
 
     private Component getConfigCardName(@Nullable CompoundTag data) {

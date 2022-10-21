@@ -1,0 +1,10 @@
+{
+  "values": [
+    "#forge:tools/axes/bronze",
+    "#forge:tools/axes/lapis_lazuli",
+    "#forge:tools/axes/osmium",
+    "#forge:tools/axes/refined_glowstone",
+    "#forge:tools/axes/refined_obsidian",
+    "#forge:tools/axes/steel"
+  ]
+}

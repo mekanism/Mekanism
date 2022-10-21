@@ -5,7 +5,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.annotation.Nullable;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
@@ -14,7 +14,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import org.jetbrains.annotations.Nullable;
 
+@NothingNullByDefault
 public enum Upgrade implements IHasTranslationKey {
     SPEED("speed", APILang.UPGRADE_SPEED, APILang.UPGRADE_SPEED_DESCRIPTION, 8, EnumColor.RED),
     ENERGY("energy", APILang.UPGRADE_ENERGY, APILang.UPGRADE_ENERGY_DESCRIPTION, 8, EnumColor.BRIGHT_GREEN),
@@ -57,7 +60,7 @@ public enum Upgrade implements IHasTranslationKey {
                 CompoundTag compound = list.getCompound(tagCount);
                 Upgrade upgrade = byIndexStatic(compound.getInt(NBTConstants.TYPE));
                 //Validate the nbt isn't malformed with a negative or zero amount
-                int installed = Math.max(0, Math.min(upgrade.maxStack, compound.getInt(NBTConstants.AMOUNT)));
+                int installed = Mth.clamp(compound.getInt(NBTConstants.AMOUNT), 0, upgrade.maxStack);
                 if (installed > 0) {
                     if (upgrades == null) {
                         upgrades = new EnumMap<>(Upgrade.class);

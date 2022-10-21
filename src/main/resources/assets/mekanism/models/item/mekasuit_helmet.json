@@ -1,6 +1,7 @@
 {
     "parent": "minecraft:item/generated",
     "textures": { 
-        "layer0": "mekanism:item/mekasuit_helmet"
+        "layer0": "mekanism:item/mekasuit_helmet",
+        "layer1": "mekanism:item/mekasuit_helmet_tint_layer"
     }
 }

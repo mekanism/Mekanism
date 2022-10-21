@@ -1,13 +1,13 @@
 package mekanism.common.world;
 
 import com.mojang.serialization.Codec;
-import javax.annotation.Nonnull;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismIntProviderTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.IntProviderType;
+import org.jetbrains.annotations.NotNull;
 
 public class ConfigurableUniformInt extends IntProvider {
 
@@ -18,7 +18,7 @@ public class ConfigurableUniformInt extends IntProvider {
     }
 
     @Override
-    public int sample(@Nonnull RandomSource random) {
+    public int sample(@NotNull RandomSource random) {
         return Mth.randomBetweenInclusive(random, getMinValue(), getMaxValue());
     }
 
@@ -32,7 +32,7 @@ public class ConfigurableUniformInt extends IntProvider {
         return MekanismConfig.world.salt.maxRadius.get();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IntProviderType<?> getType() {
         return MekanismIntProviderTypes.CONFIGURABLE_UNIFORM.get();

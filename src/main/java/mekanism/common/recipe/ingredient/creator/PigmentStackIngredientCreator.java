@@ -2,7 +2,7 @@ package mekanism.common.recipe.ingredient.creator;
 
 import java.util.Objects;
 import java.util.stream.Stream;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
@@ -12,11 +12,9 @@ import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientInfo;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.tags.TagKey;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreator<Pigment, PigmentStack, PigmentStackIngredient> {
 
     public static final PigmentStackIngredientCreator INSTANCE = new PigmentStackIngredientCreator();

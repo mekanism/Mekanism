@@ -1,8 +1,7 @@
 package mekanism.common.tile.factory;
 
-import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Set;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
@@ -20,24 +19,27 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 //Smelting, enriching, crushing
 public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemFactory<ItemStackToItemStackRecipe> implements
       ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
-    private static final Map<RecipeError, Boolean> TRACKED_ERROR_TYPES = Map.of(
-          RecipeError.NOT_ENOUGH_ENERGY, true,
-          RecipeError.NOT_ENOUGH_INPUT, false,
-          RecipeError.NOT_ENOUGH_OUTPUT_SPACE, false,
-          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT, false
+    private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
+          RecipeError.NOT_ENOUGH_ENERGY,
+          RecipeError.NOT_ENOUGH_INPUT,
+          RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
+    private static final Set<RecipeError> GLOBAL_ERROR_TYPES = Set.of(RecipeError.NOT_ENOUGH_ENERGY);
 
     public TileEntityItemStackToItemStackFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
-        super(blockProvider, pos, state, TRACKED_ERROR_TYPES);
+        super(blockProvider, pos, state, TRACKED_ERROR_TYPES, GLOBAL_ERROR_TYPES);
     }
 
     @Override
-    public boolean isValidInputItem(@Nonnull ItemStack stack) {
+    public boolean isValidInputItem(@NotNull ItemStack stack) {
         return containsRecipe(stack);
     }
 
@@ -47,19 +49,19 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
     }
 
     @Override
-    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<ItemStackToItemStackRecipe> cached, @Nonnull ItemStack stack) {
+    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<ItemStackToItemStackRecipe> cached, @NotNull ItemStack stack) {
         return cached != null && cached.getRecipe().getInput().testType(stack);
     }
 
     @Override
-    protected ItemStackToItemStackRecipe findRecipe(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot,
+    protected ItemStackToItemStackRecipe findRecipe(int process, @NotNull ItemStack fallbackInput, @NotNull IInventorySlot outputSlot,
           @Nullable IInventorySlot secondaryOutputSlot) {
         ItemStack output = outputSlot.getStack();
         return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput,
               recipe -> InventoryUtils.areItemsStackable(recipe.getOutput(fallbackInput), output));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> getRecipeType() {
         return switch (type) {
@@ -76,9 +78,9 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
         return findFirstRecipe(inputHandlers[cacheIndex]);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
+    public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@NotNull ItemStackToItemStackRecipe recipe, int cacheIndex) {
         return OneInputCachedRecipe.itemToItem(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], outputHandlers[cacheIndex])
               .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
@@ -89,7 +91,7 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public MachineUpgradeData getUpgradeData() {
         return new MachineUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, energySlot, inputSlots, outputSlots, isSorting(), getComponents());

@@ -1,7 +1,6 @@
 package mekanism.common.content.network.transmitter;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -9,6 +8,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBufferedNetwork<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>, BUFFER,
       TRANSMITTER extends BufferedTransmitter<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>> extends Transmitter<ACCEPTOR, NETWORK, TRANSMITTER> {
@@ -29,7 +29,7 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
      *
      * @return The transmitter's buffer, or if null the network's buffer.
      */
-    @Nonnull
+    @NotNull
     public abstract BUFFER getBufferWithFallback();
 
     /**
@@ -170,12 +170,12 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
     }
 
     @Override
-    protected void handleContentsUpdateTag(@Nonnull NETWORK network, @Nonnull CompoundTag tag) {
+    protected void handleContentsUpdateTag(@NotNull NETWORK network, @NotNull CompoundTag tag) {
         network.updateCapacity();
     }
 
     @Override
-    protected void updateClientNetwork(@Nonnull NETWORK network) {
+    protected void updateClientNetwork(@NotNull NETWORK network) {
         super.updateClientNetwork(network);
         network.updateCapacity();
     }
@@ -190,6 +190,6 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
     /**
      * @return Gets the transmitter's buffer.
      */
-    @Nonnull
+    @NotNull
     public abstract BUFFER getShare();
 }

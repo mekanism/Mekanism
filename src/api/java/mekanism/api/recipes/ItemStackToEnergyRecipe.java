@@ -4,15 +4,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Input: ItemStack
@@ -21,10 +19,8 @@ import net.minecraft.world.item.ItemStack;
  *
  * @apiNote Energy conversion recipes can be used in any slots in Mekanism machines that are able to convert items into energy.
  */
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-public abstract class ItemStackToEnergyRecipe extends MekanismRecipe implements Predicate<@NonNull ItemStack> {
+@NothingNullByDefault
+public abstract class ItemStackToEnergyRecipe extends MekanismRecipe implements Predicate<@NotNull ItemStack> {
 
     protected final ItemStackIngredient input;
     protected final FloatingLong output;

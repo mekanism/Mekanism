@@ -3,8 +3,10 @@ package mekanism.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -12,10 +14,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.UUID;
-import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.armor.ISpecialGear;
@@ -59,6 +62,7 @@ import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
@@ -84,17 +88,20 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.RenderProperties;
-import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.client.event.RenderArmEvent;
-import net.minecraftforge.client.event.RenderLevelLastEvent;
-import net.minecraftforge.client.event.ScreenOpenEvent;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderHighlightEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.event.ScreenEvent;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class RenderTickHandler {
 
@@ -102,13 +109,19 @@ public class RenderTickHandler {
 
     private static final Map<BlockState, List<Vertex[]>> cachedWireFrames = new HashMap<>();
     private static final Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
+    private static final Map<RenderType, List<LazyRender>> transparentRenderers = new HashMap<>();
 
     public static int modeSwitchTimer = 0;
-    public static double prevRadiation = 0;
+    private static double prevRadiation = 0;
 
     private static final BoltRenderer boltRenderer = new BoltRenderer();
 
     private boolean outliningArea = false;
+
+    public static void clearQueued() {
+        prevRadiation = 0;
+        transparentRenderers.clear();
+    }
 
     public static void resetCached() {
         cachedOverlays.clear();
@@ -120,32 +133,103 @@ public class RenderTickHandler {
     }
 
     //Note: This listener is only registered if JEI is loaded
-    public static void guiOpening(ScreenOpenEvent event) {
-        if (Minecraft.getInstance().screen instanceof GuiMekanism screen) {
+    public static void guiOpening(ScreenEvent.Opening event) {
+        if (event.getCurrentScreen() instanceof GuiMekanism<?> screen) {
             //If JEI is loaded and our current screen is a mekanism gui,
             // check if the new screen is a JEI recipe screen
-            if (event.getScreen() instanceof IRecipesGui) {
+            if (event.getNewScreen() instanceof IRecipesGui) {
                 //If it is mark on our current screen that we are switching to JEI
                 screen.switchingToJEI = true;
             }
         }
     }
 
+    public static void addTransparentRenderer(RenderType renderType, LazyRender render) {
+        transparentRenderers.computeIfAbsent(renderType, r -> new ArrayList<>()).add(render);
+    }
+
     @SubscribeEvent
-    public void renderWorld(RenderLevelLastEvent event) {
-        if (boltRenderer.hasBoltsToRender()) {
+    public void renderWorld(RenderLevelStageEvent event) {
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
+            //Only do matrix transforms and mess with buffers if we actually have any renders to render
+            renderStage(event, !transparentRenderers.isEmpty(), (camera, renderer, poseStack, renderTick, partialTick) -> {
+                ProfilerFiller profiler = minecraft.getProfiler();
+                profiler.push(ProfilerConstants.DELAYED);
+                record TransparentRenderInfo(RenderType renderType, List<LazyRender> renders, double closest) {
+                }
+                Consumer<TransparentRenderInfo> renderInfoConsumer = info -> {
+                    //Batch all renders for a single render type into a single buffer addition
+                    VertexConsumer buffer = renderer.getBuffer(info.renderType);
+                    for (LazyRender transparentRender : info.renders) {
+                        String profilerSection = transparentRender.getProfilerSection();
+                        if (profilerSection != null) {
+                            profiler.push(profilerSection);
+                        }
+                        //Note: We don't bother sorting renders in a specific render type as we assume the render type has sortOnUpload as true
+                        transparentRender.render(camera, buffer, poseStack, renderTick, partialTick, profiler);
+                        if (profilerSection != null) {
+                            profiler.pop();
+                        }
+                    }
+                    renderer.endBatch(info.renderType);
+                };
+                if (transparentRenderers.size() == 1) {
+                    //If we only have one render type we don't need to bother calculating any distances
+                    for (Map.Entry<RenderType, List<LazyRender>> entry : transparentRenderers.entrySet()) {
+                        renderInfoConsumer.accept(new TransparentRenderInfo(entry.getKey(), entry.getValue(), 0));
+                    }
+                } else {
+                    transparentRenderers.entrySet().stream()
+                          .map(entry -> {
+                              List<LazyRender> renders = entry.getValue();
+                              double closest = Double.MAX_VALUE;
+                              for (LazyRender render : renders) {
+                                  Vec3 renderPos = render.getCenterPos(partialTick);
+                                  if (renderPos != null) {
+                                      //Note: We can just use the distance sqr as we use it for both things, so they compare the same anyway
+                                      double distanceSqr = camera.getPosition().distanceToSqr(renderPos);
+                                      if (distanceSqr < closest) {
+                                          closest = distanceSqr;
+                                      }
+                                  }
+                              }
+                              //Note: we remap it in order to keep track of the closest distance so that we only have to calculate it once
+                              return new TransparentRenderInfo(entry.getKey(), renders, closest);
+                          })
+                          //Sort in the order of furthest to closest (reverse of by closest)
+                          .sorted(Comparator.comparingDouble(info -> -info.closest))
+                          .forEachOrdered(renderInfoConsumer);
+                }
+                transparentRenderers.clear();
+                profiler.pop();
+            });
+        } else if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES && boltRenderer.hasBoltsToRender()) {
             //Only do matrix transforms and mess with buffers if we actually have any bolts to render
+            renderStage(event, boltRenderer.hasBoltsToRender(), (camera, renderer, poseStack, renderTick, partialTick) -> {
+                boltRenderer.render(partialTick, poseStack, renderer);
+                renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
+            });
+        }
+    }
+
+    private void renderStage(RenderLevelStageEvent event, boolean shouldRender, StageRenderer renderer) {
+        if (shouldRender) {
+            Camera camera = event.getCamera();
             PoseStack matrix = event.getPoseStack();
             matrix.pushPose();
             // here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
-            Vec3 camVec = minecraft.gameRenderer.getMainCamera().getPosition();
+            Vec3 camVec = camera.getPosition();
             matrix.translate(-camVec.x, -camVec.y, -camVec.z);
-            //TODO: FIXME, this doesn't work on fabulous, I think it needs something like
-            // https://github.com/MinecraftForge/MinecraftForge/pull/7225
-            MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
-            boltRenderer.render(event.getPartialTick(), matrix, renderer);
-            renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
+            renderer.render(camera, minecraft.renderBuffers().bufferSource(), matrix, event.getRenderTick(), event.getPartialTick());
             matrix.popPose();
+        }
+    }
+
+    @SubscribeEvent
+    public void renderCrosshair(RenderGuiOverlayEvent.Pre event) {
+        if (event.getOverlay().id().equals(VanillaGuiOverlay.CROSSHAIR.id()) && minecraft.screen instanceof GuiRadialSelector screen && screen.shouldHideCrosshair()) {
+            //Hide the crosshair if we have a radial menu open and are drawing the back button
+            event.setCanceled(true);
         }
     }
 
@@ -154,7 +238,7 @@ public class RenderTickHandler {
         AbstractClientPlayer player = event.getPlayer();
         ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
         if (chestStack.getItem() instanceof ItemMekaSuitArmor armorItem) {
-            MekaSuitArmor armor = (MekaSuitArmor) ((ISpecialGear) RenderProperties.get(armorItem)).getGearModel(EquipmentSlot.CHEST);
+            MekaSuitArmor armor = (MekaSuitArmor) ((ISpecialGear) IClientItemExtensions.of(armorItem)).getGearModel(EquipmentSlot.CHEST);
             PlayerRenderer renderer = (PlayerRenderer) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player);
             PlayerModel<AbstractClientPlayer> model = renderer.getModel();
             model.setAllVisible(true);
@@ -169,7 +253,7 @@ public class RenderTickHandler {
             model.crouching = false;
             model.swimAmount = 0.0F;
             model.setupAnim(player, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-            armor.renderArm(model, event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), OverlayTexture.NO_OVERLAY, chestStack.hasFoil(), player, rightHand);
+            armor.renderArm(model, event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), OverlayTexture.NO_OVERLAY, player, chestStack, rightHand);
             event.setCanceled(true);
         }
     }
@@ -290,7 +374,7 @@ public class RenderTickHandler {
     }
 
     @SubscribeEvent
-    public void onBlockHover(DrawSelectionEvent.HighlightBlock event) {
+    public void onBlockHover(RenderHighlightEvent.Block event) {
         Player player = minecraft.player;
         if (player == null) {
             return;
@@ -366,7 +450,8 @@ public class RenderTickHandler {
                         matrix.pushPose();
                         Vec3 viewPosition = info.getPosition();
                         matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
-                        renderWireFrame.render(renderer.getBuffer(RenderType.lines()), matrix, actualState, 0, 0, 0, 0.4F);
+                        //0.4 Alpha
+                        renderWireFrame.render(renderer.getBuffer(RenderType.lines()), matrix, actualState, 0, 0, 0, 0x66);
                         matrix.popPose();
                         shouldCancel = true;
                     }
@@ -400,7 +485,8 @@ public class RenderTickHandler {
                             matrix.pushPose();
                             matrix.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
                             MekanismRenderer.renderObject(getOverlayModel(face, type), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
-                                  MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F), MekanismRenderer.FULL_LIGHT, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT);
+                                  MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT,
+                                  info);
                             matrix.popPose();
                         }
                     }
@@ -413,42 +499,42 @@ public class RenderTickHandler {
         }
     }
 
-    private void renderQuadsWireFrame(BlockState state, VertexConsumer buffer, Matrix4f matrix, RandomSource rand, float red, float green, float blue, float alpha) {
+    private void renderQuadsWireFrame(BlockState state, VertexConsumer buffer, Matrix4f matrix, RandomSource rand, int red, int green, int blue, int alpha) {
         List<Vertex[]> allVertices = cachedWireFrames.computeIfAbsent(state, s -> {
             BakedModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(s);
-            //TODO: Eventually we may want to add support for Model data
-            IModelData modelData = EmptyModelData.INSTANCE;
+            //TODO: Eventually we may want to add support for Model data and maybe render type
+            ModelData modelData = ModelData.EMPTY;
             List<Vertex[]> vertices = new ArrayList<>();
             for (Direction direction : EnumUtils.DIRECTIONS) {
-                QuadUtils.unpack(bakedModel.getQuads(s, direction, rand, modelData)).stream().map(Quad::getVertices).forEach(vertices::add);
+                QuadUtils.unpack(bakedModel.getQuads(s, direction, rand, modelData, null)).stream().map(Quad::getVertices).forEach(vertices::add);
             }
-            QuadUtils.unpack(bakedModel.getQuads(s, null, rand, modelData)).stream().map(Quad::getVertices).forEach(vertices::add);
+            QuadUtils.unpack(bakedModel.getQuads(s, null, rand, modelData, null)).stream().map(Quad::getVertices).forEach(vertices::add);
             return vertices;
         });
         renderVertexWireFrame(allVertices, buffer, matrix, red, green, blue, alpha);
     }
 
-    public static void renderVertexWireFrame(List<Vertex[]> allVertices, VertexConsumer buffer, Matrix4f matrix, float red, float green, float blue, float alpha) {
+    public static void renderVertexWireFrame(List<Vertex[]> allVertices, VertexConsumer buffer, Matrix4f matrix, int red, int green, int blue, int alpha) {
         for (Vertex[] vertices : allVertices) {
             Vector4f vertex = getVertex(matrix, vertices[0]);
-            Vec3 normal = vertices[0].getNormal();
+            Vector3f normal = vertices[0].getNormal();
             Vector4f vertex2 = getVertex(matrix, vertices[1]);
-            Vec3 normal2 = vertices[1].getNormal();
+            Vector3f normal2 = vertices[1].getNormal();
             Vector4f vertex3 = getVertex(matrix, vertices[2]);
-            Vec3 normal3 = vertices[2].getNormal();
+            Vector3f normal3 = vertices[2].getNormal();
             Vector4f vertex4 = getVertex(matrix, vertices[3]);
-            Vec3 normal4 = vertices[3].getNormal();
-            buffer.vertex(vertex.x(), vertex.y(), vertex.z()).color(red, green, blue, alpha).normal((float) normal.x(), (float) normal.y(), (float) normal.z()).endVertex();
-            buffer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).color(red, green, blue, alpha).normal((float) normal2.x(), (float) normal2.y(), (float) normal2.z()).endVertex();
+            Vector3f normal4 = vertices[3].getNormal();
+            buffer.vertex(vertex.x(), vertex.y(), vertex.z()).color(red, green, blue, alpha).normal(normal.x(), normal.y(), normal.z()).endVertex();
+            buffer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).color(red, green, blue, alpha).normal(normal2.x(), normal2.y(), normal2.z()).endVertex();
 
-            buffer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).color(red, green, blue, alpha).normal((float) normal3.x(), (float) normal3.y(), (float) normal3.z()).endVertex();
-            buffer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).color(red, green, blue, alpha).normal((float) normal4.x(), (float) normal4.y(), (float) normal4.z()).endVertex();
+            buffer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).color(red, green, blue, alpha).normal(normal3.x(), normal3.y(), normal3.z()).endVertex();
+            buffer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).color(red, green, blue, alpha).normal(normal4.x(), normal4.y(), normal4.z()).endVertex();
 
-            buffer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).color(red, green, blue, alpha).normal((float) normal2.x(), (float) normal2.y(), (float) normal2.z()).endVertex();
-            buffer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).color(red, green, blue, alpha).normal((float) normal3.x(), (float) normal3.y(), (float) normal3.z()).endVertex();
+            buffer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).color(red, green, blue, alpha).normal(normal2.x(), normal2.y(), normal2.z()).endVertex();
+            buffer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).color(red, green, blue, alpha).normal(normal3.x(), normal3.y(), normal3.z()).endVertex();
 
-            buffer.vertex(vertex.x(), vertex.y(), vertex.z()).color(red, green, blue, alpha).normal((float) normal.x(), (float) normal.y(), (float) normal.z()).endVertex();
-            buffer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).color(red, green, blue, alpha).normal((float) normal4.x(), (float) normal4.y(), (float) normal4.z()).endVertex();
+            buffer.vertex(vertex.x(), vertex.y(), vertex.z()).color(red, green, blue, alpha).normal(normal.x(), normal.y(), normal.z()).endVertex();
+            buffer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).color(red, green, blue, alpha).normal(normal4.x(), normal4.y(), normal4.z()).endVertex();
         }
     }
 
@@ -458,7 +544,7 @@ public class RenderTickHandler {
         return vector4f;
     }
 
-    private void renderStatusBar(PoseStack matrix, @Nonnull Player player) {
+    private void renderStatusBar(PoseStack matrix, @NotNull Player player) {
         //TODO: use vanilla status bar text? Note, the vanilla status bar text stays a lot longer than we have our message
         // display for, so we would need to somehow modify it. This can be done via ATs but does cause it to always appear
         // to be more faded in color, and blinks to full color just before disappearing
@@ -485,19 +571,38 @@ public class RenderTickHandler {
     }
 
     private Model3D getOverlayModel(Direction side, TransmissionType type) {
-        if (cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(type)) {
-            return cachedOverlays.get(side).get(type);
+        return cachedOverlays.computeIfAbsent(side, s -> new EnumMap<>(TransmissionType.class))
+              .computeIfAbsent(type, t -> new Model3D()
+                    .setTexture(MekanismRenderer.overlays.get(t))
+                    .prepSingleFaceModelSize(side)
+              );
+    }
+
+    @FunctionalInterface
+    private interface StageRenderer {
+
+        void render(Camera camera, MultiBufferSource.BufferSource renderer, PoseStack poseStack, int renderTick, float partialTick);
+    }
+
+    @FunctionalInterface
+    public interface LazyRender {
+
+        void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler);
+
+        @Nullable
+        default Vec3 getCenterPos(float partialTick) {
+            return null;
         }
-        Model3D toReturn = new Model3D();
-        toReturn.setTexture(MekanismRenderer.overlays.get(type));
-        MekanismRenderer.prepSingleFaceModelSize(toReturn, side);
-        cachedOverlays.computeIfAbsent(side, s -> new EnumMap<>(TransmissionType.class)).put(type, toReturn);
-        return toReturn;
+
+        @Nullable
+        default String getProfilerSection() {
+            return null;
+        }
     }
 
     @FunctionalInterface
     private interface WireFrameRenderer {
 
-        void render(VertexConsumer buffer, PoseStack matrix, BlockState state, float red, float green, float blue, float alpha);
+        void render(VertexConsumer buffer, PoseStack matrix, BlockState state, int red, int green, int blue, int alpha);
     }
 }

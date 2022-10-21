@@ -5,7 +5,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import cpw.mods.modlauncher.api.LamdbaExceptionUtils;
 import java.util.function.BiConsumer;
-import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -17,6 +16,7 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.Lazy;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseModifierProvider<MODIFIER> implements DataProvider {
 
@@ -32,7 +32,7 @@ public abstract class BaseModifierProvider<MODIFIER> implements DataProvider {
     }
 
     @Override
-    public void run(@Nonnull CachedOutput cache) {
+    public void run(@NotNull CachedOutput cache) {
         RegistryOps<JsonElement> ops = OPS.get();
         getModifiers(new RegistryGetter() {
             @Override
@@ -54,7 +54,7 @@ public abstract class BaseModifierProvider<MODIFIER> implements DataProvider {
 
     protected abstract void getModifiers(RegistryGetter registryGetter, BiConsumer<MODIFIER, ResourceLocation> consumer);
 
-    @Nonnull
+    @NotNull
     @Override
     public abstract String getName();
 

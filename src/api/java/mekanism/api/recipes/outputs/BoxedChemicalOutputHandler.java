@@ -1,7 +1,7 @@
 package mekanism.api.recipes.outputs;
 
 import java.util.Objects;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
@@ -12,7 +12,7 @@ import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 /**
  * Specialized version of {@link IOutputHandler} for handling boxed chemicals.
  */
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class BoxedChemicalOutputHandler {
 
     private final RecipeError notEnoughSpaceError;

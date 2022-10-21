@@ -7,7 +7,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IChemicalConstant;
 import net.minecraft.Util;
@@ -31,7 +30,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.client.IFluidTypeRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidStack;
@@ -41,6 +40,7 @@ import net.minecraftforge.fluids.ForgeFlowingFluid.Flowing;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Source;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class FluidDeferredRegister {
@@ -51,9 +51,9 @@ public class FluidDeferredRegister {
     private static final ResourceLocation LIQUID_FLOW = Mekanism.rl("liquid/liquid_flow");
     //Copy of/based off of vanilla's lava/water bucket dispense behavior
     private static final DispenseItemBehavior BUCKET_DISPENSE_BEHAVIOR = new DefaultDispenseItemBehavior() {
-        @Nonnull
+        @NotNull
         @Override
-        public ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stack) {
+        public ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
             Level world = source.getLevel();
             DispensibleContainerItem bucket = (DispensibleContainerItem) stack.getItem();
             BlockPos pos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
@@ -231,8 +231,8 @@ public class FluidDeferredRegister {
         }
 
         @Override
-        public void initializeClient(Consumer<IFluidTypeRenderProperties> consumer) {
-            consumer.accept(new IFluidTypeRenderProperties() {
+        public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
+            consumer.accept(new IClientFluidTypeExtensions() {
                 @Override
                 public ResourceLocation getStillTexture() {
                     return stillTexture;
@@ -255,7 +255,7 @@ public class FluidDeferredRegister {
                 }
 
                 @Override
-                public int getColorTint() {
+                public int getTintColor() {
                     return color;
                 }
             });

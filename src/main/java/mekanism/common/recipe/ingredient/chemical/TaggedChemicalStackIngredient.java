@@ -5,9 +5,7 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import mekanism.api.JsonConstants;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTags;
@@ -16,19 +14,20 @@ import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.TagKey;
 import net.minecraftforge.registries.tags.ITag;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>>
       implements ChemicalStackIngredient<CHEMICAL, STACK> {
 
-    @Nonnull
+    @NotNull
     private final ITag<CHEMICAL> tag;
     private final long amount;
 
-    protected TaggedChemicalStackIngredient(@Nonnull ChemicalTags<CHEMICAL> tags, @Nonnull TagKey<CHEMICAL> tag, long amount) {
+    protected TaggedChemicalStackIngredient(@NotNull ChemicalTags<CHEMICAL> tags, @NotNull TagKey<CHEMICAL> tag, long amount) {
         this(tags.getManager().map(manager -> manager.getTag(tag)).orElseThrow(), amount);
     }
 
-    protected TaggedChemicalStackIngredient(@Nonnull ITag<CHEMICAL> tag, long amount) {
+    protected TaggedChemicalStackIngredient(@NotNull ITag<CHEMICAL> tag, long amount) {
         this.tag = tag;
         this.amount = amount;
     }
@@ -36,23 +35,23 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
     protected abstract ChemicalIngredientInfo<CHEMICAL, STACK> getIngredientInfo();
 
     @Override
-    public boolean test(@Nonnull STACK chemicalStack) {
+    public boolean test(@NotNull STACK chemicalStack) {
         return testType(chemicalStack) && chemicalStack.getAmount() >= amount;
     }
 
     @Override
-    public boolean testType(@Nonnull STACK chemicalStack) {
+    public boolean testType(@NotNull STACK chemicalStack) {
         return testType(Objects.requireNonNull(chemicalStack).getType());
     }
 
     @Override
-    public boolean testType(@Nonnull CHEMICAL chemical) {
+    public boolean testType(@NotNull CHEMICAL chemical) {
         return tag.contains(Objects.requireNonNull(chemical));
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public STACK getMatchingInstance(@Nonnull STACK chemicalStack) {
+    public STACK getMatchingInstance(@NotNull STACK chemicalStack) {
         if (test(chemicalStack)) {
             //Our chemical is in the tag, so we make a new stack with the given amount
             return getIngredientInfo().createStack(chemicalStack, amount);
@@ -61,7 +60,7 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
     }
 
     @Override
-    public long getNeededAmount(@Nonnull STACK stack) {
+    public long getNeededAmount(@NotNull STACK stack) {
         return testType(stack) ? amount : 0;
     }
 
@@ -70,12 +69,12 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
         return tag.isEmpty();
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public List<@NonNull STACK> getRepresentations() {
+    public List<@NotNull STACK> getRepresentations() {
         ChemicalIngredientInfo<CHEMICAL, STACK> ingredientInfo = getIngredientInfo();
         //TODO: Can this be cached some how
-        List<@NonNull STACK> representations = new ArrayList<>();
+        List<@NotNull STACK> representations = new ArrayList<>();
         for (CHEMICAL chemical : tag) {
             representations.add(ingredientInfo.createStack(chemical, amount));
         }
@@ -96,12 +95,28 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
         buffer.writeVarLong(amount);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public JsonElement serialize() {
         JsonObject json = new JsonObject();
         json.addProperty(JsonConstants.AMOUNT, amount);
         json.addProperty(JsonConstants.TAG, tag.getKey().location().toString());
         return json;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TaggedChemicalStackIngredient<CHEMICAL, STACK> other = (TaggedChemicalStackIngredient<CHEMICAL, STACK>) o;
+        return amount == other.amount && tag.equals(other.tag);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tag, amount);
     }
 }

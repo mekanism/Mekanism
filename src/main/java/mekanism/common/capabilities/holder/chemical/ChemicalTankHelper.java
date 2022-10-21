@@ -1,7 +1,6 @@
 package mekanism.common.capabilities.holder.chemical;
 
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -24,6 +23,7 @@ import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.Con
 import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigSlurryTankHolder;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.NotNull;
 
 public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
 
@@ -55,7 +55,7 @@ public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
         return new ChemicalTankHelper<>(new ConfigSlurryTankHolder(facingSupplier, configSupplier));
     }
 
-    public TANK addTank(@Nonnull TANK tank) {
+    public TANK addTank(@NotNull TANK tank) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
@@ -69,7 +69,7 @@ public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
         return tank;
     }
 
-    public TANK addTank(@Nonnull TANK tank, RelativeSide... sides) {
+    public TANK addTank(@NotNull TANK tank, RelativeSide... sides) {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }

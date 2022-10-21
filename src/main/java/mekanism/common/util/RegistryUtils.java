@@ -1,6 +1,5 @@
 package mekanism.common.util;
 
-import javax.annotation.Nullable;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.data.BuiltinRegistries;
@@ -14,6 +13,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
+import org.jetbrains.annotations.Nullable;
 
 public class RegistryUtils {
 
@@ -21,7 +21,7 @@ public class RegistryUtils {
     }
 
     public static ResourceLocation getName(MenuType<?> element) {
-        return getName(ForgeRegistries.CONTAINERS, element);
+        return getName(ForgeRegistries.MENU_TYPES, element);
     }
 
     public static ResourceLocation getName(ParticleType<?> element) {
@@ -53,11 +53,11 @@ public class RegistryUtils {
     }
 
     public static ResourceLocation getName(BlockEntityType<?> element) {
-        return getName(ForgeRegistries.BLOCK_ENTITIES, element);
+        return getName(ForgeRegistries.BLOCK_ENTITY_TYPES, element);
     }
 
     public static ResourceLocation getName(EntityType<?> element) {
-        return getName(ForgeRegistries.ENTITIES, element);
+        return getName(ForgeRegistries.ENTITY_TYPES, element);
     }
 
     public static ResourceLocation getName(RecipeSerializer<?> element) {

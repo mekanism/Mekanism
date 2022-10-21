@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiConsumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.Coord4D;
@@ -58,14 +56,17 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTracker,
       IInfusionTracker, IPigmentTracker, ISlurryTracker {
@@ -169,49 +170,49 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         storedHeat.setHeat(dataStream.readDouble());
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return inventorySlots;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IGasTank> getGasTanks(@Nullable Direction side) {
         return gasTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
         return infusionTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
         return pigmentTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
         return slurryTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         return fluidTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         return energyContainers;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
         return heatCapacitors;
@@ -256,10 +257,17 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
                 //If we have at least one type to eject (we are not entirely empty)
                 // then go through all the QEs and build up the target locations
                 for (TileEntityQuantumEntangloporter qe : activeQEs.values()) {
+                    if (!MekanismUtils.canFunction(qe)) {
+                        //Skip trying to eject for this QE if it can't function
+                        continue;
+                    }
                     Map<Direction, BlockEntity> adjacentTiles = null;
                     for (Map.Entry<TransmissionType, BiConsumer<BlockEntity, Direction>> entry : typesToEject.entrySet()) {
-                        ConfigInfo config = qe.getConfig().getConfig(entry.getKey());
-                        if (config != null && config.isEjecting()) {
+                        TransmissionType transmissionType = entry.getKey();
+                        ConfigInfo config = qe.getConfig().getConfig(transmissionType);
+                        //Validate the ejector for the config allows ejecting this transmission type. In theory, we already check all
+                        // of this except config#isEjecting before we get here, but we do so anyway for consistency
+                        if (config != null && qe.getEjector().isEjecting(config, transmissionType)) {
                             Set<Direction> outputSides = config.getAllOutputtingSides();
                             if (!outputSides.isEmpty()) {
                                 if (adjacentTiles == null) {
@@ -310,7 +318,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         if (!fluidToSend.isEmpty()) {
             FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend, expected);
             typesToEject.put(TransmissionType.FLUID, (tile, side) ->
-                  CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
+                  CapabilityUtils.getCapability(tile, ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).ifPresent(handler -> {
                       if (FluidUtils.canFill(handler, fluidToSend)) {
                           target.addHandler(handler);
                       }

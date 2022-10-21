@@ -1,15 +1,13 @@
 package mekanism.api.heat;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A sided variant of {@link IHeatHandler}
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public interface ISidedHeatHandler extends IHeatHandler {
 
     /**

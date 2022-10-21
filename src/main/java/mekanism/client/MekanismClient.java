@@ -3,7 +3,6 @@ package mekanism.client;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.tileentity.RenderSPS;
 import mekanism.client.sound.SoundHandler;
@@ -18,6 +17,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 public class MekanismClient {
 
@@ -58,7 +58,7 @@ public class MekanismClient {
         SoundHandler.radiationSoundMap.clear();
         RenderSPS.clearBoltRenderers();
         TransmitterNetworkRegistry.getInstance().clearClientNetworks();
-        RenderTickHandler.prevRadiation = 0;
+        RenderTickHandler.clearQueued();
         MekanismRecipeType.clearCache();
 
         for (IModModule module : Mekanism.modulesLoaded) {

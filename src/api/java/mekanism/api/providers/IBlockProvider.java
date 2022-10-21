@@ -1,13 +1,13 @@
 package mekanism.api.providers;
 
-import javax.annotation.Nonnull;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 
+@MethodsReturnNonnullByDefault
 public interface IBlockProvider extends IItemProvider {
 
-    @Nonnull
     Block getBlock();
 
     @Override

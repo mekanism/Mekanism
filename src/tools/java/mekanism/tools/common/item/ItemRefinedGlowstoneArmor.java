@@ -1,13 +1,13 @@
 package mekanism.tools.common.item;
 
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
 import mekanism.tools.client.render.ToolsRenderPropertiesProvider;
 import mekanism.tools.common.material.MaterialCreator;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemRefinedGlowstoneArmor extends ItemMekanismArmor {
 
@@ -16,12 +16,12 @@ public class ItemRefinedGlowstoneArmor extends ItemMekanismArmor {
     }
 
     @Override
-    public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
+    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
         consumer.accept(ToolsRenderPropertiesProvider.glowArmor());
     }
 
     @Override
-    public boolean makesPiglinsNeutral(@Nonnull ItemStack stack, @Nonnull LivingEntity wearer) {
+    public boolean makesPiglinsNeutral(@NotNull ItemStack stack, @NotNull LivingEntity wearer) {
         return true;
     }
 }

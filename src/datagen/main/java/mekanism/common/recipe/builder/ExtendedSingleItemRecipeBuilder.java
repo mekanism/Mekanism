@@ -1,18 +1,16 @@
 package mekanism.common.recipe.builder;
 
 import com.google.gson.JsonObject;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.JsonConstants;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.util.RegistryUtils;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class ExtendedSingleItemRecipeBuilder extends BaseRecipeBuilder<ExtendedSingleItemRecipeBuilder> {
 
     private final Ingredient ingredient;

@@ -2,7 +2,6 @@ package mekanism.common.content.blocktype;
 
 import java.util.Set;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.ILangEntry;
@@ -17,6 +16,7 @@ import mekanism.common.registration.impl.SoundEventRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.sounds.SoundEvent;
+import org.jetbrains.annotations.Nullable;
 
 public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
 

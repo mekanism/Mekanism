@@ -12,11 +12,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiPredicate;
-import javax.annotation.Nullable;
 import mekanism.common.base.TagCache;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Advanced pattern searching, in use by QIO Item Viewers. Only use on client-side.

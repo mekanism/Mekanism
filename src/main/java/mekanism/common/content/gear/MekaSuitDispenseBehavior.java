@@ -1,15 +1,15 @@
 package mekanism.common.content.gear;
 
-import javax.annotation.Nonnull;
 import mekanism.api.gear.ICustomModule.ModuleDispenseResult;
 import net.minecraft.core.BlockSource;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class MekaSuitDispenseBehavior extends ModuleDispenseBehavior {
 
     @Override
-    protected ModuleDispenseResult performBuiltin(@Nonnull BlockSource source, @Nonnull ItemStack stack) {
+    protected ModuleDispenseResult performBuiltin(@NotNull BlockSource source, @NotNull ItemStack stack) {
         if (ArmorItem.dispenseArmor(source, stack)) {
             return ModuleDispenseResult.HANDLED;
         }

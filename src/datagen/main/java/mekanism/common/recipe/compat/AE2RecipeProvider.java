@@ -3,7 +3,7 @@ package mekanism.common.recipe.compat;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import java.util.function.Consumer;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class AE2RecipeProvider extends CompatRecipeProvider {
 
     public AE2RecipeProvider() {
@@ -34,27 +34,6 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
                     AEItems.FLUIX_DUST.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "fluix_crystal_to_dust"));
-
-        //Certus Ore -> Certus Dust
-        ItemStackToItemStackRecipeBuilder.enriching(
-                    IngredientCreatorAccess.item().from(ItemTags.create(new ResourceLocation("forge", "ores/certus_quartz"))),
-                    AEItems.CERTUS_QUARTZ_DUST.stack(5)
-              ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "certus_ore_to_dust"));
-
-        //Certus Crystal Seed -> Certus Crystal
-        ItemStackToItemStackRecipeBuilder.enriching(
-                    IngredientCreatorAccess.item().from(AEItems.CERTUS_CRYSTAL_SEED),
-                    AEItems.CERTUS_QUARTZ_CRYSTAL.stack(1)
-              ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "certus_seed_to_crystal"));
-
-        //Fluix Crystal Seed -> Fluix Crystal
-        ItemStackToItemStackRecipeBuilder.enriching(
-                    IngredientCreatorAccess.item().from(AEItems.FLUIX_CRYSTAL_SEED),
-                    AEItems.FLUIX_CRYSTAL.stack(1)
-              ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "fluix_seed_to_crystal"));
 
         //Sky Stone -> Sky Stone Dust
         ItemStackToItemStackRecipeBuilder.crushing(

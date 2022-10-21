@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.MekanismRenderType;
@@ -22,7 +22,6 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.ParticleStatus;
@@ -32,14 +31,16 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.fluids.FluidStack;
 
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileEntityNutritionalLiquifier> {
 
     private static final Int2ObjectMap<Model3D> cachedModels = new Int2ObjectOpenHashMap<>();
@@ -62,23 +63,23 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         if (!tile.fluidTank.isEmpty()) {
             FluidStack paste = tile.fluidTank.getFluid();
             float fluidScale = paste.getAmount() / (float) tile.fluidTank.getCapacity();
-            int modelNumber = ModelRenderer.getStage(paste, stages, fluidScale);
-            MekanismRenderer.renderObject(getPasteModel(modelNumber), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
-                  MekanismRenderer.getColorARGB(paste, fluidScale), light, overlayLight, FaceDisplay.FRONT);
+            MekanismRenderer.renderObject(getPasteModel(paste, fluidScale), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
+                  MekanismRenderer.getColorARGB(paste, fluidScale), light, overlayLight, FaceDisplay.FRONT, getCamera(), tile.getBlockPos());
         }
         boolean active = tile.getActive();
-        matrix.pushPose();
         if (active) {
+            //Render the blade at the correct rotation if we are active
+            matrix.pushPose();
             matrix.translate(0.5, 0.5, 0.5);
             matrix.mulPose(Vector3f.YP.rotationDegrees((tile.getLevel().getGameTime() + partialTick) * BLADE_SPEED % 360));
             matrix.translate(-0.5, -0.5, -0.5);
+            Pose entry = matrix.last();
+            VertexConsumer bladeBuffer = renderer.getBuffer(Sheets.solidBlockSheet());
+            for (BakedQuad quad : MekanismModelCache.INSTANCE.LIQUIFIER_BLADE.getQuads(tile.getLevel().random)) {
+                bladeBuffer.putBulkData(entry, quad, 1, 1, 1, light, overlayLight);
+            }
+            matrix.popPose();
         }
-        Pose entry = matrix.last();
-        VertexConsumer bladeBuffer = renderer.getBuffer(Sheets.solidBlockSheet());
-        for (BakedQuad quad : MekanismModelCache.INSTANCE.LIQUIFIER_BLADE.getBakedModel().getQuads(null, null, tile.getLevel().random)) {
-            bladeBuffer.putBulkData(entry, quad, 1F, 1F, 1F, 1F, light, overlayLight);
-        }
-        matrix.popPose();
         //Render the item and particle
         ItemStack stack = tile.getRenderStack();
         if (!stack.isEmpty()) {
@@ -125,21 +126,15 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         return ProfilerConstants.NUTRITIONAL_LIQUIFIER;
     }
 
-    private Model3D getPasteModel(int stage) {
-        if (cachedModels.containsKey(stage)) {
-            return cachedModels.get(stage);
-        }
-        Model3D model = new Model3D();
-        model.setTexture(MekanismRenderer.getFluidTexture(MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(1), FluidTextureType.STILL));
-        model.minX = 0.001F;
-        model.minY = 0.313F;
-        model.minZ = 0.001F;
-
-        model.maxX = 0.999F;
-        model.maxY = 0.313F + 0.624F * (stage / (float) stages);
-        model.maxZ = 0.999F;
-        cachedModels.putIfAbsent(stage, model);
-        return model;
+    private Model3D getPasteModel(FluidStack paste, float fluidScale) {
+        return cachedModels.computeIfAbsent(ModelRenderer.getStage(paste, stages, fluidScale), stage -> new Model3D()
+              .setTexture(MekanismRenderer.getFluidTexture(paste, FluidTextureType.STILL))
+              .setSideRender(Direction.DOWN, false)
+              .setSideRender(Direction.UP, stage < stages)
+              .xBounds(0.001F, 0.999F)
+              .yBounds(0.313F, 0.313F + 0.624F * (stage / (float) stages))
+              .zBounds(0.001F, 0.999F)
+        );
     }
 
     private static class PseudoParticleData {
@@ -187,12 +182,12 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             this.yd = (Math.random() * 2.0D - 1.0D) * 0.4;
             this.zd = (Math.random() * 2.0D - 1.0D) * 0.4;
             float f = (float) (Math.random() + Math.random() + 1.0D) * 0.15F;
-            float f1 = (float) Math.sqrt(this.xd * this.xd + this.yd * this.yd + this.zd * this.zd);
+            float f1 = (float) Mth.length(xd, yd, zd);
             this.xd = (this.xd / f1) * f * 0.4;
             this.yd = (this.yd / f1) * f * 0.4 + 0.1;
             this.zd = (this.zd / f1) * f * 0.4;
 
-            sprite = Minecraft.getInstance().getItemRenderer().getModel(stack, world, null, 0).getParticleIcon();
+            sprite = Minecraft.getInstance().getItemRenderer().getModel(stack, world, null, 0).getParticleIcon(ModelData.EMPTY);
             this.gravity = 1.0F;
             this.quadSize = 0.1F * (world.random.nextFloat() * 0.5F + 0.5F);
             this.uo = world.random.nextFloat() * 3.0F;
@@ -249,22 +244,22 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             float f6 = this.getV1();
             buffer.vertex(matrix, vectors[0].x(), vectors[0].y(), vectors[0].z())
                   .uv(f8, f6)
-                  .color(1F, 1F, 1F, 1F)
+                  .color(0xFF, 0xFF, 0xFF, 0xFF)
                   .uv2(light)
                   .endVertex();
             buffer.vertex(matrix, vectors[1].x(), vectors[1].y(), vectors[1].z())
                   .uv(f8, f5)
-                  .color(1F, 1F, 1F, 1F)
+                  .color(0xFF, 0xFF, 0xFF, 0xFF)
                   .uv2(light)
                   .endVertex();
             buffer.vertex(matrix, vectors[2].x(), vectors[2].y(), vectors[2].z())
                   .uv(f7, f5)
-                  .color(1F, 1F, 1F, 1F)
+                  .color(0xFF, 0xFF, 0xFF, 0xFF)
                   .uv2(light)
                   .endVertex();
             buffer.vertex(matrix, vectors[3].x(), vectors[3].y(), vectors[3].z())
                   .uv(f7, f6)
-                  .color(1F, 1F, 1F, 1F)
+                  .color(0xFF, 0xFF, 0xFF, 0xFF)
                   .uv2(light)
                   .endVertex();
         }

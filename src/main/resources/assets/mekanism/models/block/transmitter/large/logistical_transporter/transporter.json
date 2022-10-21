@@ -2,11 +2,11 @@
   "parent": "block/block",
   "loader": "mekanism:transmitter",
   "model": "mekanism:models/block/transmitter_large.obj.mek",
-  "flip-v": true,
+  "flip_v": true,
   "glass": {
     "model": "mekanism:models/block/transmitter_large.obj.mek",
-    "materialLibraryOverride": "mekanism:models/block/transmitter_glass_large.mtl",
-    "flip-v": true
+    "mtl_override": "mekanism:models/block/transmitter_glass_large.mtl",
+    "flip_v": true
   },
   "textures": {
     "particle": "#center_down",

@@ -5,26 +5,25 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import mekanism.api.annotations.NonNull;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.network.to_client.container.property.list.ListPropertyData;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling lists
  */
 public abstract class SyncableList<TYPE> implements ISyncableData {
 
-    private final Supplier<@NonNull ? extends Collection<TYPE>> getter;
-    private final Consumer<@NonNull List<TYPE>> setter;
+    private final Supplier<? extends @NotNull Collection<TYPE>> getter;
+    private final Consumer<@NotNull List<TYPE>> setter;
     private int lastKnownHashCode;
 
-    protected SyncableList(Supplier<@NonNull ? extends Collection<TYPE>> getter, Consumer<@NonNull List<TYPE>> setter) {
+    protected SyncableList(Supplier<? extends @NotNull Collection<TYPE>> getter, Consumer<@NotNull List<TYPE>> setter) {
         this.getter = getter;
         this.setter = setter;
     }
 
-    @Nonnull
+    @NotNull
     public List<TYPE> get() {
         Collection<TYPE> collection = getRaw();
         if (collection instanceof List) {
@@ -33,7 +32,7 @@ public abstract class SyncableList<TYPE> implements ISyncableData {
         return new ArrayList<>(collection);
     }
 
-    @Nonnull
+    @NotNull
     protected Collection<TYPE> getRaw() {
         return getter.get();
     }
@@ -42,7 +41,7 @@ public abstract class SyncableList<TYPE> implements ISyncableData {
         return getRaw().hashCode();
     }
 
-    public void set(@Nonnull List<TYPE> value) {
+    public void set(@NotNull List<TYPE> value) {
         setter.accept(value);
     }
 

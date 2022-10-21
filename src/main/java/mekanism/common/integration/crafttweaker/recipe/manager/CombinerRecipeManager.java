@@ -9,6 +9,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.CombinerIRecipe;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -31,7 +32,19 @@ public class CombinerRecipeManager extends MekanismRecipeManager<CombinerRecipe>
      */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient mainInput, ItemStackIngredient extraInput, IItemStack output) {
-        addRecipe(new CombinerIRecipe(getAndValidateName(name), mainInput, extraInput, getAndValidateNotEmpty(output)));
+        addRecipe(makeRecipe(getAndValidateName(name), mainInput, extraInput, output));
+    }
+
+    /**
+     * Creates a combining recipe that combines multiple items into a new item.
+     *
+     * @param id         Name of the new recipe.
+     * @param mainInput  {@link ItemStackIngredient} representing the main item input of the recipe.
+     * @param extraInput {@link ItemStackIngredient} representing the secondary item input of the recipe.
+     * @param output     {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
+     */
+    public final CombinerRecipe makeRecipe(ResourceLocation id, ItemStackIngredient mainInput, ItemStackIngredient extraInput, IItemStack output) {
+        return new CombinerIRecipe(id, mainInput, extraInput, getAndValidateNotEmpty(output));
     }
 
     @Override

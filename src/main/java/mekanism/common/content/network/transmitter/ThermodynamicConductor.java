@@ -4,8 +4,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.heat.IHeatCapacitor;
@@ -29,6 +27,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwork, ThermodynamicConductor> implements ITileHeatHandler,
       IUpgradeableTransmitter<ThermodynamicConductorUpgradeData> {
@@ -84,32 +84,32 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     }
 
     @Override
-    public boolean dataTypeMatches(@Nonnull TransmitterUpgradeData data) {
+    public boolean dataTypeMatches(@NotNull TransmitterUpgradeData data) {
         return data instanceof ThermodynamicConductorUpgradeData;
     }
 
     @Override
-    public void parseUpgradeData(@Nonnull ThermodynamicConductorUpgradeData data) {
+    public void parseUpgradeData(@NotNull ThermodynamicConductorUpgradeData data) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
         buffer.setHeat(data.heat);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CompoundTag write(@Nonnull CompoundTag tag) {
+    public CompoundTag write(@NotNull CompoundTag tag) {
         tag = super.write(tag);
         tag.put(NBTConstants.HEAT_CAPACITORS, DataHandlerUtils.writeContainers(getHeatCapacitors(null)));
         return tag;
     }
 
     @Override
-    public void read(@Nonnull CompoundTag tag) {
+    public void read(@NotNull CompoundTag tag) {
         super.read(tag);
         DataHandlerUtils.readContainers(getHeatCapacitors(null), tag.getList(NBTConstants.HEAT_CAPACITORS, Tag.TAG_COMPOUND));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag(CompoundTag updateTag) {
         updateTag = super.getReducedUpdateTag(updateTag);
@@ -118,7 +118,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setDoubleIfPresent(tag, NBTConstants.TEMPERATURE, buffer::setHeat);
     }
@@ -127,7 +127,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
         return tier.getBaseColor();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IHeatCapacitor> getHeatCapacitors(Direction side) {
         return capacitors;
@@ -148,13 +148,13 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     }
 
     @Override
-    public double getAmbientTemperature(@Nonnull Direction side) {
+    public double getAmbientTemperature(@NotNull Direction side) {
         return ambientTemperature.getTemperature(side);
     }
 
     @Nullable
     @Override
-    public IHeatHandler getAdjacent(@Nonnull Direction side) {
+    public IHeatHandler getAdjacent(@NotNull Direction side) {
         if (connectionMapContainsSide(getAllCurrentConnections(), side)) {
             //Note: We use the acceptor cache as the heat network is different and the transmitters count the other transmitters in the
             // network as valid acceptors
@@ -164,7 +164,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     }
 
     @Override
-    public double incrementAdjacentTransfer(double currentAdjacentTransfer, double tempToTransfer, @Nonnull Direction side) {
+    public double incrementAdjacentTransfer(double currentAdjacentTransfer, double tempToTransfer, @NotNull Direction side) {
         if (tempToTransfer > 0) {
             //Look up the adjacent tile from the acceptor cache and then do the type checking
             BlockEntity sink = getAcceptorCache().getConnectedAcceptorTile(side);

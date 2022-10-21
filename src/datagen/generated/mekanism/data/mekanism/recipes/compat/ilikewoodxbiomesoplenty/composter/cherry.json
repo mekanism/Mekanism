@@ -2,35 +2,35 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewoodxbiomesoplenty",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbiomesoplenty"
         },
         {
-          "modid": "biomesoplenty",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "biomesoplenty"
         },
         {
-          "modid": "ilikewood_composters",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_composters"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "input": {
     "ingredient": {
-      "item": "ilikewood:cherry_composter"
+      "item": "ilikewood:biomesoplenty_cherry_composter"
     }
   },
   "mainOutput": {
-    "item": "biomesoplenty:cherry_planks",
-    "count": 3
+    "count": 3,
+    "item": "biomesoplenty:cherry_planks"
   },
+  "secondaryChance": 1.0,
   "secondaryOutput": {
-    "item": "biomesoplenty:cherry_fence",
-    "count": 4
-  },
-  "secondaryChance": 1.0
+    "count": 4,
+    "item": "biomesoplenty:cherry_fence"
+  }
 }

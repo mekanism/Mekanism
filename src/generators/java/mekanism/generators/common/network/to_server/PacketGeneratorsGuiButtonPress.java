@@ -44,7 +44,7 @@ public class PacketGeneratorsGuiButtonPress implements IMekanismPacket {
                 MenuProvider provider = tileButton.getProvider(tile, extra);
                 if (provider != null) {
                     //Ensure valid data
-                    NetworkHooks.openGui(player, provider, buf -> {
+                    NetworkHooks.openScreen(player, provider, buf -> {
                         buf.writeBlockPos(tilePosition);
                         buf.writeVarInt(extra);
                     });

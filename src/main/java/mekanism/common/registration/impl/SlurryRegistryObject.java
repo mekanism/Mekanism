@@ -1,9 +1,9 @@
 package mekanism.common.registration.impl;
 
-import javax.annotation.Nonnull;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.common.registration.DoubleWrappedRegistryObject;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 
 public class SlurryRegistryObject<DIRTY extends Slurry, CLEAN extends Slurry> extends DoubleWrappedRegistryObject<DIRTY, CLEAN> {
 
@@ -11,12 +11,12 @@ public class SlurryRegistryObject<DIRTY extends Slurry, CLEAN extends Slurry> ex
         super(dirtyRO, cleanRO);
     }
 
-    @Nonnull
+    @NotNull
     public DIRTY getDirtySlurry() {
         return getPrimary();
     }
 
-    @Nonnull
+    @NotNull
     public CLEAN getCleanSlurry() {
         return getSecondary();
     }

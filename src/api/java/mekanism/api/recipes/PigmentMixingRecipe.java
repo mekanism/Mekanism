@@ -1,11 +1,10 @@
 package mekanism.api.recipes;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -15,8 +14,7 @@ import net.minecraft.resources.ResourceLocation;
  *
  * @apiNote Pigment Mixers can process this recipe type and the pigments can be put in any order into the mixer.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@ParametersAreNotNullByDefault
 public abstract class PigmentMixingRecipe extends ChemicalChemicalToChemicalRecipe<Pigment, PigmentStack, PigmentStackIngredient> {
 
     /**

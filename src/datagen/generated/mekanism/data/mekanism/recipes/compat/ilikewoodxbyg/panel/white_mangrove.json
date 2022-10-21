@@ -1,0 +1,39 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "byg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_panels"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_sticks"
+        }
+      ]
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:byg_white_mangrove_panels"
+    }
+  },
+  "mainOutput": {
+    "count": 6,
+    "item": "ilikewood:byg_white_mangrove_stick"
+  },
+  "secondaryChance": 0.25,
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  }
+}

@@ -1,10 +1,10 @@
 package mekanism.api.heat;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
+@AutoRegisterCapability
 public interface IHeatHandler {
 
     /**

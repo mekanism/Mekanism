@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/white_mangrove_logs"
+      "tag": "byg:white_mangrove_logs"
     }
   },
   "mainOutput": {

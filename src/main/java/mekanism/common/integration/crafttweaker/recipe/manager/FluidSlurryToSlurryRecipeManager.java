@@ -7,7 +7,6 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngre
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTSlurryStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -35,7 +34,19 @@ public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeMan
      */
     @ZenCodeType.Method
     public void addRecipe(String name, FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, ICrTSlurryStack output) {
-        addRecipe(makeRecipe(getAndValidateName(name), fluidInput, slurryInput, getAndValidateNotEmpty(output)));
+        addRecipe(makeRecipe(getAndValidateName(name), fluidInput, slurryInput, output));
+    }
+
+    /**
+     * Creates a recipe that converts a fluid and slurry to another slurry.
+     *
+     * @param id          Name of the new recipe.
+     * @param fluidInput  {@link FluidStackIngredient} representing the fluid input of the recipe.
+     * @param slurryInput {@link SlurryStackIngredient} representing the slurry input of the recipe.
+     * @param output      {@link ICrTSlurryStack} representing the output of the recipe. Will be validated as not empty.
+     */
+    public final FluidSlurryToSlurryRecipe makeRecipe(ResourceLocation id, FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, ICrTSlurryStack output) {
+        return makeRecipe(id, fluidInput, slurryInput, getAndValidateNotEmpty(output));
     }
 
     protected abstract FluidSlurryToSlurryRecipe makeRecipe(ResourceLocation id, FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output);
@@ -45,7 +56,7 @@ public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeMan
         return new ActionAddMekanismRecipe(recipe) {
             @Override
             protected String describeOutputs() {
-                return CrTUtils.describeOutputs(recipe.getOutputDefinition(), CrTSlurryStack::new);
+                return CrTUtils.describeOutputs(recipe.getOutputDefinition());
             }
         };
     }

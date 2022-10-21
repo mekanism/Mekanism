@@ -3,9 +3,7 @@ package mekanism.api.recipes.cache;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.LongSupplier;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
@@ -13,17 +11,17 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.outputs.BoxedChemicalOutputHandler;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Base class to help implement handling of chemical dissolution recipes.
  */
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissolutionRecipe> {
 
     private final BoxedChemicalOutputHandler outputHandler;
-    private final IInputHandler<@NonNull ItemStack> itemInputHandler;
-    private final ILongInputHandler<@NonNull GasStack> gasInputHandler;
+    private final IInputHandler<@NotNull ItemStack> itemInputHandler;
+    private final ILongInputHandler<@NotNull GasStack> gasInputHandler;
     private final LongSupplier gasUsage;
     private long gasUsageMultiplier;
 
@@ -40,8 +38,8 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
      * @param gasUsage         Gas usage multiplier.
      * @param outputHandler    Output handler.
      */
-    public ChemicalDissolutionCachedRecipe(ChemicalDissolutionRecipe recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NonNull ItemStack> itemInputHandler,
-          ILongInputHandler<@NonNull GasStack> gasInputHandler, LongSupplier gasUsage, BoxedChemicalOutputHandler outputHandler) {
+    public ChemicalDissolutionCachedRecipe(ChemicalDissolutionRecipe recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> itemInputHandler,
+          ILongInputHandler<@NotNull GasStack> gasInputHandler, LongSupplier gasUsage, BoxedChemicalOutputHandler outputHandler) {
         super(recipe, recheckAllErrors);
         this.itemInputHandler = Objects.requireNonNull(itemInputHandler, "Item input handler cannot be null.");
         this.gasInputHandler = Objects.requireNonNull(gasInputHandler, "Gas input handler cannot be null.");

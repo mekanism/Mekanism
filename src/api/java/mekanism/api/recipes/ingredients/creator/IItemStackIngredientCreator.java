@@ -1,18 +1,16 @@
 package mekanism.api.recipes.ingredients.creator;
 
 import java.util.Objects;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.crafting.NBTIngredient;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public interface IItemStackIngredientCreator extends IIngredientCreator<Item, ItemStack, ItemStackIngredient> {
 
     @Override
@@ -38,7 +36,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         stack = stack.copy();
         //Support NBT that is on the stack in case it matters
         // Note: Only bother making it an NBT ingredient if the stack has NBT, otherwise there is no point in doing the extra checks
-        Ingredient ingredient = stack.hasTag() ? NBTIngredient.of(stack) : Ingredient.of(stack);
+        Ingredient ingredient = stack.hasTag() ? StrictNBTIngredient.of(stack) : Ingredient.of(stack);
         return from(ingredient, amount);
     }
 

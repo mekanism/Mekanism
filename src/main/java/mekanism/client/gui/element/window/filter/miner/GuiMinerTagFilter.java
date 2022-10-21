@@ -2,14 +2,14 @@ package mekanism.client.gui.element.window.filter.miner;
 
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.filter.GuiTagFilter;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.miner.MinerTagFilter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiMinerTagFilter extends GuiTagFilter<MinerTagFilter, TileEntityDigitalMiner> implements GuiMinerFilterHelper {
 
@@ -36,7 +36,7 @@ public class GuiMinerTagFilter extends GuiTagFilter<MinerTagFilter, TileEntityDi
         return new MinerTagFilter();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected List<ItemStack> getRenderStacks() {
         if (filter.hasFilter()) {

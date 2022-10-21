@@ -1,11 +1,10 @@
 {
 	"credit": "Model by CyanideX",
-	"loader": "mekanism:mekanism",
-	"texture_size": [32, 32],
 	"textures": {
 		"2": "mekanism:block/models/security_desk_base",
 		"3": "mekanism:block/models/security_desk_monitor",
 		"4": "mekanism:block/models/security_desk_leds",
+		"5": "mekanism:block/models/leds",
 		"particle": "mekanism:block/models/security_desk_base"
 	},
 	"elements": [
@@ -13,12 +12,11 @@
 			"name": "desk_top",
 			"from": [0, 6, 0],
 			"to": [16, 13, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
-				"north": {"uv": [0, 8, 8, 11.5], "texture": "#2"},
-				"east": {"uv": [0, 8, 8, 11.5], "texture": "#2"},
-				"south": {"uv": [0, 8, 8, 11.5], "texture": "#2"},
-				"west": {"uv": [0, 8, 8, 11.5], "texture": "#2"},
+				"north": {"uv": [0, 8, 8, 11.5], "texture": "#2", "cullface": "north"},
+				"east": {"uv": [0, 8, 8, 11.5], "texture": "#2", "cullface": "east"},
+				"south": {"uv": [0, 8, 8, 11.5], "texture": "#2", "cullface": "south"},
+				"west": {"uv": [0, 8, 8, 11.5], "texture": "#2", "cullface": "west"},
 				"up": {"uv": [0, 0, 8, 8], "texture": "#2"},
 				"down": {"uv": [8, 0, 16, 8], "texture": "#2"}
 			}
@@ -27,7 +25,6 @@
 			"name": "desk_middle",
 			"from": [1, 5, 1],
 			"to": [15, 6, 15],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [8.5, 8, 15.5, 8.5], "texture": "#2"},
 				"east": {"uv": [8.5, 8, 15.5, 8.5], "texture": "#2"},
@@ -39,14 +36,13 @@
 			"name": "desk_base",
 			"from": [0, 0, 0],
 			"to": [16, 5, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
-				"north": {"uv": [8, 9, 16, 11.5], "texture": "#2"},
-				"east": {"uv": [8, 9, 16, 11.5], "texture": "#2"},
-				"south": {"uv": [8, 9, 16, 11.5], "texture": "#2"},
-				"west": {"uv": [8, 9, 16, 11.5], "texture": "#2"},
+				"north": {"uv": [8, 9, 16, 11.5], "texture": "#2", "cullface": "north"},
+				"east": {"uv": [8, 9, 16, 11.5], "texture": "#2", "cullface": "east"},
+				"south": {"uv": [8, 9, 16, 11.5], "texture": "#2", "cullface": "south"},
+				"west": {"uv": [8, 9, 16, 11.5], "texture": "#2", "cullface": "west"},
 				"up": {"uv": [8, 8, 16, 16], "texture": "#3"},
-				"down": {"uv": [8, 0, 16, 8], "texture": "#2"}
+				"down": {"uv": [8, 0, 16, 8], "texture": "#2", "cullface": "down"}
 			}
 		},
 		{
@@ -69,20 +65,21 @@
 			"to": [14, 23, 10.99],
 			"rotation": {"angle": 22.5, "axis": "x", "origin": [8, 21, 14]},
 			"faces": {
-				"north": {"uv": [0, 0, 12, 8], "texture": "#4", "lightLevel": 15}
+				"north": {"uv": [0, 0, 12, 8], "texture": "#4", "emissivity": 15}
 			}
 		},
 		{
 			"name": "button_led",
 			"from": [2, 13.5, 11.5],
 			"to": [3, 14.5, 12.5],
+			"shade": false,
 			"rotation": {"angle": 22.5, "axis": "x", "origin": [8, 21, 14]},
 			"faces": {
-				"north": {"uv": [15, 0, 16, 1], "texture": "#4", "lightLevel": 15},
-				"east": {"uv": [15, 0, 16, 1], "texture": "#4", "lightLevel": 15},
-				"south": {"uv": [15, 0, 16, 1], "texture": "#4", "lightLevel": 15},
-				"west": {"uv": [15, 0, 16, 1], "texture": "#4", "lightLevel": 15},
-				"down": {"uv": [15, 0, 16, 1], "texture": "#4", "lightLevel": 15}
+				"north": {"uv": [0, 0, 1, 1], "texture": "#5", "emissivity": 15},
+				"east": {"uv": [0, 0, 1, 1], "texture": "#5", "emissivity": 15},
+				"south": {"uv": [0, 0, 1, 1], "texture": "#5", "emissivity": 15},
+				"west": {"uv": [0, 0, 1, 1], "texture": "#5", "emissivity": 15},
+				"down": {"uv": [0, 0, 1, 1], "texture": "#5", "emissivity": 15}
 			}
 		},
 		{
@@ -102,7 +99,6 @@
 			"name": "stand_base",
 			"from": [4, 13, 10],
 			"to": [12, 14, 14],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [1, 14.5, 5, 15], "texture": "#3"},
 				"east": {"uv": [2, 14, 4, 14.5], "texture": "#3"},
@@ -115,7 +111,6 @@
 			"name": "stand_neck",
 			"from": [7, 14, 13],
 			"to": [9, 21, 14],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
 			"faces": {
 				"north": {"uv": [1, 9, 2, 12.5], "texture": "#3"},
 				"east": {"uv": [2, 9, 2.5, 12.5], "texture": "#3"},
@@ -127,7 +122,6 @@
 			"name": "keyboard",
 			"from": [3, 13, 2],
 			"to": [13, 14, 7],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 13, 2]},
 			"faces": {
 				"north": {"uv": [0, 0, 5, 0.5], "texture": "#3"},
 				"east": {"uv": [0, 0, 2.5, 0.5], "texture": "#3"},

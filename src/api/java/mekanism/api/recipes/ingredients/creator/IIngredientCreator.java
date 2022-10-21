@@ -2,17 +2,15 @@ package mekanism.api.recipes.ingredients.creator;
 
 import com.google.gson.JsonElement;
 import java.util.stream.Stream;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.InputIngredient;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.TagKey;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredient<@NonNull STACK>> {
+@NothingNullByDefault
+public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredient<@NotNull STACK>> {
 
     /**
      * Creates an Ingredient that matches a given stack.

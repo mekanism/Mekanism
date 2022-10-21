@@ -1,8 +1,8 @@
 package mekanism.api.chemical.pigment;
 
 import java.util.Optional;
-import javax.annotation.Nonnull;
 import net.minecraftforge.registries.tags.IReverseTag;
+import org.jetbrains.annotations.NotNull;
 
 public final class EmptyPigment extends Pigment {
 
@@ -10,7 +10,7 @@ public final class EmptyPigment extends Pigment {
         super(PigmentBuilder.builder().hidden());
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected Optional<IReverseTag<Pigment>> getReverseTag() {
         //Empty pigment is in no tags

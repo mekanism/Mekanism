@@ -19,6 +19,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.KeyModifier;
 import org.lwjgl.glfw.GLFW;
 import top.theillusivec4.curios.api.SlotContext;
@@ -31,7 +32,7 @@ public class MekanismKeyHandler {
               if (player != null) {
                   if (IModeItem.isModeItem(player, EquipmentSlot.MAINHAND, false)) {
                       Mekanism.packetHandler().sendToServer(new PacketModeChange(EquipmentSlot.MAINHAND, player.isShiftKeyDown()));
-                  } else if (!IModeItem.isModeItem(player, EquipmentSlot.MAINHAND) && IModeItem.isModeItem(player, EquipmentSlot.OFFHAND)) {
+                  } else if (!IModeItem.isModeItem(player, EquipmentSlot.MAINHAND) && IModeItem.isModeItem(player, EquipmentSlot.OFFHAND, false)) {
                       //Otherwise, try their offhand
                       Mekanism.packetHandler().sendToServer(new PacketModeChange(EquipmentSlot.OFFHAND, player.isShiftKeyDown()));
                   }
@@ -60,8 +61,8 @@ public class MekanismKeyHandler {
     public static final KeyMapping hudKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_HUD).conflictInGame().keyCode(GLFW.GLFW_KEY_H)
           .onKeyDown((kb, isRepeat) -> MekanismClient.renderHUD = !MekanismClient.renderHUD).build();
 
-    public static void registerKeybindings() {
-        ClientRegistrationUtil.registerKeyBindings(handModeSwitchKey, headModeSwitchKey, chestModeSwitchKey, legsModeSwitchKey, feetModeSwitchKey,
+    public static void registerKeybindings(RegisterKeyMappingsEvent event) {
+        ClientRegistrationUtil.registerKeyBindings(event, handModeSwitchKey, headModeSwitchKey, chestModeSwitchKey, legsModeSwitchKey, feetModeSwitchKey,
               detailsKey, descriptionKey, moduleTweakerKey, boostKey, hudKey);
     }
 

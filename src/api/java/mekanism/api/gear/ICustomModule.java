@@ -2,12 +2,13 @@ package mekanism.api.gear;
 
 import java.util.Objects;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.math.FloatingLongSupplier;
+import mekanism.api.radial.RadialData;
+import mekanism.api.radial.mode.IRadialMode;
+import mekanism.api.radial.mode.NestedRadialMode;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.core.BlockSource;
 import net.minecraft.network.chat.Component;
@@ -19,11 +20,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraftforge.common.ToolAction;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface used to describe and implement custom modules. Instances of this should be returned via the {@link ModuleData}.
  */
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
 
     /**
@@ -92,16 +95,102 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
     }
 
     /**
-     * Called to change the mode of the module. This will only be called if {@link ModuleData#handlesModeChange()} is {@code true}. {@link
-     * IModule#displayModeChange(Player, Component, IHasTextComponent)} is provided to help display the mode change when {@code displayChangeMessage} is {@code true}.
+     * Called to check if this module has any radial modes that can be changed when disabled or if it should be skipped. This should be overridden for modules where the
+     * radial menu allows toggling whether the module is active.
+     *
+     * @param module Module instance.
+     *
+     * @return {@code true} if this module has radial modes that can be changed while disabled.
+     *
+     * @since 10.3.2
+     */
+    default boolean canChangeRadialModeWhenDisabled(IModule<MODULE> module) {
+        return false;
+    }
+
+    /**
+     * Called to get the text component to display when the mode is changed via the scroll wheel.  This will only be called if {@link ModuleData#handlesModeChange()} is
+     * {@code true}.
+     *
+     * @param module Module instance.
+     * @param stack  The stack to get the mode of.
+     *
+     * @return Mode display text or {@code null} if no text should be displayed.
+     *
+     * @since 10.3.2
+     */
+    @Nullable
+    default Component getModeScrollComponent(IModule<MODULE> module, ItemStack stack) {
+        return null;
+    }
+
+    /**
+     * Called to change the mode of the module. This will only be called if {@link ModuleData#handlesModeChange()} is {@code true}.
+     * {@link IModule#displayModeChange(Player, Component, IHasTextComponent)} is provided to help display the mode change when {@code displayChangeMessage} is
+     * {@code true}.
      *
      * @param module               Module instance.
      * @param player               The player who made the mode change.
      * @param stack                The stack to change the mode of.
      * @param shift                The amount to shift the mode by, may be negative for indicating the mode should decrease.
      * @param displayChangeMessage {@code true} if a message should be displayed when the mode changes
+     *
+     * @see #canChangeModeWhenDisabled(IModule)
      */
     default void changeMode(IModule<MODULE> module, Player player, ItemStack stack, int shift, boolean displayChangeMessage) {
+    }
+
+    /**
+     * Called by the Meka-Tool to attempt to add all supported radial types of the module. This will only be called if {@link ModuleData#handlesModeChange()} is
+     * {@code true}.
+     *
+     * @param module Module instance.
+     * @param stack  The stack to get the supported radial types of.
+     * @param adder  Consumer used to add any supported radial modes.
+     *
+     * @see #canChangeRadialModeWhenDisabled(IModule)
+     * @since 10.3.2
+     */
+    default void addRadialModes(IModule<MODULE> module, ItemStack stack, Consumer<NestedRadialMode> adder) {
+    }
+
+    /**
+     * Called by the Meka-Tool to attempt to get the mode of the module for the given radial data. This will only be called if {@link ModuleData#handlesModeChange()} is
+     * {@code true}, but may be called when this module does not support or handle the given radial type, so the radial type should be validated.
+     *
+     * @param module     Module instance.
+     * @param stack      The stack to get the mode of.
+     * @param radialData Radial data of the mode being retrieved.
+     * @param <MODE>     Radial Mode.
+     *
+     * @return Radial Mode if this module can handle the given Radial Data, or {@code null} if it can't.
+     *
+     * @see #canChangeRadialModeWhenDisabled(IModule)
+     * @since 10.3.2
+     */
+    @Nullable
+    default <MODE extends IRadialMode> MODE getMode(IModule<MODULE> module, ItemStack stack, RadialData<MODE> radialData) {
+        return null;
+    }
+
+    /**
+     * Called by the Meka-Tool to attempt to set the mode of the module for the given radial data. This will only be called if {@link ModuleData#handlesModeChange()} is
+     * {@code true}, but may be called when this module does not support or handle the given radial type, so the radial type should be validated.
+     *
+     * @param module     Module instance.
+     * @param player     The player who is attempting to set the mode.
+     * @param stack      The stack to set the mode of.
+     * @param radialData Radial data of the mode being set.
+     * @param mode       Mode to attempt to set if this module can handle modes of this type.
+     * @param <MODE>     Radial Mode.
+     *
+     * @return {@code true} if this module was able to handle the given radial data.
+     *
+     * @see #canChangeRadialModeWhenDisabled(IModule)
+     * @since 10.3.2
+     */
+    default <MODE extends IRadialMode> boolean setMode(IModule<MODULE> module, Player player, ItemStack stack, RadialData<MODE> radialData, MODE mode) {
+        return false;
     }
 
     /**
@@ -151,7 +240,6 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @return Result type or {@link InteractionResult#PASS} to pass.
      */
-    @Nonnull
     default InteractionResult onItemUse(IModule<MODULE> module, UseOnContext context) {
         return InteractionResult.PASS;
     }
@@ -176,7 +264,6 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @return Result type or {@link InteractionResult#PASS} to pass.
      */
-    @Nonnull
     default InteractionResult onInteract(IModule<MODULE> module, Player player, LivingEntity entity, InteractionHand hand) {
         return InteractionResult.PASS;
     }
@@ -190,7 +277,6 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @return The {@link ModuleDispenseResult} defining how this dispenser should behave.
      */
-    @Nonnull
     default ModuleDispenseResult onDispense(IModule<MODULE> module, BlockSource source) {
         return ModuleDispenseResult.DEFAULT;
     }
@@ -199,7 +285,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      * @param absorptionRatio Ratio of damage this module can absorb up to, returns a value between zero and one.
      * @param energyCost      Energy cost per point of damage reduced.
      */
-    record ModuleDamageAbsorbInfo(FloatSupplier absorptionRatio, FloatingLongSupplier energyCost) {
+    record ModuleDamageAbsorbInfo(@NotNull FloatSupplier absorptionRatio, @NotNull FloatingLongSupplier energyCost) {
 
         /**
          * @param absorptionRatio Ratio of damage this module can absorb up to, returns a value between zero and one.

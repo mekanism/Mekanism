@@ -1,12 +1,12 @@
 package mekanism.common.recipe.serializer;
 
 import com.google.gson.JsonObject;
-import javax.annotation.Nonnull;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import net.minecraft.network.FriendlyByteBuf;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemStackToPigmentRecipeSerializer<RECIPE extends ItemStackToPigmentRecipe> extends ItemStackToChemicalRecipeSerializer<Pigment, PigmentStack, RECIPE> {
 
@@ -15,12 +15,12 @@ public class ItemStackToPigmentRecipeSerializer<RECIPE extends ItemStackToPigmen
     }
 
     @Override
-    protected PigmentStack fromJson(@Nonnull JsonObject json, @Nonnull String key) {
+    protected PigmentStack fromJson(@NotNull JsonObject json, @NotNull String key) {
         return SerializerHelper.getPigmentStack(json, key);
     }
 
     @Override
-    protected PigmentStack fromBuffer(@Nonnull FriendlyByteBuf buffer) {
+    protected PigmentStack fromBuffer(@NotNull FriendlyByteBuf buffer) {
         return PigmentStack.readFromPacket(buffer);
     }
 }

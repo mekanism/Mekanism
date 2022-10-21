@@ -1,36 +1,52 @@
 {
 	"credit": "Model by CyanideX",
 	"parent": "block/cube_all",
-	"texture_size": [32, 32],
 	"textures": {
 		"1": "mekanism:block/models/ports",
+		"2": "mekanism:block/models/ports_led",
 		"all": "mekanism:block/models/chemical_infuser",
-		"particle": "mekanism:block/models/ports"
+		"particle": "mekanism:block/models/chemical_infuser"
 	},
+	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"name": "portRight",
-			"from": [-0.01, 4, 4],
-			"to": [0.99, 12, 12],
+			"from": [0, 5, 4],
+			"to": [1, 12, 12],
 			"faces": {
-				"north": {"uv": [0, 0, 1, 8], "texture": "#1"},
-				"east": {"uv": [8, 0, 16, 8], "texture": "#1"},
-				"south": {"uv": [7, 0, 8, 8], "texture": "#1"},
-				"west": {"uv": [0, 0, 8, 8], "texture": "#1"},
+				"north": {"uv": [0, 0, 1, 7], "texture": "#1"},
+				"east": {"uv": [8, 0, 16, 7], "texture": "#1"},
+				"south": {"uv": [7, 0, 8, 7], "texture": "#1"},
+				"west": {"uv": [0, 0, 8, 7], "texture": "#1", "cullface": "west"},
 				"up": {"uv": [0, 0, 8, 1], "rotation": 90, "texture": "#1"}
 			}
 		},
 		{
-			"name": "portLeft",
-			"from": [15.01, 4, 4],
-			"to": [16.01, 12, 12],
-			"rotation": {"angle": 0, "axis": "y", "origin": [15.49, 8, 8]},
+			"name": "portRightLED",
+			"from": [0, 4, 4],
+			"to": [0, 12, 12],
 			"faces": {
-				"north": {"uv": [0, 0, 1, 8], "texture": "#1"},
-				"east": {"uv": [0, 0, 8, 8], "texture": "#1"},
-				"south": {"uv": [7, 0, 8, 8], "texture": "#1"},
-				"west": {"uv": [8, 0, 16, 8], "texture": "#1"},
+				"west": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "west", "emissivity": 15}
+			}
+		},
+		{
+			"name": "portLeft",
+			"from": [15, 5, 4],
+			"to": [16, 12, 12],
+			"faces": {
+				"north": {"uv": [0, 0, 1, 7], "texture": "#1"},
+				"east": {"uv": [0, 0, 8, 7], "texture": "#1", "cullface": "east"},
+				"south": {"uv": [7, 0, 8, 7], "texture": "#1"},
+				"west": {"uv": [8, 0, 16, 7], "texture": "#1"},
 				"up": {"uv": [0, 0, 8, 1], "rotation": 90, "texture": "#1"}
+			}
+		},
+		{
+			"name": "portLeftLED",
+			"from": [16, 4, 4],
+			"to": [16, 12, 12],
+			"faces": {
+				"east": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "east", "emissivity": 15}
 			}
 		},
 		{
@@ -82,7 +98,6 @@
 			"name": "connector3",
 			"from": [8, 8, 9],
 			"to": [9, 9, 13],
-			"rotation": {"angle": 0, "axis": "y", "origin": [4, 8, 9]},
 			"faces": {
 				"west": {"uv": [2, 2, 2.5, 2.5], "texture": "#all"},
 				"up": {"uv": [2, 2, 2.5, 2.5], "texture": "#all"},
@@ -137,15 +152,22 @@
 		},
 		{
 			"name": "portFront",
-			"from": [4, 4, -0.01],
-			"to": [12, 12, 0.99],
+			"from": [4, 5, 0],
+			"to": [12, 12, 1],
 			"faces": {
-				"north": {"uv": [0, 0, 8, 8], "texture": "#1"},
-				"east": {"uv": [0, 0, 1, 8], "texture": "#1"},
-				"south": {"uv": [8, 0, 16, 8], "texture": "#1"},
-				"west": {"uv": [7, 0, 8, 8], "texture": "#1"},
-				"up": {"uv": [0, 0, 8, 1], "texture": "#1"},
-				"down": {"uv": [0, 7, 8, 8], "texture": "#1"}
+				"north": {"uv": [0, 0, 8, 7], "texture": "#1", "cullface": "north"},
+				"east": {"uv": [0, 0, 1, 7], "texture": "#1"},
+				"south": {"uv": [8, 0, 16, 7], "texture": "#1"},
+				"west": {"uv": [7, 0, 8, 7], "texture": "#1"},
+				"up": {"uv": [0, 0, 8, 1], "texture": "#1"}
+			}
+		},
+		{
+			"name": "portFrontLED",
+			"from": [4, 4, 0],
+			"to": [12, 12, 0],
+			"faces": {
+				"north": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "north", "emissivity": 15}
 			}
 		},
 		{
@@ -153,12 +175,12 @@
 			"from": [0, 0, 0],
 			"to": [16, 5, 16],
 			"faces": {
-				"north": {"uv": [8, 10.5, 0, 8], "texture": "#all"},
-				"east": {"uv": [8, 10.5, 0, 8], "texture": "#all"},
-				"south": {"uv": [8, 10.5, 0, 8], "texture": "#all"},
-				"west": {"uv": [8, 10.5, 0, 8], "texture": "#all"},
+				"north": {"uv": [8, 10.5, 0, 8], "texture": "#all", "cullface": "north"},
+				"east": {"uv": [8, 10.5, 0, 8], "texture": "#all", "cullface": "east"},
+				"south": {"uv": [8, 10.5, 0, 8], "texture": "#all", "cullface": "south"},
+				"west": {"uv": [8, 10.5, 0, 8], "texture": "#all", "cullface": "west"},
 				"up": {"uv": [8, 8, 0, 0], "texture": "#all"},
-				"down": {"uv": [16, 8, 8, 0], "texture": "#all"}
+				"down": {"uv": [16, 8, 8, 0], "texture": "#all", "cullface": "down"}
 			}
 		},
 		{
@@ -207,15 +229,22 @@
 		},
 		{
 			"name": "portBack",
-			"from": [4, 4, 15.01],
-			"to": [12, 12, 16.01],
+			"from": [4, 5, 15],
+			"to": [12, 12, 16],
 			"faces": {
-				"north": {"uv": [8, 0, 16, 8], "texture": "#1"},
-				"east": {"uv": [15, 8, 16, 16], "texture": "#1"},
-				"south": {"uv": [8, 8, 16, 16], "texture": "#1"},
-				"west": {"uv": [8, 8, 9, 16], "texture": "#1"},
-				"up": {"uv": [8, 8, 16, 9], "texture": "#1"},
-				"down": {"uv": [8, 15, 16, 16], "texture": "#1"}
+				"north": {"uv": [8, 0, 16, 7], "texture": "#1"},
+				"east": {"uv": [7, 0, 8, 7], "texture": "#1"},
+				"south": {"uv": [0, 0, 8, 7], "texture": "#1", "cullface": "south"},
+				"west": {"uv": [0, 0, 1, 7], "texture": "#1"},
+				"up": {"uv": [0, 0, 8, 1], "texture": "#1"}
+			}
+		},
+		{
+			"name": "portBackLED",
+			"from": [4, 4, 16],
+			"to": [12, 12, 16],
+			"faces": {
+				"south": {"uv": [8, 8, 16, 16], "texture": "#2", "cullface": "south", "emissivity": 15}
 			}
 		},
 		{
@@ -269,7 +298,6 @@
 			"name": "exhaust1",
 			"from": [11, 12, 2],
 			"to": [12, 13, 3],
-			"rotation": {"angle": 0, "axis": "y", "origin": [13, 9, 8]},
 			"faces": {
 				"north": {"uv": [0, 15.5, 0.5, 16], "texture": "#all"},
 				"east": {"uv": [0, 15.5, 0.5, 16], "texture": "#all"},
@@ -282,7 +310,6 @@
 			"name": "exhaust2",
 			"from": [9, 12, 2],
 			"to": [10, 13, 3],
-			"rotation": {"angle": 0, "axis": "y", "origin": [11, 9, 8]},
 			"faces": {
 				"north": {"uv": [0, 15.5, 0.5, 16], "texture": "#all"},
 				"east": {"uv": [0, 15.5, 0.5, 16], "texture": "#all"},
@@ -295,7 +322,6 @@
 			"name": "exhaust3",
 			"from": [6, 12, 2],
 			"to": [7, 13, 3],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 9, 8]},
 			"faces": {
 				"north": {"uv": [0, 15.5, 0.5, 16], "texture": "#all"},
 				"east": {"uv": [0, 15.5, 0.5, 16], "texture": "#all"},
@@ -308,7 +334,6 @@
 			"name": "exhaust4",
 			"from": [4, 12, 2],
 			"to": [5, 13, 3],
-			"rotation": {"angle": 0, "axis": "y", "origin": [6, 9, 8]},
 			"faces": {
 				"north": {"uv": [0, 15.5, 0.5, 16], "texture": "#all"},
 				"east": {"uv": [0, 15.5, 0.5, 16], "texture": "#all"},
@@ -326,20 +351,19 @@
 				"east": {"uv": [6.5, 10.5, 9.5, 16], "texture": "#all"},
 				"south": {"uv": [6.5, 10.5, 9.5, 16], "texture": "#all"},
 				"west": {"uv": [6.5, 10.5, 9.5, 16], "texture": "#all"},
-				"up": {"uv": [3.5, 10.5, 6.5, 13.5], "rotation": 90, "texture": "#all"}
+				"up": {"uv": [3.5, 10.5, 6.5, 13.5], "rotation": 90, "texture": "#all", "cullface": "up"}
 			}
 		},
 		{
 			"name": "tank2",
 			"from": [1, 5, 9],
 			"to": [7, 16, 15],
-			"rotation": {"angle": 0, "axis": "y", "origin": [0, 8, 8]},
 			"faces": {
 				"north": {"uv": [6.5, 10.5, 9.5, 16], "texture": "#all"},
 				"east": {"uv": [6.5, 10.5, 9.5, 16], "texture": "#all"},
 				"south": {"uv": [6.5, 10.5, 9.5, 16], "texture": "#all"},
 				"west": {"uv": [6.5, 10.5, 9.5, 16], "texture": "#all"},
-				"up": {"uv": [3.5, 10.5, 6.5, 13.5], "rotation": 270, "texture": "#all"}
+				"up": {"uv": [3.5, 10.5, 6.5, 13.5], "rotation": 270, "texture": "#all", "cullface": "up"}
 			}
 		}
 	]

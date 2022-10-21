@@ -2,9 +2,7 @@ package mekanism.common.recipe.upgrade.chemical;
 
 import java.util.List;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.pigment.IPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentHandler.IMekanismPigmentHandler;
@@ -14,13 +12,13 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.ListTag;
 import net.minecraftforge.common.capabilities.Capability;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class PigmentRecipeData extends ChemicalRecipeData<Pigment, PigmentStack, IPigmentTank, IPigmentHandler> {
 
     public PigmentRecipeData(ListTag tanks) {
@@ -49,7 +47,7 @@ public class PigmentRecipeData extends ChemicalRecipeData<Pigment, PigmentStack,
     @Override
     protected IPigmentHandler getOutputHandler(List<IPigmentTank> tanks) {
         return new IMekanismPigmentHandler() {
-            @Nonnull
+            @NotNull
             @Override
             public List<IPigmentTank> getChemicalTanks(@Nullable Direction side) {
                 return tanks;

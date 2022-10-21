@@ -1,5 +1,7 @@
 package mekanism.api.lasers;
 
+import net.minecraftforge.common.capabilities.AutoRegisterCapability;
+
 /**
  * Expose as a capability on armor items to allow lasers to be dissipated and/or refracted through entities wearing your armor.
  *
@@ -11,6 +13,7 @@ package mekanism.api.lasers;
  * </ol>
  * Any damage that isn't blocked, dissipated, or refracted through the entity will be applied to the entity as normal.
  */
+@AutoRegisterCapability
 public interface ILaserDissipation {
 
     /**

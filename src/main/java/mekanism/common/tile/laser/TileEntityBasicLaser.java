@@ -3,7 +3,6 @@ package mekanism.common.tile.laser;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -13,6 +12,7 @@ import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
+import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
@@ -31,6 +31,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -43,10 +44,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
@@ -56,7 +59,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.living.ShieldBlockEvent;
-import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.level.BlockEvent;
+import org.jetbrains.annotations.NotNull;
 
 //TODO - V11: Make the laser "shrink" the further distance it goes, If above a certain energy level and in water makes it make a bubble stream
 public abstract class TileEntityBasicLaser extends TileEntityMekanism {
@@ -71,7 +75,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         super(blockProvider, pos, state);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
@@ -143,6 +147,10 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                                 // maybe even implement this ability but don't add it to any of our things yet?
                                 float damageBlocked = damageShield(livingEntity, livingEntity.getUseItem(), damage, 2);
                                 if (damageBlocked > 0) {
+                                    if (livingEntity instanceof ServerPlayer player) {
+                                        //If the entity is a player trigger the advancement criteria for blocking a laser with a shield
+                                        MekanismCriteriaTriggers.BLOCK_LASER.trigger(player);
+                                    }
                                     //Remove however much energy we were able to block
                                     remainingEnergy = remainingEnergy.minusEqual(energyPerDamage.multiply(damageBlocked));
                                     if (remainingEnergy.isZero()) {
@@ -215,6 +223,13 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         if (!entity.fireImmune()) {
                             entity.setSecondsOnFire(value.intValue());
                         }
+                        int totemTimesUsed = -1;
+                        if (entity instanceof ServerPlayer player) {
+                            MinecraftServer server = entity.getServer();
+                            if (server != null && server.isHardcore()) {
+                                totemTimesUsed = player.getStats().getValue(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
+                            }
+                        }
                         int lastHurtResistTime = entity.invulnerableTime;
                         //Set the hurt resistance time to zero to ensure we get a chance to do damage
                         entity.invulnerableTime = 0;
@@ -226,6 +241,11 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                             if (entity instanceof LivingEntity livingEntity) {
                                 //Update the damage to match how much health the entity lost
                                 damage = Math.min(damage, Math.max(0, health - livingEntity.getHealth()));
+                                if (entity instanceof ServerPlayer player) {
+                                    //If the damage actually went through fire the trigger
+                                    boolean hardcoreTotem = totemTimesUsed != -1 && totemTimesUsed < player.getStats().getValue(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
+                                    MekanismCriteriaTriggers.DAMAGE.trigger(player, MekanismDamageSource.LASER, hardcoreTotem);
+                                }
                             }
                             remainingEnergy = remainingEnergy.minusEqual(energyPerDamage.multiply(damage));
                             if (remainingEnergy.isZero()) {
@@ -282,10 +302,18 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                                     dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
                                     BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, hitPos, hitState, dummy);
                                     if (!MinecraftForge.EVENT_BUS.post(event)) {
-                                        handleBreakBlock(hitState, hitPos);
-                                        hitState.onRemove(level, hitPos, Blocks.AIR.defaultBlockState(), false);
-                                        level.removeBlock(hitPos, false);
-                                        level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, hitPos, Block.getId(hitState));
+                                        if (hitState.getBlock() instanceof TntBlock && hitState.isFlammable(level, hitPos, result.getDirection())) {
+                                            //Convert TNT that can be lit on fire into a tnt entity
+                                            //Note: We don't mark the fake player as the igniter as then when the tnt explodes if it hits a player
+                                            // there will be a crash as our fake player's level will be null
+                                            hitState.onCaughtFire(level, hitPos, result.getDirection(), null);
+                                            level.removeBlock(hitPos, false);
+                                        } else {
+                                            handleBreakBlock(hitState, hitPos);
+                                            hitState.onRemove(level, hitPos, Blocks.AIR.defaultBlockState(), false);
+                                            level.removeBlock(hitPos, false);
+                                            level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, hitPos, Block.getId(hitState));
+                                        }
                                     }
                                     return null;
                                 });
@@ -383,18 +411,18 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.LAST_FIRED, value -> lastFired = value);
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+    public void saveAdditional(@NotNull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
         nbtTags.putString(NBTConstants.LAST_FIRED, lastFired.toString());
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
@@ -403,7 +431,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setFloatingLongIfPresent(tag, NBTConstants.LAST_FIRED, fired -> lastFired = fired);
     }

@@ -1,13 +1,12 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import com.blamejared.crafttweaker.api.data.base.IData;
-import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
+import com.blamejared.crafttweaker.api.data.IData;
+import com.blamejared.crafttweaker.api.data.converter.JSONConverter;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.ingredient.type.IIngredientList;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.item.MCItemStack;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
@@ -237,7 +236,7 @@ public class CrTItemStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Getter("representations")
     public static List<IItemStack> getRepresentations(ItemStackIngredient _this) {
-        return CrTUtils.convert(_this.getRepresentations(), MCItemStack::new);
+        return CrTUtils.convertItems(_this.getRepresentations());
     }
 
     /**

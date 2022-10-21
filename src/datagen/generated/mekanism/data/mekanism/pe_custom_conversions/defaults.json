@@ -2,9 +2,9 @@
   "comment": "Default values for Mekanism items.",
   "values": {
     "before": {
-      "mekanism:salt": 8,
       "mekanism:fluorite_gem": 576,
-      "mekanism:hdpe_pellet": 32
+      "mekanism:hdpe_pellet": 32,
+      "mekanism:salt": 8
     }
   }
 }

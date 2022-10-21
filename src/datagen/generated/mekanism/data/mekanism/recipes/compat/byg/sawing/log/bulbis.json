@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/bulbis_logs"
+      "tag": "byg:bulbis_logs"
     }
   },
   "mainOutput": {

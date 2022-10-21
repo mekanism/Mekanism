@@ -24,6 +24,7 @@ public class CrTConstants {
 
     public static final String CLASS_HAS_TRANSLATION = "mods." + Mekanism.MODID + ".api.text.HasTranslation";
     public static final String CLASS_HAS_TEXT_COMPONENT = "mods." + Mekanism.MODID + ".api.text.HasTextComponent";
+    public static final String CLASS_BASE_PROVIDER = "mods." + Mekanism.MODID + ".api.provider.BaseProvider";
 
     public static final String CLASS_CHEMICAL = "mods." + Mekanism.MODID + ".api.chemical.Chemical";
     public static final String CLASS_GAS = "mods." + Mekanism.MODID + ".api.chemical.Gas";
@@ -59,8 +60,9 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_MANAGER_CRUSHING = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_ITEM_STACK + ".Crushing";
     public static final String CLASS_RECIPE_MANAGER_ENRICHING = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_ITEM_STACK + ".Enriching";
     public static final String CLASS_RECIPE_MANAGER_SMELTING = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_ITEM_STACK + ".Smelting";
-    public static final String CLASS_RECIPE_MANAGER_CHEMICAL_INFUSING = "mods." + Mekanism.MODID + ".recipe.manager.ChemicalInfusing";
-    public static final String CLASS_RECIPE_MANAGER_PIGMENT_MIXING = "mods." + Mekanism.MODID + ".recipe.manager.PigmentMixing";
+    public static final String CLASS_RECIPE_MANAGER_CHEMICAL_CHEMICAL_TO_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.manager.ChemicalChemicalToChemical";
+    public static final String CLASS_RECIPE_MANAGER_CHEMICAL_INFUSING = CLASS_RECIPE_MANAGER_CHEMICAL_CHEMICAL_TO_CHEMICAL + ".ChemicalInfusing";
+    public static final String CLASS_RECIPE_MANAGER_PIGMENT_MIXING = CLASS_RECIPE_MANAGER_CHEMICAL_CHEMICAL_TO_CHEMICAL + ".PigmentMixing";
     public static final String CLASS_RECIPE_MANAGER_COMBINING = "mods." + Mekanism.MODID + ".recipe.manager.Combining";
     public static final String CLASS_RECIPE_MANAGER_SEPARATING = "mods." + Mekanism.MODID + ".recipe.manager.Separating";
     public static final String CLASS_RECIPE_MANAGER_FLUID_SLURRY_TO_SLURRY = "mods." + Mekanism.MODID + ".recipe.manager.FluidSlurryToSlurry";
@@ -81,12 +83,13 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_MANAGER_NUCLEOSYNTHESIZING = "mods." + Mekanism.MODID + ".recipe.manager.Nucleosynthesizing";
     public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_ENERGY = "mods." + Mekanism.MODID + ".recipe.manager.ItemStackToEnergy";
     public static final String CLASS_RECIPE_MANAGER_ENERGY_CONVERSION = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_ENERGY + ".EnergyConversion";
-    public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS = "mods." + Mekanism.MODID + ".recipe.manager.ItemStackToGas";
+    public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.manager.ItemStackToChemical";
+    public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL + ".Gas";
     public static final String CLASS_RECIPE_MANAGER_GAS_CONVERSION = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS + ".GasConversion";
     public static final String CLASS_RECIPE_MANAGER_OXIDIZING = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS + ".Oxidizing";
-    public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_INFUSE_TYPE = "mods." + Mekanism.MODID + ".recipe.manager.ItemStackToInfuseType";
+    public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_INFUSE_TYPE = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL + ".InfuseType";
     public static final String CLASS_RECIPE_MANAGER_INFUSION_CONVERSION = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_INFUSE_TYPE + ".InfusionConversion";
-    public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_PIGMENT = "mods." + Mekanism.MODID + ".recipe.manager.ItemStackToPigment";
+    public static final String CLASS_RECIPE_MANAGER_ITEM_STACK_TO_PIGMENT = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_CHEMICAL + ".Pigment";
     public static final String CLASS_RECIPE_MANAGER_PIGMENT_EXTRACTING = CLASS_RECIPE_MANAGER_ITEM_STACK_TO_PIGMENT + ".PigmentExtracting";
     public static final String CLASS_RECIPE_MANAGER_REACTION = "mods." + Mekanism.MODID + ".recipe.manager.Reaction";
     public static final String CLASS_RECIPE_MANAGER_ROTARY = "mods." + Mekanism.MODID + ".recipe.manager.Rotary";

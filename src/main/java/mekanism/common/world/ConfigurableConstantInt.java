@@ -3,8 +3,6 @@ package mekanism.common.world;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.registries.MekanismIntProviderTypes;
@@ -12,6 +10,8 @@ import mekanism.common.resource.ore.OreType.OreVeinType;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.IntProviderType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ConfigurableConstantInt extends IntProvider {
 
@@ -42,7 +42,7 @@ public class ConfigurableConstantInt extends IntProvider {
     }
 
     @Override
-    public int sample(@Nonnull RandomSource random) {
+    public int sample(@NotNull RandomSource random) {
         return getValue();
     }
 
@@ -56,7 +56,7 @@ public class ConfigurableConstantInt extends IntProvider {
         return getValue();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IntProviderType<?> getType() {
         return MekanismIntProviderTypes.CONFIGURABLE_CONSTANT.get();

@@ -7,8 +7,6 @@ public class ProfilerConstants {
 
     //Tile
     public static final String BIN = "bin";
-    public static final String CHEMICAL_CRYSTALLIZER = "chemicalCrystallizer";
-    public static final String CHEMICAL_DISSOLUTION_CHAMBER = "chemicalDissolutionChamber";
     public static final String CONFIGURABLE_MACHINE = "configurableMachine";
     public static final String DIGITAL_MINER = "digitalMiner";
     public static final String DIMENSIONAL_STABILIZER = "dimensionalStabilizer";
@@ -21,21 +19,15 @@ public class ProfilerConstants {
     public static final String NUTRITIONAL_LIQUIFIER = "nutritionalLiquifier";
     public static final String PERSONAL_CHEST = "personalChest";
     public static final String PIGMENT_MIXER = "pigmentMixer";
-    public static final String QUANTUM_ENTANGLOPORTER = "quantumEntangloporter";
     public static final String RESISTIVE_HEATER = "resistiveHeater";
-    public static final String SECURITY_DESK = "securityDesk";
     public static final String SEISMIC_VIBRATOR = "seismicVibrator";
-    public static final String SOLAR_NEUTRON_ACTIVATOR = "solarNeutronActivator";
     public static final String TELEPORTER = "teleporter";
     public static final String THERMAL_EVAPORATION_CONTROLLER = "thermalEvaporationController";
     public static final String THERMOELECTRIC_BOILER = "thermoelectricBoiler";
     public static final String SPS = "supercriticalPhaseShifter";
 
     //Sub parts
-    public static final String CORE = "core";
-    public static final String FRAME = "frame";
-    public static final String SIDES = "sides";
-    public static final String CORNERS = "corners";
+    private static final String CORE = "core";
 
     //Transmitter
     public static final String LOGISTICAL_TRANSPORTER = "logisticalTransporter";
@@ -43,4 +35,10 @@ public class ProfilerConstants {
     public static final String PRESSURIZED_TUBE = "pressurizedTube";
     public static final String THERMODYNAMIC_CONDUCTOR = "thermodynamicConductor";
     public static final String UNIVERSAL_CABLE = "universalCable";
+
+    //Lazy/delayed rendering
+    public static final String DELAYED = "delayedMekanismTranslucentBERs";
+    public static final String ENERGY_CUBE_CORE = ENERGY_CUBE + "." + CORE;
+    public static final String SPS_CORE = SPS + "." + CORE;
+    public static final String SPS_ORBIT = SPS + ".orbitEffect";
 }

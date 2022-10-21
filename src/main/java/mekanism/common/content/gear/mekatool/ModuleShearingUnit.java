@@ -2,11 +2,9 @@ package mekanism.common.content.gear.mekatool;
 
 import java.util.List;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
@@ -43,8 +41,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
 
     private static final Predicate<Entity> SHEARABLE = entity -> !entity.isSpectator() && entity instanceof IForgeShearable;
@@ -74,7 +74,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         return energyContainer == null || energyContainer.getEnergy().smallerThan(cost);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public InteractionResult onInteract(IModule<ModuleShearingUnit> module, Player player, LivingEntity entity, InteractionHand hand) {
         if (entity instanceof IForgeShearable) {
@@ -88,7 +88,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         return InteractionResult.PASS;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ModuleDispenseResult onDispense(IModule<ModuleShearingUnit> module, BlockSource source) {
         ServerLevel world = source.getLevel();

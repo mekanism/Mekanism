@@ -1,7 +1,7 @@
 package mekanism.api.security;
 
-import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
  *
  * @since 10.2.1
  */
+@NothingNullByDefault
 public enum SecurityMode implements IIncrementalEnum<SecurityMode>, IHasTextComponent {
     /**
      * Public Security: Everyone is allowed access.
@@ -43,7 +44,6 @@ public enum SecurityMode implements IIncrementalEnum<SecurityMode>, IHasTextComp
         return langEntry.translateColored(color);
     }
 
-    @Nonnull
     @Override
     public SecurityMode byIndex(int index) {
         return byIndexStatic(index);

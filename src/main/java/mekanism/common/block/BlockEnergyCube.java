@@ -1,8 +1,6 @@
 package mekanism.common.block;
 
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.block.attribute.Attribute;
@@ -32,6 +30,8 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Block class for handling multiple energy cube block IDs. 0: Basic Energy Cube 1: Advanced Energy Cube 2: Elite Energy Cube 3: Ultimate Energy Cube 4: Creative Energy
@@ -57,18 +57,18 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
               box(13, 3, 0, 16, 13, 3),
               box(13, 3, 13, 16, 13, 16),
               box(13, 13, 3, 16, 16, 13),
-              box(12.5, 14.9, 7.5, 13.5, 15.9, 8.5),//ledTop1
-              box(2.5, 14.9, 7.5, 3.5, 15.9, 8.5),//ledTop2
-              box(12.5, 7.5, 0.1, 13.5, 8.5, 1.1),//ledBack1
-              box(2.5, 7.5, 0.1, 3.5, 8.5, 1.1),//ledBack2
-              box(2.5, 0.1, 7.5, 3.5, 1.1, 8.5),//ledBottom2
-              box(12.5, 0.1, 7.5, 13.5, 1.1, 8.5),//ledBottom1
-              box(12.5, 7.5, 14.9, 13.5, 8.5, 15.9),//ledFront1
-              box(2.5, 7.5, 14.9, 3.5, 8.5, 15.9),//ledFront2
-              box(0.1, 7.5, 2.5, 1.1, 8.5, 3.5),//ledRight2
-              box(0.1, 7.5, 12.5, 1.1, 8.5, 13.5),//ledRight1
-              box(14.9, 7.5, 2.5, 15.9, 8.5, 3.5),//ledLeft1
-              box(14.9, 7.5, 12.5, 15.9, 8.5, 13.5)//ledLeft2
+              box(12.5, 15, 7.5, 13.5, 15.9, 8.5),//ledTop1
+              box(2.5, 15, 7.5, 3.5, 15.9, 8.5),//ledTop2
+              box(12.5, 7.5, 0.1, 13.5, 8.5, 1),//ledBack1
+              box(2.5, 7.5, 0.1, 3.5, 8.5, 1),//ledBack2
+              box(2.5, 0.1, 7.5, 3.5, 1, 8.5),//ledBottom2
+              box(12.5, 0.1, 7.5, 13.5, 1, 8.5),//ledBottom1
+              box(12.5, 7.5, 15, 13.5, 8.5, 15.9),//ledFront1
+              box(2.5, 7.5, 15, 3.5, 8.5, 15.9),//ledFront2
+              box(0.1, 7.5, 2.5, 1, 8.5, 3.5),//ledRight2
+              box(0.1, 7.5, 12.5, 1, 8.5, 13.5),//ledRight1
+              box(15, 7.5, 2.5, 15.9, 8.5, 3.5),//ledLeft1
+              box(15, 7.5, 12.5, 15.9, 8.5, 13.5)//ledLeft2
         );
         VoxelShape frontPanel = VoxelShapeUtils.combine(
               box(3, 5, 14, 13, 11, 15),//connectorFrontToggle
@@ -144,7 +144,7 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
     }
 
     @Override
-    public void setTileData(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
+    public void setTileData(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, @NotNull TileEntityMekanism tile) {
         if (tile instanceof TileEntityEnergyCube energyCube) {
             if (Attribute.getTier(this, EnergyCubeTier.class) == EnergyCubeTier.CREATIVE) {
                 //TODO: Move this to being set in the variant added to the item group
@@ -163,10 +163,10 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
-    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
+    public VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         TileEntityEnergyCube energyCube = WorldUtils.getTileEntity(TileEntityEnergyCube.class, world, pos, true);
         int index;
         if (energyCube == null) {

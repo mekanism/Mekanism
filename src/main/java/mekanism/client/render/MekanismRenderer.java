@@ -14,9 +14,8 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BooleanSupplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -25,11 +24,9 @@ import mekanism.api.tier.BaseTier;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.model.baked.DigitalMinerBakedModel;
-import mekanism.client.render.MekanismRenderer.Model3D.SpriteInfo;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.ValveRenderData;
-import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.lib.ColorAtlas;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
@@ -37,6 +34,7 @@ import mekanism.client.render.tileentity.RenderDimensionalStabilizer;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderNutritionalLiquifier;
 import mekanism.client.render.tileentity.RenderPigmentMixer;
+import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
@@ -47,32 +45,32 @@ import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.IFluidTypeRenderProperties;
-import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MekanismRenderer {
 
-    //TODO: Replace various usages of this with the getter for calculating glow light, at least if we end up making it only
+    //TODO: Replace various usages of LightTexture.FULL_BRIGHT with the getter for calculating glow light, at least if we end up making it only
     // effect block light for the glow rather than having it actually become full light
-    public static final int FULL_LIGHT = 0xF000F0;
-    public static final int FULL_SKY_LIGHT = LightTexture.pack(0, 15);
-
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite whiteIcon;
@@ -89,8 +87,8 @@ public class MekanismRenderer {
      *
      * @return the sprite, or missing sprite if not found
      */
-    public static TextureAtlasSprite getBaseFluidTexture(@Nonnull Fluid fluid, @Nonnull FluidTextureType type) {
-        IFluidTypeRenderProperties properties = RenderProperties.get(fluid);
+    public static TextureAtlasSprite getBaseFluidTexture(@NotNull Fluid fluid, @NotNull FluidTextureType type) {
+        IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(fluid);
         ResourceLocation spriteLocation;
         if (type == FluidTextureType.STILL) {
             spriteLocation = properties.getStillTexture();
@@ -100,8 +98,8 @@ public class MekanismRenderer {
         return getSprite(spriteLocation);
     }
 
-    public static TextureAtlasSprite getFluidTexture(@Nonnull FluidStack fluidStack, @Nonnull FluidTextureType type) {
-        IFluidTypeRenderProperties properties = RenderProperties.get(fluidStack.getFluid());
+    public static TextureAtlasSprite getFluidTexture(@NotNull FluidStack fluidStack, @NotNull FluidTextureType type) {
+        IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(fluidStack.getFluid());
         ResourceLocation spriteLocation;
         if (type == FluidTextureType.STILL) {
             spriteLocation = properties.getStillTexture(fluidStack);
@@ -111,7 +109,7 @@ public class MekanismRenderer {
         return getSprite(spriteLocation);
     }
 
-    public static TextureAtlasSprite getChemicalTexture(@Nonnull Chemical<?> chemical) {
+    public static TextureAtlasSprite getChemicalTexture(@NotNull Chemical<?> chemical) {
         return getSprite(chemical.getIcon());
     }
 
@@ -119,95 +117,46 @@ public class MekanismRenderer {
         return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(spriteLocation);
     }
 
-    public static void prepFlowing(Model3D model, @Nonnull FluidStack fluid) {
-        SpriteInfo still = new SpriteInfo(getFluidTexture(fluid, FluidTextureType.STILL), 16);
-        SpriteInfo flowing = new SpriteInfo(getFluidTexture(fluid, FluidTextureType.FLOWING), 8);
-        model.setTextures(still, still, flowing, flowing, flowing, flowing);
-    }
-
-    public static void prepSingleFaceModelSize(Model3D model, Direction face) {
-        switch (face) {
-            case DOWN -> {
-                model.minX = 0;
-                model.maxX = 1;
-                model.minY = -0.01F;
-                model.maxY = -0.001F;
-                model.minZ = 0;
-                model.maxZ = 1;
-            }
-            case UP -> {
-                model.minX = 0;
-                model.maxX = 1;
-                model.minY = 1.001F;
-                model.maxY = 1.01F;
-                model.minZ = 0;
-                model.maxZ = 1;
-            }
-            case NORTH -> {
-                model.minX = 0;
-                model.maxX = 1;
-                model.minY = 0;
-                model.maxY = 1;
-                model.minZ = -0.01F;
-                model.maxZ = -0.001F;
-            }
-            case SOUTH -> {
-                model.minX = 0;
-                model.maxX = 1;
-                model.minY = 0;
-                model.maxY = 1;
-                model.minZ = 1.001F;
-                model.maxZ = 1.01F;
-            }
-            case WEST -> {
-                model.minX = -0.01F;
-                model.maxX = -0.001F;
-                model.minY = 0;
-                model.maxY = 1;
-                model.minZ = 0;
-                model.maxZ = 1;
-            }
-            case EAST -> {
-                model.minX = 1.001F;
-                model.maxX = 1.01F;
-                model.minY = 0;
-                model.maxY = 1;
-                model.minZ = 0;
-                model.maxZ = 1;
-            }
-        }
-    }
-
-    public static void renderObject(@Nullable Model3D object, @Nonnull PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay,
-          FaceDisplay faceDisplay) {
-        renderObject(object, matrix, buffer, argb, light, overlay, faceDisplay, true);
-    }
-
-    public static void renderObject(@Nullable Model3D object, @Nonnull PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay,
-          FaceDisplay faceDisplay, boolean fakeDisableDiffuse) {
+    public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay,
+          FaceDisplay faceDisplay, Camera camera, BlockPos renderPos) {
         if (object != null) {
-            RenderResizableCuboid.renderCube(object, matrix, buffer, argb, light, overlay, faceDisplay, fakeDisableDiffuse);
+            renderObject(object, matrix, buffer, argb, light, overlay, faceDisplay, camera, Vec3.atLowerCornerOf(renderPos));
         }
     }
 
-    public static void renderObject(@Nullable Model3D object, @Nonnull PoseStack matrix, VertexConsumer buffer, int[] colors, int light, int overlay,
-          FaceDisplay faceDisplay) {
+    public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay,
+          FaceDisplay faceDisplay, Camera camera) {
+        renderObject(object, matrix, buffer, argb, light, overlay, faceDisplay, camera, (Vec3) null);
+    }
+
+    public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay,
+          FaceDisplay faceDisplay, Camera camera, @Nullable Vec3 renderPos) {
         if (object != null) {
-            RenderResizableCuboid.renderCube(object, matrix, buffer, colors, light, overlay, faceDisplay, true);
+            RenderResizableCuboid.renderCube(object, matrix, buffer, argb, light, overlay, faceDisplay, camera, renderPos);
         }
     }
 
-    public static void renderValves(PoseStack matrix, VertexConsumer buffer, Set<ValveData> valves, FluidRenderData data, BlockPos pos, int glow, int overlay,
-          BooleanSupplier inMultiblock) {
-        FaceDisplay faceDisplay;
-        if (!valves.isEmpty()) {
-            //If we are in the multiblock, render both faces of the valves as we may be "inside" of them or inside and outside them
-            // if we aren't in the multiblock though we can just get away with only rendering the front faces
-            faceDisplay = inMultiblock.getAsBoolean() ? FaceDisplay.BOTH : FaceDisplay.FRONT;
-            for (ValveData valveData : valves) {
+    public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int[] colors, int light, int overlay,
+          FaceDisplay faceDisplay, Camera camera) {
+        renderObject(object, matrix, buffer, colors, light, overlay, faceDisplay, camera, null);
+    }
+
+    public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int[] colors, int light, int overlay,
+          FaceDisplay faceDisplay, Camera camera, @Nullable Vec3 renderPos) {
+        if (object != null) {
+            RenderResizableCuboid.renderCube(object, matrix, buffer, colors, light, overlay, faceDisplay, camera, renderPos);
+        }
+    }
+
+    public static void renderValves(PoseStack matrix, VertexConsumer buffer, Set<ValveData> valves, FluidRenderData data, float fluidHeight, BlockPos pos, int glow,
+          int overlay, FaceDisplay faceDisplay, Camera camera) {
+        for (ValveData valveData : valves) {
+            ValveRenderData valveRenderData = ValveRenderData.get(data, valveData);
+            Model3D valveModel = ModelRenderer.getValveModel(valveRenderData, fluidHeight);
+            if (valveModel != null) {
                 matrix.pushPose();
                 matrix.translate(valveData.location.getX() - pos.getX(), valveData.location.getY() - pos.getY(), valveData.location.getZ() - pos.getZ());
-                renderObject(ModelRenderer.getValveModel(ValveRenderData.get(data, valveData)), matrix, buffer, data.getColorARGB(), glow, overlay, faceDisplay);
+                renderObject(valveModel, matrix, buffer, valveRenderData.getColorARGB(), glow, overlay, faceDisplay, camera, valveData.location);
                 matrix.popPose();
             }
         }
@@ -219,19 +168,19 @@ public class MekanismRenderer {
     }
 
     public static float getRed(int color) {
-        return (color >> 16 & 0xFF) / 255.0F;
+        return FastColor.ARGB32.red(color) / 255.0F;
     }
 
     public static float getGreen(int color) {
-        return (color >> 8 & 0xFF) / 255.0F;
+        return FastColor.ARGB32.green(color) / 255.0F;
     }
 
     public static float getBlue(int color) {
-        return (color & 0xFF) / 255.0F;
+        return FastColor.ARGB32.blue(color) / 255.0F;
     }
 
     public static float getAlpha(int color) {
-        return (color >> 24 & 0xFF) / 255.0F;
+        return FastColor.ARGB32.alpha(color) / 255.0F;
     }
 
     public static void color(int color) {
@@ -246,26 +195,26 @@ public class MekanismRenderer {
         RenderSystem.setShaderColor(color.rf(), color.gf(), color.bf(), color.af());
     }
 
-    public static void color(@Nonnull FluidStack fluid) {
+    public static void color(@NotNull FluidStack fluid) {
         if (!fluid.isEmpty()) {
-            color(RenderProperties.get(fluid.getFluid()).getColorTint(fluid));
+            color(IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid));
         }
     }
 
-    public static void color(@Nonnull ChemicalStack<?> chemicalStack) {
+    public static void color(@NotNull ChemicalStack<?> chemicalStack) {
         if (!chemicalStack.isEmpty()) {
             color(chemicalStack.getType());
         }
     }
 
-    public static void color(@Nonnull Chemical<?> chemical) {
+    public static void color(@NotNull Chemical<?> chemical) {
         if (!chemical.isEmptyType()) {
             int color = chemical.getTint();
             RenderSystem.setShaderColor(getRed(color), getGreen(color), getBlue(color), 1);
         }
     }
 
-    public static void color(@Nonnull BaseTier tier) {
+    public static void color(@NotNull BaseTier tier) {
         color(tier.getColor());
     }
 
@@ -283,28 +232,32 @@ public class MekanismRenderer {
         return getColorARGB(color.getRgbCode()[0], color.getRgbCode()[1], color.getRgbCode()[2], alpha);
     }
 
-    public static int getColorARGB(@Nonnull FluidStack fluidStack) {
-        return RenderProperties.get(fluidStack.getFluid()).getColorTint(fluidStack);
+    public static int getColorARGB(@NotNull FluidStack fluidStack) {
+        return IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor(fluidStack);
     }
 
-    public static int getColorARGB(@Nonnull FluidStack fluidStack, float fluidScale) {
+    public static int getColorARGB(@NotNull FluidStack fluidStack, float fluidScale) {
         if (fluidStack.isEmpty()) {
             return -1;
         }
         int color = getColorARGB(fluidStack);
         if (MekanismUtils.lighterThanAirGas(fluidStack)) {
             //TODO: We probably want to factor in the fluid's alpha value somehow
-            return getColorARGB(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
+            return getColorARGB(FastColor.ARGB32.red(color), FastColor.ARGB32.green(color), FastColor.ARGB32.blue(color), Math.min(1, fluidScale + 0.2F));
         }
         return color;
     }
 
-    public static int getColorARGB(@Nonnull ChemicalStack<?> stack, float scale, boolean gaseous) {
-        if (stack.isEmpty()) {
+    public static int getColorARGB(@NotNull ChemicalStack<?> stack, float scale, boolean gaseous) {
+        return getColorARGB(stack.getType(), scale, gaseous);
+    }
+
+    public static int getColorARGB(@NotNull Chemical<?> chemical, float scale, boolean gaseous) {
+        if (chemical.isEmptyType()) {
             return -1;
         }
-        int color = stack.getChemicalTint();
-        return getColorARGB(getRed(color), getGreen(color), getBlue(color), gaseous ? Math.min(1, scale + 0.2F) : 1);
+        int color = chemical.getTint();
+        return getColorARGB(FastColor.ARGB32.red(color), FastColor.ARGB32.green(color), FastColor.ARGB32.blue(color), gaseous ? Math.min(1, scale + 0.2F) : 1);
     }
 
     public static int getColorARGB(float red, float green, float blue, float alpha) {
@@ -317,14 +270,10 @@ public class MekanismRenderer {
         } else if (alpha > 1) {
             alpha = 1;
         }
-        int argb = (int) (255 * alpha) << 24;
-        argb |= red << 16;
-        argb |= green << 8;
-        argb |= blue;
-        return argb;
+        return FastColor.ARGB32.color((int) (255 * alpha), red, green, blue);
     }
 
-    public static int calculateGlowLight(int combinedLight, @Nonnull FluidStack fluid) {
+    public static int calculateGlowLight(int combinedLight, @NotNull FluidStack fluid) {
         return fluid.isEmpty() ? combinedLight : calculateGlowLight(combinedLight, fluid.getFluid().getFluidType().getLightLevel(fluid));
     }
 
@@ -334,14 +283,15 @@ public class MekanismRenderer {
     }
 
     public static void renderColorOverlay(PoseStack matrix, int x, int y, int width, int height, int color) {
-        float r = getRed(color);
-        float g = getGreen(color);
-        float b = getBlue(color);
-        float a = getAlpha(color);
+        int r = FastColor.ARGB32.red(color);
+        int g = FastColor.ARGB32.green(color);
+        int b = FastColor.ARGB32.blue(color);
+        int a = FastColor.ARGB32.alpha(color);
         RenderSystem.disableDepthTest();
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tesselator.getBuilder();
@@ -407,10 +357,10 @@ public class MekanismRenderer {
         RenderDigitalMiner.resetCachedVisuals();
         RenderDimensionalStabilizer.resetCachedVisuals();
         RenderFluidTank.resetCachedModels();
-        RenderFluidTankItem.resetCachedModels();
         RenderNutritionalLiquifier.resetCachedModels();
         RenderPigmentMixer.resetCached();
         RenderMechanicalPipe.onStitch();
+        RenderSeismicVibrator.resetCached();
         RenderTickHandler.resetCached();
         RenderTeleporter.resetCachedModels();
 
@@ -474,54 +424,146 @@ public class MekanismRenderer {
         private final SpriteInfo[] textures = new SpriteInfo[6];
         private final boolean[] renderSides = {true, true, true, true, true, true};
 
-        public void setSideRender(Direction side, boolean value) {
+        public Model3D setSideRender(Predicate<Direction> shouldRender) {
+            for (Direction direction : EnumUtils.DIRECTIONS) {
+                setSideRender(direction, shouldRender.test(direction));
+            }
+            return this;
+        }
+
+        public Model3D setSideRender(Direction side, boolean value) {
             renderSides[side.ordinal()] = value;
+            return this;
         }
 
         public Model3D copy() {
             Model3D copy = new Model3D();
             System.arraycopy(textures, 0, copy.textures, 0, textures.length);
             System.arraycopy(renderSides, 0, copy.renderSides, 0, renderSides.length);
-            copy.minX = minX;
-            copy.minY = minY;
-            copy.minZ = minZ;
-            copy.maxX = maxX;
-            copy.maxY = maxY;
-            copy.maxZ = maxZ;
-            return copy;
+            return copy.bounds(minX, minY, minZ, maxX, maxY, maxZ);
         }
 
         @Nullable
         public SpriteInfo getSpriteToRender(Direction side) {
             int ordinal = side.ordinal();
-            if (renderSides[ordinal]) {
-                return textures[ordinal];
-            }
-            return null;
+            return renderSides[ordinal] ? textures[ordinal] : null;
         }
 
-        public void setTexture(Direction side, SpriteInfo spriteInfo) {
+        public Model3D shrink(float amount) {
+            return grow(-amount);
+        }
+
+        public Model3D grow(float amount) {
+            return bounds(minX - amount, minY - amount, minZ - amount, maxX + amount, maxY + amount, maxZ + amount);
+        }
+
+        public Model3D xBounds(float min, float max) {
+            this.minX = min;
+            this.maxX = max;
+            return this;
+        }
+
+        public Model3D yBounds(float min, float max) {
+            this.minY = min;
+            this.maxY = max;
+            return this;
+        }
+
+        public Model3D zBounds(float min, float max) {
+            this.minZ = min;
+            this.maxZ = max;
+            return this;
+        }
+
+        public Model3D bounds(float min, float max) {
+            return bounds(min, min, min, max, max, max);
+        }
+
+        public Model3D bounds(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+            return xBounds(minX, maxX)
+                  .yBounds(minY, maxY)
+                  .zBounds(minZ, maxZ);
+        }
+
+        public Model3D prepSingleFaceModelSize(Direction face) {
+            bounds(0, 1);
+            return switch (face) {
+                case DOWN -> yBounds(-0.01F, -0.001F);
+                case UP -> yBounds(1.001F, 1.01F);
+                case NORTH -> zBounds(-0.01F, -0.001F);
+                case SOUTH -> zBounds(1.001F, 1.01F);
+                case WEST -> xBounds(-0.01F, -0.001F);
+                case EAST -> xBounds(1.001F, 1.01F);
+            };
+        }
+
+        public Model3D prepFlowing(@NotNull FluidStack fluid) {
+            SpriteInfo still = new SpriteInfo(getFluidTexture(fluid, FluidTextureType.STILL), 16);
+            SpriteInfo flowing = new SpriteInfo(getFluidTexture(fluid, FluidTextureType.FLOWING), 8);
+            return setTextures(still, still, flowing, flowing, flowing, flowing);
+        }
+
+        public Model3D setTexture(Direction side, @Nullable SpriteInfo spriteInfo) {
             textures[side.ordinal()] = spriteInfo;
+            return this;
         }
 
-        public void setTexture(TextureAtlasSprite tex) {
-            setTexture(tex, 16);
+        public Model3D setTexture(TextureAtlasSprite tex) {
+            return setTexture(tex, 16);
         }
 
-        public void setTexture(TextureAtlasSprite tex, int size) {
+        public Model3D setTexture(TextureAtlasSprite tex, int size) {
             Arrays.fill(textures, new SpriteInfo(tex, size));
+            return this;
         }
 
-        public void setTextures(SpriteInfo down, SpriteInfo up, SpriteInfo north, SpriteInfo south, SpriteInfo west, SpriteInfo east) {
+        public Model3D setTextures(SpriteInfo down, SpriteInfo up, SpriteInfo north, SpriteInfo south, SpriteInfo west, SpriteInfo east) {
             textures[0] = down;
             textures[1] = up;
             textures[2] = north;
             textures[3] = south;
             textures[4] = west;
             textures[5] = east;
+            return this;
         }
 
         public record SpriteInfo(TextureAtlasSprite sprite, int size) {
+
+            public float getU(float u) {
+                return sprite.getU(u * size);
+            }
+
+            public float getV(float v) {
+                return sprite.getV(v * size);
+            }
+        }
+
+        public interface ModelBoundsSetter {
+
+            Model3D set(float min, float max);
+        }
+    }
+
+    public static class LazyModel implements Supplier<Model3D> {
+
+        private final Supplier<Model3D> supplier;
+        @Nullable
+        private Model3D model;
+
+        public LazyModel(Supplier<Model3D> supplier) {
+            this.supplier = supplier;
+        }
+
+        public void reset() {
+            model = null;
+        }
+
+        @Override
+        public Model3D get() {
+            if (model == null) {
+                model = supplier.get();
+            }
+            return model;
         }
     }
 }

@@ -1,0 +1,78 @@
+{
+  "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:brown"
+  },
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "byg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_beds"
+        }
+      ]
+    }
+  ],
+  "itemInput": {
+    "ingredient": [
+      {
+        "item": "ilikewood:byg_white_fir_bed"
+      },
+      {
+        "item": "ilikewood:byg_orange_fir_bed"
+      },
+      {
+        "item": "ilikewood:byg_magenta_fir_bed"
+      },
+      {
+        "item": "ilikewood:byg_light_blue_fir_bed"
+      },
+      {
+        "item": "ilikewood:byg_yellow_fir_bed"
+      },
+      {
+        "item": "ilikewood:byg_lime_fir_bed"
+      },
+      {
+        "item": "ilikewood:byg_pink_fir_bed"
+      },
+      {
+        "item": "ilikewood:byg_gray_fir_bed"
+      },
+      {
+        "item": "ilikewood:byg_light_gray_fir_bed"
+      },
+      {
+        "item": "ilikewood:byg_cyan_fir_bed"
+      },
+      {
+        "item": "ilikewood:byg_purple_fir_bed"
+      },
+      {
+        "item": "ilikewood:byg_blue_fir_bed"
+      },
+      {
+        "item": "ilikewood:byg_green_fir_bed"
+      },
+      {
+        "item": "ilikewood:byg_red_fir_bed"
+      },
+      {
+        "item": "ilikewood:byg_black_fir_bed"
+      }
+    ]
+  },
+  "output": {
+    "item": "ilikewood:byg_brown_fir_bed"
+  }
+}

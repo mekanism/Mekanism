@@ -40,7 +40,18 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
      */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient input, IItemStack output) {
-        addRecipe(makeRecipe(getAndValidateName(name), input, getAndValidateNotEmpty(output)));
+        addRecipe(makeRecipe(getAndValidateName(name), input, output));
+    }
+
+    /**
+     * Creates a recipe that converts an item into another item.
+     *
+     * @param id     Name of the new recipe.
+     * @param input  {@link ItemStackIngredient} representing the input of the recipe.
+     * @param output {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
+     */
+    public final ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, IItemStack output) {
+        return makeRecipe(id, input, getAndValidateNotEmpty(output));
     }
 
     protected abstract ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output);

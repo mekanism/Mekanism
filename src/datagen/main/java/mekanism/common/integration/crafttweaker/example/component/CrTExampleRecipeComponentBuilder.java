@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,12 +17,13 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.integration.crafttweaker.example.BaseCrTExampleProvider;
 import mekanism.common.integration.crafttweaker.example.CrTExampleBuilder;
 import mekanism.common.integration.crafttweaker.recipe.manager.MekanismRecipeManager;
 import mekanism.common.util.MekanismUtils;
+import net.minecraftforge.common.util.Lazy;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
 
 public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TYPE>> extends CrTBaseExampleRecipeComponent {
@@ -41,12 +43,24 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
             usedMethodNames.put(methodName, false);
         }
         Class<?> recipeManagerClass = recipeManager.getClass();
+        //Lazy lookup of types so that if we don't have any methods with generics we don't need to traverse the class heirarchy
+        Lazy<Map<Class<?>, Map<String, Type>>> lazyTypeLookup = Lazy.of(() -> GenericResolutionHelper.getTypes(recipeManagerClass));
         for (Method method : recipeManagerClass.getMethods()) {
             String methodName = method.getName();
             if (usedMethodNames.containsKey(methodName) && isZCMethod(method)) {
                 usedMethodNames.put(methodName, true);
-                int optionalParameterCount = 0;
                 Parameter[] methodParameters = method.getParameters();
+                Type[] genericParameterTypes = method.getGenericParameterTypes();
+                if (genericParameterTypes.length != methodParameters.length) {
+                    throw new IllegalStateException("Mismatched number of parameters and generic versions");
+                }
+                //Convert the lazy type lookup into a lazy lookup for the specific class the method is declared in
+                // that way if multiple classes define the same generic name we know which one to reference
+                Lazy<Map<String, Type>> lazyMethodTypeLookup = Lazy.of(() -> lazyTypeLookup.get().getOrDefault(method.getDeclaringClass(), Collections.emptyMap()));
+                Lazy<Map<String, Type>> lazyLocalTypeLookup = Lazy.of(() -> GenericResolutionHelper.calculateBaseTypes(method.getTypeParameters(),
+                      lazyMethodTypeLookup.get()::get));
+                MethodParameter[] transformedParameters = new MethodParameter[methodParameters.length];
+                int optionalParameterCount = 0;
                 List<String> parameterNames = lookupParameterNames(recipeManagerClass, method);
                 LinkedHashMap<String, ParameterData> parameters = new LinkedHashMap<>();
                 for (int i = 0; i < methodParameters.length; i++) {
@@ -56,14 +70,17 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
                     } else if (optionalParameterCount > 0) {
                         throw new RuntimeException("Optional parameters have to be consecutive and at the end. Found non optional parameter after an optional parameter.");
                     }
-                    addParameter(parameters, parameterNames, parameter, i);
+                    //Transform the parameters to proper type and cache the type in case we have optionals, so we can directly query the transformed type
+                    MethodParameter transformedParameter = MethodParameter.get(parameter, genericParameterTypes[i], lazyLocalTypeLookup, lazyMethodTypeLookup);
+                    transformedParameters[i] = transformedParameter;
+                    addParameter(parameters, parameterNames, transformedParameter, i);
                 }
                 methods.add(new RecipeMethod(methodName, parameters));
                 //First we build it up with no optionals excluded, and then we go through and create the other possible combinations
                 for (int i = 1; i <= optionalParameterCount; i++) {
                     LinkedHashMap<String, ParameterData> reducedParameters = new LinkedHashMap<>();
-                    for (int j = 0; j < methodParameters.length - i; j++) {
-                        addParameter(reducedParameters, parameterNames, methodParameters[j], j);
+                    for (int j = 0; j < transformedParameters.length - i; j++) {
+                        addParameter(reducedParameters, parameterNames, transformedParameters[j], j);
                     }
                     methods.add(new RecipeMethod(methodName, reducedParameters));
                 }
@@ -138,7 +155,7 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
         throw new IllegalArgumentException("No matching recipe signature found for recipe type '" + recipeType + "'");
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String asString() {
         validate();
@@ -273,15 +290,15 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
         }
     }
 
-    private void addParameter(LinkedHashMap<String, ParameterData> parameters, List<String> parameterNames, Parameter parameter, int index) {
+    private void addParameter(LinkedHashMap<String, ParameterData> parameters, List<String> parameterNames, MethodParameter parameter, int index) {
         String name;
         if (index < parameterNames.size()) {
             name = parameterNames.get(index);
         } else {
             //Fallback to generated name
-            name = parameter.getName();
+            name = parameter.name();
         }
-        parameters.put(name, ParameterData.create(parameter.getType(), parameter.getParameterizedType()));
+        parameters.put(name, parameter.createData());
     }
 
     private boolean isZCMethod(Method method) {
@@ -337,18 +354,46 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
         void write(StringBuilder sb, String name, Class<?> type, @Nullable Class<?> genericType);
     }
 
-    private record ParameterData(Class<?> type, @Nullable Class<?> generic) {
+    private record MethodParameter(String name, Type type) {
 
-        public static ParameterData create(Class<?> type, Type generic) {
-            //TODO: Improve the support of generics
-            if (generic instanceof ParameterizedType parameterizedType) {
-                Type[] arguments = parameterizedType.getActualTypeArguments();
-                if (arguments.length == 1 && arguments[0] instanceof Class<?> genericClass) {
-                    return new ParameterData(type, genericClass);
+        /**
+         * Helper to get a method parameter (name, type pair) either using the existing parameter, or if there is a subclass, and the parameter was a generic, using the
+         * more specific type if possible.
+         */
+        private static MethodParameter get(Parameter parameter, Type genericParameterType, Lazy<Map<String, Type>> lazyLocalTypeLookup,
+              Lazy<Map<String, Type>> lazyMethodTypeLookup) {
+            Type type = null;
+            if (genericParameterType instanceof TypeVariable<?> v) {
+                String name = v.getName();
+                //First try grabbing the type from any generics the method itself might declare
+                type = lazyLocalTypeLookup.get().get(name);
+                if (type == null) {
+                    //If we couldn't find the corresponding type then we instead need to look at the class' generics
+                    type = lazyMethodTypeLookup.get().get(name);
                 }
             }
-            return new ParameterData(type, null);
+            if (type == null) {
+                return new MethodParameter(parameter.getName(), parameter.getParameterizedType());
+            }
+            return new MethodParameter(parameter.getName(), type);
         }
+
+        public ParameterData createData() {
+            if (type instanceof Class<?> c) {
+                return new ParameterData(c, null);
+            } else if (type instanceof ParameterizedType parameterizedType && parameterizedType.getRawType() instanceof Class<?> c) {
+                Type[] arguments = parameterizedType.getActualTypeArguments();
+                //TODO: Improve the support of generics
+                if (arguments.length == 1 && arguments[0] instanceof Class<?> genericClass) {
+                    return new ParameterData(c, genericClass);
+                }
+                return new ParameterData(c, null);
+            }
+            throw new IllegalArgumentException("Unknown type: " + type.getTypeName());
+        }
+    }
+
+    private record ParameterData(Class<?> type, @Nullable Class<?> generic) {
     }
 
     private record RecipeExample(RecipeMethod method, Object[] params) {

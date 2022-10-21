@@ -1,12 +1,8 @@
 package mekanism.client.particle;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
-import javax.annotation.Nonnull;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.particle.LaserParticleData;
 import net.minecraft.client.Camera;
@@ -15,30 +11,13 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class LaserParticle extends TextureSheetParticle {
-
-    private static final ParticleRenderType LASER_TYPE = new ParticleRenderType() {
-        @Override
-        public void begin(@Nonnull BufferBuilder buffer, @Nonnull TextureManager manager) {
-            RenderSystem.disableCull();
-            ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT.begin(buffer, manager);
-        }
-
-        @Override
-        public void end(@Nonnull Tesselator tesselator) {
-            ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT.end(tesselator);
-        }
-
-        public String toString() {
-            return "MEK_LASER_PARTICLE_TYPE";
-        }
-    };
 
     private static final float RADIAN_45 = (float) Math.toRadians(45);
     private static final float RADIAN_90 = (float) Math.toRadians(90);
@@ -62,7 +41,7 @@ public class LaserParticle extends TextureSheetParticle {
     }
 
     @Override
-    public void render(@Nonnull VertexConsumer vertexBuilder, Camera renderInfo, float partialTicks) {
+    public void render(@NotNull VertexConsumer vertexBuilder, Camera renderInfo, float partialTicks) {
         Vec3 view = renderInfo.getPosition();
         float newX = (float) (Mth.lerp(partialTicks, xo, x) - view.x());
         float newY = (float) (Mth.lerp(partialTicks, yo, y) - view.y());
@@ -94,16 +73,25 @@ public class LaserParticle extends TextureSheetParticle {
     }
 
     private void drawComponent(VertexConsumer vertexBuilder, Vector3f[] resultVector, float uMin, float uMax, float vMin, float vMax) {
-        vertexBuilder.vertex(resultVector[0].x(), resultVector[0].y(), resultVector[0].z()).uv(uMax, vMax).color(rCol, gCol, bCol, alpha).uv2(240, 240).endVertex();
-        vertexBuilder.vertex(resultVector[1].x(), resultVector[1].y(), resultVector[1].z()).uv(uMax, vMin).color(rCol, gCol, bCol, alpha).uv2(240, 240).endVertex();
-        vertexBuilder.vertex(resultVector[2].x(), resultVector[2].y(), resultVector[2].z()).uv(uMin, vMin).color(rCol, gCol, bCol, alpha).uv2(240, 240).endVertex();
-        vertexBuilder.vertex(resultVector[3].x(), resultVector[3].y(), resultVector[3].z()).uv(uMin, vMax).color(rCol, gCol, bCol, alpha).uv2(240, 240).endVertex();
+        addVertex(vertexBuilder, resultVector[0], uMax, vMax);
+        addVertex(vertexBuilder, resultVector[1], uMax, vMin);
+        addVertex(vertexBuilder, resultVector[2], uMin, vMin);
+        addVertex(vertexBuilder, resultVector[3], uMin, vMax);
+        //Draw back faces
+        addVertex(vertexBuilder, resultVector[1], uMax, vMin);
+        addVertex(vertexBuilder, resultVector[0], uMax, vMax);
+        addVertex(vertexBuilder, resultVector[3], uMin, vMax);
+        addVertex(vertexBuilder, resultVector[2], uMin, vMin);
     }
 
-    @Nonnull
+    private void addVertex(VertexConsumer vertexBuilder, Vector3f pos, float u, float v) {
+        vertexBuilder.vertex(pos.x(), pos.y(), pos.z()).uv(u, v).color(rCol, gCol, bCol, alpha).uv2(240, 240).endVertex();
+    }
+
+    @NotNull
     @Override
     public ParticleRenderType getRenderType() {
-        return LASER_TYPE;
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
@@ -145,7 +133,7 @@ public class LaserParticle extends TextureSheetParticle {
         }
 
         @Override
-        public LaserParticle createParticle(LaserParticleData data, @Nonnull ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public LaserParticle createParticle(LaserParticleData data, @NotNull ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             Pos3D start = new Pos3D(x, y, z);
             Pos3D end = start.translate(data.direction(), data.distance());
             LaserParticle particleLaser = new LaserParticle(world, start, end, data.direction(), data.energyScale());

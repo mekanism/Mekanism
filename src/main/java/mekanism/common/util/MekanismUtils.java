@@ -16,8 +16,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
@@ -82,6 +80,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BubbleColumnBlock;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -96,10 +96,13 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Utilities used by Mekanism. All miscellaneous methods are located here.
@@ -147,8 +150,8 @@ public final class MekanismUtils {
      *
      * @implNote While the default implementation of getCreatorModId falls back to the registry name, it is possible someone is overriding this and not falling back.
      */
-    @Nonnull
-    public static String getModId(@Nonnull ItemStack stack) {
+    @NotNull
+    public static String getModId(@NotNull ItemStack stack) {
         Item item = stack.getItem();
         String modid = item.getCreatorModId(stack);
         if (modid == null) {
@@ -401,6 +404,11 @@ public final class MekanismUtils {
         return 0;
     }
 
+    public static boolean isLiquidBlock(Block block) {
+        //Treat bubble columns as liquids
+        return block instanceof LiquidBlock || block instanceof BubbleColumnBlock || block instanceof IFluidBlock;
+    }
+
     /**
      * Ray-traces what block a player is looking at.
      *
@@ -487,7 +495,7 @@ public final class MekanismUtils {
 
     public static Component getEnergyDisplayShort(FloatingLong energy) {
         EnergyUnit configured = EnergyUnit.getConfigured();
-        return UnitDisplayUtils.getDisplayShort(configured.convertToAsFloatingLong(energy), configured);
+        return UnitDisplayUtils.getDisplayShort(configured.convertTo(energy), configured);
     }
 
     /**
@@ -509,7 +517,7 @@ public final class MekanismUtils {
      * @return energy converted to configured unit
      */
     public static FloatingLong convertToDisplay(FloatingLong energy) {
-        return EnergyUnit.getConfigured().convertToAsFloatingLong(energy);
+        return EnergyUnit.getConfigured().convertTo(energy);
     }
 
     /**
@@ -526,14 +534,14 @@ public final class MekanismUtils {
 
     public static CraftingContainer getDummyCraftingInv() {
         AbstractContainerMenu tempContainer = new AbstractContainerMenu(MenuType.CRAFTING, 1) {
-            @Nonnull
+            @NotNull
             @Override
-            public ItemStack quickMoveStack(@Nonnull Player player, int slotID) {
+            public ItemStack quickMoveStack(@NotNull Player player, int slotID) {
                 return ItemStack.EMPTY;
             }
 
             @Override
-            public boolean stillValid(@Nonnull Player player) {
+            public boolean stillValid(@NotNull Player player) {
                 return false;
             }
         };
@@ -552,7 +560,7 @@ public final class MekanismUtils {
         return stack.is(MekanismTags.Items.CONFIGURATORS);
     }
 
-    @Nonnull
+    @NotNull
     public static String getLastKnownUsername(@Nullable UUID uuid) {
         if (uuid == null) {
             return "<???>";
@@ -670,8 +678,9 @@ public final class MekanismUtils {
     }
 
     /**
-     * Calculates the redstone level based on the percentage of amount stored. Like {@link net.minecraftforge.items.ItemHandlerHelper#calcRedstoneFromInventory(IItemHandler)}
-     * except without limiting slots to the max stack size of the item to allow for better support for bins
+     * Calculates the redstone level based on the percentage of amount stored. Like
+     * {@link net.minecraftforge.items.ItemHandlerHelper#calcRedstoneFromInventory(IItemHandler)} except without limiting slots to the max stack size of the item to allow
+     * for better support for bins
      *
      * @return A redstone level based on the percentage of the amount stored.
      */
@@ -725,8 +734,8 @@ public final class MekanismUtils {
     }
 
     /**
-     * Similar in concept to {@link net.minecraft.world.entity.Entity#updateFluidHeightAndDoFluidPushing(net.minecraft.tags.TagKey, double)} except calculates if a given
-     * portion of the player is in the fluids.
+     * Similar in concept to {@link net.minecraft.world.entity.Entity#updateFluidHeightAndDoFluidPushing()} except calculates if a given portion of the player is in the
+     * fluids.
      */
     public static Map<FluidType, FluidInDetails> getFluidsIn(Player player, UnaryOperator<AABB> modifyBoundingBox) {
         AABB bb = modifyBoundingBox.apply(player.getBoundingBox().deflate(0.001));
@@ -834,6 +843,7 @@ public final class MekanismUtils {
         GUI_HUD("gui/hud"),
         GUI_GAUGE("gui/gauge"),
         GUI_PROGRESS("gui/progress"),
+        GUI_RADIAL("gui/radial"),
         GUI_SLOT("gui/slot"),
         GUI_TAB("gui/tabs"),
         SOUND("sound"),

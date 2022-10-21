@@ -14,15 +14,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.minecraftforge.client.gui.IIngameOverlay;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
-public class MekaSuitEnergyLevel implements IIngameOverlay {
+public class MekaSuitEnergyLevel implements IGuiOverlay {
 
     private static final ResourceLocation POWER_BAR = MekanismUtils.getResource(ResourceType.GUI_BAR, "horizontal_power_long.png");
 
     @Override
-    public void render(ForgeIngameGui gui, PoseStack poseStack, float partialTicks, int width, int height) {
+    public void render(ForgeGui gui, PoseStack poseStack, float partialTicks, int width, int height) {
         if (!Minecraft.getInstance().options.hideGui && gui.shouldDrawSurvivalElements()) {
             gui.setupOverlayRenderState(true, false);
             FloatingLong capacity = FloatingLong.ZERO, stored = FloatingLong.ZERO;
@@ -37,12 +37,12 @@ public class MekaSuitEnergyLevel implements IIngameOverlay {
             }
             if (!capacity.isZero()) {
                 int x = width / 2 - 91;
-                int y = height - gui.left_height + 2;
+                int y = height - gui.leftHeight + 2;
                 int length = (int) Math.round(stored.divide(capacity).doubleValue() * 79);
                 GuiUtils.renderExtendedTexture(poseStack, GuiBar.BAR, 2, 2, x, y, 81, 6);
                 RenderSystem.setShaderTexture(0, POWER_BAR);
                 GuiComponent.blit(poseStack, x + 1, y + 1, length, 4, 0, 0, length, 4, 79, 4);
-                gui.left_height += 8;
+                gui.leftHeight += 8;
             }
         }
     }

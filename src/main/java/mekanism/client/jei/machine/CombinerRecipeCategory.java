@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine;
 
-import javax.annotation.Nonnull;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.client.gui.element.GuiUpArrow;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -15,6 +14,7 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import org.jetbrains.annotations.NotNull;
 
 public class CombinerRecipeCategory extends BaseRecipeCategory<CombinerRecipe> {
 
@@ -34,7 +34,7 @@ public class CombinerRecipeCategory extends BaseRecipeCategory<CombinerRecipe> {
     }
 
     @Override
-    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, CombinerRecipe recipe, @Nonnull IFocusGroup focusGroup) {
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, CombinerRecipe recipe, @NotNull IFocusGroup focusGroup) {
         initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getMainInput().getRepresentations());
         initItem(builder, RecipeIngredientRole.INPUT, extra, recipe.getExtraInput().getRepresentations());
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());

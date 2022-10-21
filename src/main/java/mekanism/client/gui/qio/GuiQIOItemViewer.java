@@ -2,11 +2,9 @@ package mekanism.client.gui.qio;
 
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiDigitalIconToggle;
@@ -31,6 +29,7 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer> extends GuiMekanism<CONTAINER> {
 
@@ -61,23 +60,20 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         int slotsY = MekanismConfig.client.qioItemViewerSlotsY.get();
         getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
         addRenderableWidget(new GuiInnerScreen(this, 7, 15, imageWidth - 16, 12, () -> {
-            List<Component> list = new ArrayList<>();
             FrequencyIdentity freq = getFrequency();
             if (freq == null) {
-                list.add(MekanismLang.NO_FREQUENCY.translate());
-            } else {
-                list.add(MekanismLang.FREQUENCY.translate(freq.key()));
+                return List.of(MekanismLang.NO_FREQUENCY.translate());
             }
-            return list;
+            return List.of(MekanismLang.FREQUENCY.translate(freq.key()));
         }).tooltip(() -> {
-            List<Component> list = new ArrayList<>();
-            if (getFrequency() != null) {
-                list.add(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                      TextUtils.format(menu.getTotalItems()), TextUtils.format(menu.getCountCapacity())));
-                list.add(MekanismLang.QIO_TYPES_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                      TextUtils.format(menu.getTotalTypes()), TextUtils.format(menu.getTypeCapacity())));
+            if (getFrequency() == null) {
+                return List.of();
             }
-            return list;
+            return List.of(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO, TextUtils.format(menu.getTotalItems()),
+                        TextUtils.format(menu.getCountCapacity())),
+                  MekanismLang.QIO_TYPES_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO, TextUtils.format(menu.getTotalTypes()),
+                        TextUtils.format(menu.getTypeCapacity()))
+            );
         }));
         searchField = addRenderableWidget(new GuiTextField(this, 50, 15 + 12 + 3, imageWidth - 50 - 10, 10));
         searchField.setOffset(0, -1);
@@ -99,7 +95,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
         drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         drawTextScaledBound(matrix, MekanismLang.LIST_SEARCH.translate(), 7, 31, titleTextColor(), 41);
@@ -109,7 +105,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    public void init(@Nonnull Minecraft minecraft, int sizeX, int sizeY) {
+    public void init(@NotNull Minecraft minecraft, int sizeX, int sizeY) {
         super.init(minecraft, sizeX, sizeY);
         menu.updateSearch(searchField.getText());
         //Validate the height is still valid, and if it isn't recreate it

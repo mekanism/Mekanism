@@ -1,12 +1,12 @@
 package mekanism.common.inventory.container.slot;
 
-import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.common.util.StackUtils;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.NotNull;
 
 public class InsertableSlot extends Slot implements IInsertableSlot {
 
@@ -19,9 +19,9 @@ public class InsertableSlot extends Slot implements IInsertableSlot {
         return Math.min(getMaxStackSize(), stack.getMaxStackSize());
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ItemStack insertItem(@Nonnull ItemStack stack, Action action) {
+    public ItemStack insertItem(@NotNull ItemStack stack, Action action) {
         if (stack.isEmpty() || !mayPlace(stack)) {
             //TODO: Should we even be checking isItemValid
             //"Fail quick" if the given stack is empty or we are not valid for the slot

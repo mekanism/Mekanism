@@ -1,6 +1,5 @@
 package mekanism.common.lib.radiation.capability;
 
-import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.common.Mekanism;
@@ -11,24 +10,26 @@ import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
-import mekanism.common.network.to_client.PacketRadiationData;
 import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
 
 public class DefaultRadiationEntity implements IRadiationEntity {
 
-    private double radiation;
-    private double clientSeverity = 0;
+    private double radiation = RadiationManager.BASELINE;
 
     @Override
     public double getRadiation() {
@@ -41,7 +42,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
     }
 
     @Override
-    public void update(@Nonnull LivingEntity entity) {
+    public void update(@NotNull LivingEntity entity) {
         if (entity instanceof Player player && !MekanismUtils.isPlayingMode(player)) {
             return;
         }
@@ -51,26 +52,27 @@ public class DefaultRadiationEntity implements IRadiationEntity {
         double severityScale = RadiationScale.getScaledDoseSeverity(radiation);
         double chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
 
-        float strength = 0;
         if (severityScale > chance) {
             //Calculate effect strength based on radiation severity
-            strength = Math.max(1, (float) Math.log1p(radiation));
+            float strength = Math.max(1, (float) Math.log1p(radiation));
             //Hurt randomly
             if (rand.nextBoolean()) {
-                entity.hurt(MekanismDamageSource.RADIATION, strength);
                 if (entity instanceof ServerPlayer player) {
-                    MekanismCriteriaTriggers.RADIATION_DAMAGE.trigger(player);
+                    MinecraftServer server = entity.getServer();
+                    int totemTimesUsed = -1;
+                    if (server != null && server.isHardcore()) {//Only allow totems to count on hardcore
+                        totemTimesUsed = player.getStats().getValue(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
+                    }
+                    if (entity.hurt(MekanismDamageSource.RADIATION, strength)) {
+                        //If the damage actually went through fire the trigger
+                        boolean hardcoreTotem = totemTimesUsed != -1 && totemTimesUsed < player.getStats().getValue(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
+                        MekanismCriteriaTriggers.DAMAGE.trigger(player, MekanismDamageSource.RADIATION, hardcoreTotem);
+                    }
+                } else {
+                    entity.hurt(MekanismDamageSource.RADIATION, strength);
                 }
             }
-        }
-
-        if (entity instanceof ServerPlayer player) {
-            if (clientSeverity != radiation) {
-                clientSeverity = radiation;
-                PacketRadiationData.sync(player);
-            }
-
-            if (strength > 0) {
+            if (entity instanceof ServerPlayer player && strength > 0) {
                 player.getFoodData().addExhaustion(strength);
             }
         }
@@ -108,9 +110,9 @@ public class DefaultRadiationEntity implements IRadiationEntity {
             capabilityCache.addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.RADIATION_ENTITY, defaultImpl));
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction side) {
+        public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side) {
             return capabilityCache.getCapability(capability, side);
         }
 

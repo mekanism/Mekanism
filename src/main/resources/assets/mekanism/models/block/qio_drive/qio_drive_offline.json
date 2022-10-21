@@ -1,5 +1,4 @@
 {
-	"loader": "mekanism:mekanism",
 	"textures": {
 		"7": "mekanism:block/qio_drive_array/side"
 	},
@@ -8,7 +7,6 @@
 			"name": "drive",
 			"from": [13, 3, 2],
 			"to": [14, 5, 9],
-			"rotation": {"angle": 0, "axis": "y", "origin": [13, 4, 5]},
 			"faces": {
 				"north": {"uv": [1, 11, 2, 13], "texture": "#7"},
 				"east": {"uv": [9, 11, 2, 13], "texture": "#7"},

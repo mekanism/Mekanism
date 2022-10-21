@@ -1,6 +1,5 @@
 package mekanism.common.content.transporter;
 
-import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
@@ -9,6 +8,7 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> implements IItemStackFilter<SorterItemStackFilter> {
 
@@ -81,14 +81,14 @@ public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> i
         return FilterType.SORTER_ITEMSTACK_FILTER;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack getItemStack() {
         return itemType;
     }
 
     @Override
-    public void setItemStack(@Nonnull ItemStack stack) {
+    public void setItemStack(@NotNull ItemStack stack) {
         itemType = stack;
     }
 }

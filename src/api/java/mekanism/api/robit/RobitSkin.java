@@ -3,24 +3,23 @@ package mekanism.api.robit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.MekanismAPI;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.api.text.TextComponentUtil;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.registries.IForgeRegistry;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class RobitSkin implements IRobitSkinProvider {
 
     private final List<ResourceLocation> textures;
+    @Nullable
     private String translationKey;
 
     /**
@@ -72,12 +71,11 @@ public class RobitSkin implements IRobitSkinProvider {
      *
      * @return {@code true} if the player has access.
      */
-    public boolean isUnlocked(@Nonnull Player player) {
+    public boolean isUnlocked(@NotNull Player player) {
         //TODO: Have some skins that are potentially locked as patreon rewards?
         return true;
     }
 
-    @Nonnull
     @Override
     public final RobitSkin getSkin() {
         return this;

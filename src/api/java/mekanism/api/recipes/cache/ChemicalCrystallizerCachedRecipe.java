@@ -2,23 +2,21 @@ package mekanism.api.recipes.cache;
 
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.inputs.BoxedChemicalInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Base class to help implement handling of crystallizing recipes.
  */
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class ChemicalCrystallizerCachedRecipe extends CachedRecipe<ChemicalCrystallizerRecipe> {
 
-    private final IOutputHandler<@NonNull ItemStack> outputHandler;
+    private final IOutputHandler<@NotNull ItemStack> outputHandler;
     private final BoxedChemicalInputHandler inputHandler;
 
     private BoxedChemicalStack recipeInput = BoxedChemicalStack.EMPTY;
@@ -32,7 +30,7 @@ public class ChemicalCrystallizerCachedRecipe extends CachedRecipe<ChemicalCryst
      * @param outputHandler    Output handler.
      */
     public ChemicalCrystallizerCachedRecipe(ChemicalCrystallizerRecipe recipe, BooleanSupplier recheckAllErrors, BoxedChemicalInputHandler inputHandler,
-          IOutputHandler<@NonNull ItemStack> outputHandler) {
+          IOutputHandler<@NotNull ItemStack> outputHandler) {
         super(recipe, recheckAllErrors);
         this.inputHandler = Objects.requireNonNull(inputHandler, "Input handler cannot be null.");
         this.outputHandler = Objects.requireNonNull(outputHandler, "Output handler cannot be null.");

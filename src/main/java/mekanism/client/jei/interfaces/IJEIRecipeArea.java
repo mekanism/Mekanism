@@ -1,11 +1,11 @@
 package mekanism.client.jei.interfaces;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface IJEIRecipeArea<ELEMENT extends GuiElement> extends GuiEventListener {
 
@@ -19,7 +19,7 @@ public interface IJEIRecipeArea<ELEMENT extends GuiElement> extends GuiEventList
         return true;
     }
 
-    ELEMENT jeiCategories(@Nonnull MekanismJEIRecipeType<?>... recipeCategories);
+    ELEMENT jeiCategories(@NotNull MekanismJEIRecipeType<?>... recipeCategories);
 
     default ELEMENT jeiCategory(TileEntityMekanism tile) {
         return jeiCategories(MekanismJEIRecipeType.findType(tile.getBlockTypeRegistryName()));

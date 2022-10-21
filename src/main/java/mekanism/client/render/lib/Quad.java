@@ -1,44 +1,51 @@
 package mekanism.client.render.lib;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
 import mekanism.common.lib.Color;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.pipeline.IVertexConsumer;
-import net.minecraftforge.client.model.pipeline.LightUtil;
+import net.minecraftforge.client.model.pipeline.QuadBakingVertexConsumer;
+import org.jetbrains.annotations.NotNull;
 
 public class Quad {
-
-    private static final VertexFormat FORMAT = DefaultVertexFormat.BLOCK;
-    private static final int SIZE = DefaultVertexFormat.BLOCK.getElements().size();
 
     private final Vertex[] vertices;
     private Direction side;
     private TextureAtlasSprite sprite;
-    private int tintIndex = -1;
-    private boolean applyDiffuseLighting;
+    private int tintIndex;
+    private boolean shade;
+    private boolean hasAmbientOcclusion;
 
     public Quad(TextureAtlasSprite sprite, Direction side, Vertex[] vertices) {
-        this(sprite, side, vertices, -1, false);
+        this(sprite, side, vertices, -1, false, true);
     }
 
-    public Quad(TextureAtlasSprite sprite, Direction side, Vertex[] vertices, int tintIndex, boolean applyDiffuseLighting) {
+    public Quad(TextureAtlasSprite sprite, Direction side, Vertex[] vertices, int tintIndex, boolean shade, boolean hasAmbientOcclusion) {
         this.sprite = sprite;
         this.side = side;
         this.vertices = vertices;
         this.tintIndex = tintIndex;
-        this.applyDiffuseLighting = applyDiffuseLighting;
+        this.shade = shade;
+        this.hasAmbientOcclusion = hasAmbientOcclusion;
     }
 
     public Quad(BakedQuad quad) {
         vertices = new Vertex[4];
-        quad.pipe(new BakedQuadUnpacker());
+        side = quad.getDirection();
+        sprite = quad.getSprite();
+        tintIndex = quad.getTintIndex();
+        shade = quad.isShade();
+        hasAmbientOcclusion = quad.hasAmbientOcclusion();
+        new BakedQuadUnpacker().putBulkData(new PoseStack().last(), quad, 1, 1, 1, 1, 0, OverlayTexture.NO_OVERLAY, true);
     }
 
     public TextureAtlasSprite getTexture() {
@@ -49,17 +56,26 @@ public class Quad {
         this.sprite = sprite;
     }
 
+    public int getTint() {
+        return tintIndex;
+    }
+
+    public void setTint(int tintIndex) {
+        this.tintIndex = tintIndex;
+    }
+
     public void vertexTransform(Consumer<Vertex> transformation) {
         for (Vertex v : vertices) {
             transformation.accept(v);
         }
     }
 
-    public Quad transform(QuadTransformation... transformations) {
+    public boolean transform(QuadTransformation... transformations) {
+        boolean transformed = false;
         for (QuadTransformation transform : transformations) {
-            transform.transform(this);
+            transformed |= transform.transform(this);
         }
-        return this;
+        return transformed;
     }
 
     public Vertex[] getVertices() {
@@ -74,96 +90,115 @@ public class Quad {
         return side;
     }
 
-    public boolean getApplyDiffuseLighting() {
-        return applyDiffuseLighting;
+    public boolean isShade() {
+        return shade;
     }
 
-    public void setApplyDiffuseLighting(boolean applyDiffuseLighting) {
-        this.applyDiffuseLighting = applyDiffuseLighting;
+    public void setShade(boolean shade) {
+        this.shade = shade;
+    }
+
+    public boolean hasAmbientOcclusion() {
+        return hasAmbientOcclusion;
+    }
+
+    public void setHasAmbientOcclusion(boolean hasAmbientOcclusion) {
+        this.hasAmbientOcclusion = hasAmbientOcclusion;
     }
 
     public BakedQuad bake() {
-        int[] ret = new int[FORMAT.getIntegerSize() * 4];
-        for (int v = 0; v < vertices.length; v++) {
-            float[][] packed = vertices[v].pack(FORMAT);
-            for (int e = 0; e < SIZE; e++) {
-                LightUtil.pack(packed[e], ret, DefaultVertexFormat.BLOCK, v, e);
-            }
+        BakedQuad[] quads = new BakedQuad[1];
+        QuadBakingVertexConsumer quadBaker = new QuadBakingVertexConsumer(q -> quads[0] = q);
+        quadBaker.setSprite(sprite);
+        quadBaker.setDirection(side);
+        quadBaker.setTintIndex(tintIndex);
+        quadBaker.setShade(shade);
+        quadBaker.setHasAmbientOcclusion(hasAmbientOcclusion);
+        for (Vertex vertex : vertices) {
+            vertex.write(quadBaker);
         }
-        return new BakedQuad(ret, tintIndex, side, sprite, applyDiffuseLighting);
+        return quads[0];
     }
 
     public Quad copy() {
-        Vertex[] newVertices = new Vertex[4];
-        for (int i = 0; i < 4; i++) {
+        Vertex[] newVertices = new Vertex[vertices.length];
+        for (int i = 0; i < newVertices.length; i++) {
             newVertices[i] = vertices[i].copy();
         }
-        return new Quad(sprite, side, newVertices, tintIndex, applyDiffuseLighting);
+        return new Quad(sprite, side, newVertices, tintIndex, shade, hasAmbientOcclusion);
     }
 
     public Quad flip() {
-        Vertex[] flipped = new Vertex[4];
-        flipped[3] = vertices[0].copy().normal(vertices[0].getNormal().scale(-1));
-        flipped[2] = vertices[1].copy().normal(vertices[1].getNormal().scale(-1));
-        flipped[1] = vertices[2].copy().normal(vertices[2].getNormal().scale(-1));
-        flipped[0] = vertices[3].copy().normal(vertices[3].getNormal().scale(-1));
-        return new Quad(sprite, side.getOpposite(), flipped, tintIndex, applyDiffuseLighting);
+        Vertex[] flipped = new Vertex[vertices.length];
+        for (int i = 0; i < flipped.length; i++) {
+            flipped[i] = vertices[i].flip();
+        }
+        return new Quad(sprite, side.getOpposite(), flipped, tintIndex, shade, hasAmbientOcclusion);
     }
 
-    private class BakedQuadUnpacker implements IVertexConsumer {
+    private class BakedQuadUnpacker implements VertexConsumer {
 
         private Vertex vertex = new Vertex();
         private int vertexIndex = 0;
 
-        @Nonnull
+        @NotNull
         @Override
-        public VertexFormat getVertexFormat() {
-            return FORMAT;
+        public VertexConsumer vertex(double x, double y, double z) {
+            vertex.pos(new Vec3(x, y, z));
+            return this;
+        }
+
+        @NotNull
+        @Override
+        public VertexConsumer color(int red, int green, int blue, int alpha) {
+            vertex.color(red, green, blue, alpha);
+            return this;
+        }
+
+        @NotNull
+        @Override
+        public VertexConsumer uv(float u, float v) {
+            vertex.texRaw(u, v);
+            return this;
+        }
+
+        @NotNull
+        @Override
+        public VertexConsumer overlayCoords(int u, int v) {
+            vertex.overlay(u, v);
+            return this;
+        }
+
+        @NotNull
+        @Override
+        public VertexConsumer uv2(int u, int v) {
+            vertex.lightRaw(u, v);
+            return this;
+        }
+
+        @NotNull
+        @Override
+        public VertexConsumer normal(float x, float y, float z) {
+            vertex.normal(x, y, z);
+            return this;
         }
 
         @Override
-        public void setQuadTint(int tint) {
-            tintIndex = tint;
-        }
-
-        @Override
-        public void setQuadOrientation(@Nonnull Direction orientation) {
-            side = orientation;
-        }
-
-        @Override
-        public void setApplyDiffuseLighting(boolean diffuse) {
-            applyDiffuseLighting = diffuse;
-        }
-
-        @Override
-        public void setTexture(@Nonnull TextureAtlasSprite texture) {
-            sprite = texture;
-        }
-
-        @Override
-        public void put(int elementIndex, float... data) {
-            VertexFormatElement element = FORMAT.getElements().get(elementIndex);
-            float f0 = data.length >= 1 ? data[0] : 0;
-            float f1 = data.length >= 2 ? data[1] : 0;
-            float f2 = data.length >= 3 ? data[2] : 0;
-            float f3 = data.length >= 4 ? data[3] : 0;
-            switch (element.getUsage()) {
-                case POSITION -> vertex.pos(new Vec3(f0, f1, f2));
-                case NORMAL -> vertex.normal(new Vec3(f0, f1, f2));
-                case COLOR -> vertex.color(Color.rgbad(f0, f1, f2, f3));
-                case UV -> {
-                    if (element.getIndex() == 0) {
-                        vertex.texRaw(f0, f1);
-                    } else if (element.getIndex() == 2) {
-                        vertex.lightRaw(f0, f1);
-                    }
-                }
-            }
-            if (elementIndex == SIZE - 1) {
+        public void endVertex() {
+            if (vertexIndex != vertices.length) {
                 vertices[vertexIndex++] = vertex;
                 vertex = new Vertex();
             }
+        }
+
+        @Override
+        public void defaultColor(int red, int green, int blue, int alpha) {
+            //We don't support having a default color
+        }
+
+        @Override
+        public void unsetDefaultColor() {
+            //We don't support having a default color
         }
     }
 
@@ -171,14 +206,16 @@ public class Quad {
 
         private TextureAtlasSprite texture;
         private final Direction side;
+        private Color color = Color.WHITE;
 
         private Vec3 vec1, vec2, vec3, vec4;
 
         private float minU, minV, maxU, maxV;
-        private float lightU, lightV;
+        private int lightU, lightV;
 
         private int tintIndex = -1;
-        private boolean applyDiffuseLighting;
+        private boolean shade;
+        private boolean hasAmbientOcclusion = true;
         private boolean contractUVs = true;
 
         public Builder(TextureAtlasSprite texture, Direction side) {
@@ -186,7 +223,11 @@ public class Quad {
             this.side = side;
         }
 
-        public Builder light(float u, float v) {
+        public Builder light(int light) {
+            return light(LightTexture.block(light), LightTexture.sky(light));
+        }
+
+        public Builder light(int u, int v) {
             this.lightU = u;
             this.lightV = v;
             return this;
@@ -210,8 +251,18 @@ public class Quad {
             return this;
         }
 
-        public Builder applyDiffuseLighting(boolean applyDiffuseLighting) {
-            this.applyDiffuseLighting = applyDiffuseLighting;
+        public Builder color(Color color) {
+            this.color = color;
+            return this;
+        }
+
+        public Builder setShade(boolean shade) {
+            this.shade = shade;
+            return this;
+        }
+
+        public Builder setHasAmbientOcclusion(boolean hasAmbientOcclusion) {
+            this.hasAmbientOcclusion = hasAmbientOcclusion;
             return this;
         }
 
@@ -235,17 +286,28 @@ public class Quad {
         // start = bottom left
         public Builder rect(Vec3 start, double width, double height, double scale) {
             start = start.scale(scale);
-            return pos(start.add(0, height * scale, 0), start, start.add(width * scale, 0, 0), start.add(width * scale, height * scale, 0));
+            Vec3 end;
+            if (side.getAxis().isHorizontal()) {
+                Vec3i normal = side.getNormal();
+                end = start.add(normal.getZ() * width * scale, 0, normal.getX() * width * scale);
+                if (side.getAxis() == Axis.X) {
+                    //Wind vertices in a different order so that it faces the correct direction
+                    return pos(start, start.add(0, height * scale, 0), end.add(0, height * scale, 0), end);
+                }
+            } else {
+                end = start.add(width * scale, 0, 0);
+            }
+            return pos(start.add(0, height * scale, 0), start, end, end.add(0, height * scale, 0));
         }
 
         public Quad build() {
             Vertex[] vertices = new Vertex[4];
-            Vec3 normal = vec3.subtract(vec2).cross(vec1.subtract(vec2)).normalize();
-            vertices[0] = Vertex.create(vec1, normal, texture, minU, minV).light(lightU, lightV);
-            vertices[1] = Vertex.create(vec2, normal, texture, minU, maxV).light(lightU, lightV);
-            vertices[2] = Vertex.create(vec3, normal, texture, maxU, maxV).light(lightU, lightV);
-            vertices[3] = Vertex.create(vec4, normal, texture, maxU, minV).light(lightU, lightV);
-            Quad quad = new Quad(texture, side, vertices, tintIndex, applyDiffuseLighting);
+            Vector3f normal = new Vector3f(vec3.subtract(vec2).cross(vec1.subtract(vec2)).normalize());
+            vertices[0] = Vertex.create(vec1, normal, color, texture, minU, minV).light(lightU, lightV);
+            vertices[1] = Vertex.create(vec2, normal, color, texture, minU, maxV).light(lightU, lightV);
+            vertices[2] = Vertex.create(vec3, normal, color, texture, maxU, maxV).light(lightU, lightV);
+            vertices[3] = Vertex.create(vec4, normal, color, texture, maxU, minV).light(lightU, lightV);
+            Quad quad = new Quad(texture, side, vertices, tintIndex, shade, hasAmbientOcclusion);
             if (contractUVs) {
                 QuadUtils.contractUVs(quad);
             }

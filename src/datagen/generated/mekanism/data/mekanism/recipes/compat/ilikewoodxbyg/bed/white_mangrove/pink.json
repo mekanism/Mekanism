@@ -1,0 +1,36 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "byg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_beds"
+        }
+      ]
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:byg_pink_white_mangrove_bed"
+    }
+  },
+  "mainOutput": {
+    "count": 3,
+    "item": "byg:white_mangrove_planks"
+  },
+  "secondaryChance": 1.0,
+  "secondaryOutput": {
+    "count": 3,
+    "item": "minecraft:pink_wool"
+  }
+}

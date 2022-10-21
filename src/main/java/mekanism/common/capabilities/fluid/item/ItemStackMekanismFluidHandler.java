@@ -2,10 +2,8 @@ package mekanism.common.capabilities.fluid.item;
 
 import java.util.List;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.NBTConstants;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
@@ -15,13 +13,15 @@ import mekanism.common.util.ItemDataUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper class for implementing fluid handlers for items
  */
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class ItemStackMekanismFluidHandler extends ItemCapability implements IMekanismFluidHandler, IFluidHandlerItem {
 
@@ -41,7 +41,7 @@ public abstract class ItemStackMekanismFluidHandler extends ItemCapability imple
         ItemDataUtils.readContainers(getStack(), NBTConstants.FLUID_TANKS, getFluidTanks(null));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         return tanks;
@@ -52,7 +52,7 @@ public abstract class ItemStackMekanismFluidHandler extends ItemCapability imple
         ItemDataUtils.writeContainers(getStack(), NBTConstants.FLUID_TANKS, getFluidTanks(null));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack getContainer() {
         return getStack();
@@ -60,6 +60,6 @@ public abstract class ItemStackMekanismFluidHandler extends ItemCapability imple
 
     @Override
     protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
-        consumer.accept(BasicCapabilityResolver.constant(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, this));
+        consumer.accept(BasicCapabilityResolver.constant(ForgeCapabilities.FLUID_HANDLER_ITEM, this));
     }
 }

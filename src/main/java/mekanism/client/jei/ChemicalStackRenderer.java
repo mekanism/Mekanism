@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.MathUtils;
@@ -23,6 +22,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidType;
+import org.jetbrains.annotations.NotNull;
 
 public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements IIngredientRenderer<STACK> {
 
@@ -50,7 +50,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
     }
 
     @Override
-    public void render(@Nonnull PoseStack matrix, @Nonnull STACK stack) {
+    public void render(@NotNull PoseStack matrix, @NotNull STACK stack) {
         if (!stack.isEmpty()) {
             RenderSystem.enableBlend();
             int desiredHeight = MathUtils.clampToInt(height * (double) stack.getAmount() / capacityMb);
@@ -71,7 +71,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
     }
 
     @Override
-    public List<Component> getTooltip(@Nonnull STACK stack, TooltipFlag tooltipFlag) {
+    public List<Component> getTooltip(@NotNull STACK stack, TooltipFlag tooltipFlag) {
         Chemical<?> chemical = stack.getType();
         if (chemical.isEmptyType()) {
             return Collections.emptyList();
@@ -88,7 +88,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
     }
 
     @Override
-    public Font getFontRenderer(Minecraft minecraft, @Nonnull STACK stack) {
+    public Font getFontRenderer(Minecraft minecraft, @NotNull STACK stack) {
         return minecraft.font;
     }
 

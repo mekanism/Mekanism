@@ -5,8 +5,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -49,9 +47,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Utils for simplifying the code for interacting with various mods that you look at things for (TOP, and Hwyla)
@@ -69,7 +69,7 @@ public class LookingAtUtils {
     }
 
     @Nullable
-    private static MultiblockData getMultiblock(@Nonnull BlockEntity tile) {
+    private static MultiblockData getMultiblock(@NotNull BlockEntity tile) {
         if (tile instanceof IMultiblock<?> multiblock) {
             return multiblock.getMultiblock();
         } else if (tile instanceof IStructuralMultiblock multiblock) {
@@ -87,13 +87,13 @@ public class LookingAtUtils {
         return null;
     }
 
-    public static void addInfo(LookingAtHelper info, @Nonnull Entity entity) {
+    public static void addInfo(LookingAtHelper info, @NotNull Entity entity) {
         if (entity instanceof EntityRobit robit) {
             displayEnergy(info, robit);
         }
     }
 
-    public static void addInfo(LookingAtHelper info, @Nonnull BlockEntity tile, boolean displayTanks, boolean displayFluidTanks) {
+    public static void addInfo(LookingAtHelper info, @NotNull BlockEntity tile, boolean displayTanks, boolean displayFluidTanks) {
         MultiblockData structure = getMultiblock(tile);
         Optional<IStrictEnergyHandler> energyCapability = CapabilityUtils.getCapability(tile, Capabilities.STRICT_ENERGY, null).resolve();
         if (energyCapability.isPresent()) {
@@ -105,7 +105,7 @@ public class LookingAtUtils {
         if (displayTanks) {
             //Fluid - only add it to our own tiles in which we disable the default display for
             if (displayFluidTanks && tile instanceof TileEntityUpdateable) {
-                Optional<IFluidHandler> fluidCapability = CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).resolve();
+                Optional<IFluidHandler> fluidCapability = CapabilityUtils.getCapability(tile, ForgeCapabilities.FLUID_HANDLER, null).resolve();
                 if (fluidCapability.isPresent()) {
                     displayFluid(info, fluidCapability.get());
                 } else if (structure != null && structure.isFormed()) {

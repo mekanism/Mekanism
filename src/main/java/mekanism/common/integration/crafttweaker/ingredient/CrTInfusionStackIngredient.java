@@ -1,8 +1,8 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import com.blamejared.crafttweaker.api.data.base.IData;
-import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
+import com.blamejared.crafttweaker.api.data.IData;
+import com.blamejared.crafttweaker.api.data.converter.JSONConverter;
 import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
@@ -12,7 +12,6 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIng
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import net.minecraft.tags.TagKey;
 import org.openzen.zencode.java.ZenCodeType;
@@ -131,7 +130,7 @@ public class CrTInfusionStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Getter("representations")
     public static List<ICrTInfusionStack> getRepresentations(InfusionStackIngredient _this) {
-        return CrTUtils.convert(_this.getRepresentations(), CrTInfusionStack::new);
+        return CrTUtils.convertInfusion(_this.getRepresentations());
     }
 
     /**

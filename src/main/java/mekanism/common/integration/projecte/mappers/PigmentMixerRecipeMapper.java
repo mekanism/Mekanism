@@ -1,7 +1,6 @@
 package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
@@ -14,6 +13,7 @@ import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
+import org.jetbrains.annotations.NotNull;
 
 @RecipeTypeMapper
 public class PigmentMixerRecipeMapper implements IRecipeTypeMapper {
@@ -40,8 +40,8 @@ public class PigmentMixerRecipeMapper implements IRecipeTypeMapper {
             return false;
         }
         boolean handled = false;
-        List<@NonNull PigmentStack> leftInputRepresentations = recipe.getLeftInput().getRepresentations();
-        List<@NonNull PigmentStack> rightInputRepresentations = recipe.getRightInput().getRepresentations();
+        List<@NotNull PigmentStack> leftInputRepresentations = recipe.getLeftInput().getRepresentations();
+        List<@NotNull PigmentStack> rightInputRepresentations = recipe.getRightInput().getRepresentations();
         for (PigmentStack leftRepresentation : leftInputRepresentations) {
             NormalizedSimpleStack nssLeft = NSSPigment.createPigment(leftRepresentation);
             for (PigmentStack rightRepresentation : rightInputRepresentations) {

@@ -5,7 +5,6 @@ import java.util.EnumSet;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
@@ -19,13 +18,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.client.RenderProperties;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import org.jetbrains.annotations.NotNull;
 
 public final class FluidUtils {
 
@@ -42,20 +44,20 @@ public final class FluidUtils {
     }
 
     public static OptionalInt getRGBDurabilityForDisplay(ItemStack stack) {
-        FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
-        if (!fluidStack.isEmpty()) {
+        return getRGBDurabilityForDisplay(StorageUtils.getStoredFluidFromNBT(stack));
+    }
+
+    public static OptionalInt getRGBDurabilityForDisplay(FluidStack stack) {
+        if (!stack.isEmpty()) {
             //TODO: Technically doesn't support things where the color is part of the texture such as lava
             // for chemicals it is supported via allowing people to override getColorRepresentation in their
             // chemicals
-            if (fluidStack.getFluid().isSame(Fluids.LAVA)) {//Special case lava
+            if (stack.getFluid().isSame(Fluids.LAVA)) {//Special case lava
                 return OptionalInt.of(0xFFDB6B19);
-            }
-            try {
-                //Try to get the color tint of the fluid. There is a chance this will fail on servers even though
-                // we only call this on the client side. But just in case try catch it in case something causes
-                // it to be called on the server
-                return OptionalInt.of(RenderProperties.get(fluidStack.getFluid()).getColorTint(fluidStack));
-            } catch (Throwable ignored) {
+            } else if (FMLEnvironment.dist == Dist.CLIENT) {
+                //Note: We can only return an accurate result on the client side. This method should never be called from the server
+                // but in case it is make sure we only run on the client side
+                return OptionalInt.of(IClientFluidTypeExtensions.of(stack.getFluid()).getTintColor(stack));
             }
         }
         return OptionalInt.empty();
@@ -84,7 +86,7 @@ public final class FluidUtils {
      *
      * @return the amount of fluid emitted
      */
-    public static int emit(Set<Direction> sides, @Nonnull FluidStack stack, BlockEntity from) {
+    public static int emit(Set<Direction> sides, @NotNull FluidStack stack, BlockEntity from) {
         if (stack.isEmpty() || sides.isEmpty()) {
             return 0;
         }
@@ -92,7 +94,7 @@ public final class FluidUtils {
         FluidHandlerTarget target = new FluidHandlerTarget(stack, 6);
         EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (acceptor, side) -> {
             //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
-            CapabilityUtils.getCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
+            CapabilityUtils.getCapability(acceptor, ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).ifPresent(handler -> {
                 if (canFill(handler, toSend)) {
                     target.addHandler(handler);
                 }
@@ -104,7 +106,7 @@ public final class FluidUtils {
         return 0;
     }
 
-    public static boolean canFill(IFluidHandler handler, @Nonnull FluidStack stack) {
+    public static boolean canFill(IFluidHandler handler, @NotNull FluidStack stack) {
         return handler.fill(stack, FluidAction.SIMULATE) > 0;
     }
 

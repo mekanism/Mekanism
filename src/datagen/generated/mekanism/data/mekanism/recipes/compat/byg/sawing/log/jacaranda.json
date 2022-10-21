@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/jacaranda_logs"
+      "tag": "byg:jacaranda_logs"
     }
   },
   "mainOutput": {

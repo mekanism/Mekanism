@@ -1,18 +1,33 @@
 {
   "variants": {
-    "facing=north": {
+    "facing=north,active=false": {
       "model": "mekanism:block/solar_neutron_activator"
     },
-    "facing=south": {
+    "facing=north,active=true": {
+      "model": "mekanism:block/solar_neutron_activator_active"
+    },
+    "facing=south,active=false": {
       "model": "mekanism:block/solar_neutron_activator",
       "y": 180
     },
-    "facing=east": {
+    "facing=south,active=true": {
+      "model": "mekanism:block/solar_neutron_activator_active",
+      "y": 180
+    },
+    "facing=east,active=false": {
       "model": "mekanism:block/solar_neutron_activator",
       "y": 90
     },
-    "facing=west": {
+    "facing=east,active=true": {
+      "model": "mekanism:block/solar_neutron_activator_active",
+      "y": 90
+    },
+    "facing=west,active=false": {
       "model": "mekanism:block/solar_neutron_activator",
+      "y": -90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/solar_neutron_activator_active",
       "y": -90
     }
   }

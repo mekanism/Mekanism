@@ -1,7 +1,5 @@
 package mekanism.common.tile.multiblock;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
@@ -18,13 +16,14 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityBoilerValve extends TileEntityBoilerCasing {
 
@@ -32,13 +31,13 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
         super(MekanismBlocks.BOILER_VALVE, pos, state);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
         return side -> getMultiblock().getGasTanks(side);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         return side -> getMultiblock().getFluidTanks(side);
@@ -94,9 +93,9 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
         return InteractionResult.SUCCESS;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public FluidStack insertFluid(@Nonnull FluidStack stack, Direction side, @Nonnull Action action) {
+    public FluidStack insertFluid(@NotNull FluidStack stack, Direction side, @NotNull Action action) {
         FluidStack ret = super.insertFluid(stack, side, action);
         if (ret.getAmount() < stack.getAmount() && action.execute()) {
             getMultiblock().triggerValveTransfer(this);

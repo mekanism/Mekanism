@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.Mekanism;
@@ -26,6 +25,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseAdvancementProvider implements DataProvider {
 
@@ -39,14 +39,14 @@ public abstract class BaseAdvancementProvider implements DataProvider {
         this.pathProvider = generator.createPathProvider(DataGenerator.Target.DATA_PACK, "advancements");
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return "Advancements: " + modid;
     }
 
     @Override
-    public void run(@Nonnull CachedOutput cache) {
+    public void run(@NotNull CachedOutput cache) {
         registerAdvancements(advancement -> {
             ResourceLocation id = advancement.getId();
             if (existingFileHelper.exists(id, PackType.SERVER_DATA, ".json", "advancements")) {
@@ -77,7 +77,7 @@ public abstract class BaseAdvancementProvider implements DataProvider {
         json.remove(DataGenJsonConstants.REQUIREMENTS);
     }
 
-    protected abstract void registerAdvancements(@Nonnull Consumer<Advancement> consumer);
+    protected abstract void registerAdvancements(@NotNull Consumer<Advancement> consumer);
 
     protected ExtendedAdvancementBuilder advancement(MekanismAdvancement advancement) {
         return ExtendedAdvancementBuilder.advancement(advancement, existingFileHelper);

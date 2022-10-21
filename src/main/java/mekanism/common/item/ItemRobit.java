@@ -2,7 +2,6 @@ package mekanism.common.item;
 
 import java.util.List;
 import java.util.UUID;
-import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
@@ -44,6 +43,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemRobit extends ItemEnergized implements IItemSustainedInventory {
 
@@ -52,12 +52,12 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
     }
 
     @Override
-    public void onDestroyed(@Nonnull ItemEntity item, @Nonnull DamageSource damageSource) {
+    public void onDestroyed(@NotNull ItemEntity item, @NotNull DamageSource damageSource) {
         InventoryUtils.dropItemContents(item, damageSource);
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, world, tooltip, flag);
         tooltip.add(MekanismLang.ROBIT_NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getRobitName(stack)));
         tooltip.add(MekanismLang.ROBIT_SKIN.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getRobitSkin(stack)));
@@ -65,7 +65,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();

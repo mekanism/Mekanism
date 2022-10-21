@@ -1,12 +1,12 @@
 package mekanism.client.gui.element.button;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Extends our "Widget" class (GuiElement) instead of Button so that we can easier utilize common code
@@ -60,7 +60,7 @@ public class MekanismButton extends GuiElement {
     }
 
     @Override
-    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         if (onHover != null) {
             onHover.onHover(this, matrix, mouseX, mouseY);

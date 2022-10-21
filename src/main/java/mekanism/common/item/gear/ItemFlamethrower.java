@@ -3,11 +3,9 @@ package mekanism.common.item.gear;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import mekanism.api.AutomationType;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -30,7 +28,6 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.Util;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -42,7 +39,9 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemFlamethrower extends CapabilityItem implements IItemHUDProvider, IModeItem, IGasItem {
 
@@ -51,12 +50,12 @@ public class ItemFlamethrower extends CapabilityItem implements IItemHUDProvider
     }
 
     @Override
-    public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
+    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
         consumer.accept(RenderPropertiesProvider.flamethrower());
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         StorageUtils.addStoredGas(stack, tooltip, true, false);
         tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack)));
     }
@@ -67,22 +66,22 @@ public class ItemFlamethrower extends CapabilityItem implements IItemHUDProvider
     }
 
     @Override
-    public boolean isBarVisible(@Nonnull ItemStack stack) {
+    public boolean isBarVisible(@NotNull ItemStack stack) {
         return true;
     }
 
     @Override
-    public int getBarWidth(@Nonnull ItemStack stack) {
+    public int getBarWidth(@NotNull ItemStack stack) {
         return StorageUtils.getBarWidth(stack);
     }
 
     @Override
-    public int getBarColor(@Nonnull ItemStack stack) {
+    public int getBarColor(@NotNull ItemStack stack) {
         return ChemicalUtil.getRGBDurabilityForDisplay(stack);
     }
 
     @Override
-    public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
+    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
         if (allowedIn(group)) {
             items.add(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismConfig.gear.flamethrowerMaxGas.get(), MekanismGases.HYDROGEN));
@@ -101,8 +100,7 @@ public class ItemFlamethrower extends CapabilityItem implements IItemHUDProvider
     protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
         super.gatherCapabilities(capabilities, stack, nbt);
         capabilities.add(RateLimitGasHandler.create(MekanismConfig.gear.flamethrowerFillRate, MekanismConfig.gear.flamethrowerMaxGas,
-              (item, automationType) -> automationType != AutomationType.EXTERNAL, ChemicalTankBuilder.GAS.alwaysTrueBi,
-              gas -> gas == MekanismGases.HYDROGEN.getChemical()));
+              ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi, gas -> gas == MekanismGases.HYDROGEN.getChemical()));
     }
 
     @Override
@@ -127,7 +125,7 @@ public class ItemFlamethrower extends CapabilityItem implements IItemHUDProvider
     }
 
     @Override
-    public void changeMode(@Nonnull Player player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, boolean displayChangeMessage) {
         FlamethrowerMode mode = getMode(stack);
         FlamethrowerMode newMode = mode.adjust(shift);
         if (mode != newMode) {
@@ -138,14 +136,14 @@ public class ItemFlamethrower extends CapabilityItem implements IItemHUDProvider
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Component getScrollTextComponent(@Nonnull ItemStack stack) {
+    public Component getScrollTextComponent(@NotNull ItemStack stack) {
         return getMode(stack).getTextComponent();
     }
 
     @Override
-    public boolean isEnchantable(@Nonnull ItemStack stack) {
+    public boolean isEnchantable(@NotNull ItemStack stack) {
         return false;
     }
 
@@ -159,6 +157,7 @@ public class ItemFlamethrower extends CapabilityItem implements IItemHUDProvider
         return false;
     }
 
+    @NothingNullByDefault
     public enum FlamethrowerMode implements IIncrementalEnum<FlamethrowerMode>, IHasTextComponent {
         COMBAT(MekanismLang.FLAMETHROWER_COMBAT, EnumColor.YELLOW),
         HEAT(MekanismLang.FLAMETHROWER_HEAT, EnumColor.ORANGE),
@@ -178,7 +177,6 @@ public class ItemFlamethrower extends CapabilityItem implements IItemHUDProvider
             return langEntry.translateColored(color);
         }
 
-        @Nonnull
         @Override
         public FlamethrowerMode byIndex(int index) {
             return byIndexStatic(index);

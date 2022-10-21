@@ -4,13 +4,14 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.function.IntSupplier;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class FloatingLongTransferUtils {
+
+    private FloatingLongTransferUtils() {
+    }
 
     /**
      * Util method for a generic insert implementation for various handlers. Mainly for internal use only

@@ -1,11 +1,9 @@
 package mekanism.common.tile.factory;
 
-import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -43,19 +41,25 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFactory<MetallurgicInfuserRecipe> implements IHasDumpButton,
       ItemChemicalRecipeLookupHandler<InfuseType, InfusionStack, MetallurgicInfuserRecipe> {
 
-    private static final Map<RecipeError, Boolean> TRACKED_ERROR_TYPES = Map.of(
-          RecipeError.NOT_ENOUGH_ENERGY, true,
-          RecipeError.NOT_ENOUGH_INPUT, false,
-          RecipeError.NOT_ENOUGH_SECONDARY_INPUT, true,
-          RecipeError.NOT_ENOUGH_OUTPUT_SPACE, false,
-          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT, false
+    private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
+          RecipeError.NOT_ENOUGH_ENERGY,
+          RecipeError.NOT_ENOUGH_INPUT,
+          RecipeError.NOT_ENOUGH_SECONDARY_INPUT,
+          RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
+          RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
+    );
+    private static final Set<RecipeError> GLOBAL_ERROR_TYPES = Set.of(
+          RecipeError.NOT_ENOUGH_ENERGY,
+          RecipeError.NOT_ENOUGH_SECONDARY_INPUT
     );
 
-    private final IInputHandler<@NonNull InfusionStack> infusionInputHandler;
+    private final IInputHandler<@NotNull InfusionStack> infusionInputHandler;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInfuseTypeItem")
     private InfusionInventorySlot extraSlot;
@@ -64,13 +68,13 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     private IInfusionTank infusionTank;
 
     public TileEntityMetallurgicInfuserFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
-        super(blockProvider, pos, state, TRACKED_ERROR_TYPES);
+        super(blockProvider, pos, state, TRACKED_ERROR_TYPES, GLOBAL_ERROR_TYPES);
         infusionInputHandler = InputHelper.getInputHandler(infusionTank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT);
         configComponent.addSupported(TransmissionType.INFUSION);
         configComponent.setupIOConfig(TransmissionType.INFUSION, infusionTank, RelativeSide.RIGHT).setCanEject(false);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks(IContentsListener listener) {
         ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusionWithConfig(this::getDirection, this::getConfig);
@@ -100,7 +104,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     }
 
     @Override
-    public boolean isValidInputItem(@Nonnull ItemStack stack) {
+    public boolean isValidInputItem(@NotNull ItemStack stack) {
         return containsRecipeA(stack);
     }
 
@@ -110,7 +114,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     }
 
     @Override
-    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<MetallurgicInfuserRecipe> cached, @Nonnull ItemStack stack) {
+    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<MetallurgicInfuserRecipe> cached, @NotNull ItemStack stack) {
         if (cached != null) {
             MetallurgicInfuserRecipe cachedRecipe = cached.getRecipe();
             return cachedRecipe.getItemInput().testType(stack) && (infusionTank.isEmpty() || cachedRecipe.getChemicalInput().testType(infusionTank.getType()));
@@ -119,7 +123,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     }
 
     @Override
-    protected MetallurgicInfuserRecipe findRecipe(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot,
+    protected MetallurgicInfuserRecipe findRecipe(int process, @NotNull ItemStack fallbackInput, @NotNull IInventorySlot outputSlot,
           @Nullable IInventorySlot secondaryOutputSlot) {
         InfusionStack stored = infusionTank.getStack();
         ItemStack output = outputSlot.getStack();
@@ -138,7 +142,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         return true;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<MetallurgicInfuserRecipe, ItemChemical<InfuseType, InfusionStack, MetallurgicInfuserRecipe>> getRecipeType() {
         return MekanismRecipeType.METALLURGIC_INFUSING;
@@ -150,9 +154,9 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         return findFirstRecipe(inputHandlers[cacheIndex], infusionInputHandler);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CachedRecipe<MetallurgicInfuserRecipe> createNewCachedRecipe(@Nonnull MetallurgicInfuserRecipe recipe, int cacheIndex) {
+    public CachedRecipe<MetallurgicInfuserRecipe> createNewCachedRecipe(@NotNull MetallurgicInfuserRecipe recipe, int cacheIndex) {
         return TwoInputCachedRecipe.itemChemicalToItem(recipe, recheckAllRecipeErrors[cacheIndex], inputHandlers[cacheIndex], infusionInputHandler,
                     outputHandlers[cacheIndex])
               .setErrorsChanged(errors -> errorTracker.onErrorsChanged(errors, cacheIndex))
@@ -165,7 +169,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     }
 
     @Override
-    public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
+    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof MetallurgicInfuserUpgradeData data) {
             //Generic factory upgrade data handling
             super.parseUpgradeData(upgradeData);
@@ -177,7 +181,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public MetallurgicInfuserUpgradeData getUpgradeData() {
         return new MetallurgicInfuserUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, infusionTank, extraSlot, energySlot,

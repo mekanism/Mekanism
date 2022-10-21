@@ -1,11 +1,10 @@
 package mekanism.api.recipes;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -15,8 +14,7 @@ import net.minecraft.resources.ResourceLocation;
  *
  * @apiNote Chemical Infusers can process this recipe type and the gases can be put in any order into the infuser.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@ParametersAreNotNullByDefault
 public abstract class ChemicalInfuserRecipe extends ChemicalChemicalToChemicalRecipe<Gas, GasStack, GasStackIngredient> {
 
     /**

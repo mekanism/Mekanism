@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
 import mekanism.api.Upgrade;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.common.Mekanism;
@@ -38,6 +37,7 @@ import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.event.sound.SoundEngineLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * SoundHandler is the central point for sounds on Mek client side. There are roughly three classes of sounds to deal with:
@@ -87,7 +87,7 @@ public class SoundHandler {
         gravitationalModulationSounds.remove(uuid);
     }
 
-    public static void startSound(@Nonnull LevelAccessor world, @Nonnull UUID uuid, @Nonnull SoundType soundType) {
+    public static void startSound(@NotNull LevelAccessor world, @NotNull UUID uuid, @NotNull SoundType soundType) {
         switch (soundType) {
             case JETPACK -> startSound(world, uuid, jetpackSounds, JetpackSound::new);
             case SCUBA_MASK -> startSound(world, uuid, scubaMaskSounds, ScubaMaskSound::new);

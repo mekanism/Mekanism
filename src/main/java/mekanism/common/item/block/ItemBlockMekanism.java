@@ -2,8 +2,6 @@ package mekanism.common.item.block;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
@@ -30,18 +28,20 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
 
-    @Nonnull
+    @NotNull
     private final BLOCK block;
 
-    public ItemBlockMekanism(@Nonnull BLOCK block, Item.Properties properties) {
+    public ItemBlockMekanism(@NotNull BLOCK block, Item.Properties properties) {
         super(block, properties);
         this.block = block;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public BLOCK getBlock() {
         return block;
@@ -56,9 +56,9 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
         return tier == null ? null : tier.getBaseTier().getTextColor();
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Component getName(@Nonnull ItemStack stack) {
+    public Component getName(@NotNull ItemStack stack) {
         EnumColor color = getTextColor(stack);
         if (color == null) {
             return super.getName(stack);
@@ -68,7 +68,7 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        if (Attribute.has(getBlock(), AttributeEnergy.class)) {
+        if (exposesEnergyCap(oldStack) && exposesEnergyCap(newStack)) {
             //Ignore NBT for energized items causing re-equip animations
             return oldStack.getItem() != newStack.getItem();
         }
@@ -77,7 +77,7 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
 
     @Override
     public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
-        if (Attribute.has(getBlock(), AttributeEnergy.class)) {
+        if (exposesEnergyCap(oldStack) && exposesEnergyCap(newStack)) {
             //Ignore NBT for energized items causing block break reset
             return oldStack.getItem() != newStack.getItem();
         }
@@ -88,7 +88,7 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
         if (Attribute.has(block, AttributeSecurity.class)) {
             capabilities.add(new ItemStackSecurityObject());
         }
-        if (Attribute.has(block, AttributeEnergy.class)) {
+        if (exposesEnergyCap(stack)) {
             AttributeEnergy attributeEnergy = Attribute.get(block, AttributeEnergy.class);
             FloatingLongSupplier maxEnergy;
             AttributeUpgradeSupport upgradeSupport = Attribute.get(block, AttributeUpgradeSupport.class);
@@ -101,6 +101,11 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
             }
             capabilities.add(RateLimitEnergyHandler.create(maxEnergy, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue));
         }
+    }
+
+    protected boolean exposesEnergyCap(ItemStack stack) {
+        //Only expose it if the block can't stack
+        return Attribute.has(block, AttributeEnergy.class) && !stack.isStackable();
     }
 
     @Override
@@ -134,7 +139,7 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
             this.value = MekanismUtils.getMaxEnergy(this.stack, this.baseStorage.get());
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public FloatingLong get() {
             if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, Tag.TAG_COMPOUND)) {

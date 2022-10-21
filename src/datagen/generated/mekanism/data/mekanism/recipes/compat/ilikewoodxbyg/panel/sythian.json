@@ -2,38 +2,38 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewoodxbyg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
         },
         {
-          "modid": "byg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "byg"
         },
         {
-          "modid": "ilikewood_panels",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_panels"
         },
         {
-          "modid": "ilikewood_sticks",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_sticks"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "input": {
     "ingredient": {
-      "item": "ilikewood:sythian_panels"
+      "item": "ilikewood:byg_sythian_panels"
     }
   },
   "mainOutput": {
-    "item": "ilikewood:sythian_stick",
-    "count": 6
+    "count": 6,
+    "item": "ilikewood:byg_sythian_stick"
   },
+  "secondaryChance": 0.25,
   "secondaryOutput": {
     "item": "mekanism:sawdust"
-  },
-  "secondaryChance": 0.25
+  }
 }

@@ -1,12 +1,12 @@
 package mekanism.common.block.attribute;
 
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.world.MenuProvider;
+import org.jetbrains.annotations.Nullable;
 
 public class AttributeGui implements Attribute {
 

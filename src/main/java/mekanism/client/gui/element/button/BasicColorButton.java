@@ -3,14 +3,14 @@ package mekanism.client.gui.element.button;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.Color;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BasicColorButton extends MekanismButton {
 
@@ -32,7 +32,7 @@ public class BasicColorButton extends MekanismButton {
     }
 
     @Override
-    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         EnumColor color = getColor();
         boolean doColor = color != null && color != EnumColor.GRAY;
         if (doColor) {

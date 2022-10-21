@@ -1,11 +1,11 @@
 {
-  "parent": "mekanism:block/machine",
+  "parent": "mekanism:block/machine_back_port",
   "textures": {
     "sides": "mekanism:block/painting_machine/right",
     "front": "mekanism:block/painting_machine/front",
     "west": "mekanism:block/painting_machine/right",
     "east": "mekanism:block/painting_machine/left",
-    "south": "mekanism:block/painting_machine/back",
+    "back": "mekanism:block/painting_machine/back",
     "up": "mekanism:block/painting_machine/top",
     "down": "mekanism:block/painting_machine/bottom"
   }

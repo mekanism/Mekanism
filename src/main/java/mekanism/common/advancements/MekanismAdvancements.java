@@ -1,7 +1,7 @@
 package mekanism.common.advancements;
 
-import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
+import org.jetbrains.annotations.Nullable;
 
 public class MekanismAdvancements {
 
@@ -32,6 +32,8 @@ public class MekanismAdvancements {
 
     public static final MekanismAdvancement ALLOY_UPGRADING = advancement(INFUSED_ALLOY, "alloy_upgrading");
     public static final MekanismAdvancement LASER = advancement(REINFORCED_ALLOY, "laser");
+    public static final MekanismAdvancement LASER_DEATH = advancement(LASER, "laser_death");
+    public static final MekanismAdvancement STOPPING_LASERS = advancement(LASER, "stopping_lasers");;
     public static final MekanismAdvancement AUTO_COLLECTION = advancement(LASER, "auto_collection");
 
     public static final MekanismAdvancement ALARM = advancement(BASIC_CONTROL_CIRCUIT, "alarm");

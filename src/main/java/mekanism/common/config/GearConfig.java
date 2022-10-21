@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.value.CachedBooleanValue;
+import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
@@ -11,6 +12,7 @@ import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
@@ -45,6 +47,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedBooleanValue disassemblerVeinMining;
     public final CachedIntValue disassemblerMinDamage;
     public final CachedIntValue disassemblerMaxDamage;
+    public final CachedDoubleValue disassemblerAttackSpeed;
     public final CachedFloatingLongValue disassemblerMaxEnergy;
     public final CachedFloatingLongValue disassemblerChargeRate;
     //Configurator
@@ -105,6 +108,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaToolEnergyUsageSilk;
     public final CachedIntValue mekaToolMaxTeleportReach;
     public final CachedIntValue mekaToolBaseDamage;
+    public final CachedDoubleValue mekaToolAttackSpeed;
     public final CachedFloatValue mekaToolBaseEfficiency;
     public final CachedFloatingLongValue mekaToolBaseEnergyCapacity;
     public final CachedFloatingLongValue mekaToolBaseChargeRate;
@@ -130,6 +134,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaSuitEnergyUsageNutritionalInjection;
     public final CachedFloatingLongValue mekaSuitEnergyUsageDamage;
     public final CachedFloatingLongValue mekaSuitEnergyUsageItemAttraction;
+    public final CachedBooleanValue mekaSuitGravitationalVibrations;
     public final CachedIntValue mekaSuitNutritionalMaxStorage;
     public final CachedIntValue mekaSuitNutritionalTransferRate;
     public final CachedLongValue mekaSuitJetpackMaxStorage;
@@ -155,17 +160,19 @@ public class GearConfig extends BaseMekanismConfig {
         disassemblerEnergyUsageWeapon = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Atomic Disassembler as a weapon.",
               "energyUsageWeapon", FloatingLong.createConst(2_000));
         disassemblerMiningCount = CachedIntValue.wrap(this, builder.comment("The max Atomic Disassembler Vein Mining Block Count.")
-              .define("miningCount", 128));
+              .defineInRange("miningCount", 128, 2, 1_000_000));
         disassemblerSlowMode = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Slow' mode for the Atomic Disassembler.")
               .define("slowMode", true));
         disassemblerFastMode = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Fast' mode for the Atomic Disassembler.")
               .define("fastMode", true));
         disassemblerVeinMining = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Vein Mining' mode for the Atomic Disassembler.")
               .define("veinMining", false));
-        disassemblerMinDamage = CachedIntValue.wrap(this, builder.comment("The amount of damage the Atomic Disassembler does when it is out of power. (Value is in number of half hearts)")
-              .define("minDamage", 4));
-        disassemblerMaxDamage = CachedIntValue.wrap(this, builder.comment("The amount of damage the Atomic Disassembler does when it has at least energyUsageWeapon power stored. (Value is in number of half hearts)")
-              .define("maxDamage", 20));
+        disassemblerMinDamage = CachedIntValue.wrap(this, builder.comment("The bonus attack damage of the Atomic Disassembler when it is out of power. (Value is in number of half hearts)")
+              .defineInRange("minDamage", 4, 0, 1_000));
+        disassemblerMaxDamage = CachedIntValue.wrap(this, builder.comment("The bonus attack damage of the Atomic Disassembler when it has at least energyUsageWeapon power stored. (Value is in number of half hearts)")
+              .defineInRange("maxDamage", 20, 1, 10_000));
+        disassemblerAttackSpeed = CachedDoubleValue.wrap(this, builder.comment("Attack speed of the Atomic Disassembler.")
+              .defineInRange("attackSpeed", -2.4, -Attributes.ATTACK_SPEED.getDefaultValue(), 100));
         disassemblerMaxEnergy = CachedFloatingLongValue.define(this, builder, "Maximum amount (joules) of energy the Atomic Disassembler can contain.",
               "maxEnergy", FloatingLong.createConst(1_000_000));
         disassemblerChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Atomic Disassembler can accept per tick.",
@@ -257,7 +264,7 @@ public class GearConfig extends BaseMekanismConfig {
         portableTeleporterChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Portable Teleporter can accept per tick.",
               "chargeRate", FloatingLong.createConst(5_000));
         portableTeleporterDelay = CachedIntValue.wrap(this, builder.comment("Delay in ticks before a player is teleported after clicking the Teleport button in the portable teleporter.")
-              .define("delay", 0));
+              .defineInRange("delay", 0, 0, 6_000));//Max is 5 minutes
         builder.pop();
 
         builder.comment("Scuba Tank Settings").push(SCUBA_TANK_CATEGORY);
@@ -293,11 +300,13 @@ public class GearConfig extends BaseMekanismConfig {
         mekaToolEnergyUsageTeleport = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool to teleport 10 blocks.",
               "energyUsageTeleport", FloatingLong.createConst(1_000));
         mekaToolMaxTeleportReach = CachedIntValue.wrap(this, builder.comment("Maximum distance a player can teleport with the Meka-Tool.")
-              .define("maxTeleportReach", 100));
-        mekaToolBaseDamage = CachedIntValue.wrap(this, builder.comment("Base damage applied by the Meka-Tool without using any energy.")
-              .define("baseDamage", 4));
+              .defineInRange("maxTeleportReach", 100, 2, 1_024));
+        mekaToolBaseDamage = CachedIntValue.wrap(this, builder.comment("Base bonus damage applied by the Meka-Tool without using any energy.")
+              .defineInRange("baseDamage", 4, 0, 100_000));
+        mekaToolAttackSpeed = CachedDoubleValue.wrap(this, builder.comment("Attack speed of the Meka-Tool.")
+              .defineInRange("attackSpeed", -2.4, -Attributes.ATTACK_SPEED.getDefaultValue(), 100));
         mekaToolBaseEfficiency = CachedFloatValue.wrap(this, builder.comment("Efficiency of the Meka-Tool with energy but without any upgrades.")
-              .define("baseEfficiency", 4D));
+              .defineInRange("baseEfficiency", 4, 0.1, 100));
         mekaToolBaseEnergyCapacity = CachedFloatingLongValue.define(this, builder, "Energy capacity (Joules) of the Meka-Tool without any installed upgrades. Quadratically scaled by upgrades.",
               "baseEnergyCapacity", FloatingLong.createConst(16_000_000));
         mekaToolBaseChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Meka-Tool can accept per tick. Quadratically scaled by upgrades.",
@@ -347,6 +356,8 @@ public class GearConfig extends BaseMekanismConfig {
               "energyUsageDamage", FloatingLong.createConst(100_000));
         mekaSuitEnergyUsageItemAttraction = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick of attracting a single item.",
               "energyUsageItemAttraction", FloatingLong.createConst(250));
+        mekaSuitGravitationalVibrations = CachedBooleanValue.wrap(this, builder.comment("Should the Gravitational Modulation unit give off vibrations when in use.")
+              .define("gravitationalVibrations", true));
         mekaSuitNutritionalMaxStorage = CachedIntValue.wrap(this, builder.comment("Maximum amount of Nutritional Paste storable by the nutritional injection unit.")
               .defineInRange("nutritionalMaxStorage", 128_000, 1, Integer.MAX_VALUE));
         mekaSuitNutritionalTransferRate = CachedIntValue.wrap(this, builder.comment("Rate at which Nutritional Paste can be transferred into the nutritional injection unit.")

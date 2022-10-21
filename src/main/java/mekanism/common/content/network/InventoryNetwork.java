@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
@@ -35,6 +34,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetwork, LogisticalTransporterBase> {
 
@@ -128,7 +129,7 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
 
     private void removePositionedTransmitter(LogisticalTransporterBase transmitter) {
         BlockPos pos = transmitter.getTilePos();
-        LogisticalTransporterBase currentTransmitter = positionedTransmitters.get(pos);
+        LogisticalTransporterBase currentTransmitter = getTransmitter(pos);
         if (currentTransmitter != null) {
             //This shouldn't be null but if it is, don't bother attempting to remove
             if (currentTransmitter != transmitter) {
@@ -189,6 +190,7 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
         return "[InventoryNetwork] " + transmittersSize() + " transmitters, " + getAcceptorCount() + " acceptors.";
     }
 
+    @NotNull
     @Override
     public Component getTextComponent() {
         return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.INVENTORY_NETWORK, transmittersSize(), getAcceptorCount());

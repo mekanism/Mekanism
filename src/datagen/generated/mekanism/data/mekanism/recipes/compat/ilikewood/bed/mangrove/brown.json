@@ -1,0 +1,33 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "mekanism:mod_version_loaded",
+          "minVersion": "1.19-9.0.1.0",
+          "modid": "ilikewood"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_beds"
+        }
+      ]
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:brown_mangrove_bed"
+    }
+  },
+  "mainOutput": {
+    "count": 3,
+    "item": "minecraft:mangrove_planks"
+  },
+  "secondaryChance": 1.0,
+  "secondaryOutput": {
+    "count": 3,
+    "item": "minecraft:brown_wool"
+  }
+}

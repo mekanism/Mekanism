@@ -1,9 +1,11 @@
 package mekanism.generators.common.config;
 
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedDoubleValue;
+import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
@@ -47,6 +49,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedDoubleValue fissionCasingHeatCapacity;
     public final CachedDoubleValue fissionSurfaceAreaTarget;
     public final CachedBooleanValue fissionMeltdownsEnabled;
+    public final CachedFloatValue fissionMeltdownRadius;
     public final CachedDoubleValue fissionMeltdownChance;
     public final CachedDoubleValue fissionMeltdownRadiationMultiplier;
     public final CachedDoubleValue fissionPostMeltdownDamage;
@@ -86,13 +89,13 @@ public class GeneratorsConfig extends BaseMekanismConfig {
 
         builder.comment("Turbine Settings").push(TURBINE_CATEGORY);
         turbineBladesPerCoil = CachedIntValue.wrap(this, builder.comment("The number of blades on each turbine coil per blade applied.")
-              .define("turbineBladesPerCoil", 4));
+              .defineInRange("turbineBladesPerCoil", 4, 1, 12));
         turbineVentGasFlow = CachedDoubleValue.wrap(this, builder.comment("The rate at which steam is vented into the turbine.")
-              .define("turbineVentGasFlow", 32_000D));
+              .defineInRange("turbineVentGasFlow", 32_000D, 0.1, 1_024_000));
         turbineDisperserGasFlow = CachedDoubleValue.wrap(this, builder.comment("The rate at which steam is dispersed into the turbine.")
-              .define("turbineDisperserGasFlow", 1_280D));
+              .defineInRange("turbineDisperserGasFlow", 1_280D, 0.1, 1_024_000));
         condenserRate = CachedIntValue.wrap(this, builder.comment("The rate at which steam is condensed in the turbine.")
-              .define("condenserRate", 64_000));
+              .defineInRange("condenserRate", 64_000, 1, 2_000_000));
         builder.pop();
 
         builder.comment("Wind Generator Settings").push(WIND_CATEGORY);
@@ -109,7 +112,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .define("maxY", DimensionType.MAX_Y, value -> value instanceof Integer && (Integer) value > windGenerationMinY.get()));
         //Note: We cannot verify the dimension exists as dimensions are dynamic so may not actually exist when we are validating
         windGenerationDimBlacklist = CachedResourceLocationListValue.define(this, builder.comment("The list of dimension ids that the Wind Generator will not generate power in."),
-              "windGenerationDimBlacklist", rl -> true);
+              "windGenerationDimBlacklist", ConstantPredicates.alwaysTrue());
         builder.pop();
 
         builder.comment("Fusion Settings").push(FUSION_CATEGORY);
@@ -132,15 +135,17 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         energyPerFissionFuel = CachedFloatingLongValue.define(this, builder, "Amount of energy created (in heat) from each whole mB of fission fuel.",
               "energyPerFissionFuel", FloatingLong.createConst(1_000_000));
         fissionCasingHeatCapacity = CachedDoubleValue.wrap(this, builder.comment("The heat capacity added to a Fission Reactor by a single casing block. Increase to require more energy to raise the reactor temperature.")
-              .define("casingHeatCapacity", 1_000D));
+              .defineInRange("casingHeatCapacity", 1_000D, 1, 1_000_000));
         fissionSurfaceAreaTarget = CachedDoubleValue.wrap(this, builder.comment("The average surface area of a Fission Reactor's fuel assemblies to reach 100% boil efficiency. Higher values make it harder to cool the reactor.")
               .defineInRange("surfaceAreaTarget", 4D, 1D, Double.MAX_VALUE));
         fissionMeltdownsEnabled = CachedBooleanValue.wrap(this, builder.comment("Whether catastrophic meltdowns can occur from Fission Reactors. If disabled instead of melting down the reactor will turn off and not be able to be turned back on until the damage level decreases.")
               .define("meltdownsEnabled", true));
+        fissionMeltdownRadius = CachedFloatValue.wrap(this, builder.comment("The radius of the explosion that occurs from a meltdown.")
+              .defineInRange("meltdownRadius", 8D, 1, 500));
         fissionMeltdownChance = CachedDoubleValue.wrap(this, builder.comment("The chance of a meltdown occurring once damage passes 100%. Will linearly scale as damage continues increasing.")
               .defineInRange("meltdownChance", 0.001D, 0D, 1D));
         fissionMeltdownRadiationMultiplier = CachedDoubleValue.wrap(this, builder.comment("How much radioactivity of fuel/waste contents are multiplied during a meltdown.")
-              .define("meltdownRadiationMultiplier", 50D));
+              .defineInRange("meltdownRadiationMultiplier", 50, 0.1, 1_000_000));
         fissionPostMeltdownDamage = CachedDoubleValue.wrap(this, builder.comment("Damage to reset the reactor to after a meltdown.")
               .defineInRange("postMeltdownDamage", 0.75 * FissionReactorMultiblockData.MAX_DAMAGE, 0, FissionReactorMultiblockData.MAX_DAMAGE));
         defaultBurnRate = CachedDoubleValue.wrap(this, builder.comment("The default burn rate of the fission reactor.")

@@ -2,17 +2,17 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewood",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood"
         },
         {
-          "modid": "ilikewood_barrels",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_barrels"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "input": {
@@ -21,7 +21,7 @@
     }
   },
   "mainOutput": {
-    "item": "minecraft:warped_planks",
-    "count": 7
+    "count": 7,
+    "item": "minecraft:warped_planks"
   }
 }

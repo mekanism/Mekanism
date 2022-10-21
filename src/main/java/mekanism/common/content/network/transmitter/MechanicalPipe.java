@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
@@ -32,15 +30,17 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetwork, FluidStack, MechanicalPipe> implements IMekanismFluidHandler,
       IUpgradeableTransmitter<MechanicalPipeUpgradeData> {
 
     public final PipeTier tier;
-    @Nonnull
+    @NotNull
     public FluidStack saveShare = FluidStack.EMPTY;
     private final List<IExtendedFluidTank> tanks;
     public final BasicFluidTank buffer;
@@ -106,19 +106,19 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     }
 
     @Override
-    public boolean dataTypeMatches(@Nonnull TransmitterUpgradeData data) {
+    public boolean dataTypeMatches(@NotNull TransmitterUpgradeData data) {
         return data instanceof MechanicalPipeUpgradeData;
     }
 
     @Override
-    public void parseUpgradeData(@Nonnull MechanicalPipeUpgradeData data) {
+    public void parseUpgradeData(@NotNull MechanicalPipeUpgradeData data) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
         takeFluid(data.contents, Action.EXECUTE);
     }
 
     @Override
-    public void read(@Nonnull CompoundTag nbtTags) {
+    public void read(@NotNull CompoundTag nbtTags) {
         super.read(nbtTags);
         if (nbtTags.contains(NBTConstants.FLUID_STORED, Tag.TAG_COMPOUND)) {
             saveShare = FluidStack.loadFluidStackFromNBT(nbtTags.getCompound(NBTConstants.FLUID_STORED));
@@ -128,9 +128,9 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
         buffer.setStack(saveShare);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CompoundTag write(@Nonnull CompoundTag nbtTags) {
+    public CompoundTag write(@NotNull CompoundTag nbtTags) {
         super.write(nbtTags);
         if (hasTransmitterNetwork()) {
             getTransmitterNetwork().validateSaveShares(this);
@@ -145,7 +145,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
 
     @Override
     public boolean isValidAcceptor(BlockEntity tile, Direction side) {
-        return super.isValidAcceptor(tile, side) && getAcceptorCache().isAcceptorAndListen(tile, side, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+        return super.isValidAcceptor(tile, side) && getAcceptorCache().isAcceptorAndListen(tile, side, ForgeCapabilities.FLUID_HANDLER);
     }
 
     @Override
@@ -189,7 +189,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
         return tier.getPipeCapacity();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public FluidStack releaseShare() {
         FluidStack ret = buffer.getFluid();
@@ -202,7 +202,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
         return getBufferWithFallback().isEmpty();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public FluidStack getBufferWithFallback() {
         FluidStack buffer = getShare();
@@ -213,7 +213,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
         return buffer;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public FluidStack getShare() {
         return buffer.getFluid();
@@ -231,7 +231,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         if (hasTransmitterNetwork()) {
@@ -248,8 +248,8 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     /**
      * @return remainder
      */
-    @Nonnull
-    public FluidStack takeFluid(@Nonnull FluidStack fluid, Action action) {
+    @NotNull
+    public FluidStack takeFluid(@NotNull FluidStack fluid, Action action) {
         if (hasTransmitterNetwork()) {
             return getTransmitterNetwork().fluidTank.insert(fluid, action, AutomationType.INTERNAL);
         }
@@ -257,7 +257,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     }
 
     @Override
-    protected void handleContentsUpdateTag(@Nonnull FluidNetwork network, @Nonnull CompoundTag tag) {
+    protected void handleContentsUpdateTag(@NotNull FluidNetwork network, @NotNull CompoundTag tag) {
         super.handleContentsUpdateTag(network, tag);
         NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, network::setLastFluid);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> network.currentScale = scale);

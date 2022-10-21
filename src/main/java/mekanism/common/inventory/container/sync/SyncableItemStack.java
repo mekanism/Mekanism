@@ -2,38 +2,37 @@ package mekanism.common.inventory.container.sync;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import mekanism.api.annotations.NonNull;
 import mekanism.common.network.to_client.container.property.IntPropertyData;
 import mekanism.common.network.to_client.container.property.ItemStackPropertyData;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling item stacks
  */
 public class SyncableItemStack implements ISyncableData {
 
-    public static SyncableItemStack create(Supplier<@NonNull ItemStack> getter, Consumer<@NonNull ItemStack> setter) {
+    public static SyncableItemStack create(Supplier<@NotNull ItemStack> getter, Consumer<@NotNull ItemStack> setter) {
         return new SyncableItemStack(getter, setter);
     }
 
-    private final Supplier<@NonNull ItemStack> getter;
-    private final Consumer<@NonNull ItemStack> setter;
-    @Nonnull
+    private final Supplier<@NotNull ItemStack> getter;
+    private final Consumer<@NotNull ItemStack> setter;
+    @NotNull
     private ItemStack lastKnownValue = ItemStack.EMPTY;
 
-    private SyncableItemStack(Supplier<@NonNull ItemStack> getter, Consumer<@NonNull ItemStack> setter) {
+    private SyncableItemStack(Supplier<@NotNull ItemStack> getter, Consumer<@NotNull ItemStack> setter) {
         this.getter = getter;
         this.setter = setter;
     }
 
-    @Nonnull
+    @NotNull
     public ItemStack get() {
         return getter.get();
     }
 
-    public void set(@Nonnull ItemStack value) {
+    public void set(@NotNull ItemStack value) {
         setter.accept(value);
     }
 

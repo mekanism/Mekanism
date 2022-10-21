@@ -1,10 +1,7 @@
 {
-	"parent": "block/cube_all",
-	"loader": "forge:multi-layer",
-	"texture_size": [32, 32],
+	"loader": "forge:composite",
+	"gui_light": "side",
 	"textures": {
-		"0": "mekanism:block/models/isotopic_centrifuge",
-		"1": "mekanism:block/models/ports",
 		"particle": "mekanism:block/models/isotopic_centrifuge"
 	},
 	"display": {
@@ -43,33 +40,79 @@
 			"scale": [0.5, 0.5, 0.5]
 		}
 	},
-	"layers": {
-		"solid": {
-			"parent": "block/cube_all",
+	"children": {
+		"cutout": {
+			"render_type": "minecraft:cutout",
 			"textures": {
 				"0": "mekanism:block/models/isotopic_centrifuge",
 				"1": "mekanism:block/models/ports",
-				"particle": "mekanism:block/models/isotopic_centrifuge"
+				"2": "mekanism:block/models/ports_led"
 			},
 			"elements": [
 				{
-					"name": "base",
+					"name": "baseFront",
 					"from": [0, 0, 0],
+					"to": [16, 2, 4],
+					"faces": {
+						"north": {"uv": [8, 7, 16, 8], "texture": "#0", "cullface": "north"},
+						"east": {"uv": [8, 7, 10, 8], "texture": "#0", "cullface": "east"},
+						"west": {"uv": [14, 7, 16, 8], "texture": "#0", "cullface": "west"},
+						"up": {"uv": [8, 8, 16, 10], "texture": "#0"},
+						"down": {"uv": [8, 14, 16, 16], "texture": "#0", "cullface": "down"}
+					}
+				},
+				{
+					"name": "baseLeft",
+					"from": [12, 0, 4],
+					"to": [16, 2, 12],
+					"faces": {
+						"east": {"uv": [10, 7, 14, 8], "texture": "#0", "cullface": "east"},
+						"up": {"uv": [14, 10, 16, 14], "texture": "#0"},
+						"down": {"uv": [14, 10, 16, 14], "texture": "#0", "cullface": "down"}
+					}
+				},
+				{
+					"name": "baseBack",
+					"from": [0, 0, 12],
 					"to": [16, 2, 16],
 					"faces": {
-						"north": {"uv": [8, 7, 16, 8], "texture": "#0"},
-						"east": {"uv": [8, 7, 16, 8], "texture": "#0"},
-						"south": {"uv": [8, 7, 16, 8], "texture": "#0"},
-						"west": {"uv": [8, 7, 16, 8], "texture": "#0"},
-						"up": {"uv": [8, 8, 16, 16], "texture": "#0"},
-						"down": {"uv": [8, 8, 16, 16], "texture": "#0"}
+						"east": {"uv": [8, 7, 10, 8], "texture": "#0", "cullface": "east"},
+						"south": {"uv": [8, 7, 16, 8], "texture": "#0", "cullface": "south"},
+						"west": {"uv": [14, 7, 16, 8], "texture": "#0", "cullface": "west"},
+						"up": {"uv": [8, 14, 16, 16], "texture": "#0"},
+						"down": {"uv": [8, 8, 16, 10], "texture": "#0", "cullface": "down"}
+					}
+				},
+				{
+					"name": "baseRight",
+					"from": [0, 0, 4],
+					"to": [4, 2, 12],
+					"faces": {
+						"west": {"uv": [10, 7, 14, 8], "texture": "#0", "cullface": "west"},
+						"up": {"uv": [8, 10, 10, 14], "texture": "#0"},
+						"down": {"uv": [8, 10, 10, 14], "texture": "#0", "cullface": "down"}
+					}
+				},
+				{
+					"name": "portBottom",
+					"from": [4, 0, 4],
+					"to": [12, 0, 12],
+					"faces": {
+						"down": {"uv": [0, 0, 8, 8], "texture": "#1", "cullface": "down"}
+					}
+				},
+				{
+					"name": "portBottomLED",
+					"from": [4, 0, 4],
+					"to": [12, 0, 12],
+					"faces": {
+						"down": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "down", "emissivity": 15}
 					}
 				},
 				{
 					"name": "rivet1",
 					"from": [1, 2, 14],
 					"to": [2, 3, 15],
-					"rotation": {"angle": 0, "axis": "y", "origin": [1.5, 2.5, 14.5]},
 					"faces": {
 						"north": {"uv": [9, 14.5, 9.5, 15], "texture": "#0"},
 						"east": {"uv": [9, 14.5, 9.5, 15], "texture": "#0"},
@@ -82,7 +125,6 @@
 					"name": "rivet2",
 					"from": [1, 2, 1],
 					"to": [2, 3, 2],
-					"rotation": {"angle": 0, "axis": "y", "origin": [1.5, 2.5, 1.5]},
 					"faces": {
 						"north": {"uv": [9, 14.5, 9.5, 15], "texture": "#0"},
 						"east": {"uv": [9, 14.5, 9.5, 15], "texture": "#0"},
@@ -95,7 +137,6 @@
 					"name": "rivet3",
 					"from": [14, 2, 1],
 					"to": [15, 3, 2],
-					"rotation": {"angle": 0, "axis": "y", "origin": [14.5, 2.5, 1.5]},
 					"faces": {
 						"north": {"uv": [9, 14.5, 9.5, 15], "texture": "#0"},
 						"east": {"uv": [9, 14.5, 9.5, 15], "texture": "#0"},
@@ -108,7 +149,6 @@
 					"name": "rivet4",
 					"from": [14, 2, 14],
 					"to": [15, 3, 15],
-					"rotation": {"angle": 0, "axis": "y", "origin": [14.5, 2.5, 14.5]},
 					"faces": {
 						"north": {"uv": [9, 14.5, 9.5, 15], "texture": "#0"},
 						"east": {"uv": [9, 14.5, 9.5, 15], "texture": "#0"},
@@ -157,7 +197,6 @@
 					"name": "tower4",
 					"from": [10, 16, 3],
 					"to": [13, 27, 6],
-					"rotation": {"angle": 0, "axis": "y", "origin": [15, 8, 8]},
 					"faces": {
 						"north": {"uv": [0, 2.5, 1.5, 8], "texture": "#0"},
 						"east": {"uv": [3.5, 2.5, 5, 8], "texture": "#0"},
@@ -180,7 +219,6 @@
 					"name": "tower6",
 					"from": [10, 16, 10],
 					"to": [13, 27, 13],
-					"rotation": {"angle": 0, "axis": "y", "origin": [15, 8, 8]},
 					"faces": {
 						"north": {"uv": [3.5, 2.5, 5, 8], "texture": "#0"},
 						"east": {"uv": [0, 2.5, 1.5, 8], "texture": "#0"},
@@ -205,7 +243,6 @@
 					"name": "ring2",
 					"from": [2, 7, 2],
 					"to": [14, 8, 14],
-					"rotation": {"angle": 0, "axis": "y", "origin": [8, 6, 8]},
 					"faces": {
 						"north": {"uv": [10, 5.5, 16, 6], "texture": "#0"},
 						"east": {"uv": [10, 5.5, 16, 6], "texture": "#0"},
@@ -219,7 +256,6 @@
 					"name": "ring3",
 					"from": [2, 5, 2],
 					"to": [14, 6, 14],
-					"rotation": {"angle": 0, "axis": "y", "origin": [8, 4, 8]},
 					"faces": {
 						"north": {"uv": [10, 0, 16, 0.5], "texture": "#0"},
 						"east": {"uv": [10, 5.5, 16, 6], "texture": "#0"},
@@ -233,7 +269,6 @@
 					"name": "ring4",
 					"from": [2, 3, 2],
 					"to": [14, 4, 14],
-					"rotation": {"angle": 0, "axis": "y", "origin": [8, 2, 8]},
 					"faces": {
 						"north": {"uv": [10, 5.5, 16, 6], "texture": "#0"},
 						"east": {"uv": [10, 5.5, 16, 6], "texture": "#0"},
@@ -294,9 +329,8 @@
 					"name": "port",
 					"from": [4, 4, 0],
 					"to": [12, 12, 1],
-					"rotation": {"angle": 0, "axis": "y", "origin": [12, 12, 8]},
 					"faces": {
-						"north": {"uv": [0, 0, 8, 8], "texture": "#1"},
+						"north": {"uv": [0, 0, 8, 8], "texture": "#1", "cullface": "north"},
 						"east": {"uv": [0, 0, 1, 8], "texture": "#1"},
 						"south": {"uv": [0, 8, 8, 16], "texture": "#1"},
 						"west": {"uv": [7, 0, 8, 8], "texture": "#1"},
@@ -305,10 +339,17 @@
 					}
 				},
 				{
+					"name": "port_led",
+					"from": [4, 4, 0],
+					"to": [12, 12, 0],
+					"faces": {
+						"north": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "north", "emissivity": 15}
+					}
+				},
+				{
 					"name": "port_connector",
 					"from": [5, 5, 1],
 					"to": [11, 11, 3],
-					"rotation": {"angle": 0, "axis": "y", "origin": [13, 13, 9]},
 					"faces": {
 						"east": {"uv": [13, 1, 15, 7], "texture": "#1"},
 						"west": {"uv": [9, 1, 11, 7], "texture": "#1"},
@@ -320,7 +361,6 @@
 					"name": "random_shape1",
 					"from": [6, 18, 7],
 					"to": [7, 25, 8],
-					"rotation": {"angle": 0, "axis": "y", "origin": [14, 26, 15]},
 					"faces": {
 						"north": {"uv": [7, 12, 7.5, 13], "texture": "#0"},
 						"east": {"uv": [7, 12, 7.5, 13], "texture": "#0"},
@@ -333,7 +373,6 @@
 					"name": "random_shape2",
 					"from": [6, 17, 7],
 					"to": [9, 18, 8],
-					"rotation": {"angle": 0, "axis": "y", "origin": [14, 25, 15]},
 					"faces": {
 						"north": {"uv": [7, 12, 7.5, 13], "texture": "#0"},
 						"east": {"uv": [7, 12, 7.5, 13], "texture": "#0"},
@@ -347,7 +386,6 @@
 					"name": "random_shape3",
 					"from": [8, 15, 7],
 					"to": [9, 17, 8],
-					"rotation": {"angle": 0, "axis": "y", "origin": [14, 23, 15]},
 					"faces": {
 						"north": {"uv": [7, 12, 7.5, 13], "texture": "#0"},
 						"east": {"uv": [7, 12, 7.5, 13], "texture": "#0"},
@@ -358,11 +396,9 @@
 			]
 		},
 		"translucent": {
-			"parent": "block/cube_all",
+			"render_type": "minecraft:translucent",
 			"textures": {
-				"0": "mekanism:block/models/isotopic_centrifuge",
-				"1": "mekanism:block/models/ports",
-				"particle": "mekanism:block/models/isotopic_centrifuge"
+				"0": "mekanism:block/models/isotopic_centrifuge"
 			},
 			"elements": [
 				{

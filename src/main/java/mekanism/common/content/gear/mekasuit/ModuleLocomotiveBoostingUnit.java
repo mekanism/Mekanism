@@ -1,8 +1,8 @@
 package mekanism.common.content.gear.mekasuit;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.config.IModuleConfigItem;
@@ -18,7 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomotiveBoostingUnit> {
 
     private IModuleConfigItem<SprintBoost> sprintBoost;
@@ -26,18 +26,17 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
     @Override
     public void init(IModule<ModuleLocomotiveBoostingUnit> module, ModuleConfigItemCreator configItemCreator) {
         sprintBoost = configItemCreator.createConfigItem("sprint_boost", MekanismLang.MODULE_SPRINT_BOOST,
-              new ModuleEnumData<>(SprintBoost.class, module.getInstalledCount() + 1, SprintBoost.LOW));
+              new ModuleEnumData<>(SprintBoost.LOW, module.getInstalledCount() + 1));
     }
 
     @Override
     public void changeMode(IModule<ModuleLocomotiveBoostingUnit> module, Player player, ItemStack stack, int shift, boolean displayChangeMessage) {
-        if (module.isEnabled()) {
-            SprintBoost newMode = sprintBoost.get().adjust(shift, v -> v.ordinal() < module.getInstalledCount() + 1);
-            if (sprintBoost.get() != newMode) {
-                sprintBoost.set(newMode);
-                if (displayChangeMessage) {
-                    module.displayModeChange(player, MekanismLang.MODULE_SPRINT_BOOST.translate(), newMode);
-                }
+        SprintBoost currentMode = sprintBoost.get();
+        SprintBoost newMode = currentMode.adjust(shift, v -> v.ordinal() < module.getInstalledCount() + 1);
+        if (currentMode != newMode) {
+            sprintBoost.set(newMode);
+            if (displayChangeMessage) {
+                module.displayModeChange(player, MekanismLang.MODULE_SPRINT_BOOST.translate(), newMode);
             }
         }
     }
@@ -80,6 +79,7 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
         return sprintBoost.get().getBoost();
     }
 
+    @NothingNullByDefault
     public enum SprintBoost implements IHasTextComponent, IIncrementalEnum<SprintBoost> {
         OFF(0),
         LOW(0.05F),
@@ -97,7 +97,6 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
             this.label = TextComponentUtil.getString(Float.toString(boost));
         }
 
-        @Nonnull
         @Override
         public SprintBoost byIndex(int index) {
             return MathUtils.getByIndexMod(MODES, index);

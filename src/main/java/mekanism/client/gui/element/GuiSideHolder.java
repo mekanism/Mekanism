@@ -2,7 +2,6 @@ package mekanism.client.gui.element;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
@@ -10,6 +9,7 @@ import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class GuiSideHolder extends GuiTexturedElement {
 
@@ -47,7 +47,7 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
     protected abstract void colorTab();
 
     @Override
-    public void renderButton(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.renderButton(matrix, mouseX, mouseY, partialTicks);
         if (this.slotHolder) {
             //Slot holders need to draw here to render behind the slots instead of in front of them
@@ -56,14 +56,14 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
     }
 
     @Override
-    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         if (!this.slotHolder) {
             draw(matrix, mouseX, mouseY, partialTicks);
         }
     }
 
-    private void draw(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    private void draw(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShaderTexture(0, getResource());
         colorTab();
         //Top

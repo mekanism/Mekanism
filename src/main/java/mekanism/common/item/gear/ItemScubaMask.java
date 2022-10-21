@@ -1,16 +1,15 @@
 package mekanism.common.item.gear;
 
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.Rarity;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemScubaMask extends ItemSpecialArmor {
 
@@ -21,17 +20,16 @@ public class ItemScubaMask extends ItemSpecialArmor {
     }
 
     @Override
-    public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
+    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
         consumer.accept(RenderPropertiesProvider.scubaMask());
     }
 
     @Override
-    public int getDefaultTooltipHideFlags(@Nonnull ItemStack stack) {
+    public int getDefaultTooltipHideFlags(@NotNull ItemStack stack) {
         return super.getDefaultTooltipHideFlags(stack) | TooltipPart.MODIFIERS.getMask();
     }
 
-    @ParametersAreNonnullByDefault
-    @MethodsReturnNonnullByDefault
+    @NothingNullByDefault
     protected static class ScubaMaskMaterial extends BaseSpecialArmorMaterial {
 
         @Override

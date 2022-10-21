@@ -1,8 +1,8 @@
 package mekanism.common.block.attribute;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Property;
+import org.jetbrains.annotations.NotNull;
 
 public class AttributeStateBoilerValveMode implements AttributeState {
 
@@ -28,7 +29,7 @@ public class AttributeStateBoilerValveMode implements AttributeState {
     }
 
     @Override
-    public BlockState getDefaultState(@Nonnull BlockState state) {
+    public BlockState getDefaultState(@NotNull BlockState state) {
         return state.setValue(modeProperty, BoilerValveMode.INPUT);
     }
 
@@ -37,6 +38,7 @@ public class AttributeStateBoilerValveMode implements AttributeState {
         properties.add(modeProperty);
     }
 
+    @NothingNullByDefault
     public enum BoilerValveMode implements StringRepresentable, IHasTextComponent, IIncrementalEnum<BoilerValveMode> {
         INPUT("input", MekanismLang.BOILER_VALVE_MODE_INPUT, EnumColor.BRIGHT_GREEN),
         OUTPUT_STEAM("output_steam", MekanismLang.BOILER_VALVE_MODE_OUTPUT_STEAM, EnumColor.GRAY),
@@ -54,7 +56,6 @@ public class AttributeStateBoilerValveMode implements AttributeState {
             this.color = color;
         }
 
-        @Nonnull
         @Override
         public String getSerializedName() {
             return name;
@@ -65,12 +66,10 @@ public class AttributeStateBoilerValveMode implements AttributeState {
             return langEntry.translateColored(color);
         }
 
-        @Nonnull
         public static BoilerValveMode byIndexStatic(int index) {
             return MathUtils.getByIndexMod(MODES, index);
         }
 
-        @Nonnull
         @Override
         public BoilerValveMode byIndex(int index) {
             return byIndexStatic(index);

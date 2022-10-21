@@ -1,6 +1,5 @@
 package mekanism.additions.common;
 
-import javax.annotation.Nonnull;
 import mekanism.additions.client.AdditionsClient;
 import mekanism.additions.common.block.BlockObsidianTNT;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
@@ -39,6 +38,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.jetbrains.annotations.NotNull;
 
 @Mod(MekanismAdditions.MODID)
 public class MekanismAdditions implements IModModule {
@@ -120,9 +120,9 @@ public class MekanismAdditions implements IModModule {
             Parrot.MOB_SOUND_MAP.put(AdditionsEntityTypes.BABY_WITHER_SKELETON.get(), SoundEvents.PARROT_IMITATE_WITHER_SKELETON);
             //Dispenser behavior
             DispenserBlock.registerBehavior(AdditionsBlocks.OBSIDIAN_TNT, new DefaultDispenseItemBehavior() {
-                @Nonnull
+                @NotNull
                 @Override
-                protected ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stack) {
+                protected ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
                     BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
                     if (BlockObsidianTNT.createAndAddEntity(source.getLevel(), blockpos, null)) {
                         source.getLevel().gameEvent(null, GameEvent.ENTITY_PLACE, blockpos);

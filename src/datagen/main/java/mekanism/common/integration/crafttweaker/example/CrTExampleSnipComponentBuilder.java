@@ -1,7 +1,7 @@
 package mekanism.common.integration.crafttweaker.example;
 
-import javax.annotation.Nonnull;
 import mekanism.common.integration.crafttweaker.example.component.ICrTExampleComponent;
+import org.jetbrains.annotations.NotNull;
 
 public class CrTExampleSnipComponentBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TYPE>> extends CrTExampleBuilder<CrTExampleSnipComponentBuilder<BUILDER_TYPE>>
       implements ICrTExampleComponent {
@@ -22,7 +22,7 @@ public class CrTExampleSnipComponentBuilder<BUILDER_TYPE extends CrTExampleBuild
         return parent;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String asString() {
         return "#snip " + name + ' ' + snipData + '\n' + build() + "\n#snip end";

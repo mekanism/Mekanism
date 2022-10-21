@@ -2,12 +2,11 @@ package mekanism.common.inventory.container.sync.chemical;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IEmptyStackProvider;
 import mekanism.common.inventory.container.sync.ISyncableData;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Version of {@link net.minecraft.world.inventory.DataSlot} for handling chemical stacks
@@ -15,26 +14,26 @@ import mekanism.common.inventory.container.sync.ISyncableData;
 public abstract class SyncableChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements ISyncableData,
       IEmptyStackProvider<CHEMICAL, STACK> {
 
-    @Nonnull
+    @NotNull
     private ChemicalStack<CHEMICAL> lastKnownValue;
-    private final Supplier<@NonNull STACK> getter;
-    private final Consumer<@NonNull STACK> setter;
+    private final Supplier<@NotNull STACK> getter;
+    private final Consumer<@NotNull STACK> setter;
 
-    protected SyncableChemicalStack(Supplier<@NonNull STACK> getter, Consumer<@NonNull STACK> setter) {
+    protected SyncableChemicalStack(Supplier<@NotNull STACK> getter, Consumer<@NotNull STACK> setter) {
         this.getter = getter;
         this.setter = setter;
         lastKnownValue = getEmptyStack();
     }
 
-    @Nonnull
+    @NotNull
     protected abstract STACK createStack(STACK stored, long size);
 
-    @Nonnull
+    @NotNull
     public STACK get() {
         return getter.get();
     }
 
-    public void set(@Nonnull STACK value) {
+    public void set(@NotNull STACK value) {
         setter.accept(value);
     }
 

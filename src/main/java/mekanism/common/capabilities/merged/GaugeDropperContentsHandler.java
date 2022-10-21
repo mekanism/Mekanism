@@ -3,10 +3,8 @@ package mekanism.common.capabilities.merged;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.NBTConstants;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
@@ -23,15 +21,15 @@ import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler.RateLimitFl
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class GaugeDropperContentsHandler extends MergedTankContentsHandler<MergedTank> implements IMekanismFluidHandler, IFluidHandlerItem {
 
     private static final int CAPACITY = 16 * FluidType.BUCKET_VOLUME;
@@ -69,7 +67,7 @@ public class GaugeDropperContentsHandler extends MergedTankContentsHandler<Merge
         ItemDataUtils.readContainers(getStack(), NBTConstants.FLUID_TANKS, getFluidTanks(null));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         return fluidTanks;
@@ -80,7 +78,7 @@ public class GaugeDropperContentsHandler extends MergedTankContentsHandler<Merge
         onContentsChanged(NBTConstants.FLUID_TANKS, fluidTanks);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack getContainer() {
         return getStack();
@@ -89,6 +87,6 @@ public class GaugeDropperContentsHandler extends MergedTankContentsHandler<Merge
     @Override
     protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
         super.gatherCapabilityResolvers(consumer);
-        consumer.accept(BasicCapabilityResolver.constant(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, this));
+        consumer.accept(BasicCapabilityResolver.constant(ForgeCapabilities.FLUID_HANDLER_ITEM, this));
     }
 }

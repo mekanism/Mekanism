@@ -1,7 +1,7 @@
 {
 	"credit": "Model by CyanideX",
+	"render_type": "minecraft:cutout",
 	"parent": "block/cube_all",
-	"loader": "mekanism:mekanism",
 	"textures": {
 		"2": "mekanism:block/models/ports",
 		"3": "mekanism:block/models/ports_led",
@@ -15,7 +15,6 @@
 			"name": "pillar2",
 			"from": [4, 1, 11.99],
 			"to": [6, 8, 13.99],
-			"rotation": {"angle": 0, "axis": "y", "origin": [5, 4.5, 12.99]},
 			"faces": {
 				"north": {"uv": [4, 0, 2, 7], "texture": "#4"},
 				"east": {"uv": [2, 0, 4, 7], "texture": "#4"},
@@ -28,7 +27,6 @@
 			"name": "pillar1",
 			"from": [10, 1, 11.99],
 			"to": [12, 8, 13.99],
-			"rotation": {"angle": 0, "axis": "y", "origin": [11, 4.5, 12.99]},
 			"faces": {
 				"north": {"uv": [2, 0, 4, 7], "texture": "#4"},
 				"east": {"uv": [2, 7, 4, 14], "texture": "#4"},
@@ -42,12 +40,12 @@
 			"from": [0, 0, 0],
 			"to": [16, 1, 16],
 			"faces": {
-				"north": {"uv": [0, 1, 16, 0], "texture": "#all"},
-				"east": {"uv": [15, 16, 16, 0], "rotation": 90, "texture": "#all"},
-				"south": {"uv": [0, 16, 16, 15], "texture": "#all"},
-				"west": {"uv": [0, 16, 1, 0], "rotation": 90, "texture": "#all"},
+				"north": {"uv": [0, 1, 16, 0], "texture": "#all", "cullface": "north"},
+				"east": {"uv": [15, 16, 16, 0], "rotation": 90, "texture": "#all", "cullface": "east"},
+				"south": {"uv": [0, 16, 16, 15], "texture": "#all", "cullface": "south"},
+				"west": {"uv": [0, 16, 1, 0], "rotation": 90, "texture": "#all", "cullface": "west"},
 				"up": {"uv": [0, 16, 16, 0], "texture": "#all"},
-				"down": {"uv": [0, 16, 16, 0], "texture": "#5"}
+				"down": {"uv": [0, 16, 16, 0], "texture": "#5", "cullface": "down"}
 			}
 		},
 		{
@@ -91,46 +89,19 @@
 			"to": [12, 12, 16],
 			"faces": {
 				"north": {"uv": [0, 8, 8, 16], "texture": "#2"},
-				"east": {"uv": [15, 8, 16, 16], "texture": "#2"},
-				"south": {"uv": [8, 8, 16, 16], "texture": "#2"},
-				"west": {"uv": [8, 8, 9, 16], "texture": "#2"},
-				"up": {"uv": [8, 8, 16, 9], "texture": "#2"},
-				"down": {"uv": [8, 15, 16, 16], "texture": "#2"}
+				"east": {"uv": [7, 0, 8, 8], "texture": "#2"},
+				"south": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "south"},
+				"west": {"uv": [0, 0, 1, 8], "texture": "#2"},
+				"up": {"uv": [0, 0, 8, 1], "texture": "#2"},
+				"down": {"uv": [0, 7, 8, 8], "texture": "#2"}
 			}
 		},
 		{
-			"name": "port_led1",
-			"from": [5, 10, 15.001],
-			"to": [11, 11, 16.001],
+			"name": "port_led",
+			"from": [4, 4, 16],
+			"to": [12, 12, 16],
 			"faces": {
-				"south": {"uv": [9, 9, 15, 10], "texture": "#3", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_led2",
-			"from": [5, 5, 15.001],
-			"to": [11, 6, 16.001],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 3, 8]},
-			"faces": {
-				"south": {"uv": [9, 14, 15, 15], "texture": "#3", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_led3",
-			"from": [5, 6, 15.001],
-			"to": [6, 10, 16.001],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 7, 8]},
-			"faces": {
-				"south": {"uv": [9, 10, 10, 14], "texture": "#3", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_led4",
-			"from": [10, 6, 15.001],
-			"to": [11, 10, 16.001],
-			"rotation": {"angle": 0, "axis": "y", "origin": [13, 7, 8]},
-			"faces": {
-				"south": {"uv": [14, 10, 15, 14], "texture": "#3", "lightLevel": 15}
+				"south": {"uv": [8, 8, 16, 16], "texture": "#3", "cullface": "south", "emissivity": 15}
 			}
 		}
 	],

@@ -18,6 +18,7 @@
     }
   },
   "display": {
+    "announce_to_chat": false,
     "description": {
       "translate": "advancements.mekanismtools.loved_by_piglins.description"
     },

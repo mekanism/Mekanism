@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
@@ -43,6 +41,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A DynamicNetwork extension created specifically for the transfer of Chemicals.
@@ -55,7 +55,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     private final List<IInfusionTank> infusionTanks;
     private final List<IPigmentTank> pigmentTanks;
     private final List<ISlurryTank> slurryTanks;
-    @Nonnull
+    @NotNull
     public BoxedChemical lastChemical = BoxedChemical.EMPTY;
     private long prevTransferAmount;
 
@@ -170,7 +170,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
         other.setEmpty();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public BoxedChemicalStack getBuffer() {
         Current current = chemicalTank.getCurrent();
@@ -230,21 +230,21 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     }
 
     @Override
-    protected void onLastTransmitterRemoved(@Nonnull BoxedPressurizedTube triggerTransmitter) {
+    protected void onLastTransmitterRemoved(@NotNull BoxedPressurizedTube triggerTransmitter) {
         Current current = chemicalTank.getCurrent();
         if (current != Current.EMPTY) {
             disperse(triggerTransmitter, chemicalTank.getTankFromCurrent(current).getStack());
         }
     }
 
-    protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void disperse(@Nonnull BoxedPressurizedTube triggerTransmitter, STACK chemical) {
+    protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void disperse(@NotNull BoxedPressurizedTube triggerTransmitter, STACK chemical) {
         if (chemical instanceof GasStack stack) {
             // Handle radiation leakage
             MekanismAPI.getRadiationManager().dumpRadiation(triggerTransmitter.getTileCoord(), stack);
         }
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> long tickEmit(@Nonnull STACK stack) {
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> long tickEmit(@NotNull STACK stack) {
         ChemicalType chemicalType = ChemicalType.getTypeFor(stack);
         Collection<Map<Direction, LazyOptional<BoxedChemicalHandler>>> acceptorValues = acceptorCache.getAcceptorValues();
         ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>> target = new ChemicalHandlerTarget<>(stack, acceptorValues.size() * 2);
@@ -327,6 +327,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
         return false;
     }
 
+    @NotNull
     @Override
     public Component getTextComponent() {
         return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.CHEMICAL_NETWORK, transmittersSize(), getAcceptorCount());
@@ -351,7 +352,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
         }
     }
 
-    public void setLastChemical(@Nonnull BoxedChemical chemical) {
+    public void setLastChemical(@NotNull BoxedChemical chemical) {
         if (chemical.isEmpty()) {
             Current current = chemicalTank.getCurrent();
             if (current != Current.EMPTY) {
@@ -363,25 +364,25 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IGasTank> getGasTanks(@Nullable Direction side) {
         return gasTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
         return infusionTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
         return pigmentTanks;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
         return slurryTanks;

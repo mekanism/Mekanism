@@ -2,38 +2,38 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewoodxbyg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
         },
         {
-          "modid": "byg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "byg"
         },
         {
-          "modid": "ilikewood_item_frames",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_item_frames"
         },
         {
-          "modid": "ilikewood_sticks",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_sticks"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "input": {
     "ingredient": {
-      "item": "ilikewood:blue_enchanted_item_frame"
+      "item": "ilikewood:byg_blue_enchanted_item_frame"
     }
   },
   "mainOutput": {
-    "item": "ilikewood:blue_enchanted_stick",
-    "count": 8
+    "count": 8,
+    "item": "ilikewood:byg_blue_enchanted_stick"
   },
+  "secondaryChance": 1.0,
   "secondaryOutput": {
     "item": "minecraft:leather"
-  },
-  "secondaryChance": 1.0
+  }
 }

@@ -1,10 +1,9 @@
 {
 	"textures": {
 		"1": "mekanismadditions:entity/balloon_string",
-		"all": "mekanismadditions:entity/balloon",
-		"particle": "mekanismadditions:entity/balloon_string"
+		"all": "mekanismadditions:entity/balloon"
 	},
-	"loader": "forge:separate-perspective",
+	"loader": "forge:separate_transforms",
 	"base": {
 		"parent": "mekanismadditions:item/balloon_latched"
 	},

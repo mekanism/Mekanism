@@ -3,7 +3,6 @@ package mekanism.client.gui.element.custom;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
@@ -15,6 +14,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 public class GuiSupportedUpgrades extends GuiElement {
@@ -40,7 +40,7 @@ public class GuiSupportedUpgrades extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         //Draw the background
         renderBackgroundTexture(matrix, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE, GuiElementHolder.HOLDER_SIZE);
@@ -67,7 +67,7 @@ public class GuiSupportedUpgrades extends GuiElement {
     }
 
     @Override
-    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         for (int i = 0; i < EnumUtils.UPGRADES.length; i++) {
             UpgradePos pos = getUpgradePos(i);

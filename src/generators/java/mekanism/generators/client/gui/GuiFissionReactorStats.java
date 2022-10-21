@@ -1,13 +1,17 @@
 package mekanism.generators.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
+import java.util.Collections;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
+import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.client.gui.element.text.GuiTextField;
+import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils;
+import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.InputValidator;
 import mekanism.common.util.text.TextUtils;
 import mekanism.generators.client.gui.element.GuiFissionReactorTab;
@@ -20,6 +24,7 @@ import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract.
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionReactorCasing, EmptyTileContainer<TileEntityFissionReactorCasing>> {
 
@@ -45,6 +50,10 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
                 return Math.min(1, multiblock.lastBurnRate / multiblock.getMaxBurnRate());
             }
         }, 5, 114, imageWidth - 12));
+        addRenderableWidget(new GuiHeatTab(this, () -> {
+            Component environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
+            return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
+        }));
         rateLimitField = addRenderableWidget(new GuiTextField(this, 77, 128, 49, 12));
         rateLimitField.setEnterHandler(this::setRateLimit);
         rateLimitField.setInputValidator(InputValidator.DECIMAL);
@@ -68,7 +77,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
         FissionReactorMultiblockData multiblock = tile.getMultiblock();
         // heat stats

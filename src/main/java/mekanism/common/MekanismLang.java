@@ -1,9 +1,11 @@
 package mekanism.common;
 
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.ILangEntry;
 import net.minecraft.Util;
 import net.minecraft.world.entity.EquipmentSlot;
 
+@NothingNullByDefault
 public enum MekanismLang implements ILangEntry {
     //Vanilla lang strings we use, for purposes of not having to have them copy-pasted all over the place
     REPAIR_COST("container.repair.cost"),
@@ -58,6 +60,7 @@ public enum MekanismLang implements ILangEntry {
     QIO_TYPES("qio", "types"),
     QIO_TRIGGER_COUNT("qio", "trigger_count"),
     QIO_STORED_COUNT("qio", "stored_count"),
+    QIO_FUZZY_MODE("qio", "fuzzy_mode"),
     QIO_ITEM_TYPE_UNDEFINED("qio", "item_type_undefined"),
     QIO_IMPORT_WITHOUT_FILTER("qio", "import_without_filter"),
     QIO_EXPORT_WITHOUT_FILTER("qio", "export_without_filter"),
@@ -121,6 +124,8 @@ public enum MekanismLang implements ILangEntry {
     GENERIC_BLOCK_POS("generic", "block_pos"),
     GENERIC_HEX("generic", "hex"),
     GENERIC_LIST("generic", "list"),
+    GENERIC_MINUTES("generic", "minutes"),
+    GENERIC_HOURS_MINUTES("generic", "hours_minutes"),
     //Hold for
     HOLD_FOR_DETAILS("tooltip", "hold_for_details"),
     HOLD_FOR_DESCRIPTION("tooltip", "hold_for_description"),
@@ -167,6 +172,7 @@ public enum MekanismLang implements ILangEntry {
     STORED("tooltip", "stored"),
     STORED_MB_PERCENTAGE("tooltip", "stored_mb_percentage"),
     ITEM_AMOUNT("tooltip", "item_amount"),
+    LOCKED("tooltip", "locked"),
     FLOWING("tooltip", "flowing"),
     INVALID("tooltip", "invalid"),
     HAS_INVENTORY("tooltip", "inventory"),
@@ -182,8 +188,10 @@ public enum MekanismLang implements ILangEntry {
     //Gui stuff
     HEIGHT("gui", "height"),
     WIDTH("gui", "width"),
+    BACK("gui", "back"),
     CRAFTING_TAB("gui", "crafting.tab"),
     CRAFTING_WINDOW("gui", "crafting.window"),
+    CRAFTING_WINDOW_CLEAR("gui", "crafting.window.clear"),
     PROGRESS("gui", "progress"),
     PROCESS_RATE("gui", "process_rate"),
     PROCESS_RATE_MB("gui", "process_rate_mb"),
@@ -226,8 +234,11 @@ public enum MekanismLang implements ILangEntry {
     CLOSE("gui", "close"),
     RADIATION_DOSE("gui", "radiation_dose"),
     RADIATION_EXPOSURE("gui", "radiation_exposure"),
+    RADIATION_EXPOSURE_ENTITY("gui", "radiation_exposure.entity"),
+    RADIATION_DECAY_TIME("gui", "radiation_decay_time"),
     COLOR_PICKER("gui", "color_picker"),
     RGB("gui", "rgb"),
+    RGBA("gui", "rgba"),
     HELMET_OPTIONS("gui", "helmet_options"),
     HUD_OVERLAY("gui", "hud_overlay"),
     OPACITY("gui", "opacity"),
@@ -615,6 +626,7 @@ public enum MekanismLang implements ILangEntry {
     //Free runner modes
     FREE_RUNNER_MODE_CHANGE("free_runner", "mode_change"),
     FREE_RUNNER_NORMAL("free_runner", "normal"),
+    FREE_RUNNER_SAFETY("free_runner", "safety"),
     FREE_RUNNER_DISABLED("free_runner", "disabled"),
     //Jetpack Modes
     JETPACK_MODE_CHANGE("jetpack", "mode_change"),
@@ -624,11 +636,6 @@ public enum MekanismLang implements ILangEntry {
     //Disassembler Mode
     DISASSEMBLER_MODE_CHANGE("disassembler", "mode_change"),
     DISASSEMBLER_EFFICIENCY("disassembler", "efficiency"),
-    DISASSEMBLER_NORMAL("disassembler", "normal"),
-    DISASSEMBLER_SLOW("disassembler", "slow"),
-    DISASSEMBLER_FAST("disassembler", "fast"),
-    DISASSEMBLER_VEIN("disassembler", "vein"),
-    DISASSEMBLER_OFF("disassembler", "off"),
     //Flamethrower Modes
     FLAMETHROWER_MODE_CHANGE("flamethrower", "mode_change"),
     FLAMETHROWER_COMBAT("flamethrower", "combat"),
@@ -757,6 +764,17 @@ public enum MekanismLang implements ILangEntry {
     INJECTING("factory", "injecting"),
     INFUSING("factory", "infusing"),
     SAWING("factory", "sawing"),
+    //Radial Menu
+    RADIAL_VEIN("radial", "vein"),
+    RADIAL_VEIN_NORMAL("radial", "vein.normal"),
+    RADIAL_VEIN_EXTENDED("radial", "vein.extended"),
+    RADIAL_EXCAVATION_SPEED("radial", "excavation_speed"),
+    RADIAL_EXCAVATION_SPEED_OFF("radial", "excavation_speed.off"),
+    RADIAL_EXCAVATION_SPEED_SLOW("radial", "excavation_speed.slow"),
+    RADIAL_EXCAVATION_SPEED_NORMAL("radial", "excavation_speed.normal"),
+    RADIAL_EXCAVATION_SPEED_FAST("radial", "excavation_speed.fast"),
+    RADIAL_EXCAVATION_SPEED_SUPER("radial", "excavation_speed.super_fast"),
+    RADIAL_EXCAVATION_SPEED_EXTREME("radial", "excavation_speed.extreme"),
     //Modules
     MODULE_ENABLED("module", "enabled"),
     MODULE_ENABLED_LOWER("module", "enabled_lower"),
@@ -771,6 +789,7 @@ public enum MekanismLang implements ILangEntry {
     MODULE_HANDLE_MODE_CHANGE("module", "handle_mode_change"),
     MODULE_RENDER_HUD("module", "render_hud"),
     MODULE_MODE("module", "mode"),
+    MODULE_COLOR("module", "color"),
     MODULE_BONUS_ATTACK_DAMAGE("module", "bonus_attack_damage"),
     MODULE_FARMING_RADIUS("module", "farming_radius"),
     MODULE_JUMP_BOOST("module", "jump_boost"),

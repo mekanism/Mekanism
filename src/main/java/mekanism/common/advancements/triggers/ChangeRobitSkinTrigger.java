@@ -2,8 +2,6 @@ package mekanism.common.advancements.triggers;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.providers.IRobitSkinProvider;
@@ -18,6 +16,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
 import net.minecraftforge.registries.IForgeRegistry;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<ChangeRobitSkinTrigger.TriggerInstance> {
 
@@ -27,15 +27,15 @@ public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<ChangeRobitSk
         this.id = id;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ResourceLocation getId() {
         return id;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    protected TriggerInstance createInstance(@Nonnull JsonObject json, @Nonnull EntityPredicate.Composite playerPredicate, @Nonnull DeserializationContext context) {
+    protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull EntityPredicate.Composite playerPredicate, @NotNull DeserializationContext context) {
         RobitSkin skin;
         if (json.has(JsonConstants.SKIN)) {
             String name = GsonHelper.getAsString(json, JsonConstants.SKIN);
@@ -68,9 +68,9 @@ public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<ChangeRobitSk
             this.skin = skin;
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        public JsonObject serializeToJson(@Nonnull SerializationContext context) {
+        public JsonObject serializeToJson(@NotNull SerializationContext context) {
             JsonObject json = super.serializeToJson(context);
             if (skin != null) {
                 json.addProperty(JsonConstants.SKIN, skin.getRegistryName().toString());

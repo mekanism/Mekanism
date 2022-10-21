@@ -496,6 +496,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
         add(MekanismAdvancements.ALLOY_UPGRADING, "In Place Transmitter Upgrades", "Upgrade transmitters in world using the next tier of alloy");
         add(MekanismAdvancements.LASER, "Shooting Lasers", "Craft a Laser");
+        add(MekanismAdvancements.STOPPING_LASERS, "Stopping Lasers", "Block a Laser with a shield");
+        add(MekanismAdvancements.LASER_DEATH, "Shooting Lasers", "Die to a Laser");
         add(MekanismAdvancements.AUTO_COLLECTION, "A Real Short Trip", "Tractor beams pull in the drops of blocks they break");
 
         add(MekanismAdvancements.ALARM, "Making Noise", "Alarms are loud, especially the industrial kind");
@@ -690,6 +692,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.QIO_TYPES, "Types");
         add(MekanismLang.QIO_TRIGGER_COUNT, "Trigger count: %1$s");
         add(MekanismLang.QIO_STORED_COUNT, "Stored count: %1$s");
+        add(MekanismLang.QIO_FUZZY_MODE, "Ignoring NBT: %1$s");
         add(MekanismLang.QIO_ITEM_TYPE_UNDEFINED, "Item type undefined");
         add(MekanismLang.QIO_IMPORT_WITHOUT_FILTER, "Import Without Filter:");
         add(MekanismLang.QIO_EXPORT_WITHOUT_FILTER, "Export Without Filter:");
@@ -750,6 +753,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.GENERIC_BLOCK_POS, "%1$s, %2$s, %3$s");
         add(MekanismLang.GENERIC_HEX, "#%1$s");
         add(MekanismLang.GENERIC_LIST, "- %1$s");
+        add(MekanismLang.GENERIC_MINUTES, "%1$sm");
+        add(MekanismLang.GENERIC_HOURS_MINUTES, "%1$sh %2$sm");
         //Directions
         add(APILang.DOWN, "Down");
         add(APILang.UP, "Up");
@@ -805,6 +810,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.STORED, "Stored %1$s: %2$s");
         add(MekanismLang.STORED_MB_PERCENTAGE, "Stored %1$s: %2$s mB (%3$s)");
         add(MekanismLang.ITEM_AMOUNT, "Item amount: %1$s");
+        add(MekanismLang.LOCKED, "Locked to item: %1$s");
         add(MekanismLang.FLOWING, "Flowing: %1$s");
         add(MekanismLang.INVALID, "(Invalid)");
         add(MekanismLang.HAS_INVENTORY, "Inventory: %1$s");
@@ -824,8 +830,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Gui stuff
         add(MekanismLang.WIDTH, "Width");
         add(MekanismLang.HEIGHT, "Height");
+        add(MekanismLang.BACK, "Back");
         add(MekanismLang.CRAFTING_TAB, "Crafting (%1$s/%2$s)");
         add(MekanismLang.CRAFTING_WINDOW, "Crafting Window %1$s");
+        add(MekanismLang.CRAFTING_WINDOW_CLEAR, "Empty Crafting Window contents into storage, hold shift to empty into player inventory instead.");
         add(MekanismLang.MIN, "Min: %1$s");
         add(MekanismLang.MAX, "Max: %1$s");
         add(MekanismLang.INFINITE, "Infinite");
@@ -866,7 +874,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.CLOSE, "Close");
         add(MekanismLang.RADIATION_DOSE, "Radiation Dose: %1$s");
         add(MekanismLang.RADIATION_EXPOSURE, "Radiation Exposure: %1$s");
+        add(MekanismLang.RADIATION_EXPOSURE_ENTITY, "Entity Radiation Exposure: %1$s");
+        add(MekanismLang.RADIATION_DECAY_TIME, "Time to Decay: %1$s");
         add(MekanismLang.RGB, "RGB:");
+        add(MekanismLang.RGBA, "RGBA:");
         add(MekanismLang.COLOR_PICKER, "Color Picker");
         add(MekanismLang.HELMET_OPTIONS, "Helmet Options");
         add(MekanismLang.HUD_OVERLAY, "HUD Overlay:");
@@ -1266,6 +1277,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Free runner modes
         add(MekanismLang.FREE_RUNNER_MODE_CHANGE, "Free runner mode changed to: %1$s");
         add(MekanismLang.FREE_RUNNER_NORMAL, "Regular");
+        add(MekanismLang.FREE_RUNNER_SAFETY, "Safety");
         add(MekanismLang.FREE_RUNNER_DISABLED, "Disabled");
         //Jetpack Modes
         add(MekanismLang.JETPACK_MODE_CHANGE, "Jetpack mode changed to: %1$s");
@@ -1275,11 +1287,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Disassembler Mode
         add(MekanismLang.DISASSEMBLER_MODE_CHANGE, "Mode toggled to: %1$s (%2$s)");
         add(MekanismLang.DISASSEMBLER_EFFICIENCY, "Efficiency: %1$s");
-        add(MekanismLang.DISASSEMBLER_NORMAL, "normal");
-        add(MekanismLang.DISASSEMBLER_SLOW, "slow");
-        add(MekanismLang.DISASSEMBLER_FAST, "fast");
-        add(MekanismLang.DISASSEMBLER_VEIN, "vein");
-        add(MekanismLang.DISASSEMBLER_OFF, "off");
         //Flamethrower Modes
         add(MekanismLang.FLAMETHROWER_MODE_CHANGE, "Flamethrower mode changed to: %1$s");
         add(MekanismLang.FLAMETHROWER_COMBAT, "Combat");
@@ -1398,6 +1405,18 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_SPS_PORT, "A port used for the transfer of energy and substances in the Supercritical Phase Shifter.");
         add(MekanismLang.DESCRIPTION_SUPERCHARGED_COIL, "Used in Supercritical Phase Shifter multiblock to supply large quantities of energy. Must be attached to a SPS Port.");
         add(MekanismLang.DESCRIPTION_DIMENSIONAL_STABILIZER, "A machine that prevents areas of the world from disappearing when not observed.");
+        // Radial Menu
+        add(MekanismLang.RADIAL_VEIN, "Vein Mining");
+        add(MekanismLang.RADIAL_VEIN_NORMAL, "Vein");
+        add(MekanismLang.RADIAL_VEIN_EXTENDED, "Extended Vein");
+
+        add(MekanismLang.RADIAL_EXCAVATION_SPEED, "Excavation Speed");
+        add(MekanismLang.RADIAL_EXCAVATION_SPEED_OFF, "Off");
+        add(MekanismLang.RADIAL_EXCAVATION_SPEED_SLOW, "Slow");
+        add(MekanismLang.RADIAL_EXCAVATION_SPEED_NORMAL, "Normal");
+        add(MekanismLang.RADIAL_EXCAVATION_SPEED_FAST, "Fast");
+        add(MekanismLang.RADIAL_EXCAVATION_SPEED_SUPER, "Super Fast");
+        add(MekanismLang.RADIAL_EXCAVATION_SPEED_EXTREME, "Extreme");
         // Modules
         add(MekanismLang.MODULE_ENABLED, "Enabled");
         add(MekanismLang.MODULE_ENABLED_LOWER, "enabled");
@@ -1412,6 +1431,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_HANDLE_MODE_CHANGE, "Handle Mode Key");
         add(MekanismLang.MODULE_RENDER_HUD, "Show in HUD");
         add(MekanismLang.MODULE_MODE, "Mode");
+        add(MekanismLang.MODULE_COLOR, "ARGB Color");
         add(MekanismLang.MODULE_BONUS_ATTACK_DAMAGE, "Bonus Attack Damage");
         add(MekanismLang.MODULE_FARMING_RADIUS, "Farming Radius");
         add(MekanismLang.MODULE_JUMP_BOOST, "Jump Boost");
@@ -1441,6 +1461,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_TELEPORT_REQUIRES_BLOCK, "Requires Block Target");
 
         add(MekanismModules.ENERGY_UNIT, "Energy Unit", "Increases maximum energy capacity.");
+        add(MekanismModules.COLOR_MODULATION_UNIT, "Color Modulation Unit", "Uses advanced holographic projectors to modulate the perceived color of the MekaSuit.");
         add(MekanismModules.LASER_DISSIPATION_UNIT, "Laser Dissipation Unit", "Refracts and safely dissipates lasers that hit any MekaSuit armor piece.");
         add(MekanismModules.RADIATION_SHIELDING_UNIT, "Radiation Shielding Unit", "Provides thick, radiation-proof metal plating to any MekaSuit armor piece.");
 

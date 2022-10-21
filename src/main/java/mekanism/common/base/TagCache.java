@@ -14,7 +14,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import javax.annotation.Nonnull;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.registries.MekanismBlocks;
@@ -33,6 +32,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.tags.ITag;
 import net.minecraftforge.registries.tags.ITagManager;
+import org.jetbrains.annotations.NotNull;
 
 //TODO: Try to come up with a better name for this class given it also handles things like materials, and modids
 public final class TagCache {
@@ -61,26 +61,26 @@ public final class TagCache {
         materialBlacklistedElements.clear();
     }
 
-    public static List<String> getItemTags(@Nonnull ItemStack check) {
+    public static List<String> getItemTags(@NotNull ItemStack check) {
         return getTagsAsStrings(check.getTags());
     }
 
-    public static List<String> getTileEntityTypeTags(@Nonnull Block block) {
+    public static List<String> getTileEntityTypeTags(@NotNull Block block) {
         if (tileEntityTypeTagCache.containsKey(block)) {
             return tileEntityTypeTagCache.get(block);
         }
         List<String> tagsAsString;
         if (block instanceof IHasTileEntity<?> hasTileEntity) {
             //If it is one of our blocks, short circuit and just lookup the tile's type directly
-            tagsAsString = getTagsAsStrings(TagUtils.tagsStream(ForgeRegistries.BLOCK_ENTITIES, hasTileEntity.getTileType().get()));
+            tagsAsString = getTagsAsStrings(TagUtils.tagsStream(ForgeRegistries.BLOCK_ENTITY_TYPES, hasTileEntity.getTileType().get()));
         } else {
             BlockState state = block.defaultBlockState();
             if (state.hasBlockEntity()) {
                 //Otherwise, check if the block has a tile entity and if it does, gather all the tile types the block
                 // is valid for as we don't want to risk initializing a tile for another mod as it may have side effects
                 // that we don't know about and don't handle properly
-                ITagManager<BlockEntityType<?>> manager = TagUtils.manager(ForgeRegistries.BLOCK_ENTITIES);
-                tagsAsString = getTagsAsStrings(StreamSupport.stream(ForgeRegistries.BLOCK_ENTITIES.spliterator(), false)
+                ITagManager<BlockEntityType<?>> manager = TagUtils.manager(ForgeRegistries.BLOCK_ENTITY_TYPES);
+                tagsAsString = getTagsAsStrings(StreamSupport.stream(ForgeRegistries.BLOCK_ENTITY_TYPES.spliterator(), false)
                       .filter(type -> type.isValid(state))
                       .flatMap(type -> TagUtils.tagsStream(manager, type))
                       .distinct()
@@ -93,11 +93,11 @@ public final class TagCache {
         return tagsAsString;
     }
 
-    public static <TYPE> List<String> getTagsAsStrings(@Nonnull Stream<TagKey<TYPE>> tags) {
+    public static <TYPE> List<String> getTagsAsStrings(@NotNull Stream<TagKey<TYPE>> tags) {
         return tags.map(tag -> tag.location().toString()).toList();
     }
 
-    public static List<ItemStack> getItemTagStacks(@Nonnull String tagName) {
+    public static List<ItemStack> getItemTagStacks(@NotNull String tagName) {
         if (itemTagStacks.containsKey(tagName)) {
             return itemTagStacks.get(tagName);
         }
@@ -107,7 +107,7 @@ public final class TagCache {
         return stacks;
     }
 
-    public static MatchingStacks getBlockTagStacks(@Nonnull String tagName) {
+    public static MatchingStacks getBlockTagStacks(@NotNull String tagName) {
         if (blockTagStacks.containsKey(tagName)) {
             return blockTagStacks.get(tagName);
         }
@@ -132,7 +132,7 @@ public final class TagCache {
         return matchingStacks;
     }
 
-    public static List<ItemStack> getItemModIDStacks(@Nonnull String modName) {
+    public static List<ItemStack> getItemModIDStacks(@NotNull String modName) {
         if (itemModIDStacks.containsKey(modName)) {
             return itemModIDStacks.get(modName);
         }
@@ -152,7 +152,7 @@ public final class TagCache {
         return stacks;
     }
 
-    public static MatchingStacks getBlockModIDStacks(@Nonnull String modName) {
+    public static MatchingStacks getBlockModIDStacks(@NotNull String modName) {
         if (blockModIDStacks.containsKey(modName)) {
             return blockModIDStacks.get(modName);
         }
@@ -167,11 +167,11 @@ public final class TagCache {
         return getMatching(blockModIDStacks, blocks, modName);
     }
 
-    public static List<ItemStack> getMaterialStacks(@Nonnull ItemStack stack) {
+    public static List<ItemStack> getMaterialStacks(@NotNull ItemStack stack) {
         return getMaterialStacks(Block.byItem(stack.getItem()).defaultBlockState().getMaterial());
     }
 
-    public static List<ItemStack> getMaterialStacks(@Nonnull Material material) {
+    public static List<ItemStack> getMaterialStacks(@NotNull Material material) {
         if (materialStacks.containsKey(material)) {
             return materialStacks.get(material);
         }
@@ -189,7 +189,7 @@ public final class TagCache {
         return stacks;
     }
 
-    public static boolean tagHasMinerBlacklisted(@Nonnull String tag) {
+    public static boolean tagHasMinerBlacklisted(@NotNull String tag) {
         if (MekanismTags.Blocks.MINER_BLACKLIST_LOOKUP.isEmpty()) {
             return false;
         } else if (blockTagBlacklistedElements.containsKey(tag)) {
@@ -203,7 +203,7 @@ public final class TagCache {
         return hasBlacklisted;
     }
 
-    public static boolean modIDHasMinerBlacklisted(@Nonnull String modName) {
+    public static boolean modIDHasMinerBlacklisted(@NotNull String modName) {
         if (MekanismTags.Blocks.MINER_BLACKLIST_LOOKUP.isEmpty()) {
             return false;
         } else if (modIDBlacklistedElements.containsKey(modName)) {
@@ -221,11 +221,11 @@ public final class TagCache {
         return hasBlacklisted;
     }
 
-    public static boolean materialHasMinerBlacklisted(@Nonnull ItemStack stack) {
+    public static boolean materialHasMinerBlacklisted(@NotNull ItemStack stack) {
         return materialHasMinerBlacklisted(Block.byItem(stack.getItem()).defaultBlockState().getMaterial());
     }
 
-    public static boolean materialHasMinerBlacklisted(@Nonnull Material material) {
+    public static boolean materialHasMinerBlacklisted(@NotNull Material material) {
         if (MekanismTags.Blocks.MINER_BLACKLIST_LOOKUP.isEmpty()) {
             return false;
         } else if (materialBlacklistedElements.containsKey(material)) {

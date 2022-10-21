@@ -1,23 +1,104 @@
 {
-	"parent": "block/cube_all",
-	"texture_size": [64, 64],
+	"loader": "forge:composite",
+	"gui_light": "side",
 	"textures": {
 		"1": "mekanism:block/models/industrial_alarm",
 		"particle": "mekanism:block/steel_casing"
 	},
-	"elements": [
-		{
-			"name": "base",
-			"from": [5, 0, 5],
-			"to": [11, 1, 11],
-			"faces": {
-				"north": {"uv": [1.5, 3.75, 3, 3.75], "texture": "#1"},
-				"east": {"uv": [0, 3.75, 1.5, 3.75], "texture": "#1"},
-				"south": {"uv": [4.5, 3.75, 6, 3.75], "texture": "#1"},
-				"west": {"uv": [3, 3.75, 4.5, 3.75], "texture": "#1"},
-				"up": {"uv": [3, 3.75, 1.5, 2.25], "texture": "#1"},
-				"down": {"uv": [4.5, 2.25, 3, 3.75], "texture": "#1"}
-			}
+	"display": {
+		"gui": {
+			"rotation": [ 30, 225, 0 ],
+			"translation": [ 0, 5, 0],
+			"scale":[ 1.25, 1.25, 1.25 ]
+		},
+		"ground": {
+			"rotation": [ 0, 0, 0 ],
+			"translation": [ 0, 4, 0],
+			"scale":[ 1, 1, 1 ]
+		},
+		"thirdperson_righthand": {
+			"rotation": [ 65, 45, 0 ],
+			"translation": [ 0, 2.5, 3],
+			"scale": [ 0.5625, 0.5625, 0.5625 ]
+		},
+		"firstperson_righthand": {
+			"rotation": [ 15, 45, 0 ],
+			"translation": [ 0, 3.75, 1.5],
+			"scale": [ 0.6, 0.6, 0.6 ]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [ 65, 45, 0 ],
+			"translation": [ 0, 2.5, 3],
+			"scale": [ 0.5625, 0.5625, 0.5625 ]
+		},
+		"firstperson_lefthand": {
+			"rotation": [ 0, 20, 25 ],
+			"translation": [ 0, 2.5, 0],
+			"scale": [ 0.6, 0.6, 0.6 ]
+		},
+		"head": {
+			"rotation": [ 0, 0, 0 ],
+			"translation": [ 0, 17.5, 0],
+			"scale":[ 1.5, 1.5, 1.5]
+		},
+		"fixed": {
+			"rotation": [ 0, 0, 0 ],
+			"translation": [ 0, 8, 0],
+			"scale":[ 1.5, 1.5, 1.5 ]
 		}
-	]
+	},
+	"children": {
+		"solid": {
+			"textures": {
+				"1": "mekanism:block/models/industrial_alarm"
+			},
+			"elements": [
+				{
+					"name": "base",
+					"from": [5, 0, 5],
+					"to": [11, 1, 11],
+					"faces": {
+						"north": {"uv": [3, 7.5, 6, 7.5], "texture": "#1"},
+						"east": {"uv": [0, 7.5, 3, 7.5], "texture": "#1"},
+						"south": {"uv": [9, 7.5, 12, 7.5], "texture": "#1"},
+						"west": {"uv": [6, 7.5, 9, 7.5], "texture": "#1"},
+						"up": {"uv": [6, 7.5, 3, 4.5], "texture": "#1"},
+						"down": {"uv": [9, 4.5, 6, 7.5], "texture": "#1", "cullface": "down"}
+					}
+				}
+			]
+		},
+		"translucent": {
+			"render_type": "minecraft:translucent",
+			"textures": {
+				"1": "mekanism:block/models/industrial_alarm"
+			},
+			"elements": [
+				{
+					"name": "bulb",
+					"from": [7, 1, 7],
+					"to": [9, 4, 9],
+					"faces": {
+						"north": {"uv": [9, 1, 10, 2.5], "texture": "#1"},
+						"east": {"uv": [8, 1, 9, 2.5], "texture": "#1"},
+						"south": {"uv": [11, 1, 12, 2.5], "texture": "#1"},
+						"west": {"uv": [10, 1, 11, 2.5], "texture": "#1"},
+						"up": {"uv": [10, 1.5, 9, 0.5], "texture": "#1"}
+					}
+				},
+				{
+					"name": "light_box",
+					"from": [6, 1, 6],
+					"to": [10, 5, 10],
+					"faces": {
+						"north": {"uv": [2, 2, 4, 4], "texture": "#1"},
+						"east": {"uv": [0, 2, 2, 4], "texture": "#1"},
+						"south": {"uv": [6, 2, 8, 4], "texture": "#1"},
+						"west": {"uv": [4, 2, 6, 4], "texture": "#1"},
+						"up": {"uv": [4, 2, 2, 0], "texture": "#1"}
+					}
+				}
+			]
+		}
+	}
 }

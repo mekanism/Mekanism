@@ -1,7 +1,6 @@
 package mekanism.client.sound;
 
 import java.util.function.UnaryOperator;
-import javax.annotation.Nonnull;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import net.minecraft.data.DataGenerator;
@@ -9,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.SoundDefinition;
 import net.minecraftforge.common.data.SoundDefinitionsProvider;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseSoundProvider extends SoundDefinitionsProvider {
 
@@ -19,7 +19,7 @@ public abstract class BaseSoundProvider extends SoundDefinitionsProvider {
         this.modid = modid;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return super.getName() + ": " + modid;

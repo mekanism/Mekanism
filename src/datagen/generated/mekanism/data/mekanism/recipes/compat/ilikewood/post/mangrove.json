@@ -1,0 +1,37 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "mekanism:mod_version_loaded",
+          "minVersion": "1.19-9.0.1.0",
+          "modid": "ilikewood"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_posts"
+        }
+      ]
+    }
+  ],
+  "input": {
+    "ingredient": [
+      {
+        "item": "ilikewood:mangrove_post"
+      },
+      {
+        "item": "ilikewood:stripped_mangrove_post"
+      }
+    ]
+  },
+  "mainOutput": {
+    "count": 3,
+    "item": "minecraft:mangrove_planks"
+  },
+  "secondaryChance": 0.125,
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  }
+}

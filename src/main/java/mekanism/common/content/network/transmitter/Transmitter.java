@@ -5,8 +5,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
@@ -33,6 +32,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER>,
       TRANSMITTER extends Transmitter<ACCEPTOR, NETWORK, TRANSMITTER>> implements ITileWrapper {
@@ -104,18 +105,18 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return connectionTypes;
     }
 
-    public void setConnectionTypesRaw(@Nonnull ConnectionType[] connectionTypes) {
+    public void setConnectionTypesRaw(@NotNull ConnectionType[] connectionTypes) {
         if (this.connectionTypes.length != connectionTypes.length) {
             throw new IllegalArgumentException("Mismatched connection types length");
         }
         this.connectionTypes = connectionTypes;
     }
 
-    public ConnectionType getConnectionTypeRaw(@Nonnull Direction side) {
+    public ConnectionType getConnectionTypeRaw(@NotNull Direction side) {
         return connectionTypes[side.ordinal()];
     }
 
-    public void setConnectionTypeRaw(@Nonnull Direction side, @Nonnull ConnectionType type) {
+    public void setConnectionTypeRaw(@NotNull Direction side, @NotNull ConnectionType type) {
         int index = side.ordinal();
         ConnectionType old = connectionTypes[index];
         if (old != type) {
@@ -137,6 +138,11 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     @Override
     public Coord4D getTileCoord() {
         return transmitterTile.getTileCoord();
+    }
+
+    @Override
+    public Chunk3D getTileChunk() {
+        return transmitterTile.getTileChunk();
     }
 
     public boolean isRemote() {
@@ -235,7 +241,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return supportsTransmissionType(transmitter.getTransmitter());
     }
 
-    @Nonnull
+    @NotNull
     public LazyOptional<ACCEPTOR> getAcceptor(Direction side) {
         return acceptorCache.getCachedAcceptor(side);
     }
@@ -383,7 +389,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         getTransmitterTile().sendUpdatePacket();
     }
 
-    @Nonnull
+    @NotNull
     public CompoundTag getReducedUpdateTag(CompoundTag updateTag) {
         updateTag.putByte(NBTConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
         updateTag.putByte(NBTConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
@@ -397,7 +403,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return updateTag;
     }
 
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         NBTUtils.setByteIfPresent(tag, NBTConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
         NBTUtils.setByteIfPresent(tag, NBTConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
         for (Direction direction : EnumUtils.DIRECTIONS) {
@@ -422,23 +428,23 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         }, () -> setTransmitterNetwork(null));
     }
 
-    protected void updateClientNetwork(@Nonnull NETWORK network) {
+    protected void updateClientNetwork(@NotNull NETWORK network) {
         network.register();
         setTransmitterNetwork(network);
     }
 
-    protected void handleContentsUpdateTag(@Nonnull NETWORK network, @Nonnull CompoundTag tag) {
+    protected void handleContentsUpdateTag(@NotNull NETWORK network, @NotNull CompoundTag tag) {
     }
 
-    public void read(@Nonnull CompoundTag nbtTags) {
+    public void read(@NotNull CompoundTag nbtTags) {
         redstoneReactive = nbtTags.getBoolean(NBTConstants.REDSTONE);
         for (Direction direction : EnumUtils.DIRECTIONS) {
             NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.CONNECTION + direction.ordinal(), ConnectionType::byIndexStatic, type -> setConnectionTypeRaw(direction, type));
         }
     }
 
-    @Nonnull
-    public CompoundTag write(@Nonnull CompoundTag nbtTags) {
+    @NotNull
+    public CompoundTag write(@NotNull CompoundTag nbtTags) {
         nbtTags.putBoolean(NBTConstants.REDSTONE, redstoneReactive);
         for (Direction direction : EnumUtils.DIRECTIONS) {
             NBTUtils.writeEnum(nbtTags, NBTConstants.CONNECTION + direction.ordinal(), getConnectionTypeRaw(direction));

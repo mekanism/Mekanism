@@ -1,8 +1,8 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.function.Consumer;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.MekanismAPI;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
@@ -20,7 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class ModuleGravitationalModulatingUnit implements ICustomModule<ModuleGravitationalModulatingUnit> {
 
     private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "gravitational_modulation_unit.png");
@@ -30,7 +30,7 @@ public class ModuleGravitationalModulatingUnit implements ICustomModule<ModuleGr
 
     @Override
     public void init(IModule<ModuleGravitationalModulatingUnit> module, ModuleConfigItemCreator configItemCreator) {
-        speedBoost = configItemCreator.createConfigItem("speed_boost", MekanismLang.MODULE_SPEED_BOOST, new ModuleEnumData<>(SprintBoost.class, SprintBoost.LOW));
+        speedBoost = configItemCreator.createConfigItem("speed_boost", MekanismLang.MODULE_SPEED_BOOST, new ModuleEnumData<>(SprintBoost.LOW));
     }
 
     @Override

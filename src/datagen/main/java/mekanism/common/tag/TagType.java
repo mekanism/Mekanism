@@ -21,9 +21,9 @@ public record TagType<TYPE>(String name, NonNullSupplier<Either<IForgeRegistry<T
 
     public static final TagType<Item> ITEM = new TagType<>("Item", () -> Either.left(ForgeRegistries.ITEMS));
     public static final TagType<Block> BLOCK = new TagType<>("Block", () -> Either.left(ForgeRegistries.BLOCKS));
-    public static final TagType<EntityType<?>> ENTITY_TYPE = new TagType<>("Entity Type", () -> Either.left(ForgeRegistries.ENTITIES));
+    public static final TagType<EntityType<?>> ENTITY_TYPE = new TagType<>("Entity Type", () -> Either.left(ForgeRegistries.ENTITY_TYPES));
     public static final TagType<Fluid> FLUID = new TagType<>("Fluid", () -> Either.left(ForgeRegistries.FLUIDS));
-    public static final TagType<BlockEntityType<?>> BLOCK_ENTITY_TYPE = new TagType<>("Block Entity Type", () -> Either.left(ForgeRegistries.BLOCK_ENTITIES));
+    public static final TagType<BlockEntityType<?>> BLOCK_ENTITY_TYPE = new TagType<>("Block Entity Type", () -> Either.left(ForgeRegistries.BLOCK_ENTITY_TYPES));
     public static final TagType<GameEvent> GAME_EVENT = new TagType<>("Game Event", () -> Either.right(Registry.GAME_EVENT));
     public static final TagType<Gas> GAS = new TagType<>("Gas", () -> Either.left(MekanismAPI.gasRegistry()));
     public static final TagType<InfuseType> INFUSE_TYPE = new TagType<>("Infuse Type", () -> Either.left(MekanismAPI.infuseTypeRegistry()));

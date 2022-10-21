@@ -1,7 +1,6 @@
 package mekanism.api.chemical.merged;
 
 import java.util.Objects;
-import javax.annotation.Nullable;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.gas.GasStack;
@@ -11,6 +10,8 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BoxedChemicalStack implements IHasTextComponent {
 
@@ -107,6 +108,7 @@ public class BoxedChemicalStack implements IHasTextComponent {
         return chemicalStack;
     }
 
+    @NotNull
     @Override
     public Component getTextComponent() {
         return chemicalStack.getTextComponent();

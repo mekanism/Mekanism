@@ -1,7 +1,5 @@
 package mekanism.common.block;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.block.interfaces.IHasTileEntity;
@@ -23,6 +21,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,7 +29,9 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.level.BlockEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BlockCardboardBox extends BlockMekanism implements IStateStorage, IHasTileEntity<TileEntityCardboardBox> {
 
@@ -38,11 +39,11 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
         super(BlockBehaviour.Properties.of(Material.WOOL).strength(0.5F, 0.6F));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     @Deprecated
-    public InteractionResult use(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand,
-          @Nonnull BlockHitResult hit) {
+    public InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
+          @NotNull BlockHitResult hit) {
         if (!player.isShiftKeyDown()) {
             return InteractionResult.PASS;
         } else if (!canReplace(world, player, pos, state)) {
@@ -54,7 +55,9 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
                 BlockData data = box.storedData;
                 //TODO: Note - this will not allow for rotation of the block based on how it is placed direction wise via the removal of
                 // the cardboard box and will instead leave it how it was when the box was initially put on
-                world.setBlockAndUpdate(pos, data.blockState);
+                //Adjust the state based on neighboring blocks to ensure double chests properly become single chests again
+                BlockState adjustedState = Block.updateFromNeighbourShapes(data.blockState, world, pos);
+                world.setBlockAndUpdate(pos, adjustedState);
                 if (data.tileTag != null) {
                     data.updateLocation(pos);
                     BlockEntity tile = WorldUtils.getTileEntity(world, pos);
@@ -62,8 +65,8 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
                         tile.load(data.tileTag);
                     }
                 }
-                //TODO: Do we need to call onBlockPlacedBy or not bother given we are setting the blockstate to what it was AND setting any tile data
-                //data.blockState.getBlock().onBlockPlacedBy(world, pos, data.blockState, player, new ItemStack(data.block));
+                //TODO: Do we need to call setPlacedBy or not bother given we are setting the blockstate to what it was AND setting any tile data
+                //adjustedState.getBlock().setPlacedBy(world, pos, data.blockState, player, new ItemStack(adjustedState.getBlock()));
                 popResource(world, pos, MekanismBlocks.CARDBOARD_BOX.getItemStack());
                 MekanismCriteriaTriggers.UNBOX_CARDBOARD_BOX.trigger((ServerPlayer) player);
             }
@@ -85,9 +88,9 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
         return false;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ItemStack getCloneItemStack(@Nonnull BlockState state, HitResult target, @Nonnull BlockGetter world, @Nonnull BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(@NotNull BlockState state, HitResult target, @NotNull BlockGetter world, @NotNull BlockPos pos, Player player) {
         ItemStack itemStack = new ItemStack(this);
         TileEntityCardboardBox tile = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
         if (tile == null) {
@@ -105,12 +108,12 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
 
     public static class BlockData {
 
-        @Nonnull
+        @NotNull
         public final BlockState blockState;
         @Nullable
         public CompoundTag tileTag;
 
-        public BlockData(@Nonnull BlockState blockState) {
+        public BlockData(@NotNull BlockState blockState) {
             this.blockState = blockState;
         }
 

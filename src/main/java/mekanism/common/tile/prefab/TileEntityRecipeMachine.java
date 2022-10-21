@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -34,6 +33,7 @@ import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE> {
 
@@ -49,7 +49,8 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe> ext
 
     protected TileEntityRecipeMachine(IBlockProvider blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes) {
         super(blockProvider, pos, state);
-        this.errorTypes = errorTypes;
+        //Copy the list if it is mutable to ensure it doesn't get changed, otherwise just use the list
+        this.errorTypes = List.copyOf(errorTypes);
         recheckAllRecipeErrors = shouldRecheckAllErrors(this);
         trackedErrors = new boolean[this.errorTypes.size()];
         //Clear the memory if we didn't use it. Note: We can set this to null as we pass it by reference so if it is not used

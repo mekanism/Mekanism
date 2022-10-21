@@ -3,8 +3,6 @@ package mekanism.common.tile;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -31,8 +29,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityChargepad extends TileEntityMekanism {
 
@@ -44,7 +44,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
         super(MekanismBlocks.CHARGEPAD, pos, state);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
@@ -67,7 +67,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
             } else if (entity instanceof EntityRobit robit) {
                 provideEnergy(robit);
             } else if (entity instanceof Player) {
-                Optional<IItemHandler> itemHandlerCap = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
+                Optional<IItemHandler> itemHandlerCap = entity.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve();
                 if (!chargeHandler(itemHandlerCap) && Mekanism.hooks.CuriosLoaded) {
                     //If we didn't charge anything in the inventory and curios is loaded try charging things in the curios slots
                     chargeHandler(CuriosIntegration.getCuriosInventory(entity));

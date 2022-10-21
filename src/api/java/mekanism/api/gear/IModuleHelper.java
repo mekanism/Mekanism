@@ -3,23 +3,22 @@ package mekanism.api.gear;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import mekanism.api.providers.IModuleDataProvider;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper class for interacting with and creating custom modules. Get an instance from {@link mekanism.api.MekanismAPI#getModuleHelper()}.
  */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public interface IModuleHelper {
 
     /**
@@ -168,7 +167,7 @@ public interface IModuleHelper {
      * @see #addMekaSuitModuleModelSpec(String, IModuleDataProvider, EquipmentSlot, Predicate)
      */
     default void addMekaSuitModuleModelSpec(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlot slotType) {
-        addMekaSuitModuleModelSpec(name, moduleDataProvider, slotType, entity -> true);
+        addMekaSuitModuleModelSpec(name, moduleDataProvider, slotType, ConstantPredicates.alwaysTrue());
     }
 
     /**

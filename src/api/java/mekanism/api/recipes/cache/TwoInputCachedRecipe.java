@@ -6,10 +6,7 @@ import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.CombinerRecipe;
@@ -20,16 +17,15 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class to help implement handling of recipes with two inputs.
  */
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends MekanismRecipe & BiPredicate<INPUT_A, INPUT_B>> extends CachedRecipe<RECIPE> {
 
     private final IInputHandler<INPUT_A> inputHandler;
@@ -122,8 +118,8 @@ public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends Mekan
      */
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>,
           RECIPE extends FluidChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>>
-    TwoInputCachedRecipe<@NonNull FluidStack, @NonNull STACK, @NonNull STACK, RECIPE> fluidChemicalToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors,
-          IInputHandler<@NonNull FluidStack> fluidInputHandler, IInputHandler<@NonNull STACK> chemicalInputHandler, IOutputHandler<@NonNull STACK> outputHandler) {
+    TwoInputCachedRecipe<@NotNull FluidStack, @NotNull STACK, @NotNull STACK, RECIPE> fluidChemicalToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors,
+          IInputHandler<@NotNull FluidStack> fluidInputHandler, IInputHandler<@NotNull STACK> chemicalInputHandler, IOutputHandler<@NotNull STACK> outputHandler) {
         return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, fluidInputHandler, chemicalInputHandler, outputHandler, recipe::getFluidInput,
               recipe::getChemicalInput, recipe::getOutput, FluidStack::isEmpty, ChemicalStack::isEmpty, ChemicalStack::isEmpty);
     }
@@ -140,8 +136,8 @@ public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends Mekan
      */
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>,
           RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>>
-    TwoInputCachedRecipe<@NonNull ItemStack, @NonNull STACK, @NonNull ItemStack, RECIPE> itemChemicalToItem(RECIPE recipe, BooleanSupplier recheckAllErrors,
-          IInputHandler<@NonNull ItemStack> itemInputHandler, IInputHandler<@NonNull STACK> chemicalInputHandler, IOutputHandler<@NonNull ItemStack> outputHandler) {
+    TwoInputCachedRecipe<@NotNull ItemStack, @NotNull STACK, @NotNull ItemStack, RECIPE> itemChemicalToItem(RECIPE recipe, BooleanSupplier recheckAllErrors,
+          IInputHandler<@NotNull ItemStack> itemInputHandler, IInputHandler<@NotNull STACK> chemicalInputHandler, IOutputHandler<@NotNull ItemStack> outputHandler) {
         return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, itemInputHandler, chemicalInputHandler, outputHandler, recipe::getItemInput, recipe::getChemicalInput,
               recipe::getOutput, ItemStack::isEmpty, ChemicalStack::isEmpty, ItemStack::isEmpty);
     }
@@ -156,9 +152,9 @@ public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends Mekan
      * @param extraInputHandler Secondary/Extra input handler.
      * @param outputHandler     Output handler.
      */
-    public static TwoInputCachedRecipe<@NonNull ItemStack, @NonNull ItemStack, @NonNull ItemStack, CombinerRecipe> combiner(CombinerRecipe recipe,
-          BooleanSupplier recheckAllErrors, IInputHandler<@NonNull ItemStack> inputHandler, IInputHandler<@NonNull ItemStack> extraInputHandler,
-          IOutputHandler<@NonNull ItemStack> outputHandler) {
+    public static TwoInputCachedRecipe<@NotNull ItemStack, @NotNull ItemStack, @NotNull ItemStack, CombinerRecipe> combiner(CombinerRecipe recipe,
+          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler, IInputHandler<@NotNull ItemStack> extraInputHandler,
+          IOutputHandler<@NotNull ItemStack> outputHandler) {
         return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, extraInputHandler, outputHandler, recipe::getMainInput, recipe::getExtraInput,
               recipe::getOutput, ItemStack::isEmpty, ItemStack::isEmpty, ItemStack::isEmpty);
     }

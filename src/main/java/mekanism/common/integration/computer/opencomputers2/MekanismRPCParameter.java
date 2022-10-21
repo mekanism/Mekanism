@@ -1,9 +1,9 @@
 package mekanism.common.integration.computer.opencomputers2;
 
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import li.cil.oc2.api.bus.device.rpc.RPCParameter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MekanismRPCParameter implements RPCParameter {
 
@@ -16,13 +16,13 @@ public class MekanismRPCParameter implements RPCParameter {
         this.name = Optional.ofNullable(name);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Class<?> getType() {
         return type;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Optional<String> getName() {
         return name;

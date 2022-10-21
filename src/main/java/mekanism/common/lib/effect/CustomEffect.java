@@ -12,9 +12,9 @@ public class CustomEffect {
 
     protected final Random rand = new Random();
 
-    protected Vec3 pos = new Vec3(0, 0, 0);
-    protected Color color = Color.rgbai(255, 255, 255, 255);
-    protected float scale = 1F;
+    private Vec3 pos = new Vec3(0, 0, 0);
+    private Color color = Color.rgbai(255, 255, 255, 255);
+    private float scale = 1F;
 
     protected int ticker;
 

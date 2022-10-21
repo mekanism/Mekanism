@@ -4,28 +4,28 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SelectedWindowData {
 
     public static final SelectedWindowData UNSPECIFIED = new SelectedWindowData(WindowType.UNSPECIFIED);
 
-    @Nonnull
+    @NotNull
     public final WindowType type;
     public final byte extraData;
 
-    public SelectedWindowData(@Nonnull WindowType type) {
+    public SelectedWindowData(@NotNull WindowType type) {
         this(type, (byte) 0);
     }
 
     /**
      * It is expected to only call this with a piece of extra data that is valid. If it is not valid this end up treating it as zero instead.
      */
-    public SelectedWindowData(@Nonnull WindowType type, byte extraData) {
+    public SelectedWindowData(@NotNull WindowType type, byte extraData) {
         this.type = Objects.requireNonNull(type);
         this.extraData = this.type.isValid(extraData) ? extraData : 0;
     }

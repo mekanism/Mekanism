@@ -70,7 +70,6 @@
   "description.mekanism.diversion": "- Interactible via stoneRed",
   "description.mekanism.teleporter": "A device capable of telolocating players to various locations defined by another telolocator.",
   "description.mekanism.tin_ore": "A lightweight, yet sturdy, conductive material that is found slightly less commonly than Cupric Metal.",
-  "disassembler.mekanism.off": "disabled",
   "energy.mekanism.forge": "RosaFarads",
   "energy.mekanism.forge.short": "RF",
   "energy.mekanism.joules": "Juule",

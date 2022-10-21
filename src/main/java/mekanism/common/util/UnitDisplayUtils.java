@@ -1,19 +1,26 @@
 package mekanism.common.util;
 
 import java.util.function.BooleanSupplier;
-import javax.annotation.Nonnull;
+import java.util.function.Supplier;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.energy.IEnergyConversion;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config.listener.ConfigBasedCachedFLSupplier;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraftforge.common.util.Lazy;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Code taken from UE and modified to fit Mekanism.
@@ -37,16 +44,13 @@ public class UnitDisplayUtils {
         }
         for (int i = 0; i < EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS.length; i++) {
             FloatingLongMeasurementUnit lowerMeasure = EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS[i];
-            if (i == 0 && lowerMeasure.below(value)) {
+            if ((i == 0 && lowerMeasure.below(value)) ||
+                i + 1 >= EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS.length ||
+                (lowerMeasure.aboveEqual(value) && EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS[i + 1].below(value))) {
+                //First element and it is below it (no more unit abbreviations before),
+                // or last element (no more unit abbreviations past),
+                // or we are within the bounds between this one and the next one
                 return TextComponentUtil.build(lowerMeasure.process(value).toString(decimalPlaces) + " " + lowerMeasure.getName(isShort), label);
-            }
-            if (i + 1 >= EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS.length) {
-                return TextComponentUtil.build(lowerMeasure.process(value).toString(decimalPlaces) + " " + lowerMeasure.getName(isShort), label);
-            } else {
-                FloatingLongMeasurementUnit upperMeasure = EnumUtils.FLOATING_LONG_MEASUREMENT_UNITS[i + 1];
-                if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value.equals(value)) {
-                    return TextComponentUtil.build(lowerMeasure.process(value).toString(decimalPlaces) + " " + lowerMeasure.getName(isShort), label);
-                }
             }
         }
         return TextComponentUtil.build(value.toString(decimalPlaces), label);
@@ -56,15 +60,17 @@ public class UnitDisplayUtils {
         return getDisplay(value, unit, 2, true);
     }
 
-    public static Component getDisplay(double temp, TemperatureUnit unit, int decimalPlaces, boolean shift, boolean isShort) {
-        return getDisplayBase(unit.convertFromK(temp, shift), unit, decimalPlaces, isShort, false);
+    public static Component getDisplay(double temp, TemperatureUnit unit, int decimalPlaces, boolean shift, boolean isShort, boolean spaceBetweenSymbol) {
+        return getDisplayBase(unit.convertFromK(temp, shift), unit, decimalPlaces, isShort, spaceBetweenSymbol);
     }
 
     public static Component getDisplayBase(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol) {
-        ILangEntry label = unit.getLabel();
-        String spaceStr = spaceBetweenSymbol ? " " : "";
         if (value == 0) {
-            return isShort ? TextComponentUtil.getString(value + spaceStr + unit.getSymbol()) : TextComponentUtil.build(value, label);
+            if (isShort) {
+                String spaceStr = spaceBetweenSymbol ? " " : "";
+                return TextComponentUtil.getString(value + spaceStr + unit.getSymbol());
+            }
+            return TextComponentUtil.build(value, unit.getLabel());
         }
         boolean negative = value < 0;
         if (negative) {
@@ -72,33 +78,17 @@ public class UnitDisplayUtils {
         }
         for (int i = 0; i < EnumUtils.MEASUREMENT_UNITS.length; i++) {
             MeasurementUnit lowerMeasure = EnumUtils.MEASUREMENT_UNITS[i];
-            String symbolStr = spaceStr + lowerMeasure.symbol;
-            if (lowerMeasure.below(value) && lowerMeasure.ordinal() == 0) {
-                if (isShort) {
-                    return TextComponentUtil.getString(roundDecimals(negative, lowerMeasure.process(value), decimalPlaces) + symbolStr + unit.getSymbol());
-                }
-                return TextComponentUtil.build(roundDecimals(negative, lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.name, label);
-            }
-            if (lowerMeasure.ordinal() + 1 >= EnumUtils.MEASUREMENT_UNITS.length) {
-                if (isShort) {
-                    return TextComponentUtil.getString(roundDecimals(negative, lowerMeasure.process(value), decimalPlaces) + symbolStr + unit.getSymbol());
-                }
-                return TextComponentUtil.build(roundDecimals(negative, lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.name, label);
-            }
-            if (i + 1 < EnumUtils.MEASUREMENT_UNITS.length) {
-                MeasurementUnit upperMeasure = EnumUtils.MEASUREMENT_UNITS[i + 1];
-                if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value == value) {
-                    if (isShort) {
-                        return TextComponentUtil.getString(roundDecimals(negative, lowerMeasure.process(value), decimalPlaces) + symbolStr + unit.getSymbol());
-                    }
-                    return TextComponentUtil.build(roundDecimals(negative, lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.name, label);
-                }
+            if ((i == 0 && lowerMeasure.below(value)) ||
+                i + 1 >= EnumUtils.MEASUREMENT_UNITS.length ||
+                (lowerMeasure.aboveEqual(value) && EnumUtils.MEASUREMENT_UNITS[i + 1].below(value))) {
+                //First element and it is below it (no more unit abbreviations before),
+                // or last element (no more unit abbreviations past),
+                // or we are within the bounds between this one and the next one
+                return lowerMeasure.getDisplay(value, unit, decimalPlaces, isShort, spaceBetweenSymbol, negative);
             }
         }
-        if (isShort) {
-            return TextComponentUtil.getString(roundDecimals(negative, value, decimalPlaces) + spaceStr + unit.getSymbol());
-        }
-        return TextComponentUtil.build(roundDecimals(negative, value, decimalPlaces) + " ", label);
+        //Fallback, should never be reached as should have been captured by the check in the loop
+        return EnumUtils.MEASUREMENT_UNITS[EnumUtils.MEASUREMENT_UNITS.length - 1].getDisplay(value, unit, decimalPlaces, isShort, spaceBetweenSymbol, negative);
     }
 
     public static Component getDisplayShort(double value, TemperatureUnit unit) {
@@ -110,7 +100,7 @@ public class UnitDisplayUtils {
     }
 
     public static Component getDisplayShort(double value, TemperatureUnit unit, boolean shift, int decimalPlaces) {
-        return getDisplay(value, unit, decimalPlaces, shift, true);
+        return getDisplay(value, unit, decimalPlaces, shift, true, false);
     }
 
     public static Component getDisplayShort(double value, RadiationUnit unit, int decimalPlaces) {
@@ -138,76 +128,113 @@ public class UnitDisplayUtils {
         ILangEntry getLabel();
     }
 
-    public record EnergyConversionRate(CachedFloatingLongValue from, CachedFloatingLongValue to) {
-    }
-
-    public enum EnergyUnit implements IDisableableEnum<EnergyUnit>, IHasTranslationKey {
-        JOULES(MekanismLang.ENERGY_JOULES, MekanismLang.ENERGY_JOULES_PLURAL, MekanismLang.ENERGY_JOULES_SHORT, "j", () -> true) {
+    @NothingNullByDefault
+    public enum EnergyUnit implements IDisableableEnum<EnergyUnit>, IEnergyConversion {
+        JOULES(MekanismLang.ENERGY_JOULES, MekanismLang.ENERGY_JOULES_PLURAL, MekanismLang.ENERGY_JOULES_SHORT, "j", null, () -> true) {
             @Override
-            protected EnergyConversionRate getConversionRate() {
-                //Return null and then override usages of it as there is no conversion needed
-                return null;
+            protected FloatingLong getConversion() {
+                //Unused but override it anyway
+                return FloatingLong.ONE;
             }
 
             @Override
-            public FloatingLong convertFrom(FloatingLong energy) {
-                return energy;
+            protected FloatingLong getInverseConversion() {
+                //Unused but override it anyway
+                return FloatingLong.ONE;
             }
 
             @Override
-            public FloatingLong convertToAsFloatingLong(FloatingLong joules) {
+            public FloatingLong convertFrom(FloatingLong joules) {
+                return joules;
+            }
+
+            @Override
+            public FloatingLong convertInPlaceFrom(FloatingLong joules) {
+                return joules;
+            }
+
+            @Override
+            public FloatingLong convertTo(FloatingLong joules) {
+                return joules;
+            }
+
+            @Override
+            public FloatingLong convertInPlaceTo(FloatingLong joules) {
                 return joules;
             }
         },
-        FORGE_ENERGY(MekanismLang.ENERGY_FORGE, MekanismLang.ENERGY_FORGE, MekanismLang.ENERGY_FORGE_SHORT, "fe", () -> !MekanismConfig.general.blacklistForge.get()) {
-            @Override
-            protected EnergyConversionRate getConversionRate() {
-                return MekanismConfig.general.FORGE_CONVERSION_RATE;
-            }
-        },
-        ELECTRICAL_UNITS(MekanismLang.ENERGY_EU, MekanismLang.ENERGY_EU_PLURAL, MekanismLang.ENERGY_EU_SHORT, "eu", EnergyCompatUtils::useIC2) {
-            @Override
-            protected EnergyConversionRate getConversionRate() {
-                return MekanismConfig.general.IC2_CONVERSION_RATE;
-            }
-        };
+        FORGE_ENERGY(MekanismLang.ENERGY_FORGE, MekanismLang.ENERGY_FORGE, MekanismLang.ENERGY_FORGE_SHORT, "fe", () -> MekanismConfig.general.forgeConversionRate,
+              //Note: Use default value if called before configs are loaded. In general this should never happen, but third party mods may just call it regardless
+              () -> !MekanismConfig.general.blacklistForge.getOrDefault()),
+        ELECTRICAL_UNITS(MekanismLang.ENERGY_EU, MekanismLang.ENERGY_EU_PLURAL, MekanismLang.ENERGY_EU_SHORT, "eu", () -> MekanismConfig.general.ic2ConversionRate,
+              EnergyCompatUtils::useIC2);
 
         private static final EnergyUnit[] TYPES = values();
 
+        private final Supplier<CachedFloatingLongValue> conversion;
+        private final Supplier<FloatingLongSupplier> inverseConversion;
         private final BooleanSupplier checkEnabled;
         private final ILangEntry singularLangEntry;
         private final ILangEntry pluralLangEntry;
         private final ILangEntry shortLangEntry;
         private final String tabName;
 
-        EnergyUnit(ILangEntry singularLangEntry, ILangEntry pluralLangEntry, ILangEntry shortLangEntry, String tabName, BooleanSupplier checkEnabled) {
+        //Note: We ignore improper nulls as they only are null for joules which overrides the various use places
+        @SuppressWarnings("ConstantConditions")
+        EnergyUnit(ILangEntry singularLangEntry, ILangEntry pluralLangEntry, ILangEntry shortLangEntry, String tabName,
+              @Nullable Supplier<CachedFloatingLongValue> conversionRate, BooleanSupplier checkEnabled) {
             this.singularLangEntry = singularLangEntry;
             this.pluralLangEntry = pluralLangEntry;
             this.shortLangEntry = shortLangEntry;
             this.checkEnabled = checkEnabled;
             this.tabName = tabName;
+            this.conversion = conversionRate;
+            if (this.conversion == null) {
+                this.inverseConversion = null;
+            } else {
+                //Cache the inverse as multiplication for floating longs is more consistently fast compared to division
+                //Note: We also cache the creation of our cache so that when MC is not initialized we can still create
+                // this enum without having initialization errors. Use case: Unit tests
+                inverseConversion = Lazy.of(() -> new ConfigBasedCachedFLSupplier(() -> FloatingLong.ONE.divide(getConversion()), this.conversion.get()));
+            }
         }
 
-        protected abstract EnergyConversionRate getConversionRate();
-
-        public FloatingLong convertFrom(long energy) {
-            return convertFrom(FloatingLong.createConst(energy));
+        protected FloatingLong getConversion() {
+            //Note: Use default value if called before configs are loaded. In general this should never happen,
+            // but third party mods may just call it regardless
+            return conversion.get().getOrDefault();
         }
 
+        protected FloatingLong getInverseConversion() {
+            return inverseConversion.get().get();
+        }
+
+        @Override
         public FloatingLong convertFrom(FloatingLong energy) {
-            return energy.multiply(getConversionRate().from.get());
+            return energy.multiply(getConversion());
         }
 
-        public int convertToAsInt(FloatingLong joules) {
-            return convertToAsFloatingLong(joules).intValue();
+        @Override
+        public FloatingLong convertInPlaceFrom(FloatingLong energy) {
+            return energy.timesEqual(getConversion());
         }
 
-        public long convertToAsLong(FloatingLong joules) {
-            return convertToAsFloatingLong(joules).longValue();
+        @Override
+        public FloatingLong convertTo(FloatingLong joules) {
+            if (joules.isZero()) {
+                //Short circuit if energy is zero to avoid having to create any additional objects
+                return FloatingLong.ZERO;
+            }
+            return joules.multiply(getInverseConversion());
         }
 
-        public FloatingLong convertToAsFloatingLong(FloatingLong joules) {
-            return joules.multiply(getConversionRate().to.get());
+        @Override
+        public FloatingLong convertInPlaceTo(FloatingLong joules) {
+            if (joules.isZero()) {
+                //Short circuit if energy is zero to avoid having to create any additional objects
+                return joules;
+            }
+            return joules.timesEqual(getInverseConversion());
         }
 
         @Override
@@ -215,7 +242,7 @@ public class UnitDisplayUtils {
             return shortLangEntry.getTranslationKey();
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public EnergyUnit byIndex(int index) {
             return MathUtils.getByIndexMod(TYPES, index);
@@ -236,6 +263,7 @@ public class UnitDisplayUtils {
         }
     }
 
+    @NothingNullByDefault
     public enum TemperatureUnit implements IIncrementalEnum<TemperatureUnit>, IHasTranslationKey, Unit {
         KELVIN(MekanismLang.TEMPERATURE_KELVIN, MekanismLang.TEMPERATURE_KELVIN_SHORT, "K", "k", 0, 1),
         CELSIUS(MekanismLang.TEMPERATURE_CELSIUS, MekanismLang.TEMPERATURE_CELSIUS_SHORT, "\u00B0C", "c", 273.15, 1),
@@ -288,7 +316,6 @@ public class UnitDisplayUtils {
             return tabName;
         }
 
-        @Nonnull
         @Override
         public TemperatureUnit byIndex(int index) {
             return MathUtils.getByIndexMod(TYPES, index);
@@ -320,10 +347,10 @@ public class UnitDisplayUtils {
      * Metric system of measurement.
      */
     public enum MeasurementUnit {
-        FEMTO("Femto", "f", 0.000000000000001D),
-        PICO("Pico", "p", 0.000000000001D),
-        NANO("Nano", "n", 0.000000001D),
-        MICRO("Micro", "\u00B5", 0.000001D),
+        FEMTO("Femto", "f", 0.000_000_000_000_001D),
+        PICO("Pico", "p", 0.000_000_000_001D),
+        NANO("Nano", "n", 0.000_000_001D),
+        MICRO("Micro", "\u00B5", 0.000_001D),
         MILLI("Milli", "m", 0.001D),
         BASE("", "", 1),
         KILO("Kilo", "k", 1_000D),
@@ -356,8 +383,8 @@ public class UnitDisplayUtils {
             this.value = value;
         }
 
-        public String getName(boolean getShort) {
-            if (getShort) {
+        public String getName(boolean isShort) {
+            if (isShort) {
                 return symbol;
             }
             return name;
@@ -367,12 +394,24 @@ public class UnitDisplayUtils {
             return d / value;
         }
 
-        public boolean above(double d) {
-            return d > value;
+        public boolean aboveEqual(double d) {
+            return d >= value;
         }
 
         public boolean below(double d) {
             return d < value;
+        }
+
+        private Component getDisplay(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol, boolean negative) {
+            double rounded = roundDecimals(negative, process(value), decimalPlaces);
+            String name = getName(isShort);
+            if (isShort) {
+                if (spaceBetweenSymbol) {
+                    name = " " + name;
+                }
+                return TextComponentUtil.getString(rounded + name + unit.getSymbol());
+            }
+            return TextComponentUtil.build(rounded + " " + name, unit.getLabel());
         }
     }
 
@@ -421,8 +460,8 @@ public class UnitDisplayUtils {
             return d.divide(value);
         }
 
-        public boolean above(FloatingLong d) {
-            return d.greaterThan(value);
+        public boolean aboveEqual(FloatingLong d) {
+            return d.greaterOrEqual(value);
         }
 
         public boolean below(FloatingLong d) {

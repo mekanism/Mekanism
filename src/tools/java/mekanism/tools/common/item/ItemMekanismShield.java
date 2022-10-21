@@ -2,8 +2,6 @@ package mekanism.tools.common.item;
 
 import java.util.List;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.tools.client.render.ToolsRenderPropertiesProvider;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.material.BaseMekanismMaterial;
@@ -15,7 +13,9 @@ import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemMekanismShield extends ShieldItem implements IHasRepairType {
 
@@ -27,17 +27,17 @@ public class ItemMekanismShield extends ShieldItem implements IHasRepairType {
     }
 
     @Override
-    public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
+    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
         consumer.accept(ToolsRenderPropertiesProvider.shield());
     }
 
     @Override
-    public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, world, tooltip, flag);//Add the banner type description
         ToolsUtils.addDurability(tooltip, stack);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Ingredient getRepairMaterial() {
         return material.getRepairIngredient();
@@ -54,7 +54,7 @@ public class ItemMekanismShield extends ShieldItem implements IHasRepairType {
     }
 
     @Override
-    public boolean isValidRepairItem(@Nonnull ItemStack toRepair, @Nonnull ItemStack repair) {
+    public boolean isValidRepairItem(@NotNull ItemStack toRepair, @NotNull ItemStack repair) {
         return getRepairMaterial().test(repair);
     }
 

@@ -2,11 +2,11 @@ package mekanism.common.integration.computer.computercraft;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nullable;
 import net.minecraft.nbt.CollectionTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.nbt.Tag;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
 
 class CCArgumentWrapperTestHelper {

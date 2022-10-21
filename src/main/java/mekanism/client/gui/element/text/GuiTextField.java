@@ -4,10 +4,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
-import javax.annotation.Nonnull;
+import java.util.function.UnaryOperator;
 import mekanism.api.functions.CharPredicate;
 import mekanism.api.functions.CharUnaryOperator;
 import mekanism.client.SpecialColors;
+import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -17,6 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -35,6 +37,7 @@ public class GuiTextField extends GuiElement {
     private Runnable enterHandler;
     private CharPredicate inputValidator;
     private CharUnaryOperator inputTransformer;
+    private UnaryOperator<String> pasteTransformer;
     private Consumer<String> responder;
 
     private BackgroundType backgroundType = BackgroundType.DEFAULT;
@@ -116,6 +119,11 @@ public class GuiTextField extends GuiElement {
         return this;
     }
 
+    public GuiTextField setPasteTransformer(UnaryOperator<String> pasteTransformer) {
+        this.pasteTransformer = pasteTransformer;
+        return this;
+    }
+
     public GuiTextField setBackground(BackgroundType backgroundType) {
         this.backgroundType = backgroundType;
         return this;
@@ -188,7 +196,7 @@ public class GuiTextField extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         backgroundType.render(this, matrix);
         if (textScale == 1F) {
@@ -210,15 +218,9 @@ public class GuiTextField extends GuiElement {
         }
     }
 
-    private void renderTextField(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    private void renderTextField(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Apply matrix via render system so that it applies to the highlight
-        PoseStack modelViewStack = RenderSystem.getModelViewStack();
-        modelViewStack.pushPose();
-        modelViewStack.mulPoseMatrix(matrix.last().pose());
-        RenderSystem.applyModelViewMatrix();
-        textField.render(new PoseStack(), mouseX, mouseY, partialTicks);
-        modelViewStack.popPose();
-        RenderSystem.applyModelViewMatrix();
+        GuiUtils.renderWithPose(matrix, () -> textField.render(new PoseStack(), mouseX, mouseY, partialTicks));
     }
 
     @Override
@@ -251,6 +253,9 @@ public class GuiTextField extends GuiElement {
             } else if (Screen.isPaste(keyCode)) {
                 //Manual handling of textField#keyPressed for pasting so that we can filter things as needed
                 String text = Minecraft.getInstance().keyboardHandler.getClipboard();
+                if (pasteTransformer != null) {
+                    text = pasteTransformer.apply(text);
+                }
                 if (inputTransformer != null || inputValidator != null) {
                     boolean transformed = false;
                     char[] charArray = text.toCharArray();

@@ -1,6 +1,6 @@
 ![Mekanism Logo](logo.png)
 
-# Mekanism for Minecraft 1.18 #
+# Mekanism for Minecraft 1.19 #
 
 Mekanism is an independent Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, 
 armor, and weapons. You can find more detail on the features on the [**Official Website**](http://aidancbrady.com/mekanism/).
@@ -59,7 +59,7 @@ dependencies {
 Add the following to your `gradle.properties` file (see [Maven](https://modmaven.dev/mekanism/Mekanism/) for the list of available versions):
 
 ```properties
-mekanism_version=1.18.2-10.2.0.459
+mekanism_version=1.19.2-10.3.2.469
 ```
 
 # Credits #

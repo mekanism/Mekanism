@@ -2,14 +2,14 @@ package mekanism.common.integration.crafttweaker.content.builder;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister(loaders = CrTConstants.CONTENT_LOADER)
@@ -93,7 +93,7 @@ public class CrTRobitSkinBuilder {
                 }
 
                 @Override
-                public boolean isUnlocked(@Nonnull Player player) {
+                public boolean isUnlocked(@NotNull Player player) {
                     return unlockedPredicate == null ? super.isUnlocked(player) : unlockedPredicate.test(player);
                 }
             };

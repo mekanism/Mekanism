@@ -20,8 +20,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
@@ -57,6 +55,8 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer> implements IRecipeTransferHandler<CONTAINER, CraftingRecipe> {
 
@@ -340,7 +340,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
         return null;
     }
 
-    private IRecipeTransferError invalidSource(@Nonnull HashedItem type) {
+    private IRecipeTransferError invalidSource(@NotNull HashedItem type) {
         ItemStack stack = type.getStack();
         Mekanism.logger.warn("Error finding source for: {} with nbt: {}. This should not be possible happen.", stack.getItem(), stack.getTag());
         return handlerHelper.createInternalError();

@@ -1,12 +1,9 @@
 package mekanism.common.integration.crafttweaker.jeitweaker;
 
-import com.blamejared.crafttweaker.api.annotation.ZenRegister;
-import com.blamejared.crafttweaker_annotations.annotations.TypedExpansion;
 import com.blamejared.jeitweaker.zen.component.JeiDrawable;
 import com.blamejared.jeitweaker.zen.component.JeiIngredient;
 import com.blamejared.jeitweaker.zen.component.JeiIngredientExpansions;
 import com.blamejared.jeitweaker.zen.component.RawJeiIngredient;
-import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
@@ -18,8 +15,9 @@ public class JEITweakerExpansions {
     private JEITweakerExpansions() {
     }
 
-    @ZenRegister(modDeps = MekanismHooks.JEITWEAKER_MOD_ID)
-    @TypedExpansion(ICrTGasStack.class)
+    //TODO - 1.19: Update once JEI Tweaker updates
+    //@ZenRegister(modDeps = MekanismHooks.JEITWEAKER_MOD_ID)
+    //@TypedExpansion(ICrTGasStack.class)
     public static class ICrTGasStackExpansion {
 
         private ICrTGasStackExpansion() {
@@ -42,8 +40,9 @@ public class JEITweakerExpansions {
         }
     }
 
-    @ZenRegister(modDeps = MekanismHooks.JEITWEAKER_MOD_ID)
-    @TypedExpansion(ICrTInfusionStack.class)
+    //TODO - 1.19: Update once JEI Tweaker updates
+    //@ZenRegister(modDeps = MekanismHooks.JEITWEAKER_MOD_ID)
+    //@TypedExpansion(ICrTInfusionStack.class)
     public static class ICrTInfusionStackExpansion {
 
         private ICrTInfusionStackExpansion() {
@@ -66,8 +65,9 @@ public class JEITweakerExpansions {
         }
     }
 
-    @ZenRegister(modDeps = MekanismHooks.JEITWEAKER_MOD_ID)
-    @TypedExpansion(ICrTPigmentStack.class)
+    //TODO - 1.19: Update once JEI Tweaker updates
+    //@ZenRegister(modDeps = MekanismHooks.JEITWEAKER_MOD_ID)
+    //@TypedExpansion(ICrTPigmentStack.class)
     public static class ICrTPigmentStackExpansion {
 
         private ICrTPigmentStackExpansion() {
@@ -90,8 +90,9 @@ public class JEITweakerExpansions {
         }
     }
 
-    @ZenRegister(modDeps = MekanismHooks.JEITWEAKER_MOD_ID)
-    @TypedExpansion(ICrTSlurryStack.class)
+    //TODO - 1.19: Update once JEI Tweaker updates
+    //@ZenRegister(modDeps = MekanismHooks.JEITWEAKER_MOD_ID)
+    //@TypedExpansion(ICrTSlurryStack.class)
     public static class ICrTSlurryStackExpansion {
 
         private ICrTSlurryStackExpansion() {

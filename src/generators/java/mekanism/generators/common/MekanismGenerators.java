@@ -2,11 +2,13 @@ package mekanism.generators.common;
 
 import mekanism.api.MekanismIMC;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
 import mekanism.common.command.builders.BuildCommand;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.MekanismModConfig;
+import mekanism.common.config.listener.ConfigBasedCachedFLSupplier;
 import mekanism.common.lib.Version;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismGases;
@@ -46,6 +48,11 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class MekanismGenerators implements IModModule {
 
     public static final String MODID = "mekanismgenerators";
+    private static final ConfigBasedCachedFLSupplier ETHENE_ENERGY_DENSITY = new ConfigBasedCachedFLSupplier(() -> {
+        //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
+        FloatingLong energy = MekanismGeneratorsConfig.generators.bioGeneration.get().multiply(2L * MekanismConfig.general.ETHENE_BURN_TIME.get());
+        return MekanismConfig.general.FROM_H2.get().add(energy);
+    }, MekanismConfig.general.FROM_H2, MekanismGeneratorsConfig.generators.bioGeneration, MekanismConfig.general.ETHENE_BURN_TIME);
 
     public static MekanismGenerators instance;
 
@@ -92,14 +99,11 @@ public class MekanismGenerators implements IModModule {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
-        MekanismGases.ETHENE.get().addAttribute(new Fuel(MekanismConfig.general.ETHENE_BURN_TIME,
-              () -> MekanismConfig.general.FROM_H2.get().add(MekanismGeneratorsConfig.generators.bioGeneration.get()
-                    .multiply(2L * MekanismConfig.general.ETHENE_BURN_TIME.get()))));
-
         event.enqueueWork(() -> {
             //Ensure our tags are all initialized
             GeneratorTags.init();
+            //Add fuel attribute to ethene
+            MekanismGases.ETHENE.get().addAttribute(new Fuel(MekanismConfig.general.ETHENE_BURN_TIME, ETHENE_ENERGY_DENSITY));
             //Register dispenser behaviors
             GeneratorsFluids.FLUIDS.registerBucketDispenserBehavior();
             //Register extended build commands (in enqueue as it is not thread safe)

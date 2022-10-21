@@ -1,48 +1,48 @@
 {
-  "parent": "builtin/entity",
-  "textures": {
-    "particle": "mekanism:block/steel_casing"
-  },
+  "loader": "forge:composite",
+  "gui_light": "side",
   "display": {
-    "gui": {
-      "rotation": [ 30, 225, 0 ],
-      "translation": [ 0, 0, 0],
-      "scale":[ 0.375, 0.375, 0.375 ]
-    },
-    "ground": {
-      "rotation": [ 0, 0, 0 ],
-      "translation": [ 0, 2, 0],
-      "scale":[ 0.15, 0.15, 0.15 ]
-    },
     "thirdperson_righthand": {
-      "rotation": [ 75, 45, 0 ],
-      "translation": [ 0, 2.5, 0],
-      "scale": [ 0.225, 0.225, 0.225 ]
-    },
-    "firstperson_righthand": {
-      "rotation": [ 0, 45, 0 ],
-      "translation": [ 0, 0, 0],
-      "scale": [ 0.24, 0.24, 0.24 ]
+      "rotation": [75, 45, 0],
+      "translation": [0, 2.5, 0],
+      "scale": [0.375, 0.375, 0.375]
     },
     "thirdperson_lefthand": {
-      "rotation": [ 75, 45, 0 ],
-      "translation": [ 0, 2.5, 0],
-      "scale": [ 0.225, 0.225, 0.225 ]
+      "rotation": [75, 45, 0],
+      "translation": [0, 2.5, 0],
+      "scale": [0.375, 0.375, 0.375]
+    },
+    "firstperson_righthand": {
+      "rotation": [0, 45, 0],
+      "scale": [0.4, 0.4, 0.4]
     },
     "firstperson_lefthand": {
-      "rotation": [ 0, 45, 0 ],
-      "translation": [ 0, 0, 0],
-      "scale": [ 0.24, 0.24, 0.24 ]
+      "rotation": [0, 225, 0],
+      "scale": [0.4, 0.4, 0.4]
+    },
+    "ground": {
+      "translation": [0, 3, 0],
+      "scale": [0.25, 0.25, 0.25]
+    },
+    "gui": {
+      "rotation": [30, 225, 0],
+      "translation": [0, -2.75, 0],
+      "scale": [0.4, 0.4, 0.4]
     },
     "head": {
-      "rotation": [ 0, 0, 0 ],
-      "translation": [ 0, 4, 0],
-      "scale":[ 1, 1, 1]
+      "translation": [0, 14.75, 0]
     },
     "fixed": {
-      "rotation": [ 0, 0, 0 ],
-      "translation": [ 0, -0.5, 0],
-      "scale":[ 0.6, 0.6, 0.6 ]
+      "translation": [0, -4, 0],
+      "scale": [0.5, 0.5, 0.5]
+    }
+  },
+  "children": {
+    "base": {
+      "parent": "mekanism:block/seismic_vibrator"
+    },
+    "shaft": {
+      "parent": "mekanism:block/vibrator_shaft"
     }
   }
 }

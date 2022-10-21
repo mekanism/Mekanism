@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
-import javax.annotation.Nullable;
 import mekanism.api.functions.TriConsumer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -13,6 +12,7 @@ import mekanism.common.lib.Version;
 import mekanism.common.lib.math.Range3D;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -31,6 +31,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class BasePacketHandler {
 
@@ -141,7 +142,7 @@ public abstract class BasePacketHandler {
     public <MSG> void sendTo(MSG message, ServerPlayer player) {
         //Validate it is not a fake player, even though none of our code should call this with a fake player
         if (!(player instanceof FakePlayer)) {
-            getChannel().sendTo(message, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+            getChannel().send(PacketDistributor.PLAYER.with(() -> player), message);
         }
     }
 
@@ -206,7 +207,7 @@ public abstract class BasePacketHandler {
             level.getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false).forEach(p -> sendTo(message, p));
         } else {
             //Otherwise, fallback to entities tracking the chunk if some mod did something odd and our world is not a ServerWorld
-            getChannel().send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos.getX() >> 4, pos.getZ() >> 4)), message);
+            getChannel().send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()))), message);
         }
     }
 

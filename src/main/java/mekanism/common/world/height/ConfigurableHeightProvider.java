@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
-import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.WorldConfig.OreVeinConfig;
@@ -15,6 +14,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProviderType;
+import org.jetbrains.annotations.NotNull;
 
 public class ConfigurableHeightProvider extends HeightProvider {
 
@@ -36,7 +36,7 @@ public class ConfigurableHeightProvider extends HeightProvider {
     }
 
     @Override
-    public int sample(@Nonnull RandomSource random, @Nonnull WorldGenerationContext context) {
+    public int sample(@NotNull RandomSource random, @NotNull WorldGenerationContext context) {
         int min = range.minInclusive().resolveY(context);
         int max = range.maxInclusive().resolveY(context);
         if (min > max) {
@@ -54,7 +54,7 @@ public class ConfigurableHeightProvider extends HeightProvider {
         };
     }
 
-    private int sampleTrapezoid(@Nonnull RandomSource random, int min, int max) {
+    private int sampleTrapezoid(@NotNull RandomSource random, int min, int max) {
         int plateau = range.plateau().getAsInt();
         int range = max - min;
         if (plateau >= range) {
@@ -64,7 +64,7 @@ public class ConfigurableHeightProvider extends HeightProvider {
         return min + Mth.randomBetweenInclusive(random, 0, range - middle) + Mth.randomBetweenInclusive(random, 0, middle);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public HeightProviderType<?> getType() {
         return MekanismHeightProviderTypes.CONFIGURABLE.get();

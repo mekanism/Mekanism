@@ -12,6 +12,7 @@ import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.MekanismPermissions;
 import mekanism.common.command.builders.BuildCommand;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.commands.CommandSourceStack;
@@ -34,6 +35,7 @@ public class CommandMek {
 
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("mek")
+              .requires(MekanismPermissions.COMMAND)
               .then(BuildCommand.COMMAND)
               .then(ChunkCommand.register())
               .then(DebugCommand.register())
@@ -48,7 +50,7 @@ public class CommandMek {
 
         static ArgumentBuilder<CommandSourceStack, ?> register() {
             return Commands.literal("debug")
-                  .requires(cs -> cs.hasPermission(2))
+                  .requires(MekanismPermissions.COMMAND_DEBUG)
                   .executes(ctx -> {
                       MekanismAPI.debug = !MekanismAPI.debug;
                       ctx.getSource().sendSuccess(MekanismLang.COMMAND_DEBUG.translateColored(EnumColor.GRAY, OnOff.of(MekanismAPI.debug, true)), true);
@@ -61,7 +63,7 @@ public class CommandMek {
 
         static ArgumentBuilder<CommandSourceStack, ?> register() {
             return Commands.literal("testrules")
-                  .requires(cs -> cs.hasPermission(2))
+                  .requires(MekanismPermissions.COMMAND_TEST_RULES)
                   .executes(ctx -> {
                       CommandSourceStack source = ctx.getSource();
                       MinecraftServer server = source.getServer();
@@ -82,7 +84,7 @@ public class CommandMek {
 
         static ArgumentBuilder<CommandSourceStack, ?> register() {
             return Commands.literal("tp")
-                  .requires(cs -> cs.hasPermission(2) && cs.getEntity() instanceof ServerPlayer)
+                  .requires(MekanismPermissions.COMMAND_TP.and(cs -> cs.getEntity() instanceof ServerPlayer))
                   .then(Commands.argument("location", Vec3Argument.vec3())
                         .executes(ctx -> {
                             CommandSourceStack source = ctx.getSource();
@@ -113,7 +115,7 @@ public class CommandMek {
 
         static ArgumentBuilder<CommandSourceStack, ?> register() {
             return Commands.literal("tpop")
-                  .requires(cs -> cs.hasPermission(2) && cs.getEntity() instanceof ServerPlayer)
+                  .requires(MekanismPermissions.COMMAND_TP_POP.and(cs -> cs.getEntity() instanceof ServerPlayer))
                   .executes(ctx -> {
                       CommandSourceStack source = ctx.getSource();
                       ServerPlayer player = source.getPlayerOrException();

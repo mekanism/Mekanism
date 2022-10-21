@@ -1,12 +1,10 @@
 package mekanism.common.content.sps;
 
-import java.util.List;
 import mekanism.api.NBTConstants;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 
 public class SPSCache extends MultiblockCache<SPSMultiblockData> {
 
@@ -17,8 +15,8 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     private double lastProcessed;
 
     @Override
-    public void merge(MultiblockCache<SPSMultiblockData> mergeCache, List<ItemStack> rejectedItems) {
-        super.merge(mergeCache, rejectedItems);
+    public void merge(MultiblockCache<SPSMultiblockData> mergeCache, RejectContents rejectContents) {
+        super.merge(mergeCache, rejectContents);
         progress += ((SPSCache) mergeCache).progress;
         inputProcessed += ((SPSCache) mergeCache).inputProcessed;
         couldOperate |= ((SPSCache) mergeCache).couldOperate;

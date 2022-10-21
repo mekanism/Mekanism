@@ -1,7 +1,7 @@
 package mekanism.common.tile.factory;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.ints.IntArraySet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,8 +12,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
@@ -73,6 +71,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE>, ISustainedData {
 
@@ -105,7 +105,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     /**
      * This machine's factory type.
      */
-    @Nonnull
+    @NotNull
     protected final FactoryType type;
 
     protected MachineEnergyContainer<TileEntityFactory<?>> energyContainer;
@@ -114,7 +114,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     protected EnergyInventorySlot energySlot;
 
-    protected TileEntityFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state, Map<RecipeError, Boolean> errorTypes) {
+    protected TileEntityFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes, Set<RecipeError> globalErrorTypes) {
         super(blockProvider, pos, state);
         type = Attribute.get(blockProvider, AttributeFactoryType.class).getFactoryType();
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
@@ -149,7 +149,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             //Note: We store one per slot so that we can recheck the different slots at different times to reduce the load on the server
             recheckAllRecipeErrors[i] = TileEntityRecipeMachine.shouldRecheckAllErrors(this);
         }
-        errorTracker = new ErrorTracker(errorTypes, tier.processes);
+        errorTracker = new ErrorTracker(errorTypes, globalErrorTypes, tier.processes);
     }
 
     /**
@@ -177,7 +177,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -185,7 +185,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -271,15 +271,15 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
      *
      * @return True if the recipe produces the given output.
      */
-    public boolean inputProducesOutput(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
+    public boolean inputProducesOutput(int process, @NotNull ItemStack fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
           boolean updateCache) {
         return outputSlot.isEmpty() || getRecipeForInput(process, fallbackInput, outputSlot, secondaryOutputSlot, updateCache) != null;
     }
 
-    protected abstract boolean isCachedRecipeValid(@Nullable CachedRecipe<RECIPE> cached, @Nonnull ItemStack stack);
+    protected abstract boolean isCachedRecipeValid(@Nullable CachedRecipe<RECIPE> cached, @NotNull ItemStack stack);
 
     @Nullable
-    protected RECIPE getRecipeForInput(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
+    protected RECIPE getRecipeForInput(int process, @NotNull ItemStack fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
           boolean updateCache) {
         if (!CommonWorldTickHandler.flushTagAndRecipeCaches) {
             //If our recipe caches are valid, grab our cached recipe and see if it is still valid
@@ -303,7 +303,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @Nullable
-    protected abstract RECIPE findRecipe(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot,
+    protected abstract RECIPE findRecipe(int process, @NotNull ItemStack fallbackInput, @NotNull IInventorySlot outputSlot,
           @Nullable IInventorySlot secondaryOutputSlot);
 
     protected abstract int getNeededInput(RECIPE recipe, ItemStack inputStack);
@@ -336,7 +336,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     /**
      * Like isItemValidForSlot makes no assumptions about current stored types
      */
-    public abstract boolean isValidInputItem(@Nonnull ItemStack stack);
+    public abstract boolean isValidInputItem(@NotNull ItemStack stack);
 
     public int getProgress(int cacheIndex) {
         return progress[cacheIndex];
@@ -361,7 +361,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         return sorting;
     }
 
-    @Nonnull
+    @NotNull
     @ComputerMethod(nameOverride = "getEnergyUsage")
     public FloatingLong getLastUsage() {
         return lastUsage;
@@ -373,7 +373,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         if (nbt.contains(NBTConstants.PROGRESS, Tag.TAG_INT_ARRAY)) {
             int[] savedProgress = nbt.getIntArray(NBTConstants.PROGRESS);
@@ -387,7 +387,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+    public void saveAdditional(@NotNull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
         nbtTags.put(NBTConstants.PROGRESS, new IntArrayTag(Arrays.copyOf(progress, progress.length)));
     }
@@ -417,8 +417,9 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         }
     }
 
+    @NotNull
     @Override
-    public List<Component> getInfo(Upgrade upgrade) {
+    public List<Component> getInfo(@NotNull Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
@@ -457,7 +458,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @Override
-    public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
+    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof MachineUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
@@ -718,7 +719,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         }
     }
 
-    public record ProcessInfo(int process, @Nonnull FactoryInputInventorySlot inputSlot, @Nonnull IInventorySlot outputSlot,
+    public record ProcessInfo(int process, @NotNull FactoryInputInventorySlot inputSlot, @NotNull IInventorySlot outputSlot,
                               @Nullable IInventorySlot secondaryOutputSlot) {
     }
 
@@ -743,18 +744,19 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     protected static class ErrorTracker {
 
         private final List<RecipeError> errorTypes;
-        private final IntList globalTypes;
+        private final IntSet globalTypes;
 
         //TODO: See if we can get it so we only have to sync a single version of global types?
         private final boolean[][] trackedErrors;
         private final int processes;
 
-        public ErrorTracker(Map<RecipeError, Boolean> errorTypes, int processes) {
-            this.errorTypes = List.copyOf(errorTypes.keySet());
-            globalTypes = new IntArrayList();
+        public ErrorTracker(List<RecipeError> errorTypes, Set<RecipeError> globalErrorTypes, int processes) {
+            //Copy the list if it is mutable to ensure it doesn't get changed, otherwise just use the list
+            this.errorTypes = List.copyOf(errorTypes);
+            globalTypes = new IntArraySet(globalErrorTypes.size());
             for (int i = 0; i < this.errorTypes.size(); i++) {
                 RecipeError error = this.errorTypes.get(i);
-                if (errorTypes.get(error)) {
+                if (globalErrorTypes.contains(error)) {
                     globalTypes.add(i);
                 }
             }

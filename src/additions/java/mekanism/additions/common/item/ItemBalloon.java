@@ -1,7 +1,6 @@
 package mekanism.additions.common.item;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.additions.common.entity.EntityBalloon;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
@@ -27,6 +26,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemBalloon extends Item {
 
@@ -42,9 +42,9 @@ public class ItemBalloon extends Item {
         return color;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level world, @NotNull Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!world.isClientSide) {
             boolean rightHand = (player.getMainArm() == HumanoidArm.RIGHT) == (hand == InteractionHand.MAIN_HAND);
@@ -61,9 +61,9 @@ public class ItemBalloon extends Item {
         return InteractionResultHolder.success(stack);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Component getName(@Nonnull ItemStack stack) {
+    public Component getName(@NotNull ItemStack stack) {
         Item item = stack.getItem();
         if (item instanceof ItemBalloon balloon) {
             return TextComponentUtil.build(balloon.getColor(), super.getName(stack));
@@ -71,7 +71,7 @@ public class ItemBalloon extends Item {
         return super.getName(stack);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
@@ -111,9 +111,9 @@ public class ItemBalloon extends Item {
         return InteractionResult.PASS;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public InteractionResult interactLivingEntity(@Nonnull ItemStack stack, Player player, @Nonnull LivingEntity entity, @Nonnull InteractionHand hand) {
+    public InteractionResult interactLivingEntity(@NotNull ItemStack stack, Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
         if (player.isShiftKeyDown()) {
             if (!player.level.isClientSide) {
                 AABB bound = new AABB(entity.getX() - 0.2, entity.getY() - 0.5, entity.getZ() - 0.2,
@@ -144,9 +144,9 @@ public class ItemBalloon extends Item {
             this.color = color;
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        public ItemStack execute(BlockSource source, @Nonnull ItemStack stack) {
+        public ItemStack execute(BlockSource source, @NotNull ItemStack stack) {
             Direction side = source.getBlockState().getValue(DispenserBlock.FACING);
             BlockPos sourcePos = source.getPos();
             BlockPos offsetPos = sourcePos.relative(side);

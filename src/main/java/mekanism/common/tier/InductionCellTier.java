@@ -1,14 +1,13 @@
 package mekanism.common.tier;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedFloatingLongValue;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public enum InductionCellTier implements ITier {
     BASIC(BaseTier.BASIC, FloatingLong.createConst(8_000_000_000L)),
     ADVANCED(BaseTier.ADVANCED, FloatingLong.createConst(64_000_000_000L)),
@@ -17,6 +16,7 @@ public enum InductionCellTier implements ITier {
 
     private final FloatingLong baseMaxEnergy;
     private final BaseTier baseTier;
+    @Nullable
     private CachedFloatingLongValue storageReference;
 
     InductionCellTier(BaseTier tier, FloatingLong max) {

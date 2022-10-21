@@ -1,8 +1,10 @@
 package mekanism.additions.common;
 
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.ILangEntry;
 import net.minecraft.Util;
 
+@NothingNullByDefault
 public enum AdditionsLang implements ILangEntry {
     CHANNEL("walkie", "channel"),
     CHANNEL_CHANGE("walkie", "channel.change"),

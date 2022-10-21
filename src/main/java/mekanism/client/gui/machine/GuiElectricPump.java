@@ -3,7 +3,6 @@ package mekanism.client.gui.machine;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -21,7 +20,7 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, MekanismTileContainer<TileEntityElectricPump>> {
 
@@ -52,13 +51,13 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
                   return energyContainer.getEnergyPerTick().greaterThan(energyContainer.getEnergy());
               });
         addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13))
-              .warning(WarningType.NO_SPACE_IN_OUTPUT, () -> tile.fluidTank.getNeeded() < FluidType.BUCKET_VOLUME);
+              .warning(WarningType.NO_SPACE_IN_OUTPUT, () -> tile.fluidTank.getNeeded() < tile.estimateIncrementAmount());
         //TODO: Eventually we may want to consider showing a warning if the block under the pump is of the wrong type or there wasn't a valid spot to suck
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer()));
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
         drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);

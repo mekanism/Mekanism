@@ -9,11 +9,12 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
@@ -50,6 +51,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTracker, IInfusionTracker,
       IPigmentTracker, ISlurryTracker {
@@ -96,11 +99,37 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     protected final List<IEnergyContainer> energyContainers = new ArrayList<>();
     protected final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
+    private final BiPredicate<Object, @NotNull AutomationType> formedBiPred = (t, automationType) -> isFormed();
+    private final BiPredicate<Object, @NotNull AutomationType> notExternalFormedBiPred = (t, automationType) -> automationType != AutomationType.EXTERNAL && isFormed();
+
     private boolean dirty;
 
     public MultiblockData(BlockEntity tile) {
         remoteSupplier = () -> tile.getLevel().isClientSide();
         worldSupplier = tile::getLevel;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> BiPredicate<T, @NotNull AutomationType> formedBiPred() {
+        return (BiPredicate<T, @NotNull AutomationType>) formedBiPred;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> BiPredicate<T, @NotNull AutomationType> notExternalFormedBiPred() {
+        return (BiPredicate<T, @NotNull AutomationType>) notExternalFormedBiPred;
+    }
+
+    protected IContentsListener createSaveAndComparator() {
+        return createSaveAndComparator(this);
+    }
+
+    protected IContentsListener createSaveAndComparator(IContentsListener contentsListener) {
+        return () -> {
+            contentsListener.onContentsChanged();
+            if (!isRemote()) {
+                markDirtyComparator(getWorld());
+            }
+        };
     }
 
     public boolean isDirty() {
@@ -286,7 +315,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     /**
      * Checks if this multiblock is formed and the given position is insides the bounds of this multiblock
      */
-    public <T extends MultiblockData> boolean isPositionInsideBounds(@Nonnull Structure structure, @Nonnull BlockPos pos) {
+    public <T extends MultiblockData> boolean isPositionInsideBounds(@NotNull Structure structure, @NotNull BlockPos pos) {
         if (isFormed()) {
             CuboidRelative relativeLocation = getBounds().getRelativeLocation(pos);
             if (relativeLocation == CuboidRelative.INSIDE) {
@@ -307,49 +336,49 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return false;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return isFormed() ? inventorySlots : Collections.emptyList();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         return isFormed() ? fluidTanks : Collections.emptyList();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IGasTank> getGasTanks(@Nullable Direction side) {
         return isFormed() ? gasTanks : Collections.emptyList();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IInfusionTank> getInfusionTanks(@Nullable Direction side) {
         return isFormed() ? infusionTanks : Collections.emptyList();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IPigmentTank> getPigmentTanks(@Nullable Direction side) {
         return isFormed() ? pigmentTanks : Collections.emptyList();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<ISlurryTank> getSlurryTanks(@Nullable Direction side) {
         return isFormed() ? slurryTanks : Collections.emptyList();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         return isFormed() ? energyContainers : Collections.emptyList();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IHeatCapacitor> getHeatCapacitors(Direction side) {
         return isFormed() ? heatCapacitors : Collections.emptyList();

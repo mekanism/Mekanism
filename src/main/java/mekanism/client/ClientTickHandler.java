@@ -12,6 +12,7 @@ import mekanism.api.gear.IModule;
 import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.render.RenderTickHandler;
+import mekanism.client.render.lib.ScrollIncrementer;
 import mekanism.client.sound.GeigerSound;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonPlayerTickHandler;
@@ -26,14 +27,13 @@ import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.item.interfaces.IModeItem;
-import mekanism.common.item.interfaces.IRadialModeItem;
-import mekanism.common.item.interfaces.IRadialSelectorEnum;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
+import mekanism.common.lib.radial.IGenericRadialModeItem;
+import mekanism.api.radial.RadialData;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.network.to_server.PacketModeChange;
 import mekanism.common.network.to_server.PacketPortableTeleporterTeleport;
-import mekanism.common.network.to_server.PacketRadialModeChange;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtil;
@@ -52,11 +52,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
+import net.minecraftforge.client.event.InputEvent.MouseScrollingEvent;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.ScreenEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.Event;
@@ -72,13 +71,13 @@ public class ClientTickHandler {
     public static final Minecraft minecraft = Minecraft.getInstance();
     public static final Random rand = new Random();
     public static final Map<Player, TeleportData> portableTeleports = new Object2ObjectArrayMap<>(1);
-    public boolean initHoliday = false;
-    public boolean shouldReset = false;
+    private static final ScrollIncrementer scrollIncrementer = new ScrollIncrementer(true);
+
     public static boolean firstTick = true;
     public static boolean visionEnhancement = false;
 
-    private static long lastScrollTime = -1;
-    private static double scrollDelta;
+    public boolean initHoliday = false;
+    public boolean shouldReset = false;
 
     public static boolean isJetpackInUse(Player player, ItemStack jetpack) {
         if (!player.isSpectator() && !jetpack.isEmpty()) {
@@ -170,10 +169,6 @@ public class ClientTickHandler {
             //Reboot player sounds if needed
             SoundHandler.restartSounds();
 
-            if (minecraft.level.getGameTime() - lastScrollTime > 20) {
-                scrollDelta = 0;
-            }
-
             RadiationManager.INSTANCE.tickClient(minecraft.player);
 
             UUID playerUUID = minecraft.player.getUUID();
@@ -235,13 +230,13 @@ public class ClientTickHandler {
                 }
             }
 
-            ItemStack stack = minecraft.player.getItemBySlot(EquipmentSlot.MAINHAND);
-            if (MekKeyHandler.isRadialPressed() && stack.getItem() instanceof IRadialModeItem<?> item) {
-                if (minecraft.screen == null || minecraft.screen instanceof GuiRadialSelector) {
-                    updateSelectorRenderer(item);
+            if (minecraft.screen == null || minecraft.screen instanceof GuiRadialSelector) {
+                if (!MekKeyHandler.isRadialPressed() || (!updateSelectorRenderer(EquipmentSlot.MAINHAND) && !updateSelectorRenderer(EquipmentSlot.OFFHAND))) {
+                    if (minecraft.screen != null) {
+                        //If we currently have a radial selector gui open but shouldn't close it
+                        minecraft.setScreen(null);
+                    }
                 }
-            } else if (minecraft.screen instanceof GuiRadialSelector) {
-                minecraft.setScreen(null);
             }
 
             if (MekanismConfig.client.enablePlayerSounds.get()) {
@@ -255,56 +250,44 @@ public class ClientTickHandler {
         }
     }
 
-    private <TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYPE>> void updateSelectorRenderer(IRadialModeItem<TYPE> modeItem) {
-        Class<TYPE> modeClass = modeItem.getModeClass();
-        if (!(minecraft.screen instanceof GuiRadialSelector<?> screen) || screen.getEnumClass() != modeClass) {
-            minecraft.setScreen(new GuiRadialSelector<>(modeClass, () -> {
-                if (minecraft.player != null) {
-                    ItemStack s = minecraft.player.getItemBySlot(EquipmentSlot.MAINHAND);
-                    if (s.getItem() instanceof IRadialModeItem) {
-                        //noinspection unchecked
-                        return ((IRadialModeItem<TYPE>) s.getItem()).getMode(s);
+    private boolean updateSelectorRenderer(EquipmentSlot slot) {
+        if (minecraft.player != null) {
+            ItemStack stack = minecraft.player.getItemBySlot(slot);
+            if (stack.getItem() instanceof IGenericRadialModeItem item) {
+                RadialData<?> radialData = item.getRadialData(stack);
+                if (radialData != null) {
+                    if (!(minecraft.screen instanceof GuiRadialSelector screen) || !screen.hasMatchingData(slot, radialData)) {
+                        GuiRadialSelector newSelector = new GuiRadialSelector(slot, radialData, () -> minecraft.player);
+                        newSelector.tryInheritCurrentPath(minecraft.screen);
+                        minecraft.setScreen(newSelector);
                     }
+                    return true;
                 }
-                return modeItem.getDefaultMode();
-            }, type -> {
-                if (minecraft.player != null) {
-                    Mekanism.packetHandler().sendToServer(new PacketRadialModeChange(EquipmentSlot.MAINHAND, type.ordinal()));
-                }
-            }));
+            }
         }
+        return false;
     }
 
     @SubscribeEvent
-    public void onMouseEvent(MouseScrollEvent event) {
+    public void onMouseEvent(MouseScrollingEvent event) {
         if (MekanismConfig.client.allowModeScroll.get() && minecraft.player != null && minecraft.player.isShiftKeyDown()) {
-            handleModeScroll(event, event.getScrollDelta());
+            handleModeScroll(event, EquipmentSlot.MAINHAND, event.getScrollDelta());
         }
     }
 
-    @SubscribeEvent
-    public void onGuiMouseEvent(ScreenEvent.MouseScrollEvent.Pre event) {
-        if (event.getScreen() instanceof GuiRadialSelector) {
-            handleModeScroll(event, event.getScrollDelta());
-        }
-    }
-
-    private void handleModeScroll(Event event, double delta) {
-        if (delta != 0 && IModeItem.isModeItem(minecraft.player, EquipmentSlot.MAINHAND)) {
-            lastScrollTime = minecraft.level.getGameTime();
-            scrollDelta += delta;
-            int shift = (int) scrollDelta;
-            scrollDelta %= 1;
+    private void handleModeScroll(Event event, EquipmentSlot slot, double delta) {
+        if (delta != 0 && IModeItem.isModeItem(minecraft.player, slot)) {
+            int shift = scrollIncrementer.scroll(delta);
             if (shift != 0) {
                 RenderTickHandler.modeSwitchTimer = 100;
-                Mekanism.packetHandler().sendToServer(new PacketModeChange(EquipmentSlot.MAINHAND, shift));
+                Mekanism.packetHandler().sendToServer(new PacketModeChange(slot, shift));
             }
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
-    public void onFogLighting(EntityViewRenderEvent.FogColors event) {
+    public void onFogLighting(ViewportEvent.ComputeFogColor event) {
         if (visionEnhancement) {
             event.setBlue(0.4F);
             event.setRed(0.4F);
@@ -313,7 +296,7 @@ public class ClientTickHandler {
     }
 
     @SubscribeEvent
-    public void onFog(EntityViewRenderEvent.RenderFogEvent event) {
+    public void onFog(ViewportEvent.RenderFog event) {
         if (visionEnhancement) {
             float fog = 384;
             IModule<ModuleVisionEnhancementUnit> module = MekanismAPI.getModuleHelper().load(minecraft.player.getItemBySlot(EquipmentSlot.HEAD), MekanismModules.VISION_ENHANCEMENT_UNIT);

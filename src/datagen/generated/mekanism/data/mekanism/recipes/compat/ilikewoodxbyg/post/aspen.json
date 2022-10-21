@@ -2,39 +2,39 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewoodxbyg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
         },
         {
-          "modid": "byg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "byg"
         },
         {
-          "modid": "ilikewood_posts",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_posts"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "input": {
     "ingredient": [
       {
-        "item": "ilikewood:aspen_post"
+        "item": "ilikewood:byg_aspen_post"
       },
       {
-        "item": "ilikewood:stripped_aspen_post"
+        "item": "ilikewood:byg_stripped_aspen_post"
       }
     ]
   },
   "mainOutput": {
-    "item": "byg:aspen_planks",
-    "count": 3
+    "count": 3,
+    "item": "byg:aspen_planks"
   },
+  "secondaryChance": 0.125,
   "secondaryOutput": {
     "item": "mekanism:sawdust"
-  },
-  "secondaryChance": 0.125
+  }
 }

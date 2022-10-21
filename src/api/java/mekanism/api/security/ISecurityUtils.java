@@ -2,20 +2,20 @@ package mekanism.api.security;
 
 import java.util.List;
 import java.util.UUID;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Utility class for interacting with Mekanism's security system. Get an instance from {@link mekanism.api.MekanismAPI#getSecurityUtils()}.
  *
  * @since 10.2.1
  */
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public interface ISecurityUtils {
 
     /**

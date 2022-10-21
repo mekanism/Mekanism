@@ -1,7 +1,5 @@
 package mekanism.generators.common.tile.turbine;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.util.NBTUtils;
@@ -14,6 +12,8 @@ import net.minecraft.world.Clearable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityTurbineRotor extends TileEntityInternalMultiblock implements Clearable {
 
@@ -159,7 +159,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         blades = nbt.getInt(NBTConstants.BLADES);
         position = nbt.getInt(NBTConstants.POSITION);
@@ -167,13 +167,13 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+    public void saveAdditional(@NotNull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
         nbtTags.putInt(NBTConstants.BLADES, getHousedBlades());
         nbtTags.putInt(NBTConstants.POSITION, getPosition());
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public AABB getRenderBoundingBox() {
         if (blades == 0 || radius == -1) {
@@ -183,7 +183,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
         return new AABB(worldPosition.offset(-radius, 0, -radius), worldPosition.offset(1 + radius, 1, 1 + radius));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
@@ -193,7 +193,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         int prevBlades = blades;
         int prevPosition = position;

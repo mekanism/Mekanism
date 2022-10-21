@@ -1,10 +1,9 @@
 package mekanism.common.tile.laser;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTranslationKey;
@@ -30,6 +29,7 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements IHasMode {
 
@@ -239,6 +239,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
     //End methods IComputerTile
 
+    @NothingNullByDefault
     public enum RedstoneOutput implements IIncrementalEnum<RedstoneOutput>, IHasTranslationKey {
         OFF(MekanismLang.OFF),
         ENTITY_DETECTION(MekanismLang.ENTITY_DETECTION),
@@ -256,7 +257,6 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
             return langEntry.getTranslationKey();
         }
 
-        @Nonnull
         @Override
         public RedstoneOutput byIndex(int index) {
             return byIndexStatic(index);

@@ -1,6 +1,5 @@
 package mekanism.common.item.block;
 
-import javax.annotation.Nonnull;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IPersonalStorage;
 import mekanism.common.inventory.container.item.PersonalStorageItemContainer;
@@ -22,6 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.FakePlayer;
+import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockPersonalStorage<BLOCK extends Block & IHasDescription & IPersonalStorage> extends ItemBlockTooltip<BLOCK> implements IItemSustainedInventory,
       IGuiItem {
@@ -33,18 +33,18 @@ public class ItemBlockPersonalStorage<BLOCK extends Block & IHasDescription & IP
         this.openStat = openStat;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(@Nonnull Level world, @Nonnull Player player, @Nonnull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
         return SecurityUtils.INSTANCE.claimOrOpenGui(world, player, hand, (p, h, s) -> {
             getContainerType().tryOpenGui(p, h, s);
             p.awardStat(Stats.CUSTOM.get(openStat));
         });
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public InteractionResult useOn(@Nonnull UseOnContext context) {
+    public InteractionResult useOn(@NotNull UseOnContext context) {
         //Like super.onItemUse, except we validate the player is not null, and pass the onItemRightClick regardless of if
         // we are food or not (as we know the personal chest is never food). This allows us to open the personal chest's
         // GUI if we didn't interact with a block that caused something to happen like opening a GUI.
@@ -54,7 +54,7 @@ public class ItemBlockPersonalStorage<BLOCK extends Block & IHasDescription & IP
     }
 
     @Override
-    protected boolean canPlace(@Nonnull BlockPlaceContext context, @Nonnull BlockState state) {
+    protected boolean canPlace(@NotNull BlockPlaceContext context, @NotNull BlockState state) {
         Player player = context.getPlayer();
         //Only allow placing if there is no player, it is a fake player, or the player is sneaking
         return (player == null || player instanceof FakePlayer || player.isShiftKeyDown()) && super.canPlace(context, state);

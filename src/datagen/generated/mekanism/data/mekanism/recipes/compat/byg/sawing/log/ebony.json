@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/ebony_logs"
+      "tag": "byg:ebony_logs"
     }
   },
   "mainOutput": {

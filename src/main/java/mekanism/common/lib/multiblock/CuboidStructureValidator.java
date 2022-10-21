@@ -78,7 +78,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
         if (requirement.isCasing()) {
             CasingType type = getCasingType(state);
             FormationResult ret = validateFrame(ctx, pos, state, type, requirement.needsFrame());
-            if (requirement != StructureRequirement.IGNORED && !ret.isFormed()) {
+            if ((requirement != StructureRequirement.IGNORED || ret.isNoIgnore()) && !ret.isFormed()) {
                 return ret;
             }
         } else if (!validateInner(state, chunkMap, pos)) {

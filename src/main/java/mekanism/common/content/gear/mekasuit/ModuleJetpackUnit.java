@@ -1,8 +1,8 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.function.Consumer;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.MekanismAPI;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
@@ -19,14 +19,14 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class ModuleJetpackUnit implements ICustomModule<ModuleJetpackUnit> {
 
     private IModuleConfigItem<JetpackMode> jetpackMode;
 
     @Override
     public void init(IModule<ModuleJetpackUnit> module, ModuleConfigItemCreator configItemCreator) {
-        jetpackMode = configItemCreator.createConfigItem("jetpack_mode", MekanismLang.MODULE_JETPACK_MODE, new ModuleEnumData<>(JetpackMode.class, JetpackMode.NORMAL));
+        jetpackMode = configItemCreator.createConfigItem("jetpack_mode", MekanismLang.MODULE_JETPACK_MODE, new ModuleEnumData<>(JetpackMode.NORMAL));
     }
 
     @Override
@@ -41,13 +41,12 @@ public class ModuleJetpackUnit implements ICustomModule<ModuleJetpackUnit> {
 
     @Override
     public void changeMode(IModule<ModuleJetpackUnit> module, Player player, ItemStack stack, int shift, boolean displayChangeMessage) {
-        if (module.isEnabled()) {
-            JetpackMode newMode = jetpackMode.get().adjust(shift);
-            if (jetpackMode.get() != newMode) {
-                jetpackMode.set(newMode);
-                if (displayChangeMessage) {
-                    module.displayModeChange(player, MekanismLang.MODULE_JETPACK_MODE.translate(), newMode);
-                }
+        JetpackMode currentMode = getMode();
+        JetpackMode newMode = currentMode.adjust(shift);
+        if (currentMode != newMode) {
+            jetpackMode.set(newMode);
+            if (displayChangeMessage) {
+                module.displayModeChange(player, MekanismLang.MODULE_JETPACK_MODE.translate(), newMode);
             }
         }
     }

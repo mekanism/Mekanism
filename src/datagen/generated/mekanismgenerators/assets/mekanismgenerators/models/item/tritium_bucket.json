@@ -1,5 +1,5 @@
 {
   "parent": "forge:item/bucket",
   "fluid": "mekanismgenerators:tritium",
-  "loader": "forge:bucket"
+  "loader": "forge:fluid_container"
 }

@@ -33,7 +33,18 @@ public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<Fl
      */
     @ZenCodeType.Method
     public void addRecipe(String name, FluidStackIngredient input, IFluidStack output) {
-        addRecipe(makeRecipe(getAndValidateName(name), input, getAndValidateNotEmpty(output)));
+        addRecipe(makeRecipe(getAndValidateName(name), input, output));
+    }
+
+    /**
+     * Creates a recipe that converts a fluid into another fluid.
+     *
+     * @param id     Name of the new recipe.
+     * @param input  {@link FluidStackIngredient} representing the input of the recipe.
+     * @param output {@link IFluidStack} representing the output of the recipe. Will be validated as not empty.
+     */
+    public final FluidToFluidIRecipe makeRecipe(ResourceLocation id, FluidStackIngredient input, IFluidStack output) {
+        return makeRecipe(id, input, getAndValidateNotEmpty(output));
     }
 
     protected abstract FluidToFluidIRecipe makeRecipe(ResourceLocation id, FluidStackIngredient input, FluidStack output);

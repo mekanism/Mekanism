@@ -2,17 +2,17 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewood",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood"
         },
         {
-          "modid": "ilikewood_chests",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_chests"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "input": {
@@ -21,7 +21,7 @@
     }
   },
   "mainOutput": {
-    "item": "minecraft:spruce_planks",
-    "count": 8
+    "count": 8,
+    "item": "minecraft:spruce_planks"
   }
 }

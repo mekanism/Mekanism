@@ -7,12 +7,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 public class MultiblockManager<T extends MultiblockData> {
 
@@ -88,17 +88,21 @@ public class MultiblockManager<T extends MultiblockData> {
      * @param world - world the cache is stored in
      * @param id    - inventory ID to pull
      *
-     * @return correct multiblock inventory cache
+     * @return correct multiblock inventory cache or {@code null} if one could not be found for the given id.
      */
+    @Nullable
     public MultiblockCache<T> pullInventory(Level world, UUID id) {
-        CacheWrapper toReturn = inventories.get(id);
+        CacheWrapper toReturn = inventories.remove(id);
+        if (toReturn == null) {
+            //If there wasn't an inventory found return that we didn't have one
+            return null;
+        }
         for (Coord4D obj : toReturn.locations) {
-            BlockEntity tile = WorldUtils.getTileEntity(BlockEntity.class, world, obj.getPos());
+            BlockEntity tile = WorldUtils.getTileEntity(world, obj.getPos());
             if (tile instanceof IMultiblock<?> multiblock) {
                 multiblock.resetCache();
             }
         }
-        inventories.remove(id);
         return toReturn.getCache();
     }
 

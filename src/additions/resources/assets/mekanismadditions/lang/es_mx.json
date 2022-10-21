@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismadditions.balloon.description": "Fabrica cualquier globo de color",
+  "advancements.mekanismadditions.balloon.title": "Alcanzar los cielos",
+  "advancements.mekanismadditions.glow_in_the_dark.description": "Crea cualquier panel de brillo de color",
+  "advancements.mekanismadditions.glow_in_the_dark.title": "Brillan en la oscuridad",
+  "advancements.mekanismadditions.not_the_babies.description": "Mata a cualquier bebé mob de Mekanism Addition",
+  "advancements.mekanismadditions.not_the_babies.title": "No los bebés",
+  "advancements.mekanismadditions.pop_pop.description": "Revienta un globo",
+  "advancements.mekanismadditions.pop_pop.title": "Pop Pop\n",
   "block.mekanismadditions.aqua_glow_panel": "Panel Luminoso Aqua",
   "block.mekanismadditions.aqua_plastic": "Bloque de Plástico Aqua",
   "block.mekanismadditions.aqua_plastic_fence": "Valla de Plástico Aqua",

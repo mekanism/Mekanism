@@ -1,12 +1,12 @@
 package mekanism.client.render.obj;
 
-import javax.annotation.Nonnull;
 import net.minecraft.client.resources.model.Material;
-import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import org.jetbrains.annotations.NotNull;
 
 public class OpaqueModelConfiguration extends WrapperModelConfiguration {
 
-    public OpaqueModelConfiguration(IModelConfiguration internal) {
+    public OpaqueModelConfiguration(IGeometryBakingContext internal) {
         super(internal);
     }
 
@@ -21,13 +21,13 @@ public class OpaqueModelConfiguration extends WrapperModelConfiguration {
     }
 
     @Override
-    public boolean isTexturePresent(@Nonnull String name) {
-        return internal.isTexturePresent(adjustTextureName(name));
+    public boolean hasMaterial(@NotNull String name) {
+        return internal.hasMaterial(adjustTextureName(name));
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public Material resolveTexture(@Nonnull String name) {
-        return internal.resolveTexture(adjustTextureName(name));
+    public Material getMaterial(@NotNull String name) {
+        return internal.getMaterial(adjustTextureName(name));
     }
 }

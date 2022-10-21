@@ -3,8 +3,6 @@ package mekanism.client.gui.element.window.filter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.functions.CharPredicate;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
@@ -18,6 +16,8 @@ import mekanism.common.util.text.InputValidator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiOredictionificatorFilter extends GuiTextFilter<OredictionificatorItemFilter, TileEntityOredictionificator> {
 
@@ -124,7 +124,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
         return new OredictionificatorItemFilter();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected List<ItemStack> getRenderStacks() {
         ItemStack result = filter.getResult();

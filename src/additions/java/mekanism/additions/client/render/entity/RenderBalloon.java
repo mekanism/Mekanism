@@ -3,7 +3,6 @@ package mekanism.additions.client.render.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.additions.client.model.AdditionsModelCache;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.entity.EntityBalloon;
@@ -17,6 +16,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class RenderBalloon extends EntityRenderer<EntityBalloon> {
 
@@ -26,14 +26,14 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
         super(context);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ResourceLocation getTextureLocation(@Nonnull EntityBalloon entity) {
+    public ResourceLocation getTextureLocation(@NotNull EntityBalloon entity) {
         return BALLOON_TEXTURE;
     }
 
     @Override
-    public void render(@Nonnull EntityBalloon balloon, float entityYaw, float partialTick, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light) {
+    public void render(@NotNull EntityBalloon balloon, float entityYaw, float partialTick, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light) {
         matrix.pushPose();
         matrix.translate(-0.5, -1, -0.5);
 
@@ -51,7 +51,7 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
 
         JSONModelData model = balloon.isLatched() ? AdditionsModelCache.INSTANCE.BALLOON : AdditionsModelCache.INSTANCE.BALLOON_FREE;
 
-        List<BakedQuad> quads = model.getBakedModel().getQuads(null, null, balloon.level.random);
+        List<BakedQuad> quads = model.getQuads(balloon.level.random);
         RenderType renderType = RenderType.entityTranslucent(TextureAtlas.LOCATION_BLOCKS);
         VertexConsumer builder = renderer.getBuffer(renderType);
         PoseStack.Pose last = matrix.last();
@@ -63,7 +63,7 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
                 color[1] = balloonColor.getColor(1);
                 color[2] = balloonColor.getColor(2);
             }
-            builder.putBulkData(last, quad, color[0], color[1], color[2], color[3], light, OverlayTexture.NO_OVERLAY);
+            builder.putBulkData(last, quad, color[0], color[1], color[2], color[3], light, OverlayTexture.NO_OVERLAY, false);
         }
         ((MultiBufferSource.BufferSource) renderer).endBatch(renderType);
         matrix.popPose();

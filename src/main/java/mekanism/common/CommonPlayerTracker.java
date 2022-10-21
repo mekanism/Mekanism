@@ -35,11 +35,10 @@ public class CommonPlayerTracker {
 
     @SubscribeEvent
     public void onPlayerLoginEvent(PlayerLoggedInEvent event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         if (!player.level.isClientSide) {
             ServerPlayer serverPlayer = (ServerPlayer) player;
             Mekanism.packetHandler().sendTo(new PacketSecurityUpdate(), serverPlayer);
-            player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> PacketRadiationData.sync(serverPlayer));
             //player.sendMessage(ALPHA_WARNING, Util.NIL_UUID);
             MekanismCriteriaTriggers.LOGGED_IN.trigger(serverPlayer);
         }
@@ -47,23 +46,23 @@ public class CommonPlayerTracker {
 
     @SubscribeEvent
     public void onPlayerLogoutEvent(PlayerLoggedOutEvent event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         Mekanism.playerState.clearPlayer(player.getUUID(), false);
         Mekanism.playerState.clearPlayerServerSideOnly(player.getUUID());
     }
 
     @SubscribeEvent
     public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event) {
-        ServerPlayer player = (ServerPlayer) event.getPlayer();
+        ServerPlayer player = (ServerPlayer) event.getEntity();
         Mekanism.playerState.clearPlayer(player.getUUID(), false);
         Mekanism.playerState.reapplyServerSideOnly(player);
-        player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> PacketRadiationData.sync(player));
+        player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(c.getRadiation()), player));
         RadiationManager.INSTANCE.updateClientRadiation(player);
     }
 
     @SubscribeEvent
     public void onPlayerStartTrackingEvent(PlayerEvent.StartTracking event) {
-        if (event.getTarget() instanceof Player player && event.getPlayer() instanceof ServerPlayer serverPlayer) {
+        if (event.getTarget() instanceof Player player && event.getEntity() instanceof ServerPlayer serverPlayer) {
             Mekanism.packetHandler().sendTo(new PacketPlayerData(player.getUUID()), serverPlayer);
         }
     }
@@ -81,19 +80,19 @@ public class CommonPlayerTracker {
     public void cloneEvent(PlayerEvent.Clone event) {
         event.getOriginal().reviveCaps();
         event.getOriginal().getCapability(Capabilities.RADIATION_ENTITY).ifPresent(cap ->
-              event.getPlayer().getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> c.deserializeNBT(cap.serializeNBT())));
+              event.getEntity().getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> c.deserializeNBT(cap.serializeNBT())));
         event.getOriginal().invalidateCaps();
     }
 
     @SubscribeEvent
     public void respawnEvent(PlayerEvent.PlayerRespawnEvent event) {
-        ServerPlayer player = (ServerPlayer) event.getPlayer();
+        ServerPlayer player = (ServerPlayer) event.getEntity();
         player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
             if (!event.isEndConquered()) {
                 //If the player is returning from the end don't reset radiation
                 c.set(0);
             }
-            PacketRadiationData.sync(player);
+            Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(c.getRadiation()), player);
         });
         RadiationManager.INSTANCE.updateClientRadiation(player);
         Mekanism.packetHandler().sendToAll(new PacketResetPlayerClient(player.getUUID()));
@@ -106,7 +105,7 @@ public class CommonPlayerTracker {
      */
     @SubscribeEvent
     public void rightClickEvent(RightClickBlock blockEvent) {
-        if (blockEvent.getPlayer().isShiftKeyDown() && blockEvent.getWorld().getBlockState(blockEvent.getPos()).getBlock() instanceof BlockCardboardBox) {
+        if (blockEvent.getEntity().isShiftKeyDown() && blockEvent.getLevel().getBlockState(blockEvent.getPos()).getBlock() instanceof BlockCardboardBox) {
             blockEvent.setUseBlock(Event.Result.ALLOW);
             blockEvent.setUseItem(Event.Result.DENY);
         }

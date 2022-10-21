@@ -21,7 +21,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -36,7 +35,6 @@ public class MekanismTags {
     public static void init() {
         Items.init();
         Blocks.init();
-        Entities.init();
         Fluids.init();
         Gases.init();
         InfuseTypes.init();
@@ -85,7 +83,6 @@ public class MekanismTags {
 
         public static final TagKey<Item> CONFIGURATORS = tag("configurators");
         public static final TagKey<Item> WRENCHES = forgeTag("wrenches");
-        public static final TagKey<Item> TOOLS = forgeTag("tools");
         public static final TagKey<Item> TOOLS_WRENCH = forgeTag("tools/wrench");
         public static final TagKey<Item> PERSONAL_STORAGE = tag("personal_storage");
 
@@ -181,6 +178,11 @@ public class MekanismTags {
         public static final TagKey<Item> COLORABLE_CONCRETE_POWDER = tag("colorable/concrete_powder");
         public static final TagKey<Item> COLORABLE_BANNERS = tag("colorable/banners");
 
+        public static final TagKey<Item> ARMORS_HELMETS_HAZMAT = forgeTag("armors/armors/hazmat");
+        public static final TagKey<Item> ARMORS_CHESTPLATES_HAZMAT = forgeTag("armors/chestplates/hazmat");
+        public static final TagKey<Item> ARMORS_LEGGINGS_HAZMAT = forgeTag("armors/leggings/hazmat");
+        public static final TagKey<Item> ARMORS_BOOTS_HAZMAT = forgeTag("armors/boots/hazmat");
+
         private static TagKey<Item> forgeTag(String name) {
             return ItemTags.create(new ResourceLocation("forge", name));
         }
@@ -240,21 +242,6 @@ public class MekanismTags {
 
         private static TagKey<Block> tag(String name) {
             return BlockTags.create(Mekanism.rl(name));
-        }
-    }
-
-    public static class Entities {
-
-        private static void init() {
-        }
-
-        private Entities() {
-        }
-
-        public static final TagKey<EntityType<?>> HURTABLE_VEHICLES = tag("hurtable_vehicles");
-
-        private static TagKey<EntityType<?>> tag(String name) {
-            return TagUtils.createKey(ForgeRegistries.ENTITIES, Mekanism.rl(name));
         }
     }
 
@@ -357,16 +344,16 @@ public class MekanismTags {
         }
 
         public static final TagKey<BlockEntityType<?>> CARDBOARD_BLACKLIST = tag("cardboard_blacklist");
-        public static final LazyTagLookup<BlockEntityType<?>> CARDBOARD_BLACKLIST_LOOKUP = LazyTagLookup.create(ForgeRegistries.BLOCK_ENTITIES, CARDBOARD_BLACKLIST);
+        public static final LazyTagLookup<BlockEntityType<?>> CARDBOARD_BLACKLIST_LOOKUP = LazyTagLookup.create(ForgeRegistries.BLOCK_ENTITY_TYPES, CARDBOARD_BLACKLIST);
         public static final TagKey<BlockEntityType<?>> RELOCATION_NOT_SUPPORTED = forgeTag("relocation_not_supported");
         public static final TagKey<BlockEntityType<?>> IMMOVABLE = forgeTag("immovable");
 
         private static TagKey<BlockEntityType<?>> tag(String name) {
-            return TagUtils.createKey(ForgeRegistries.BLOCK_ENTITIES, Mekanism.rl(name));
+            return TagUtils.createKey(ForgeRegistries.BLOCK_ENTITY_TYPES, Mekanism.rl(name));
         }
 
         private static TagKey<BlockEntityType<?>> forgeTag(String name) {
-            return TagUtils.createKey(ForgeRegistries.BLOCK_ENTITIES, new ResourceLocation("forge", name));
+            return TagUtils.createKey(ForgeRegistries.BLOCK_ENTITY_TYPES, new ResourceLocation("forge", name));
         }
     }
 }

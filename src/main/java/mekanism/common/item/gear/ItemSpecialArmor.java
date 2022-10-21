@@ -2,7 +2,6 @@ package mekanism.common.item.gear;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.integration.gender.GenderCapabilityHelper;
@@ -14,6 +13,7 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class ItemSpecialArmor extends ArmorItem {
 
@@ -27,7 +27,7 @@ public abstract class ItemSpecialArmor extends ArmorItem {
     }
 
     @Override
-    public boolean isEnchantable(@Nonnull ItemStack stack) {
+    public boolean isEnchantable(@NotNull ItemStack stack) {
         return material.getEnchantmentValue() > 0 && super.isEnchantable(stack);
     }
 

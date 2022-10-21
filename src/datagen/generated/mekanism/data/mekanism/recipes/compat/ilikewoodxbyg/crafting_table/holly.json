@@ -2,21 +2,21 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewoodxbyg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
         },
         {
-          "modid": "byg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "byg"
         },
         {
-          "modid": "ilikewood_crafting_tables",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_crafting_tables"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "input": {
@@ -25,7 +25,7 @@
     }
   },
   "mainOutput": {
-    "item": "byg:holly_planks",
-    "count": 4
+    "count": 4,
+    "item": "byg:holly_planks"
   }
 }

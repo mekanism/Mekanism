@@ -1,0 +1,10 @@
+{
+  "values": [
+    "#forge:tools/hoes/bronze",
+    "#forge:tools/hoes/lapis_lazuli",
+    "#forge:tools/hoes/osmium",
+    "#forge:tools/hoes/refined_glowstone",
+    "#forge:tools/hoes/refined_obsidian",
+    "#forge:tools/hoes/steel"
+  ]
+}

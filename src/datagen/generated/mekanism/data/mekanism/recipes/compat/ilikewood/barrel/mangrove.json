@@ -1,0 +1,28 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "mekanism:mod_version_loaded",
+          "minVersion": "1.19-9.0.1.0",
+          "modid": "ilikewood"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_barrels"
+        }
+      ]
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:mangrove_barrel"
+    }
+  },
+  "mainOutput": {
+    "count": 7,
+    "item": "minecraft:mangrove_planks"
+  }
+}

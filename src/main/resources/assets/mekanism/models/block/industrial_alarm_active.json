@@ -1,6 +1,5 @@
 {
 	"parent": "block/cube_all",
-	"texture_size": [64, 64],
 	"textures": {
 		"1": "mekanism:block/models/industrial_alarm",
 		"particle": "mekanism:block/steel_casing"
@@ -11,12 +10,12 @@
 			"from": [5, 0, 5],
 			"to": [11, 1, 11],
 			"faces": {
-				"north": {"uv": [1.5, 3.75, 3, 3.75], "texture": "#1"},
-				"east": {"uv": [0, 3.75, 1.5, 3.75], "texture": "#1"},
-				"south": {"uv": [4.5, 3.75, 6, 3.75], "texture": "#1"},
-				"west": {"uv": [3, 3.75, 4.5, 3.75], "texture": "#1"},
-				"up": {"uv": [3, 3.75, 1.5, 2.25], "texture": "#1"},
-				"down": {"uv": [4.5, 2.25, 3, 3.75], "texture": "#1"}
+				"north": {"uv": [3, 7.5, 6, 7.5], "texture": "#1"},
+				"east": {"uv": [0, 7.5, 3, 7.5], "texture": "#1"},
+				"south": {"uv": [9, 7.5, 12, 7.5], "texture": "#1"},
+				"west": {"uv": [6, 7.5, 9, 7.5], "texture": "#1"},
+				"up": {"uv": [6, 7.5, 3, 4.5], "texture": "#1"},
+				"down": {"uv": [9, 4.5, 6, 7.5], "texture": "#1", "cullface": "down"}
 			}
 		}
 	]

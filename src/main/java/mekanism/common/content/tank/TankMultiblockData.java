@@ -2,6 +2,7 @@ package mekanism.common.content.tank;
 
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.IGasTank;
@@ -12,7 +13,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
-import mekanism.common.capabilities.fluid.MultiblockFluidTank;
+import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.config.MekanismConfig;
@@ -51,12 +52,13 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
 
     public TankMultiblockData(TileEntityDynamicTank tile) {
         super(tile);
+        IContentsListener saveAndComparator = createSaveAndComparator();
         mergedTank = MergedTank.create(
-              MultiblockFluidTank.create(this, tile, this::getTankCapacity, BasicFluidTank.alwaysTrue),
-              MultiblockChemicalTankBuilder.GAS.create(this, tile, this::getChemicalTankCapacity, ChemicalTankBuilder.GAS.alwaysTrue),
-              MultiblockChemicalTankBuilder.INFUSION.create(this, tile, this::getChemicalTankCapacity, ChemicalTankBuilder.INFUSION.alwaysTrue),
-              MultiblockChemicalTankBuilder.PIGMENT.create(this, tile, this::getChemicalTankCapacity, ChemicalTankBuilder.PIGMENT.alwaysTrue),
-              MultiblockChemicalTankBuilder.SLURRY.create(this, tile, this::getChemicalTankCapacity, ChemicalTankBuilder.SLURRY.alwaysTrue)
+              VariableCapacityFluidTank.create(this, this::getTankCapacity, BasicFluidTank.alwaysTrue, saveAndComparator),
+              MultiblockChemicalTankBuilder.GAS.create(this, this::getChemicalTankCapacity, ChemicalTankBuilder.GAS.alwaysTrue, saveAndComparator),
+              MultiblockChemicalTankBuilder.INFUSION.create(this, this::getChemicalTankCapacity, ChemicalTankBuilder.INFUSION.alwaysTrue, saveAndComparator),
+              MultiblockChemicalTankBuilder.PIGMENT.create(this, this::getChemicalTankCapacity, ChemicalTankBuilder.PIGMENT.alwaysTrue, saveAndComparator),
+              MultiblockChemicalTankBuilder.SLURRY.create(this, this::getChemicalTankCapacity, ChemicalTankBuilder.SLURRY.alwaysTrue, saveAndComparator)
         );
         fluidTanks.add(mergedTank.getFluidTank());
         gasTanks.add(mergedTank.getGasTank());

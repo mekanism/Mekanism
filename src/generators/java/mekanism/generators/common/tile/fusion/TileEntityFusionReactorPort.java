@@ -1,8 +1,6 @@
 package mekanism.generators.common.tile.fusion;
 
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -32,6 +30,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
 
@@ -40,32 +40,32 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
         delaySupplier = () -> 0;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
         //Note: We can just use a proxied holder as the input/output restrictions are done in the tanks themselves
         return side -> getMultiblock().getGasTanks(side);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         return side -> getMultiblock().getFluidTanks(side);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         return side -> getMultiblock().getEnergyContainers(side);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         return side -> getMultiblock().getHeatCapacitors(side);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         return side -> getMultiblock().getInventorySlots(side);
@@ -92,7 +92,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
 
     @Nullable
     @Override
-    public IHeatHandler getAdjacent(@Nonnull Direction side) {
+    public IHeatHandler getAdjacent(@NotNull Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
             BlockEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
             if (!(adj instanceof TileEntityFusionReactorBlock)) {

@@ -12,12 +12,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
-import mekanism.api.annotations.NonNull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
@@ -25,7 +22,6 @@ import mekanism.common.network.BasePacketHandler;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.tags.TagUtils;
 import mekanism.common.util.RegistryUtils;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
@@ -36,9 +32,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.tags.ITag;
 import net.minecraftforge.registries.tags.ITagManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class FluidStackIngredientCreator implements IFluidStackIngredientCreator {
 
     public static final FluidStackIngredientCreator INSTANCE = new FluidStackIngredientCreator();
@@ -160,11 +157,9 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         return createMulti(ingredients.toArray(FluidStackIngredient[]::new));
     }
 
-    @ParametersAreNonnullByDefault
-    @MethodsReturnNonnullByDefault
+    @NothingNullByDefault
     public static class SingleFluidStackIngredient extends FluidStackIngredient {
 
-        @Nonnull
         private final FluidStack fluidInstance;
 
         private SingleFluidStackIngredient(FluidStack fluidInstance) {
@@ -197,7 +192,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         }
 
         @Override
-        public List<@NonNull FluidStack> getRepresentations() {
+        public List<@NotNull FluidStack> getRepresentations() {
             return Collections.singletonList(fluidInstance);
         }
 
@@ -224,13 +219,28 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             }
             return json;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            SingleFluidStackIngredient other = (SingleFluidStackIngredient) o;
+            //Need to use this over equals to ensure we compare amounts
+            return fluidInstance.isFluidStackIdentical(other.fluidInstance);
+        }
+
+        @Override
+        public int hashCode() {
+            return fluidInstance.hashCode();
+        }
     }
 
-    @ParametersAreNonnullByDefault
-    @MethodsReturnNonnullByDefault
+    @NothingNullByDefault
     public static class TaggedFluidStackIngredient extends FluidStackIngredient {
 
-        @Nonnull
         private final ITag<Fluid> tag;
         private final int amount;
 
@@ -273,9 +283,9 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         }
 
         @Override
-        public List<@NonNull FluidStack> getRepresentations() {
+        public List<@NotNull FluidStack> getRepresentations() {
             //TODO: Can this be cached some how
-            List<@NonNull FluidStack> representations = new ArrayList<>();
+            List<@NotNull FluidStack> representations = new ArrayList<>();
             for (Fluid fluid : tag) {
                 representations.add(new FluidStack(fluid, amount));
             }
@@ -303,10 +313,25 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             json.addProperty(JsonConstants.TAG, tag.getKey().location().toString());
             return json;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            TaggedFluidStackIngredient other = (TaggedFluidStackIngredient) o;
+            return amount == other.amount && tag.equals(other.tag);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(tag, amount);
+        }
     }
 
-    @ParametersAreNonnullByDefault
-    @MethodsReturnNonnullByDefault
+    @NothingNullByDefault
     public static class MultiFluidStackIngredient extends FluidStackIngredient implements IMultiIngredient<FluidStack, FluidStackIngredient> {
 
         private final FluidStackIngredient[] ingredients;
@@ -353,8 +378,8 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         }
 
         @Override
-        public List<@NonNull FluidStack> getRepresentations() {
-            List<@NonNull FluidStack> representations = new ArrayList<>();
+        public List<@NotNull FluidStack> getRepresentations() {
+            List<@NotNull FluidStack> representations = new ArrayList<>();
             for (FluidStackIngredient ingredient : ingredients) {
                 representations.addAll(ingredient.getRepresentations());
             }
@@ -371,6 +396,11 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         }
 
         @Override
+        public final List<FluidStackIngredient> getIngredients() {
+            return List.of(ingredients);
+        }
+
+        @Override
         public void write(FriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.MULTI);
             BasePacketHandler.writeArray(buffer, ingredients, InputIngredient::write);
@@ -383,6 +413,21 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
                 json.add(ingredient.serialize());
             }
             return json;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            return Arrays.equals(ingredients, ((MultiFluidStackIngredient) o).ingredients);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(ingredients);
         }
     }
 

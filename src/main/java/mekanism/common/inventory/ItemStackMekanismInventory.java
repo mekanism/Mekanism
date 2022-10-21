@@ -1,14 +1,14 @@
 package mekanism.common.inventory;
 
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper class for implementing handling of inventories for items
@@ -16,10 +16,10 @@ import net.minecraft.world.item.ItemStack;
 public abstract class ItemStackMekanismInventory implements IMekanismInventory {
 
     private final List<IInventorySlot> slots;
-    @Nonnull
+    @NotNull
     protected final ItemStack stack;
 
-    protected ItemStackMekanismInventory(@Nonnull ItemStack stack) {
+    protected ItemStackMekanismInventory(@NotNull ItemStack stack) {
         this.stack = stack;
         this.slots = getInitialInventory();
         if (!stack.isEmpty() && stack.getItem() instanceof IItemSustainedInventory sustainedInventory) {
@@ -29,7 +29,7 @@ public abstract class ItemStackMekanismInventory implements IMekanismInventory {
 
     protected abstract List<IInventorySlot> getInitialInventory();
 
-    @Nonnull
+    @NotNull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return slots;

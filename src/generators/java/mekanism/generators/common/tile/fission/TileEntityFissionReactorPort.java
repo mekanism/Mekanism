@@ -1,7 +1,5 @@
 package mekanism.generators.common.tile.fission;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
@@ -31,6 +29,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing {
 
@@ -54,7 +54,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
 
     @Nullable
     @Override
-    public IHeatHandler getAdjacent(@Nonnull Direction side) {
+    public IHeatHandler getAdjacent(@NotNull Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
             BlockEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
             if (!(adj instanceof TileEntityFissionReactorPort)) {
@@ -64,19 +64,19 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         return null;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener) {
         return side -> getMultiblock().getGasTanks(side);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         return side -> getMultiblock().getFluidTanks(side);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         return side -> getMultiblock().getHeatCapacitors(side);
@@ -112,9 +112,9 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         return InteractionResult.SUCCESS;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public FluidStack insertFluid(@Nonnull FluidStack stack, Direction side, @Nonnull Action action) {
+    public FluidStack insertFluid(@NotNull FluidStack stack, Direction side, @NotNull Action action) {
         FluidStack ret = super.insertFluid(stack, side, action);
         if (ret.getAmount() < stack.getAmount() && action.execute()) {
             getMultiblock().triggerValveTransfer(this);

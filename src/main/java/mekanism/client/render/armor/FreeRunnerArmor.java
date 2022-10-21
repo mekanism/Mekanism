@@ -1,7 +1,6 @@
 package mekanism.client.render.armor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
 import mekanism.client.model.ModelArmoredFreeRunners;
 import mekanism.client.model.ModelFreeRunners;
 import net.minecraft.client.Minecraft;
@@ -11,6 +10,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class FreeRunnerArmor implements ICustomArmor, ResourceManagerReloadListener {
 
@@ -25,7 +25,7 @@ public class FreeRunnerArmor implements ICustomArmor, ResourceManagerReloadListe
     }
 
     @Override
-    public void onResourceManagerReload(@Nonnull ResourceManager resourceManager) {
+    public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
         if (armored) {
             model = new ModelArmoredFreeRunners(Minecraft.getInstance().getEntityModels());
         } else {
@@ -34,7 +34,7 @@ public class FreeRunnerArmor implements ICustomArmor, ResourceManagerReloadListe
     }
 
     @Override
-    public void render(HumanoidModel<? extends LivingEntity> baseModel, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer,
+    public void render(HumanoidModel<? extends LivingEntity> baseModel, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer,
           int light, int overlayLight, float partialTicks, boolean hasEffect, LivingEntity entity, ItemStack stack) {
         if (baseModel.young) {
             matrix.pushPose();
@@ -50,7 +50,7 @@ public class FreeRunnerArmor implements ICustomArmor, ResourceManagerReloadListe
         }
     }
 
-    private void renderLeg(HumanoidModel<? extends LivingEntity> baseModel, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light,
+    private void renderLeg(HumanoidModel<? extends LivingEntity> baseModel, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light,
           int overlayLight, boolean hasEffect, boolean left) {
         if (left && !baseModel.leftLeg.visible || !left && !baseModel.rightLeg.visible) {
             //If the model isn't meant to be shown don't bother rendering it

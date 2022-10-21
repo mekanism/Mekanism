@@ -1,7 +1,7 @@
 package mekanism.common.integration.computer;
 
 import java.util.Locale;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Short-lived helper to wrap handling of arguments for different computer types and build up any implicit casts needed

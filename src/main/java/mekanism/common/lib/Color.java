@@ -74,7 +74,7 @@ public class Color {
     }
 
     public int argb() {
-        return (a() & 0xFF) << 24 | (r() & 0xFF) << 16 | (g() & 0xFF) << 8 | (b() & 0xFF);
+        return (a() & 0xFF) << 24 | rgb();
     }
 
     public int rgb() {
@@ -192,6 +192,13 @@ public class Color {
             case 4 -> rgbd(t, p, v);
             default -> rgbd(v, p, q);
         };
+    }
+
+    //Works both directions
+    public static int argbToFromABGR(int argb) {
+        int red = argb >> 16 & 0xFF;
+        int blue = argb & 0xFF;
+        return argb & 0xFF00FF00 | blue << 16 | red;
     }
 
     public double[] hsvArray() {

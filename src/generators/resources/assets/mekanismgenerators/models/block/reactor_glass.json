@@ -1,5 +1,6 @@
 {
-  "parent": "mekanism:block/basic_cube",
+  "render_type": "minecraft:translucent",
+  "parent": "block/cube_all",
   "textures": {
     "all": "mekanismgenerators:block/reactor_glass"
   }

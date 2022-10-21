@@ -1,0 +1,73 @@
+{
+  "parent": "mekanism:root",
+  "criteria": {
+    "baby_creeper": {
+      "conditions": {
+        "damage": {
+          "blocked": false,
+          "source_entity": {
+            "type": "mekanismadditions:baby_creeper"
+          }
+        }
+      },
+      "trigger": "minecraft:entity_hurt_player"
+    },
+    "baby_enderman": {
+      "conditions": {
+        "damage": {
+          "blocked": false,
+          "source_entity": {
+            "type": "mekanismadditions:baby_enderman"
+          }
+        }
+      },
+      "trigger": "minecraft:entity_hurt_player"
+    },
+    "baby_skeleton": {
+      "conditions": {
+        "damage": {
+          "blocked": false,
+          "source_entity": {
+            "type": "mekanismadditions:baby_skeleton"
+          }
+        }
+      },
+      "trigger": "minecraft:entity_hurt_player"
+    },
+    "baby_stray": {
+      "conditions": {
+        "damage": {
+          "blocked": false,
+          "source_entity": {
+            "type": "mekanismadditions:baby_stray"
+          }
+        }
+      },
+      "trigger": "minecraft:entity_hurt_player"
+    },
+    "baby_wither_skeleton": {
+      "conditions": {
+        "damage": {
+          "blocked": false,
+          "source_entity": {
+            "type": "mekanismadditions:baby_wither_skeleton"
+          }
+        }
+      },
+      "trigger": "minecraft:entity_hurt_player"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanismadditions.hurt_by_babies.description"
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "item": "minecraft:creeper_head"
+    },
+    "title": {
+      "translate": "advancements.mekanismadditions.hurt_by_babies.title"
+    }
+  }
+}

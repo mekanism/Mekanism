@@ -3,9 +3,7 @@ package mekanism.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderType;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -13,11 +11,14 @@ import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class ModelAtomicDisassembler extends MekanismJavaModel {
 
@@ -45,7 +46,7 @@ public class ModelAtomicDisassembler extends MekanismJavaModel {
           PartPose.rotation(-0.7853982F, 0, 0));
     private static final ModelPartData BLADE_FRONT_LOWER = new ModelPartData("bladeFrontLower", CubeListBuilder.create()
           .texOffs(58, 0)
-          .addBox(0, -9.58F, -4, 1, 5, 2),
+          .addBox(0, -9.58F, -4, 1, 5, 2, new CubeDeformation(0.01F)),
           PartPose.rotation(0.7853982F, 0, 0));
     private static final ModelPartData NECK_ANGLED = new ModelPartData("neckAngled", CubeListBuilder.create()
           .texOffs(12, 0)
@@ -95,13 +96,13 @@ public class ModelAtomicDisassembler extends MekanismJavaModel {
         bladeParts = getRenderableParts(root, BLADE_FRONT_CONNECTOR, BLADE_BACK, BLADE_FRONT_UPPER, BLADE_FRONT_LOWER, BLADE_BACK_SMALL);
     }
 
-    public void render(@Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect) {
+    public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect) {
         renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
-        renderPartsToBuffer(bladeParts, matrix, getVertexConsumer(renderer, BLADE_RENDER_TYPE, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 0.75F);
+        renderPartsToBuffer(bladeParts, matrix, getVertexConsumer(renderer, BLADE_RENDER_TYPE, hasEffect), LightTexture.FULL_BRIGHT, overlayLight, 1, 1, 1, 0.75F);
     }
 
     @Override
-    public void renderToBuffer(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
         renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
     }
 }

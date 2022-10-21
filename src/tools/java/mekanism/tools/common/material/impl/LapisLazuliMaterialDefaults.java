@@ -1,7 +1,5 @@
 package mekanism.tools.common.material.impl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.BaseMekanismMaterial;
 import net.minecraft.sounds.SoundEvent;
@@ -11,6 +9,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.Tags;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
 
@@ -60,7 +60,7 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForSlot(@Nonnull EquipmentSlot slotType) {
+    public int getDurabilityForSlot(@NotNull EquipmentSlot slotType) {
         return switch (slotType) {
             case FEET -> 130;
             case LEGS -> 150;
@@ -71,7 +71,7 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefenseForSlot(@Nonnull EquipmentSlot slotType) {
+    public int getDefenseForSlot(@NotNull EquipmentSlot slotType) {
         return switch (slotType) {
             case FEET -> 1;
             case LEGS -> 3;
@@ -81,13 +81,13 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
         };
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getConfigCommentName() {
         return "Lapis Lazuli";
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getRegistryPrefix() {
         return "lapis_lazuli";
@@ -99,13 +99,13 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
         return ToolsTags.Blocks.NEEDS_LAPIS_LAZULI_TOOL;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public SoundEvent getEquipSound() {
         return SoundEvents.ARMOR_EQUIP_DIAMOND;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Ingredient getCommonRepairMaterial() {
         return Ingredient.of(Tags.Items.GEMS_LAPIS);

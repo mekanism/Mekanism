@@ -3,7 +3,6 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import javax.annotation.Nonnull;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalStack;
@@ -21,6 +20,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import org.jetbrains.annotations.NotNull;
 
 public class ChemicalDissolutionRecipeSerializer<RECIPE extends ChemicalDissolutionRecipe> implements RecipeSerializer<RECIPE> {
 
@@ -30,9 +30,9 @@ public class ChemicalDissolutionRecipeSerializer<RECIPE extends ChemicalDissolut
         this.factory = factory;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+    public RECIPE fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
         JsonElement itemInput = GsonHelper.isArrayNode(json, JsonConstants.ITEM_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.ITEM_INPUT) :
                                 GsonHelper.getAsJsonObject(json, JsonConstants.ITEM_INPUT);
         ItemStackIngredient itemIngredient = IngredientCreatorAccess.item().deserialize(itemInput);
@@ -47,7 +47,7 @@ public class ChemicalDissolutionRecipeSerializer<RECIPE extends ChemicalDissolut
     }
 
     @Override
-    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
         try {
             ItemStackIngredient itemInput = IngredientCreatorAccess.item().read(buffer);
             GasStackIngredient gasInput = IngredientCreatorAccess.gas().read(buffer);
@@ -66,7 +66,7 @@ public class ChemicalDissolutionRecipeSerializer<RECIPE extends ChemicalDissolut
     }
 
     @Override
-    public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull RECIPE recipe) {
+    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

@@ -1,8 +1,8 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.Optional;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.gear.ICustomModule;
@@ -23,7 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class ModuleChargeDistributionUnit implements ICustomModule<ModuleChargeDistributionUnit> {
 
     private IModuleConfigItem<Boolean> chargeSuit;

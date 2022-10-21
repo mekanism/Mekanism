@@ -1,6 +1,7 @@
 package mekanism.common.content.gear.mekasuit;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.config.IModuleConfigItem;
@@ -11,7 +12,7 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import net.minecraft.network.chat.Component;
 
-@ParametersAreNonnullByDefault
+@ParametersAreNotNullByDefault
 public class ModuleHydraulicPropulsionUnit implements ICustomModule<ModuleHydraulicPropulsionUnit> {
 
     private IModuleConfigItem<JumpBoost> jumpBoost;
@@ -20,9 +21,9 @@ public class ModuleHydraulicPropulsionUnit implements ICustomModule<ModuleHydrau
     @Override
     public void init(IModule<ModuleHydraulicPropulsionUnit> module, ModuleConfigItemCreator configItemCreator) {
         jumpBoost = configItemCreator.createConfigItem("jump_boost", MekanismLang.MODULE_JUMP_BOOST,
-              new ModuleEnumData<>(JumpBoost.class, module.getInstalledCount() + 1, JumpBoost.LOW));
+              new ModuleEnumData<>(JumpBoost.LOW, module.getInstalledCount() + 1));
         stepAssist = configItemCreator.createConfigItem("step_assist", MekanismLang.MODULE_STEP_ASSIST,
-              new ModuleEnumData<>(StepAssist.class, module.getInstalledCount() + 1, StepAssist.LOW));
+              new ModuleEnumData<>(StepAssist.LOW, module.getInstalledCount() + 1));
     }
 
     public float getBoost() {
@@ -33,6 +34,7 @@ public class ModuleHydraulicPropulsionUnit implements ICustomModule<ModuleHydrau
         return stepAssist.get().getHeight();
     }
 
+    @NothingNullByDefault
     public enum JumpBoost implements IHasTextComponent {
         OFF(0),
         LOW(0.5F),
@@ -58,6 +60,7 @@ public class ModuleHydraulicPropulsionUnit implements ICustomModule<ModuleHydrau
         }
     }
 
+    @NothingNullByDefault
     public enum StepAssist implements IHasTextComponent {
         OFF(0),
         LOW(0.5F),

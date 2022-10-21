@@ -2,7 +2,6 @@ package mekanism.common.content.gear;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.gear.ICustomModule;
@@ -21,6 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public interface IModuleContainerItem extends IItemHUDProvider {
 

@@ -2,8 +2,8 @@ package mekanism.common.item.interfaces;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
@@ -21,6 +21,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public interface IJetpackItem {
 
@@ -30,6 +31,7 @@ public interface IJetpackItem {
 
     void useJetpackFuel(ItemStack stack);
 
+    @NothingNullByDefault
     enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {
         NORMAL(MekanismLang.JETPACK_NORMAL, EnumColor.DARK_GREEN, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_normal.png")),
         HOVER(MekanismLang.JETPACK_HOVER, EnumColor.DARK_AQUA, MekanismUtils.getResource(ResourceType.GUI_HUD, "jetpack_hover.png")),
@@ -51,7 +53,6 @@ public interface IJetpackItem {
             return langEntry.translateColored(color);
         }
 
-        @Nonnull
         @Override
         public JetpackMode byIndex(int index) {
             return byIndexStatic(index);
@@ -75,7 +76,7 @@ public interface IJetpackItem {
      *
      * @return the jetpack stack if present, otherwise an empty stack
      */
-    @Nonnull
+    @NotNull
     static ItemStack getActiveJetpack(LivingEntity entity) {
         return getJetpack(entity, stack -> stack.getItem() instanceof IJetpackItem jetpackItem && jetpackItem.canUseJetpack(stack));
     }
@@ -89,7 +90,7 @@ public interface IJetpackItem {
      *
      * @return the jetpack stack if present, otherwise an empty stack
      */
-    @Nonnull
+    @NotNull
     static ItemStack getPrimaryJetpack(LivingEntity entity) {
         return getJetpack(entity, stack -> stack.getItem() instanceof IJetpackItem);
     }

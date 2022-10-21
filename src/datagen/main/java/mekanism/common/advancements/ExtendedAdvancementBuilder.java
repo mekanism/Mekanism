@@ -1,7 +1,6 @@
 package mekanism.common.advancements;
 
 import java.util.function.Consumer;
-import javax.annotation.Nullable;
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.advancements.Advancement;
@@ -17,6 +16,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.Nullable;
 
 public class ExtendedAdvancementBuilder {
 
@@ -46,12 +46,12 @@ public class ExtendedAdvancementBuilder {
         return display(new ItemStack(item), background, frame, showToast, announceToChat, hidden);
     }
 
-    public ExtendedAdvancementBuilder display(ItemLike item, FrameType frame) {
-        return display(item, null, frame, true, true, false);
+    public ExtendedAdvancementBuilder display(ItemLike item, FrameType frame, boolean announceToChat) {
+        return display(item, null, frame, true, announceToChat, false);
     }
 
-    public ExtendedAdvancementBuilder displayAndCriterion(ItemLike item, FrameType frame) {
-        display(item, frame);
+    public ExtendedAdvancementBuilder displayAndCriterion(ItemLike item, FrameType frame, boolean announceToChat) {
+        display(item, frame, announceToChat);
         return addCriterion(item);
     }
 

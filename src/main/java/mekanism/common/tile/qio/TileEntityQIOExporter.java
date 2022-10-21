@@ -37,7 +37,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 
 public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
@@ -184,7 +184,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
             Object2IntMap<HashedItem> removed = new Object2IntOpenHashMap<>();
             int amountRemoved = 0;
 
-            Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, getDirection()).resolve();
+            Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, ForgeCapabilities.ITEM_HANDLER, getDirection()).resolve();
 
             if (capability.isPresent()) {
                 IItemHandler inventory = capability.get();

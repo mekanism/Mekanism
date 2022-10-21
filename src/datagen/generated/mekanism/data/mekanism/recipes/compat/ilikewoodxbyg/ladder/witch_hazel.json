@@ -2,35 +2,35 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewoodxbyg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
         },
         {
-          "modid": "byg",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "byg"
         },
         {
-          "modid": "ilikewood_ladders",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_ladders"
         },
         {
-          "modid": "ilikewood_sticks",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_sticks"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "input": {
     "amount": 3,
     "ingredient": {
-      "item": "ilikewood:witch_hazel_ladder"
+      "item": "ilikewood:byg_witch_hazel_ladder"
     }
   },
   "mainOutput": {
-    "item": "ilikewood:witch_hazel_stick",
-    "count": 7
+    "count": 7,
+    "item": "ilikewood:byg_witch_hazel_stick"
   }
 }

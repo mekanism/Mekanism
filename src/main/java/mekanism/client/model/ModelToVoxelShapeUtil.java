@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Stream;
 
 //TODO: JavaDoc - contains client side methods to help convert models to VoxelShapes
@@ -55,31 +56,69 @@ public class ModelToVoxelShapeUtil {
             e.printStackTrace();
             return;
         }
+        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.US);
+        DecimalFormat df = new DecimalFormat("#.####", otherSymbols);
         JsonObject obj = JsonParser.parseString(builder.toString()).getAsJsonObject();
         if (obj.has("elements")) {
-            printoutObject(obj);
-        } else if (obj.has("layers")) {
-            obj.getAsJsonObject("layers").entrySet().forEach(e -> printoutObject(e.getValue().getAsJsonObject()));
+            JsonArray elements = obj.getAsJsonArray("elements");
+            printoutObject(elements, df, 0, elements.size());
+        } else if (obj.has("children")) {//Forge composite model
+            JsonObject children = obj.getAsJsonObject("children");
+            JsonArray[] childElements = new JsonArray[children.size()];
+            int index = 0;
+            for (Map.Entry<String, JsonElement> e : children.entrySet()) {
+                JsonObject child = e.getValue().getAsJsonObject();
+                JsonArray array;
+                if (child.has("elements")) {
+                    array = child.getAsJsonArray("elements");
+                } else {
+                    System.err.println("Unable to parse child: " + e.getKey());
+                    array = new JsonArray();
+                }
+                childElements[index++] = array;
+            }
+            ChildData childData = ChildData.from(childElements);
+            int soFar = 0;
+            for (JsonArray childElement : childData.childElements) {
+                soFar = printoutObject(childElement, df, soFar, childData.totalElements);
+            }
         } else {
             System.err.println("Unable to parse model file.");
         }
     }
 
-    private static void printoutObject(JsonObject obj) {
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.US);
-        DecimalFormat df = new DecimalFormat("#.####", otherSymbols);
-        JsonArray array = obj.getAsJsonArray("elements");
-        for (int i = 0, elements = array.size(); i < elements; i++) {
-            JsonObject element = array.get(i).getAsJsonObject();
-            JsonElement nameObj = element.get("name");
-            String name = nameObj == null ? "" : " // " + nameObj.getAsString();
-            String from = convertCorner(df, element.getAsJsonArray("from"));
-            String to = convertCorner(df, element.getAsJsonArray("to"));
-            System.out.println("box(" + from + ", " + to + ")" + (i < elements - 1 ? "," : "") + name);
+    private static int printoutObject(JsonArray elementsArray, DecimalFormat df, int soFar, int totalElements) {
+        for (JsonElement jsonElement : elementsArray) {
+            JsonObject element = jsonElement.getAsJsonObject();
+            StringBuilder line = new StringBuilder("box(")
+                  .append(convertCorner(df, element.getAsJsonArray("from")))
+                  .append(", ")
+                  .append(convertCorner(df, element.getAsJsonArray("to")))
+                  .append(')');
+            if (++soFar < totalElements) {
+                //If this isn't the last element we need to make sure we have a comma at the end
+                line.append(',');
+            }
+            if (element.has("name")) {
+                line.append(" // ").append(element.get("name").getAsString());
+            }
+            System.out.println(line);
         }
+        return soFar;
     }
 
     private static String convertCorner(DecimalFormat df, JsonArray corner) {
         return df.format(corner.get(0).getAsDouble()) + ", " + df.format(corner.get(1).getAsDouble()) + ", " + df.format(corner.get(2).getAsDouble());
+    }
+
+    private record ChildData(JsonArray[] childElements, int totalElements) {
+
+        private static ChildData from(JsonArray[] childElements) {
+            int elements = 0;
+            for (JsonArray childElement : childElements) {
+                elements += childElement.size();
+            }
+            return new ChildData(childElements, elements);
+        }
     }
 }

@@ -1,7 +1,7 @@
 package mekanism.api.math;
 
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents an operation that accepts a single {@link FloatingLong}-valued argument and returns no result.  This is a specialization of {@link Consumer} for {@link
@@ -11,5 +11,5 @@ import javax.annotation.Nonnull;
 public interface FloatingLongConsumer extends Consumer<FloatingLong> {
 
     @Override
-    void accept(@Nonnull FloatingLong floatingLong);
+    void accept(@NotNull FloatingLong floatingLong);
 }

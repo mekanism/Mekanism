@@ -1,13 +1,13 @@
 package mekanism.common.network.to_client.container.property.list;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.common.network.BasePacketHandler;
 import net.minecraft.network.FriendlyByteBuf;
+import org.jetbrains.annotations.NotNull;
 
 public class StringListPropertyData extends ListPropertyData<String> {
 
-    public StringListPropertyData(short property, @Nonnull List<String> values) {
+    public StringListPropertyData(short property, @NotNull List<String> values) {
         super(property, ListType.STRING, values);
     }
 

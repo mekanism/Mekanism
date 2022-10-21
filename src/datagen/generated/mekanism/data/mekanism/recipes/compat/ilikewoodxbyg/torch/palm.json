@@ -1,0 +1,39 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewoodxbyg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "byg"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_sticks"
+        },
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_torches"
+        }
+      ]
+    }
+  ],
+  "input": {
+    "amount": 4,
+    "ingredient": {
+      "item": "ilikewood:byg_palm_torch"
+    }
+  },
+  "mainOutput": {
+    "item": "ilikewood:byg_palm_stick"
+  },
+  "secondaryChance": 1.0,
+  "secondaryOutput": {
+    "item": "minecraft:coal"
+  }
+}

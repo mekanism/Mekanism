@@ -8,14 +8,11 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.CommonWorldTickHandler;
@@ -66,11 +63,13 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMachine implements IHasMode {
 
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
-    private static final Predicate<@NonNull ItemStack> formulaSlotValidator = stack -> stack.getItem() instanceof ItemCraftingFormula;
+    private static final Predicate<@NotNull ItemStack> formulaSlotValidator = stack -> stack.getItem() instanceof ItemCraftingFormula;
 
     private static final int BASE_TICKS_REQUIRED = 40;
 
@@ -119,7 +118,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -127,7 +126,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         craftingGridSlots = new ArrayList<>();
@@ -153,7 +152,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                         return ItemHandlerHelper.canItemStacksStack(stockItem.getStack(), stack);
                     }
                     return false;
-                }, item -> true, listener, 8 + slotX * 18, 98 + slotY * 18);
+                }, BasicInventorySlot.alwaysTrue, listener, 8 + slotX * 18, 98 + slotY * 18);
                 builder.addSlot(inputSlot);
                 inputSlots.add(inputSlot);
             }
@@ -187,6 +186,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (!isRemote()) {
             checkFormula();
             recalculateRecipe();
+            if (formula != null && stockControl) {
+                //Ensure stock control is loaded before our first tick in case something inserting ticks before our first tick
+                // and inserts into the wrong slots
+                buildStockControlMap();
+            }
         }
     }
 
@@ -626,7 +630,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    public void load(@Nonnull CompoundTag nbt) {
+    public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         autoMode = nbt.getBoolean(NBTConstants.AUTO);
         operatingTicks = nbt.getInt(NBTConstants.PROGRESS);
@@ -635,7 +639,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+    public void saveAdditional(@NotNull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
         nbtTags.putBoolean(NBTConstants.AUTO, autoMode);
         nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
@@ -656,8 +660,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
+    @NotNull
     @Override
-    public List<Component> getInfo(Upgrade upgrade) {
+    public List<Component> getInfo(@NotNull Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 

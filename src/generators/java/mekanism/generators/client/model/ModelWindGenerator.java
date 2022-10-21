@@ -3,7 +3,6 @@ package mekanism.generators.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.client.model.MekanismJavaModel;
 import mekanism.client.model.ModelPartData;
 import mekanism.generators.common.MekanismGenerators;
@@ -16,6 +15,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class ModelWindGenerator extends MekanismJavaModel {
 
@@ -134,7 +134,7 @@ public class ModelWindGenerator extends MekanismJavaModel {
         bladeCenter = BLADE_CENTER.getFromRoot(root);
     }
 
-    public void render(@Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, double angle, int light, int overlayLight, boolean hasEffect) {
+    public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, double angle, int light, int overlayLight, boolean hasEffect) {
         float baseRotation = getAbsoluteRotation(angle);
         setRotation(blade1a, 0F, 0F, baseRotation);
         setRotation(blade1b, 0F, 0F, 0.0349066F + baseRotation);
@@ -154,11 +154,11 @@ public class ModelWindGenerator extends MekanismJavaModel {
     }
 
     @Override
-    public void renderToBuffer(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
         renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
     }
 
-    public void renderWireFrame(PoseStack matrix, VertexConsumer vertexBuilder, double angle, float red, float green, float blue, float alpha) {
+    public void renderWireFrame(PoseStack matrix, VertexConsumer vertexBuilder, double angle, int red, int green, int blue, int alpha) {
         float baseRotation = getAbsoluteRotation(angle);
         setRotation(blade1a, 0F, 0F, baseRotation);
         setRotation(blade1b, 0F, 0F, 0.0349066F + baseRotation);

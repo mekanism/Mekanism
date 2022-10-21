@@ -1,7 +1,6 @@
 package mekanism.generators.common.tile.turbine;
 
 import java.util.Collections;
-import javax.annotation.Nonnull;
 import mekanism.api.IContentsListener;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.tile.base.SubstanceType;
@@ -10,6 +9,7 @@ import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityTurbineVent extends TileEntityTurbineCasing {
 
@@ -17,7 +17,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing {
         super(GeneratorsBlocks.TURBINE_VENT, pos, state);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         return side -> {

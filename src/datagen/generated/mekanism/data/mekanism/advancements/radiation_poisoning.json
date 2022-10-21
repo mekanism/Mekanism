@@ -3,9 +3,10 @@
   "criteria": {
     "poisoned": {
       "conditions": {
+        "damage": "mekanism.radiation",
         "killed": false
       },
-      "trigger": "mekanism:radiation_damage"
+      "trigger": "mekanism:damage"
     }
   },
   "display": {

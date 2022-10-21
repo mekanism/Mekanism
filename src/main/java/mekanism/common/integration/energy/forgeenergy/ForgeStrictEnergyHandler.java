@@ -1,16 +1,16 @@
 package mekanism.common.integration.energy.forgeenergy;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraftforge.energy.IEnergyStorage;
+import org.jetbrains.annotations.NotNull;
 
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+//Note: When wrapping joules to a whole number based energy type we don't need to add any extra simulation steps
+// for insert or extract when executing as we will always round down the number and just act upon a lower max requested amount
+@NothingNullByDefault
 public class ForgeStrictEnergyHandler implements IStrictEnergyHandler {
 
     private final IEnergyStorage storage;
@@ -45,21 +45,28 @@ public class ForgeStrictEnergyHandler implements IStrictEnergyHandler {
     }
 
     @Override
-    public FloatingLong insertEnergy(int container, FloatingLong amount, @Nonnull Action action) {
+    public FloatingLong insertEnergy(int container, FloatingLong amount, @NotNull Action action) {
         if (container == 0 && storage.canReceive()) {
-            int inserted = storage.receiveEnergy(EnergyUnit.FORGE_ENERGY.convertToAsInt(amount), action.simulate());
-            if (inserted > 0) {
-                //Only bother converting back if any was able to be inserted
-                return amount.subtract(EnergyUnit.FORGE_ENERGY.convertFrom(inserted));
+            int toInsert = EnergyUnit.FORGE_ENERGY.convertToAsInt(amount);
+            if (toInsert > 0) {
+                int inserted = storage.receiveEnergy(toInsert, action.simulate());
+                if (inserted > 0) {
+                    //Only bother converting back if any was inserted
+                    return amount.subtract(EnergyUnit.FORGE_ENERGY.convertFrom(inserted));
+                }
             }
         }
         return amount;
     }
 
     @Override
-    public FloatingLong extractEnergy(int container, FloatingLong amount, @Nonnull Action action) {
+    public FloatingLong extractEnergy(int container, FloatingLong amount, @NotNull Action action) {
         if (container == 0 && storage.canExtract()) {
-            return EnergyUnit.FORGE_ENERGY.convertFrom(storage.extractEnergy(EnergyUnit.FORGE_ENERGY.convertToAsInt(amount), action.simulate()));
+            int toExtract = EnergyUnit.FORGE_ENERGY.convertToAsInt(amount);
+            if (toExtract > 0) {
+                int extracted = storage.extractEnergy(toExtract, action.simulate());
+                return EnergyUnit.FORGE_ENERGY.convertFrom(extracted);
+            }
         }
         return FloatingLong.ZERO;
     }

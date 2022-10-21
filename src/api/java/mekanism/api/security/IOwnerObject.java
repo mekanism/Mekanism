@@ -2,9 +2,10 @@ package mekanism.api.security;
 
 import java.util.Objects;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.capabilities.AutoRegisterCapability;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Expose this as a capability on items, entities, or block entities to represent it is an object that can be "owned".
@@ -16,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
  * checking if the provider exposes a security capability.
  * @since 10.2.1
  */
+@AutoRegisterCapability
 public interface IOwnerObject {
 
     /**
@@ -51,7 +53,7 @@ public interface IOwnerObject {
      *
      * @return {@code true} if the player is the owner, {@code false} if the player isn't the owner or there is no owner currently set.
      */
-    default boolean ownerMatches(@Nonnull Player player) {
+    default boolean ownerMatches(@NotNull Player player) {
         Objects.requireNonNull(player, "Player may not be null.");
         return player.getUUID().equals(getOwnerUUID());
     }

@@ -1,12 +1,13 @@
 package mekanism.api;
 
-import javax.annotation.Nonnull;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.APILang;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import net.minecraft.core.Direction;
 
+@NothingNullByDefault
 public enum RelativeSide implements IHasTranslationKey {
     FRONT(APILang.FRONT),
     LEFT(APILang.LEFT),
@@ -44,7 +45,7 @@ public enum RelativeSide implements IHasTranslationKey {
      *
      * @return The direction representing which side of the block this RelativeSide is actually representing based on the direction it is facing.
      */
-    public Direction getDirection(@Nonnull Direction facing) {
+    public Direction getDirection(Direction facing) {
         return switch (this) {
             case FRONT -> facing;
             case BACK -> facing.getOpposite();
@@ -73,7 +74,7 @@ public enum RelativeSide implements IHasTranslationKey {
      *
      * @apiNote The calculations for what side is what when facing upwards or downwards, is done as if it was facing NORTH and rotated around the X-axis
      */
-    public static RelativeSide fromDirections(@Nonnull Direction facing, @Nonnull Direction side) {
+    public static RelativeSide fromDirections(Direction facing, Direction side) {
         if (side == facing) {
             return FRONT;
         } else if (side == facing.getOpposite()) {

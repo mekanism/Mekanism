@@ -1,7 +1,6 @@
 package mekanism.common.integration.projecte.mappers;
 
 import java.util.List;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -14,6 +13,7 @@ import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
+import org.jetbrains.annotations.NotNull;
 
 @RecipeTypeMapper
 public class CombinerRecipeMapper implements IRecipeTypeMapper {
@@ -40,8 +40,8 @@ public class CombinerRecipeMapper implements IRecipeTypeMapper {
             return false;
         }
         boolean handled = false;
-        List<@NonNull ItemStack> mainRepresentations = recipe.getMainInput().getRepresentations();
-        List<@NonNull ItemStack> extraRepresentations = recipe.getExtraInput().getRepresentations();
+        List<@NotNull ItemStack> mainRepresentations = recipe.getMainInput().getRepresentations();
+        List<@NotNull ItemStack> extraRepresentations = recipe.getExtraInput().getRepresentations();
         for (ItemStack mainRepresentation : mainRepresentations) {
             NormalizedSimpleStack nssMain = NSSItem.createItem(mainRepresentation);
             for (ItemStack extraRepresentation : extraRepresentations) {

@@ -5,7 +5,6 @@ import com.blamejared.crafttweaker.api.zencode.scriptrun.ScriptRunConfiguration;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -16,6 +15,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper class for registering chemicals via CraftTweaker. This is sort of akin to how ContentTweaker allows registering items/blocks via CraftTweaker

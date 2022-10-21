@@ -7,21 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullConsumer;
+import org.jetbrains.annotations.NotNull;
 
-@FieldsAreNonnullByDefault
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AbstractAcceptorInfo> {
 
     private final Map<Direction, NonNullConsumer<LazyOptional<ACCEPTOR>>> cachedListeners = new EnumMap<>(Direction.class);
@@ -77,7 +73,7 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AbstractAccep
     /**
      * Gets the listener that will refresh connections on a given side.
      */
-    protected NonNullConsumer<LazyOptional<ACCEPTOR>> getRefreshListener(@Nonnull Direction side) {
+    protected NonNullConsumer<LazyOptional<ACCEPTOR>> getRefreshListener(@NotNull Direction side) {
         return cachedListeners.computeIfAbsent(side, s -> new RefreshListener<>(transmitterTile, s));
     }
 
@@ -94,7 +90,7 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AbstractAccep
         }
 
         @Override
-        public void accept(@Nonnull LazyOptional<ACCEPTOR> ignored) {
+        public void accept(@NotNull LazyOptional<ACCEPTOR> ignored) {
             TileEntityTransmitter transmitterTile = tile.get();
             //Check to make sure the transmitter is still valid and that the position we are going to check is actually still loaded
             if (transmitterTile != null && !transmitterTile.isRemoved() && transmitterTile.hasLevel() && transmitterTile.isLoaded() &&

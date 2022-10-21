@@ -11,8 +11,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.Coord4D;
@@ -61,6 +59,7 @@ import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -73,6 +72,8 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader {
 
@@ -104,7 +105,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         cacheCoord();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         EnergyContainerHelper builder = EnergyContainerHelper.forSide(this::getDirection);
@@ -112,7 +113,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
@@ -203,6 +204,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
      * Checks whether, or why not, this teleporter can teleport entities.
      *
      * @return 1: yes, 2: no frame, 3: no link found, 4: not enough electricity
+     *
+     * @apiNote Only call on server
      */
     private byte canTeleport() {
         Direction direction = getFrameDirection();
@@ -214,12 +217,26 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             resetBounds();
         }
         Coord4D closestCoords = getClosest();
-        if (closestCoords == null) {
+        if (closestCoords == null || level == null) {
             return 3;
         }
+        boolean sameDimension = level.dimension() == closestCoords.dimension;
+        Level targetWorld;
+        if (sameDimension) {
+            targetWorld = level;
+        } else {
+            MinecraftServer server = level.getServer();
+            if (server == null) {//Should not happen
+                return 3;
+            }
+            targetWorld = server.getLevel(closestCoords.dimension);
+            if (targetWorld == null) {//In theory should not happen
+                return 3;
+            }
+        }
         FloatingLong sum = FloatingLong.ZERO;
-        for (Entity entity : getToTeleport(level.dimension() == closestCoords.dimension)) {
-            sum = sum.plusEqual(calculateEnergyCost(entity, closestCoords));
+        for (Entity entity : getToTeleport(sameDimension)) {
+            sum = sum.plusEqual(calculateEnergyCost(entity, targetWorld, closestCoords));
         }
         if (energyContainer.extract(sum, Action.SIMULATE, AutomationType.INTERNAL).smallerThan(sum)) {
             return 4;
@@ -274,7 +291,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                     teleporter.teleDelay = 5;
                     //Calculate energy cost before teleporting the entity, as after teleporting it
                     // the cost will be negligible due to being on top of the destination
-                    FloatingLong energyCost = calculateEnergyCost(entity, closestCoords);
+                    FloatingLong energyCost = calculateEnergyCost(entity, teleWorld, closestCoords);
                     double oldX = entity.getX();
                     double oldY = entity.getY();
                     double oldZ = entity.getZ();
@@ -412,17 +429,55 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                         (sameDimension || entity.canChangeDimensions()) && !didTeleport.contains(entity.getUUID()));
     }
 
-    @Nonnull
+    /**
+     * @apiNote Only call from the server side
+     */
+    @Nullable
     public static FloatingLong calculateEnergyCost(Entity entity, Coord4D coords) {
+        MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
+        if (currentServer != null) {
+            Level targetWorld = currentServer.getLevel(coords.dimension);
+            if (targetWorld != null) {
+                return calculateEnergyCost(entity, targetWorld, coords);
+            }
+        }
+        return null;
+    }
+
+    @NotNull
+    public static FloatingLong calculateEnergyCost(Entity entity, Level targetWorld, Coord4D coords) {
         FloatingLong energyCost = MekanismConfig.usage.teleporterBase.get();
-        if (entity.level.dimension() == coords.dimension) {
+        boolean sameDimension = entity.level.dimension() == coords.dimension;
+        if (sameDimension) {
             energyCost = energyCost.add(MekanismConfig.usage.teleporterDistance.get().multiply(Math.sqrt(entity.distanceToSqr(coords.getX(), coords.getY(), coords.getZ()))));
         } else {
-            energyCost = energyCost.add(MekanismConfig.usage.teleporterDimensionPenalty.get());
+            double currentScale = entity.level.dimensionType().coordinateScale();
+            double targetScale = targetWorld.dimensionType().coordinateScale();
+            double yDifference = entity.getY() - coords.getY();
+            //Note: coordinate scale only affects x and z, y is 1:1
+            double xDifference, zDifference;
+            if (currentScale <= targetScale) {
+                //If our current scale is less than or equal our target scale, then the cheapest way of teleporting is to act like we:
+                // - changed dimensions
+                // - teleported the distance
+                double scale = currentScale / targetScale;
+                xDifference = entity.getX() * scale - coords.getX();
+                zDifference = entity.getZ() * scale - coords.getZ();
+            } else {
+                //If however our current scale is greater than our target scale, then the cheapest way of teleporting is to act like we:
+                // - teleported the distance
+                // - changed dimensions
+                double inverseScale = targetScale / currentScale;
+                xDifference = entity.getX() - coords.getX() * inverseScale;
+                zDifference = entity.getZ() - coords.getZ() * inverseScale;
+            }
+            double distance = Mth.length(xDifference, yDifference, zDifference);
+            energyCost = energyCost.add(MekanismConfig.usage.teleporterDimensionPenalty.get())
+                  .plusEqual(MekanismConfig.usage.teleporterDistance.get().multiply(distance));
         }
         //Factor the number of passengers of this entity into the teleportation energy cost
         Set<Entity> passengers = new HashSet<>();
-        fillIndirectPassengers(entity, entity.level.dimension() == coords.dimension, passengers);
+        fillIndirectPassengers(entity, sameDimension, passengers);
         int passengerCount = passengers.size();
         return passengerCount > 0 ? energyCost.multiply(passengerCount) : energyCost;
     }
@@ -525,7 +580,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return frameRotated;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public AABB getRenderBoundingBox() {
         //Note: If the frame direction is "null" we instead just only mark the teleporter itself.
@@ -533,7 +588,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return frameDirection == null ? new AABB(worldPosition, worldPosition.offset(1, 1, 1)) : getTeleporterBoundingBox(frameDirection);
     }
 
-    private AABB getTeleporterBoundingBox(@Nonnull Direction frameDirection) {
+    private AABB getTeleporterBoundingBox(@NotNull Direction frameDirection) {
         //Note: We only include the area inside the frame, we don't bother including the teleporter's block itself
         return switch (frameDirection) {
             case UP -> new AABB(worldPosition.above(), worldPosition.offset(1, 3, 1));
@@ -585,7 +640,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         container.track(SyncableByte.create(() -> status, value -> status = value));
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
@@ -597,7 +652,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+    public void handleUpdateTag(@NotNull CompoundTag tag) {
         super.handleUpdateTag(tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> shouldRender = value);
         if (tag.contains(NBTConstants.COLOR, Tag.TAG_INT)) {

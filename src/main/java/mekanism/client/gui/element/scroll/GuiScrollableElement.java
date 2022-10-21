@@ -1,9 +1,13 @@
 package mekanism.client.gui.element.scroll;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiTexturedElement;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 public abstract class GuiScrollableElement extends GuiTexturedElement {
 
@@ -63,11 +67,11 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     }
 
     @Override
-    public void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
-        super.onDrag(mouseX, mouseY, mouseXOld, mouseYOld);
+    public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
+        super.onDrag(mouseX, mouseY, deltaX, deltaY);
         if (needsScrollBars() && isDragging) {
             double yAxis = mouseY - getGuiTop();
-            this.scroll = Math.min(Math.max((yAxis - barY - dragOffset) / getMax(), 0), 1);
+            this.scroll = Mth.clamp((yAxis - barY - dragOffset) / getMax(), 0, 1);
         }
     }
 
@@ -82,6 +86,14 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
         return getMaxElements() > getFocusedElements();
     }
 
+    protected final int getElements() {
+        return getMaxElements() - getFocusedElements();
+    }
+
+    protected int getScrollElementScaler() {
+        return 1;
+    }
+
     private int getMax() {
         return maxBarHeight - barHeight;
     }
@@ -89,36 +101,40 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     protected int getScroll() {
         //Calculate thumb position along scrollbar
         int max = getMax();
-        return Math.max(Math.min((int) (scroll * max), max), 0);
+        return Mth.clamp((int) (scroll * max), 0, max);
     }
 
     public int getCurrentSelection() {
-        if (needsScrollBars()) {
-            int size = getMaxElements() - getFocusedElements();
-            return (int) ((size + 0.5) * scroll);
-        }
-        return 0;
+        return needsScrollBars() ? (int) ((getElements() + 0.5) * scroll) : 0;
     }
 
     public boolean adjustScroll(double delta) {
         if (delta != 0 && needsScrollBars()) {
-            int elements = getMaxElements() - getFocusedElements();
+            int elements = MathUtils.clampToInt(Math.ceil(getElements() / (double) getScrollElementScaler()));
             if (elements > 0) {
+                //TODO - 1.19: Should this make use of ScrollIncrementer
                 if (delta > 0) {
                     delta = 1;
                 } else {
                     delta = -1;
                 }
-                scroll = (float) (scroll - delta / elements);
-                if (scroll < 0.0F) {
-                    scroll = 0.0F;
-                } else if (scroll > 1.0F) {
-                    scroll = 1.0F;
-                }
+                scroll = (float) Mth.clamp(scroll - delta / elements, 0, 1);
                 return true;
             }
         }
         return false;
+    }
+
+    protected void drawScrollBar(PoseStack matrix, int textureWidth, int textureHeight) {
+        RenderSystem.setShaderTexture(0, getResource());
+        //Top border
+        blit(matrix, barX - 1, barY - 1, 0, 0, textureWidth, 1, textureWidth, textureHeight);
+        //Middle border
+        blit(matrix, barX - 1, barY, 6, maxBarHeight, 0, 1, textureWidth, 1, textureWidth, textureHeight);
+        //Bottom border
+        blit(matrix, barX - 1, y + maxBarHeight + 2, 0, 0, textureWidth, 1, textureWidth, textureHeight);
+        //Scroll bar
+        blit(matrix, barX, barY + getScroll(), 0, 2, barWidth, barHeight, textureWidth, textureHeight);
     }
 
     @Override

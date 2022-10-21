@@ -2,8 +2,6 @@ package mekanism.common.tile.transmitter;
 
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
@@ -26,6 +24,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityUniversalCable extends TileEntityTransmitter implements IComputerTile {
 
@@ -65,9 +65,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
         return TransmitterType.UNIVERSAL_CABLE;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
+    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
         return switch (tier) {
             case BASIC -> BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_UNIVERSAL_CABLE);
             case ADVANCED -> BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_UNIVERSAL_CABLE);
@@ -77,7 +77,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
         };
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public CompoundTag getUpdateTag() {
         //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
@@ -95,7 +95,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
     }
 
     @Override
-    public void sideChanged(@Nonnull Direction side, @Nonnull ConnectionType old, @Nonnull ConnectionType type) {
+    public void sideChanged(@NotNull Direction side, @NotNull ConnectionType old, @NotNull ConnectionType type) {
         super.sideChanged(side, old, type);
         if (type == ConnectionType.NONE) {
             invalidateCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities(), side);

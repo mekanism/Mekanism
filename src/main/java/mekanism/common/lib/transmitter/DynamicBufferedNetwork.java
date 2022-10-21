@@ -6,13 +6,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.LongConsumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import mekanism.common.lib.math.Range3D;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraftforge.eventbus.api.Event;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBufferedNetwork<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>, BUFFER,
       TRANSMITTER extends BufferedTransmitter<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>> extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER> {
@@ -55,7 +56,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     @Override
     protected void addTransmitterFromCommit(TRANSMITTER transmitter) {
         super.addTransmitterFromCommit(transmitter);
-        chunks.add(WorldUtils.getChunkPosAsLong(transmitter.getTilePos()));
+        chunks.add(ChunkPos.asLong(transmitter.getTilePos()));
         //Update the capacity here, to make sure that we can actually absorb the buffer properly
         updateCapacity(transmitter);
         absorbBuffer(transmitter);
@@ -101,7 +102,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
 
     protected abstract void forceScaleUpdate();
 
-    @Nonnull
+    @NotNull
     public abstract BUFFER getBuffer();
 
     public abstract void absorbBuffer(TRANSMITTER transmitter);
@@ -154,7 +155,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     protected void updateSaveShares(@Nullable TRANSMITTER triggerTransmitter) {
     }
 
-    public final void validateSaveShares(@Nonnull TRANSMITTER triggerTransmitter) {
+    public final void validateSaveShares(@NotNull TRANSMITTER triggerTransmitter) {
         if (world == null) {
             //If the world is null, try falling back to the trigger transmitter's world.
             // Note: This also in theory could be null, so we double-check it is not before grabbing the game time

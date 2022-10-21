@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
-import javax.annotation.Nonnull;
 import mekanism.api.math.MathUtils;
 import mekanism.client.gui.element.graph.GuiLongGraph;
 import mekanism.client.gui.element.tab.GuiBoilerTab;
@@ -19,6 +18,7 @@ import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, EmptyTileContainer<TileEntityBoilerCasing>> {
 
@@ -43,7 +43,7 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         drawCenteredText(matrix, title, 0, imageWidth, titleLabelY, titleTextColor());
         BoilerMultiblockData multiblock = tile.getMultiblock();
         drawString(matrix, MekanismLang.BOILER_MAX_WATER.translate(TextUtils.format(multiblock.waterTank.getCapacity())), 8, 26, titleTextColor());

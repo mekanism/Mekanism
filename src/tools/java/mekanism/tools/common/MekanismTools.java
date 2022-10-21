@@ -129,10 +129,10 @@ public class MekanismTools implements IModModule {
     }
 
     private void onLivingSpecialSpawn(LivingSpawnEvent.SpecialSpawn event) {
-        LivingEntity entity = event.getEntityLiving();
+        LivingEntity entity = event.getEntity();
         if (entity instanceof Zombie || entity instanceof Skeleton || entity instanceof Piglin) {
             //Don't bother calculating random numbers unless the instanceof checks pass
-            RandomSource random = event.getWorld().getRandom();
+            RandomSource random = event.getLevel().getRandom();
             double chance = random.nextDouble();
             if (chance < MekanismToolsConfig.tools.armorSpawnRate.get()) {
                 //We can only spawn refined glowstone armor on piglins

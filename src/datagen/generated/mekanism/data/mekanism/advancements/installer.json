@@ -18,6 +18,7 @@
     }
   },
   "display": {
+    "announce_to_chat": false,
     "description": {
       "translate": "advancements.mekanism.installer.description"
     },

@@ -1,18 +1,22 @@
 {
   "type": "mekanism:painting",
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:light_blue"
+  },
   "conditions": [
     {
+      "type": "forge:and",
       "values": [
         {
-          "modid": "ilikewood",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood"
         },
         {
-          "modid": "ilikewood_beds",
-          "type": "forge:mod_loaded"
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood_beds"
         }
-      ],
-      "type": "forge:and"
+      ]
     }
   ],
   "itemInput": {
@@ -63,10 +67,6 @@
         "item": "ilikewood:black_oak_bed"
       }
     ]
-  },
-  "chemicalInput": {
-    "amount": 256,
-    "pigment": "mekanism:light_blue"
   },
   "output": {
     "item": "ilikewood:light_blue_oak_bed"

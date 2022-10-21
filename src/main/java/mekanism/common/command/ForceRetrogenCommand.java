@@ -6,12 +6,14 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.MekanismPermissions;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.commands.arguments.coordinates.ColumnPosArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.server.level.ServerLevel;
@@ -25,7 +27,7 @@ public class ForceRetrogenCommand {
 
     static ArgumentBuilder<CommandSourceStack, ?> register() {
         return Commands.literal("retrogen")
-              .requires(cs -> cs.hasPermission(2))
+              .requires(MekanismPermissions.COMMAND_FORCE_RETROGEN)
               .executes(ctx -> {
                   BlockPos blockPos = new BlockPos(ctx.getSource().getPosition());
                   ColumnPos pos = new ColumnPos(blockPos.getX(), blockPos.getZ());
@@ -51,10 +53,10 @@ public class ForceRetrogenCommand {
         if (xStart < -30000000 || zStart < -30000000 || xEnd >= 30000000 || zEnd >= 30000000) {
             throw BlockPosArgument.ERROR_OUT_OF_WORLD.create();
         }
-        int chunkXStart = xStart >> 4;
-        int chunkXEnd = xEnd >> 4;
-        int chunkZStart = zStart >> 4;
-        int chunkZEnd = zEnd >> 4;
+        int chunkXStart = SectionPos.blockToSectionCoord(xStart);
+        int chunkXEnd = SectionPos.blockToSectionCoord(xEnd);
+        int chunkZStart = SectionPos.blockToSectionCoord(zStart);
+        int chunkZEnd = SectionPos.blockToSectionCoord(zEnd);
         ServerLevel world = source.getLevel();
         ResourceKey<Level> registryKey = world.dimension();
         boolean hasChunks = false;

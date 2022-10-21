@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/zelkova_logs"
+      "tag": "byg:zelkova_logs"
     }
   },
   "mainOutput": {

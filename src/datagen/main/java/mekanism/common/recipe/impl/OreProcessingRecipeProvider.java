@@ -1,7 +1,6 @@
 package mekanism.common.recipe.impl;
 
 import java.util.function.Consumer;
-import javax.annotation.Nullable;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalDissolutionRecipeBuilder;
@@ -41,6 +40,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
+import org.jetbrains.annotations.Nullable;
 
 class OreProcessingRecipeProvider implements ISubRecipeProvider {
 

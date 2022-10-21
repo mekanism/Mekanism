@@ -2,16 +2,16 @@
   "type": "mekanismtools:paxel",
   "key": {
     "A": {
-      "item": "mekanismtools:lapis_lazuli_axe"
+      "tag": "forge:tools/axes/lapis_lazuli"
     },
     "P": {
-      "item": "mekanismtools:lapis_lazuli_pickaxe"
+      "tag": "forge:tools/pickaxes/lapis_lazuli"
     },
     "R": {
       "tag": "forge:rods/wooden"
     },
     "S": {
-      "item": "mekanismtools:lapis_lazuli_shovel"
+      "tag": "forge:tools/shovels/lapis_lazuli"
     }
   },
   "pattern": [

@@ -1,7 +1,6 @@
 package mekanism.client.gui.element.window.filter;
 
 import java.util.Locale;
-import javax.annotation.Nullable;
 import mekanism.api.functions.CharPredicate;
 import mekanism.api.functions.CharUnaryOperator;
 import mekanism.client.gui.IGuiWrapper;
@@ -11,6 +10,7 @@ import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
       extends GuiFilter<FILTER, TILE> {

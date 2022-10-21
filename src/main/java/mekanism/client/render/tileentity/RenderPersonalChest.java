@@ -3,7 +3,7 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
-import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.util.MekanismUtils;
@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.profiling.ProfilerFiller;
 
-@ParametersAreNonnullByDefault
+@NothingNullByDefault
 public class RenderPersonalChest extends MekanismTileEntityRenderer<TileEntityPersonalChest> {
 
     private static final ResourceLocation texture = MekanismUtils.getResource(ResourceType.TEXTURE_BLOCKS, "models/personal_chest.png");

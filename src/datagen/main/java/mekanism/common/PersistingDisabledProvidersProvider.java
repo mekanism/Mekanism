@@ -12,13 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.lib.FieldReflectionHelper;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Used for helping to persist specific integrations we have that aren't updated yet.
@@ -33,26 +34,26 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     }
 
     private static final Set<String> PATHS_TO_SKIP = Set.of(
-          "/scripts/",//CraftTweaker script files
-          "/pe_custom_conversions/"//ProjectE custom conversion files
+          //"/scripts/"//CraftTweaker script files
+          //, "/pe_custom_conversions/"//ProjectE custom conversion files
     );
     private static final Set<String> COMPAT_RECIPES_TO_SKIP = Set.of(
-          "ae2/",
-          //"biomesoplenty/",
-          //"byg/",//Biomes You'll Go
-          "ilikewood/",
-          "ilikewoodxbiomesoplenty/",//I Like Wood Biomes O' Plenty
-          "ilikewoodxbyg/"//I Like Wood Biomes You'll Go
+          //"ae2/"
+          //, "biomesoplenty/"
+          //, "byg/"//Biomes You'll Go
+          //, "ilikewood/"
+          //, "ilikewoodxbiomesoplenty/"//I Like Wood Biomes O' Plenty
+          //, "ilikewoodxbyg/"//I Like Wood Biomes You'll Go
     );
-    private static final List<DataProvider> FAKE_PROVIDERS = Stream.of(
-          "CraftTweaker Examples: mekanism",
-          "Custom EMC Conversions: mekanism"
+    private static final List<DataProvider> FAKE_PROVIDERS = Stream.<String>of(
+          //"CraftTweaker Examples: mekanism"
+          //, "Custom EMC Conversions: mekanism"
     ).<DataProvider>map(name -> new DataProvider() {
         @Override
-        public void run(@Nonnull CachedOutput cache) {
+        public void run(@NotNull CachedOutput cache) {
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public String getName() {
             return name;
@@ -66,11 +67,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     }
 
     @Override
-    public void run(@Nonnull CachedOutput cache) throws IOException {
-        if (PATHS_TO_SKIP.isEmpty() && COMPAT_RECIPES_TO_SKIP.isEmpty() && FAKE_PROVIDERS.isEmpty()) {
-            //Skip if we don't have any things to override and persist
-            return;
-        }
+    public void run(@NotNull CachedOutput cache) throws IOException {
         if (globalCache == null) {
             throw new RuntimeException("Failed to retrieve global cache");
         }
@@ -78,8 +75,16 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     }
 
     private <PROVIDER_CACHE, CACHE_UPDATER> void tryPersist(HashCache cache) throws IOException {
-        FieldReflectionHelper<HashCache, Map<DataProvider, PROVIDER_CACHE>> existingCaches = new FieldReflectionHelper<>(HashCache.class, "f_236082_", () -> null);
         FieldReflectionHelper<HashCache, Map<DataProvider, CACHE_UPDATER>> cachesToWrite = new FieldReflectionHelper<>(HashCache.class, "f_236083_", () -> null);
+        Map<DataProvider, CACHE_UPDATER> toWrite = cachesToWrite.getValue(cache);
+        //Skip writing a cache for this data generator
+        toWrite.remove(this);
+        if (PATHS_TO_SKIP.isEmpty() && COMPAT_RECIPES_TO_SKIP.isEmpty() && FAKE_PROVIDERS.isEmpty()) {
+            //Skip if we don't have any things to override and persist
+            return;
+        }
+
+        FieldReflectionHelper<HashCache, Map<DataProvider, PROVIDER_CACHE>> existingCaches = new FieldReflectionHelper<>(HashCache.class, "f_236082_", () -> null);
         FieldReflectionHelper<HashCache, Set<Path>> cachePaths = new FieldReflectionHelper<>(HashCache.class, "f_236084_", () -> null);
         FieldReflectionHelper<HashCache, Integer> initialCount = new FieldReflectionHelper<>(HashCache.class, "f_236085_", () -> null);
         Class<CACHE_UPDATER> cacheUpdater;
@@ -99,9 +104,6 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         Path cacheDir = baseOutputPath.resolve(".cache");
 
         Map<DataProvider, PROVIDER_CACHE> existing = existingCaches.getValue(cache);
-        Map<DataProvider, CACHE_UPDATER> toWrite = cachesToWrite.getValue(cache);
-        //Skip writing a cache for this data generator
-        toWrite.remove(this);
 
         Set<Path> paths = cachePaths.getValue(cache);
         //Load and inject any providers we have that are fully disabled into the cache system
@@ -123,7 +125,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         }
         //Technically this is unused except in a logging message but log it anyway
         int totalAdditional = additional;
-        initialCount.transformValue(cache, c -> true, c -> c + totalAdditional);
+        initialCount.transformValue(cache, ConstantPredicates.alwaysTrue(), c -> c + totalAdditional);
 
         //Persist data from previous runs that is in the correct format into the current run
         for (Map.Entry<DataProvider, CACHE_UPDATER> entry : toWrite.entrySet()) {
@@ -158,7 +160,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         return false;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String getName() {
         return "Persisting disabled provider";

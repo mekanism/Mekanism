@@ -3,69 +3,187 @@ package mekanism.client.model.baked;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.annotation.Nullable;
+import java.util.Objects;
+import java.util.function.BiPredicate;
+import mekanism.api.NBTConstants;
+import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.client.model.MekanismModelCache;
+import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadTransformation;
-import mekanism.client.render.lib.QuadUtils;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.content.qio.IQIODriveItem;
+import mekanism.common.content.qio.IQIODriveItem.DriveMetadata;
+import mekanism.common.item.interfaces.IItemSustainedInventory;
+import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
+import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.recipe.upgrade.ItemRecipeData;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
 import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
+import mekanism.common.util.ItemDataUtils;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
+@NothingNullByDefault
+public class DriveArrayBakedModel extends ExtensionOverrideBakedModel<byte[]> {
 
+    private static final BiPredicate<byte[], byte[]> DATA_EQUALITY_CHECK = Arrays::equals;
     private static final float[][] DRIVE_PLACEMENTS = {
           {0, 6F / 16}, {-2F / 16, 6F / 16}, {-4F / 16, 6F / 16}, {-7F / 16, 6F / 16}, {-9F / 16, 6F / 16}, {-11F / 16, 6F / 16},
           {0, 0}, {-2F / 16, 0}, {-4F / 16, 0}, {-7F / 16, 0}, {-9F / 16, 0}, {-11F / 16, 0}
     };
 
     public DriveArrayBakedModel(BakedModel original) {
-        super(original);
+        super(original, DriveArrayOverrideList::new);
     }
 
     @Override
     public List<BakedQuad> createQuads(QuadsKey<byte[]> key) {
-        byte[] driveStatus = key.getData();
-        List<BakedQuad> ret = key.getQuads();
+        byte[] driveStatus = Objects.requireNonNull(key.getData());
+        BlockState blockState = Objects.requireNonNull(key.getBlockState());
+        RenderType renderType = key.getLayer();
+        QuadTransformation rotation = QuadTransformation.rotate(Attribute.getFacing(blockState));
+        //Side will always be null as we validate it when creating the key as we don't currently have any of the sides get culled
         Direction side = key.getSide();
-        BlockState blockState = key.getBlockState();
-        if (blockState != null && side == Attribute.getFacing(blockState)) {
-            ret = new ArrayList<>(ret);
-            List<BakedQuad> driveQuads = new ArrayList<>();
-            for (int i = 0; i < driveStatus.length; i++) {
-                DriveStatus status = DriveStatus.STATUSES[driveStatus[i]];
-                if (status != DriveStatus.NONE) {
-                    driveQuads.addAll(getDriveQuads(i, status, key));
+        List<BakedQuad> driveQuads = new ArrayList<>();
+        for (int i = 0; i < driveStatus.length; i++) {
+            DriveStatus status = DriveStatus.STATUSES[driveStatus[i]];
+            if (status != DriveStatus.NONE) {
+                float[] translation = DRIVE_PLACEMENTS[i];
+                QuadTransformation transformation = QuadTransformation.translate(translation[0], translation[1], 0);
+                for (BakedQuad bakedQuad : MekanismModelCache.INSTANCE.QIO_DRIVES[status.ordinal()].getQuads(blockState, side, key.getRandom(), ModelData.EMPTY, renderType)) {
+                    Quad quad = new Quad(bakedQuad);
+                    if (quad.transform(transformation, rotation)) {
+                        //Bake and add the quad if we transformed it
+                        driveQuads.add(quad.bake());
+                    } else {
+                        // otherwise, just add the source quad
+                        driveQuads.add(bakedQuad);
+                    }
                 }
             }
-            ret.addAll(QuadUtils.transformBakedQuads(driveQuads, QuadTransformation.rotate(side)));
         }
-        return ret;
-    }
-
-    private List<BakedQuad> getDriveQuads(int index, DriveStatus status, QuadsKey<byte[]> key) {
-        List<BakedQuad> ret = MekanismModelCache.INSTANCE.QIO_DRIVES[status.ordinal()].getBakedModel().getQuads(key.getBlockState(), null, key.getRandom());
-        float[] translation = DRIVE_PLACEMENTS[index];
-        return QuadUtils.transformBakedQuads(ret, QuadTransformation.translate(new Vec3(translation[0], translation[1], 0)));
+        if (!driveQuads.isEmpty()) {
+            List<BakedQuad> ret = new ArrayList<>(key.getQuads());
+            ret.addAll(driveQuads);
+            return ret;
+        }
+        return key.getQuads();
     }
 
     @Nullable
     @Override
-    public QuadsKey<byte[]> createKey(QuadsKey<byte[]> key, IModelData data) {
-        byte[] driveStatus = data.getData(TileEntityQIODriveArray.DRIVE_STATUS_PROPERTY);
-        if (driveStatus == null) {
-            return null;
+    public QuadsKey<byte[]> createKey(QuadsKey<byte[]> key, ModelData data) {
+        //Skip if we don't have a blockstate or we aren't for the null side (unculled)
+        if (key.getBlockState() != null && key.getSide() == null) {
+            byte[] driveStatus = data.get(TileEntityQIODriveArray.DRIVE_STATUS_PROPERTY);
+            if (driveStatus != null) {
+                return key.data(driveStatus, Arrays.hashCode(driveStatus), DATA_EQUALITY_CHECK);
+            }
         }
-        return key.data(driveStatus, Arrays.hashCode(driveStatus), Arrays::equals);
+        return null;
     }
 
     @Override
     protected DriveArrayBakedModel wrapModel(BakedModel model) {
         return new DriveArrayBakedModel(model);
+    }
+
+    private static class DriveArrayOverrideList extends ExtendedItemOverrides {
+
+        DriveArrayOverrideList(ItemOverrides original) {
+            super(original);
+        }
+
+        @Nullable
+        @Override
+        public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
+            if (!stack.isEmpty() && stack.getItem() == MekanismBlocks.QIO_DRIVE_ARRAY.asItem()) {
+                ListTag inventory = ((IItemSustainedInventory) stack.getItem()).getInventory(stack);
+                List<IInventorySlot> inventorySlots = ItemRecipeData.readContents(inventory);
+                byte[] driveStatus = new byte[TileEntityQIODriveArray.DRIVE_SLOTS];
+                boolean hasFrequency = hasFrequency(stack);
+                boolean allEmpty = true;
+                for (int i = 0; i < driveStatus.length; i++) {
+                    DriveStatus status;
+                    ItemStack driveStack;
+                    if (i < inventorySlots.size()) {
+                        driveStack = inventorySlots.get(i).getStack();
+                    } else {
+                        driveStack = ItemStack.EMPTY;
+                    }
+                    if (driveStack.isEmpty() || !(driveStack.getItem() instanceof IQIODriveItem driveItem)) {
+                        status = DriveStatus.NONE;
+                    } else if (hasFrequency) {
+                        allEmpty = false;
+                        DriveMetadata metadata = DriveMetadata.load(driveStack);
+                        long countCapacity = driveItem.getCountCapacity(driveStack);
+                        if (metadata.count() == countCapacity) {
+                            //If we are at max item capacity: Full
+                            status = DriveStatus.FULL;
+                        } else if (metadata.types() == driveItem.getTypeCapacity(driveStack) || metadata.count() >= countCapacity * 0.75) {
+                            //If we are at max type capacity OR we are at 75% or more capacity: Near full
+                            status = DriveStatus.NEAR_FULL;
+                        } else {
+                            //Otherwise: Ready
+                            status = DriveStatus.READY;
+                        }
+                    } else {
+                        allEmpty = false;
+                        status = DriveStatus.OFFLINE;
+                    }
+                    driveStatus[i] = status.status();
+                }
+                if (!allEmpty) {//Only bother actually applying an override if there are some drives that aren't empty
+                    ModelData modelData = ModelData.builder().with(TileEntityQIODriveArray.DRIVE_STATUS_PROPERTY, driveStatus).build();
+                    //TODO: At some point we may want to evaluate caching this
+                    return wrap(model, stack, world, entity, seed, modelData, DriveStatusBakedModel::new);
+                }
+            }
+            return original.resolve(model, stack, world, entity, seed);
+        }
+
+        private boolean hasFrequency(ItemStack stack) {
+            if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
+                CompoundTag frequencyComponent = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_FREQUENCY);
+                if (frequencyComponent.contains(FrequencyType.QIO.getName(), Tag.TAG_COMPOUND)) {
+                    CompoundTag frequencyCompound = frequencyComponent.getCompound(FrequencyType.QIO.getName());
+                    FrequencyIdentity identity = FrequencyIdentity.load(FrequencyType.QIO, frequencyCompound);
+                    return identity != null && frequencyCompound.hasUUID(NBTConstants.OWNER_UUID);
+                }
+            }
+            return false;
+        }
+
+        private static class DriveStatusBakedModel extends ModelDataBakedModel {
+
+            private final BlockState targetState;
+
+            public DriveStatusBakedModel(BakedModel original, ModelData data) {
+                super(original, data);
+                this.targetState = MekanismBlocks.QIO_DRIVE_ARRAY.getBlock().defaultBlockState();
+            }
+
+            @NotNull
+            @Override
+            public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData data, @Nullable RenderType renderType) {
+                return super.getQuads(state == null ? targetState : state, side, rand, data, renderType);
+            }
+        }
     }
 }

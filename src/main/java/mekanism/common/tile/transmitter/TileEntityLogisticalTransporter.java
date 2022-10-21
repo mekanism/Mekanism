@@ -1,6 +1,5 @@
 package mekanism.common.tile.transmitter;
 
-import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.model.data.TransmitterModelData;
@@ -10,6 +9,7 @@ import mekanism.common.content.network.transmitter.LogisticalTransporter;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityLogisticalTransporter extends TileEntityLogisticalTransporterBase {
 
@@ -38,9 +38,9 @@ public class TileEntityLogisticalTransporter extends TileEntityLogisticalTranspo
         modelData.setHasColor(getTransmitter().getColor() != null);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
+    protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
         return switch (tier) {
             case BASIC -> BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER);
             case ADVANCED -> BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER);

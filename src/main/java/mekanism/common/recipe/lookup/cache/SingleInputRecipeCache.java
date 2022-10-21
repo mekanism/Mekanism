@@ -5,12 +5,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.IInputCache;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Basic implementation for {@link IInputRecipeCache} for handling recipes with a single input.
@@ -77,7 +78,7 @@ public abstract class SingleInputRecipeCache<INPUT, INGREDIENT extends InputIngr
      */
     @Nullable
     public RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT input) {
-        return findTypeBasedRecipe(world, input, recipe -> true);
+        return findTypeBasedRecipe(world, input, ConstantPredicates.alwaysTrue());
     }
 
     /**

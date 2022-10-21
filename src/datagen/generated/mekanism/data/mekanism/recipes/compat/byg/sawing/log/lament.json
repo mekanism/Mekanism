@@ -8,7 +8,7 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "byg:wood/lament_logs"
+      "tag": "byg:lament_logs"
     }
   },
   "mainOutput": {

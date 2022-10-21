@@ -1,12 +1,9 @@
 package mekanism.common.tile.machine;
 
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.Gas;
@@ -28,6 +25,7 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
@@ -51,7 +49,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<GasToGasRecipe> implements IBoundingBlock, ChemicalRecipeLookupHandler<Gas, GasStack, GasToGasRecipe> {
 
@@ -74,8 +73,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
     private boolean settingsChecked;
     private boolean needsRainCheck;
 
-    private final IOutputHandler<@NonNull GasStack> outputHandler;
-    private final IInputHandler<@NonNull GasStack> inputHandler;
+    private final IOutputHandler<@NotNull GasStack> outputHandler;
+    private final IInputHandler<@NotNull GasStack> inputHandler;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
     private GasInventorySlot inputSlot;
@@ -96,7 +95,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
@@ -108,7 +107,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
         return builder.build();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
@@ -154,7 +153,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
         recipeCacheLookupMonitor.updateAndProcess();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IMekanismRecipeTypeProvider<GasToGasRecipe, SingleChemical<Gas, GasStack, GasToGasRecipe>> getRecipeType() {
         return MekanismRecipeType.ACTIVATING;
@@ -166,10 +165,15 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
         return findFirstRecipe(inputHandler);
     }
 
+    @ComputerMethod
+    private boolean canSeeSun(){
+        return WorldUtils.canSeeSun(level, worldPosition.above());
+    }
+
     private boolean canFunction() {
         // Sort out if the solar neutron activator can see the sun; we no longer check if it's raining here,
         // since under the new rules, we can still function when it's raining, albeit at a significant penalty.
-        return MekanismUtils.canFunction(this) && WorldUtils.canSeeSun(level, worldPosition.above());
+        return MekanismUtils.canFunction(this) && canSeeSun();
     }
 
     private float recalculateProductionRate() {
@@ -189,9 +193,9 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
         return production;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CachedRecipe<GasToGasRecipe> createNewCachedRecipe(@Nonnull GasToGasRecipe recipe, int cacheIndex) {
+    public CachedRecipe<GasToGasRecipe> createNewCachedRecipe(@NotNull GasToGasRecipe recipe, int cacheIndex) {
         return OneInputCachedRecipe.chemicalToChemical(recipe, recheckAllRecipeErrors, inputHandler, outputHandler)
               .setErrorsChanged(this::onErrorsChanged)
               .setCanHolderFunction(this::canFunction)
@@ -200,12 +204,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
               //Edge case handling, this should almost always end up being 1
               .setRequiredTicks(() -> productionRate > 0 && productionRate < 1 ? (int) Math.ceil(1 / productionRate) : 1)
               .setBaselineMaxOperations(() -> productionRate > 0 && productionRate < 1 ? 1 : (int) productionRate);
-    }
-
-    @Nonnull
-    @Override
-    public AABB getRenderBoundingBox() {
-        return new AABB(worldPosition, worldPosition.offset(1, 2, 1));
     }
 
     @Override

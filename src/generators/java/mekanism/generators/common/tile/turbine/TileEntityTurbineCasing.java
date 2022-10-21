@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile.turbine;
 
-import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.tile.interfaces.IHasGasMode;
@@ -10,6 +9,7 @@ import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultiblockData> implements IHasGasMode {
 
@@ -29,7 +29,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultibl
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public TurbineMultiblockData createMultiblock() {
         return new TurbineMultiblockData(this);

@@ -11,12 +11,11 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.MekanismPermissions;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
@@ -34,6 +33,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BuildCommand {
 
@@ -44,8 +45,9 @@ public class BuildCommand {
 
     public static final ArgumentBuilder<CommandSourceStack, ?> COMMAND =
           Commands.literal("build")
-                .requires(cs -> cs.hasPermission(2) && cs.getEntity() instanceof ServerPlayer)
+                .requires(MekanismPermissions.COMMAND_BUILD.and(cs -> cs.getEntity() instanceof ServerPlayer))
                 .then(Commands.literal("remove")
+                      .requires(MekanismPermissions.COMMAND_BUILD_REMOVE)
                       .executes(ctx -> {
                           CommandSourceStack source = ctx.getSource();
                           destroy(source.getLevel(), rayTracePos(source));
@@ -113,7 +115,7 @@ public class BuildCommand {
         }
     }
 
-    private static boolean isMekanismBlock(@Nullable LevelAccessor world, @Nonnull Long2ObjectMap<ChunkAccess> chunkMap, @Nonnull BlockPos pos) {
+    private static boolean isMekanismBlock(@Nullable LevelAccessor world, @NotNull Long2ObjectMap<ChunkAccess> chunkMap, @NotNull BlockPos pos) {
         Optional<BlockState> state = WorldUtils.getBlockState(world, chunkMap, pos);
         return state.isPresent() && RegistryUtils.getNamespace(state.get().getBlock()).startsWith(Mekanism.MODID);
     }

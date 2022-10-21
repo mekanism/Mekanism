@@ -1,0 +1,78 @@
+{
+  "parent": "block/cube_all",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "#sides",
+    "down": "#sides",
+    "up": "#sides",
+    "north": "#front",
+    "east": "#sides",
+    "south": "#back",
+    "west": "#sides",
+		"ports": "mekanism:block/models/ports",
+		"ports_led": "mekanism:block/models/ports_led"
+	},
+	"elements": [
+		{
+			"name": "bottom",
+			"from": [4, 0, 0],
+			"to": [12, 4, 16],
+			"faces": {
+				"north": {"uv": [4, 12, 12, 16], "texture": "#north", "cullface": "north"},
+				"south": {"uv": [4, 12, 12, 16], "texture": "#south", "cullface": "south"},
+				"down": {"uv": [4, 0, 12, 16], "texture": "#down", "cullface": "down"}
+			}
+		},
+		{
+			"name": "top",
+			"from": [4, 12, 0],
+			"to": [12, 16, 16],
+			"faces": {
+				"north": {"uv": [4, 0, 12, 4], "texture": "#north", "cullface": "north"},
+				"south": {"uv": [4, 0, 12, 4], "texture": "#south", "cullface": "south"},
+				"up": {"uv": [4, 0, 12, 16], "rotation": 180, "texture": "#up", "cullface": "up"}
+			}
+		},
+		{
+			"name": "right",
+			"from": [0, 0, 0],
+			"to": [4, 16, 16],
+			"faces": {
+				"north": {"uv": [12, 0, 16, 16], "texture": "#north", "cullface": "north"},
+				"south": {"uv": [0, 0, 4, 16], "texture": "#south", "cullface": "south"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#west", "cullface": "west"},
+				"up": {"uv": [0, 0, 4, 16], "rotation": 180, "texture": "#up", "cullface": "up"},
+				"down": {"uv": [0, 0, 4, 16], "texture": "#down", "cullface": "down"}
+			}
+		},
+		{
+			"name": "left",
+			"from": [12, 0, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 4, 16], "texture": "#north", "cullface": "north"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#east", "cullface": "east"},
+				"south": {"uv": [12, 0, 16, 16], "texture": "#south", "cullface": "south"},
+				"up": {"uv": [12, 0, 16, 16], "rotation": 180, "texture": "#up", "cullface": "up"},
+				"down": {"uv": [12, 0, 16, 16], "texture": "#down", "cullface": "down"}
+			}
+		},
+		{
+			"name": "port",
+			"from": [4, 4, 0],
+			"to": [12, 12, 16],
+			"faces": {
+				"north": {"uv": [4, 4, 12, 12], "texture": "#north"},
+				"south": {"uv": [0, 0, 8, 8], "texture": "#ports"}
+			}
+		},
+		{
+			"name": "port_led",
+			"from": [4, 4, 16],
+			"to": [12, 12, 16],
+			"faces": {
+				"south": {"uv": [8, 8, 16, 16], "texture": "#ports_led", "emissivity": 15}
+			}
+		}
+	]
+}

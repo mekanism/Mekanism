@@ -1,14 +1,12 @@
 {
-	"loader": "mekanism:mekanism",
 	"parent": "block/cube_all",
-	"texture_size": [32, 32],
 	"textures": {
 		"0": "mekanismgenerators:block/model/gas_burning_generator",
-		"2": "mekanism:block/models/ports",
-		"3": "mekanism:block/models/ports_led",
-		"4": "mekanism:block/models/ports2",
+		"1": "mekanism:block/models/ports",
+		"2": "mekanism:block/models/ports_led",
 		"particle": "mekanismgenerators:block/model/gas_burning_generator"
 	},
+	"render_type": "minecraft:cutout",
 	"elements": [
 		{
 			"name": "port_connector_south1",
@@ -45,7 +43,6 @@
 			"name": "port_connector_west2",
 			"from": [2, 12, 4],
 			"to": [3, 13, 12],
-			"rotation": {"angle": 0, "axis": "z", "origin": [3, 12, 4]},
 			"faces": {
 				"up": {"uv": [11.5, 8.5, 15.5, 8], "rotation": 270, "texture": "#0"}
 			}
@@ -54,7 +51,6 @@
 			"name": "bottom_connector1",
 			"from": [1, 5, 4],
 			"to": [2, 5, 12],
-			"rotation": {"angle": 0, "axis": "z", "origin": [8, 5, 8]},
 			"faces": {
 				"down": {"uv": [2, 13.5, 6, 14], "rotation": 270, "texture": "#0"}
 			}
@@ -63,7 +59,6 @@
 			"name": "bottom_connector2",
 			"from": [4, 5, 14],
 			"to": [12, 5, 15],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 5, 8]},
 			"faces": {
 				"down": {"uv": [2, 13.5, 6, 14], "texture": "#0"}
 			}
@@ -72,7 +67,6 @@
 			"name": "bottom_connector3",
 			"from": [14, 5, 4],
 			"to": [15, 5, 12],
-			"rotation": {"angle": 0, "axis": "z", "origin": [8, 5, 8]},
 			"faces": {
 				"down": {"uv": [2, 13.5, 6, 14], "rotation": 270, "texture": "#0"}
 			}
@@ -81,7 +75,6 @@
 			"name": "bottom_connector4",
 			"from": [4, 5, 1],
 			"to": [12, 5, 2],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 5, 8]},
 			"faces": {
 				"down": {"uv": [2, 13.5, 6, 14], "texture": "#0"}
 			}
@@ -121,23 +114,49 @@
 			}
 		},
 		{
-			"name": "chamber",
-			"from": [3, 6, 3],
-			"to": [13, 16, 13],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 10, 8]},
+			"name": "chamber_south",
+			"from": [4, 13, 12],
+			"to": [12, 16, 13],
 			"faces": {
-				"north": {"uv": [1.5, 8, 6.5, 13], "texture": "#0"},
-				"east": {"uv": [1.5, 8, 6.5, 13], "texture": "#0"},
-				"south": {"uv": [1.5, 8, 6.5, 13], "texture": "#0"},
-				"west": {"uv": [1.5, 8, 6.5, 13], "texture": "#0"},
-				"up": {"uv": [1.5, 8, 6.5, 13], "texture": "#0"}
+				"south": {"uv": [2, 8, 6, 9.5], "texture": "#0"},
+				"up": {"uv": [1.5, 12.5, 6.5, 13], "texture": "#0", "cullface": "up"}
+			}
+		},
+		{
+			"name": "chamber_north",
+			"from": [4, 13, 3],
+			"to": [12, 16, 4],
+			"faces": {
+				"north": {"uv": [2, 8, 6, 9.5], "texture": "#0"},
+				"up": {"uv": [1.5, 8, 6.5, 8.5], "texture": "#0", "cullface": "up"}
+			}
+		},
+		{
+			"name": "chamber_west",
+			"from": [3, 13, 3],
+			"to": [4, 16, 13],
+			"faces": {
+				"north": {"uv": [1.5, 8, 2, 9.5], "texture": "#0"},
+				"south": {"uv": [6, 8, 6.5, 9.5], "texture": "#0"},
+				"west": {"uv": [1.5, 8, 6.5, 9.5], "texture": "#0"},
+				"up": {"uv": [1.5, 8, 2, 13], "texture": "#0", "cullface": "up"}
+			}
+		},
+		{
+			"name": "chamber_east",
+			"from": [12, 13, 3],
+			"to": [13, 16, 13],
+			"faces": {
+				"north": {"uv": [1.5, 8, 2, 9.5], "texture": "#0"},
+				"east": {"uv": [1.5, 8, 6.5, 9.5], "texture": "#0"},
+				"south": {"uv": [6, 8, 6.5, 9.5], "texture": "#0"},
+				"up": {"uv": [6, 8, 6.5, 13], "texture": "#0", "cullface": "up"}
 			}
 		},
 		{
 			"name": "tank1",
 			"from": [12, 5, 1],
 			"to": [15, 14, 4],
-			"rotation": {"angle": 0, "axis": "y", "origin": [13.5, 9.5, 2.5]},
 			"faces": {
 				"north": {"uv": [9.5, 9.5, 8, 14], "texture": "#0"},
 				"east": {"uv": [9.5, 9.5, 8, 14], "texture": "#0"},
@@ -151,7 +170,6 @@
 			"name": "tank4",
 			"from": [1, 5, 1],
 			"to": [4, 14, 4],
-			"rotation": {"angle": 0, "axis": "y", "origin": [2.5, 9.5, 2.5]},
 			"faces": {
 				"north": {"uv": [9.5, 9.5, 8, 14], "texture": "#0"},
 				"east": {"uv": [11, 9.5, 9.5, 14], "texture": "#0"},
@@ -165,7 +183,6 @@
 			"name": "tank3",
 			"from": [1, 5, 12],
 			"to": [4, 14, 15],
-			"rotation": {"angle": 0, "axis": "y", "origin": [2.5, 9.5, 13.5]},
 			"faces": {
 				"north": {"uv": [11, 9.5, 9.5, 14], "texture": "#0"},
 				"east": {"uv": [11, 9.5, 9.5, 14], "texture": "#0"},
@@ -179,7 +196,6 @@
 			"name": "tank2",
 			"from": [12, 5, 12],
 			"to": [15, 14, 15],
-			"rotation": {"angle": 0, "axis": "y", "origin": [13.5, 9.5, 13.5]},
 			"faces": {
 				"north": {"uv": [11, 9.5, 9.5, 14], "texture": "#0"},
 				"east": {"uv": [9.5, 9.5, 8, 14], "texture": "#0"},
@@ -194,12 +210,12 @@
 			"from": [0, 0, 0],
 			"to": [16, 4, 16],
 			"faces": {
-				"north": {"uv": [8, 14, 0, 16], "texture": "#0"},
-				"east": {"uv": [8, 14, 0, 16], "texture": "#0"},
-				"south": {"uv": [8, 14, 0, 16], "texture": "#0"},
-				"west": {"uv": [8, 14, 0, 16], "texture": "#0"},
+				"north": {"uv": [8, 14, 0, 16], "texture": "#0", "cullface": "north"},
+				"east": {"uv": [8, 14, 0, 16], "texture": "#0", "cullface": "east"},
+				"south": {"uv": [8, 14, 0, 16], "texture": "#0", "cullface": "south"},
+				"west": {"uv": [8, 14, 0, 16], "texture": "#0", "cullface": "west"},
 				"up": {"uv": [8, 0, 0, 8], "texture": "#0"},
-				"down": {"uv": [16, 0, 8, 8], "texture": "#0"}
+				"down": {"uv": [16, 0, 8, 8], "texture": "#0", "cullface": "down"}
 			}
 		},
 		{
@@ -218,46 +234,19 @@
 			"from": [4, 4, 0],
 			"to": [12, 12, 1],
 			"faces": {
-				"north": {"uv": [16, 8, 8, 16], "texture": "#2"},
-				"east": {"uv": [9, 8, 8, 16], "texture": "#2"},
-				"south": {"uv": [8, 8, 0, 16], "texture": "#2"},
-				"west": {"uv": [16, 8, 15, 16], "texture": "#2"},
-				"up": {"uv": [16, 8, 8, 9], "texture": "#2"}
+				"north": {"uv": [8, 0, 0, 8], "texture": "#1", "cullface": "north"},
+				"east": {"uv": [1, 0, 0, 8], "texture": "#1"},
+				"south": {"uv": [8, 8, 0, 16], "texture": "#1"},
+				"west": {"uv": [8, 0, 7, 8], "texture": "#1"},
+				"up": {"uv": [8, 0, 0, 1], "texture": "#1"}
 			}
 		},
 		{
-			"name": "port_north_led1",
-			"from": [5, 10, -0.005],
-			"to": [11, 11, -0.005],
+			"name": "port_north_led",
+			"from": [4, 4, 0],
+			"to": [12, 12, 0],
 			"faces": {
-				"north": {"uv": [9, 9, 15, 10], "texture": "#3", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_north_led2",
-			"from": [5, 5, -0.005],
-			"to": [11, 6, -0.005],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 3, 8]},
-			"faces": {
-				"north": {"uv": [9, 14, 15, 15], "texture": "#3", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_north_led3",
-			"from": [10, 6, -0.005],
-			"to": [11, 10, -0.005],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 4, 8]},
-			"faces": {
-				"north": {"uv": [9, 10, 10, 14], "texture": "#3", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_north_led4",
-			"from": [5, 6, -0.005],
-			"to": [6, 10, -0.005],
-			"rotation": {"angle": 0, "axis": "y", "origin": [3, 4, 8]},
-			"faces": {
-				"north": {"uv": [14, 10, 15, 14], "texture": "#3", "lightLevel": 15}
+				"north": {"uv": [8, 8, 16, 16], "texture": "#2", "cullface": "north", "emissivity": 15}
 			}
 		},
 		{
@@ -265,198 +254,75 @@
 			"from": [15, 4, 4],
 			"to": [16, 12, 12],
 			"faces": {
-				"north": {"uv": [8, 0, 7, 8], "texture": "#2"},
-				"east": {"uv": [8, 0, 0, 8], "texture": "#4"},
-				"south": {"uv": [1, 0, 0, 8], "texture": "#2"},
-				"west": {"uv": [8, 8, 0, 16], "texture": "#2"},
-				"up": {"uv": [8, 0, 0, 1], "rotation": 90, "texture": "#2"}
+				"north": {"uv": [8, 0, 7, 8], "texture": "#1"},
+				"east": {"uv": [8, 0, 0, 8], "texture": "#1", "cullface": "east"},
+				"south": {"uv": [1, 0, 0, 8], "texture": "#1"},
+				"west": {"uv": [8, 8, 0, 16], "texture": "#1"},
+				"up": {"uv": [8, 0, 0, 1], "rotation": 90, "texture": "#1"}
 			}
 		},
 		{
-			"name": "port_east_led1",
-			"from": [15.005, 10, 5],
-			"to": [16.005, 11, 11],
+			"name": "port_east_led",
+			"from": [16, 4, 4],
+			"to": [16, 12, 12],
 			"faces": {
-				"east": {"uv": [9, 1, 15, 2], "texture": "#3", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_east_led2",
-			"from": [15.005, 5, 5],
-			"to": [16.005, 6, 11],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 3, 8]},
-			"faces": {
-				"east": {"uv": [9, 6, 15, 7], "texture": "#3", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_east_led3",
-			"from": [15.005, 6, 10],
-			"to": [16.005, 10, 11],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 7, 8]},
-			"faces": {
-				"east": {"uv": [9, 2, 10, 6], "texture": "#3", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_east_led4",
-			"from": [15.005, 6, 5],
-			"to": [16.005, 10, 6],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 7, 3]},
-			"faces": {
-				"east": {"uv": [14, 2, 15, 6], "texture": "#3", "lightLevel": 15}
+				"east": {"uv": [8, 0, 16, 8], "texture": "#2", "cullface": "east", "emissivity": 15}
 			}
 		},
 		{
 			"name": "port_up",
-			"from": [4, 15.005, 4],
-			"to": [12, 16.005, 12],
+			"from": [4, 16, 4],
+			"to": [12, 16, 12],
 			"faces": {
-				"north": {"uv": [8, 0, 7, 8], "rotation": 90, "texture": "#2"},
-				"south": {"uv": [1, 0, 0, 8], "rotation": 270, "texture": "#2"},
-				"west": {"uv": [8, 0, 0, 1], "texture": "#2"},
-				"up": {"uv": [8, 0, 0, 8], "rotation": 270, "texture": "#4"}
+				"up": {"uv": [8, 0, 0, 8], "rotation": 270, "texture": "#1", "cullface": "up"}
 			}
 		},
 		{
-			"name": "port_up_led1",
-			"from": [5, 15.01, 5],
-			"to": [6, 16.01, 11],
+			"name": "port_up_led",
+			"from": [4, 16, 4],
+			"to": [12, 16, 12],
 			"faces": {
-				"up": {"uv": [9, 6, 15, 7], "rotation": 270, "texture": "#3", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_up_led2",
-			"from": [6, 15.01, 10],
-			"to": [10, 16.01, 11],
-			"rotation": {"angle": 0, "axis": "z", "origin": [9, 8, 8]},
-			"faces": {
-				"up": {"uv": [14, 2, 15, 6], "rotation": 270, "texture": "#3", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_up_led3",
-			"from": [6, 15.01, 5],
-			"to": [10, 16.01, 6],
-			"rotation": {"angle": 0, "axis": "z", "origin": [9, 8, 3]},
-			"faces": {
-				"up": {"uv": [9, 2, 10, 6], "rotation": 270, "texture": "#3", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_up_led2",
-			"from": [10, 15.01, 5],
-			"to": [11, 16.01, 11],
-			"rotation": {"angle": 0, "axis": "z", "origin": [13, 8, 8]},
-			"faces": {
-				"up": {"uv": [9, 1, 15, 2], "rotation": 270, "texture": "#3", "lightLevel": 15}
+				"up": {"uv": [8, 0, 16, 8], "rotation": 270, "texture": "#2", "cullface": "up", "emissivity": 15}
 			}
 		},
 		{
 			"name": "port_south",
 			"from": [4, 4, 15],
 			"to": [12, 12, 16],
-
 			"faces": {
-				"north": {"uv": [8, 8, 0, 16], "texture": "#2"},
-				"east": {"uv": [8, 0, 7, 8], "texture": "#2"},
-				"south": {"uv": [8, 0, 0, 8], "texture": "#4"},
-				"west": {"uv": [1, 0, 0, 8], "texture": "#2"},
-				"up": {"uv": [8, 0, 0, 1], "rotation": 180, "texture": "#2"}
+				"north": {"uv": [8, 8, 0, 16], "texture": "#1"},
+				"east": {"uv": [8, 0, 7, 8], "texture": "#1"},
+				"south": {"uv": [8, 0, 0, 8], "texture": "#1", "cullface": "south"},
+				"west": {"uv": [1, 0, 0, 8], "texture": "#1"},
+				"up": {"uv": [8, 0, 0, 1], "rotation": 180, "texture": "#1"}
 			}
 		},
 		{
-			"name": "port_south_led1",
-			"from": [5, 10, 16.005],
-			"to": [11, 11, 16.005],
-
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 7, 8]},
+			"name": "port_south_led",
+			"from": [4, 4, 16],
+			"to": [12, 12, 16],
 			"faces": {
-				"south": {"uv": [9, 1, 15, 2], "rotation": 180, "texture": "#3", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_south_led2",
-			"from": [5, 5, 16.005],
-			"to": [11, 6, 16.005],
-
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 2, 8]},
-			"faces": {
-				"south": {"uv": [9, 6, 15, 7], "rotation": 180, "texture": "#3", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_south_led3",
-			"from": [5, 6, 16.005],
-			"to": [6, 10, 16.005],
-
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 6, 8]},
-			"faces": {
-				"south": {"uv": [9, 2, 10, 6], "rotation": 180, "texture": "#3", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_south_led4",
-			"from": [10, 6, 16.005],
-			"to": [11, 10, 16.005],
-
-			"rotation": {"angle": 0, "axis": "y", "origin": [13, 6, 8]},
-			"faces": {
-				"south": {"uv": [14, 2, 15, 6], "rotation": 180, "texture": "#3", "lightLevel": 15}
+				"south": {"uv": [8, 0, 16, 8], "rotation": 180, "texture": "#2", "cullface": "south", "emissivity": 15}
 			}
 		},
 		{
 			"name": "port_west",
 			"from": [0, 4, 4],
 			"to": [1, 12, 12],
-
 			"faces": {
-				"north": {"uv": [1, 0, 0, 8], "texture": "#2"},
-				"east": {"uv": [8, 8, 0, 16], "texture": "#2"},
-				"south": {"uv": [8, 0, 7, 8], "texture": "#2"},
-				"west": {"uv": [8, 0, 0, 8], "texture": "#4"},
-				"up": {"uv": [8, 0, 0, 1], "rotation": 270, "texture": "#2"}
+				"north": {"uv": [1, 0, 0, 8], "texture": "#1"},
+				"east": {"uv": [8, 8, 0, 16], "texture": "#1"},
+				"south": {"uv": [8, 0, 7, 8], "texture": "#1"},
+				"west": {"uv": [8, 0, 0, 8], "texture": "#1", "cullface": "west"},
+				"up": {"uv": [8, 0, 0, 1], "rotation": 270, "texture": "#1"}
 			}
 		},
 		{
-			"name": "port_west_led1",
-			"from": [-0.005, 10, 5],
-			"to": [-0.005, 11, 11],
-
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 7, 7]},
+			"name": "port_west_led",
+			"from": [0, 4, 4],
+			"to": [0, 12, 12],
 			"faces": {
-				"west": {"uv": [9, 1, 15, 2], "texture": "#3", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_west_led2",
-			"from": [-0.005, 5, 5],
-			"to": [-0.005, 6, 11],
-
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 2, 7]},
-			"faces": {
-				"west": {"uv": [9, 6, 15, 7], "texture": "#3", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_west_led3",
-			"from": [-0.005, 6, 5],
-			"to": [-0.005, 10, 6],
-
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 6, 7]},
-			"faces": {
-				"west": {"uv": [9, 2, 10, 6], "texture": "#3", "lightLevel": 15}
-			}
-		},
-		{
-			"name": "port_west_led4",
-			"from": [-0.005, 6, 10],
-			"to": [-0.005, 10, 11],
-
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 6, 12]},
-			"faces": {
-				"west": {"uv": [14, 2, 15, 6], "texture": "#3", "lightLevel": 15}
+				"west": {"uv": [8, 0, 16, 8], "texture": "#2", "cullface": "west", "emissivity": 15}
 			}
 		}
 	]

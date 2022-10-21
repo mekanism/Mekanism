@@ -1,8 +1,6 @@
 package mekanism.common.item;
 
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -23,6 +21,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemNutritionalPasteBucket extends BucketItem {
 
@@ -31,19 +31,19 @@ public class ItemNutritionalPasteBucket extends BucketItem {
     }
 
     @Override
-    public int getUseDuration(@Nonnull ItemStack stack) {
+    public int getUseDuration(@NotNull ItemStack stack) {
         return 32;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public UseAnim getUseAnimation(@Nonnull ItemStack stack) {
+    public UseAnim getUseAnimation(@NotNull ItemStack stack) {
         return UseAnim.DRINK;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
         if (MekanismUtils.isPlayingMode(player)) {
             int needed = Math.min(20 - player.getFoodData().getFoodLevel(), FluidType.BUCKET_VOLUME / MekanismConfig.general.nutritionalPasteMBPerFood.get());
             if (needed > 0) {
@@ -53,9 +53,9 @@ public class ItemNutritionalPasteBucket extends BucketItem {
         return super.use(level, player, hand);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ItemStack finishUsingItem(@Nonnull ItemStack stack, @Nonnull Level level, @Nonnull LivingEntity entity) {
+    public ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity entity) {
         if (entity instanceof Player player && MekanismUtils.isPlayingMode(player)) {
             int needed = Math.min(20 - player.getFoodData().getFoodLevel(), FluidType.BUCKET_VOLUME / MekanismConfig.general.nutritionalPasteMBPerFood.get());
             if (needed > 0) {
@@ -74,7 +74,7 @@ public class ItemNutritionalPasteBucket extends BucketItem {
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(@Nonnull ItemStack stack, @Nullable CompoundTag nbt) {
+    public ICapabilityProvider initCapabilities(@NotNull ItemStack stack, @Nullable CompoundTag nbt) {
         return new FluidBucketWrapper(stack);
     }
 }

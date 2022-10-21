@@ -31,7 +31,9 @@ public class EvaporationValidator extends CuboidStructureValidator<EvaporationMu
     protected FormationResult validateFrame(FormationProtocol<EvaporationMultiblockData> ctx, BlockPos pos, BlockState state, CasingType type, boolean needsFrame) {
         boolean controller = structure.getTile(pos) instanceof TileEntityThermalEvaporationController;
         if (foundController && controller) {
-            return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_CONTROLLER_CONFLICT, pos);
+            //Ensure we don't allow ignoring the failure as if there are multiple in the corners which are ignored spots
+            // it is possible then we will form with multiple controllers
+            return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_CONTROLLER_CONFLICT, pos, true);
         }
         foundController |= controller;
         return super.validateFrame(ctx, pos, state, type, needsFrame);
