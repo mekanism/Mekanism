@@ -13,7 +13,7 @@ import net.minecraft.block.Block;
 public final class BoxBlacklistParser
 {
 	public static File mekanismDir = new File(Mekanism.proxy.getMinecraftDir(), "config/mekanism");
-	public static File boxBlacklistFile = new File(mekanismDir, "BoxBlacklist.txt");
+	public static File boxBlacklistFile = new File(mekanismDir, "MekanismCardboardBoxBlacklist.txt");
 
 	public static void load()
 	{
