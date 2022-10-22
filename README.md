@@ -65,6 +65,7 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 + added dimension whitelist config for windmills, by default only overworld is whitelisted Thorfusion#47
 + silicon integration is enabled if enderio or gc or project red is installed, silicon is now used to make instead of iron control circuits Thorfusion#45
 + added oredict componentcontrolcircuit for advanced control circuit
++ Overhauled the config file system
 
 #### [Pokemonplatin](https://github.com/Pokemonplatin) - Mekanism CE Team
 + Teleporter and Quantum Entangloporter now have a trusted channel for smp Thorfusion#22
