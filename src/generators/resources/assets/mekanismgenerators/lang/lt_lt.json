@@ -1,4 +1,11 @@
 {
+  "advancements.mekanismgenerators.burn_the_gas.title": "Degink kura",
+  "advancements.mekanismgenerators.heat_generator.description": "Pasigamink šilumos generatoriu, kad pradėtum gaminti elektra",
+  "advancements.mekanismgenerators.heat_generator.title": "Tavo Pirmasis Generatorius",
+  "advancements.mekanismgenerators.solar_generator.description": "Atsinaujinanti dienos energija",
+  "advancements.mekanismgenerators.solar_generator.title": "Saulės jega",
+  "advancements.mekanismgenerators.wind_generator.description": "Tikimės, kad pučia vėjas",
+  "advancements.mekanismgenerators.wind_generator.title": "Suk, mažulė, suk",
   "block.mekanismgenerators.advanced_solar_generator": "Pažangus Saulės Generatorius",
   "block.mekanismgenerators.bio_generator": "Bio-Generatorius",
   "block.mekanismgenerators.bioethanol": "Bioetanolis",
