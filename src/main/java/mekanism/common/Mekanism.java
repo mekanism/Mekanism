@@ -159,6 +159,9 @@ public class Mekanism
 
     /** Mekanism configuration instance */
     public static Configuration configuration;
+	public static Configuration configurationgenerators;
+	public static Configuration configurationtools;
+	public static Configuration configurationrecipes;
 
 	/** Mekanism version number */
 	public static Version versionNumber = new Version(GRADLE_VERSIONMOD);
@@ -1397,22 +1400,14 @@ public class Mekanism
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		File config = new File("config/mekanism/Mekanism.cfg");
-
 		//Set the mod's configuration
-		configuration = new Configuration(config);
+		configuration = new Configuration(new File("config/mekanism/Mekanism.cfg"));
+		configurationgenerators = new Configuration(new File("config/mekanism/MekanismGenerators.cfg"));
+		configurationtools = new Configuration(new File("config/mekanism/MekanismTools.cfg"));
+		configurationrecipes = new Configuration(new File("config/mekanism/MekanismRecipes.cfg"));
 
         //Register tier information
         Tier.init();
-
-		if(config.getAbsolutePath().contains("voltz"))
-		{
-			logger.info("Detected Voltz in root directory - hello, fellow user!");
-		}
-		else if(config.getAbsolutePath().contains("tekkit"))
-		{
-			logger.info("Detected Tekkit in root directory - hello, fellow user!");
-		}
 
 		GasRegistry.register(new Gas("hydrogen")).registerFluid();
 		GasRegistry.register(new Gas("oxygen")).registerFluid();
