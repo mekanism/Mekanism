@@ -4,6 +4,7 @@ import ic2.api.energy.tile.IEnergySink;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.energy.IStrictEnergyAcceptor;
+import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -30,9 +31,9 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor
 		{
 			wrapper = new RFAcceptor((IEnergyReceiver)tileEntity);
 		}
-		else if(MekanismUtils.useIC2() && tileEntity instanceof IEnergySink)
+		else if(MekanismUtils.useIC2() && CableUtils.getIC2Tile(tileEntity) instanceof IEnergySink)
 		{
-			wrapper = new IC2Acceptor((IEnergySink)tileEntity);
+			wrapper = new IC2Acceptor((IEnergySink)CableUtils.getIC2Tile(tileEntity));
 		}
 		
 		if(wrapper != null)
