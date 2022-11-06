@@ -34,6 +34,7 @@ item.Dictionary.name=Dictionary
 item.ElectrolyticCore.name=Electrolytic Core
 item.Sawdust.name=Sawdust
 item.Salt.name=Salt
+item.Yeast.name=Yeast
 item.BrineBucket.name=Brine Bucket
 item.LithiumBucket.name=Lithium Bucket
 item.HeavyWaterBucket.name=Heavy Water Bucket
@@ -303,6 +304,9 @@ gas.tritium=Tritium
 gas.lithium=Lithium
 gas.fusionFuelDT=D-T Fuel
 gas.methane=Methane
+gas.biomatter=Bio-Matter
+gas.ethanol=Ethanol Vapor
+gas.glucose=Glucose
 
 gas.iron=Iron Slurry
 gas.gold=Gold Slurry
@@ -343,6 +347,10 @@ fluid.deuterium=Liquid Deuterium
 fluid.tritium=Liquid Tritium
 fluid.fusionFuelDT=Liquid D-T Fuel
 fluid.steam=Steam
+fluid.biomatter=Liquid Bio-Matter
+fluid.ethanol=Ethanol
+fluid.glucose=Liquid Glucose
+
 
 //OreGas names
 oregas.iron=Iron Ore

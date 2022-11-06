@@ -115,6 +115,10 @@ public class MekanismRenderer
 			GasRegistry.getGas("fusionFuelDT").setIcon(event.map.registerIcon("mekanism:liquid/LiquidDT"));
 			GasRegistry.getGas("lithium").setIcon(event.map.registerIcon("mekanism:liquid/LiquidLithium"));
 			GasRegistry.getGas("methane").setIcon(event.map.registerIcon("mekanism:liquid/LiquidMethane"));
+			GasRegistry.getGas("biomatter").setIcon(event.map.registerIcon("mekanism:liquid/LiquidBiomatter"));
+			GasRegistry.getGas("bioethanol").setIcon(event.map.registerIcon("mekanism:liquid/LiquidEthanol"));
+			GasRegistry.getGas("glucose").setIcon(event.map.registerIcon("mekanism:liquid/LiquidGlucose"));
+
 
 			for(Gas gas : GasRegistry.getRegisteredGasses())
 			{
@@ -133,7 +137,7 @@ public class MekanismRenderer
 			FluidRegistry.getFluid("brine").setIcons(event.map.registerIcon("mekanism:liquid/LiquidBrine"));
 			FluidRegistry.getFluid("heavywater").setIcons(event.map.registerIcon("mekanism:liquid/LiquidHeavyWater"));
 			FluidRegistry.getFluid("steam").setIcons(event.map.registerIcon("mekanism:liquid/LiquidSteam"));
-			
+
 			for(InfuseType type : InfuseRegistry.getInfuseMap().values())
 			{
 				type.setIcon(event.map.registerIcon(type.textureLocation));
