@@ -1220,6 +1220,10 @@ public class Mekanism
 				if(fuel.isItemEqual(new ItemStack(MekanismBlocks.BasicBlock, 1, 3)))
 				{
 					return 200*8*9;
+				}else if(fuel.isItemEqual(new ItemStack(MekanismItems.Substrate))){
+					return 400;
+				}else if(fuel.isItemEqual(new ItemStack(MekanismItems.Polyethene, 1, Short.MAX_VALUE))) {
+					return 600;
 				}
 
 				return 0;
