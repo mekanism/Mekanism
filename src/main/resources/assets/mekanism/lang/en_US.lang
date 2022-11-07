@@ -178,6 +178,7 @@ infuse.fungi=Fungi
 infuse.obsidian=Obsidian
 infuse.bio=Biomass
 infuse.ender=Ender
+infuse.lead=Lead
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmium Ore

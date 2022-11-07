@@ -392,6 +392,11 @@ public final class OreDictManager
 			InfuseRegistry.registerInfuseObject(ore, new InfuseObject(InfuseRegistry.get("TIN"), 50));
 		}
 
+		for(ItemStack ore : OreDictionary.getOres("dustLead"))
+		{
+			InfuseRegistry.registerInfuseObject(ore, new InfuseObject(InfuseRegistry.get("LEAD"), 50));
+		}
+
 		try {
 			for(ItemStack ore : OreDictionary.getOres("treeSapling"))
 			{

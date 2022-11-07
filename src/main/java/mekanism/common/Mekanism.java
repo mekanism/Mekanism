@@ -1456,6 +1456,7 @@ public class Mekanism
 		InfuseRegistry.registerInfuseType(new InfuseType("BIO", "mekanism:infuse/Bio").setUnlocalizedName("bio"));
 		InfuseRegistry.registerInfuseType(new InfuseType("OBSIDIAN", "mekanism:infuse/Obsidian").setUnlocalizedName("obsidian"));
 		InfuseRegistry.registerInfuseType(new InfuseType("ENDER", "mekanism:infuse/Ender").setUnlocalizedName("ender"));
+		InfuseRegistry.registerInfuseType(new InfuseType("LEAD", "mekanism:infuse/Lead").setUnlocalizedName("lead"));
 	}
 
 	@EventHandler
