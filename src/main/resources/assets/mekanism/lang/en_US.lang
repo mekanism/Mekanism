@@ -49,7 +49,7 @@ item.PlaStick.name=PlaStick
 item.Substrate.name=Substrate
 item.Flamethrower.name=Flamethrower
 item.GaugeDropper.name=Gauge Dropper
-item.BioFuel.name=Bio Fuel
+item.BioFuel.name=Bio Mass
 item.CraftingFormula.name=Crafting Formula
 
 //Control Circuits
@@ -305,7 +305,7 @@ gas.lithium=Lithium
 gas.fusionFuelDT=D-T Fuel
 gas.methane=Methane
 gas.biomatter=Bio-Matter
-gas.ethanol=Ethanol Vapor
+gas.bioethanol=Ethanol Vapor
 gas.glucose=Glucose
 
 gas.iron=Iron Slurry
@@ -348,7 +348,7 @@ fluid.tritium=Liquid Tritium
 fluid.fusionFuelDT=Liquid D-T Fuel
 fluid.steam=Steam
 fluid.biomatter=Liquid Bio-Matter
-fluid.ethanol=Ethanol
+fluid.bioethanol=Ethanol
 fluid.glucose=Liquid Glucose
 
 
@@ -853,7 +853,7 @@ tooltip.QuantumEntangloporter=A highly-advanced block capable of transmitting an
 tooltip.HeatGenerator=A generator that uses the heat of lava or other burnable resources to produce energy.
 tooltip.SolarGenerator=A generator that uses the power of the sun to produce energy.
 tooltip.GasGenerator=A generator that harnesses the molecular varying gasses to produce energy.
-tooltip.BioGenerator=A generator that burns organic materials of the world to produce energy.
+tooltip.BioGenerator=A generator that burns organic-based gases to produce energy.
 tooltip.AdvancedSolarGenerator=An advanced generator that directly absorbs the sun's rays with little loss to produce energy.
 tooltip.WindGenerator=A generator that uses the strength of the wind to produce energy, with greater efficiency at higher levels.
 tooltip.TurbineRotor=The steel rod that is used to house Turbine Blades within an Industrial Turbine.

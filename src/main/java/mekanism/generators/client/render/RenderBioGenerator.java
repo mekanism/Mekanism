@@ -37,7 +37,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 
 	private void renderAModelAt(TileEntityBioGenerator tileEntity, double x, double y, double z, float partialTick)
 	{
-		if(tileEntity.bioFuelSlot.fluidStored > 0)
+		if(tileEntity.fuelTank.getStored() > 0)
 		{
 			push();
 

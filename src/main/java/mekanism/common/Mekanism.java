@@ -1209,6 +1209,9 @@ public class Mekanism
 			InfuseRegistry.registerInfuseObject(Amethyst, new InfuseObject(InfuseRegistry.get("ENDER"), 10));
 		}
 
+		//Chemical Oxidiser Recipes
+		RecipeHandler.addChemicalOxidizerRecipe(new ItemStack(MekanismItems.BioFuel), new GasStack(GasRegistry.getGas("biomatter"), 100));
+
 		//Fuels
         GameRegistry.registerFuelHandler(new IFuelHandler() {
 			@Override
