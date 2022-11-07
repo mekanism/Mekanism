@@ -1060,6 +1060,7 @@ public class Mekanism
 
 		//Osmium Compressor Recipes
 		RecipeHandler.addOsmiumCompressorRecipe(new ItemStack(Items.glowstone_dust), new ItemStack(MekanismItems.Ingot, 1, 3));
+		RecipeHandler.addOsmiumCompressorRecipe(new ItemStack(Items.dye,1, 4), new ItemStack(MekanismItems.Ingot, 1, 7));
 
 		//Crusher Recipes
 		RecipeHandler.addCrusherRecipe(new ItemStack(Items.diamond), new ItemStack(MekanismItems.OtherDust, 1, 0));
@@ -1267,6 +1268,7 @@ public class Mekanism
 		OreDictionary.registerOre("ingotSteel", new ItemStack(MekanismItems.Ingot, 1, 4));
 		OreDictionary.registerOre("ingotCopper", new ItemStack(MekanismItems.Ingot, 1, 5));
 		OreDictionary.registerOre("ingotTin", new ItemStack(MekanismItems.Ingot, 1, 6));
+		OreDictionary.registerOre("ingotRefinedLapis", new ItemStack(MekanismItems.Ingot, 1, 7));
 
 
 		OreDictionary.registerOre("blockBronze", new ItemStack(MekanismBlocks.BasicBlock, 1, 1));

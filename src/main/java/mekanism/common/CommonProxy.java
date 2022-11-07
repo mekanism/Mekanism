@@ -404,7 +404,7 @@ public class CommonProxy implements IGuiProvider
 		recipes.enableBronzeBlock = Mekanism.configurationrecipes.get("Recipes","enableBronzeBlock", true).getBoolean();
 		recipes.enableRefinedObsidianBlock = Mekanism.configurationrecipes.get("Recipes","enableRefinedObsidianBlock", true).getBoolean();
 		recipes.enableCharcoalBlock = Mekanism.configurationrecipes.get("Recipes","enableCharcoalBlock", true).getBoolean();
-		recipes.enableRefinedGlowstoneBlock = Mekanism.configurationrecipes.get("Recipes","enableSteelBlock", true).getBoolean();
+		recipes.enableRefinedGlowstoneBlock = Mekanism.configurationrecipes.get("Recipes","enableGlowstoneBlock", true).getBoolean();
 		recipes.enableSteelBlock = Mekanism.configurationrecipes.get("Recipes","enableSteelBlock", true).getBoolean();
 		recipes.enableCopperBlock = Mekanism.configurationrecipes.get("Recipes","enableCopperBlock", true).getBoolean();
 		recipes.enableTinBlock = Mekanism.configurationrecipes.get("Recipes","enableTinBlock", true).getBoolean();

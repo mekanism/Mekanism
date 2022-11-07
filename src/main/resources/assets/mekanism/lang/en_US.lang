@@ -283,6 +283,8 @@ item.glowstoneIngot.name=Glowstone Ingot
 item.steelIngot.name=Steel Ingot
 item.copperIngot.name=Copper Ingot
 item.tinIngot.name=Tin Ingot
+item.lazuliIngot.name=Lazuli Ingot
+
 
 //Gasses
 gas.hydrogen=Hydrogen
