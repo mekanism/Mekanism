@@ -105,6 +105,7 @@ public class GeneratorsCommonProxy implements IGuiProvider
 		generators.heatGeneration = Mekanism.configurationgenerators.get("generation", "HeatGeneration", 150D).getDouble();
 		generators.heatGenerationLava = Mekanism.configurationgenerators.get("generation", "HeatGenerationLava", 5D).getDouble();
 		generators.heatGenerationNether = Mekanism.configurationgenerators.get("generation", "HeatGenerationNether", 100D).getDouble();
+		generators.heatGenerationFluidRate = Mekanism.configurationgenerators.get("generation", "HeatGenerationFluidRate", 10).getInt();
 		generators.solarGeneration = Mekanism.configurationgenerators.get("generation", "SolarGeneration", 50D).getDouble();
 		
 		loadWindConfiguration();
