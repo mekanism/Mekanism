@@ -49,7 +49,7 @@ item.PlaStick.name=PlaStick
 item.Substrate.name=Substrate
 item.Flamethrower.name=Flamethrower
 item.GaugeDropper.name=Gauge Dropper
-item.BioFuel.name=Bio Mass
+item.BioFuel.name=Biomass
 item.CraftingFormula.name=Crafting Formula
 
 //Control Circuits
@@ -304,7 +304,7 @@ gas.tritium=Tritium
 gas.lithium=Lithium
 gas.fusionFuelDT=D-T Fuel
 gas.methane=Methane
-gas.biomatter=Bio-Matter
+gas.biomatter=BioGas
 gas.bioethanol=Ethanol Vapor
 gas.glucose=Glucose
 
@@ -347,7 +347,7 @@ fluid.deuterium=Liquid Deuterium
 fluid.tritium=Liquid Tritium
 fluid.fusionFuelDT=Liquid D-T Fuel
 fluid.steam=Steam
-fluid.biomatter=Liquid Bio-Matter
+fluid.biomatter=Liquid BioGas
 fluid.bioethanol=Ethanol
 fluid.glucose=Liquid Glucose
 
@@ -999,6 +999,9 @@ tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laser Focus Matrix
 gui.heatGenerator.fuel=Fuel
 gui.solarGenerator.sun=Sun
 gui.bioGenerator.bioFuel=BioFuel
+gui.bioGenerator.bioGas=BioGas
+gui.bioGenerator.bioEthanol=Ethanol
+
 gui.electrolyticSeparator.dump=Dump
 
 gui.passive=Air-Cooled

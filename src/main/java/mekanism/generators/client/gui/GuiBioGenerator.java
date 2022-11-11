@@ -42,7 +42,7 @@ public class GuiBioGenerator extends GuiMekanism
 			public List<String> getInfo()
 			{
 				return ListUtils.asList(
-						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.isActive ? generators.bioGeneration : 0) + "/t",
+						LangUtils.localize("gui.producing") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.isActive ? generators.bioGeneration * tileEntity.getMultiplier(tileEntity.fuelTank.getGasType()): 0) + "/t",
 						LangUtils.localize("gui.maxOutput") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t");
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBioGenerator.png")));
@@ -56,11 +56,16 @@ public class GuiBioGenerator extends GuiMekanism
 	{
 		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
+		boolean isEthanol = tileEntity.getFuelType() == 1;
+
+ 		String bioFuel = isEthanol ? "gui.bioGenerator.bioEthanol" : "gui.bioGenerator.bioGas";
+		 int colorFuel = isEthanol ? 0xFF8622 : 0x00CD00;
+
 		fontRendererObj.drawString(tileEntity.getInventoryName(), 45, 6, 0x404040);
 		fontRendererObj.drawString(LangUtils.localize("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), 51, 26, 0x00CD00);
-		fontRendererObj.drawString(LangUtils.localize("gui.bioGenerator.bioFuel") + ": " + tileEntity.fuelTank.getStored(), 51, 35, 0x00CD00);
-		fontRendererObj.drawString(LangUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t", 51, 44, 0x00CD00);
+		fontRendererObj.drawString(MekanismUtils.getEnergyDisplay(tileEntity.getEnergy()), 51, 26, colorFuel);
+		fontRendererObj.drawString(LangUtils.localize(bioFuel) + ": " + tileEntity.fuelTank.getStored(), 51, 35, colorFuel);
+		fontRendererObj.drawString(LangUtils.localize("gui.out") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxOutput()) + "/t", 51, 44, colorFuel);
 	}
 
 	@Override
@@ -75,7 +80,10 @@ public class GuiBioGenerator extends GuiMekanism
 		int displayInt;
 
 		displayInt = tileEntity.getScaledFuelLevel(52);
-		drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, 176, 52 + 52 - displayInt, 4, displayInt);
+
+		int gasType = tileEntity.getFuelType() * 4;
+
+		drawTexturedModalRect(guiWidth + 7, guiHeight + 17 + 52 - displayInt, 176 + gasType, 52 + 52 - displayInt, 4, displayInt);
 
 		super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
 	}

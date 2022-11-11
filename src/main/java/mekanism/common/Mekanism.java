@@ -1151,7 +1151,7 @@ public class Mekanism
 		//Thermal Evaporation Plant Recipes
 		RecipeHandler.addThermalEvaporationRecipe(FluidRegistry.getFluidStack("water", 10), FluidRegistry.getFluidStack("brine", 1));
 		RecipeHandler.addThermalEvaporationRecipe(FluidRegistry.getFluidStack("brine", 10), FluidRegistry.getFluidStack("lithium", 1));
-		RecipeHandler.addThermalEvaporationRecipe(FluidRegistry.getFluidStack("bioethanol", 10), FluidRegistry.getFluidStack("ethene", 1)); //Rebalance values
+		RecipeHandler.addThermalEvaporationRecipe(FluidRegistry.getFluidStack("bioethanol", 5), FluidRegistry.getFluidStack("ethene", 1));
 
 		//Chemical Crystallizer Recipes
 		RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(GasRegistry.getGas("lithium"), 100), new ItemStack(MekanismItems.OtherDust, 1, 4));
@@ -1171,11 +1171,11 @@ public class Mekanism
 
 		//Pressurized Reaction Chamber Recipes
 
-		RecipeHandler.addPRCRecipe( //Adjust values for balance
-				new ItemStack(MekanismItems.Yeast), new FluidStack(FluidRegistry.getFluid("steam"), 50), new GasStack(GasRegistry.getGas("biomatter"), 100),
-				new ItemStack(MekanismItems.Substrate), new GasStack(GasRegistry.getGas("bioethanol"), 100),
-				1000,
-				100);
+		RecipeHandler.addPRCRecipe(
+				new ItemStack(MekanismItems.Yeast), new FluidStack(FluidRegistry.WATER, 200), new GasStack(GasRegistry.getGas("biomatter"), 150),
+				new ItemStack(MekanismItems.Substrate), new GasStack(GasRegistry.getGas("bioethanol"), 50),
+				100,
+				50);
 
 		RecipeHandler.addPRCRecipe(
 				new ItemStack(MekanismItems.Substrate), new FluidStack(FluidRegistry.getFluid("ethene"), 50), new GasStack(GasRegistry.getGas("oxygen"), 10),
@@ -1210,7 +1210,7 @@ public class Mekanism
 		}
 
 		//Chemical Oxidiser Recipes
-		RecipeHandler.addChemicalOxidizerRecipe(new ItemStack(MekanismItems.BioFuel), new GasStack(GasRegistry.getGas("biomatter"), 100));
+		RecipeHandler.addChemicalOxidizerRecipe(new ItemStack(MekanismItems.BioFuel), new GasStack(GasRegistry.getGas("biomatter"), 150));
 
 		//Fuels
         GameRegistry.registerFuelHandler(new IFuelHandler() {

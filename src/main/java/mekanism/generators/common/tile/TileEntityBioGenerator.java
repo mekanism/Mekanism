@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import mekanism.api.MekanismConfig.generators;
 import mekanism.api.gas.*;
+import mekanism.api.gas.GasTank;
 import mekanism.common.base.ISustainedData;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
@@ -22,7 +23,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IGasH
 
 	public TileEntityBioGenerator()
 	{
-		super("bio", "BioGenerator", 180000, generators.bioGeneration * Math.max(1+generators.ethanolMultiplier, 2));
+		super("bio", "BioGenerator", 180000, generators.bioGeneration * generators.ethanolMultiplier * 2);
 		inventory = new ItemStack[2];
 		fuelTank = new GasTank(MAX_GAS);
 	}
@@ -37,17 +38,25 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IGasH
 			//Has valid item and capacity for new gas
 			if (inventory[0] != null && fuelTank.getStored() < MAX_GAS) {
 				Gas gasType = null;
+
 				//Ensures to only accept currently stored gas
-				if (fuelTank.getGas() != null) {
+				if (fuelTank.getStored() > 0 && fuelTank.getGas() != null)
+				{
 					gasType = fuelTank.getGas().getGas();
-				} //If tank has no valid gas in storage, accept gas from container
-				else if (inventory[0] != null && inventory[0].getItem() instanceof IGasItem) {
-					if (((IGasItem) inventory[0].getItem()).getGas(inventory[0]) != null) {
-						gasType = ((IGasItem) inventory[0].getItem()).getGas(inventory[0]).getGas();
+				}
+				else if(inventory[0] != null && inventory[0].getItem() instanceof IGasItem)
+				{
+					GasStack gas = ((IGasItem)inventory[0].getItem()).getGas(inventory[0]);
+
+					//If tank has valid gas in storage, accept gas from container
+					if(gas != null && isValidGas(gas.getGas()))
+					{
+						gasType = gas.getGas();
 					}
 				}
 				//If valid gas, drain Gas container
 				if (isValidGas(gasType)) {
+
 					GasStack removed = GasTransmission.removeGas(inventory[0], gasType, fuelTank.getNeeded());
 					boolean isTankEmpty = (fuelTank.getGas() == null);
 
@@ -60,23 +69,20 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IGasH
 				}
 			}
 
-			if (canOperate() && getEnergy() + generators.bioGeneration < getMaxEnergy()) {
+			if (canOperate()) {
 				if (!worldObj.isRemote) {
 					setActive(true);
 				}
+				output = generators.bioGeneration * getMultiplier(fuelTank.getGas().getGas()) * 2;
 
-				Gas fuel;
-
-				//Get multiplier from fuel in tank
-					fuel = fuelTank.getGas().getGas();
-
-				output = generators.bioGeneration * getMultiplier(fuel) * 2;
-
-
-				setEnergy(electricityStored + generators.bioGeneration);
+				setEnergy(electricityStored + generators.bioGeneration * getMultiplier(fuelTank.getGas().getGas()));
 				fuelTank.setGas(new GasStack(fuelTank.getGasType(), fuelTank.getStored() - 1));
 
 			} else {
+				//reset
+					fuelTank.setGas(null);
+					output = generators.bioGeneration * 2;
+
 				if (!worldObj.isRemote) {
 					setActive(false);
 				}
@@ -135,6 +141,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IGasH
 
 		boolean isTankEmpty = (fuelTank.getGas() == null);
 		Gas fuel = (isTankEmpty) ? null : fuelTank.getGas().getGas();
+
+		if (fuel != null)
+			output = generators.bioGeneration * getMultiplier(fuelTank.getGas().getGas()) * 2;
 	}
 
 	@Override
@@ -147,22 +156,25 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IGasH
 
 	public double getMultiplier(Gas gas)
 	{
-		if (gas == GasRegistry.getGas("biomatter")) {
-			return 1;
-		} else if(gas == GasRegistry.getGas("bioethanol"))
-		{
+		if (gas == GasRegistry.getGas("bioethanol")) {
+
 			return generators.ethanolMultiplier;
 		}
-		return 0;
+		return 1;
 	}
 
-	public int getGasStyle()
+	public int getFuelType()
 	{
-		if(fuelTank.getGas().getGas() == GasRegistry.getGas("bioethanol"))
-		{
-			return 1; //Orange
+		if (fuelTank.getStored() > 0) {
+
+			Gas gas = fuelTank.getGas().getGas();
+
+			if (gas != null && isValidGas(gas)) {
+				if (gas == GasRegistry.getGas("bioethanol"))
+					return 1; //Ethanol
+			}
 		}
-		return 0; //Green
+		return 0; //Biogas
 	}
 
 	public int getTypeGas()
@@ -211,7 +223,10 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IGasH
 
 	public boolean isValidGas(Gas gas)
 	{
-		return gas == GasRegistry.getGas("biomatter") || gas == GasRegistry.getGas("bioethanol");
+		if (gas == GasRegistry.getGas("biomatter") || gas == GasRegistry.getGas("bioethanol")){
+			return true;}
+		else
+			return false;
 	}
 
 	@Override
@@ -334,7 +349,12 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IGasH
 
 			boolean isTankEmpty = (fuelTank.getGas() == null);
 			//Update energy output based on any existing fuel in tank
+
 			Gas fuel = (isTankEmpty) ? null : fuelTank.getGas().getGas();
+
+			if (fuel != null)
+				output = generators.bioGeneration * getMultiplier(fuelTank.getGas().getGas()) * 2;
+
 		}
 	}
 }
