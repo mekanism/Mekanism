@@ -179,6 +179,7 @@ infuse.fungi=Fungi
 infuse.obsidian=Obsidian
 infuse.bio=Biomass
 infuse.ender=Ender
+infuse.lead=Lead
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmium Ore
@@ -284,6 +285,8 @@ item.glowstoneIngot.name=Glowstone Ingot
 item.steelIngot.name=Steel Ingot
 item.copperIngot.name=Copper Ingot
 item.tinIngot.name=Tin Ingot
+item.lazuliIngot.name=Lazuli Ingot
+
 
 //Gasses
 gas.hydrogen=Hydrogen
