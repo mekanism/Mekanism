@@ -13,6 +13,7 @@ import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
@@ -37,14 +38,16 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 
 	private void renderAModelAt(TileEntityBioGenerator tileEntity, double x, double y, double z, float partialTick)
 	{
-		if(tileEntity.bioFuelSlot.fluidStored > 0)
+		if(tileEntity.fuelTank.getStored() > 0)
 		{
 			push();
+
+			int gasType = tileEntity.getFuelType();
 
 			MekanismRenderer.glowOn();
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			bindTexture(MekanismRenderer.getBlocksTexture());
-			getDisplayList(ForgeDirection.getOrientation(tileEntity.facing))[tileEntity.getScaledFuelLevel(stages-1)].render();
+			getDisplayList(gasType, ForgeDirection.getOrientation(tileEntity.facing)) [tileEntity.getScaledFuelLevel(stages-1)].render();
 			MekanismRenderer.glowOff();
 
 			pop();
@@ -68,7 +71,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	private DisplayInteger[] getDisplayList(ForgeDirection side)
+	private DisplayInteger[] getDisplayList(int gasType, ForgeDirection side)
 	{
 		if(energyDisplays.containsKey(side))
 		{
@@ -79,7 +82,11 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 
 		Model3D model3D = new Model3D();
 		model3D.baseBlock = Blocks.water;
-		model3D.setTexture(MekanismRenderer.energyIcon);
+
+		if (gasType == 1)
+		model3D.setTexture(MekanismRenderer.ethanolIcon);
+		else
+			model3D.setTexture(MekanismRenderer.biomatterIcon);
 
 		for(int i = 0; i < stages; i++)
 		{

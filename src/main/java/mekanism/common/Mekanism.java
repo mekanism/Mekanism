@@ -1102,6 +1102,7 @@ public class Mekanism
         RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Blocks.hardened_clay), "water", new ItemStack(Blocks.clay));
         RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Items.brick), "water", new ItemStack(Items.clay_ball));
         RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Items.gunpowder), "hydrogenChloride", new ItemStack(MekanismItems.OtherDust, 1, 3));
+		RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(MekanismItems.Yeast), "glucose", new ItemStack(MekanismItems.Yeast, 3));
 
 		//Precision Sawmill Recipes
 		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.ladder, 3), new ItemStack(Items.stick, 7));
@@ -1123,6 +1124,7 @@ public class Mekanism
         //Metallurgic Infuser Recipes
         RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, new ItemStack(Items.iron_ingot), new ItemStack(MekanismItems.EnrichedIron));
 		RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("CARBON"), 10, new ItemStack(MekanismItems.EnrichedIron), new ItemStack(MekanismItems.OtherDust, 1, 1));
+		RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("FUNGI"), 10, new ItemStack(Items.sugar), new ItemStack(MekanismItems.Yeast));
 		RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("FUNGI"), 10, new ItemStack(Blocks.dirt), new ItemStack(Blocks.mycelium));
         RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("BIO"), 10, new ItemStack(Blocks.cobblestone), new ItemStack(Blocks.mossy_cobblestone));
         RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("BIO"), 10, new ItemStack(Blocks.stonebrick, 1, 0), new ItemStack(Blocks.stonebrick, 1, 1));
@@ -1149,6 +1151,7 @@ public class Mekanism
 		//Thermal Evaporation Plant Recipes
 		RecipeHandler.addThermalEvaporationRecipe(FluidRegistry.getFluidStack("water", 10), FluidRegistry.getFluidStack("brine", 1));
 		RecipeHandler.addThermalEvaporationRecipe(FluidRegistry.getFluidStack("brine", 10), FluidRegistry.getFluidStack("lithium", 1));
+		RecipeHandler.addThermalEvaporationRecipe(FluidRegistry.getFluidStack("bioethanol", 5), FluidRegistry.getFluidStack("ethene", 1));
 
 		//Chemical Crystallizer Recipes
 		RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(GasRegistry.getGas("lithium"), 100), new ItemStack(MekanismItems.OtherDust, 1, 4));
@@ -1167,12 +1170,13 @@ public class Mekanism
 		}
 
 		//Pressurized Reaction Chamber Recipes
+
 		RecipeHandler.addPRCRecipe(
-				new ItemStack(MekanismItems.BioFuel, 2), new FluidStack(FluidRegistry.WATER, 10), new GasStack(GasRegistry.getGas("hydrogen"), 100),
-				new ItemStack(MekanismItems.Substrate), new GasStack(GasRegistry.getGas("ethene"), 100),
-				0,
-				100
-		);
+				new ItemStack(MekanismItems.Yeast), new FluidStack(FluidRegistry.WATER, 200), new GasStack(GasRegistry.getGas("biomatter"), 150),
+				new ItemStack(MekanismItems.Substrate), new GasStack(GasRegistry.getGas("bioethanol"), 50),
+				100,
+				50);
+
 		RecipeHandler.addPRCRecipe(
 				new ItemStack(MekanismItems.Substrate), new FluidStack(FluidRegistry.getFluid("ethene"), 50), new GasStack(GasRegistry.getGas("oxygen"), 10),
 				new ItemStack(MekanismItems.Polyethene), new GasStack(GasRegistry.getGas("oxygen"), 5),
@@ -1185,7 +1189,6 @@ public class Mekanism
 				200,
 				400
 		);
-
 		//Solar Neutron Activator Recipes
 		RecipeHandler.addSolarNeutronRecipe(new GasStack(GasRegistry.getGas("lithium"), 1), new GasStack(GasRegistry.getGas("tritium"), 1));
 
@@ -1206,6 +1209,9 @@ public class Mekanism
 			InfuseRegistry.registerInfuseObject(Amethyst, new InfuseObject(InfuseRegistry.get("ENDER"), 10));
 		}
 
+		//Chemical Oxidiser Recipes
+		RecipeHandler.addChemicalOxidizerRecipe(new ItemStack(MekanismItems.BioFuel), new GasStack(GasRegistry.getGas("biomatter"), 150));
+
 		//Fuels
         GameRegistry.registerFuelHandler(new IFuelHandler() {
 			@Override
@@ -1214,6 +1220,10 @@ public class Mekanism
 				if(fuel.isItemEqual(new ItemStack(MekanismBlocks.BasicBlock, 1, 3)))
 				{
 					return 200*8*9;
+				}else if(fuel.isItemEqual(new ItemStack(MekanismItems.Substrate))){
+					return 400;
+				}else if(fuel.isItemEqual(new ItemStack(MekanismItems.Polyethene, 1, Short.MAX_VALUE))) {
+					return 600;
 				}
 
 				return 0;
@@ -1242,6 +1252,7 @@ public class Mekanism
 		OreDictionary.registerOre("dustWood", MekanismItems.Sawdust);
 		OreDictionary.registerOre("blockSalt", MekanismBlocks.SaltBlock);
 
+
 		//Alloys!
 		OreDictionary.registerOre("alloyBasic", new ItemStack(Items.redstone));
 		OreDictionary.registerOre("alloyAdvanced", new ItemStack(MekanismItems.EnrichedAlloy));
@@ -1251,6 +1262,8 @@ public class Mekanism
 		//GregoriousT?
 		OreDictionary.registerOre("itemSalt", MekanismItems.Salt);
 		OreDictionary.registerOre("dustSalt", MekanismItems.Salt);
+		OreDictionary.registerOre("dustYeast", MekanismItems.Yeast);
+		OreDictionary.registerOre("dustSugar", Items.sugar);
 
 		OreDictionary.registerOre("dustDiamond", new ItemStack(MekanismItems.OtherDust, 1, 0));
 		OreDictionary.registerOre("dustSteel", new ItemStack(MekanismItems.OtherDust, 1, 1));
@@ -1427,6 +1440,9 @@ public class Mekanism
 		GasRegistry.register(new Gas("fusionFuelDT")).registerFluid();
 		GasRegistry.register(new Gas("lithium")).registerFluid();
 		GasRegistry.register(new Gas("methane")).registerFluid();
+		GasRegistry.register(new Gas("biomatter")).registerFluid();
+		GasRegistry.register(new Gas("bioethanol")).registerFluid();
+		GasRegistry.register(new Gas("glucose")).registerFluid();
 
 		FluidRegistry.registerFluid(new Fluid("heavyWater"));
 		FluidRegistry.registerFluid(new Fluid("steam").setGaseous(true));

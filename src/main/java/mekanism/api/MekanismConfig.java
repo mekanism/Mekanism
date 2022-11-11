@@ -143,6 +143,7 @@ public class MekanismConfig
 	{
 		public static double advancedSolarGeneration;
 		public static double bioGeneration;
+		public static double ethanolMultiplier;
 		public static double heatGeneration;
 		public static double heatGenerationLava;
 		public static double heatGenerationNether;

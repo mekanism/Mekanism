@@ -99,6 +99,8 @@ public class MekanismItems
 	public static final Item Dust = new ItemDust();
 	public static final Item Sawdust = new ItemMekanism().setUnlocalizedName("Sawdust");
 	public static final Item Salt = new ItemMekanism().setUnlocalizedName("Salt");
+	public static final Item Yeast = new ItemMekanism().setUnlocalizedName("Yeast");
+
 	public static final Item Ingot = new ItemIngot();
 	public static final Item Clump = new ItemClump();
 	public static final Item DirtyDust = new ItemDirtyDust();
@@ -150,6 +152,7 @@ public class MekanismItems
 		GameRegistry.registerItem(ElectrolyticCore, "ElectrolyticCore");
 		GameRegistry.registerItem(Sawdust, "Sawdust");
 		GameRegistry.registerItem(Salt, "Salt");
+		GameRegistry.registerItem(Yeast, "Yeast");
 		GameRegistry.registerItem(BrineBucket, "BrineBucket");
 		GameRegistry.registerItem(LithiumBucket, "LithiumBucket");
 		GameRegistry.registerItem(HeavyWaterBucket, "HeavyWaterBucket");
