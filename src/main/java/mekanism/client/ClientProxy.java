@@ -6,7 +6,6 @@ import com.jadarstudios.developercapes.DevCapes;
 import cpw.mods.fml.common.Loader;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.client;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.EntityLaser;
