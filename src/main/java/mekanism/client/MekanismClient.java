@@ -7,7 +7,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.api.MekanismConfig.general;
 import mekanism.client.sound.SoundHandler;
-import mekanism.client.voice.VoiceClient;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
@@ -20,8 +19,6 @@ import net.minecraftforge.common.MinecraftForge;
 public class MekanismClient extends Mekanism
 {
 	public static Map<String, SecurityData> clientSecurityMap = new HashMap<String, SecurityData>();
-	
-	public static VoiceClient voiceClient;
 
 	public static long ticksPassed = 0;
 
@@ -39,15 +36,6 @@ public class MekanismClient extends Mekanism
 	public static void reset()
 	{
 		clientSecurityMap.clear();
-		
-		if(general.voiceServerEnabled)
-		{
-			if(MekanismClient.voiceClient != null)
-			{
-				MekanismClient.voiceClient.disconnect();
-				MekanismClient.voiceClient = null;
-			}
-		}
 
 		ClientTickHandler.tickingSet.clear();
 

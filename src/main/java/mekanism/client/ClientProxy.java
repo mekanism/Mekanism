@@ -351,7 +351,6 @@ public class ClientProxy extends CommonProxy
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), handler);
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), handler);
 		MinecraftForgeClient.registerItemRenderer(MekanismItems.Robit, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.WalkieTalkie, handler);
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.GasTank), handler);
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.ObsidianTNT), handler);
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.BasicBlock), handler);
@@ -646,11 +645,6 @@ public class ClientProxy extends CommonProxy
 	public void onConfigSync(boolean fromPacket)
 	{
 		super.onConfigSync(fromPacket);
-
-		if(fromPacket && general.voiceServerEnabled && MekanismClient.voiceClient != null)
-		{
-			MekanismClient.voiceClient.start();
-		}
 	}
 
 	@Override

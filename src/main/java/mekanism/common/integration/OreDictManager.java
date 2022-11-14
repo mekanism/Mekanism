@@ -156,11 +156,6 @@ public final class OreDictManager
 							" B ", "ECE", "OOO", Character.valueOf('B'), Items.bucket, Character.valueOf('E'), MekanismItems.EnrichedAlloy, Character.valueOf('C'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('O'), "ingot" + s
 					}));
 				}
-				if (MekanismConfig.recipes.enableWalkieTalkie) {
-					CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.WalkieTalkie), new Object[]{
-							"  O", "SCS", " S ", Character.valueOf('O'), "ingot" + s, Character.valueOf('S'), "ingotSteel", Character.valueOf('C'), MekanismUtils.getControlCircuit(Tier.BaseTier.BASIC)
-					}));
-				}
 
 				if (MekanismConfig.recipes.enableElectroliticCore) {
 					CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.ElectrolyticCore), new Object[]{

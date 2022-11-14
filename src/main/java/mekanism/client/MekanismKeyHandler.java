@@ -13,7 +13,6 @@ import mekanism.common.item.ItemFlamethrower;
 import mekanism.common.item.ItemJetpack;
 import mekanism.common.item.ItemJetpack.JetpackMode;
 import mekanism.common.item.ItemScubaTank;
-import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.network.PacketConfiguratorState.ConfiguratorStateMessage;
 import mekanism.common.network.PacketElectricBowState.ElectricBowStateMessage;
 import mekanism.common.network.PacketFlamethrowerData;
@@ -22,7 +21,6 @@ import mekanism.common.network.PacketJetpackData.JetpackPacket;
 import mekanism.common.network.PacketPortableTankState.PortableTankStateMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
-import mekanism.common.network.PacketWalkieTalkieState.WalkieTalkieStateMessage;
 import mekanism.common.util.LangUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -47,17 +45,15 @@ public class MekanismKeyHandler extends MekKeyHandler
 	public static final String keybindCategory = "Mekanism";
 	public static KeyBinding modeSwitchKey = new KeyBinding("Mekanism " + LangUtils.localize("key.mode"), Keyboard.KEY_M, keybindCategory);
 	public static KeyBinding armorModeSwitchKey = new KeyBinding("Mekanism " + LangUtils.localize("key.armorMode"), Keyboard.KEY_F, keybindCategory);
-	public static KeyBinding voiceKey = new KeyBinding("Mekanism " + LangUtils.localize("key.voice"), Keyboard.KEY_U, keybindCategory);
 	public static KeyBinding sneakKey = Minecraft.getMinecraft().gameSettings.keyBindSneak;
 	public static KeyBinding jumpKey = Minecraft.getMinecraft().gameSettings.keyBindJump;
 
 	public MekanismKeyHandler()
 	{
-		super(new KeyBinding[] {modeSwitchKey, armorModeSwitchKey, voiceKey}, new boolean[] {false, false, true});
+		super(new KeyBinding[] {modeSwitchKey, armorModeSwitchKey}, new boolean[] {false, false, true});
 		
 		ClientRegistry.registerKeyBinding(modeSwitchKey);
 		ClientRegistry.registerKeyBinding(armorModeSwitchKey);
-		ClientRegistry.registerKeyBinding(voiceKey);
 		
 		FMLCommonHandler.instance().bus().register(this);
 	}
@@ -104,18 +100,6 @@ public class MekanismKeyHandler extends MekKeyHandler
 					machine.setBucketMode(toolStack, !machine.getBucketMode(toolStack));
 					Mekanism.packetHandler.sendToServer(new PortableTankStateMessage(machine.getBucketMode(toolStack)));
 					player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.portableTank.bucketMode") + ": " + (machine.getBucketMode(toolStack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED) + LangUtils.transOnOff(machine.getBucketMode(toolStack))));
-				}
-			}
-			else if(player.isSneaking() && item instanceof ItemWalkieTalkie)
-			{
-				ItemWalkieTalkie wt = (ItemWalkieTalkie)item;
-
-				if(wt.getOn(toolStack))
-				{
-					int newChan = wt.getChannel(toolStack) < 9 ? wt.getChannel(toolStack) + 1 : 1;
-					wt.setChannel(toolStack, newChan);
-					Mekanism.packetHandler.sendToServer(new WalkieTalkieStateMessage(newChan));
-					SoundHandler.playSound("mekanism:etc.Ding");
 				}
 			}
             else if(player.isSneaking() && item instanceof ItemFlamethrower)
