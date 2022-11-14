@@ -1375,10 +1375,6 @@ public class Mekanism
 	@EventHandler
 	public void serverStopping(FMLServerStoppingEvent event)
 	{
-		if(general.voiceServerEnabled)
-		{
-			voiceManager.stop();
-		}
 
 		//Clear all cache data
 		jetpackOn.clear();
@@ -1497,12 +1493,6 @@ public class Mekanism
 
 		//Register this module's GUI handler in the simple packet protocol
 		PacketSimpleGui.handlers.add(0, proxy);
-
-		//Set up VoiceServerManager
-		if(general.voiceServerEnabled)
-		{
-			voiceManager = new VoiceServerManager();
-		}
 
 		//Register with TransmitterNetworkRegistry
 		TransmitterNetworkRegistry.initiate();
