@@ -123,7 +123,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IGasH
 	@Override
 	public boolean canOperate()
 	{
-		return (fuelTank.getStored() > 0) && MekanismUtils.canFunction(this);
+		return electricityStored < BASE_MAX_ENERGY && fuelTank.getStored() > 0 && MekanismUtils.canFunction(this);
 	}
 
 	@Override
