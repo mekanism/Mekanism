@@ -87,7 +87,7 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 + Added BoP integration, when enabled atomic alloy is made with Ender Amethyst from BoP Thorfusion#44
 + [Large feature] Reworked the bio-fuel cycle Thorfusion#48
 + added lazuli ingots and lead infusion Thorfusion#50
-+ fixed energy storage meter increasen when generating no energy in industrial turbine Thorfusion#40
++ fixed energy storage meter increasing when generating no energy in industrial turbine Thorfusion#40
 
 ## All contributors get capes
 
