@@ -43,7 +43,6 @@ import mekanism.common.item.ItemFreeRunners;
 import mekanism.common.item.ItemGasMask;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemScubaTank;
-import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multipart.ItemGlowPanel;
 import mekanism.common.multipart.ItemPartTransmitter;
 import mekanism.common.multipart.TransmitterType;
@@ -101,11 +100,6 @@ public class ItemRenderingHandler implements IItemRenderer
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
 	{
-		if(item.getItem() == MekanismItems.WalkieTalkie)
-		{
-			return type != ItemRenderType.INVENTORY;
-		}
-
 		return true;
 	}
 
@@ -326,20 +320,6 @@ public class ItemRenderingHandler implements IItemRenderer
 			GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 			obsidianTNT.render(0.0625F);
 			GL11.glPopMatrix();
-		}
-		else if(item.getItem() instanceof ItemWalkieTalkie)
-		{
-			if(((ItemWalkieTalkie)item.getItem()).getOn(item))
-			{
-				MekanismRenderer.glowOn();
-			}
-
-			MekanismRenderer.renderItem(item);
-
-			if(((ItemWalkieTalkie)item.getItem()).getOn(item))
-			{
-				MekanismRenderer.glowOff();
-			}
 		}
 		else if(MachineType.get(item) == MachineType.PERSONAL_CHEST)
 		{

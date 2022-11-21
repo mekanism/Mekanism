@@ -33,7 +33,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(general.controlCircuitOreDict);
 			dataStream.writeBoolean(general.logPackets);
 			dataStream.writeBoolean(general.dynamicTankEasterEgg);
-			dataStream.writeBoolean(general.voiceServerEnabled);
 			dataStream.writeBoolean(general.cardboardSpawners);
 			dataStream.writeBoolean(general.spawnBabySkeletons);
 			dataStream.writeBoolean(general.enableBoPProgression);
@@ -49,7 +48,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeInt(general.METHANE_BURN_TIME);
 			dataStream.writeDouble(general.ENERGY_PER_REDSTONE);
 			dataStream.writeDouble(general.DISASSEMBLER_USAGE);
-			dataStream.writeInt(general.VOICE_PORT);
 			dataStream.writeInt(general.maxUpgradeMultiplier);
 			dataStream.writeInt(general.energyUnit.ordinal());
 			dataStream.writeDouble(general.minerSilkMultiplier);
@@ -196,7 +194,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(recipes.enableTeleporterCore);
 			dataStream.writeBoolean(recipes.enableConfigurator);
 			dataStream.writeBoolean(recipes.enableNetworkReader);
-			dataStream.writeBoolean(recipes.enableWalkieTalkie);
 			dataStream.writeBoolean(recipes.enableJetpacks);
 			dataStream.writeBoolean(recipes.enableScubaSet);
 			dataStream.writeBoolean(recipes.enableFreeRunners);
@@ -228,7 +225,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.controlCircuitOreDict = dataStream.readBoolean();
 			general.logPackets = dataStream.readBoolean();
 			general.dynamicTankEasterEgg = dataStream.readBoolean();
-			general.voiceServerEnabled = dataStream.readBoolean();
 			general.cardboardSpawners = dataStream.readBoolean();
 			general.spawnBabySkeletons = dataStream.readBoolean();
 			general.enableBoPProgression = dataStream.readBoolean();
@@ -244,7 +240,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.METHANE_BURN_TIME = dataStream.readInt();
 			general.ENERGY_PER_REDSTONE = dataStream.readDouble();
 			general.DISASSEMBLER_USAGE = dataStream.readDouble();
-			general.VOICE_PORT = dataStream.readInt();
 			general.maxUpgradeMultiplier = dataStream.readInt();
 			general.energyUnit = EnergyType.values()[dataStream.readInt()];
 			general.minerSilkMultiplier = dataStream.readDouble();
@@ -391,7 +386,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			recipes.enableTeleporterCore = dataStream.readBoolean();
 			recipes.enableConfigurator = dataStream.readBoolean();
 			recipes.enableNetworkReader = dataStream.readBoolean();
-			recipes.enableWalkieTalkie = dataStream.readBoolean();
 			recipes.enableJetpacks = dataStream.readBoolean();
 			recipes.enableScubaSet = dataStream.readBoolean();
 			recipes.enableFreeRunners = dataStream.readBoolean();

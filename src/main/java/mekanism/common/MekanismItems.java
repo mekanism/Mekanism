@@ -32,7 +32,6 @@ import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemShard;
 import mekanism.common.item.ItemUpgrade;
-import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multipart.ItemGlowPanel;
 import mekanism.common.multipart.ItemPartTransmitter;
 import net.minecraft.init.Items;
@@ -77,7 +76,6 @@ public class MekanismItems
 	public static final ItemPortableTeleporter PortableTeleporter = (ItemPortableTeleporter)new ItemPortableTeleporter().setUnlocalizedName("PortableTeleporter");
 	public static final ItemConfigurator Configurator = (ItemConfigurator)new ItemConfigurator().setUnlocalizedName("Configurator");
 	public static final ItemNetworkReader NetworkReader = (ItemNetworkReader)new ItemNetworkReader().setUnlocalizedName("NetworkReader");
-	public static final Item WalkieTalkie = new ItemWalkieTalkie().setUnlocalizedName("WalkieTalkie");
 	public static final ItemElectricBow ElectricBow = (ItemElectricBow)new ItemElectricBow().setUnlocalizedName("ElectricBow");
 	public static final ItemFlamethrower Flamethrower = (ItemFlamethrower)new ItemFlamethrower().setUnlocalizedName("Flamethrower");
 	public static final ItemSeismicReader SeismicReader = (ItemSeismicReader)new ItemSeismicReader().setUnlocalizedName("SeismicReader");
@@ -142,7 +140,6 @@ public class MekanismItems
 		GameRegistry.registerItem(DirtyDust, "DirtyDust");
 		GameRegistry.registerItem(Configurator, "Configurator");
 		GameRegistry.registerItem(NetworkReader, "NetworkReader");
-		GameRegistry.registerItem(WalkieTalkie, "WalkieTalkie");
 		GameRegistry.registerItem(Jetpack, "Jetpack");
 		GameRegistry.registerItem(Dictionary, "Dictionary");
 		GameRegistry.registerItem(GasMask, "GasMask");

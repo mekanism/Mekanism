@@ -253,7 +253,6 @@ public class CommonProxy implements IGuiProvider
 		general.controlCircuitOreDict = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ControlCircuitOreDict", true).getBoolean();
 		general.logPackets = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "LogPackets", false).getBoolean();
 		general.dynamicTankEasterEgg = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DynamicTankEasterEgg", false).getBoolean();
-		general.voiceServerEnabled = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "VoiceServerEnabled", false).getBoolean();
 		general.cardboardSpawners = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "AllowSpawnerBoxPickup", true).getBoolean();
 		general.enableWorldRegeneration = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableWorldRegeneration", false).getBoolean();
 		general.enableBoPProgression = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "enableBoPProgression", true).getBoolean();
@@ -275,7 +274,6 @@ public class CommonProxy implements IGuiProvider
 		general.METHANE_BURN_TIME = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MethaneBurnTime", 10).getInt();
 		general.ENERGY_PER_REDSTONE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyPerRedstone", 10000D).getDouble();
 		general.DISASSEMBLER_USAGE = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DisassemblerEnergyUsage", 10).getInt();
-		general.VOICE_PORT = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "VoicePort", 36123, null, 1, 65535).getInt();
 		//If this is less than 1, upgrades make machines worse. If less than 0, I don't even know.
 		general.maxUpgradeMultiplier = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "UpgradeModifier", 10, null, 1, Integer.MAX_VALUE).getInt();
 		general.minerSilkMultiplier = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MinerSilkMultiplier", 6).getDouble();
@@ -485,7 +483,6 @@ public class CommonProxy implements IGuiProvider
 		recipes.enableTeleporterCore = Mekanism.configurationrecipes.get("Recipes","enableTeleporterCore", true).getBoolean();
 		recipes.enableConfigurator = Mekanism.configurationrecipes.get("Recipes","enableConfigurator", true).getBoolean();
 		recipes.enableNetworkReader = Mekanism.configurationrecipes.get("Recipes","enableNetworkReader", true).getBoolean();
-		recipes.enableWalkieTalkie = Mekanism.configurationrecipes.get("Recipes","enableWalkieTalkie", true).getBoolean();
 		recipes.enableJetpacks = Mekanism.configurationrecipes.get("Recipes","enableJetpacks", true).getBoolean();
 		recipes.enableScubaSet = Mekanism.configurationrecipes.get("Recipes","enableScubaSet", true).getBoolean();
 		recipes.enableFreeRunners = Mekanism.configurationrecipes.get("Recipes","enableFreeRunners", true).getBoolean();

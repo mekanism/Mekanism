@@ -41,7 +41,5 @@ public class ThreadGetData extends Thread
 				}
 			}
 		}
-		
-		MekanismUtils.updateDonators();
 	}
 }

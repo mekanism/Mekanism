@@ -6,7 +6,6 @@ import com.jadarstudios.developercapes.DevCapes;
 import cpw.mods.fml.common.Loader;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.client;
-import mekanism.api.MekanismConfig.general;
 import mekanism.api.Pos3D;
 import mekanism.client.SparkleAnimation.INodeChecker;
 import mekanism.client.entity.EntityLaser;
@@ -351,7 +350,6 @@ public class ClientProxy extends CommonProxy
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.MachineBlock2), handler);
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.MachineBlock3), handler);
 		MinecraftForgeClient.registerItemRenderer(MekanismItems.Robit, handler);
-		MinecraftForgeClient.registerItemRenderer(MekanismItems.WalkieTalkie, handler);
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.GasTank), handler);
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.ObsidianTNT), handler);
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(MekanismBlocks.BasicBlock), handler);
@@ -585,7 +583,6 @@ public class ClientProxy extends CommonProxy
 	{
 		super.loadUtilities();
 		
-		FMLCommonHandler.instance().bus().register(new ClientConnectionHandler());
 		FMLCommonHandler.instance().bus().register(new ClientPlayerTracker());
 		FMLCommonHandler.instance().bus().register(new ClientTickHandler());
 		FMLCommonHandler.instance().bus().register(new RenderTickHandler());
@@ -646,11 +643,6 @@ public class ClientProxy extends CommonProxy
 	public void onConfigSync(boolean fromPacket)
 	{
 		super.onConfigSync(fromPacket);
-
-		if(fromPacket && general.voiceServerEnabled && MekanismClient.voiceClient != null)
-		{
-			MekanismClient.voiceClient.start();
-		}
 	}
 
 	@Override

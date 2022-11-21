@@ -3,7 +3,6 @@ package mekanism.common.util;
 import ic2.api.energy.EnergyNet;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -160,18 +159,6 @@ public final class MekanismUtils
 		return false;
 	}
 
-	/**
-	 * Updates the donator list by retrieving the most recent information from a foreign document.
-	 */
-	public static void updateDonators()
-	{
-		Mekanism.donators.clear();
-
-		for(String s : getHTML("http://aidancbrady.com/data/capes/Mekanism.txt"))
-		{
-			Mekanism.donators.add(s);
-		}
-	}
 
 	/**
 	 * Returns one line of HTML from the url.
@@ -241,20 +228,6 @@ public final class MekanismUtils
 		}
 
 		return true;
-	}
-
-	/**
-	 * Checks if Minecraft is running in offline mode.
-	 * @return if mod is running in offline mode.
-	 */
-	public static boolean isOffline()
-	{
-		try {
-			new URL("http://www.apple.com").openConnection().connect();
-			return true;
-		} catch (IOException e) {
-			return false;
-		}
 	}
 
 	/**

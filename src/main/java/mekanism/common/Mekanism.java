@@ -85,7 +85,6 @@ import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.TileEntityThermalEvaporationValve;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.voice.VoiceServerManager;
 import mekanism.common.world.GenHandler;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
@@ -193,9 +192,6 @@ public class Mekanism
 
 	/** The recent news which is received from the Mekanism server */
 	public static String recentNews;
-
-	/** The VoiceServer manager for walkie talkies */
-	public static VoiceServerManager voiceManager;
 
 	/** A list of the usernames of players who have donated to Mekanism. */
 	public static List<String> donators = new ArrayList<String>();
@@ -1362,10 +1358,6 @@ public class Mekanism
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event)
 	{
-		if(general.voiceServerEnabled)
-		{
-			voiceManager.start();
-		}
 
 		//Load cached furnace recipes
 		Recipe.ENERGIZED_SMELTER.get().clear();
@@ -1383,10 +1375,6 @@ public class Mekanism
 	@EventHandler
 	public void serverStopping(FMLServerStoppingEvent event)
 	{
-		if(general.voiceServerEnabled)
-		{
-			voiceManager.stop();
-		}
 
 		//Clear all cache data
 		jetpackOn.clear();
@@ -1505,12 +1493,6 @@ public class Mekanism
 
 		//Register this module's GUI handler in the simple packet protocol
 		PacketSimpleGui.handlers.add(0, proxy);
-
-		//Set up VoiceServerManager
-		if(general.voiceServerEnabled)
-		{
-			voiceManager = new VoiceServerManager();
-		}
 
 		//Register with TransmitterNetworkRegistry
 		TransmitterNetworkRegistry.initiate();
