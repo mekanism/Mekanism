@@ -315,7 +315,7 @@ public class MekanismGenerators implements IModule
 		generators.ethanolMultiplier = dataStream.readDouble();
 		generators.heatGeneration = dataStream.readDouble();
 		generators.heatGenerationLava = dataStream.readDouble();
-		generators.heatGenerationNether = dataStream.readDouble();;
+		generators.heatGenerationNether = dataStream.readDouble();
 		generators.heatGenerationFluidRate = dataStream.readInt();
 		generators.heatGenEnable = dataStream.readBoolean();
 		generators.solarGeneration = dataStream.readDouble();
