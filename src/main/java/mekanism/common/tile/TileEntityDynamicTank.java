@@ -322,4 +322,9 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 		
 		structure.editMode = mode;
 	}
+	@Override
+	public int getInventoryStackLimit()
+	{
+		return 1;
+	}
 }
