@@ -67,6 +67,10 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 + silicon integration is enabled if enderio or gc or project red is installed, silicon is now used to make instead of iron control circuits Thorfusion#45
 + added oredict componentcontrolcircuit for advanced control circuit
 + Overhauled the config file system
++ fixed fluidstack duplication through tanks, or other blocks allowing filling & emptying fluidstacks like drums Thorfusion#49
++ removed the native cape module, the auto updater module and voiceserver Thorfusion#51
++ fixed config for HeatGenerationFluidRate
++ disabled prefilled tanks by default
 
 #### [Pokemonplatin](https://github.com/Pokemonplatin) - Mekanism CE Team
 + Teleporter and Quantum Entangloporter now have a trusted channel for smp Thorfusion#22
@@ -81,6 +85,9 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 + added methane to gas burner fuel list Thorfusion#36
 + Added a workaround for minetweaker regarding removal of recipes, use the config file to disable them. Thorfusion#43
 + Added BoP integration, when enabled atomic alloy is made with Ender Amethyst from BoP Thorfusion#44
++ [Large feature] Reworked the bio-fuel cycle Thorfusion#48
++ added lazuli ingots and lead infusion Thorfusion#50
++ fixed energy storage meter increasen when generating no energy in industrial turbine Thorfusion#40
 
 ## All contributors get capes
 
