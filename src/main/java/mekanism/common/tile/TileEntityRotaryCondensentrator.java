@@ -599,4 +599,19 @@ public class TileEntityRotaryCondensentrator extends TileEntityElectricBlock imp
 	{
 		return securityComponent;
 	}
+	@Override
+	public int getInventoryStackLimit()
+	{
+		return 1;
+	}
+	@Override
+	public void setInventorySlotContents(int slotID, ItemStack itemstack)
+	{
+		inventory[slotID] = itemstack;
+
+		if(itemstack != null && itemstack.stackSize > getInventoryStackLimit())
+		{
+			itemstack.stackSize = getInventoryStackLimit();
+		}
+	}
 }
