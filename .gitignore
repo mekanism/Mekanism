@@ -23,3 +23,5 @@ MDK.zip
 *.blend2
 /bin
 gradle.properties
+
+!Mekanism.txt
