@@ -11,7 +11,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
-import mekanism.common.integration.MekanismHooks;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.tile.TileEntityBin;
