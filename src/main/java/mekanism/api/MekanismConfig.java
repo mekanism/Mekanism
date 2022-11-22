@@ -167,7 +167,6 @@ public class MekanismConfig
 	public static class tools
 	{
 		public static double armorSpawnRate;
-		public static boolean enableTools = true;
 	}
 
 	public static class recipes
