@@ -10,6 +10,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.util.StackUtils;
+import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.tile.TileEntityBin;
@@ -22,6 +23,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 import cpw.mods.fml.common.Loader;
+import com.dynious.refinedrelocation.tileentity.TileBuffer;
 
 public class TransporterManager
 {
@@ -95,6 +97,11 @@ public class TransporterManager
 			if(slots == null || slots.length == 0)
 			{
 				return null;
+			}
+			if(Mekanism.hooks.RRLoaded) {
+				if (inv instanceof TileBuffer) {
+					return null;
+				}
 			}
 
 			for(int get = 0; get <= slots.length - 1; get++)

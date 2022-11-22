@@ -41,6 +41,7 @@ public final class MekanismHooks
 	public boolean TELoaded = false;
 	public boolean CCLoaded = false;
 	public boolean AE2Loaded = false;
+	public boolean RRLoaded = false;
 
 	public void hook()
 	{
@@ -50,6 +51,7 @@ public final class MekanismHooks
 		if(Loader.isModLoaded("ThermalExpansion")) TELoaded = true;
 		if(Loader.isModLoaded("ComputerCraft")) CCLoaded = true;
 		if(Loader.isModLoaded("appliedenergistics2")) AE2Loaded = true;
+		if(Loader.isModLoaded("RefinedRelocation")) RRLoaded = true;
 
 		if(IC2Loaded)
 		{
