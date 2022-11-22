@@ -13,6 +13,10 @@ Originally made for Terralization Modpack with fixes from several different fork
 ```
 You will find the files inside ./output/
 
+## Official Modpacks
+### [Terralization](https://www.technicpack.net/modpack/terralization.654195)
+### [The Lost Era](https://modrinth.com/modpack/the-lost-era)
+
 ## For modpacks
 You need to include the [LICENSE](https://raw.githubusercontent.com/Thorfusion/Mekanism-1.7.10-Community-Edition/1.7.10/LICENSE.md) for Mekanism 1.7.10 Community Edition and Aidanbrady as author, if your system supports it indicate that this is an custom version and give appreciable credits
 
