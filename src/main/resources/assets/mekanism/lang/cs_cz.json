@@ -262,6 +262,7 @@
   "cardboard_box.mekanism.block_data": "Data bloku: %1$s",
   "cardboard_box.mekanism.block_entity": "Bloková Entita: %1$s",
   "chemical.mekanism.attribute.coolant.efficiency": " - Účinnost Chlazení: %1$s",
+  "chemical.mekanism.attribute.coolant.heat_capacity": " Tepelná entalpie: %1$s",
   "chemical.mekanism.attribute.fuel.burn_ticks": " - Čas Pálení: %1$s t",
   "chemical.mekanism.attribute.fuel.energy_density": " - Energetická hustota: %1$s",
   "chemical.mekanism.attribute.radiation": " - Radioaktivita: %1$s",
