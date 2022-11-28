@@ -1,4 +1,11 @@
 {
+  "advancements.mekanism.environmental_radiation.title": "Mysli na přírodu",
+  "advancements.mekanism.factory.description": "Vytvoř jakoukoliv továrnu",
+  "advancements.mekanism.fluid_tank.description": "Vytvoř nádrž na skladování kapalin",
+  "advancements.mekanism.fluid_tank.title": "Větší kbelík",
+  "advancements.mekanism.full_canteen.description": "Naplň Čutoru Nutriční Pastou",
+  "advancements.mekanism.full_canteen.title": "Chutná pasta",
+  "advancements.mekanism.hydrogen_powered_flight.description": "Vyleť s Jetpackem do oblak",
   "assemblicator.mekanism.auto_mode_toggle": "Automatický režim: %1$s",
   "assemblicator.mekanism.craft_available": "Vyrobit Dostupné Předměty",
   "assemblicator.mekanism.craft_single": "Vyrobit Jeden Předmět",
