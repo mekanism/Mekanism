@@ -4,11 +4,9 @@ import static mekanism.client.sound.SoundHandler.Channel.FLAMETHROWER;
 import static mekanism.client.sound.SoundHandler.Channel.GASMASK;
 import static mekanism.client.sound.SoundHandler.Channel.JETPACK;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import mekanism.api.IClientTicker;
@@ -32,13 +30,9 @@ import mekanism.common.network.PacketScubaTankData.ScubaTankDataMessage;
 import mekanism.common.network.PacketScubaTankData.ScubaTankPacket;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.StringUtils;
-
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -57,20 +51,9 @@ public class ClientTickHandler
 {
 	public boolean hasNotified = false;
 	public boolean initHoliday = false;
-
-	public boolean preloadedSounds = false;
-
-	public boolean lastTickUpdate;
-
 	public boolean shouldReset = false;
 
 	public static Minecraft mc = FMLClientHandler.instance().getClient();
-
-	public static final String DONATE_CAPE = "http://aidancbrady.com/data/capes/donate.png";
-	public static final String AIDAN_CAPE = "http://aidancbrady.com/data/capes/aidan.png";
-
-	private Map<String, CapeBufferDownload> donateDownload = new HashMap<String, CapeBufferDownload>();
-	private Map<String, CapeBufferDownload> aidanDownload = new HashMap<String, CapeBufferDownload>();
 
 	public static Set<IClientTicker> tickingSet = new HashSet<IClientTicker>();
 
@@ -125,58 +108,6 @@ public class ClientTickHandler
 			{
 				HolidayManager.check();
 				initHoliday = true;
-			}
-
-			for(EntityPlayer entityPlayer : (List<EntityPlayer>)mc.theWorld.playerEntities)
-			{
-				if(entityPlayer instanceof AbstractClientPlayer)
-				{
-					AbstractClientPlayer player = (AbstractClientPlayer)entityPlayer;
-
-					if(player != null)
-					{
-						if(StringUtils.stripControlCodes(player.getCommandSenderName()).equals("aidancbrady"))
-						{
-							CapeBufferDownload download = aidanDownload.get(player.getCommandSenderName());
-
-							if(download == null)
-							{
-								download = new CapeBufferDownload(player.getCommandSenderName(), AIDAN_CAPE);
-								aidanDownload.put(player.getCommandSenderName(), download);
-
-								download.start();
-							}
-							else {
-								if(!download.downloaded)
-								{
-									continue;
-								}
-
-								player.func_152121_a(MinecraftProfileTexture.Type.CAPE, download.getResourceLocation());
-							}
-						}
-						else if(Mekanism.donators.contains(StringUtils.stripControlCodes(player.getCommandSenderName())))
-						{
-							CapeBufferDownload download = donateDownload.get(player.getCommandSenderName());
-
-							if(download == null)
-							{
-								download = new CapeBufferDownload(player.getCommandSenderName(), DONATE_CAPE);
-								donateDownload.put(player.getCommandSenderName(), download);
-
-								download.start();
-							}
-							else {
-								if(!download.downloaded)
-								{
-									continue;
-								}
-
-								player.func_152121_a(MinecraftProfileTexture.Type.CAPE, download.getResourceLocation());
-							}
-						}
-					}
-				}
 			}
 
 			if(mc.thePlayer.getEquipmentInSlot(1) != null && mc.thePlayer.getEquipmentInSlot(1).getItem() instanceof ItemFreeRunners)

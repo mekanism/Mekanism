@@ -276,25 +276,18 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	{
 		if(slotID == 0)
 		{
-			if(itemstack.getItem() instanceof IFluidContainerItem)
-			{
+			if (itemstack.getItem() instanceof IFluidContainerItem) {
 				return true;
-			}
-			else if(FluidContainerRegistry.isFilledContainer(itemstack))
-			{
+			} else if (FluidContainerRegistry.isFilledContainer(itemstack)) {
 				FluidStack stack = FluidContainerRegistry.getFluidForFilledItem(itemstack);
-				
-				if(fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(stack))
-				{
+
+				if (fluidTank.getFluid() == null || fluidTank.getFluid().isFluidEqual(stack)) {
 					return editMode == ContainerEditMode.EMPTY || editMode == ContainerEditMode.BOTH;
 				}
-			}
-			else if(FluidContainerRegistry.isEmptyContainer(itemstack))
-			{
+			} else if (FluidContainerRegistry.isEmptyContainer(itemstack)) {
 				return editMode == ContainerEditMode.FILL || editMode == ContainerEditMode.BOTH;
 			}
 		}
-
 		return false;
 	}
 
@@ -624,5 +617,20 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	public TileComponentSecurity getSecurity()
 	{
 		return securityComponent;
+	}
+	@Override
+	public int getInventoryStackLimit()
+	{
+		return 1;
+	}
+	@Override
+	public void setInventorySlotContents(int slotID, ItemStack itemstack)
+	{
+		inventory[slotID] = itemstack;
+
+		if(itemstack != null && itemstack.stackSize > getInventoryStackLimit())
+		{
+			itemstack.stackSize = getInventoryStackLimit();
+		}
 	}
 }

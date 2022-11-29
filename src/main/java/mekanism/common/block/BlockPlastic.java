@@ -10,8 +10,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -20,17 +22,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockPlastic extends Block
 {
-	public BlockPlastic()
+	public BlockPlastic(String type)
 	{
 		super(Material.wood);
-		setHardness(this == MekanismBlocks.ReinforcedPlasticBlock ? 50F : 5F);
-		setResistance(this == MekanismBlocks.ReinforcedPlasticBlock ? 2000F : 10F);
+		setHardness(type == "reinforced" ? 50F : 5F);
+		setResistance(type == "reinforced" ? 2000F : 10F);
 		setCreativeTab(Mekanism.tabMekanism);
-		
-		if(this == MekanismBlocks.SlickPlasticBlock)
-		{
+		if (type == "slick")
 			slipperiness = 0.98F;
-		}
 	}
 
 	@Override
@@ -60,16 +59,32 @@ public class BlockPlastic extends Block
 	}
 
 	@Override
-	public void onEntityWalking(World world, int x, int y, int z, Entity e)
-	{
-		if(this == MekanismBlocks.RoadPlasticBlock)
-		{
-			double boost = 1.6;
-
-			double a = Math.atan2(e.motionX, e.motionZ);
-			e.motionX += Math.sin(a) * boost * slipperiness;
-			e.motionZ += Math.cos(a) * boost * slipperiness;
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
+		if (this == MekanismBlocks.RoadPlasticBlock) {
+			final float f = 1 / 128f;
+			return AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 1 - f, z + 1);
+		} else {
+			return AxisAlignedBB.getBoundingBox((double)x + this.minX, (double)y + this.minY, (double)z + this.minZ, (double)x + this.maxX, (double)y + this.maxY, (double)z + this.maxZ);
 		}
+	}
+
+	@Override
+	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity e) {
+			if (this == MekanismBlocks.RoadPlasticBlock) {
+
+				if (e.getEntityData().getInteger("Mekanism:road") == e.ticksExisted)
+					return;
+				e.getEntityData().setInteger("Mekanism:road", e.ticksExisted);
+
+				double boost = 0.99 * slipperiness;
+
+				final double minSpeed = 1e-9;
+
+				if (Math.abs(e.motionX) > minSpeed || Math.abs(e.motionZ) > minSpeed) {
+					e.motionX += e.motionX * boost;
+					e.motionZ += e.motionZ * boost;
+				}
+			}
 	}
 
 	@Override
@@ -110,6 +125,11 @@ public class BlockPlastic extends Block
 		}
 
 		return 0;
+	}
+	@Override
+	public boolean canCreatureSpawn(EnumCreatureType type, IBlockAccess world, int x, int y, int z){
+
+		return false;
 	}
 
 	@Override

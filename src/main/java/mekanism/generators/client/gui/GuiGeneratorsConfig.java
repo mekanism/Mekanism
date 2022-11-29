@@ -12,7 +12,7 @@ public class GuiGeneratorsConfig extends GuiConfig
 {
 	public GuiGeneratorsConfig(GuiScreen parent)
 	{
-		super(parent, new ConfigElement(Mekanism.configuration.getCategory("generation")).getChildElements(),
+		super(parent, new ConfigElement(Mekanism.configurationgenerators.getCategory("generation")).getChildElements(),
 				"MekanismGenerators", false, false, "MekanismGenerators");
 	}
 }

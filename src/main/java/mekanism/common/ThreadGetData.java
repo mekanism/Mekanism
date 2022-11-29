@@ -21,7 +21,7 @@ public class ThreadGetData extends Thread
 	@Override
 	public void run()
 	{
-		List<String> ret = MekanismUtils.getHTML("https://raw.githubusercontent.com/maggi373/files/main/mekanism/Mekanism.txt");
+		List<String> ret = MekanismUtils.getHTML("https://raw.githubusercontent.com/Thorfusion/Mekanism-1.7.10-Community-Edition/1.7.10/Mekanism.txt");
 		
 		Mekanism.latestVersionNumber = "null";
 		Mekanism.recentNews = "null";
@@ -41,7 +41,5 @@ public class ThreadGetData extends Thread
 				}
 			}
 		}
-		
-		MekanismUtils.updateDonators();
 	}
 }

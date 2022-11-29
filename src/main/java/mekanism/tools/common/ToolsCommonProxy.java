@@ -10,9 +10,9 @@ public class ToolsCommonProxy
 	 */
 	public void loadConfiguration()
 	{
-		tools.armorSpawnRate = Mekanism.configuration.get("tools.general", "MobArmorSpawnRate", 0.03, null, 0.00, 1.00).getDouble(0.03);
+		tools.armorSpawnRate = Mekanism.configurationtools.get("tools.general", "MobArmorSpawnRate", 0.03, null, 0.00, 1.00).getDouble(0.03);
 
-		if(Mekanism.configuration.hasChanged())
-			Mekanism.configuration.save();
+		if(Mekanism.configurationtools.hasChanged())
+			Mekanism.configurationtools.save();
 	}
 }

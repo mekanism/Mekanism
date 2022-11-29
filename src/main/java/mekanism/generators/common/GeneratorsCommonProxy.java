@@ -1,6 +1,7 @@
 package mekanism.generators.common;
 
 import mekanism.api.MekanismConfig.generators;
+import mekanism.api.MekanismConfig.generatorsrecipes;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IGuiProvider;
 import mekanism.common.inventory.container.ContainerFilter;
@@ -40,6 +41,10 @@ import net.minecraft.world.World;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Common proxy for the Mekanism Generators module.
  * @author AidanBrady
@@ -48,6 +53,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class GeneratorsCommonProxy implements IGuiProvider
 {
 	public static int GENERATOR_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
+	public static List<Integer> dimid = null;
 
 	/**
 	 * Register normal tile entities
@@ -93,34 +99,70 @@ public class GeneratorsCommonProxy implements IGuiProvider
 	 */
 	public void loadConfiguration()
 	{
-		generators.advancedSolarGeneration = Mekanism.configuration.get("generation", "AdvancedSolarGeneration", 300D).getDouble();
-		generators.bioGeneration = Mekanism.configuration.get("generation", "BioGeneration", 350D).getDouble();
-		generators.heatGeneration = Mekanism.configuration.get("generation", "HeatGeneration", 150D).getDouble();
-		generators.heatGenerationLava = Mekanism.configuration.get("generation", "HeatGenerationLava", 5D).getDouble();
-		generators.heatGenerationNether = Mekanism.configuration.get("generation", "HeatGenerationNether", 100D).getDouble();
-		generators.solarGeneration = Mekanism.configuration.get("generation", "SolarGeneration", 50D).getDouble();
+		generators.advancedSolarGeneration = Mekanism.configurationgenerators.get("generation", "AdvancedSolarGeneration", 300D).getDouble();
+		generators.bioGeneration = Mekanism.configurationgenerators.get("generation", "BioGeneration", 100D).getDouble();
+		generators.ethanolMultiplier = Mekanism.configurationgenerators.get("generation", "EthanolMultiplier", 5D).getDouble();
+		generators.heatGeneration = Mekanism.configurationgenerators.get("generation", "HeatGeneration", 150D).getDouble();
+		generators.heatGenerationLava = Mekanism.configurationgenerators.get("generation", "HeatGenerationLava", 5D).getDouble();
+		generators.heatGenerationNether = Mekanism.configurationgenerators.get("generation", "HeatGenerationNether", 100D).getDouble();
+		generators.heatGenerationFluidRate = Mekanism.configurationgenerators.get("generation", "HeatGenerationFluidRate", 10).getInt();
+		generators.solarGeneration = Mekanism.configurationgenerators.get("generation", "SolarGeneration", 50D).getDouble();
 		
 		loadWindConfiguration();
-		
-		generators.turbineBladesPerCoil = Mekanism.configuration.get("generation", "TurbineBladesPerCoil", 4).getInt();
-		generators.turbineVentGasFlow = Mekanism.configuration.get("generation", "TurbineVentGasFlow", 16000D).getDouble();
-		generators.turbineDisperserGasFlow = Mekanism.configuration.get("generation", "TurbineDisperserGasFlow", 640D).getDouble();
-		generators.condenserRate = Mekanism.configuration.get("generation", "TurbineCondenserFlowRate", 32000).getInt();
+		loadwinddimension();
+		generators.turbineBladesPerCoil = Mekanism.configurationgenerators.get("generation", "TurbineBladesPerCoil", 4).getInt();
+		generators.turbineVentGasFlow = Mekanism.configurationgenerators.get("generation", "TurbineVentGasFlow", 16000D).getDouble();
+		generators.turbineDisperserGasFlow = Mekanism.configurationgenerators.get("generation", "TurbineDisperserGasFlow", 640D).getDouble();
+		generators.condenserRate = Mekanism.configurationgenerators.get("generation", "TurbineCondenserFlowRate", 32000).getInt();
+		generators.enableWindmillWhitelist = Mekanism.configurationgenerators.get("generation", "EnableWindmillWhitelist", true).getBoolean();
 
-		if(Mekanism.configuration.hasChanged())
+		generatorsrecipes.enableHeatGenerator = Mekanism.configurationrecipes.get("generationrecipes","enableHeatGenerator", true).getBoolean();
+		generatorsrecipes.enableSolarGenerator = Mekanism.configurationrecipes.get("generationrecipes","enableSolarGenerator", true).getBoolean();
+		generatorsrecipes.enableGasGenerator = Mekanism.configurationrecipes.get("generationrecipes","enableGasGenerator", true).getBoolean();
+		generatorsrecipes.enableBioGenerator = Mekanism.configurationrecipes.get("generationrecipes","enableBioGenerator", true).getBoolean();
+		generatorsrecipes.enableAdvSolarGenerator = Mekanism.configurationrecipes.get("generationrecipes","enableAdvSolarGenerator", true).getBoolean();
+		generatorsrecipes.enableWindGenerator = Mekanism.configurationrecipes.get("generationrecipes","enableWindGenerator", true).getBoolean();
+		generatorsrecipes.enableTurbineRotor = Mekanism.configurationrecipes.get("generationrecipes","enableTurbineRotor", true).getBoolean();
+		generatorsrecipes.enableRotationalComplex = Mekanism.configurationrecipes.get("generationrecipes","enableRotationalComplex", true).getBoolean();
+		generatorsrecipes.enableElectromagneticCoil = Mekanism.configurationrecipes.get("generationrecipes","enableElectromagneticCoil", true).getBoolean();
+		generatorsrecipes.enableTurbineCasing = Mekanism.configurationrecipes.get("generationrecipes","enableTurbineCasing", true).getBoolean();
+		generatorsrecipes.enableTurbineValve = Mekanism.configurationrecipes.get("generationrecipes","enableTurbineValve", true).getBoolean();
+		generatorsrecipes.enableTurbineVent = Mekanism.configurationrecipes.get("generationrecipes","enableTurbineVent", true).getBoolean();
+		generatorsrecipes.enableSaturatingCondenser = Mekanism.configurationrecipes.get("generationrecipes","enableSaturatingCondenser", true).getBoolean();
+		generatorsrecipes.enableReactorController = Mekanism.configurationrecipes.get("generationrecipes","enableReactorController", true).getBoolean();
+		generatorsrecipes.enableReactorFrame = Mekanism.configurationrecipes.get("generationrecipes","enableReactorFrame", true).getBoolean();
+		generatorsrecipes.enableReactorPort = Mekanism.configurationrecipes.get("generationrecipes","enableReactorPort", true).getBoolean();
+		generatorsrecipes.enableReactorAdapter = Mekanism.configurationrecipes.get("generationrecipes","enableReactorAdapter", true).getBoolean();
+		generatorsrecipes.enableReactorGlass = Mekanism.configurationrecipes.get("generationrecipes","enableReactorGlass", true).getBoolean();
+		generatorsrecipes.enableReactorMatrix = Mekanism.configurationrecipes.get("generationrecipes","enableReactorMatrix", true).getBoolean();
+		generatorsrecipes.enableSolarPanel = Mekanism.configurationrecipes.get("generationrecipes","enableSolarPanel", true).getBoolean();
+		generatorsrecipes.enableTurbineBlade = Mekanism.configurationrecipes.get("generationrecipes","enableTurbineBlade", true).getBoolean();
+		if(Mekanism.configurationgenerators.hasChanged())
 		{
-			Mekanism.configuration.save();
+			Mekanism.configurationgenerators.save();
+		}
+		if(Mekanism.configurationrecipes.hasChanged())
+		{
+			Mekanism.configurationrecipes.save();
 		}
 	}
-	
+
+	public void loadwinddimension()
+	{
+		String[] windid = {"0"};
+		generators.winddimensionids = Arrays.asList(Mekanism.configurationgenerators.getStringList("winddimensionids", "generation", windid, "List of dimension id to be whitelisted"));
+		dimid = generators.winddimensionids.stream().map(Integer::parseInt).collect(Collectors.toList());
+		System.out.println("Windmill whitelist : " + dimid);
+	}
+
 	private void loadWindConfiguration() 
 	{
-		generators.windGenerationMin = Mekanism.configuration.get("generation", "WindGenerationMin", 60D).getDouble();
-		generators.windGenerationMax = Mekanism.configuration.get("generation", "WindGenerationMax", 480D).getDouble();
+		generators.windGenerationMin = Mekanism.configurationgenerators.get("generation", "WindGenerationMin", 60D).getDouble();
+		generators.windGenerationMax = Mekanism.configurationgenerators.get("generation", "WindGenerationMax", 480D).getDouble();
 
 		//Ensure max > min to avoid division by zero later
-		final int minY = Mekanism.configuration.get("generation", "WindGenerationMinY", 24).getInt();
-		final int maxY = Mekanism.configuration.get("generation", "WindGenerationMaxY", 255).getInt();
+		final int minY = Mekanism.configurationgenerators.get("generation", "WindGenerationMinY", 24).getInt();
+		final int maxY = Mekanism.configurationgenerators.get("generation", "WindGenerationMaxY", 255).getInt();
 
 		generators.windGenerationMinY = minY;
 		generators.windGenerationMaxY = Math.max(minY + 1, maxY);

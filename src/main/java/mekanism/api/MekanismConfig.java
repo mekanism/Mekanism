@@ -1,6 +1,7 @@
 package mekanism.api;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import mekanism.api.util.UnitDisplayUtils.EnergyType;
@@ -14,10 +15,10 @@ public class MekanismConfig
 		public static boolean controlCircuitOreDict = true;
 		public static boolean logPackets = false;
 		public static boolean dynamicTankEasterEgg = false;
-		public static boolean voiceServerEnabled = true;
 		public static boolean cardboardSpawners = true;
 		public static boolean enableWorldRegeneration = true;
 		public static boolean spawnBabySkeletons = true;
+		public static boolean enableBoPProgression = true;
 		public static int obsidianTNTBlastRadius = 12;
 		public static int osmiumPerChunk = 12;
 		public static int copperPerChunk = 16;
@@ -25,7 +26,6 @@ public class MekanismConfig
 		public static int saltPerChunk = 2;
 		public static int obsidianTNTDelay = 100;
 		public static int UPDATE_DELAY = 10;
-		public static int VOICE_PORT = 36123;
 		public static int maxUpgradeMultiplier = 10;
 		public static int userWorldGenVersion = 0;
 		public static double ENERGY_PER_REDSTONE = 10000;
@@ -73,6 +73,7 @@ public class MekanismConfig
 		public static boolean EnablePoorOresCompat;
 		public static boolean OreDictOsmium;
 		public static boolean OreDictPlatinum;
+		public static boolean enableSiliconCompat;
 	}
 
 	public static class client
@@ -140,6 +141,7 @@ public class MekanismConfig
 	{
 		public static double advancedSolarGeneration;
 		public static double bioGeneration;
+		public static double ethanolMultiplier;
 		public static double heatGeneration;
 		public static double heatGenerationLava;
 		public static double heatGenerationNether;
@@ -157,6 +159,9 @@ public class MekanismConfig
 		public static double turbineVentGasFlow;
 		public static double turbineDisperserGasFlow;
 		public static int condenserRate;
+		public static boolean enableWindmillWhitelist;
+		public static List<String> winddimensionids;
+
 	}
 
 	public static class tools
@@ -252,7 +257,6 @@ public class MekanismConfig
 		public static boolean enableTeleporterCore = true;
 		public static boolean enableConfigurator = true;
 		public static boolean enableNetworkReader = true;
-		public static boolean enableWalkieTalkie = true;
 		public static boolean enableJetpacks = true;
 		public static boolean enableScubaSet = true;
 		public static boolean enableFreeRunners = true;
@@ -263,6 +267,10 @@ public class MekanismConfig
 		public static boolean enableFlamethrower = true;
 		public static boolean enableGaugeDropper = true;
 		public static boolean enableTierInstaller = true;
+
+
+	}
+	public static class generatorsrecipes {
 		public static boolean enableHeatGenerator = true;
 		public static boolean enableSolarGenerator = true;
 		public static boolean enableGasGenerator = true;
@@ -284,6 +292,5 @@ public class MekanismConfig
 		public static boolean enableReactorMatrix = true;
 		public static boolean enableSolarPanel = true;
 		public static boolean enableTurbineBlade = true;
-
 	}
 }

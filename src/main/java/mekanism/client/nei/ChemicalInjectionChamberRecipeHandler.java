@@ -77,6 +77,18 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 			
 			return fuels;
 		}
+		else if(gasType == GasRegistry.getGas("glucose"))
+		{
+			List<ItemStack> fuels = new ArrayList<ItemStack>();
+			fuels.addAll(OreDictionary.getOres("dustSugar"));
+
+			for(GasTankTier tier : GasTankTier.values())
+			{
+				fuels.add(MekanismUtils.getFullGasTank(tier, GasRegistry.getGas("glucose")));
+			}
+
+			return fuels;
+		}
 
 		return new ArrayList<ItemStack>();
 	}

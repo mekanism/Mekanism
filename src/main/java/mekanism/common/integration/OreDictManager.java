@@ -34,6 +34,7 @@ import cpw.mods.fml.common.Optional.Method;
 public final class OreDictManager
 {
 	private static final List<String> minorCompat = Arrays.asList("Nickel", "Aluminum");
+	private static final List<String> siliconcompat = Arrays.asList("itemSilicon", "silicon");
 	private static List<String> osmiumcompat = new ArrayList<>();
 
 	
@@ -155,11 +156,6 @@ public final class OreDictManager
 							" B ", "ECE", "OOO", Character.valueOf('B'), Items.bucket, Character.valueOf('E'), MekanismItems.EnrichedAlloy, Character.valueOf('C'), new ItemStack(MekanismBlocks.BasicBlock, 1, 8), Character.valueOf('O'), "ingot" + s
 					}));
 				}
-				if (MekanismConfig.recipes.enableWalkieTalkie) {
-					CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.WalkieTalkie), new Object[]{
-							"  O", "SCS", " S ", Character.valueOf('O'), "ingot" + s, Character.valueOf('S'), "ingotSteel", Character.valueOf('C'), MekanismUtils.getControlCircuit(Tier.BaseTier.BASIC)
-					}));
-				}
 
 				if (MekanismConfig.recipes.enableElectroliticCore) {
 					CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.ElectrolyticCore), new Object[]{
@@ -204,12 +200,20 @@ public final class OreDictManager
 							"APA", "PTP", "APA", Character.valueOf('P'), "ingot" + s, Character.valueOf('A'), "alloyUltimate", Character.valueOf('T'), MekanismUtils.getEmptyGasTank(Tier.GasTankTier.ELITE)
 					}));
 				}
-				for (ItemStack ore : OreDictionary.getOres("ingot" + s)) {
+				if (!Mekanism.isSiliconLoaded) {
+					for (ItemStack ore : OreDictionary.getOres("ingot" + s)) {
+						RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("REDSTONE"), 10, StackUtils.size(ore, 1), new ItemStack(MekanismItems.ControlCircuit, 1, 0));
+					}
+				}
+			}
+		}
+		if (Mekanism.isSiliconLoaded) {
+			for (String s : siliconcompat) {
+				for (ItemStack ore : OreDictionary.getOres(s)) {
 					RecipeHandler.addMetallurgicInfuserRecipe(InfuseRegistry.get("REDSTONE"), 10, StackUtils.size(ore, 1), new ItemStack(MekanismItems.ControlCircuit, 1, 0));
 				}
 			}
 		}
-
 		for (String s : minorCompat) {
 			for (ItemStack ore : OreDictionary.getOres("ore" + s)) {
 				try {
@@ -381,6 +385,11 @@ public final class OreDictManager
 		for(ItemStack ore : OreDictionary.getOres("dustTin"))
 		{
 			InfuseRegistry.registerInfuseObject(ore, new InfuseObject(InfuseRegistry.get("TIN"), 50));
+		}
+
+		for(ItemStack ore : OreDictionary.getOres("dustLead"))
+		{
+			InfuseRegistry.registerInfuseObject(ore, new InfuseObject(InfuseRegistry.get("LEAD"), 50));
 		}
 
 		try {

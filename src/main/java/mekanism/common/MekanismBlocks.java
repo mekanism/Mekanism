@@ -41,11 +41,11 @@ public class MekanismBlocks
 	public static final Block BoundingBlock = (BlockBounding)new BlockBounding().setBlockName("BoundingBlock");
 	public static final Block GasTank = new BlockGasTank().setBlockName("GasTank");
 	public static final Block CardboardBox = new BlockCardboardBox().setBlockName("CardboardBox");
-	public static final Block PlasticBlock = new BlockPlastic().setBlockName("PlasticBlock");
-	public static final Block SlickPlasticBlock = new BlockPlastic().setBlockName("SlickPlasticBlock");
-	public static final Block GlowPlasticBlock = new BlockPlastic().setBlockName("GlowPlasticBlock");
-	public static final Block ReinforcedPlasticBlock = new BlockPlastic().setBlockName("ReinforcedPlasticBlock");
-	public static final Block RoadPlasticBlock = new BlockPlastic().setBlockName("RoadPlasticBlock");
+	public static final Block PlasticBlock = new BlockPlastic("normal").setBlockName("PlasticBlock");
+	public static final Block SlickPlasticBlock = new BlockPlastic("slick").setBlockName("SlickPlasticBlock");
+	public static final Block GlowPlasticBlock = new BlockPlastic("glow").setBlockName("GlowPlasticBlock");
+	public static final Block ReinforcedPlasticBlock = new BlockPlastic("reinforced").setBlockName("ReinforcedPlasticBlock");
+	public static final Block RoadPlasticBlock = new BlockPlastic("road").setBlockName("RoadPlasticBlock");
 	public static final Block PlasticFence = new BlockPlasticFence().setBlockName("PlasticFence");
 	public static final Block SaltBlock = new BlockSalt().setBlockName("SaltBlock");
 

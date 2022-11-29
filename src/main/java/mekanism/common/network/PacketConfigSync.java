@@ -33,9 +33,9 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(general.controlCircuitOreDict);
 			dataStream.writeBoolean(general.logPackets);
 			dataStream.writeBoolean(general.dynamicTankEasterEgg);
-			dataStream.writeBoolean(general.voiceServerEnabled);
 			dataStream.writeBoolean(general.cardboardSpawners);
 			dataStream.writeBoolean(general.spawnBabySkeletons);
+			dataStream.writeBoolean(general.enableBoPProgression);
 			dataStream.writeInt(general.obsidianTNTDelay);
 			dataStream.writeInt(general.obsidianTNTBlastRadius);
 			dataStream.writeInt(general.UPDATE_DELAY);
@@ -48,7 +48,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeInt(general.METHANE_BURN_TIME);
 			dataStream.writeDouble(general.ENERGY_PER_REDSTONE);
 			dataStream.writeDouble(general.DISASSEMBLER_USAGE);
-			dataStream.writeInt(general.VOICE_PORT);
 			dataStream.writeInt(general.maxUpgradeMultiplier);
 			dataStream.writeInt(general.energyUnit.ordinal());
 			dataStream.writeDouble(general.minerSilkMultiplier);
@@ -80,6 +79,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(general.EnablePoorOresCompat);
 			dataStream.writeBoolean(general.OreDictOsmium);
 			dataStream.writeBoolean(general.OreDictPlatinum);
+			dataStream.writeBoolean(general.enableSiliconCompat);
 			
 			for(MachineType type : MachineType.getValidMachines())
 			{
@@ -194,7 +194,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(recipes.enableTeleporterCore);
 			dataStream.writeBoolean(recipes.enableConfigurator);
 			dataStream.writeBoolean(recipes.enableNetworkReader);
-			dataStream.writeBoolean(recipes.enableWalkieTalkie);
 			dataStream.writeBoolean(recipes.enableJetpacks);
 			dataStream.writeBoolean(recipes.enableScubaSet);
 			dataStream.writeBoolean(recipes.enableFreeRunners);
@@ -205,27 +204,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(recipes.enableFlamethrower);
 			dataStream.writeBoolean(recipes.enableGaugeDropper);
 			dataStream.writeBoolean(recipes.enableTierInstaller);
-			dataStream.writeBoolean(recipes.enableHeatGenerator);
-			dataStream.writeBoolean(recipes.enableSolarGenerator);
-			dataStream.writeBoolean(recipes.enableGasGenerator);
-			dataStream.writeBoolean(recipes.enableBioGenerator);
-			dataStream.writeBoolean(recipes.enableAdvSolarGenerator);
-			dataStream.writeBoolean(recipes.enableWindGenerator);
-			dataStream.writeBoolean(recipes.enableTurbineRotor);
-			dataStream.writeBoolean(recipes.enableRotationalComplex);
-			dataStream.writeBoolean(recipes.enableElectromagneticCoil);
-			dataStream.writeBoolean(recipes.enableTurbineCasing);
-			dataStream.writeBoolean(recipes.enableTurbineValve);
-			dataStream.writeBoolean(recipes.enableTurbineVent);
-			dataStream.writeBoolean(recipes.enableSaturatingCondenser);
-			dataStream.writeBoolean(recipes.enableReactorController);
-			dataStream.writeBoolean(recipes.enableReactorFrame);
-			dataStream.writeBoolean(recipes.enableReactorPort);
-			dataStream.writeBoolean(recipes.enableReactorAdapter);
-			dataStream.writeBoolean(recipes.enableReactorGlass);
-			dataStream.writeBoolean(recipes.enableReactorMatrix);
-			dataStream.writeBoolean(recipes.enableSolarPanel);
-			dataStream.writeBoolean(recipes.enableTurbineBlade);
+
 
 			
 			Tier.writeConfig(dataStream);
@@ -246,9 +225,9 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.controlCircuitOreDict = dataStream.readBoolean();
 			general.logPackets = dataStream.readBoolean();
 			general.dynamicTankEasterEgg = dataStream.readBoolean();
-			general.voiceServerEnabled = dataStream.readBoolean();
 			general.cardboardSpawners = dataStream.readBoolean();
 			general.spawnBabySkeletons = dataStream.readBoolean();
+			general.enableBoPProgression = dataStream.readBoolean();
 			general.obsidianTNTDelay = dataStream.readInt();
 			general.obsidianTNTBlastRadius = dataStream.readInt();
 			general.UPDATE_DELAY = dataStream.readInt();
@@ -261,7 +240,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.METHANE_BURN_TIME = dataStream.readInt();
 			general.ENERGY_PER_REDSTONE = dataStream.readDouble();
 			general.DISASSEMBLER_USAGE = dataStream.readDouble();
-			general.VOICE_PORT = dataStream.readInt();
 			general.maxUpgradeMultiplier = dataStream.readInt();
 			general.energyUnit = EnergyType.values()[dataStream.readInt()];
 			general.minerSilkMultiplier = dataStream.readDouble();
@@ -293,6 +271,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.EnablePoorOresCompat = dataStream.readBoolean();
 			general.OreDictOsmium = dataStream.readBoolean();
 			general.OreDictPlatinum = dataStream.readBoolean();
+			general.enableSiliconCompat = dataStream.readBoolean();
 			
 			for(MachineType type : MachineType.getValidMachines())
 			{
@@ -407,7 +386,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			recipes.enableTeleporterCore = dataStream.readBoolean();
 			recipes.enableConfigurator = dataStream.readBoolean();
 			recipes.enableNetworkReader = dataStream.readBoolean();
-			recipes.enableWalkieTalkie = dataStream.readBoolean();
 			recipes.enableJetpacks = dataStream.readBoolean();
 			recipes.enableScubaSet = dataStream.readBoolean();
 			recipes.enableFreeRunners = dataStream.readBoolean();
@@ -418,27 +396,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			recipes.enableFlamethrower = dataStream.readBoolean();
 			recipes.enableGaugeDropper = dataStream.readBoolean();
 			recipes.enableTierInstaller = dataStream.readBoolean();
-			recipes.enableHeatGenerator = dataStream.readBoolean();
-			recipes.enableSolarGenerator = dataStream.readBoolean();
-			recipes.enableGasGenerator = dataStream.readBoolean();
-			recipes.enableBioGenerator = dataStream.readBoolean();
-			recipes.enableAdvSolarGenerator = dataStream.readBoolean();
-			recipes.enableWindGenerator = dataStream.readBoolean();
-			recipes.enableTurbineRotor = dataStream.readBoolean();
-			recipes.enableRotationalComplex = dataStream.readBoolean();
-			recipes.enableElectromagneticCoil = dataStream.readBoolean();
-			recipes.enableTurbineCasing = dataStream.readBoolean();
-			recipes.enableTurbineValve = dataStream.readBoolean();
-			recipes.enableTurbineVent = dataStream.readBoolean();
-			recipes.enableSaturatingCondenser = dataStream.readBoolean();
-			recipes.enableReactorController = dataStream.readBoolean();
-			recipes.enableReactorFrame = dataStream.readBoolean();
-			recipes.enableReactorPort = dataStream.readBoolean();
-			recipes.enableReactorAdapter = dataStream.readBoolean();
-			recipes.enableReactorGlass = dataStream.readBoolean();
-			recipes.enableReactorMatrix = dataStream.readBoolean();
-			recipes.enableSolarPanel = dataStream.readBoolean();
-			recipes.enableTurbineBlade = dataStream.readBoolean();
+
 			
 			Tier.readConfig(dataStream);
 	

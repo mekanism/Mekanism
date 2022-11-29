@@ -21,6 +21,7 @@ item.CompressedCarbon.name=Compressed Carbon
 item.CompressedRedstone.name=Compressed Redstone
 item.CompressedDiamond.name=Compressed Diamond
 item.CompressedObsidian.name=Compressed Obsidian
+item.CompressedEnder.name=Compressed Ender Amethyst
 item.PortableTeleporter.name=Portable Teleporter
 item.TeleportationCore.name=Teleportation Core
 item.Configurator.name=Configurator
@@ -33,6 +34,7 @@ item.Dictionary.name=Dictionary
 item.ElectrolyticCore.name=Electrolytic Core
 item.Sawdust.name=Sawdust
 item.Salt.name=Salt
+item.Yeast.name=Yeast
 item.BrineBucket.name=Brine Bucket
 item.LithiumBucket.name=Lithium Bucket
 item.HeavyWaterBucket.name=Heavy Water Bucket
@@ -47,7 +49,7 @@ item.PlaStick.name=PlaStick
 item.Substrate.name=Substrate
 item.Flamethrower.name=Flamethrower
 item.GaugeDropper.name=Gauge Dropper
-item.BioFuel.name=Bio Fuel
+item.BioFuel.name=Biomass
 item.CraftingFormula.name=Crafting Formula
 
 //Control Circuits
@@ -176,6 +178,8 @@ infuse.redstone=Redstone
 infuse.fungi=Fungi
 infuse.obsidian=Obsidian
 infuse.bio=Biomass
+infuse.ender=Ender
+infuse.lead=Lead
 
 //Ore Block
 tile.OreBlock.OsmiumOre.name=Osmium Ore
@@ -281,6 +285,8 @@ item.glowstoneIngot.name=Glowstone Ingot
 item.steelIngot.name=Steel Ingot
 item.copperIngot.name=Copper Ingot
 item.tinIngot.name=Tin Ingot
+item.lazuliIngot.name=Lazuli Ingot
+
 
 //Gasses
 gas.hydrogen=Hydrogen
@@ -301,6 +307,9 @@ gas.tritium=Tritium
 gas.lithium=Lithium
 gas.fusionFuelDT=D-T Fuel
 gas.methane=Methane
+gas.biomatter=BioGas
+gas.bioethanol=Ethanol Vapor
+gas.glucose=Glucose
 
 gas.iron=Iron Slurry
 gas.gold=Gold Slurry
@@ -341,6 +350,10 @@ fluid.deuterium=Liquid Deuterium
 fluid.tritium=Liquid Tritium
 fluid.fusionFuelDT=Liquid D-T Fuel
 fluid.steam=Steam
+fluid.biomatter=Liquid BioGas
+fluid.bioethanol=Ethanol
+fluid.glucose=Liquid Glucose
+
 
 //OreGas names
 oregas.iron=Iron Ore
@@ -843,7 +856,7 @@ tooltip.QuantumEntangloporter=A highly-advanced block capable of transmitting an
 tooltip.HeatGenerator=A generator that uses the heat of lava or other burnable resources to produce energy.
 tooltip.SolarGenerator=A generator that uses the power of the sun to produce energy.
 tooltip.GasGenerator=A generator that harnesses the molecular varying gasses to produce energy.
-tooltip.BioGenerator=A generator that burns organic materials of the world to produce energy.
+tooltip.BioGenerator=A generator that burns organic-based gases to produce energy.
 tooltip.AdvancedSolarGenerator=An advanced generator that directly absorbs the sun's rays with little loss to produce energy.
 tooltip.WindGenerator=A generator that uses the strength of the wind to produce energy, with greater efficiency at higher levels.
 tooltip.TurbineRotor=The steel rod that is used to house Turbine Blades within an Industrial Turbine.
@@ -989,6 +1002,9 @@ tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laser Focus Matrix
 gui.heatGenerator.fuel=Fuel
 gui.solarGenerator.sun=Sun
 gui.bioGenerator.bioFuel=BioFuel
+gui.bioGenerator.bioGas=BioGas
+gui.bioGenerator.bioEthanol=Ethanol
+
 gui.electrolyticSeparator.dump=Dump
 
 gui.passive=Air-Cooled
@@ -1093,3 +1109,5 @@ mekanism.configgui.ctgy.tools.tools=Tools Balance
 mekanism.configgui.ctgy.tools.general.tooltip=Settings regarding MekanismTools' general configuration
 mekanism.configgui.ctgy.tools.armor.tooltip=Settings regarding the protection values and balance of MekanismTools armor sets
 mekanism.configgui.ctgy.tools.tools.tooltip=Settings regarding the efficiency values and balance of MekanismTools tool sets
+
+mekanism.gui.noWind=No wind

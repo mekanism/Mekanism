@@ -1,5 +1,6 @@
 package mekanism.generators.common.inventory.container;
 
+import mekanism.api.gas.IGasItem;
 import mekanism.common.inventory.slot.SlotEnergy.SlotCharge;
 import mekanism.common.util.ChargeUtils;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
@@ -82,7 +83,7 @@ public class ContainerBioGenerator extends Container
 					}
 				}
 			}
-			else if(tileEntity.getFuel(slotStack) > 0 || isBiofuel(slotStack))
+			else if(slotStack.getItem() instanceof IGasItem)
 			{
 				if(slotID != 0 && slotID != 1)
 				{
@@ -140,19 +141,4 @@ public class ContainerBioGenerator extends Container
 		return stack;
 	}
 
-	private boolean isBiofuel(ItemStack itemStack)
-	{
-		if(FluidRegistry.isFluidRegistered("bioethanol"))
-		{
-			if(FluidContainerRegistry.getFluidForFilledItem(itemStack) != null)
-			{
-				if(FluidContainerRegistry.getFluidForFilledItem(itemStack).getFluid() == FluidRegistry.getFluid("bioethanol"))
-				{
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
 }

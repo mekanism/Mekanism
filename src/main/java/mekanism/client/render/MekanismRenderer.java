@@ -58,6 +58,10 @@ public class MekanismRenderer
 	public static IIcon[] colors = new IIcon[256];
 	
 	public static IIcon energyIcon;
+
+	public static IIcon biomatterIcon;
+	public static IIcon ethanolIcon;
+
 	public static IIcon heatIcon;
 	
 	public static float GAS_RENDER_BASE = 0.2F;
@@ -96,7 +100,11 @@ public class MekanismRenderer
 			
 			energyIcon = event.map.registerIcon("mekanism:liquid/LiquidEnergy");
 			heatIcon = event.map.registerIcon("mekanism:liquid/LiquidHeat");
-			
+
+			ethanolIcon = event.map.registerIcon("mekanism:liquid/LiquidEthanol");
+			biomatterIcon = event.map.registerIcon("mekanism:liquid/LiquidBiomatter");
+
+
 			GasRegistry.getGas("hydrogen").setIcon(event.map.registerIcon("mekanism:liquid/LiquidHydrogen"));
 			GasRegistry.getGas("oxygen").setIcon(event.map.registerIcon("mekanism:liquid/LiquidOxygen"));
 			GasRegistry.getGas("water").setIcon(event.map.registerIcon("mekanism:liquid/LiquidSteam"));
@@ -115,6 +123,11 @@ public class MekanismRenderer
 			GasRegistry.getGas("fusionFuelDT").setIcon(event.map.registerIcon("mekanism:liquid/LiquidDT"));
 			GasRegistry.getGas("lithium").setIcon(event.map.registerIcon("mekanism:liquid/LiquidLithium"));
 			GasRegistry.getGas("methane").setIcon(event.map.registerIcon("mekanism:liquid/LiquidMethane"));
+			GasRegistry.getGas("glucose").setIcon(event.map.registerIcon("mekanism:liquid/LiquidGlucose"));
+
+			GasRegistry.getGas("biomatter").setIcon(biomatterIcon);
+			GasRegistry.getGas("bioethanol").setIcon(ethanolIcon);
+
 
 			for(Gas gas : GasRegistry.getRegisteredGasses())
 			{
@@ -133,7 +146,7 @@ public class MekanismRenderer
 			FluidRegistry.getFluid("brine").setIcons(event.map.registerIcon("mekanism:liquid/LiquidBrine"));
 			FluidRegistry.getFluid("heavywater").setIcons(event.map.registerIcon("mekanism:liquid/LiquidHeavyWater"));
 			FluidRegistry.getFluid("steam").setIcons(event.map.registerIcon("mekanism:liquid/LiquidSteam"));
-			
+
 			for(InfuseType type : InfuseRegistry.getInfuseMap().values())
 			{
 				type.setIcon(event.map.registerIcon(type.textureLocation));

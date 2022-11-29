@@ -56,15 +56,17 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 			{
 				Gas gasType = null;
 				
-				if(fuelTank.getGas() != null)
+				if(fuelTank.getStored() > 0 && fuelTank.getGas() != null)
 				{
 					gasType = fuelTank.getGas().getGas();
 				}
 				else if(inventory[0] != null && inventory[0].getItem() instanceof IGasItem)
 				{
-					if(((IGasItem)inventory[0].getItem()).getGas(inventory[0]) != null)
+					GasStack gas = ((IGasItem)inventory[0].getItem()).getGas(inventory[0]);
+
+					if(gas != null && FuelHandler.getFuel(gas.getGas()) != null)
 					{
-						gasType = ((IGasItem)inventory[0].getItem()).getGas(inventory[0]).getGas();
+						gasType = gas.getGas();
 					}
 				}
 				
@@ -132,6 +134,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 		maxBurnTicks = 0;
 		generationRate = 0;
 		output = general.FROM_H2*2;
+		fuelTank.setGas(null);
 	}
 	
 	public int getToUse()
@@ -188,7 +191,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 	@Override
 	public boolean canOperate()
 	{
-		return (fuelTank.getStored() > 0 || burnTicks > 0) && MekanismUtils.canFunction(this);
+		return fuelTank.getStored() > 0 && MekanismUtils.canFunction(this);
 	}
 
 	/**

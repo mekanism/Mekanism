@@ -32,7 +32,6 @@ import mekanism.common.item.ItemScubaTank;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemShard;
 import mekanism.common.item.ItemUpgrade;
-import mekanism.common.item.ItemWalkieTalkie;
 import mekanism.common.multipart.ItemGlowPanel;
 import mekanism.common.multipart.ItemPartTransmitter;
 import net.minecraft.init.Items;
@@ -61,6 +60,7 @@ public class MekanismItems
 	public static final Item CompressedRedstone = new ItemMekanism().setUnlocalizedName("CompressedRedstone");
 	public static final Item CompressedDiamond = new ItemMekanism().setUnlocalizedName("CompressedDiamond");
 	public static final Item CompressedObsidian = new ItemMekanism().setUnlocalizedName("CompressedObsidian");
+	public static final Item CompressedEnder = new ItemMekanism().setUnlocalizedName("CompressedEnder");
 	public static final Item BrineBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("BrineBucket");
 	public static final Item LithiumBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("LithiumBucket");
 	public static final Item HeavyWaterBucket = new ItemMekanism().setMaxStackSize(1).setContainerItem(Items.bucket).setUnlocalizedName("HeavyWaterBucket");
@@ -76,7 +76,6 @@ public class MekanismItems
 	public static final ItemPortableTeleporter PortableTeleporter = (ItemPortableTeleporter)new ItemPortableTeleporter().setUnlocalizedName("PortableTeleporter");
 	public static final ItemConfigurator Configurator = (ItemConfigurator)new ItemConfigurator().setUnlocalizedName("Configurator");
 	public static final ItemNetworkReader NetworkReader = (ItemNetworkReader)new ItemNetworkReader().setUnlocalizedName("NetworkReader");
-	public static final Item WalkieTalkie = new ItemWalkieTalkie().setUnlocalizedName("WalkieTalkie");
 	public static final ItemElectricBow ElectricBow = (ItemElectricBow)new ItemElectricBow().setUnlocalizedName("ElectricBow");
 	public static final ItemFlamethrower Flamethrower = (ItemFlamethrower)new ItemFlamethrower().setUnlocalizedName("Flamethrower");
 	public static final ItemSeismicReader SeismicReader = (ItemSeismicReader)new ItemSeismicReader().setUnlocalizedName("SeismicReader");
@@ -98,6 +97,8 @@ public class MekanismItems
 	public static final Item Dust = new ItemDust();
 	public static final Item Sawdust = new ItemMekanism().setUnlocalizedName("Sawdust");
 	public static final Item Salt = new ItemMekanism().setUnlocalizedName("Salt");
+	public static final Item Yeast = new ItemMekanism().setUnlocalizedName("Yeast");
+
 	public static final Item Ingot = new ItemIngot();
 	public static final Item Clump = new ItemClump();
 	public static final Item DirtyDust = new ItemDirtyDust();
@@ -132,13 +133,13 @@ public class MekanismItems
 		GameRegistry.registerItem(CompressedRedstone, "CompressedRedstone");
 		GameRegistry.registerItem(CompressedDiamond, "CompressedDiamond");
 		GameRegistry.registerItem(CompressedObsidian, "CompressedObsidian");
+		GameRegistry.registerItem(CompressedEnder, "CompressedEnder");
 		GameRegistry.registerItem(PortableTeleporter, "PortableTeleporter");
 		GameRegistry.registerItem(TeleportationCore, "TeleportationCore");
 		GameRegistry.registerItem(Clump, "Clump");
 		GameRegistry.registerItem(DirtyDust, "DirtyDust");
 		GameRegistry.registerItem(Configurator, "Configurator");
 		GameRegistry.registerItem(NetworkReader, "NetworkReader");
-		GameRegistry.registerItem(WalkieTalkie, "WalkieTalkie");
 		GameRegistry.registerItem(Jetpack, "Jetpack");
 		GameRegistry.registerItem(Dictionary, "Dictionary");
 		GameRegistry.registerItem(GasMask, "GasMask");
@@ -148,6 +149,7 @@ public class MekanismItems
 		GameRegistry.registerItem(ElectrolyticCore, "ElectrolyticCore");
 		GameRegistry.registerItem(Sawdust, "Sawdust");
 		GameRegistry.registerItem(Salt, "Salt");
+		GameRegistry.registerItem(Yeast, "Yeast");
 		GameRegistry.registerItem(BrineBucket, "BrineBucket");
 		GameRegistry.registerItem(LithiumBucket, "LithiumBucket");
 		GameRegistry.registerItem(HeavyWaterBucket, "HeavyWaterBucket");
