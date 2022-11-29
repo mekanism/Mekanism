@@ -82,11 +82,6 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 			List<ItemStack> fuels = new ArrayList<ItemStack>();
 			fuels.addAll(OreDictionary.getOres("dustSugar"));
 
-			for(GasTankTier tier : GasTankTier.values())
-			{
-				fuels.add(MekanismUtils.getFullGasTank(tier, GasRegistry.getGas("glucose")));
-			}
-
 			return fuels;
 		}
 

@@ -1432,7 +1432,7 @@ public class Mekanism
 		GasRegistry.register(new Gas("methane")).registerFluid();
 		GasRegistry.register(new Gas("biomatter")).registerFluid();
 		GasRegistry.register(new Gas("bioethanol")).registerFluid();
-		GasRegistry.register(new Gas("glucose")).registerFluid();
+		GasRegistry.register(new Gas("glucose").setVisible(false));
 
 		FluidRegistry.registerFluid(new Fluid("heavyWater"));
 		FluidRegistry.registerFluid(new Fluid("steam").setGaseous(true));
