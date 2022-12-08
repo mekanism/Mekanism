@@ -402,7 +402,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             }
             //If we have a side only allow extracting if our connection allows it
             ConnectionType connectionType = getTransmitter().getConnectionType(side);
-            return connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PUSH;
+            return connectionType.canEmit();
         };
     }
 
@@ -414,7 +414,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             }
             //If we have a side only allow inserting if our connection allows it
             ConnectionType connectionType = getTransmitter().getConnectionType(side);
-            return connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PULL;
+            return connectionType.canReceive();
         };
     }
 }

@@ -146,19 +146,20 @@ public class TransporterStack {
 
     private void setPath(Level world, List<BlockPos> path, Path type, boolean updateFlowing) {
         //Make sure old path isn't null
-        if (updateFlowing && pathType != Path.NONE) {
+        if (updateFlowing && (pathType == null || pathType.hasTarget())) {
             //Only update the actual flowing stacks if we want to modify more than our current stack
             TransporterManager.remove(world, this);
         }
         pathToTarget = path;
         pathType = type;
-        if (updateFlowing && pathType != Path.NONE) {
+        if (updateFlowing && pathType != null && pathType.hasTarget()) {
             //Only update the actual flowing stacks if we want to modify more than our current stack
             TransporterManager.add(world, this);
         }
     }
 
     public boolean hasPath() {
+        //TODO: I don't think pathToTarget can ever be null?
         return pathToTarget != null && pathToTarget.size() >= 2;
     }
 
@@ -215,7 +216,7 @@ public class TransporterStack {
         if (newPath == null) {
             return false;
         }
-        if (newPath.type() == Path.HOME) {
+        if (newPath.type().isHome()) {
             idleDir = null;
         }
         setPath(transporter.getTileWorld(), newPath.path(), newPath.type(), true);
@@ -225,9 +226,10 @@ public class TransporterStack {
     }
 
     public boolean isFinal(LogisticalTransporterBase transporter) {
-        return pathToTarget.indexOf(transporter.getTilePos()) == (pathType == Path.NONE ? 0 : 1);
+        return pathToTarget.indexOf(transporter.getTilePos()) == (pathType.hasTarget() ? 1 : 0);
     }
 
+    //TODO - NETWORK: mark nullable?
     public BlockPos getNext(LogisticalTransporterBase transporter) {
         if (!transporter.isRemote()) {
             int index = pathToTarget.indexOf(transporter.getTilePos()) - 1;
@@ -309,6 +311,14 @@ public class TransporterStack {
 
         public static Path byIndexStatic(int index) {
             return MathUtils.getByIndexMod(PATHS, index);
+        }
+
+        public boolean hasTarget() {
+            return this != NONE;
+        }
+
+        public boolean isHome() {
+            return this == HOME;
         }
     }
 }

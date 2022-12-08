@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import mekanism.api.Coord4D;
-import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.ItemData;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
@@ -33,8 +32,9 @@ public class TransporterManager {
     }
 
     public static void remove(Level world, TransporterStack stack) {
-        if (stack.hasPath() && stack.getPathType() != Path.NONE) {
+        if (stack.hasPath() && stack.getPathType().hasTarget()) {
             flowingStacks.get(new Coord4D(stack.getDest(), world)).remove(stack);
+            //TODO: Should we remove the coord -> set from flowing stacks once all stacks in it is removed? Decent chance it would make sense to
         }
     }
 
@@ -205,7 +205,7 @@ public class TransporterManager {
         Set<TransporterStack> transporterStacks = flowingStacks.get(position);
         if (transporterStacks != null) {
             for (TransporterStack stack : transporterStacks) {
-                if (stack != null && stack.getPathType() != Path.NONE) {
+                if (stack != null && stack.getPathType().hasTarget()) {
                     //We start by simulating inserting the stack into the handler, regardless of if we
                     // are interacting with the same side of the target as the stack's path is taking.
                     // This is so that in cases where the item handler is shared (chests) or some of
