@@ -91,10 +91,9 @@ public class SoundHandler {
         switch (soundType) {
             case JETPACK -> startSound(world, uuid, jetpackSounds, JetpackSound::new);
             case SCUBA_MASK -> startSound(world, uuid, scubaMaskSounds, ScubaMaskSound::new);
-            case FLAMETHROWER ->
-                  //TODO: Evaluate at some point if there is a better way to do this
-                  // Currently it requests both play, except only one can ever play at once due to the shouldPlaySound method
-                  startSounds(world, uuid, flamethrowerSounds, FlamethrowerSound.Active::new, FlamethrowerSound.Idle::new);
+            //TODO: Evaluate at some point if there is a better way to do this
+            // Currently it requests both play, except only one can ever play at once due to the shouldPlaySound method
+            case FLAMETHROWER -> startSounds(world, uuid, flamethrowerSounds, FlamethrowerSound.Active::new, FlamethrowerSound.Idle::new);
             case GRAVITATIONAL_MODULATOR -> startSound(world, uuid, gravitationalModulationSounds, GravitationalModulationSound::new);
         }
     }

@@ -75,7 +75,7 @@ public class ModuleVeinMiningUnit implements ICustomModule<ModuleVeinMiningUnit>
 
     @Nullable
     @Override
-    public  <MODE extends IRadialMode> MODE getMode(IModule<ModuleVeinMiningUnit> module, ItemStack stack, RadialData<MODE> radialData) {
+    public <MODE extends IRadialMode> MODE getMode(IModule<ModuleVeinMiningUnit> module, ItemStack stack, RadialData<MODE> radialData) {
         if (radialData == RADIAL_DATA && MekanismConfig.gear.mekaToolExtendedMining.get()) {
             return (MODE) RADIAL_MODES.get(isExtended());
         }

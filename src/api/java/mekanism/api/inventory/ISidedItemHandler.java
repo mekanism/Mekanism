@@ -96,7 +96,8 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
      * <p>
      * Inserts an {@link ItemStack} into the given slot and return the remainder. The {@link ItemStack} <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
+     * Note: This behaviour is subtly different from
+     * {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
      * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param slot   Slot to insert into.
@@ -121,8 +122,8 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
      * <p>
      * Extracts an {@link ItemStack} from the given slot.
      * <p>
-     * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount} and {@link
-     * ItemStack#getMaxStackSize()}.
+     * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount} and
+     * {@link ItemStack#getMaxStackSize()}.
      * </p>
      *
      * @param slot   Slot to extract from.
@@ -177,8 +178,8 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
      * @param stack Stack to test with for validity
      * @param side  The side we are interacting with the handler from (null for internal).
      *
-     * @return true if the slot can accept the {@link ItemStack}, not considering the current state of the inventory. false if the slot can never insert the {@link
-     * ItemStack} in any situation.
+     * @return true if the slot can accept the {@link ItemStack}, not considering the current state of the inventory. false if the slot can never insert the
+     * {@link ItemStack} in any situation.
      */
     boolean isItemValid(int slot, ItemStack stack, @Nullable Direction side);
 

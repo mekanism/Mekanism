@@ -8,7 +8,6 @@ import net.minecraft.nbt.CompoundTag;
  * Integer implementation of {@link ModuleConfigData}.
  *
  * @apiNote Currently the only creatable version of this is via {@link ModuleConfigData} as there is currently no generic support for integers in the module screen.
- *
  * @since 10.3.3
  */
 @NothingNullByDefault

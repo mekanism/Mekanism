@@ -22,7 +22,7 @@ public class ModuleBlastingUnit implements ICustomModule<ModuleBlastingUnit> {
     @Override
     public void init(IModule<ModuleBlastingUnit> module, ModuleConfigItemCreator configItemCreator) {
         blastRadius = configItemCreator.createConfigItem("blast_radius", MekanismLang.MODULE_BLAST_RADIUS,
-                new ModuleEnumData<>(BlastRadius.LOW, module.getInstalledCount() + 1));
+              new ModuleEnumData<>(BlastRadius.LOW, module.getInstalledCount() + 1));
     }
 
     public int getBlastRadius() {

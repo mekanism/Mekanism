@@ -46,8 +46,8 @@ public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreato
     /**
      * {@inheritDoc}
      *
-     * @implNote Converts a stream of ingredients into a single ingredient by converting the stream to an array and calling {@link
-     * #createMulti(PigmentStackIngredient[])}.
+     * @implNote Converts a stream of ingredients into a single ingredient by converting the stream to an array and calling
+     * {@link #createMulti(PigmentStackIngredient[])}.
      */
     @Override
     public PigmentStackIngredient from(Stream<PigmentStackIngredient> ingredients) {

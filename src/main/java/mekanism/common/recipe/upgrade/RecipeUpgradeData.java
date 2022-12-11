@@ -137,7 +137,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             case SLURRY -> getContainerUpgradeData(stack, NBTConstants.SLURRY_TANKS, SlurryRecipeData::new);
             case ITEM -> {
                 ListTag inventory = ((ISustainedInventory) item).getInventory(stack);
-                yield  inventory == null || inventory.isEmpty() ? null : new ItemRecipeData(inventory);
+                yield inventory == null || inventory.isEmpty() ? null : new ItemRecipeData(inventory);
             }
             case LOCK -> {
                 BinMekanismInventory inventory = BinMekanismInventory.create(stack);
@@ -166,7 +166,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                     long[] storedItems = ItemDataUtils.getLongArray(stack, NBTConstants.QIO_ITEM_MAP);
                     if (storedItems.length % 3 == 0) {
                         //Ensure we have valid data and not some unknown thing
-                        yield  new QIORecipeData(data, storedItems);
+                        yield new QIORecipeData(data, storedItems);
                     }
                 }
                 yield null;

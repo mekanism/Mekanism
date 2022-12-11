@@ -82,8 +82,8 @@ public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      *
      * @return {@code true} if there is a match or if inputA is not empty and inputB is empty.
      *
-     * @apiNote If you are trying to insert inputA and already have inputB in the machine call this method, otherwise call {@link #containsInputBA(Level, Object,
-     * Object)}.
+     * @apiNote If you are trying to insert inputA and already have inputB in the machine call this method, otherwise call
+     * {@link #containsInputBA(Level, Object, Object)}.
      */
     public boolean containsInputAB(@Nullable Level world, INPUT_A inputA, INPUT_B inputB) {
         return containsPairing(world, inputA, inputAExtractor, cacheA, complexIngredientA, inputB, inputBExtractor, cacheB, complexIngredientB);
@@ -99,8 +99,8 @@ public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      *
      * @return {@code true} if there is a match or if inputB is not empty and inputA is empty.
      *
-     * @apiNote If you are trying to insert inputA and already have inputA in the machine call this method, otherwise call {@link #containsInputAB(Level, Object,
-     * Object)}.
+     * @apiNote If you are trying to insert inputA and already have inputA in the machine call this method, otherwise call
+     * {@link #containsInputAB(Level, Object, Object)}.
      */
     public boolean containsInputBA(@Nullable Level world, INPUT_A inputA, INPUT_B inputB) {
         return containsPairing(world, inputB, inputBExtractor, cacheB, complexIngredientB, inputA, inputAExtractor, cacheA, complexIngredientA);

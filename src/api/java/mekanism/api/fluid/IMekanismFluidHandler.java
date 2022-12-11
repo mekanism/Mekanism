@@ -30,8 +30,8 @@ public interface IMekanismFluidHandler extends ISidedFluidHandler, IContentsList
      *
      * @param side The side we are interacting with the handler from (null for internal).
      *
-     * @return The list of all IExtendedFluidTanks that this {@link IMekanismFluidHandler} contains for the given side. If there are no tanks for the side or {@link
-     * #canHandleFluid()} is false then it returns an empty list.
+     * @return The list of all IExtendedFluidTanks that this {@link IMekanismFluidHandler} contains for the given side. If there are no tanks for the side or
+     * {@link #canHandleFluid()} is false then it returns an empty list.
      *
      * @implNote When side is null (an internal request), this method <em>MUST</em> return all tanks in the handler. Additionally, if {@link #canHandleFluid()} is false,
      * this <em>MUST</em> return an empty list.

@@ -461,8 +461,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Divides this {@link FloatingLong} by the given {@link FloatingLong} rounded down to an integer value. This gets clamped at the upper bound of {@link
-     * Integer#MAX_VALUE} rather than overflowing.
+     * Divides this {@link FloatingLong} by the given {@link FloatingLong} rounded down to an integer value. This gets clamped at the upper bound of
+     * {@link Integer#MAX_VALUE} rather than overflowing.
      *
      * @param toDivide The {@link FloatingLong} to divide by.
      *
@@ -475,8 +475,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Adds the given {@link FloatingLong} to this {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of {@link
-     * FloatingLong#MAX_VALUE} rather than overflowing.
+     * Adds the given {@link FloatingLong} to this {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of
+     * {@link FloatingLong#MAX_VALUE} rather than overflowing.
      *
      * @param toAdd The {@link FloatingLong} to add.
      *
@@ -487,8 +487,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Helper method to add an unsigned long primitive to this {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of {@link
-     * FloatingLong#MAX_VALUE} rather than overflowing.
+     * Helper method to add an unsigned long primitive to this {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of
+     * {@link FloatingLong#MAX_VALUE} rather than overflowing.
      *
      * @param toAdd The value to add represented as an unsigned long.
      *
@@ -499,8 +499,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Helper method to add a double primitive to this {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of {@link
-     * FloatingLong#MAX_VALUE} rather than overflowing.
+     * Helper method to add a double primitive to this {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of
+     * {@link FloatingLong#MAX_VALUE} rather than overflowing.
      *
      * @param toAdd The value to add, must be greater than or equal to zero.
      *
@@ -516,8 +516,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Subtracts the given {@link FloatingLong} from this {@link FloatingLong} and returns the result in a new object. This gets clamped at the lower bound of {@link
-     * FloatingLong#ZERO} rather than becoming negative.
+     * Subtracts the given {@link FloatingLong} from this {@link FloatingLong} and returns the result in a new object. This gets clamped at the lower bound of
+     * {@link FloatingLong#ZERO} rather than becoming negative.
      *
      * @param toSubtract The {@link FloatingLong} to subtract.
      *
@@ -540,8 +540,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Helper method to subtract a double primitive from this {@link FloatingLong} and returns the result in a new object. This gets clamped at the lower bound of {@link
-     * FloatingLong#ZERO} rather than becoming negative.
+     * Helper method to subtract a double primitive from this {@link FloatingLong} and returns the result in a new object. This gets clamped at the lower bound of
+     * {@link FloatingLong#ZERO} rather than becoming negative.
      *
      * @param toSubtract The value to subtract, must be greater than or equal to zero.
      *
@@ -557,8 +557,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Multiplies the given {@link FloatingLong} with this {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of {@link
-     * FloatingLong#MAX_VALUE} rather than overflowing.
+     * Multiplies the given {@link FloatingLong} with this {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of
+     * {@link FloatingLong#MAX_VALUE} rather than overflowing.
      *
      * @param toMultiply The {@link FloatingLong} to multiply by.
      *
@@ -581,8 +581,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Helper method to multiple a double primitive with this {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of {@link
-     * FloatingLong#MAX_VALUE} rather than overflowing.
+     * Helper method to multiple a double primitive with this {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of
+     * {@link FloatingLong#MAX_VALUE} rather than overflowing.
      *
      * @param toMultiply The value to multiply by, must be greater than or equal to zero.
      *
@@ -598,8 +598,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Divides this {@link FloatingLong} by the given {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of {@link
-     * FloatingLong#MAX_VALUE} rather than overflowing.
+     * Divides this {@link FloatingLong} by the given {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of
+     * {@link FloatingLong#MAX_VALUE} rather than overflowing.
      *
      * @param toDivide The {@link FloatingLong} to divide by.
      *
@@ -626,8 +626,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Helper method to divide this {@link FloatingLong} by a double primitive and returns the result in a new object. This gets clamped at the upper bound of {@link
-     * FloatingLong#MAX_VALUE} rather than overflowing.
+     * Helper method to divide this {@link FloatingLong} by a double primitive and returns the result in a new object. This gets clamped at the upper bound of
+     * {@link FloatingLong#MAX_VALUE} rather than overflowing.
      *
      * @param toDivide The value to divide by, must be greater than zero.
      *
@@ -644,8 +644,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Divides this {@link FloatingLong} by the given {@link FloatingLong} and returns the result as a double. This gets clamped at the upper bound of {@link
-     * FloatingLong#MAX_VALUE} rather than overflowing. Additionally, if the value to divide by is zero, this returns {@code 1}
+     * Divides this {@link FloatingLong} by the given {@link FloatingLong} and returns the result as a double. This gets clamped at the upper bound of
+     * {@link FloatingLong#MAX_VALUE} rather than overflowing. Additionally, if the value to divide by is zero, this returns {@code 1}
      *
      * @param toDivide The {@link FloatingLong} to divide by.
      *
@@ -686,8 +686,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      *
      * @return the smallest {@link FloatingLong} that is greater than or equal to this {@link FloatingLong}, and is equal to a mathematical unsigned long.
      *
-     * @implNote If this {@link FloatingLong} is already equal to a mathematical unsigned long, then the result is the same as the argument. Additionally, if this {@link
-     * FloatingLong} is larger than the maximum unsigned long, this instead returns a {@link FloatingLong} representing the maximum unsigned long.
+     * @implNote If this {@link FloatingLong} is already equal to a mathematical unsigned long, then the result is the same as the argument. Additionally, if this
+     * {@link FloatingLong} is larger than the maximum unsigned long, this instead returns a {@link FloatingLong} representing the maximum unsigned long.
      */
     public FloatingLong ceil() {
         if (decimal == 0) {

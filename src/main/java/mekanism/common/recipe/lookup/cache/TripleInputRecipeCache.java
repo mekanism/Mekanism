@@ -103,8 +103,8 @@ public abstract class TripleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      *
      * @return {@code true} if there is a match or if inputA is not empty and inputB and inputC are both empty.
      *
-     * @apiNote If you are trying to insert inputA call this method, otherwise call {@link #containsInputBAC(Level, Object, Object, Object)} or {@link
-     * #containsInputCAB(Level, Object, Object, Object)} depending on which input is trying to be inserted.
+     * @apiNote If you are trying to insert inputA call this method, otherwise call {@link #containsInputBAC(Level, Object, Object, Object)} or
+     * {@link #containsInputCAB(Level, Object, Object, Object)} depending on which input is trying to be inserted.
      */
     public boolean containsInputABC(@Nullable Level world, INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
         return containsGrouping(world, inputA, inputAExtractor, cacheA, complexIngredientA, inputB, inputBExtractor, cacheB, complexIngredientB,
@@ -123,8 +123,8 @@ public abstract class TripleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      *
      * @return {@code true} if there is a match or if inputB is not empty and inputA and inputC are both empty.
      *
-     * @apiNote If you are trying to insert inputB call this method, otherwise call {@link #containsInputABC(Level, Object, Object, Object)} or {@link
-     * #containsInputCAB(Level, Object, Object, Object)} depending on which input is trying to be inserted.
+     * @apiNote If you are trying to insert inputB call this method, otherwise call {@link #containsInputABC(Level, Object, Object, Object)} or
+     * {@link #containsInputCAB(Level, Object, Object, Object)} depending on which input is trying to be inserted.
      */
     public boolean containsInputBAC(@Nullable Level world, INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
         return containsGrouping(world, inputB, inputBExtractor, cacheB, complexIngredientB, inputA, inputAExtractor, cacheA, complexIngredientA,
@@ -143,8 +143,8 @@ public abstract class TripleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      *
      * @return {@code true} if there is a match or if inputC is not empty and inputA and inputB are both empty.
      *
-     * @apiNote If you are trying to insert inputC call this method, otherwise call {@link #containsInputABC(Level, Object, Object, Object)} or {@link
-     * #containsInputBAC(Level, Object, Object, Object)} depending on which input is trying to be inserted.
+     * @apiNote If you are trying to insert inputC call this method, otherwise call {@link #containsInputABC(Level, Object, Object, Object)} or
+     * {@link #containsInputBAC(Level, Object, Object, Object)} depending on which input is trying to be inserted.
      */
     public boolean containsInputCAB(@Nullable Level world, INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
         return containsGrouping(world, inputC, inputCExtractor, cacheC, complexIngredientC, inputA, inputAExtractor, cacheA, complexIngredientA,

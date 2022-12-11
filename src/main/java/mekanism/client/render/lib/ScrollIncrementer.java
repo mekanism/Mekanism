@@ -16,7 +16,7 @@ public class ScrollIncrementer {
 
     private long getTime() {
         ClientLevel level = Minecraft.getInstance().level;
-        return level == null ? - 1 : level.getGameTime();
+        return level == null ? -1 : level.getGameTime();
     }
 
     public int scroll(double delta) {

@@ -68,8 +68,8 @@ public class CrTFloatingLong {
     }
 
     /**
-     * Adds the given {@link FloatingLong} to this {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of {@link
-     * FloatingLong#MAX_VALUE} rather than overflowing.
+     * Adds the given {@link FloatingLong} to this {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of
+     * {@link FloatingLong#MAX_VALUE} rather than overflowing.
      *
      * @param toAdd The {@link FloatingLong} to add.
      *
@@ -82,8 +82,8 @@ public class CrTFloatingLong {
     }
 
     /**
-     * Subtracts the given {@link FloatingLong} from this {@link FloatingLong} and returns the result in a new object. This gets clamped at the lower bound of {@link
-     * FloatingLong#ZERO} rather than becoming negative.
+     * Subtracts the given {@link FloatingLong} from this {@link FloatingLong} and returns the result in a new object. This gets clamped at the lower bound of
+     * {@link FloatingLong#ZERO} rather than becoming negative.
      *
      * @param toSubtract The {@link FloatingLong} to subtract.
      *
@@ -96,8 +96,8 @@ public class CrTFloatingLong {
     }
 
     /**
-     * Multiplies the given {@link FloatingLong} with this {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of {@link
-     * FloatingLong#MAX_VALUE} rather than overflowing.
+     * Multiplies the given {@link FloatingLong} with this {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of
+     * {@link FloatingLong#MAX_VALUE} rather than overflowing.
      *
      * @param toMultiply The {@link FloatingLong} to multiply by.
      *
@@ -110,8 +110,8 @@ public class CrTFloatingLong {
     }
 
     /**
-     * Divides this {@link FloatingLong} by the given {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of {@link
-     * FloatingLong#MAX_VALUE} rather than overflowing.
+     * Divides this {@link FloatingLong} by the given {@link FloatingLong} and returns the result in a new object. This gets clamped at the upper bound of
+     * {@link FloatingLong#MAX_VALUE} rather than overflowing.
      *
      * @param toDivide The {@link FloatingLong} to divide by.
      *
@@ -188,8 +188,8 @@ public class CrTFloatingLong {
      *
      * @return the smallest {@link FloatingLong} that is greater than or equal to this {@link FloatingLong}, and is equal to a mathematical unsigned long.
      *
-     * @implNote If this {@link FloatingLong} is already equal to a mathematical unsigned long, then the result is the same as the argument. Additionally, if this {@link
-     * FloatingLong} is larger than the maximum unsigned long, this instead returns a {@link FloatingLong} representing the maximum unsigned long.
+     * @implNote If this {@link FloatingLong} is already equal to a mathematical unsigned long, then the result is the same as the argument. Additionally, if this
+     * {@link FloatingLong} is larger than the maximum unsigned long, this instead returns a {@link FloatingLong} representing the maximum unsigned long.
      */
     @ZenCodeType.Method
     public static FloatingLong ceil(FloatingLong _this) {

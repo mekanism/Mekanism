@@ -6,7 +6,6 @@ import mekanism.api.security.SecurityMode;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -20,6 +19,7 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
+import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
@@ -385,9 +385,7 @@ public class PacketGuiInteract implements IMekanismPacket {
             if (tile instanceof TileEntityDimensionalStabilizer stabilizer) {
                 stabilizer.toggleChunkLoadingAt(extra / TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER, extra % TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER);
             }
-        })
-
-        ;
+        });
 
         private final TriConsumer<TileEntityMekanism, Player, Integer> consumerForTile;
 

@@ -15,8 +15,8 @@ public class CrTPigmentBuilder extends CrTChemicalBuilder<Pigment, PigmentBuilde
     /**
      * Creates a builder for registering a custom {@link Pigment}.
      *
-     * @param textureLocation If present the {@link ResourceLocation} representing the texture this {@link Pigment} will use, otherwise defaults to our default {@link
-     *                        Pigment} texture.
+     * @param textureLocation If present the {@link ResourceLocation} representing the texture this {@link Pigment} will use, otherwise defaults to our default
+     *                        {@link Pigment} texture.
      *
      * @return A builder for creating a custom {@link Pigment}.
      *

@@ -62,8 +62,8 @@ public interface IRadiationManager {
     double getRadiationLevel(Coord4D coord);
 
     /**
-     * Get the radiation level (in Sv/h) at an entity's location. To get the radiation level of an entity use {@link
-     * mekanism.api.radiation.capability.IRadiationEntity#getRadiation()}.
+     * Get the radiation level (in Sv/h) at an entity's location. To get the radiation level of an entity use
+     * {@link mekanism.api.radiation.capability.IRadiationEntity#getRadiation()}.
      *
      * @param entity - Entity to get the radiation level at.
      *
@@ -117,8 +117,8 @@ public interface IRadiationManager {
      * @param gasHandler       Gas handler to process the tanks of.
      * @param clearRadioactive {@code true} to clear any gas tanks that have radioactive substances.
      *
-     * @throws RuntimeException if {@code clearRadioactive = true} and the passed in handler does not expect to have {@link IGasHandler#setChemicalInTank(int,
-     *                          ChemicalStack)} called wth an empty stack.
+     * @throws RuntimeException if {@code clearRadioactive = true} and the passed in handler does not expect to have
+     *                          {@link IGasHandler#setChemicalInTank(int, ChemicalStack)} called wth an empty stack.
      */
     void dumpRadiation(Coord4D coord, IGasHandler gasHandler, boolean clearRadioactive);
 

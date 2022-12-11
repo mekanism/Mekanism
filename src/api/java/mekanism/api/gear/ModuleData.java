@@ -101,6 +101,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
 
     /**
      * Gets the mask of {@link ExclusiveFlag} for this module type.
+     *
      * @since 10.2.3
      */
     public final int getExclusiveFlags() {
@@ -247,6 +248,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
          * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
          *
          * @param mask {@link ExclusiveFlag} mask
+         *
          * @since 10.2.3
          */
         public ModuleDataBuilder<MODULE> exclusive(int mask) {
@@ -258,6 +260,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
          * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
          *
          * @param flags {@link ExclusiveFlag} flags for the exclusive mask
+         *
          * @since 10.2.3
          */
         public ModuleDataBuilder<MODULE> exclusive(ExclusiveFlag... flags) {
@@ -311,6 +314,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
 
     /**
      * Enum of flags for module exclusivity channels
+     *
      * @since 10.2.3
      */
     public enum ExclusiveFlag {

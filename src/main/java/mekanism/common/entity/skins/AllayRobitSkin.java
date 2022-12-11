@@ -14,7 +14,7 @@ public class AllayRobitSkin extends RobitSkin {
     private static final ResourceLocation MODEL = Mekanism.rl("item/robit_allay");
 
     public AllayRobitSkin() {
-        super(Mekanism.rl( "allay"), Mekanism.rl("allay2"));
+        super(Mekanism.rl("allay"), Mekanism.rl("allay2"));
     }
 
     @Nullable

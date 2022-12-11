@@ -60,8 +60,8 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     public Set<BlockPos> locations = new ObjectOpenHashSet<>();
     /**
      * @apiNote This set is only used for purposes of caching all known valid inner blocks of a multiblock structure, for use in checking if we need to revalidate the
-     * multiblock when something changes, cases we want to skip are inner nodes just changing state (for example, super heating elements being activated) This set is
-     * not synced or checked anywhere (for things like equals) as it is only used on the server and isn't part of the structure's information. It also is not the most
+     * multiblock when something changes, cases we want to skip are inner nodes just changing state (for example, super heating elements being activated) This set is not
+     * synced or checked anywhere (for things like equals) as it is only used on the server and isn't part of the structure's information. It also is not the most
      * accurate of checks that get done against this as there is no way to tell if the state actually changed or if the block changed entirely, but assuming no one is
      * replacing the blocks inside a multiblock (which is unsupported) it will handle it fine, and we can easily special-case it becoming air as having been "broken"
      */

@@ -166,7 +166,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
     }
 
     @ComputerMethod
-    private boolean canSeeSun(){
+    private boolean canSeeSun() {
         return WorldUtils.canSeeSun(level, worldPosition.above());
     }
 

@@ -115,8 +115,8 @@ public interface ISidedFluidHandler extends IExtendedFluidHandler {
      * @param tank  Tank to query.
      * @param stack Stack to test with for validity @param side   The side we are interacting with the handler from (null for internal).
      *
-     * @return true if the tank can accept the {@link FluidStack}, not considering the current state of the tank. false if the tank can never support the given {@link
-     * FluidStack} in any situation.
+     * @return true if the tank can accept the {@link FluidStack}, not considering the current state of the tank. false if the tank can never support the given
+     * {@link FluidStack} in any situation.
      */
     boolean isFluidValid(int tank, FluidStack stack, @Nullable Direction side);
 
@@ -131,8 +131,8 @@ public interface ISidedFluidHandler extends IExtendedFluidHandler {
      * <p>
      * Inserts a {@link FluidStack} into a given tank and return the remainder. The {@link FluidStack} <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly <strong>different</strong> from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(FluidStack,
-     * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
+     * Note: This behaviour is subtly <strong>different</strong> from
+     * {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(FluidStack, net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param tank   Tank to insert to.
      * @param stack  {@link FluidStack} to insert. This must not be modified by the tank.
@@ -179,8 +179,8 @@ public interface ISidedFluidHandler extends IExtendedFluidHandler {
      * Inserts a {@link FluidStack} into this handler, distribution is left <strong>entirely</strong> to this {@link IExtendedFluidHandler}. The {@link FluidStack}
      * <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly <strong>different</strong> from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(FluidStack,
-     * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
+     * Note: This behaviour is subtly <strong>different</strong> from
+     * {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(FluidStack, net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param stack  {@link FluidStack} to insert. This must not be modified by the handler.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}

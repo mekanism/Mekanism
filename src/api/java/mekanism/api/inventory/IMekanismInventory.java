@@ -30,8 +30,8 @@ public interface IMekanismInventory extends ISidedItemHandler, IContentsListener
      *
      * @param side The side we are interacting with the handler from (null for internal).
      *
-     * @return The list of all IInventorySlots that this {@link IMekanismInventory} contains for the given side. If there are no slots for the side or {@link
-     * #hasInventory()} is false then it returns an empty list.
+     * @return The list of all IInventorySlots that this {@link IMekanismInventory} contains for the given side. If there are no slots for the side or
+     * {@link #hasInventory()} is false then it returns an empty list.
      *
      * @implNote When side is null (an internal request), this method <em>MUST</em> return all slots in the inventory. This will be used by the container generating code
      * to add all the proper slots that are needed. Additionally, if {@link #hasInventory()} is false, this <em>MUST</em> return an empty list.

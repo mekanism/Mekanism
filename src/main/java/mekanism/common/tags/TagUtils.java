@@ -50,7 +50,7 @@ public class TagUtils {
         return tagNames(manager(registry), element);
     }
 
-    public static <TYPE > Set<ResourceLocation> tagNames(ITagManager<TYPE> tagManager, TYPE element) {
+    public static <TYPE> Set<ResourceLocation> tagNames(ITagManager<TYPE> tagManager, TYPE element) {
         return tagNames(tagsStream(tagManager, element));
     }
 

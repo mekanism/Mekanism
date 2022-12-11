@@ -130,7 +130,8 @@ public interface ISidedChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STAC
      * <p>
      * Inserts a {@link STACK} into a given tank and return the remainder. The {@link STACK} <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
+     * Note: This behaviour is subtly different from
+     * {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
      * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param tank   Tank to insert to.
@@ -178,7 +179,8 @@ public interface ISidedChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STAC
      * Inserts a {@link STACK} into this handler, distribution is left <strong>entirely</strong> to this {@link IChemicalHandler}. The {@link STACK}
      * <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
+     * Note: This behaviour is subtly different from
+     * {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
      * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param stack  {@link STACK} to insert. This must not be modified by the handler.

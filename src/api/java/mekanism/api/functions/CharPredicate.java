@@ -4,8 +4,8 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
- * Represents a predicate (boolean-valued function) of one {@code char}-valued argument. This is the {@code char}-consuming primitive type specialization of {@link
- * Predicate}.
+ * Represents a predicate (boolean-valued function) of one {@code char}-valued argument. This is the {@code char}-consuming primitive type specialization of
+ * {@link Predicate}.
  *
  * <p>This is a <a href="package-summary.html">functional interface</a> whose functional method is {@link #test(char)}.
  *

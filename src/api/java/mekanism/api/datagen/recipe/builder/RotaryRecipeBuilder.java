@@ -39,8 +39,8 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
      * @param fluidInput Input.
      * @param gasOutput  Output.
      *
-     * @apiNote It is recommended to use {@link #rotary(FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this method in combination with {@link
-     * #rotary(GasStackIngredient, FluidStack)} if the conversion will be possible in both directions.
+     * @apiNote It is recommended to use {@link #rotary(FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this method in combination with
+     * {@link #rotary(GasStackIngredient, FluidStack)} if the conversion will be possible in both directions.
      */
     public static RotaryRecipeBuilder rotary(FluidStackIngredient fluidInput, GasStack gasOutput) {
         if (gasOutput.isEmpty()) {
@@ -55,8 +55,8 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
      * @param gasInput    Input.
      * @param fluidOutput Output.
      *
-     * @apiNote It is recommended to use {@link #rotary(FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this method in combination with {@link
-     * #rotary(FluidStackIngredient, GasStack)} if the conversion will be possible in both directions.
+     * @apiNote It is recommended to use {@link #rotary(FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this method in combination with
+     * {@link #rotary(FluidStackIngredient, GasStack)} if the conversion will be possible in both directions.
      */
     public static RotaryRecipeBuilder rotary(GasStackIngredient gasInput, FluidStack fluidOutput) {
         if (fluidOutput.isEmpty()) {

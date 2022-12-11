@@ -230,8 +230,8 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
     }
 
     /**
-     * Sets the callback used to post-process the number of operations this {@link CachedRecipe} calculated it can perform in {@link
-     * #calculateOperationsThisTick(OperationTracker)} and to add any {@link RecipeError}s that occur during post-processing.
+     * Sets the callback used to post-process the number of operations this {@link CachedRecipe} calculated it can perform in
+     * {@link #calculateOperationsThisTick(OperationTracker)} and to add any {@link RecipeError}s that occur during post-processing.
      * <p>
      * It can be assumed that when {@code postProcessOperations} is called {@link OperationTracker#shouldContinueChecking()} is {@code true}.
      *
@@ -389,8 +389,8 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
 
     /**
      * Calculates the number of operations this {@link CachedRecipe} can perform this tick based on the various inputs available to the recipe and space left in the
-     * outputs and updates the given operation tracker. If this {@link CachedRecipe} runs into any problems while processing it should also track the corresponding {@link
-     * RecipeError} using {@link OperationTracker#addError(RecipeError)}.
+     * outputs and updates the given operation tracker. If this {@link CachedRecipe} runs into any problems while processing it should also track the corresponding
+     * {@link RecipeError} using {@link OperationTracker#addError(RecipeError)}.
      *
      * @param tracker Tracker of current errors and max operations.
      *

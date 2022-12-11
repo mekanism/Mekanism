@@ -29,9 +29,10 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, Object, Object, Object)}, {@link TripleInputRecipeCache#containsInputBAC(Level, Object, Object,
-     * Object)}, and {@link TripleInputRecipeCache#containsInputCAB(Level, Object, Object, Object)} for more details about when this method should be called versus when
-     * {@link #containsRecipeBAC(Object, Object, Object)} or {@link #containsRecipeCAB(Object, Object, Object)} should be called.
+     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, Object, Object, Object)},
+     * {@link TripleInputRecipeCache#containsInputBAC(Level, Object, Object, Object)}, and {@link TripleInputRecipeCache#containsInputCAB(Level, Object, Object, Object)}
+     * for more details about when this method should be called versus when {@link #containsRecipeBAC(Object, Object, Object)} or
+     * {@link #containsRecipeCAB(Object, Object, Object)} should be called.
      */
     default boolean containsRecipeABC(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
         return getRecipeType().getInputCache().containsInputABC(getHandlerWorld(), inputA, inputB, inputC);
@@ -46,9 +47,10 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, Object, Object, Object)}, {@link TripleInputRecipeCache#containsInputBAC(Level, Object, Object,
-     * Object)}, and {@link TripleInputRecipeCache#containsInputCAB(Level, Object, Object, Object)} for more details about when this method should be called versus when
-     * {@link #containsRecipeABC(Object, Object, Object)} or {@link #containsRecipeCAB(Object, Object, Object)} should be called.
+     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, Object, Object, Object)},
+     * {@link TripleInputRecipeCache#containsInputBAC(Level, Object, Object, Object)}, and {@link TripleInputRecipeCache#containsInputCAB(Level, Object, Object, Object)}
+     * for more details about when this method should be called versus when {@link #containsRecipeABC(Object, Object, Object)} or
+     * {@link #containsRecipeCAB(Object, Object, Object)} should be called.
      */
     default boolean containsRecipeBAC(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
         return getRecipeType().getInputCache().containsInputBAC(getHandlerWorld(), inputA, inputB, inputC);
@@ -63,9 +65,10 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, Object, Object, Object)}, {@link TripleInputRecipeCache#containsInputBAC(Level, Object, Object,
-     * Object)}, and {@link TripleInputRecipeCache#containsInputCAB(Level, Object, Object, Object)} for more details about when this method should be called versus when
-     * {@link #containsRecipeABC(Object, Object, Object)} or {@link #containsRecipeBAC(Object, Object, Object)} should be called.
+     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, Object, Object, Object)},
+     * {@link TripleInputRecipeCache#containsInputBAC(Level, Object, Object, Object)}, and {@link TripleInputRecipeCache#containsInputCAB(Level, Object, Object, Object)}
+     * for more details about when this method should be called versus when {@link #containsRecipeABC(Object, Object, Object)} or
+     * {@link #containsRecipeBAC(Object, Object, Object)} should be called.
      */
     default boolean containsRecipeCAB(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
         return getRecipeType().getInputCache().containsInputCAB(getHandlerWorld(), inputA, inputB, inputC);

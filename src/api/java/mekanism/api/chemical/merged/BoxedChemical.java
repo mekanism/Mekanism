@@ -53,7 +53,7 @@ public class BoxedChemical implements IHasTextComponent {
             case GAS -> buffer.readRegistryIdSafe(Gas.class);
             case INFUSION -> buffer.readRegistryIdSafe(InfuseType.class);
             case PIGMENT -> buffer.readRegistryIdSafe(Pigment.class);
-            case SLURRY ->  buffer.readRegistryIdSafe(Slurry.class);
+            case SLURRY -> buffer.readRegistryIdSafe(Slurry.class);
         });
     }
 

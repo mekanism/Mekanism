@@ -116,7 +116,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * Builds this recipe basing the name on the output item.
      *
      * @param consumer Finished Recipe Consumer.
-     * @param output       Output to base the recipe name off of.
+     * @param output   Output to base the recipe name off of.
      */
     protected void build(Consumer<FinishedRecipe> consumer, ItemLike output) {
         ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(output.asItem());

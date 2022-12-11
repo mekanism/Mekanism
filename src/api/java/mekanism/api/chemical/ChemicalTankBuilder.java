@@ -94,8 +94,8 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
     }
 
     /**
-     * Creates a tank with a given capacity, extract predicate, insert predicate, and content listener, using the default attribute validator {@link
-     * ChemicalAttributeValidator#DEFAULT}.
+     * Creates a tank with a given capacity, extract predicate, insert predicate, and content listener, using the default attribute validator
+     * {@link ChemicalAttributeValidator#DEFAULT}.
      *
      * @param capacity   Tank capacity.
      * @param canExtract Extract predicate.
@@ -109,8 +109,8 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
     }
 
     /**
-     * Creates a tank with a given capacity, validation predicate, and content listener, using the default attribute validator {@link
-     * ChemicalAttributeValidator#DEFAULT}.
+     * Creates a tank with a given capacity, validation predicate, and content listener, using the default attribute validator
+     * {@link ChemicalAttributeValidator#DEFAULT}.
      *
      * @param capacity  Tank capacity.
      * @param validator Validation predicate.
@@ -125,8 +125,8 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
     }
 
     /**
-     * Creates an input tank with a given capacity, validation predicate, and content listener, using the default attribute validator {@link
-     * ChemicalAttributeValidator#DEFAULT}. Input tanks don't allow for external ({@link AutomationType#EXTERNAL}) extraction.
+     * Creates an input tank with a given capacity, validation predicate, and content listener, using the default attribute validator
+     * {@link ChemicalAttributeValidator#DEFAULT}. Input tanks don't allow for external ({@link AutomationType#EXTERNAL}) extraction.
      *
      * @param capacity  Tank capacity.
      * @param validator Validation predicate.
@@ -141,8 +141,8 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
     }
 
     /**
-     * Creates an input tank with a given capacity, insertion predicate, validation predicate, and content listener, using the default attribute validator {@link
-     * ChemicalAttributeValidator#DEFAULT}. Input tanks don't allow for external ({@link AutomationType#EXTERNAL}) extraction.
+     * Creates an input tank with a given capacity, insertion predicate, validation predicate, and content listener, using the default attribute validator
+     * {@link ChemicalAttributeValidator#DEFAULT}. Input tanks don't allow for external ({@link AutomationType#EXTERNAL}) extraction.
      *
      * @param capacity  Tank capacity.
      * @param canInsert Insert predicate.
@@ -159,8 +159,8 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
     }
 
     /**
-     * Creates an output tank with a given capacity, and content listener, that allows chemicals with any attributes. Output tanks only allow for internal ({@link
-     * AutomationType#INTERNAL}) insertion.
+     * Creates an output tank with a given capacity, and content listener, that allows chemicals with any attributes. Output tanks only allow for internal
+     * ({@link AutomationType#INTERNAL}) insertion.
      *
      * @param capacity Tank capacity.
      * @param listener Contents change listener.
@@ -173,8 +173,8 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
     }
 
     /**
-     * Creates a tank with a given capacity, extract predicate, insert predicate, validation predicate, and content listener, using the default attribute validator {@link
-     * ChemicalAttributeValidator#DEFAULT}.
+     * Creates a tank with a given capacity, extract predicate, insert predicate, validation predicate, and content listener, using the default attribute validator
+     * {@link ChemicalAttributeValidator#DEFAULT}.
      *
      * @param capacity   Tank capacity.
      * @param canExtract Extract predicate.
@@ -190,8 +190,8 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
     }
 
     /**
-     * Creates a tank with a given capacity, extract predicate, insert predicate, validation predicate, and content listener, using the default attribute validator {@link
-     * ChemicalAttributeValidator#DEFAULT}.
+     * Creates a tank with a given capacity, extract predicate, insert predicate, validation predicate, and content listener, using the default attribute validator
+     * {@link ChemicalAttributeValidator#DEFAULT}.
      *
      * @param capacity   Tank capacity.
      * @param canExtract Extract predicate.

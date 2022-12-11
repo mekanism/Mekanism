@@ -61,7 +61,7 @@ public class ToolsTags {
         public static final TagKey<Item> TOOLS_PAXELS_IRON = forgeTag("tools/paxels/iron");
         public static final TagKey<Item> TOOLS_PAXELS_DIAMOND = forgeTag("tools/paxels/diamond");
         public static final TagKey<Item> TOOLS_PAXELS_NETHERITE = forgeTag("tools/paxels/netherite");
-        
+
         public static final TagKey<Item> TOOLS_PAXELS_BRONZE = forgeTag("tools/paxels/bronze");
         public static final TagKey<Item> TOOLS_PAXELS_LAPIS_LAZULI = forgeTag("tools/paxels/lapis_lazuli");
         public static final TagKey<Item> TOOLS_PAXELS_OSMIUM = forgeTag("tools/paxels/osmium");

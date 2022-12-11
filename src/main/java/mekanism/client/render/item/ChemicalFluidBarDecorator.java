@@ -2,6 +2,8 @@ package mekanism.client.render.item;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.Optional;
+import java.util.function.Predicate;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.math.MathUtils;
@@ -16,9 +18,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-
-import java.util.Optional;
-import java.util.function.Predicate;
 
 public class ChemicalFluidBarDecorator implements IItemDecorator {
 

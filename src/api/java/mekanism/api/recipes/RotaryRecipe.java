@@ -95,8 +95,9 @@ public abstract class RotaryRecipe extends MekanismRecipe {
      * @param gasOutput   Gas output.
      * @param fluidOutput Fluid output.
      *
-     * @apiNote It is recommended to use this constructor over using {@link #RotaryRecipe(ResourceLocation, FluidStackIngredient, GasStack)} and {@link
-     * #RotaryRecipe(ResourceLocation, GasStackIngredient, FluidStack)} in combination and creating two recipes if the conversion will be possible in both directions.
+     * @apiNote It is recommended to use this constructor over using {@link #RotaryRecipe(ResourceLocation, FluidStackIngredient, GasStack)} and
+     * {@link #RotaryRecipe(ResourceLocation, GasStackIngredient, FluidStack)} in combination and creating two recipes if the conversion will be possible in both
+     * directions.
      */
     public RotaryRecipe(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput) {
         super(id);

@@ -29,8 +29,8 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
      *
      * @return The requested capability.
      *
-     * @implNote Do not override this method if you are implementing {@link IOffsetCapability}, instead override {@link #getOffsetCapabilityIfEnabled(Capability,
-     * Direction, Vec3i)}, calling this method is fine.
+     * @implNote Do not override this method if you are implementing {@link IOffsetCapability}, instead override
+     * {@link #getOffsetCapabilityIfEnabled(Capability, Direction, Vec3i)}, calling this method is fine.
      */
     @NotNull
     default <T> LazyOptional<T> getOffsetCapability(@NotNull Capability<T> capability, @Nullable Direction side, @NotNull Vec3i offset) {
@@ -69,6 +69,5 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
      *
      * @return The requested capability.
      */
-    @NotNull
-    <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@NotNull Capability<T> capability, @Nullable Direction side, @NotNull Vec3i offset);
+    @NotNull <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@NotNull Capability<T> capability, @Nullable Direction side, @NotNull Vec3i offset);
 }
