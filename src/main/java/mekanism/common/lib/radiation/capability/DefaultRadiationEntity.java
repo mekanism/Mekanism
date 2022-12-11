@@ -72,7 +72,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
                     entity.hurt(MekanismDamageSource.RADIATION, strength);
                 }
             }
-            if (entity instanceof ServerPlayer player && strength > 0) {
+            if (entity instanceof ServerPlayer player) {
                 player.getFoodData().addExhaustion(strength);
             }
         }

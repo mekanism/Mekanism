@@ -301,7 +301,7 @@ public class ClientTickHandler {
             float fog = 384;
             IModule<ModuleVisionEnhancementUnit> module = MekanismAPI.getModuleHelper().load(minecraft.player.getItemBySlot(EquipmentSlot.HEAD), MekanismModules.VISION_ENHANCEMENT_UNIT);
             if (module != null) {
-                fog *= Math.pow(module.getInstalledCount(), 1.25) / (float) MekanismModules.VISION_ENHANCEMENT_UNIT.getModuleData().getMaxStackSize();
+                fog *= ((float) Math.pow(module.getInstalledCount(), 1.25)) / MekanismModules.VISION_ENHANCEMENT_UNIT.getModuleData().getMaxStackSize();
             }
             RenderSystem.setShaderFogStart(-8.0F);
             RenderSystem.setShaderFogEnd(fog * 0.5F);
