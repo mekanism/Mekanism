@@ -305,6 +305,7 @@ public class SoundHandler {
         }
 
         @Override
+        @SuppressWarnings("UnstableApiUsage")
         public void tick() {
             // Every configured interval, see if we need to adjust muffling
             if (Minecraft.getInstance().level.getGameTime() % checkInterval == 0) {

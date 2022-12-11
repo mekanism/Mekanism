@@ -84,17 +84,11 @@ public class RenderPropertiesProvider {
         return MEKA_SUIT;
     }
 
-    private static final IClientItemExtensions MEKA_SUIT = new ISpecialGear() {
-        @NotNull
-        @Override
-        public ICustomArmor getGearModel(EquipmentSlot slot) {
-            return switch (slot) {
-                case HEAD -> MekaSuitArmor.HELMET;
-                case CHEST -> MekaSuitArmor.BODYARMOR;
-                case LEGS -> MekaSuitArmor.PANTS;
-                default -> MekaSuitArmor.BOOTS;
-            };
-        }
+    private static final ISpecialGear MEKA_SUIT = slot -> switch (slot) {
+        case HEAD -> MekaSuitArmor.HELMET;
+        case CHEST -> MekaSuitArmor.BODYARMOR;
+        case LEGS -> MekaSuitArmor.PANTS;
+        default -> MekaSuitArmor.BOOTS;
     };
 
     public static IClientBlockExtensions particles() {

@@ -138,18 +138,7 @@ public class Attributes {
     }
 
     /** Custom explosion resistance attribute. */
-    public static class AttributeCustomResistance implements Attribute {
-
-        private final float resistance;
-
-        public AttributeCustomResistance(float resistance) {
-            this.resistance = resistance;
-            //TODO: Adjust properties instead of having the override?
-        }
-
-        public float getResistance() {
-            return resistance;
-        }
+    public record AttributeCustomResistance(float resistance) implements Attribute {//TODO: Adjust properties instead of having the override?
     }
 
     /** Light value attribute. */

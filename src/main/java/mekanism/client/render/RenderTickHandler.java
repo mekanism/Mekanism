@@ -374,6 +374,7 @@ public class RenderTickHandler {
     }
 
     @SubscribeEvent
+    @SuppressWarnings("UnstableApiUsage")
     public void onBlockHover(RenderHighlightEvent.Block event) {
         Player player = minecraft.player;
         if (player == null) {

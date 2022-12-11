@@ -8,7 +8,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.

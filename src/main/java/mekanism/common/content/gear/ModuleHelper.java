@@ -71,7 +71,7 @@ public class ModuleHelper implements IModuleHelper {
         ImmutableSet.Builder<ModuleData<?>> supportedModulesBuilder = ImmutableSet.builder();
         InterModComms.getMessages(Mekanism.MODID, imcMethod::equals).forEach(message -> {
             Object body = message.messageSupplier().get();
-            if (body instanceof IModuleDataProvider moduleDataProvider) {
+            if (body instanceof IModuleDataProvider<?> moduleDataProvider) {
                 supportedModulesBuilder.add(moduleDataProvider.getModuleData());
                 logDebugReceivedIMC(imcMethod, message.senderModId(), moduleDataProvider);
             } else if (body instanceof IModuleDataProvider<?>[] providers) {

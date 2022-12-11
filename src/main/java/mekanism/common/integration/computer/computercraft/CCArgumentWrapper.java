@@ -252,7 +252,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             return wrapped;
         } else if (result instanceof Enum<?> res) {
             return res.name();
-        } else if (result instanceof IFilter res) {
+        } else if (result instanceof IFilter<?> res) {
             Map<String, Object> wrapped = new HashMap<>();
             wrapped.put("type", wrapReturnType(res.getFilterType()));
             if (result instanceof IItemStackFilter<?> itemFilter) {
