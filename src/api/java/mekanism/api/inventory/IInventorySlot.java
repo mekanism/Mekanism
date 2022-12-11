@@ -17,9 +17,9 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
 
     /**
      * Returns the {@link ItemStack} in this {@link IInventorySlot}.
-     *
+     * <p>
      * The result's stack size may be greater than the itemstack's max size.
-     *
+     * <p>
      * If the result is empty, then the slot is empty.
      *
      * <p>
@@ -183,7 +183,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
 
     /**
      * Convenience method for modifying the size of the stored stack.
-     *
+     * <p>
      * If there is a stack stored in this slot, set the size of it to the given amount. Capping at the item's max stack size and the limit of this slot. If the amount is
      * less than or equal to zero, then this instead sets the stack to the empty stack.
      *
@@ -221,7 +221,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
 
     /**
      * Convenience method for growing the size of the stored stack.
-     *
+     * <p>
      * If there is a stack stored in this slot, increase its size by the given amount. Capping at the item's max stack size and the limit of this slot. If the stack
      * shrinks to an amount of less than or equal to zero, then this instead sets the stack to the empty stack.
      *
@@ -245,7 +245,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
 
     /**
      * Convenience method for shrinking the size of the stored stack.
-     *
+     * <p>
      * If there is a stack stored in this slot, shrink its size by the given amount. If this causes its size to become less than or equal to zero, then the stack is set
      * to the empty stack. If this method is used to grow the stack the size gets capped at the item's max stack size and the limit of this slot.
      *

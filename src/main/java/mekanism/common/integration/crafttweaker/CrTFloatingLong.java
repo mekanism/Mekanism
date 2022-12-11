@@ -254,7 +254,7 @@ public class CrTFloatingLong {
 
     /**
      * Gets the "float" representation of this {@link FloatingLong}.
-     *
+     * <p>
      * Converts the unsigned long portion to a float in the same way Guava's UnsignedLong does, and then adds our decimal portion
      */
     @ZenCodeType.Method
@@ -265,7 +265,7 @@ public class CrTFloatingLong {
 
     /**
      * Gets the "double" representation of this {@link FloatingLong}.
-     *
+     * <p>
      * Converts the unsigned long portion to a double in the same way Guava's UnsignedLong does, and then adds our decimal portion
      */
     @ZenCodeType.Method

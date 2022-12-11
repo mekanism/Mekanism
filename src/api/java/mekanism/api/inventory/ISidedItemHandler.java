@@ -26,7 +26,7 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     /**
      * A sided variant of {@link IItemHandlerModifiable#setStackInSlot(int, ItemStack)}, docs copied for convenience.
-     *
+     * <p>
      * Overrides the stack in the given slot. This method is used by the standard Forge helper methods and classes. It is not intended for general use by other mods, and
      * the handler may throw an error if it is called unexpectedly.
      *
@@ -45,7 +45,7 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     /**
      * A sided variant of {@link IItemHandler#getSlots()}, docs copied for convenience.
-     *
+     * <p>
      * Returns the number of slots available
      *
      * @param side The side we are interacting with the handler from (null for internal).
@@ -61,11 +61,11 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     /**
      * A sided variant of {@link IItemHandler#getStackInSlot(int)}, docs copied for convenience.
-     *
+     * <p>
      * Returns the {@link ItemStack} in a given slot.
-     *
+     * <p>
      * The result's stack size may be greater than the itemstack's max size.
-     *
+     * <p>
      * If the result is empty, then the slot is empty.
      *
      * <p>
@@ -118,7 +118,7 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     /**
      * A sided variant of {@link IItemHandler#extractItem(int, int, boolean)}, docs copied for convenience.
-     *
+     * <p>
      * Extracts an {@link ItemStack} from the given slot.
      * <p>
      * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount} and {@link
@@ -144,7 +144,7 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     /**
      * A sided variant of {@link IItemHandler#getSlotLimit(int)}, docs copied for convenience.
-     *
+     * <p>
      * Retrieves the maximum stack size allowed to exist in the given slot.
      *
      * @param slot Slot to query.

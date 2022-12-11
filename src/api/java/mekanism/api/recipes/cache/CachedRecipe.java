@@ -232,7 +232,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
     /**
      * Sets the callback used to post-process the number of operations this {@link CachedRecipe} calculated it can perform in {@link
      * #calculateOperationsThisTick(OperationTracker)} and to add any {@link RecipeError}s that occur during post-processing.
-     *
+     * <p>
      * It can be assumed that when {@code postProcessOperations} is called {@link OperationTracker#shouldContinueChecking()} is {@code true}.
      *
      * @param postProcessOperations Function that applies post-processing to the result of {@link #calculateOperationsThisTick(OperationTracker)}.

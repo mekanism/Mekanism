@@ -22,7 +22,7 @@ public interface ISidedHeatHandler extends IHeatHandler {
 
     /**
      * A sided variant of {@link IHeatHandler#getHeatCapacitorCount()}, docs copied for convenience.
-     *
+     * <p>
      * Returns the number of heat storage units ("capacitors") available
      *
      * @param side The side we are interacting with the handler from (null for internal).
@@ -38,7 +38,7 @@ public interface ISidedHeatHandler extends IHeatHandler {
 
     /**
      * A sided variant of {@link IHeatHandler#getTemperature(int)}, docs copied for convenience.
-     *
+     * <p>
      * Returns the temperature of a given capacitor.
      *
      * @param capacitor Capacitor to query.
@@ -55,7 +55,7 @@ public interface ISidedHeatHandler extends IHeatHandler {
 
     /**
      * A sided variant of {@link IHeatHandler#getInverseConduction(int)}, docs copied for convenience.
-     *
+     * <p>
      * Returns the inverse conduction coefficient of a given capacitor. This value defines how much heat is allowed to be dissipated. The larger the number the less heat
      * can dissipate. The trade-off is that it also allows for lower amounts of heat to be inserted.
      *
@@ -75,7 +75,7 @@ public interface ISidedHeatHandler extends IHeatHandler {
 
     /**
      * A sided variant of {@link IHeatHandler#getHeatCapacity(int)}, docs copied for convenience.
-     *
+     * <p>
      * Returns the heat capacity of a given capacitor.
      *
      * @param capacitor Capacitor to query.
@@ -94,7 +94,7 @@ public interface ISidedHeatHandler extends IHeatHandler {
 
     /**
      * A sided variant of {@link IHeatHandler#handleHeat(int, double)}, docs copied for convenience.
-     *
+     * <p>
      * Handles transferring heat to the given capacitor.
      *
      * @param capacitor Capacitor to target
@@ -110,7 +110,7 @@ public interface ISidedHeatHandler extends IHeatHandler {
 
     /**
      * A sided variant of {@link IHeatHandler#getTotalTemperature()}, docs copied for convenience.
-     *
+     * <p>
      * Calculates the total temperature across all capacitors in this handler.
      *
      * @param side The side we are interacting with the handler from (null for internal).
@@ -132,7 +132,7 @@ public interface ISidedHeatHandler extends IHeatHandler {
 
     /**
      * A sided variant of {@link IHeatHandler#getTotalInverseConduction()}, docs copied for convenience.
-     *
+     * <p>
      * Calculates the total inverse conduction coefficient across all capacitors in this handler.
      *
      * @param side The side we are interacting with the handler from (null for internal).
@@ -158,7 +158,7 @@ public interface ISidedHeatHandler extends IHeatHandler {
 
     /**
      * A sided variant of {@link IHeatHandler#getTotalHeatCapacity()}, docs copied for convenience.
-     *
+     * <p>
      * Calculates the total heat capacity across all capacitors in this handler.
      *
      * @param side The side we are interacting with the handler from (null for internal).
@@ -179,7 +179,7 @@ public interface ISidedHeatHandler extends IHeatHandler {
 
     /**
      * A sided variant of {@link IHeatHandler#handleHeat(double)}, docs copied for convenience.
-     *
+     * <p>
      * Handles a change of heat in this block. Can be positive or negative.
      *
      * @param transfer The amount being transferred.

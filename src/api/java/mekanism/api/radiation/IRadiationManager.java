@@ -57,7 +57,7 @@ public interface IRadiationManager {
      *
      * @param coord Location
      *
-     * @return radiation level (in Sv).
+     * @return radiation level (in Sv/h).
      */
     double getRadiationLevel(Coord4D coord);
 
@@ -67,7 +67,7 @@ public interface IRadiationManager {
      *
      * @param entity - Entity to get the radiation level at.
      *
-     * @return Radiation level (in Sv).
+     * @return Radiation level (in Sv/h).
      */
     double getRadiationLevel(Entity entity);
 

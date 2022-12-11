@@ -15,15 +15,15 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Global, shared FakePlayer for Mekanism-specific uses
- *
+ * <p>
  * This was introduced to fix <a href="https://github.com/dizzyd/Mekanism/issues/2">https://github.com/dizzyd/Mekanism/issues/2</a>. In that issue, another mod was trying
  * to apply a potion to the fake player and causing the whole system to crash due to essential potion related structures not being initialized for a fake player.
- *
+ * <p>
  * The broader problem is that the FakePlayer in Forge 14.23.5.2768 isn't really complete and short of patching Forge and requiring everyone in the world to upgrade,
  * there's no easy fix -- so we introduce our own FakePlayer that will let us override other methods as necessary.
- *
+ * <p>
  * Use of the fake player is via a consumer type lambda, where usage is only valid inside the lambda. Afterwards it may be garbage collected at any point.
- *
+ * <p>
  * Supports emulating a specific UUID, for use with TileComponentSecurity
  */
 public class MekFakePlayer extends FakePlayer {

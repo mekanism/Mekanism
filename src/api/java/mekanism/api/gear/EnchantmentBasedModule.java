@@ -14,7 +14,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
  * Abstract implementation to make creating custom modules that provide a specific enchantment when installed easier, while also properly "hiding" the fact that there is
  * an enchantment applied. This does not provide any easy way to make the enchantment use energy or other resources, and is probably only useful for enchantments that
  * have a lot of hardcoded checks so reproducing functionality would be extremely hard if even possible.
- *
+ * <p>
  * Instances of this should be returned via the {@link ModuleData}.
  */
 @NothingNullByDefault

@@ -86,7 +86,7 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
 
     /**
      * Accepts any items that can be filled with the current contents of the gas tank, or if it is a gas tank container and the tank is currently empty
-     *
+     * <p>
      * Drains the tank into this item.
      */
     public static GasInventorySlot drain(IGasTank gasTank, @Nullable IContentsListener listener, int x, int y) {
