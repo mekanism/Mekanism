@@ -107,8 +107,7 @@ public class Quad {
     }
 
     public BakedQuad bake() {
-        BakedQuad[] quads = new BakedQuad[1];
-        QuadBakingVertexConsumer quadBaker = new QuadBakingVertexConsumer(q -> quads[0] = q);
+        QuadBakingVertexConsumer.Buffered quadBaker = new QuadBakingVertexConsumer.Buffered();
         quadBaker.setSprite(sprite);
         quadBaker.setDirection(side);
         quadBaker.setTintIndex(tintIndex);
@@ -117,7 +116,7 @@ public class Quad {
         for (Vertex vertex : vertices) {
             vertex.write(quadBaker);
         }
-        return quads[0];
+        return quadBaker.getQuad();
     }
 
     public Quad copy() {

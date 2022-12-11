@@ -1,9 +1,0 @@
-path_classifiers:
-  generated:
-    - exclude: "build/sources"
-extraction:
-  java:
-    index:
-      java_version: 14
-      gradle:
-        version: 7.5.1

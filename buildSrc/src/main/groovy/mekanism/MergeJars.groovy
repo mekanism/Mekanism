@@ -42,7 +42,7 @@ class MergeJars {
         mergeTags(project, sourceSets)
     }
 
-    static List<Closure> getGeneratedClosures(def versionProperties) {
+    static List<Closure> getGeneratedClosures(Map<String, ?> versionProperties) {
         List<Closure> generated = new ArrayList<>()
         generated.add({ CopySpec c ->
             c.include('META-INF/mods.toml')

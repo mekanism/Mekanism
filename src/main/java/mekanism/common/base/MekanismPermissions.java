@@ -108,7 +108,9 @@ public class MekanismPermissions {
 
         @Override
         public boolean test(CommandSourceStack source) {
-            return source.source instanceof ServerPlayer player ? PermissionAPI.getPermission(player, node) : source.hasPermission(fallbackLevel);
+            //See https://github.com/MinecraftForge/MinecraftForge/commit/f7eea35cb9b043aae0a3866a9578724aa7560585 for details on why
+            // has permission is checked first and the implications
+            return source.hasPermission(fallbackLevel) || source.source instanceof ServerPlayer player && PermissionAPI.getPermission(player, node);
         }
     }
 
