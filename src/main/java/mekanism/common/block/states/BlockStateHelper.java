@@ -35,6 +35,7 @@ public class BlockStateHelper {
     public static final EnumProperty<FluidLogType> FLUID_LOGGED = EnumProperty.create("fluid_logged", FluidLogType.class);
 
     public static final BlockBehaviour.StatePredicate NEVER_PREDICATE = (state, world, pos) -> false;
+    public static final BlockBehaviour.StatePredicate ALWAYS_PREDICATE = (state, world, pos) -> true;
 
     public static BlockState getDefaultState(@NotNull BlockState state) {
         Block block = state.getBlock();
