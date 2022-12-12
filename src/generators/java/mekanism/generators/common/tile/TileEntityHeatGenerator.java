@@ -85,7 +85,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        builder.addTank(lavaTank = BasicFluidTank.create(MAX_FLUID, fluidStack -> MekanismTags.Fluids.LAVA_LOOKUP.contains(fluidStack.getFluid()), listener),
+        builder.addTank(lavaTank = BasicFluidTank.input(MAX_FLUID, fluidStack -> MekanismTags.Fluids.LAVA_LOOKUP.contains(fluidStack.getFluid()), listener),
               RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
     }
