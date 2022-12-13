@@ -82,7 +82,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @return A mutable {@link FloatingLong} from a given primitive long.
      */
     public static FloatingLong create(long value) {
-        return create(value, (short) 0);
+        return new FloatingLong(value, (short) 0, false);
     }
 
     /**
@@ -96,7 +96,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @apiNote If this method is called with negative numbers for {@code decimal} it will be clamped to zero.
      */
     public static FloatingLong create(long value, short decimal) {
-        return new FloatingLong(value, decimal, false);
+        return new FloatingLong(value, clampDecimal(decimal), false);
     }
 
     /**
@@ -129,7 +129,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @return A constant {@link FloatingLong} from a given primitive long.
      */
     public static FloatingLong createConst(long value) {
-        return createConst(value, (short) 0);
+        return new FloatingLong(value, (short) 0, true);
     }
 
     /**
@@ -143,7 +143,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @apiNote If this method is called with negative numbers for {@code decimal} it will be clamped to zero.
      */
     public static FloatingLong createConst(long value, short decimal) {
-        return new FloatingLong(value, decimal, true);
+        return new FloatingLong(value, clampDecimal(decimal), true);
     }
 
     /**
@@ -154,16 +154,22 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @return A mutable {@link FloatingLong}
      */
     public static FloatingLong readFromBuffer(FriendlyByteBuf buffer) {
-        return new FloatingLong(buffer.readVarLong(), buffer.readShort(), false);
+        return create(buffer.readVarLong(), buffer.readShort());
     }
 
     private final boolean isConstant;
     private long value;
     private short decimal;
 
+    /**
+     * @param value   The value to use for the whole number portion of the {@link FloatingLong}
+     * @param decimal The short value to use for the decimal portion of the {@link FloatingLong}
+     *
+     * @apiNote Only use this directly if the decimal is already properly bounded.
+     */
     private FloatingLong(long value, short decimal, boolean isConstant) {
-        setAndClampValues(value, decimal);
-        //Set the constant state after we have updated the values
+        this.value = value;
+        this.decimal = decimal;
         this.isConstant = isConstant;
     }
 
@@ -192,17 +198,27 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @return If this {@link FloatingLong} is constant, it returns a new object otherwise it returns this {@link FloatingLong} after updating the internal values.
      */
     private FloatingLong setAndClampValues(long value, short decimal) {
-        if (decimal < 0) {
-            decimal = 0;
-        } else if (decimal > MAX_DECIMAL) {
-            decimal = MAX_DECIMAL;
-        }
         if (isConstant) {
+            //Note: We don't need to clamp the decimal here as it will be clamped during creation
             return create(value, decimal);
         }
         this.value = value;
-        this.decimal = decimal;
+        this.decimal = clampDecimal(decimal);
         return this;
+    }
+
+    /**
+     * Internal helper to clamp a decimal to the range [0, {@link #MAX_DECIMAL}].
+     *
+     * @param decimal The decimal value to clamp.
+     */
+    private static short clampDecimal(short decimal) {
+        if (decimal < 0) {
+            return 0;
+        } else if (decimal > MAX_DECIMAL) {
+            return MAX_DECIMAL;
+        }
+        return decimal;
     }
 
     /**
@@ -222,7 +238,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Copies this {@link FloatingLong}, into a constant {@link FloatingLong}. If the current {@link FloatingLong{ is already a constant just returns self.
+     * Copies this {@link FloatingLong}, into a constant {@link FloatingLong}. If the current {@link FloatingLong} is already a constant just returns self.
      */
     public FloatingLong copyAsConst() {
         return isConstant ? this : new FloatingLong(value, decimal, true);
@@ -241,14 +257,29 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * {@code value = value.plusEqual(toAdd)}
      */
     public FloatingLong plusEqual(FloatingLong toAdd) {
-        if (toAdd.isZero()) {
-            return this;
-        } else if ((value < 0 && toAdd.value < 0) || ((value < 0 || toAdd.value < 0) && (value + toAdd.value >= 0))) {
+        return plusEqual(toAdd.value, toAdd.decimal);
+    }
+
+    /**
+     * Internal helper to adds the components that make up a {@link FloatingLong} to this {@link FloatingLong}, modifying the current object unless it is a constant in
+     * which case it instead returns the result in a new object. This gets clamped at the upper bound of {@link FloatingLong#MAX_VALUE} rather than overflowing.
+     *
+     * @param toAddValue   The value to add represented as an unsigned long.
+     * @param toAddDecimal The short value to use for the decimal portion to add. Must be clamped between [0, {@link #MAX_DECIMAL}].
+     *
+     * @return The {@link FloatingLong} representing the value of adding the given {@link FloatingLong} to this {@link FloatingLong}.
+     *
+     * @apiNote Used to avoid extra object creation.
+     */
+    private FloatingLong plusEqual(long toAddValue, short toAddDecimal) {
+        if (toAddDecimal == 0) {
+            return plusEqual(toAddValue);
+        } else if ((value < 0 && toAddValue < 0) || ((value < 0 || toAddValue < 0) && (value + toAddValue >= 0))) {
             //To save a tiny bit of memory if this is called on a constant we just return the constant max as the object can't be modified anyway
             return isConstant ? MAX_VALUE : setAndClampValues(-1, MAX_DECIMAL);
         }
-        long newValue = value + toAdd.value;
-        short newDecimal = (short) (decimal + toAdd.decimal);
+        long newValue = value + toAddValue;
+        short newDecimal = (short) (decimal + toAddDecimal);
         if (newDecimal > MAX_DECIMAL) {
             if (newValue == -1) {
                 newDecimal = MAX_DECIMAL;
@@ -258,6 +289,29 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             }
         }
         return setAndClampValues(newValue, newDecimal);
+    }
+
+    /**
+     * Adds the given unsigned long primitive to this {@link FloatingLong}, modifying the current object unless it is a constant in which case it instead returns the
+     * result in a new object. This gets clamped at the upper bound of {@link FloatingLong#MAX_VALUE} rather than overflowing.
+     *
+     * @param toAdd The value to add represented as an unsigned long.
+     *
+     * @return The {@link FloatingLong} representing the value of adding the given unsigned long to this {@link FloatingLong}.
+     *
+     * @apiNote It is recommended to set this to itself to reduce the chance of accidental calls if calling this on a constant {@link FloatingLong}
+     * <br>
+     * {@code value = value.plusEqual(toAdd)}
+     * @since 10.3.6
+     */
+    public FloatingLong plusEqual(long toAdd) {
+        if (toAdd == 0) {
+            return this;
+        } else if ((value < 0 && toAdd < 0) || ((value < 0 || toAdd < 0) && (value + toAdd >= 0))) {
+            //To save a tiny bit of memory if this is called on a constant we just return the constant max as the object can't be modified anyway
+            return isConstant ? MAX_VALUE : setAndClampValues(-1, MAX_DECIMAL);
+        }
+        return setAndClampValues(value + toAdd, decimal);
     }
 
     /**
@@ -290,6 +344,33 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
+     * Subtracts the given unsigned long primitive from this {@link FloatingLong}, modifying the current object unless it is a constant in which case it instead returns
+     * the result in a new object. This gets clamped at the lower bound of {@link FloatingLong#ZERO} rather than becoming negative.
+     *
+     * @param toSubtract The value to subtract represented as an unsigned long.
+     *
+     * @return The {@link FloatingLong} representing the value of subtracting the given unsigned long from this {@link FloatingLong}.
+     *
+     * @apiNote It is recommended to set this to itself to reduce the chance of accidental calls if calling this on a constant {@link FloatingLong}
+     * <br>
+     * {@code value = value.minusEqual(toSubtract)}
+     * @since 10.3.6
+     */
+    public FloatingLong minusEqual(long toSubtract) {
+        if (toSubtract == 0 || isZero()) {
+            return this;
+        }
+        long comparison = Long.compareUnsigned(value, toSubtract);
+        if (comparison < 0 || comparison == 0 && decimal == 0) {
+            //If toSubtract is greater or equal to the current floating long
+            //Clamp the result at zero as floating longs cannot become negative
+            //To save a tiny bit of memory if this is called on a constant we just return the constant zero as the object can't be modified anyway
+            return isConstant ? ZERO : setAndClampValues(0, (short) 0);
+        }
+        return setAndClampValues(value - toSubtract, decimal);
+    }
+
+    /**
      * Multiplies the given {@link FloatingLong} with this {@link FloatingLong}, modifying the current object unless it is a constant in which case it instead returns the
      * result in a new object. This gets clamped at the upper bound of {@link FloatingLong#MAX_VALUE} rather than overflowing.
      *
@@ -314,10 +395,52 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             //To save a tiny bit of memory if this is called on a constant we just return the constant max as the object can't be modified anyway
             return isConstant ? MAX_VALUE : setAndClampValues(-1, MAX_DECIMAL);
         }
-        FloatingLong temp = create(multiplyLongs(value, toMultiply.value));//a * c
-        temp = temp.plusEqual(multiplyLongAndDecimal(value, toMultiply.decimal));//a * d
-        temp = temp.plusEqual(multiplyLongAndDecimal(toMultiply.value, decimal));//b * c
-        temp = temp.plusEqual(multiplyDecimals(decimal, toMultiply.decimal));//b * d
+        //Note: We start by doing (a * d + a * c) rather than (a * c + a * d) in order to optimize out an extra object creation
+        FloatingLong temp = multiplyLongAndDecimal(value, toMultiply.decimal);//a * d
+        temp = temp.plusEqual(multiplyLongs(value, toMultiply.value));//a * c
+        //Directly add the values to our temp variable without creating another intermediary object
+        temp = addLongAndDecimalMultiplication(temp, toMultiply.value, decimal);//b * c
+        //Use our internal plusEqual to avoid an extra object creation
+        temp = temp.plusEqual(0, multiplyDecimals(decimal, toMultiply.decimal));//b * d
+        if (isConstant) {
+            //If we are currently a constant just return our temp value rather than creating a new object that is a clone of it
+            return temp;
+        }
+        return setAndClampValues(temp.value, temp.decimal);
+    }
+
+    /**
+     * Multiplies this {@link FloatingLong} by the given unsigned long primitive, modifying the current object unless it is a constant in which case it instead returns
+     * the result in a new object. This gets clamped at the upper bound of {@link FloatingLong#MAX_VALUE} rather than overflowing.
+     *
+     * @param toMultiply The value to multiply by represented as an unsigned long.
+     *
+     * @return The {@link FloatingLong} representing the value of multiplying this {@link FloatingLong} by the given unsigned long.
+     *
+     * @apiNote It is recommended to set this to itself to reduce the chance of accidental calls if calling this on a constant {@link FloatingLong}
+     * <br>
+     * {@code value = value.timesEqual(toMultiply)}
+     * @since 10.3.6
+     */
+    public FloatingLong timesEqual(long toMultiply) {
+        if (toMultiply == 1 || isZero()) {
+            return this;
+        } else if (toMultiply == 0) {
+            //To save a tiny bit of memory if this is called on a constant we just return the constant zero as the object can't be modified anyway
+            return isConstant ? ZERO : setAndClampValues(0, (short) 0);
+        } else if (equals(ONE)) {
+            return setAndClampValues(toMultiply, (short) 0);
+        } else if (multiplyLongsWillOverFlow(value, toMultiply)) {
+            //(a+b)*(c+d) where numbers represent decimal, numbers represent value
+            //To save a tiny bit of memory if this is called on a constant we just return the constant max as the object can't be modified anyway
+            return isConstant ? MAX_VALUE : setAndClampValues(-1, MAX_DECIMAL);
+        }
+        FloatingLong temp = multiplyLongAndDecimal(toMultiply, decimal);//b * c
+        temp = temp.plusEqual(multiplyLongs(value, toMultiply));//a * c
+        if (isConstant) {
+            //If we are currently a constant just return our temp value rather than creating a new object that is a clone of it
+            return temp;
+        }
         return setAndClampValues(temp.value, temp.decimal);
     }
 
@@ -495,7 +618,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @return The {@link FloatingLong} representing the value of adding the given unsigned long to this {@link FloatingLong}.
      */
     public FloatingLong add(long toAdd) {
-        return add(create(toAdd));
+        return copy().plusEqual(toAdd);
     }
 
     /**
@@ -536,7 +659,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @return The {@link FloatingLong} representing the value of subtracting the given unsigned long from this {@link FloatingLong}.
      */
     public FloatingLong subtract(long toSubtract) {
-        return subtract(create(toSubtract));
+        return copy().minusEqual(toSubtract);
     }
 
     /**
@@ -577,7 +700,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @return The {@link FloatingLong} representing the value of multiplying the given unsigned long with this {@link FloatingLong}.
      */
     public FloatingLong multiply(long toMultiply) {
-        return multiply(create(toMultiply));
+        return copy().timesEqual(toMultiply);
     }
 
     /**
@@ -692,12 +815,35 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     public FloatingLong ceil() {
         if (decimal == 0) {
             return this;
-        }
-        if (value == -1) {
+        } else if (value == -1) {
             //It is the max long value already then actually just floor it
             return new FloatingLong(value, (short) 0, false);
         }
         return new FloatingLong(value + 1, (short) 0, false);
+    }
+
+    /**
+     * Calculates the smallest {@link FloatingLong} that is greater than or equal to this {@link FloatingLong}, and is equal to a mathematical unsigned long. This method
+     * modifies the current object unless it is a constant in which case it instead returns the floored value in a new object.
+     *
+     * @return the smallest {@link FloatingLong} that is greater than or equal to this {@link FloatingLong}, and is equal to a mathematical unsigned long.
+     *
+     * @implNote If this {@link FloatingLong} is already equal to a mathematical unsigned long (or is not a constant), then the result is the same as the argument.
+     * Additionally, if this {@link FloatingLong} is larger than the maximum unsigned long, this instead returns a {@link FloatingLong} representing the maximum unsigned
+     * long.
+     * @apiNote It is recommended to set this to itself to reduce the chance of accidental calls if calling this on a constant {@link FloatingLong}
+     * <br>
+     * {@code value = value.floorSelf()}
+     * @since 10.3.6
+     */
+    public FloatingLong ceilSelf() {
+        if (decimal == 0) {
+            return this;
+        } else if (value == -1) {
+            //It is the max long value already then actually just floor it
+            return setAndClampValues(value, (short) 0);
+        }
+        return setAndClampValues(value + 1, (short) 0);
     }
 
     /**
@@ -709,6 +855,22 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      */
     public FloatingLong floor() {
         return decimal == 0 ? this : new FloatingLong(value, (short) 0, false);
+    }
+
+    /**
+     * Calculates the largest {@link FloatingLong} that is less than or equal to this {@link FloatingLong}, and is equal to a mathematical unsigned long. This method
+     * modifies the current object unless it is a constant in which case it instead returns the floored value in a new object.
+     *
+     * @return the largest {@link FloatingLong} that is less than or equal to this {@link FloatingLong}, and is equal to a mathematical unsigned long.
+     *
+     * @implNote If this {@link FloatingLong} is already equal to a mathematical unsigned long (or is not a constant), then the result is the same as the argument.
+     * @apiNote It is recommended to set this to itself to reduce the chance of accidental calls if calling this on a constant {@link FloatingLong}
+     * <br>
+     * {@code value = value.floorSelf()}
+     * @since 10.3.6
+     */
+    public FloatingLong floorSelf() {
+        return decimal == 0 ? this : setAndClampValues(value, (short) 0);
     }
 
     /**
@@ -1041,19 +1203,39 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * Internal helper to multiply a long by a decimal.
      */
     private static FloatingLong multiplyLongAndDecimal(long value, short decimal) {
+        if (value == 0 || decimal == 0) {
+            //Short circuit and don't create any new objects
+            return FloatingLong.ZERO;
+        }
         //This can't overflow!
         if (Long.compareUnsigned(value, Long.divideUnsigned(-1, SINGLE_UNIT)) > 0) {
             return create(Long.divideUnsigned(value, SINGLE_UNIT) * decimal, (short) (value % SINGLE_UNIT * decimal));
         }
-        return create(Long.divideUnsigned(value * decimal, SINGLE_UNIT), (short) (value * decimal % SINGLE_UNIT));
+        //Instantiate directly to avoid having to clamp the decimal
+        return new FloatingLong(Long.divideUnsigned(value * decimal, SINGLE_UNIT), (short) (value * decimal % SINGLE_UNIT), false);
+    }
+
+    /**
+     * Internal helper to multiply a long by a decimal and compound (add) the result to an existing {@link FloatingLong}.
+     */
+    private static FloatingLong addLongAndDecimalMultiplication(FloatingLong base, long value, short decimal) {
+        if (value == 0 || decimal == 0) {
+            //Short circuit
+            return base;
+        }
+        //This can't overflow!
+        if (Long.compareUnsigned(value, Long.divideUnsigned(-1, SINGLE_UNIT)) > 0) {
+            return base.plusEqual(Long.divideUnsigned(value, SINGLE_UNIT) * decimal, clampDecimal((short) (value % SINGLE_UNIT * decimal)));
+        }
+        return base.plusEqual(Long.divideUnsigned(value * decimal, SINGLE_UNIT), (short) (value * decimal % SINGLE_UNIT));
     }
 
     /**
      * Internal helper to multiply two decimals.
      */
-    private static FloatingLong multiplyDecimals(short a, short b) {
+    private static short multiplyDecimals(short a, short b) {
         //Note: If we instead wanted to round here, just get modulus and add if >= 0.5*SINGLE_UNIT
         long temp = (long) a * (long) b / SINGLE_UNIT;
-        return create(0, (short) temp);
+        return clampDecimal((short) temp);
     }
 }
