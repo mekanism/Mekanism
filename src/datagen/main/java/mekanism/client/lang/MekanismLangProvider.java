@@ -795,9 +795,13 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.COMMAND_BUILD_BUILT_EMPTY, "Finished building empty: %1$s.");
         add(MekanismLang.COMMAND_ERROR_BUILD_MISS, "No valid target found.");
         add(MekanismLang.COMMAND_RADIATION_ADD, "Added %1$s radiation at (%2$s) in %3$s.");
+        add(MekanismLang.COMMAND_RADIATION_ADD_ENTITY, "Added %1$s radiation to player.");
+        add(MekanismLang.COMMAND_RADIATION_ADD_ENTITY_TARGET, "Added %1$s radiation to entity: %2$s.");
         add(MekanismLang.COMMAND_RADIATION_GET, "Current radiation at (%1$s) in %2$s: %3$s");
         add(MekanismLang.COMMAND_RADIATION_CLEAR, "Cleared player radiation.");
         add(MekanismLang.COMMAND_RADIATION_CLEAR_ENTITY, "Cleared entity radiation for: %1$s.");
+        add(MekanismLang.COMMAND_RADIATION_REDUCE, "Reduced player radiation by %1$s.");
+        add(MekanismLang.COMMAND_RADIATION_REDUCE_TARGET, "Reduced entity radiation for %1$s by %2$s.");
         add(MekanismLang.COMMAND_RADIATION_REMOVE_ALL, "Removed all radiation sources.");
         add(MekanismLang.COMMAND_RETROGEN_CHUNK_QUEUED, "Queued chunk (%1$s) in %2$s for retrogen.");
         add(MekanismLang.COMMAND_ERROR_RETROGEN_DISABLED, "Retrogen is disabled, please enable it in the config.");
