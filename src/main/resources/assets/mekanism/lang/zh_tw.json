@@ -698,7 +698,7 @@
   "description.mekanism.fuelwood_heater": "一臺通過燃燒固體可燃物來生產熱量的機器.",
   "description.mekanism.geiger_unit": "在HUD中顯示環境輻射值.",
   "description.mekanism.gravitational_modulating_unit": "使用實驗技術和龐大的反物質能量, 使用者可以克服重力.",
-  "description.mekanism.gyroscopic_stabilization_unit": "允許使用者像在堅實的地面上一樣行動.",
+  "description.mekanism.gyroscopic_stabilization_unit": "允許使用者如履平地般作業.",
   "description.mekanism.hydraulic_propulsion_unit": "允許使用者跳得更高.",
   "description.mekanism.hydrostatic_repulsor_unit": "使用先進的技術推開水, 來減少在水中移動所感受到的阻力.",
   "description.mekanism.induction_casing": "用於輸導矩陣的絕緣外殼.",
@@ -1204,7 +1204,7 @@
   "item.mekanism.upgrade_gas": "氣體升級",
   "item.mekanism.upgrade_muffling": "降噪升級",
   "item.mekanism.upgrade_speed": "速度升級",
-  "item.mekanism.upgrade_stone_generator": "石頭製造機升級",
+  "item.mekanism.upgrade_stone_generator": "造石機升級",
   "item.mekanism.uranium_hexafluoride_bucket": "液態六氟化鈾桶",
   "item.mekanism.uranium_oxide_bucket": "液態氧化鈾桶",
   "item.mekanism.yellow_cake_uranium": "黃餅鈾",
@@ -1632,8 +1632,8 @@
   "upgrade.mekanism.muffling.description": "減少機器噪音.",
   "upgrade.mekanism.speed": "速度",
   "upgrade.mekanism.speed.description": "提升機器的速度.",
-  "upgrade.mekanism.stone_generator": "石頭製造機",
-  "upgrade.mekanism.stone_generator.description": "依照需求生產石頭或鵝卵石.",
+  "upgrade.mekanism.stone_generator": "造石機",
+  "upgrade.mekanism.stone_generator.description": "依照需求生成石頭或鵝卵石.",
   "waste_barrel.mekanism.decay_rate": "衰變速率: %1$s mB/t",
   "waste_barrel.mekanism.decay_rate.actual": "實際衰變速率: %1$s mB / %2$s 刻"
 }
