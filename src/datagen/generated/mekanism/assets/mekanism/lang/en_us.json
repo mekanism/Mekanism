@@ -1000,6 +1000,8 @@
   "gui.mekanism.set": "Set:",
   "gui.mekanism.slurry": "Slurry: %1$s",
   "gui.mekanism.stabilizer.center": "Chunk at (%1$s, %2$s) is always loaded.",
+  "gui.mekanism.stabilizer.radius.disable": "Right click to disable chunk loading for all chunks with a radius of %1$s around (%2$s, %3$s).",
+  "gui.mekanism.stabilizer.radius.enable": "Left click to enable chunk loading for all chunks with a radius of %1$s around (%2$s, %3$s).",
   "gui.mekanism.stabilizer.toggle_loading": "Toggle chunk loading %1$s at (%2$s, %3$s)",
   "gui.mekanism.storing": "Storing: %1$s",
   "gui.mekanism.ticks_required": "Ticks Required: %1$s",

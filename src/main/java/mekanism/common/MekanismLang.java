@@ -337,6 +337,8 @@ public enum MekanismLang implements ILangEntry {
     NEXT_ITEM("oredictionificator", "next_item"),
     //Stabilizer
     STABILIZER_CENTER("gui", "stabilizer.center"),
+    STABILIZER_ENABLE_RADIUS("gui", "stabilizer.radius.enable"),
+    STABILIZER_DISABLE_RADIUS("gui", "stabilizer.radius.disable"),
     STABILIZER_TOGGLE_LOADING("gui", "stabilizer.toggle_loading"),
     //Status
     STATUS("status", "format"),

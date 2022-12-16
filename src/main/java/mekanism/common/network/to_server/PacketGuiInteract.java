@@ -385,6 +385,16 @@ public class PacketGuiInteract implements IMekanismPacket {
             if (tile instanceof TileEntityDimensionalStabilizer stabilizer) {
                 stabilizer.toggleChunkLoadingAt(extra / TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER, extra % TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER);
             }
+        }),
+        ENABLE_RADIUS_CHUNKLOAD((tile, player, extra) -> {
+            if (tile instanceof TileEntityDimensionalStabilizer stabilizer) {
+                stabilizer.adjustChunkLoadingRadius(extra, true);
+            }
+        }),
+        DISABLE_RADIUS_CHUNKLOAD((tile, player, extra) -> {
+            if (tile instanceof TileEntityDimensionalStabilizer stabilizer) {
+                stabilizer.adjustChunkLoadingRadius(extra, false);
+            }
         });
 
         private final TriConsumer<TileEntityMekanism, Player, Integer> consumerForTile;

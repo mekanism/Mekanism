@@ -1000,6 +1000,8 @@
   "gui.mekanism.set": ":ʇǝS",
   "gui.mekanism.slurry": "%s :ʎɹɹnꞁS",
   "gui.mekanism.stabilizer.center": "˙pǝpɐoꞁ sʎɐʍꞁɐ sᴉ (%2$s '%1$s) ʇɐ ʞunɥƆ",
+  "gui.mekanism.stabilizer.radius.disable": "˙(%3$s '%s) punoɹɐ %1$s ɟo snᴉpɐɹ ɐ ɥʇᴉʍ sʞunɥɔ ꞁꞁɐ ɹoɟ ᵷuᴉpɐoꞁ ʞunɥɔ ǝꞁqɐsᴉp oʇ ʞɔᴉꞁɔ ʇɥᵷᴉᴚ",
+  "gui.mekanism.stabilizer.radius.enable": "˙(%3$s '%s) punoɹɐ %1$s ɟo snᴉpɐɹ ɐ ɥʇᴉʍ sʞunɥɔ ꞁꞁɐ ɹoɟ ᵷuᴉpɐoꞁ ʞunɥɔ ǝꞁqɐuǝ oʇ ʞɔᴉꞁɔ ʇɟǝꞀ",
   "gui.mekanism.stabilizer.toggle_loading": "(%3$s '%s) ʇɐ %1$s ᵷuᴉpɐoꞁ ʞunɥɔ ǝꞁᵷᵷo⟘",
   "gui.mekanism.storing": "%s :ᵷuᴉɹoʇS",
   "gui.mekanism.ticks_required": "%s :pǝɹᴉnbǝᴚ sʞɔᴉ⟘",

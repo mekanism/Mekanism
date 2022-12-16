@@ -977,6 +977,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.NEXT_ITEM, "Next Item");
         //Stabilizer
         add(MekanismLang.STABILIZER_CENTER, "Chunk at (%1$s, %2$s) is always loaded.");
+        add(MekanismLang.STABILIZER_ENABLE_RADIUS, "Left click to enable chunk loading for all chunks with a radius of %1$s around (%2$s, %3$s).");
+        add(MekanismLang.STABILIZER_DISABLE_RADIUS, "Right click to disable chunk loading for all chunks with a radius of %1$s around (%2$s, %3$s).");
         add(MekanismLang.STABILIZER_TOGGLE_LOADING, "Toggle chunk loading %1$s at (%2$s, %3$s)");
         //Status
         add(MekanismLang.STATUS, "Status: %1$s");

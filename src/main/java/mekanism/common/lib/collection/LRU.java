@@ -10,26 +10,26 @@ import org.jetbrains.annotations.NotNull;
 
 public class LRU<T> extends AbstractCollection<T> {
 
-    private final Map<T, LRUEntry> lookupMap = new Object2ObjectOpenHashMap<>();
+    private final Map<T, LRUEntry<T>> lookupMap = new Object2ObjectOpenHashMap<>();
 
-    private final LRUEntry head, tail;
+    private final LRUEntry<T> head, tail;
     private int size;
 
     public LRU() {
-        head = new LRUEntry(null);
-        tail = new LRUEntry(null);
+        head = new LRUEntry<>(null);
+        tail = new LRUEntry<>(null);
         head.next = tail;
         tail.prev = head;
     }
 
-    private void remove(LRUEntry entry) {
+    private void remove(LRUEntry<T> entry) {
         entry.next.prev = entry.prev;
         entry.prev.next = entry.next;
         size--;
         lookupMap.remove(entry.value);
     }
 
-    private void addFirst(LRUEntry entry) {
+    private void addFirst(LRUEntry<T> entry) {
         entry.prev = head;
         entry.next = head.next;
         entry.next.prev = entry;
@@ -40,12 +40,12 @@ public class LRU<T> extends AbstractCollection<T> {
 
     @Override
     public boolean add(T element) {
-        addFirst(new LRUEntry(element));
+        addFirst(new LRUEntry<>(element));
         return true;
     }
 
     public void moveUp(T element) {
-        LRUEntry entry = lookupMap.get(element);
+        LRUEntry<T> entry = lookupMap.get(element);
         if (entry == null) {
             return;
         }
@@ -55,7 +55,7 @@ public class LRU<T> extends AbstractCollection<T> {
 
     @Override
     public boolean remove(Object element) {
-        LRUEntry entry = lookupMap.get(element);
+        LRUEntry<T> entry = lookupMap.get(element);
         if (entry == null) {
             return false;
         }
@@ -74,17 +74,17 @@ public class LRU<T> extends AbstractCollection<T> {
     }
 
     public void reverseIterate(Consumer<T> callback) {
-        LRUEntry ptr = tail.prev;
+        LRUEntry<T> ptr = tail.prev;
         while (ptr != head) {
             callback.accept(ptr.value);
             ptr = ptr.prev;
         }
     }
 
-    private class LRUEntry {
+    private static class LRUEntry<T> {
 
         private final T value;
-        private LRUEntry prev, next;
+        private LRUEntry<T> prev, next;
 
         private LRUEntry(T value) {
             this.value = value;
@@ -104,7 +104,7 @@ public class LRU<T> extends AbstractCollection<T> {
     public class LRUIterator implements Iterator<T> {
 
         boolean reverse = false;
-        LRUEntry curEntry = head;
+        LRUEntry<T> curEntry = head;
 
         @Override
         public boolean hasNext() {
