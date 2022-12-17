@@ -1000,6 +1000,8 @@
   "gui.mekanism.set": "Ustawienie:",
   "gui.mekanism.slurry": "Zawiesina: %1$s",
   "gui.mekanism.stabilizer.center": "Chunk w (%1$s, %2$s) jest zawsze ładowany.",
+  "gui.mekanism.stabilizer.radius.disable": "Kliknij prawym przyciskiem myszy, aby wyłączyć ładowanie wszystkich chunków w promieniu %1$s od (%2$s, %3$s).",
+  "gui.mekanism.stabilizer.radius.enable": "Kliknij lewym przyciskiem myszy, aby włączyć ładowanie wszystkich chunków w promieniu %1$s od (%2$s, %3$s).",
   "gui.mekanism.stabilizer.toggle_loading": "Ustaw ładowania chunku %1$s w (%2$s, %3$s)",
   "gui.mekanism.storing": "Przechowywanie: %1$s",
   "gui.mekanism.ticks_required": "Wymagane ticki: %1$s",
