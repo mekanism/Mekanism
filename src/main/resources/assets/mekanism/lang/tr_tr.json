@@ -1000,6 +1000,8 @@
   "gui.mekanism.set": "Ayarla:",
   "gui.mekanism.slurry": "Bulamaç: %1$s",
   "gui.mekanism.stabilizer.center": "(%1$s,%2$s) konumundaki yığın her zaman yüklenecek.",
+  "gui.mekanism.stabilizer.radius.disable": "Sağ tıklayarak (%2$s,%3$s) çevresinde %1$s yarıçapındaki tüm yığınların yüklenmesini kapat.",
+  "gui.mekanism.stabilizer.radius.enable": "Sol tıklayarak (%2$s,%3$s) çevresinde %1$s yarıçapındaki tüm yığınların yüklenmesini aç.",
   "gui.mekanism.stabilizer.toggle_loading": "(%2$s,%3$s) konumundaki yığının yüklenmesi %1$s",
   "gui.mekanism.storing": "Depolanıyor: %1$s",
   "gui.mekanism.ticks_required": "%1$s tik gerekiyor",
