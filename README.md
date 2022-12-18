@@ -31,6 +31,18 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 
 ## Modifications by
 
+| Some Differences                                                                                    | MK                 | MK:[CE](https://www.curseforge.com/minecraft/mc-mods/mekanism-ce) | MK:[kmecpp](https://www.curseforge.com/minecraft/mc-mods/mekanism-patched) |
+| --------------------------------------------------------------------------------------------------- | ------------------ | ----------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Open Source                                                                                         | :heavy_check_mark: | :heavy_check_mark:                                                | :x:                                                                        |
+| Dupe: Chemical Washer                                                                               | :x:                | :heavy_check_mark:                                                | :heavy_check_mark:                                                         |
+| Dupe: Fluidtank                                                                                     | :x:                | :heavy_check_mark:                                                | :heavy_check_mark:                                                         |
+| Dupe: [Fluidstack](https://github.com/Thorfusion/Mekanism-1.7.10-Community-Edition/issues/49)       | :x:                | :heavy_check_mark:                                                | :x:                                                                        |
+| Dupe: Factories                                                                                     | :x:                | :heavy_check_mark:                                                | :heavy_check_mark:                                                         |
+| Dupe: Bins                                                                                          | :x:                | :heavy_check_mark:                                                | :heavy_check_mark:                                                         |
+| BUG: [Osmium Compressor](https://github.com/Thorfusion/Mekanism-1.7.10-Community-Edition/issues/32) | :x:                | :heavy_check_mark:                                                | :x:                                                                        |
+| BUG: [Storage Meter](https://github.com/Thorfusion/Mekanism-1.7.10-Community-Edition/issues/40)     | :x:                | :heavy_check_mark:                                                | :x:                                                                        |
+| NEW FEATURES |       :x:             |              :heavy_check_mark:                                                     |          :x:                                                                  |
+
 #### Clienthax : 
 + dupe bug with chemical washer and fluidtank, fixes issue with railcraft
 
