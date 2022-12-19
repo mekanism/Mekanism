@@ -1,6 +1,8 @@
 package mekanism.common.integration.lookingat.theoneprobe;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import mcjty.theoneprobe.api.CompoundText;
 import mcjty.theoneprobe.api.IProbeConfig;
 import mcjty.theoneprobe.api.IProbeConfig.ConfigMode;
@@ -32,8 +34,8 @@ import net.minecraftforge.fluids.FluidStack;
 //Registered via IMC
 public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, Void> {
 
-    private boolean displayFluidTanks;
-    private ConfigMode tankMode = ConfigMode.EXTENDED;
+    private BooleanSupplier displayFluidTanks;
+    private Supplier<ConfigMode> tankMode = () -> ConfigMode.EXTENDED;
 
     @Override
     public Void apply(ITheOneProbe probe) {
@@ -48,8 +50,8 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
         probe.registerElementFactory(new SlurryElementFactory());
         //Grab the default view settings
         IProbeConfig probeConfig = probe.createProbeConfig();
-        displayFluidTanks = probeConfig.getTankMode() > 0;
-        tankMode = probeConfig.getShowTankSetting();
+        displayFluidTanks = () -> probeConfig.getTankMode() > 0;
+        tankMode = probeConfig::getShowTankSetting;
         return null;
     }
 
@@ -73,19 +75,16 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
         }
         BlockEntity tile = WorldUtils.getTileEntity(world, pos);
         if (tile != null) {
-            LookingAtUtils.addInfo(new TOPLookingAtHelper(info), tile, displayTanks(mode), displayFluidTanks);
+            LookingAtUtils.addInfo(new TOPLookingAtHelper(info), tile, displayTanks(mode), displayFluidTanks.getAsBoolean());
         }
     }
 
     private boolean displayTanks(ProbeMode mode) {
-        if (tankMode == ConfigMode.NOT) {
-            //Don't display tanks
-            return false;
-        }
-        if (tankMode == ConfigMode.NORMAL) {
-            return mode == ProbeMode.NORMAL;
-        }
-        return mode == ProbeMode.EXTENDED;
+        return switch (tankMode.get()) {
+            case NOT -> false;//Don't display tanks
+            case NORMAL -> mode == ProbeMode.NORMAL;
+            case EXTENDED -> mode == ProbeMode.EXTENDED;
+        };
     }
 
     static class TOPLookingAtHelper implements LookingAtHelper {
