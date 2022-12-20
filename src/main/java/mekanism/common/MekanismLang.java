@@ -417,6 +417,7 @@ public enum MekanismLang implements ILangEntry {
     FILTER("filter", "filter"),
     FILTER_NEW("filter", "new"),
     FILTER_EDIT("filter", "edit"),
+    FILTER_STATE("filter", "state"),
     TEXT_FILTER_NO_MATCHES("filter", "no_matches"),
     MATERIAL_FILTER("filter", "material"),
     MATERIAL_FILTER_DETAILS("filter", "material.details"),

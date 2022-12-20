@@ -3,19 +3,16 @@ package mekanism.client.gui.element.custom.module;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.element.button.RadioButton;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.registries.MekanismSounds;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.resources.ResourceLocation;
 
 class BooleanToggle extends MiniElement {
 
-    private static final ResourceLocation RADIO = MekanismUtils.getResource(ResourceType.GUI, "radio_button.png");
-    private static final int RADIO_SIZE = 8;
+    private static final int RADIO_SIZE = RadioButton.RADIO_SIZE;
 
     private final ModuleConfigItem<Boolean> data;
 
@@ -31,17 +28,17 @@ class BooleanToggle extends MiniElement {
 
     @Override
     protected void renderBackground(PoseStack matrix, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, RADIO);
+        RenderSystem.setShaderTexture(0, RadioButton.RADIO);
         drawRadio(matrix, mouseX, mouseY, data.get(), 4, 11, 0);
         drawRadio(matrix, mouseX, mouseY, !data.get(), 50, 11, RADIO_SIZE);
     }
 
     private void drawRadio(PoseStack matrix, int mouseX, int mouseY, boolean selected, int relativeX, int relativeY, int selectedU) {
         if (selected) {
-            GuiComponent.blit(matrix, getX() + relativeX, getY() + relativeY, selectedU, RADIO_SIZE, RADIO_SIZE, RADIO_SIZE, 16, 16);
+            GuiComponent.blit(matrix, getX() + relativeX, getY() + relativeY, selectedU, RADIO_SIZE, RADIO_SIZE, RADIO_SIZE, 2 * RADIO_SIZE, 2 * RADIO_SIZE);
         } else {
             boolean hovered = mouseOver(mouseX, mouseY, relativeX, relativeY, RADIO_SIZE, RADIO_SIZE);
-            GuiComponent.blit(matrix, getX() + relativeX, getY() + relativeY, hovered ? RADIO_SIZE : 0, 0, RADIO_SIZE, RADIO_SIZE, 16, 16);
+            GuiComponent.blit(matrix, getX() + relativeX, getY() + relativeY, hovered ? RADIO_SIZE : 0, 0, RADIO_SIZE, RADIO_SIZE, 2 * RADIO_SIZE, 2 * RADIO_SIZE);
         }
     }
 

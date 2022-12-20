@@ -91,6 +91,10 @@ public final class NBTConstants {
     public static final String DUMP_RIGHT = "dumpRight";
     public static final String EDIT_MODE = "editMode";
     public static final String EJECT = "eject";
+    /**
+     * @since 10.3.6
+     */
+    public static final String ENABLED = "enabled";
     public static final String ENERGY_CONTAINERS = "EnergyContainers";
     public static final String ENERGY_STORED = "energy";
     public static final String ENERGY_USAGE = "energyUsage";

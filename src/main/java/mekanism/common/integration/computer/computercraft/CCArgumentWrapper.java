@@ -255,6 +255,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
         } else if (result instanceof IFilter<?> res) {
             Map<String, Object> wrapped = new HashMap<>();
             wrapped.put("type", wrapReturnType(res.getFilterType()));
+            wrapped.put("enabled", res.isEnabled());
             if (result instanceof IItemStackFilter<?> itemFilter) {
                 ItemStack stack = itemFilter.getItemStack();
                 wrapped.put("item", wrapReturnType(stack.getItem()));
@@ -447,6 +448,10 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                 IFilter<?> filter = BaseFilter.fromType(filterType);
                 if (expectedType.isInstance(filter)) {
                     //Validate the filter is of the type we expect
+                    Object enabled = map.get("enabled");
+                    if (enabled instanceof Boolean enable) {
+                        filter.setEnabled(enable);
+                    }
                     if (filter instanceof IItemStackFilter<?> itemFilter) {
                         ItemStack stack = tryCreateFilterItem(map.get("item"), map.get("itemNBT"));
                         if (stack.isEmpty()) {

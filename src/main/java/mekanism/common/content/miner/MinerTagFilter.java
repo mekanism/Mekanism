@@ -1,5 +1,6 @@
 package mekanism.common.content.miner;
 
+import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.FilterType;
@@ -63,14 +64,18 @@ public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagF
 
     @Override
     public int hashCode() {
-        int code = super.hashCode();
-        code = 31 * code + tagName.hashCode();
-        return code;
+        return Objects.hash(super.hashCode(), tagName);
     }
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(o) && o instanceof MinerTagFilter filter && filter.tagName.equals(tagName);
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
+            return false;
+        }
+        MinerTagFilter other = (MinerTagFilter) o;
+        return tagName.equals(other.tagName);
     }
 
     @Override

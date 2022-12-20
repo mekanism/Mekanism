@@ -51,6 +51,14 @@ public class NBTUtils {
         }
     }
 
+    public static void setBooleanIfPresentElse(CompoundTag nbt, String key, boolean fallback, BooleanConsumer setter) {
+        if (nbt.contains(key, Tag.TAG_BYTE)) {
+            setter.accept(nbt.getBoolean(key));
+        } else {
+            setter.accept(fallback);
+        }
+    }
+
     public static void setShortIfPresent(CompoundTag nbt, String key, ShortConsumer setter) {
         if (nbt.contains(key, Tag.TAG_SHORT)) {
             setter.accept(nbt.getShort(key));

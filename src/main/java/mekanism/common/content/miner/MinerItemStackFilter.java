@@ -1,5 +1,6 @@
 package mekanism.common.content.miner;
 
+import java.util.Objects;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.tags.MekanismTags;
@@ -67,14 +68,18 @@ public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> impl
 
     @Override
     public int hashCode() {
-        int code = super.hashCode();
-        code = 31 * code + itemType.hashCode();
-        return code;
+        return Objects.hash(super.hashCode(), itemType.getItem());
     }
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(o) && o instanceof MinerItemStackFilter filter && filter.itemType.sameItem(itemType);
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
+            return false;
+        }
+        MinerItemStackFilter other = (MinerItemStackFilter) o;
+        return itemType.sameItem(other.itemType);
     }
 
     @Override

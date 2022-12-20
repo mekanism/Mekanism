@@ -1,5 +1,6 @@
 package mekanism.common.content.qio.filter;
 
+import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.ITagFilter;
@@ -26,6 +27,7 @@ public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<
 
     @Override
     public void read(CompoundTag nbtTags) {
+        super.read(nbtTags);
         tagName = nbtTags.getString(NBTConstants.TAG_NAME);
     }
 
@@ -37,19 +39,24 @@ public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<
 
     @Override
     public void read(FriendlyByteBuf dataStream) {
+        super.read(dataStream);
         tagName = BasePacketHandler.readString(dataStream);
     }
 
     @Override
     public int hashCode() {
-        int code = 1;
-        code = 31 * code + tagName.hashCode();
-        return code;
+        return Objects.hash(super.hashCode(), tagName);
     }
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof QIOTagFilter filter && filter.tagName.equals(tagName);
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
+            return false;
+        }
+        QIOTagFilter other = (QIOTagFilter) o;
+        return tagName.equals(other.tagName);
     }
 
     @Override

@@ -36,8 +36,7 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.filter.BaseFilter;
-import mekanism.common.content.filter.IFilter;
+import mekanism.common.content.filter.SortableFilterManager;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.miner.ThreadMinerSearch;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
@@ -52,12 +51,10 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableRegistryEntry;
-import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.inventory.container.tile.DigitalMinerConfigContainer;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.chunkloading.IChunkLoader;
-import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
@@ -67,7 +64,6 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.IBoundingBlock;
-import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.interfaces.IHasVisualization;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
@@ -83,8 +79,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -116,13 +110,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IBoundingBlock, ITileFilterHolder<MinerFilter<?>>,
-      IHasSortableFilters, IHasVisualization {
+      IHasVisualization {
 
     public static final int DEFAULT_HEIGHT_RANGE = 60;
     public static final int DEFAULT_RADIUS = 10;
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private final SortableFilterManager<MinerFilter<?>> filterManager = new SortableFilterManager<MinerFilter<?>>((Class) MinerFilter.class, this::markForSave);
     private Long2ObjectMap<BitSet> oresToMine = Long2ObjectMaps.emptyMap();
-    private HashList<MinerFilter<?>> filters = new HashList<>();
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
 
     private int radius;
@@ -410,18 +405,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
     }
 
-    @Override
-    public void moveUp(int filterIndex) {
-        filters.swap(filterIndex, filterIndex - 1);
-        markForSave();
-    }
-
-    @Override
-    public void moveDown(int filterIndex) {
-        filters.swap(filterIndex, filterIndex + 1);
-        markForSave();
-    }
-
     private void tryMineBlock() {
         long target = targetChunk == null ? ChunkPos.INVALID_CHUNK_POS : targetChunk.toLong();
         for (ObjectIterator<Long2ObjectMap.Entry<BitSet>> it = oresToMine.long2ObjectEntrySet().iterator(); it.hasNext(); ) {
@@ -455,7 +438,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                         //Make sure the block is loaded and is not air, and is not in the blacklist of blocks the miner can break
                         // then check if the block matches one of our filters
                         MinerFilter<?> matchingFilter = null;
-                        for (MinerFilter<?> filter : filters) {
+                        for (MinerFilter<?> filter : filterManager.getEnabledFilters()) {
                             if (filter.canFilter(state)) {
                                 matchingFilter = filter;
                                 break;
@@ -718,12 +701,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             // things we are mining
             return inverseReplaceTargetMatches(target);
         }
-        for (MinerFilter<?> filter : filters) {
-            if (filter.replaceTargetMatches(target)) {
-                return true;
-            }
-        }
-        return false;
+        return filterManager.anyEnabledMatch(filter -> filter.replaceTargetMatches(target));
     }
 
     /**
@@ -891,13 +869,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             NBTUtils.writeRegistryEntry(dataMap, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, inverseReplaceTarget);
         }
         dataMap.putBoolean(NBTConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
-        if (!filters.isEmpty()) {
-            ListTag filterTags = new ListTag();
-            for (MinerFilter<?> filter : filters) {
-                filterTags.add(filter.write(new CompoundTag()));
-            }
-            dataMap.put(NBTConstants.FILTERS, filterTags);
-        }
+        filterManager.writeToNBT(dataMap);
     }
 
     @Override
@@ -923,15 +895,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.INVERSE, inverse -> this.inverse = inverse);
         inverseReplaceTarget = NBTUtils.readRegistryEntry(dataMap, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, Items.AIR);
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.INVERSE_REQUIRES_REPLACE, requiresReplace -> inverseRequiresReplacement = requiresReplace);
-        filters.clear();
-        NBTUtils.setListIfPresent(dataMap, NBTConstants.FILTERS, Tag.TAG_COMPOUND, tagList -> {
-            for (int i = 0, size = tagList.size(); i < size; i++) {
-                IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
-                if (filter instanceof MinerFilter<?> minerFilter) {
-                    filters.add(minerFilter);
-                }
-            }
-        });
+        filterManager.readFromNBT(dataMap);
     }
 
     @Override
@@ -1065,9 +1029,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    @ComputerMethod
-    public HashList<MinerFilter<?>> getFilters() {
-        return filters;
+    public SortableFilterManager<MinerFilter<?>> getFilterManager() {
+        return filterManager;
     }
 
     public MinerEnergyContainer getEnergyContainer() {
@@ -1114,13 +1077,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         container.track(SyncableBoolean.create(this::getInverse, value -> inverse = value));
         container.track(SyncableBoolean.create(this::getInverseRequiresReplacement, value -> inverseRequiresReplacement = value));
         container.track(SyncableRegistryEntry.create(ForgeRegistries.ITEMS, this::getInverseReplaceTarget, value -> inverseReplaceTarget = value));
-        container.track(SyncableFilterList.create(this::getFilters, value -> {
-            if (value instanceof HashList<MinerFilter<?>> filters) {
-                this.filters = filters;
-            } else {
-                this.filters = new HashList<>(value);
-            }
-        }));
+        filterManager.addContainerTrackers(container);
     }
 
     @NotNull
@@ -1299,15 +1256,20 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @ComputerMethod
+    private List<MinerFilter<?>> getFilters() {
+        return filterManager.getFilters();
+    }
+
+    @ComputerMethod
     private boolean addFilter(MinerFilter<?> filter) throws ComputerException {
         validateCanChangeConfiguration();
-        return filters.add(filter);
+        return filterManager.addFilter(filter);
     }
 
     @ComputerMethod
     private boolean removeFilter(MinerFilter<?> filter) throws ComputerException {
         validateCanChangeConfiguration();
-        return filters.remove(filter);
+        return filterManager.removeFilter(filter);
     }
     //End methods IComputerTile
 

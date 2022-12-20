@@ -15,8 +15,7 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedValue.IConfigValueInvalidationListener;
-import mekanism.common.content.filter.BaseFilter;
-import mekanism.common.content.filter.IFilter;
+import mekanism.common.content.filter.FilterManager;
 import mekanism.common.content.oredictionificator.OredictionificatorFilter;
 import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.integration.computer.ComputerException;
@@ -25,10 +24,8 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.TagUtils;
@@ -38,11 +35,8 @@ import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -56,7 +50,7 @@ import org.jetbrains.annotations.NotNull;
 //TODO - V11: Make this support other tag types, such as fluids
 public class TileEntityOredictionificator extends TileEntityConfigurableMachine implements ISustainedData, ITileFilterHolder<OredictionificatorItemFilter> {
 
-    private HashList<OredictionificatorItemFilter> filters = new HashList<>();
+    private final FilterManager<OredictionificatorItemFilter> filterManager = new FilterManager<>(OredictionificatorItemFilter.class, this::markForSave);
     public boolean didProcess;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
@@ -88,7 +82,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (CommonWorldTickHandler.flushTagAndRecipeCaches) {
-            for (OredictionificatorFilter<?, ?, ?> filter : filters) {
+            for (OredictionificatorFilter<?, ?, ?> filter : filterManager.getFilters()) {
                 filter.flushCachedTag();
             }
         }
@@ -165,9 +159,10 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     private ItemStack getResult(ItemStack stack) {
-        if (!filters.isEmpty()) {
+        List<OredictionificatorItemFilter> enabledFilters = filterManager.getEnabledFilters();
+        if (!enabledFilters.isEmpty()) {
             for (ResourceLocation filterableTag : getFilterableTags(stack)) {
-                for (OredictionificatorItemFilter filter : filters) {
+                for (OredictionificatorItemFilter filter : enabledFilters) {
                     if (filter.filterMatches(filterableTag)) {
                         ItemStack result = filter.getResult();
                         if (!result.isEmpty()) {
@@ -183,26 +178,12 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
     @Override
     public void writeSustainedData(CompoundTag dataMap) {
-        if (!filters.isEmpty()) {
-            ListTag filterList = new ListTag();
-            for (OredictionificatorFilter<?, ?, ?> filter : filters) {
-                filterList.add(filter.write(new CompoundTag()));
-            }
-            dataMap.put(NBTConstants.FILTERS, filterList);
-        }
+        filterManager.writeToNBT(dataMap);
     }
 
     @Override
     public void readSustainedData(CompoundTag dataMap) {
-        filters.clear();
-        NBTUtils.setListIfPresent(dataMap, NBTConstants.FILTERS, Tag.TAG_COMPOUND, filterList -> {
-            for (int i = 0, size = filterList.size(); i < size; i++) {
-                IFilter<?> filter = BaseFilter.readFromNBT(filterList.getCompound(i));
-                if (filter instanceof OredictionificatorItemFilter oredictionificatorFilter) {
-                    filters.add(oredictionificatorFilter);
-                }
-            }
-        });
+        filterManager.readFromNBT(dataMap);
     }
 
     @Override
@@ -218,35 +199,33 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     @Override
-    @ComputerMethod
-    public HashList<OredictionificatorItemFilter> getFilters() {
-        return filters;
+    public FilterManager<OredictionificatorItemFilter> getFilterManager() {
+        return filterManager;
     }
 
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(() -> didProcess, value -> didProcess = value));
-        container.track(SyncableFilterList.create(this::getFilters, value -> {
-            if (value instanceof HashList<OredictionificatorItemFilter> filters) {
-                this.filters = filters;
-            } else {
-                this.filters = new HashList<>(value);
-            }
-        }));
+        filterManager.addContainerTrackers(container);
     }
 
     //Methods relating to IComputerTile
     @ComputerMethod
+    private List<OredictionificatorItemFilter> getFilters() {
+        return filterManager.getFilters();
+    }
+
+    @ComputerMethod
     private boolean addFilter(OredictionificatorItemFilter filter) throws ComputerException {
         validateSecurityIsPublic();
-        return filters.add(filter);
+        return filterManager.addFilter(filter);
     }
 
     @ComputerMethod
     private boolean removeFilter(OredictionificatorItemFilter filter) throws ComputerException {
         validateSecurityIsPublic();
-        return filters.remove(filter);
+        return filterManager.removeFilter(filter);
     }
     //End methods IComputerTile
 
@@ -254,7 +233,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
         @Override
         public void run() {
-            for (OredictionificatorItemFilter filter : filters) {
+            for (OredictionificatorItemFilter filter : filterManager.getFilters()) {
                 //Check each filter for validity
                 filter.checkValidity();
             }

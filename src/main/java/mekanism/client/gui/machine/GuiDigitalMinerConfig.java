@@ -108,7 +108,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         // Note: We add this after all the buttons have their warnings added so that it is further down the tracker
         // so the tracker can short circuit on this type of warning and not have to check all the filters if one of
         // the ones that are currently being shown has the warning
-        trackWarning(WarningType.FILTER_HAS_BLACKLISTED_ELEMENT, () -> tile.getFilters().stream().anyMatch(MinerFilter::hasBlacklistedElement));
+        trackWarning(WarningType.FILTER_HAS_BLACKLISTED_ELEMENT, () -> tile.getFilterManager().anyEnabledMatch(MinerFilter::hasBlacklistedElement));
     }
 
     private void updateInverseReplaceTarget(Item target) {
@@ -126,7 +126,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         super.drawForegroundText(matrix, mouseX, mouseY);
         renderTitleText(matrix);
         drawScaledTextScaledBound(matrix, MekanismLang.FILTERS.translate(), 14, 22, screenTextColor(), 36, 0.8F);
-        drawScaledTextScaledBound(matrix, MekanismLang.FILTER_COUNT.translate(getFilters().size()), 14, 31, screenTextColor(), 36, 0.8F);
+        drawScaledTextScaledBound(matrix, MekanismLang.FILTER_COUNT.translate(getFilterManager().count()), 14, 31, screenTextColor(), 36, 0.8F);
         drawScaledTextScaledBound(matrix, MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 14, 40, screenTextColor(), 36, 0.8F);
         drawScaledTextScaledBound(matrix, MekanismLang.MIN.translate(tile.getMinY()), 14, 65, screenTextColor(), 36, 0.8F);
         drawScaledTextScaledBound(matrix, MekanismLang.MAX.translate(tile.getMaxY()), 14, 90, screenTextColor(), 36, 0.8F);
@@ -158,7 +158,8 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
 
     @Override
     protected FilterButton addFilterButton(FilterButton button) {
-        return super.addFilterButton(button).warning(WarningType.FILTER_HAS_BLACKLISTED_ELEMENT, filter -> filter instanceof MinerFilter<?> minerFilter && minerFilter.hasBlacklistedElement());
+        return super.addFilterButton(button).warning(WarningType.FILTER_HAS_BLACKLISTED_ELEMENT, filter -> filter instanceof MinerFilter<?> minerFilter &&
+                                                                                                           filter.isEnabled() && minerFilter.hasBlacklistedElement());
     }
 
     private void setText(GuiTextField field, GuiInteraction interaction) {

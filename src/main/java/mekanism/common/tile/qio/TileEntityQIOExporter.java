@@ -70,24 +70,24 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
 
     private void tryEject() {
         QIOFrequency freq = getQIOFrequency();
+        if (freq == null) {
+            return;
+        }
         Direction direction = getDirection();
         BlockEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(direction.getOpposite()));
-        if (freq == null || !InventoryUtils.isItemHandler(back, direction)) {
+        if (!InventoryUtils.isItemHandler(back, direction)) {
             return;
         }
-        if (!exportWithoutFilter && getFilters().isEmpty()) {
-            return;
-        }
-        if (exportWithoutFilter && getFilters().isEmpty()) {
-            filterlessEjector.eject(freq, back, freq.getItemDataMap().entrySet());
-        } else if (!getFilters().isEmpty()) {
+        if (getFilterManager().hasEnabledFilters()) {
             filterEjector.eject(freq, back, getFilterEjectMap(back, freq).object2LongEntrySet());
+        } else if (exportWithoutFilter) {
+            filterlessEjector.eject(freq, back, freq.getItemDataMap().entrySet());
         }
     }
 
     private Object2LongMap<HashedItem> getFilterEjectMap(BlockEntity back, QIOFrequency freq) {
         Object2LongMap<HashedItem> map = new Object2LongOpenHashMap<>();
-        for (QIOFilter<?> filter : getFilters()) {
+        for (QIOFilter<?> filter : getFilterManager().getEnabledFilters()) {
             if (filter instanceof QIOItemStackFilter itemFilter) {
                 if (itemFilter.fuzzyMode) {
                     map.putAll(freq.getStacksByItem(itemFilter.getItemStack().getItem()));

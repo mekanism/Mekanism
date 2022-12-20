@@ -1,5 +1,6 @@
 package mekanism.common.content.transporter;
 
+import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
@@ -8,6 +9,7 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
 public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> implements IItemStackFilter<SorterItemStackFilter> {
@@ -60,15 +62,24 @@ public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> i
 
     @Override
     public int hashCode() {
-        int code = super.hashCode();
-        code = 31 * code + itemType.hashCode();
-        code = 31 * code + (fuzzyMode ? 1 : 0);
-        return code;
+        return Objects.hash(super.hashCode(), itemType.getItem(), fuzzyMode);
     }
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(o) && o instanceof SorterItemStackFilter filter && filter.itemType.sameItem(itemType) && filter.fuzzyMode == fuzzyMode;
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
+            return false;
+        }
+        SorterItemStackFilter other = (SorterItemStackFilter) o;
+        if (fuzzyMode == other.fuzzyMode) {
+            if (fuzzyMode) {
+                return itemType.sameItem(other.itemType);
+            }
+            return ItemHandlerHelper.canItemStacksStack(itemType, other.itemType);
+        }
+        return false;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package mekanism.common.content.miner;
 
+import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.util.NBTUtils;
@@ -44,6 +45,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
 
     @Override
     public void read(CompoundTag nbtTags) {
+        super.read(nbtTags);
         requiresReplacement = nbtTags.getBoolean(NBTConstants.REQUIRE_STACK);
         replaceTarget = NBTUtils.readRegistryEntry(nbtTags, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, Items.AIR);
     }
@@ -57,20 +59,24 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
 
     @Override
     public void read(FriendlyByteBuf dataStream) {
+        super.read(dataStream);
         requiresReplacement = dataStream.readBoolean();
         replaceTarget = dataStream.readRegistryIdSafe(Item.class);
     }
 
     @Override
     public int hashCode() {
-        int code = 1;
-        code = 31 * code + replaceTarget.hashCode();
-        code = 31 * code + (requiresReplacement ? 1 : 0);
-        return code;
+        return Objects.hash(super.hashCode(), replaceTarget, requiresReplacement);
     }
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof MinerFilter<?> filter && filter.requiresReplacement == requiresReplacement && filter.replaceTarget == replaceTarget;
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
+            return false;
+        }
+        MinerFilter<?> other = (MinerFilter<?>) o;
+        return requiresReplacement == other.requiresReplacement && replaceTarget == other.replaceTarget;
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.common.content.transporter;
 
+import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IModIDFilter;
@@ -52,14 +53,18 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
 
     @Override
     public int hashCode() {
-        int code = super.hashCode();
-        code = 31 * code + modID.hashCode();
-        return code;
+        return Objects.hash(super.hashCode(), modID);
     }
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(o) && o instanceof SorterModIDFilter filter && filter.modID.equals(modID);
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
+            return false;
+        }
+        SorterModIDFilter other = (SorterModIDFilter) o;
+        return modID.equals(other.modID);
     }
 
     @Override

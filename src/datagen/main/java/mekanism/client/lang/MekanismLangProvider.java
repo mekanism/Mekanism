@@ -1057,6 +1057,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.FILTER, "Filter");
         add(MekanismLang.FILTER_NEW, "New: %1$s");
         add(MekanismLang.FILTER_EDIT, "Edit: %1$s");
+        add(MekanismLang.FILTER_STATE, "Filter: %1$s");
         add(MekanismLang.SORTER_SIZE_MODE, "Size Mode");
         add(MekanismLang.SORTER_SIZE_MODE_CONFLICT, "Size Mode - has no effect currently, because single item mode is turned on.");
         add(MekanismLang.FUZZY_MODE, "Fuzzy Mode");

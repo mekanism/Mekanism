@@ -1,5 +1,6 @@
 package mekanism.common.content.transporter;
 
+import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.BaseFilter;
@@ -55,6 +56,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
 
     @Override
     public void read(CompoundTag nbtTags) {
+        super.read(nbtTags);
         NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.ALLOW_DEFAULT, value -> allowDefault = value);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
         NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.SIZE_MODE, value -> sizeMode = value);
@@ -74,6 +76,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
 
     @Override
     public void read(FriendlyByteBuf dataStream) {
+        super.read(dataStream);
         allowDefault = dataStream.readBoolean();
         color = TransporterUtils.readColor(dataStream.readVarInt());
         sizeMode = dataStream.readBoolean();
@@ -83,16 +86,17 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
 
     @Override
     public int hashCode() {
-        int code = 1;
-        code = 31 * code + (color == null ? -1 : color.ordinal());
-        code = 31 * code + (sizeMode ? 1 : 0);
-        code = 31 * code + min;
-        code = 31 * code + max;
-        return code;
+        return Objects.hash(super.hashCode(), color, allowDefault, sizeMode, min, max);
     }
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof SorterFilter<?> filter && filter.color == color && filter.sizeMode == sizeMode && filter.min == min && filter.max == max;
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
+            return false;
+        }
+        SorterFilter<?> other = (SorterFilter<?>) o;
+        return allowDefault == other.allowDefault && sizeMode == other.sizeMode && min == other.min && max == other.max && color == other.color;
     }
 }

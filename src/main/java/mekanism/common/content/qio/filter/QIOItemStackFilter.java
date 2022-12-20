@@ -1,5 +1,6 @@
 package mekanism.common.content.qio.filter;
 
+import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
@@ -8,6 +9,7 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 
 public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements IItemStackFilter<QIOItemStackFilter> {
@@ -37,6 +39,7 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
 
     @Override
     public void read(CompoundTag nbtTags) {
+        super.read(nbtTags);
         NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.FUZZY_MODE, fuzzy -> fuzzyMode = fuzzy);
         itemType = ItemStack.of(nbtTags);
     }
@@ -50,21 +53,31 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
 
     @Override
     public void read(FriendlyByteBuf dataStream) {
+        super.read(dataStream);
         fuzzyMode = dataStream.readBoolean();
         itemType = dataStream.readItem();
     }
 
     @Override
     public int hashCode() {
-        int code = 1;
-        code = 31 * code + itemType.hashCode();
-        code = 31 * code + (fuzzyMode ? 1 : 0);
-        return code;
+        return Objects.hash(super.hashCode(), itemType.getItem(), fuzzyMode);
     }
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof QIOItemStackFilter filter && filter.itemType.sameItem(itemType) && filter.fuzzyMode == fuzzyMode;
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
+            return false;
+        }
+        QIOItemStackFilter other = (QIOItemStackFilter) o;
+        if (fuzzyMode == other.fuzzyMode) {
+            if (fuzzyMode) {
+                return itemType.sameItem(other.itemType);
+            }
+            return ItemHandlerHelper.canItemStacksStack(itemType, other.itemType);
+        }
+        return false;
     }
 
     @Override

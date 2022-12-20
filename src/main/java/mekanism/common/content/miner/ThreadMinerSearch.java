@@ -2,10 +2,9 @@ package mekanism.common.content.miner;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import java.util.BitSet;
-import java.util.List;
-import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent;
@@ -42,12 +41,11 @@ public class ThreadMinerSearch extends Thread {
     @Override
     public void run() {
         state = State.SEARCHING;
-        List<MinerFilter<?>> filters = tile.getFilters();
-        if (!tile.getInverse() && filters.isEmpty()) {
+        if (!tile.getInverse() && !tile.getFilterManager().hasEnabledFilters()) {
             state = State.FINISHED;
             return;
         }
-        Map<Block, MinerFilter<?>> acceptedItems = new Object2ObjectOpenHashMap<>();
+        Object2BooleanMap<Block> acceptedItems = new Object2BooleanOpenHashMap<>();
         BlockPos pos = tile.getStartingPos();
         int diameter = tile.getDiameter();
         int size = tile.getTotalSize();
@@ -69,26 +67,18 @@ public class ThreadMinerSearch extends Thread {
                 continue;
             }
             info = state.getBlock();
-            if (MekanismUtils.isLiquidBlock(info)) {
-                //Skip liquids
+            if (MekanismUtils.isLiquidBlock(info)) {//Skip liquids
                 continue;
             }
-            MinerFilter<?> filterFound = null;
-            if (acceptedItems.containsKey(info)) {
-                filterFound = acceptedItems.get(info);
-            } else {
-                if (tile.isReplaceTarget(info.asItem())) {
-                    continue;
+            boolean accepted = acceptedItems.computeIfAbsent(info, (Block block) -> {
+                if (tile.isReplaceTarget(block.asItem())) {
+                    //If it is a replace target just mark it as never being accepted
+                    return false;
                 }
-                for (MinerFilter<?> filter : filters) {
-                    if (filter.canFilter(state)) {
-                        filterFound = filter;
-                        break;
-                    }
-                }
-                acceptedItems.put(info, filterFound);
-            }
-            if (tile.getInverse() == (filterFound == null)) {
+                //Ensure that the inverse mode is the opposite of the filter match
+                return tile.getInverse() != tile.getFilterManager().anyEnabledMatch(filter -> filter.canFilter(state));
+            });
+            if (accepted) {
                 long chunk = ChunkPos.asLong(testPos);
                 oresToMine.computeIfAbsent(chunk, k -> new BitSet()).set(i);
                 found++;

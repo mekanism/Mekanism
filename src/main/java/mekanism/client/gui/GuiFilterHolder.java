@@ -10,13 +10,13 @@ import mekanism.client.gui.element.button.MovableFilterButton;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.common.Mekanism;
 import mekanism.common.base.TagCache;
+import mekanism.common.content.filter.FilterManager;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.lib.collection.HashList;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -50,18 +50,19 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         addRenderableWidget(new GuiElementHolder(this, 55, 17, 98, 118));
         //new filter button border
         addRenderableWidget(new GuiElementHolder(this, 55, 135, 98, 22));
-        scrollBar = addRenderableWidget(new GuiScrollBar(this, 153, 17, 140, () -> getFilters().size(), () -> FILTER_COUNT));
+        FilterManager<FILTER> filterManager = getFilterManager();
+        scrollBar = addRenderableWidget(new GuiScrollBar(this, 153, 17, 140, filterManager::count, () -> FILTER_COUNT));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
-            addFilterButton(new MovableFilterButton(this, 56, 18 + i * 29, i, scrollBar::getCurrentSelection, this::getFilters, index -> {
+            addFilterButton(new MovableFilterButton(this, 56, 18 + i * 29, i, scrollBar::getCurrentSelection, filterManager, index -> {
                 if (index > 0) {
                     Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_UP, tile, index));
                 }
             }, index -> {
-                if (index < getFilters().size() - 1) {
+                if (index < filterManager.count() - 1) {
                     Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_DOWN, tile, index));
                 }
-            }, this::onClick, filter -> {
+            }, this::onClick, index -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_FILTER_STATE, tile, index)), filter -> {
                 List<ItemStack> list = new ArrayList<>();
                 if (filter != null) {
                     if (filter instanceof IItemStackFilter<?> itemFilter) {
@@ -83,8 +84,8 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         return addRenderableWidget(button);
     }
 
-    protected HashList<FILTER> getFilters() {
-        return tile.getFilters();
+    protected FilterManager<FILTER> getFilterManager() {
+        return tile.getFilterManager();
     }
 
     protected abstract void onClick(IFilter<?> filter, int index);
