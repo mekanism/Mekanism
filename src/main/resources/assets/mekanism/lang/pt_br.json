@@ -872,6 +872,7 @@
   "filter.mekanism.sorter.size_mode": "Modo de Tamanho",
   "filter.mekanism.sorter.size_mode.conflict": "Modo de Tamanho - não possui efeito atualmente, pois o modo de item único está ativado.",
   "filter.mekanism.sorter.size_mode.on": "%1$s!",
+  "filter.mekanism.state": "Filtro: %1$s",
   "filter.mekanism.tag": "Filtro de Marcação",
   "filter.mekanism.tag.key": "Marcação: %1$s",
   "filter.mekanism.tag.no_key": "Nenhuma marcação",
