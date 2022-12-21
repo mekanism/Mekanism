@@ -872,6 +872,7 @@
   "filter.mekanism.sorter.size_mode": "Boyut Modu",
   "filter.mekanism.sorter.size_mode.conflict": "Boyut Modu - Şuanda bir etkisi yok çünkü tekli eşya modu aktif durumda.",
   "filter.mekanism.sorter.size_mode.on": "%1$s!",
+  "filter.mekanism.state": "Filtre: %1$s",
   "filter.mekanism.tag": "Etiket Filtresi",
   "filter.mekanism.tag.key": "Etiket: %1$s",
   "filter.mekanism.tag.no_key": "Etiket Yok",
