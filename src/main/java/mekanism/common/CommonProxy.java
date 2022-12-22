@@ -312,7 +312,7 @@ public class CommonProxy implements IGuiProvider
 		general.enableSiliconCompat = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableSiliconCompat", true).getBoolean();
 
 
-		String s = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyType", "J", null, new String[]{"J", "RF", "MJ", "EU"}).getString();
+		String s = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyType", "RF", null, new String[]{"J", "RF", "MJ", "EU"}).getString();
 
 		if(s != null)
 		{
