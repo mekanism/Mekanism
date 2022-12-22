@@ -74,6 +74,8 @@ public class MekanismConfig
 		public static boolean OreDictOsmium;
 		public static boolean OreDictPlatinum;
 		public static boolean enableSiliconCompat;
+		public static int IC2SinkTier;
+		public static int IC2SourceTier;
 	}
 
 	public static class client
