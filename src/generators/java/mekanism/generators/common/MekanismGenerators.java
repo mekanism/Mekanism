@@ -49,10 +49,10 @@ public class MekanismGenerators implements IModModule {
 
     public static final String MODID = "mekanismgenerators";
     private static final ConfigBasedCachedFLSupplier ETHENE_ENERGY_DENSITY = new ConfigBasedCachedFLSupplier(() -> {
-        //1mB hydrogen + 2*bioFuel/tick*200ticks/100mB * 20x efficiency bonus
-        FloatingLong energy = MekanismGeneratorsConfig.generators.bioGeneration.get().multiply(2L * MekanismConfig.general.ETHENE_BURN_TIME.get());
-        return MekanismConfig.general.FROM_H2.get().add(energy);
-    }, MekanismConfig.general.FROM_H2, MekanismGeneratorsConfig.generators.bioGeneration, MekanismConfig.general.ETHENE_BURN_TIME);
+        FloatingLong energy = MekanismGeneratorsConfig.generators.bioGeneration.get().multiply(2)
+              .timesEqual(MekanismGeneratorsConfig.generators.ethyleneDensityMultiplier.get());
+        return energy.plusEqual(MekanismConfig.general.FROM_H2.get());
+    }, MekanismConfig.general.FROM_H2, MekanismGeneratorsConfig.generators.bioGeneration, MekanismGeneratorsConfig.generators.ethyleneDensityMultiplier);
 
     public static MekanismGenerators instance;
 
@@ -103,7 +103,7 @@ public class MekanismGenerators implements IModModule {
             //Ensure our tags are all initialized
             GeneratorTags.init();
             //Add fuel attribute to ethene
-            MekanismGases.ETHENE.get().addAttribute(new Fuel(MekanismConfig.general.ETHENE_BURN_TIME, ETHENE_ENERGY_DENSITY));
+            MekanismGases.ETHENE.get().addAttribute(new Fuel(MekanismGeneratorsConfig.generators.ethyleneBurnTicks, ETHENE_ENERGY_DENSITY));
             //Register dispenser behaviors
             GeneratorsFluids.FLUIDS.registerBucketDispenserBehavior();
             //Register extended build commands (in enqueue as it is not thread safe)

@@ -21,6 +21,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     private static final String TURBINE_CATEGORY = "turbine";
     private static final String WIND_CATEGORY = "wind_generator";
     private static final String HEAT_CATEGORY = "heat_generator";
+    private static final String GAS_CATEGORY = "gas_generator";
     private static final String HOHLRAUM_CATEGORY = "hohlraum";
     private static final String FUSION_CATEGORY = "fusion_reactor";
     private static final String FISSION_CATEGORY = "fission_reactor";
@@ -33,6 +34,10 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue heatGenerationLava;
     public final CachedFloatingLongValue heatGenerationNether;
     public final CachedIntValue heatGenerationFluidRate;
+
+    public final CachedIntValue ethyleneBurnTicks;
+    public final CachedFloatingLongValue ethyleneDensityMultiplier;
+
     public final CachedFloatingLongValue solarGeneration;
     public final CachedIntValue turbineBladesPerCoil;
     public final CachedDoubleValue turbineVentGasFlow;
@@ -85,6 +90,13 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               "heatGenerationNether", FloatingLong.createConst(100));
         heatGenerationFluidRate = CachedIntValue.wrap(this, builder.comment("The amount of lava in mB that gets consumed to transfer heatGeneration Joules to the Heat Generator.")
               .defineInRange("heatGenerationFluidRate", 10, 1, TileEntityHeatGenerator.MAX_FLUID));
+        builder.pop();
+
+        builder.comment("Gas-Burning Generator Settings").push(GAS_CATEGORY);
+        ethyleneBurnTicks = CachedIntValue.wrap(this, builder.comment("The number of ticks each mB of Ethylene burns for in the Gas-Burning Generator.")
+              .defineInRange("ethyleneBurnTicks", 40, 1, Integer.MAX_VALUE));
+        ethyleneDensityMultiplier = CachedFloatingLongValue.define(this, builder, "Multiplier for calculating the energy density of Ethylene (1 mB Hydrogen + 2 * bioGeneration * densityMultiplier).",
+              "ethyleneDensityMultiplier", FloatingLong.createConst(40), CachedFloatingLongValue.POSITIVE);
         builder.pop();
 
         builder.comment("Turbine Settings").push(TURBINE_CATEGORY);
