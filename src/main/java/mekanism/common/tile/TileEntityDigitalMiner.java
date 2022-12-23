@@ -14,6 +14,7 @@ import java.util.Set;
 
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig;
 import mekanism.api.MekanismConfig.usage;
 import mekanism.api.Range4D;
 import mekanism.common.HashList;
@@ -647,7 +648,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	{
 		super.readFromNBT(nbtTags);
 
-		radius = nbtTags.getInteger("radius");
+		radius = Math.min(nbtTags.getInteger("radius"), MekanismConfig.general.digitalMinerMaxRadius);
 		minY = nbtTags.getInteger("minY");
 		maxY = nbtTags.getInteger("maxY");
 		doEject = nbtTags.getBoolean("doEject");
@@ -742,7 +743,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 			}
 			else if(type == 6)
 			{
-				radius = dataStream.readInt();
+				radius = Math.min(dataStream.readInt(), MekanismConfig.general.digitalMinerMaxRadius);
 			}
 			else if(type == 7)
 			{
@@ -1409,7 +1410,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 	@Override
 	public void setConfigurationData(NBTTagCompound nbtTags)
 	{
-		radius = nbtTags.getInteger("radius");
+		radius = Math.min(nbtTags.getInteger("radius"), MekanismConfig.general.digitalMinerMaxRadius);
 		minY = nbtTags.getInteger("minY");
 		maxY = nbtTags.getInteger("maxY");
 		doEject = nbtTags.getBoolean("doEject");

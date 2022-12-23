@@ -74,8 +74,9 @@ public class MekanismConfig
 		public static boolean OreDictOsmium;
 		public static boolean OreDictPlatinum;
 		public static boolean enableSiliconCompat;
-		public static int IC2SinkTier;
+    public static int IC2SinkTier;
 		public static int IC2SourceTier;
+    public static int digitalMinerMaxRadius;
 	}
 
 	public static class client
@@ -169,7 +170,6 @@ public class MekanismConfig
 	public static class tools
 	{
 		public static double armorSpawnRate;
-		public static boolean enableTools = true;
 	}
 
 	public static class recipes
