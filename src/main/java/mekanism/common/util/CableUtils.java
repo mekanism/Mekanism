@@ -27,7 +27,7 @@ public final class CableUtils
 	public static boolean isEnergyAcceptor(TileEntity tileEntity)
 	{
 		return (tileEntity instanceof IStrictEnergyAcceptor ||
-				(MekanismUtils.useIC2() && tileEntity instanceof IEnergySink) ||
+				(MekanismUtils.useIC2() && getIC2Tile(tileEntity) instanceof IEnergySink) ||
 				(MekanismUtils.useRF() && tileEntity instanceof IEnergyReceiver));
 	}
 
@@ -108,7 +108,7 @@ public final class CableUtils
 	public static boolean isOutputter(TileEntity tileEntity, ForgeDirection side)
 	{
 		return (tileEntity instanceof ICableOutputter && ((ICableOutputter)tileEntity).canOutputTo(side.getOpposite())) ||
-				(MekanismUtils.useIC2() && tileEntity instanceof IEnergySource && ((IEnergySource)tileEntity).emitsEnergyTo(null, side.getOpposite())) ||
+				(MekanismUtils.useIC2() && getIC2Tile(tileEntity) instanceof IEnergySource && ((IEnergySource)getIC2Tile(tileEntity)).emitsEnergyTo(null, side.getOpposite())) ||
 				(MekanismUtils.useRF() && tileEntity instanceof IEnergyProvider && ((IEnergyConnection)tileEntity).canConnectEnergy(side.getOpposite()));
 	}
 
@@ -126,9 +126,9 @@ public final class CableUtils
 				return true;
 			}
 		}
-		else if(MekanismUtils.useIC2() && tileEntity instanceof IEnergyAcceptor)
+		else if(MekanismUtils.useIC2() && getIC2Tile(tileEntity) instanceof IEnergyAcceptor)
 		{
-			if(((IEnergyAcceptor)tileEntity).acceptsEnergyFrom(orig, side.getOpposite()))
+			if(((IEnergyAcceptor)getIC2Tile(tileEntity)).acceptsEnergyFrom(orig, side.getOpposite()))
 			{
 				return true;
 			}
@@ -246,16 +246,23 @@ public final class CableUtils
 				sent += used*general.FROM_TE;
 			}
 		}
-		else if(MekanismUtils.useIC2() && tileEntity instanceof IEnergySink)
+		else if(MekanismUtils.useIC2() && getIC2Tile(tileEntity) instanceof IEnergySink)
 		{
-			if(((IEnergySink)tileEntity).acceptsEnergyFrom((TileEntity)from, side.getOpposite()))
+			IEnergySink sink = (IEnergySink) getIC2Tile(tileEntity);
+			if(sink.acceptsEnergyFrom((TileEntity)from, side.getOpposite()))
 			{
-				double toSend = Math.min(currentSending, EnergyNet.instance.getPowerFromTier(((IEnergySink)tileEntity).getSinkTier())*general.FROM_IC2);
-				toSend = Math.min(Math.min(toSend, ((IEnergySink)tileEntity).getDemandedEnergy()*general.FROM_IC2), Integer.MAX_VALUE);
-				sent += (toSend - (((IEnergySink)tileEntity).injectEnergy(side.getOpposite(), toSend*general.TO_IC2, 0)*general.FROM_IC2));
+				double toSend = Math.min(currentSending, EnergyNet.instance.getPowerFromTier(sink.getSinkTier())*general.FROM_IC2);
+				toSend = Math.min(Math.min(toSend, sink.getDemandedEnergy()*general.FROM_IC2), Integer.MAX_VALUE);
+				sent += (toSend - (sink.injectEnergy(side.getOpposite(), toSend*general.TO_IC2, 0)*general.FROM_IC2));
 			}
 		}
 
 		return sent;
 	}
+
+	public static TileEntity getIC2Tile(TileEntity tileEntity) {
+		if (tileEntity == null) return null;
+		return EnergyNet.instance.getTileEntity(tileEntity.getWorldObj(), tileEntity.xCoord, tileEntity.yCoord, tileEntity.zCoord);
+	}
+
 }

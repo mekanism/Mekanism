@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.transmitters.ITransmitterTile;
 import mekanism.common.base.IEnergyWrapper;
@@ -268,14 +269,14 @@ public abstract class TileEntityElectricBlock extends TileEntityContainerBlock i
 	@Method(modid = "IC2")
 	public int getSinkTier()
 	{
-		return 4;
+		return general.IC2SinkTier;
 	}
 
 	@Override
 	@Method(modid = "IC2")
 	public int getSourceTier()
 	{
-		return 4;
+		return general.IC2SourceTier;
 	}
 
 	@Override
