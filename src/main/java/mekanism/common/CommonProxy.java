@@ -311,8 +311,8 @@ public class CommonProxy implements IGuiProvider
 		general.OreDictPlatinum = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OreDictPlatinum", false).getBoolean();
 		general.enableSiliconCompat = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableSiliconCompat", true).getBoolean();
 
-		general.IC2SinkTier = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "IC2SinkTier", 2, "Tier level for machines", 1, 4).getInt();
-		general.IC2SourceTier = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "IC2SourceTier", 2, "Tier level for generators", 1, 4).getInt();
+		general.IC2SinkTier = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "IC2SinkTier", 4, "Tier level for machines, we recommend setting it to tier 2 for ic2 classic", 1, 4).getInt();
+		general.IC2SourceTier = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "IC2SourceTier", 4, "Tier level for generators, we recommend setting it to tier 2 for ic2 classic", 1, 4).getInt();
 
 		String s = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyType", "RF", null, new String[]{"J", "RF", "MJ", "EU"}).getString();
 
