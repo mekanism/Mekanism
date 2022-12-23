@@ -101,6 +101,8 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 		buttonList.add(protectedButton);
 		buttonList.add(setButton);
 		buttonList.add(deleteButton);
+		
+		access = ISecurityTile.SecurityMode.TRUSTED;
 	}
 
 	public void setFrequency(String freq)
