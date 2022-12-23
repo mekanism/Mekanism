@@ -9,6 +9,7 @@ import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -63,7 +64,11 @@ public class ItemEnergized extends CapabilityItem {
     public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
         if (allowedIn(group)) {
-            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), maxEnergySupplier.get()));
+            if (maxEnergySupplier instanceof CachedFloatingLongValue configValue) {
+                items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), configValue));
+            } else {
+                items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), maxEnergySupplier.get()));
+            }
         }
     }
 
@@ -73,6 +78,11 @@ public class ItemEnergized extends CapabilityItem {
 
     protected FloatingLong getChargeRate(ItemStack stack) {
         return chargeRateSupplier.get();
+    }
+
+    @Override
+    protected boolean areCapabilityConfigsLoaded() {
+        return super.areCapabilityConfigsLoaded() && MekanismConfig.gear.isLoaded();
     }
 
     @Override

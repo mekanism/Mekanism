@@ -38,11 +38,11 @@ public enum PipeTier implements ITier {
     }
 
     public int getPipeCapacity() {
-        return capacityReference == null ? getBaseCapacity() : capacityReference.get();
+        return capacityReference == null ? getBaseCapacity() : capacityReference.getOrDefault();
     }
 
     public int getPipePullAmount() {
-        return pullReference == null ? getBasePull() : pullReference.get();
+        return pullReference == null ? getBasePull() : pullReference.getOrDefault();
     }
 
     public int getBaseCapacity() {

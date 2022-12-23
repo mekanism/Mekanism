@@ -26,7 +26,7 @@ public enum BinTier implements ITier {
     }
 
     public int getStorage() {
-        return storageReference == null ? getBaseStorage() : storageReference.get();
+        return storageReference == null ? getBaseStorage() : storageReference.getOrDefault();
     }
 
     public int getBaseStorage() {

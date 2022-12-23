@@ -230,8 +230,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
         if (allowedIn(group)) {
-            ItemStack stack = new ItemStack(this);
-            items.add(StorageUtils.getFilledEnergyVariant(stack, getMaxEnergy(stack)));
+            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MekanismConfig.gear.mekaSuitBaseEnergyCapacity));
         }
     }
 
@@ -241,6 +240,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         for (Module<?> module : getModules(stack)) {
             module.tick(player);
         }
+    }
+
+    @Override
+    protected boolean areCapabilityConfigsLoaded() {
+        return super.areCapabilityConfigsLoaded() && MekanismConfig.gear.isLoaded();
     }
 
     @Override

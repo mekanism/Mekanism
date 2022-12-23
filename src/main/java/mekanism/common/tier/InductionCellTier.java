@@ -30,7 +30,7 @@ public enum InductionCellTier implements ITier {
     }
 
     public FloatingLong getMaxEnergy() {
-        return storageReference == null ? getBaseMaxEnergy() : storageReference.get();
+        return storageReference == null ? getBaseMaxEnergy() : storageReference.getOrDefault();
     }
 
     public FloatingLong getBaseMaxEnergy() {

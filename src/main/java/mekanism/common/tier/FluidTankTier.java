@@ -29,11 +29,11 @@ public enum FluidTankTier implements ITier {
     }
 
     public int getStorage() {
-        return storageReference == null ? getBaseStorage() : storageReference.get();
+        return storageReference == null ? getBaseStorage() : storageReference.getOrDefault();
     }
 
     public int getOutput() {
-        return outputReference == null ? getBaseOutput() : outputReference.get();
+        return outputReference == null ? getBaseOutput() : outputReference.getOrDefault();
     }
 
     public int getBaseStorage() {

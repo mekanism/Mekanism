@@ -40,7 +40,7 @@ public enum CableTier implements ITier {
     }
 
     public FloatingLong getCableCapacity() {
-        return capacityReference == null ? getBaseCapacity() : capacityReference.get();
+        return capacityReference == null ? getBaseCapacity() : capacityReference.getOrDefault();
     }
 
     public FloatingLong getBaseCapacity() {

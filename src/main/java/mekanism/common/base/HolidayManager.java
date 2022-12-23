@@ -51,7 +51,7 @@ public final class HolidayManager {
 
     public static SoundEventRegistryObject<SoundEvent> filterSound(SoundEventRegistryObject<SoundEvent> sound) {
         //Only filter sounds when on the client
-        if (MekanismConfig.client.getConfigSpec().isLoaded() && MekanismConfig.client.holidays.get()) {
+        if (MekanismConfig.client.isLoaded() && MekanismConfig.client.holidays.get()) {
             for (Holiday holiday : holidays) {
                 if (holiday.isToday()) {
                     return holiday.filterSound(sound);

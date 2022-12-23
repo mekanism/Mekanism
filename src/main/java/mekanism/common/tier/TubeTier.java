@@ -38,11 +38,11 @@ public enum TubeTier implements ITier {
     }
 
     public long getTubeCapacity() {
-        return capacityReference == null ? getBaseCapacity() : capacityReference.get();
+        return capacityReference == null ? getBaseCapacity() : capacityReference.getOrDefault();
     }
 
     public long getTubePullAmount() {
-        return pullReference == null ? getBasePull() : pullReference.get();
+        return pullReference == null ? getBasePull() : pullReference.getOrDefault();
     }
 
     public long getBaseCapacity() {

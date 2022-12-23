@@ -18,6 +18,7 @@ import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.capabilities.security.item.ItemStackSecurityObject;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundTag;
@@ -108,8 +109,19 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
         return Attribute.has(block, AttributeEnergy.class) && !stack.isStackable();
     }
 
+    protected boolean areCapabilityConfigsLoaded(ItemStack stack) {
+        if (exposesEnergyCap(stack)) {
+            return MekanismConfig.storage.isLoaded() && MekanismConfig.usage.isLoaded();
+        }
+        return true;
+    }
+
     @Override
     public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
+        if (!areCapabilityConfigsLoaded(stack)) {
+            //Only expose the capabilities if the required configs are loaded
+            return super.initCapabilities(stack, nbt);
+        }
         List<ItemCapability> capabilities = new ArrayList<>();
         gatherCapabilities(capabilities, stack, nbt);
         if (capabilities.isEmpty()) {

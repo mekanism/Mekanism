@@ -1,28 +1,30 @@
 package mekanism.common.block;
 
-import java.util.Optional;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
-import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
+import mekanism.common.util.EnumUtils;
+import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.NBTUtils;
+import mekanism.common.util.StorageUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -31,7 +33,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Block class for handling multiple energy cube block IDs. 0: Basic Energy Cube 1: Advanced Energy Cube 2: Elite Energy Cube 3: Ultimate Energy Cube 4: Creative Energy
@@ -143,22 +144,30 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
         super(type, BlockBehaviour.Properties.of(Material.METAL).strength(2, 2.4F).requiresCorrectToolForDrops().dynamicShape());
     }
 
+    private ItemStack withSideConfig(DataType dataType) {
+        CompoundTag sideConfig = new CompoundTag();
+        for (RelativeSide side : EnumUtils.SIDES) {
+            NBTUtils.writeEnum(sideConfig, NBTConstants.SIDE + side.ordinal(), dataType);
+        }
+        CompoundTag configNBT = new CompoundTag();
+        configNBT.put(NBTConstants.CONFIG + TransmissionType.ENERGY.ordinal(), sideConfig);
+        ItemStack stack = new ItemStack(this);
+        ItemDataUtils.setCompound(stack, NBTConstants.COMPONENT_CONFIG, configNBT);
+        return stack;
+    }
+
     @Override
-    public void setTileData(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, @NotNull TileEntityMekanism tile) {
-        if (tile instanceof TileEntityEnergyCube energyCube) {
-            if (Attribute.getTier(this, EnergyCubeTier.class) == EnergyCubeTier.CREATIVE) {
-                //TODO: Move this to being set in the variant added to the item group
-                ConfigInfo energyConfig = energyCube.configComponent.getConfig(TransmissionType.ENERGY);
-                if (energyConfig != null) {
-                    Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY).resolve();
-                    if (capability.isPresent()) {
-                        IStrictEnergyHandler energyHandlerItem = capability.get();
-                        if (energyHandlerItem.getEnergyContainerCount() > 0) {
-                            //Validate something didn't go terribly wrong, and we actually do have the container we expect to have
-                            energyConfig.fill(energyHandlerItem.getEnergy(0).isZero() ? DataType.INPUT : DataType.OUTPUT);
-                        }
-                    }
-                }
+    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
+        EnergyCubeTier tier = Attribute.getTier(this, EnergyCubeTier.class);
+        if (tier == EnergyCubeTier.CREATIVE) {
+            //Add the empty and charged variants
+            items.add(withSideConfig(DataType.INPUT));
+            items.add(StorageUtils.getFilledEnergyVariant(withSideConfig(DataType.OUTPUT), tier.getMaxEnergy()));
+        } else {
+            super.fillItemCategory(group, items);
+            if (tier != null) {
+                //This should never be null, but validate it just in case, and then add the charged variant
+                items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), tier.getMaxEnergy()));
             }
         }
     }

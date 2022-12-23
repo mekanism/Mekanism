@@ -45,7 +45,6 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.NotNull;
@@ -281,20 +280,21 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.COMPONENT_CONFIG, configNBT -> {
             Set<Direction> directionsToUpdate = EnumSet.noneOf(Direction.class);
             configInfo.forEach((type, info) -> {
-                info.setEjecting(configNBT.getBoolean(NBTConstants.EJECT + type.ordinal()));
-                CompoundTag sideConfig = configNBT.getCompound(NBTConstants.CONFIG + type.ordinal());
-                for (RelativeSide side : EnumUtils.SIDES) {
-                    NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> {
-                        if (info.getDataType(side) != dataType) {
-                            info.setDataType(dataType, side);
-                            if (tile.hasLevel()) {//If we aren't already loaded yet don't do any updates
-                                Direction direction = side.getDirection(tile.getDirection());
-                                sideChangedBasic(type, direction);
-                                directionsToUpdate.add(direction);
+                NBTUtils.setBooleanIfPresent(configNBT, NBTConstants.EJECT + type.ordinal(), info::setEjecting);
+                NBTUtils.setCompoundIfPresent(configNBT, NBTConstants.CONFIG + type.ordinal(), sideConfig -> {
+                    for (RelativeSide side : EnumUtils.SIDES) {
+                        NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> {
+                            if (info.getDataType(side) != dataType) {
+                                info.setDataType(dataType, side);
+                                if (tile.hasLevel()) {//If we aren't already loaded yet don't do any updates
+                                    Direction direction = side.getDirection(tile.getDirection());
+                                    sideChangedBasic(type, direction);
+                                    directionsToUpdate.add(direction);
+                                }
                             }
-                        }
-                    });
-                }
+                        });
+                    }
+                });
             });
             WorldUtils.notifyNeighborsOfChange(tile.getLevel(), tile.getBlockPos(), directionsToUpdate);
         });
@@ -334,17 +334,17 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
 
     @Override
     public void readFromUpdateTag(CompoundTag updateTag) {
-        if (updateTag.contains(NBTConstants.COMPONENT_CONFIG, Tag.TAG_COMPOUND)) {
-            CompoundTag configNBT = updateTag.getCompound(NBTConstants.COMPONENT_CONFIG);
+        NBTUtils.setCompoundIfPresent(updateTag, NBTConstants.COMPONENT_CONFIG, configNBT -> {
             for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
                 TransmissionType type = entry.getKey();
                 ConfigInfo info = entry.getValue();
-                CompoundTag sideConfig = configNBT.getCompound(NBTConstants.CONFIG + type.ordinal());
-                for (RelativeSide side : EnumUtils.SIDES) {
-                    NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> info.setDataType(dataType, side));
-                }
+                NBTUtils.setCompoundIfPresent(configNBT, NBTConstants.CONFIG + type.ordinal(), sideConfig -> {
+                    for (RelativeSide side : EnumUtils.SIDES) {
+                        NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> info.setDataType(dataType, side));
+                    }
+                });
             }
-        }
+        });
     }
 
     @Override

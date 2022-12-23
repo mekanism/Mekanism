@@ -15,11 +15,19 @@ public class CapabilityItem extends Item {
         super(properties);
     }
 
+    protected boolean areCapabilityConfigsLoaded() {
+        return true;
+    }
+
     protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
     }
 
     @Override
     public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
+        if (!areCapabilityConfigsLoaded()) {
+            //Only expose the capabilities if the required configs are loaded
+            return super.initCapabilities(stack, nbt);
+        }
         List<ItemCapability> capabilities = new ArrayList<>();
         gatherCapabilities(capabilities, stack, nbt);
         if (capabilities.isEmpty()) {

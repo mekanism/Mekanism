@@ -38,11 +38,11 @@ public enum ChemicalTankTier implements ITier, StringRepresentable {
     }
 
     public long getStorage() {
-        return storageReference == null ? getBaseStorage() : storageReference.get();
+        return storageReference == null ? getBaseStorage() : storageReference.getOrDefault();
     }
 
     public long getOutput() {
-        return outputReference == null ? getBaseOutput() : outputReference.get();
+        return outputReference == null ? getBaseOutput() : outputReference.getOrDefault();
     }
 
     public long getBaseStorage() {
