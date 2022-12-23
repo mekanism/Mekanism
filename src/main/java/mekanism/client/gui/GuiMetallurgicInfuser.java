@@ -121,7 +121,7 @@ public class GuiMetallurgicInfuser extends GuiMekanism
 			int xAxis = (x - (width - xSize) / 2);
 			int yAxis = (y - (height - ySize) / 2);
 
-			if(xAxis > 148 && xAxis < 168 && yAxis > 73 && yAxis < 82)
+			if(xAxis > 144 && xAxis < 168 && yAxis > 72 && yAxis < 83)
 			{
 				ArrayList data = new ArrayList();
 				data.add(0);
