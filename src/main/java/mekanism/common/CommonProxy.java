@@ -310,6 +310,7 @@ public class CommonProxy implements IGuiProvider
 		general.OreDictOsmium = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OreDictOsmium", true).getBoolean();
 		general.OreDictPlatinum = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OreDictPlatinum", false).getBoolean();
 		general.enableSiliconCompat = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableSiliconCompat", true).getBoolean();
+		general.digitalMinerMaxRadius = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DigitalMinerMaxRadius", 32, "Select range from 1 to 64, we do not recommend going over 32", 1, 64).getInt();
 
 
 		String s = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyType", "J", null, new String[]{"J", "RF", "MJ", "EU"}).getString();

@@ -9,6 +9,7 @@ import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
@@ -683,7 +684,7 @@ public class GuiDigitalMinerConfig extends GuiMekanism
 	{
 		if(!radiusField.getText().isEmpty())
 		{
-			int toUse = Math.max(0, Math.min(Integer.parseInt(radiusField.getText()), 32));
+			int toUse = Math.max(0, Math.min(Integer.parseInt(radiusField.getText()), MekanismConfig.general.digitalMinerMaxRadius));
 
 			ArrayList data = new ArrayList();
 			data.add(6);
