@@ -101,6 +101,8 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 		buttonList.add(protectedButton);
 		buttonList.add(setButton);
 		buttonList.add(deleteButton);
+		
+		access = ISecurityTile.SecurityMode.TRUSTED;
 	}
 
 	public void setFrequency(String freq)
@@ -113,6 +115,9 @@ public class GuiQuantumEntangloporter extends GuiMekanism
 		ArrayList data = new ArrayList();
 		data.add(0);
 		data.add(freq);
+		if (access == null) {
+			return;
+		}
 		data.add(access.ordinal());
 
 		Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
