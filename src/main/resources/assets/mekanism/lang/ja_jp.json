@@ -872,6 +872,7 @@
   "filter.mekanism.sorter.size_mode": "サイズモード",
   "filter.mekanism.sorter.size_mode.conflict": "サイズモード - 現在単一アイテムモードがオンになっているため、効果がありません。",
   "filter.mekanism.sorter.size_mode.on": "%1$s!",
+  "filter.mekanism.state": "フィルタ: %1$s",
   "filter.mekanism.tag": "タグフィルター",
   "filter.mekanism.tag.key": "タグ: %1$s",
   "filter.mekanism.tag.no_key": "タグ設定無し",
