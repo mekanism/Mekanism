@@ -77,7 +77,7 @@ public class ChemicalInjectionChamberRecipeHandler extends AdvancedMachineRecipe
 			
 			return fuels;
 		}
-		else if(gasType == GasRegistry.getGas("glucose"))
+		else if(gasType == GasRegistry.getGas("molasse"))
 		{
 			List<ItemStack> fuels = new ArrayList<ItemStack>();
 			fuels.addAll(OreDictionary.getOres("dustSugar"));

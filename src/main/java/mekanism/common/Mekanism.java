@@ -1099,7 +1099,7 @@ public class Mekanism
         RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Blocks.hardened_clay), "water", new ItemStack(Blocks.clay));
         RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Items.brick), "water", new ItemStack(Items.clay_ball));
         RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(Items.gunpowder), "hydrogenChloride", new ItemStack(MekanismItems.OtherDust, 1, 3));
-		RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(MekanismItems.Yeast), "glucose", new ItemStack(MekanismItems.Yeast, 3));
+		RecipeHandler.addChemicalInjectionChamberRecipe(new ItemStack(MekanismItems.Yeast), "molasse", new ItemStack(MekanismItems.Yeast, 3));
 
 		//Precision Sawmill Recipes
 		RecipeHandler.addPrecisionSawmillRecipe(new ItemStack(Blocks.ladder, 3), new ItemStack(Items.stick, 7));
@@ -1432,7 +1432,7 @@ public class Mekanism
 		GasRegistry.register(new Gas("methane")).registerFluid();
 		GasRegistry.register(new Gas("biomass")).registerFluid();
 		GasRegistry.register(new Gas("bioethanol")).registerFluid();
-		GasRegistry.register(new Gas("glucose").setVisible(false));
+		GasRegistry.register(new Gas("molasse").setVisible(false));
 
 		FluidRegistry.registerFluid(new Fluid("heavyWater"));
 		FluidRegistry.registerFluid(new Fluid("steam").setGaseous(true));

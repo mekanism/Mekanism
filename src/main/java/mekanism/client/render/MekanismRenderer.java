@@ -123,7 +123,7 @@ public class MekanismRenderer
 			GasRegistry.getGas("fusionFuelDT").setIcon(event.map.registerIcon("mekanism:liquid/LiquidDT"));
 			GasRegistry.getGas("lithium").setIcon(event.map.registerIcon("mekanism:liquid/LiquidLithium"));
 			GasRegistry.getGas("methane").setIcon(event.map.registerIcon("mekanism:liquid/LiquidMethane"));
-			GasRegistry.getGas("glucose").setIcon(event.map.registerIcon("mekanism:liquid/LiquidGlucose"));
+			GasRegistry.getGas("molasse").setIcon(event.map.registerIcon("mekanism:liquid/LiquidMolasse"));
 
 			GasRegistry.getGas("biomass").setIcon(biomassIcon);
 			GasRegistry.getGas("bioethanol").setIcon(ethanolIcon);
