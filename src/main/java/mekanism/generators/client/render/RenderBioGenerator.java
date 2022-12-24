@@ -86,7 +86,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 		if (gasType == 1)
 		model3D.setTexture(MekanismRenderer.ethanolIcon);
 		else
-			model3D.setTexture(MekanismRenderer.biomatterIcon);
+			model3D.setTexture(MekanismRenderer.biomassIcon);
 
 		for(int i = 0; i < stages; i++)
 		{

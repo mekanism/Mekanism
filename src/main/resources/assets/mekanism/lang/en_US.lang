@@ -307,9 +307,9 @@ gas.tritium=Tritium
 gas.lithium=Lithium
 gas.fusionFuelDT=D-T Fuel
 gas.methane=Methane
-gas.biomatter=BioGas
+gas.biomass=BioGas
 gas.bioethanol=Ethanol Vapor
-gas.glucose=Glucose
+gas.molasse=Molasse
 
 gas.iron=Iron Slurry
 gas.gold=Gold Slurry
@@ -350,9 +350,9 @@ fluid.deuterium=Liquid Deuterium
 fluid.tritium=Liquid Tritium
 fluid.fusionFuelDT=Liquid D-T Fuel
 fluid.steam=Steam
-fluid.biomatter=Liquid BioGas
+fluid.biomass=Biomatter
 fluid.bioethanol=Ethanol
-fluid.glucose=Liquid Glucose
+fluid.molasse=Liquid Molasse
 
 
 //OreGas names

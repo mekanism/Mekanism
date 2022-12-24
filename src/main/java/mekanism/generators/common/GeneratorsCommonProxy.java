@@ -101,7 +101,9 @@ public class GeneratorsCommonProxy implements IGuiProvider
 	{
 		generators.advancedSolarGeneration = Mekanism.configurationgenerators.get("generation", "AdvancedSolarGeneration", 300D).getDouble();
 		generators.bioGeneration = Mekanism.configurationgenerators.get("generation", "BioGeneration", 100D).getDouble();
-		generators.ethanolMultiplier = Mekanism.configurationgenerators.get("generation", "EthanolMultiplier", 5D).getDouble();
+		generators.biogasDuration = Mekanism.configurationgenerators.get("generation", "BiogasDuration", 1).getInt();
+		generators.ethanolDuration = Mekanism.configurationgenerators.get("generation", "EthanolDuration", 2).getInt();
+		generators.ethanolMultiplier = Mekanism.configurationgenerators.get("generation", "EthanolMultiplier", 3D).getDouble();
 		generators.heatGeneration = Mekanism.configurationgenerators.get("generation", "HeatGeneration", 150D).getDouble();
 		generators.heatGenerationLava = Mekanism.configurationgenerators.get("generation", "HeatGenerationLava", 5D).getDouble();
 		generators.heatGenerationNether = Mekanism.configurationgenerators.get("generation", "HeatGenerationNether", 100D).getDouble();

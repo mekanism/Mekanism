@@ -144,6 +144,10 @@ public class MekanismConfig
 	{
 		public static double advancedSolarGeneration;
 		public static double bioGeneration;
+		public static int ethanolDuration;
+
+		public static int biogasDuration;
+
 		public static double ethanolMultiplier;
 		public static double heatGeneration;
 		public static double heatGenerationLava;
@@ -164,7 +168,6 @@ public class MekanismConfig
 		public static int condenserRate;
 		public static boolean enableWindmillWhitelist;
 		public static List<String> winddimensionids;
-
 	}
 
 	public static class tools
