@@ -872,6 +872,7 @@
   "filter.mekanism.sorter.size_mode": "尺寸模式",
   "filter.mekanism.sorter.size_mode.conflict": "尺寸模式 - 目前沒有任何效果, 因為已啟用單個模式.",
   "filter.mekanism.sorter.size_mode.on": "%1$s!",
+  "filter.mekanism.state": "過濾: %1$s",
   "filter.mekanism.tag": "標籤過濾",
   "filter.mekanism.tag.key": "標籤: %1$s",
   "filter.mekanism.tag.no_key": "沒有標籤",
