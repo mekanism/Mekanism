@@ -223,7 +223,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IGasH
 
 	public boolean isValidGas(Gas gas)
 	{
-		if (gas == GasRegistry.getGas("biomatter") || gas == GasRegistry.getGas("bioethanol")){
+		if (gas == GasRegistry.getGas("biomass") || gas == GasRegistry.getGas("bioethanol")){
 			return true;}
 		else
 			return false;

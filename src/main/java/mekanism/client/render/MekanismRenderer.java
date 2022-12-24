@@ -59,7 +59,7 @@ public class MekanismRenderer
 	
 	public static IIcon energyIcon;
 
-	public static IIcon biomatterIcon;
+	public static IIcon biomassIcon;
 	public static IIcon ethanolIcon;
 
 	public static IIcon heatIcon;
@@ -102,7 +102,7 @@ public class MekanismRenderer
 			heatIcon = event.map.registerIcon("mekanism:liquid/LiquidHeat");
 
 			ethanolIcon = event.map.registerIcon("mekanism:liquid/LiquidEthanol");
-			biomatterIcon = event.map.registerIcon("mekanism:liquid/LiquidBiomatter");
+			biomassIcon = event.map.registerIcon("mekanism:liquid/LiquidBiomass");
 
 
 			GasRegistry.getGas("hydrogen").setIcon(event.map.registerIcon("mekanism:liquid/LiquidHydrogen"));
@@ -125,7 +125,7 @@ public class MekanismRenderer
 			GasRegistry.getGas("methane").setIcon(event.map.registerIcon("mekanism:liquid/LiquidMethane"));
 			GasRegistry.getGas("glucose").setIcon(event.map.registerIcon("mekanism:liquid/LiquidGlucose"));
 
-			GasRegistry.getGas("biomatter").setIcon(biomatterIcon);
+			GasRegistry.getGas("biomass").setIcon(biomassIcon);
 			GasRegistry.getGas("bioethanol").setIcon(ethanolIcon);
 
 

@@ -1169,7 +1169,7 @@ public class Mekanism
 		//Pressurized Reaction Chamber Recipes
 
 		RecipeHandler.addPRCRecipe(
-				new ItemStack(MekanismItems.Yeast), new FluidStack(FluidRegistry.WATER, 200), new GasStack(GasRegistry.getGas("biomatter"), 150),
+				new ItemStack(MekanismItems.Yeast), new FluidStack(FluidRegistry.WATER, 200), new GasStack(GasRegistry.getGas("biomass"), 150),
 				new ItemStack(MekanismItems.Substrate), new GasStack(GasRegistry.getGas("bioethanol"), 50),
 				100,
 				50);
@@ -1207,7 +1207,7 @@ public class Mekanism
 		}
 
 		//Chemical Oxidiser Recipes
-		RecipeHandler.addChemicalOxidizerRecipe(new ItemStack(MekanismItems.BioFuel), new GasStack(GasRegistry.getGas("biomatter"), 150));
+		RecipeHandler.addChemicalOxidizerRecipe(new ItemStack(MekanismItems.BioFuel), new GasStack(GasRegistry.getGas("biomass"), 150));
 
 		//Fuels
         GameRegistry.registerFuelHandler(new IFuelHandler() {
@@ -1430,7 +1430,7 @@ public class Mekanism
 		GasRegistry.register(new Gas("fusionFuelDT")).registerFluid();
 		GasRegistry.register(new Gas("lithium")).registerFluid();
 		GasRegistry.register(new Gas("methane")).registerFluid();
-		GasRegistry.register(new Gas("biomatter")).registerFluid();
+		GasRegistry.register(new Gas("biomass")).registerFluid();
 		GasRegistry.register(new Gas("bioethanol")).registerFluid();
 		GasRegistry.register(new Gas("glucose").setVisible(false));
 
