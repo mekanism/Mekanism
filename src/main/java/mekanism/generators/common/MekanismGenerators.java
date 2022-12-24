@@ -264,6 +264,8 @@ public class MekanismGenerators implements IModule
 	{
 		dataStream.writeDouble(generators.advancedSolarGeneration);
 		dataStream.writeDouble(generators.bioGeneration);
+		dataStream.writeInt(generators.biogasDuration);
+		dataStream.writeInt(generators.ethanolDuration);
 		dataStream.writeDouble(generators.ethanolMultiplier);
 		dataStream.writeDouble(generators.heatGeneration);
 		dataStream.writeDouble(generators.heatGenerationLava);
@@ -312,6 +314,8 @@ public class MekanismGenerators implements IModule
 	{
 		generators.advancedSolarGeneration = dataStream.readDouble();
 		generators.bioGeneration = dataStream.readDouble();
+		generators.biogasDuration = dataStream.readInt();
+		generators.ethanolDuration = dataStream.readInt();
 		generators.ethanolMultiplier = dataStream.readDouble();
 		generators.heatGeneration = dataStream.readDouble();
 		generators.heatGenerationLava = dataStream.readDouble();

@@ -1207,7 +1207,7 @@ public class Mekanism
 		}
 
 		//Chemical Oxidiser Recipes
-		RecipeHandler.addChemicalOxidizerRecipe(new ItemStack(MekanismItems.BioFuel), new GasStack(GasRegistry.getGas("biomass"), 150));
+		RecipeHandler.addChemicalOxidizerRecipe(new ItemStack(MekanismItems.BioFuel), new GasStack(GasRegistry.getGas("biomass"), 100));
 
 		//Fuels
         GameRegistry.registerFuelHandler(new IFuelHandler() {

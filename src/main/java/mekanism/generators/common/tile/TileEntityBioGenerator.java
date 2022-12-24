@@ -18,6 +18,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IGasH
 {
 	/** The maximum amount of gas this block can store. */
 	public int MAX_GAS = 18000;
+	public int gasDuration;
+
+
 	public GasTank fuelTank;
 
 
@@ -76,16 +79,20 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IGasH
 				output = generators.bioGeneration * getMultiplier(fuelTank.getGas().getGas()) * 2;
 
 				setEnergy(electricityStored + generators.bioGeneration * getMultiplier(fuelTank.getGas().getGas()));
-				fuelTank.setGas(new GasStack(fuelTank.getGasType(), fuelTank.getStored() - 1));
 
+					if (gasDuration <= 0) {
+						fuelTank.setGas(new GasStack(fuelTank.getGasType(), fuelTank.getStored() - 1));
+						gasDuration = (fuelTank.getGas().getGas() == GasRegistry.getGas("bioethanol")) ? generators.ethanolDuration : generators.biogasDuration;
+					} else gasDuration--;
 			} else {
 				//reset
-					fuelTank.setGas(null);
-					output = generators.bioGeneration * 2;
+				output = generators.bioGeneration * 2;
 
-				if (!worldObj.isRemote) {
+				if (fuelTank.getStored() == 0)
+					fuelTank.setGas(null);
+
+				if (!worldObj.isRemote)
 					setActive(false);
-				}
 			}
 		}
 	}
@@ -123,7 +130,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IGasH
 	@Override
 	public boolean canOperate()
 	{
-		return electricityStored < BASE_MAX_ENERGY && fuelTank.getStored() > 0 && MekanismUtils.canFunction(this);
+		return electricityStored < BASE_MAX_ENERGY && MekanismUtils.canFunction(this);
 	}
 
 	@Override
@@ -168,7 +175,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IGasH
 		if (fuelTank.getStored() > 0) {
 
 			Gas gas = fuelTank.getGas().getGas();
-
 			if (gas != null && isValidGas(gas)) {
 				if (gas == GasRegistry.getGas("bioethanol"))
 					return 1; //Ethanol
