@@ -29,7 +29,26 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 + [ForgeMultipart](https://files.thorfusion.com/mekanism/ForgeMultipart-1.7.10-1.2.0.347-universal.jar)
 + [CodeChickenLib](https://files.thorfusion.com/mekanism/CodeChickenLib-1.7.10-1.1.3.141-universal.jar)
 
-## Modifications by
+## Changes
+
+### Featured changes
+
+| Some Differences                                                                                          | MK                 | MK:[CE](https://www.curseforge.com/minecraft/mc-mods/mekanism-ce) | MK:[kmecpp](https://www.curseforge.com/minecraft/mc-mods/mekanism-patched) |
+| --------------------------------------------------------------------------------------------------------- | ------------------ | ----------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Open Source                                                                                               | :heavy_check_mark: | :heavy_check_mark:                                                | :x:                                                                        |
+| Dupe: Chemical Washer                                                                                     | :x:                | :heavy_check_mark:                                                | :heavy_check_mark:                                                         |
+| Dupe: Fluidtank                                                                                           | :x:                | :heavy_check_mark:                                                | :heavy_check_mark:                                                         |
+| Dupe: [Fluidstack](https://github.com/Thorfusion/Mekanism-1.7.10-Community-Edition/issues/49)             | :x:                | :heavy_check_mark:                                                | :x:                                                                        |
+| Dupe: Factories                                                                                           | :x:                | :heavy_check_mark:                                                | :heavy_check_mark:                                                         |
+| Dupe: Bins                                                                                                | :x:                | :heavy_check_mark:                                                | :heavy_check_mark:                                                         |
+| BUG: [Osmium Compressor](https://github.com/Thorfusion/Mekanism-1.7.10-Community-Edition/issues/32)       | :x:                | :heavy_check_mark:                                                | :x:                                                                        |
+| BUG: [Storage Meter](https://github.com/Thorfusion/Mekanism-1.7.10-Community-Edition/issues/40)           | :x:                | :heavy_check_mark:                                                | :x:                                                                        |
+| BUG: [Looping crash MK+RR+BC](https://github.com/Thorfusion/Mekanism-1.7.10-Community-Edition/issues/33)  | :x:                | :heavy_check_mark:                                                | :x:                                                                        |
+| FEATURE: [TerralizationCompat](https://github.com/Thorfusion/Mekanism-1.7.10-Community-Edition/issues/30) | :x:                | :heavy_check_mark:                                                | :x:                                                                        |
+| FEATURE: [Biofuel cycle rework](https://github.com/Thorfusion/Mekanism-1.7.10-Community-Edition/pull/48)  | :x:                | :heavy_check_mark:                                                | :x:                                                                        |
+| NEW FEATURES, BUGFIXES & MORE!                                                                            | :x:                | :heavy_check_mark:                                                | :x:                                                                        |
+
+### Full changelog
 
 #### Clienthax : 
 + dupe bug with chemical washer and fluidtank, fixes issue with railcraft
@@ -75,6 +94,7 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 + removed the native cape module, the auto updater module and voiceserver Thorfusion#51
 + fixed config for HeatGenerationFluidRate
 + disabled prefilled tanks by default
++ fixed looping crash with MK+RR+BC Thorfusion#33
 
 #### [Pokemonplatin](https://github.com/Pokemonplatin) - Mekanism CE Team
 + Teleporter and Quantum Entangloporter now have a trusted channel for smp Thorfusion#22
@@ -92,6 +112,7 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 + [Large feature] Reworked the bio-fuel cycle Thorfusion#48
 + added lazuli ingots and lead infusion Thorfusion#50
 + fixed energy storage meter increasing when generating no energy in industrial turbine Thorfusion#40
++ Fix plastic properties Thorfusion#60
 
 ## All contributors get capes
 

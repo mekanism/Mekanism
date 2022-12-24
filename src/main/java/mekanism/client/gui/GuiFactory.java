@@ -165,18 +165,13 @@ public class GuiFactory extends GuiMekanism
 			int xAxis = (x - (width - xSize) / 2);
 			int yAxis = (y - (height - ySize) / 2);
 
-			if(xAxis > 8 && xAxis < 168 && yAxis > 78 && yAxis < 83)
+			if(xAxis > 144 && xAxis < 168 && yAxis > 83 && yAxis < 93)
 			{
-				ItemStack stack = mc.thePlayer.inventory.getItemStack();
-				
-				if(stack != null && stack.getItem() instanceof ItemGaugeDropper)
-				{
-					ArrayList data = new ArrayList();
-					data.add(1);
-	
-					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
-					SoundHandler.playSound("gui.button.press");
-				}
+				ArrayList data = new ArrayList();
+				data.add(1);
+
+				Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
+				SoundHandler.playSound("gui.button.press");
 			}
 		}
 	}

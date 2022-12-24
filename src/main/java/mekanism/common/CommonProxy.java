@@ -310,9 +310,12 @@ public class CommonProxy implements IGuiProvider
 		general.OreDictOsmium = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OreDictOsmium", true).getBoolean();
 		general.OreDictPlatinum = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OreDictPlatinum", false).getBoolean();
 		general.enableSiliconCompat = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnableSiliconCompat", true).getBoolean();
+		general.digitalMinerMaxRadius = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "DigitalMinerMaxRadius", 32, "Select range from 1 to 64, we do not recommend going over 32", 1, 64).getInt();
 
+		general.IC2SinkTier = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "IC2SinkTier", 4, "Tier level for machines, we recommend setting it to tier 2 for ic2 classic", 1, 4).getInt();
+		general.IC2SourceTier = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "IC2SourceTier", 4, "Tier level for generators, we recommend setting it to tier 2 for ic2 classic", 1, 4).getInt();
 
-		String s = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyType", "J", null, new String[]{"J", "RF", "MJ", "EU"}).getString();
+		String s = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "EnergyType", "RF", null, new String[]{"J", "RF", "MJ", "EU"}).getString();
 
 		if(s != null)
 		{

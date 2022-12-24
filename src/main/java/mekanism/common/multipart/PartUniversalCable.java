@@ -105,9 +105,9 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 
 							((IEnergyProvider)outputter).extractEnergy(side.getOpposite(), (int)(toDraw*general.TO_TE), false);
 						}
-						else if(MekanismUtils.useIC2() && outputter instanceof IEnergySource)
+						else if(MekanismUtils.useIC2() && CableUtils.getIC2Tile(outputter) instanceof IEnergySource)
 						{
-							double received = Math.min(((IEnergySource)outputter).getOfferedEnergy() * general.FROM_IC2, canDraw);
+							double received = Math.min(((IEnergySource)CableUtils.getIC2Tile(outputter)).getOfferedEnergy() * general.FROM_IC2, canDraw);
 							double toDraw = received;
 
 							if(received > 0)
@@ -115,7 +115,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 								toDraw -= takeEnergy(received, true);
 							}
 
-							((IEnergySource)outputter).drawEnergy(toDraw * general.TO_IC2);
+							((IEnergySource)CableUtils.getIC2Tile(outputter)).drawEnergy(toDraw * general.TO_IC2);
 						}
 					}
 				}
