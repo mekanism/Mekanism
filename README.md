@@ -97,10 +97,10 @@ Note that changes not by the mekanism ce team has been added by us from their re
 + fixed config for HeatGenerationFluidRate
 + disabled prefilled tanks by default
 + fixed looping crash with MK+RR+BC Thorfusion#33
-+ add dump button to factories #39
-+ fix crash with quantum entangloporter #68
-+ Add configurable max radius for digitalminer #55
-+ Ic2 compat config #64
++ add dump button to factories Thorfusion#39
++ fix crash with quantum entangloporter Thorfusion#68
++ Add configurable max radius for digitalminer Thorfusion#55
++ Ic2 compat config Thorfusion#64
 
 #### [Pokemonplatin](https://github.com/Pokemonplatin) - Mekanism CE Team
 + Teleporter and Quantum Entangloporter now have a trusted channel for smp Thorfusion#22
