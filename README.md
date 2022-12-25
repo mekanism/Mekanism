@@ -50,6 +50,8 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 
 ### Full changelog
 
+Note that changes not by the mekanism ce team has been added by us from their respective forks. any issues with these changes should be directed to us.
+
 #### Clienthax : 
 + dupe bug with chemical washer and fluidtank, fixes issue with railcraft
 
@@ -95,6 +97,10 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 + fixed config for HeatGenerationFluidRate
 + disabled prefilled tanks by default
 + fixed looping crash with MK+RR+BC Thorfusion#33
++ add dump button to factories #39
++ fix crash with quantum entangloporter #68
++ Add configurable max radius for digitalminer #55
++ Ic2 compat config #64
 
 #### [Pokemonplatin](https://github.com/Pokemonplatin) - Mekanism CE Team
 + Teleporter and Quantum Entangloporter now have a trusted channel for smp Thorfusion#22
@@ -113,6 +119,13 @@ Mekanism CE also has two dependencies that it requires, as a modpack creator DO 
 + added lazuli ingots and lead infusion Thorfusion#50
 + fixed energy storage meter increasing when generating no energy in industrial turbine Thorfusion#40
 + Fix plastic properties Thorfusion#60
++ fix dupe with moving players Thorfusion#62
++ Adds more configs for Bio-Generator Thorfusion#71
++ add forestry compat to biogen cycle Thorfusion#71
++ Fixes Molasse/Glucose missing texture and langs Thorfusion#71
+
+#### leytilera
++ universal cable connection to IC2
 
 ## All contributors get capes
 
