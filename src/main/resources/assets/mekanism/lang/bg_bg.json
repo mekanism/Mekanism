@@ -1,8 +1,24 @@
 {
   "block.mekanism.ethene": "Течен етилен",
   "block.mekanism.heavy_water": "Тежка вода",
+  "block.mekanism.lead_ore": "Оловна руда",
   "block.mekanism.lithium": "Течен литий",
   "block.mekanism.oxygen": "Течен кислород",
+  "block.mekanism.uranium_ore": "Уранова руда",
+  "description.mekanism.fluorite_ore": "Минерал, който се намира срванително надълбоко под повърхността. Кристалите могат да се използват за направата на Флуороводородна киселина, необходим химикал при обработката на Уран.",
+  "description.mekanism.fortune_unit": "Увеличава дажбите на руда.",
+  "description.mekanism.lead_ore": "Сравнително рядък метал със страхотна устойчивост на радиоактивни частици.",
+  "description.mekanism.oredictionificator": "Машина, която позовлява \"превод\" между различни предмети и блокове, използвайки тагове.",
+  "description.mekanism.osmium_ore": "Намира се на почти всички дълбочини. Има много приложения в направата на машини.",
+  "description.mekanism.painting_machine": "Мажина, която боядисва блокове и предмети чрез внимателно прилагане на пигмент.",
+  "description.mekanism.purification_chamber": "Машина за напреднали, способна да обработва руди в три буци. Начлният стадий за утрояване на руди.",
+  "description.mekanism.tin_ore": "Лек, здрав, електро проводив материал.",
+  "description.mekanism.uranium_ore": "Често срещан тежък метал, който може да генерира огромни количества енергия ако се обработи правилно. В естествената си форма не е достатъчно радиоактивен за да навреди.",
+  "description.mekanism.vein_mining_unit": "Позволяво бързо копане на цели рудни жилки и бърза сеч на дървета.",
+  "description.mekanism.vision_enhancement_unit": "Осветява околността, позволявайки ползвателя да вижда в тъмното. Сложи няколко за по-добро нощно виждане.",
+  "filter.mekanism.oredictionificator.unsupported_tag": "Неподдържан таг",
   "key.mekanism.description": "Show description",
-  "key.mekanism.details": "Show details"
+  "key.mekanism.details": "Show details",
+  "tooltip.mekanism.no_fluid": "Няма течност.",
+  "tooltip.mekanism.no_gas": "Няма газ."
 }
