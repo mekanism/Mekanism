@@ -1077,19 +1077,18 @@ public class Mekanism
         }
 
 		//BioFuel Crusher Recipes
-		RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.tallgrass), new ItemStack(MekanismItems.BioFuel, 4));
-		RecipeHandler.addCrusherRecipe(new ItemStack(Items.reeds), new ItemStack(MekanismItems.BioFuel, 2));
-		RecipeHandler.addCrusherRecipe(new ItemStack(Items.wheat_seeds), new ItemStack(MekanismItems.BioFuel, 2));
-		RecipeHandler.addCrusherRecipe(new ItemStack(Items.wheat), new ItemStack(MekanismItems.BioFuel, 4));
-		RecipeHandler.addCrusherRecipe(new ItemStack(Items.pumpkin_seeds), new ItemStack(MekanismItems.BioFuel, 2));
-		RecipeHandler.addCrusherRecipe(new ItemStack(Items.melon_seeds), new ItemStack(MekanismItems.BioFuel, 2));
-		RecipeHandler.addCrusherRecipe(new ItemStack(Items.apple), new ItemStack(MekanismItems.BioFuel, 4));
-		RecipeHandler.addCrusherRecipe(new ItemStack(Items.bread), new ItemStack(MekanismItems.BioFuel, 4));
-		RecipeHandler.addCrusherRecipe(new ItemStack(Items.potato), new ItemStack(MekanismItems.BioFuel, 4));
-		RecipeHandler.addCrusherRecipe(new ItemStack(Items.carrot), new ItemStack(MekanismItems.BioFuel, 4));
-		RecipeHandler.addCrusherRecipe(new ItemStack(Items.rotten_flesh), new ItemStack(MekanismItems.BioFuel, 2));
-		RecipeHandler.addCrusherRecipe(new ItemStack(Items.melon), new ItemStack(MekanismItems.BioFuel, 4));
-		RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.pumpkin), new ItemStack(MekanismItems.BioFuel, 6));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.tallgrass), new ItemStack(MekanismItems.BioFuel, 1));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Items.reeds), new ItemStack(MekanismItems.BioFuel, 1));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Items.wheat_seeds), new ItemStack(MekanismItems.BioFuel, 1));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Items.wheat), new ItemStack(MekanismItems.BioFuel, 2));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Items.pumpkin_seeds), new ItemStack(MekanismItems.BioFuel, 1));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Items.melon_seeds), new ItemStack(MekanismItems.BioFuel, 1));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Items.apple), new ItemStack(MekanismItems.BioFuel, 2));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Items.potato), new ItemStack(MekanismItems.BioFuel, 2));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Items.carrot), new ItemStack(MekanismItems.BioFuel, 2));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Items.rotten_flesh), new ItemStack(MekanismItems.BioFuel, 1));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Items.melon), new ItemStack(MekanismItems.BioFuel, 3));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.pumpkin), new ItemStack(MekanismItems.BioFuel, 4));
 
 		//Purification Chamber Recipes
         RecipeHandler.addPurificationChamberRecipe(new ItemStack(Blocks.gravel), new ItemStack(Items.flint));
@@ -1207,7 +1206,7 @@ public class Mekanism
 		}
 
 		//Chemical Oxidiser Recipes
-		RecipeHandler.addChemicalOxidizerRecipe(new ItemStack(MekanismItems.BioFuel), new GasStack(GasRegistry.getGas("biomass"), 100));
+		RecipeHandler.addChemicalOxidizerRecipe(new ItemStack(MekanismItems.BioFuel), new GasStack(GasRegistry.getGas("biomass"), 75));
 
 		//Fuels
         GameRegistry.registerFuelHandler(new IFuelHandler() {
