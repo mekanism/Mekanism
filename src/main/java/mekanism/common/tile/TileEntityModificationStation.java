@@ -8,6 +8,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.ModuleData;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -22,6 +23,7 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
@@ -42,6 +44,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
 
     public int ticksRequired = BASE_TICKS_REQUIRED;
     public int operatingTicks;
+    private boolean usedEnergy = false;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getModuleItem")
@@ -84,6 +87,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     protected void onUpdateServer() {
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
+        FloatingLong clientEnergyUsed = FloatingLong.ZERO;
         if (MekanismUtils.canFunction(this)) {
             boolean operated = false;
             if (energyContainer.getEnergy().greaterOrEqual(energyContainer.getEnergyPerTick()) && !moduleSlot.isEmpty() && !containerSlot.isEmpty()) {
@@ -96,7 +100,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                     if (module == null || module.getInstalledCount() < data.getMaxStackSize()) {
                         operated = true;
                         operatingTicks++;
-                        energyContainer.extract(energyContainer.getEnergyPerTick(), Action.EXECUTE, AutomationType.INTERNAL);
+                        clientEnergyUsed = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.EXECUTE, AutomationType.INTERNAL);
                         if (operatingTicks == ticksRequired) {
                             operatingTicks = 0;
                             ((IModuleContainerItem) stack.getItem()).addModule(stack, data);
@@ -110,6 +114,11 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                 operatingTicks = 0;
             }
         }
+        usedEnergy = !clientEnergyUsed.isZero();
+    }
+
+    public boolean usedEnergy() {
+        return usedEnergy;
     }
 
     public void removeModule(Player player, ModuleData<?> type) {
@@ -143,5 +152,6 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableInt.create(() -> operatingTicks, value -> operatingTicks = value));
+        container.track(SyncableBoolean.create(this::usedEnergy, value -> usedEnergy = value));
     }
 }

@@ -40,7 +40,7 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
                   return energyContainer.getEnergyPerTick().greaterThan(energyContainer.getEnergy());
               });
         addRenderableWidget(new GuiVisualsTab(this, tile));
-        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer()));
+        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
         int tileChunkX = SectionPos.blockToSectionCoord(tile.getBlockPos().getX());
         int tileChunkZ = SectionPos.blockToSectionCoord(tile.getBlockPos().getZ());
         for (int x = -TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; x <= TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS; x++) {

@@ -27,6 +27,7 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -43,6 +44,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     private float soundScale = 1;
     private double lastEnvironmentLoss;
     private double lastTransferLoss;
+    private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
     private ResistiveHeaterEnergyContainer energyContainer;
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
@@ -92,6 +94,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
             }
         }
         setActive(!toUse.isZero());
+        clientEnergyUsed = toUse;
         HeatTransfer transfer = simulate();
         lastEnvironmentLoss = transfer.environmentTransfer();
         lastTransferLoss = transfer.adjacentTransfer();
@@ -100,6 +103,12 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
             soundScale = newSoundScale;
             sendUpdatePacket();
         }
+    }
+
+    @NotNull
+    @ComputerMethod
+    public FloatingLong getEnergyUsed() {
+        return clientEnergyUsed;
     }
 
     @ComputerMethod(nameOverride = "getTransferLoss")
@@ -144,6 +153,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         super.addContainerTrackers(container);
         container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
         container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
+        container.track(SyncableFloatingLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
 
     @NotNull

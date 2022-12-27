@@ -32,6 +32,8 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -91,6 +93,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
      * How many ticks this machine has been operating for.
      */
     public int operatingTicks;
+    private boolean usedEnergy = false;
     /**
      * The nodes that have full sources near them or in them
      */
@@ -141,20 +144,31 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         inputSlot.drainTank(outputSlot);
+        FloatingLong clientEnergyUsed = FloatingLong.ZERO;
         if (MekanismUtils.canFunction(this) && (fluidTank.isEmpty() || estimateIncrementAmount() <= fluidTank.getNeeded())) {
             FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
+                if (!activeType.isEmpty()) {
+                    //If we have an active type of fluid, use energy. This can cause there to be ticks where there isn't actually
+                    // anything to suck that use energy, but those will balance out with the first set of ticks where it doesn't
+                    // use any energy until it actually picks up the first block
+                    clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
+                }
                 operatingTicks++;
                 if (operatingTicks >= ticksRequired) {
                     operatingTicks = 0;
                     if (suck()) {
-                        energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
+                        if (clientEnergyUsed.isZero()) {
+                            //If it didn't already have an active type (hasn't used energy this tick), then extract energy
+                            clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
+                        }
                     } else {
                         reset();
                     }
                 }
             }
         }
+        usedEnergy = !clientEnergyUsed.isZero();
         if (!fluidTank.isEmpty()) {
             FluidUtils.emit(Collections.singleton(Direction.UP), fluidTank, this, 256 * (1 + upgradeComponent.getUpgrades(Upgrade.SPEED)));
         }
@@ -349,6 +363,16 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     public MachineEnergyContainer<TileEntityElectricPump> getEnergyContainer() {
         return energyContainer;
+    }
+
+    public boolean usedEnergy() {
+        return usedEnergy;
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableBoolean.create(this::usedEnergy, value -> usedEnergy = value));
     }
 
     //Methods relating to IComputerTile

@@ -77,6 +77,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     private int ticksRequired = BASE_TICKS_REQUIRED;
     private int operatingTicks;
+    private boolean usedEnergy = false;
     private boolean autoMode = false;
     private boolean isRecipe = false;
     private boolean stockControl = false;
@@ -218,6 +219,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             nextMode();
         }
 
+        FloatingLong clientEnergyUsed = FloatingLong.ZERO;
         if (autoMode && formula != null && ((getControlType() == RedstoneControl.PULSE && pulseOperations > 0) || MekanismUtils.canFunction(this))) {
             boolean canOperate = true;
             if (!isRecipe) {
@@ -235,7 +237,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 } else {
                     FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
                     if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
-                        energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
+                        clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                         operatingTicks++;
                     }
                 }
@@ -245,6 +247,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         } else {
             operatingTicks = 0;
         }
+        usedEnergy = !clientEnergyUsed.isZero();
     }
 
     private void checkFormula() {
@@ -670,6 +673,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return energyContainer;
     }
 
+    public boolean usedEnergy() {
+        return usedEnergy;
+    }
+
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
@@ -678,6 +685,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         container.track(SyncableInt.create(this::getTicksRequired, value -> ticksRequired = value));
         container.track(SyncableBoolean.create(this::hasRecipe, value -> isRecipe = value));
         container.track(SyncableBoolean.create(this::getStockControl, value -> stockControl = value));
+        container.track(SyncableBoolean.create(this::usedEnergy, value -> usedEnergy = value));
         container.track(SyncableBoolean.create(() -> formula != null, hasFormula -> {
             if (hasFormula) {
                 if (formula == null && isRemote()) {

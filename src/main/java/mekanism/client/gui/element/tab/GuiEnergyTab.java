@@ -33,17 +33,12 @@ public class GuiEnergyTab extends GuiBiDirectionalTab {
         infoHandler = handler;
     }
 
-    public GuiEnergyTab(IGuiWrapper gui, MachineEnergyContainer<?> energyContainer) {
-        this(gui, () -> List.of(MekanismLang.USING.translate(EnergyDisplay.of(energyContainer.getEnergyPerTick())),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeeded()))));
-        //TODO: Re-evaluate uses of this constructor at some point, as well as the isActive constructor
-    }
-
     public GuiEnergyTab(IGuiWrapper gui, MachineEnergyContainer<?> energyContainer, FloatingLongSupplier lastEnergyUsed) {
         this(gui, () -> List.of(MekanismLang.USING.translate(EnergyDisplay.of(lastEnergyUsed.get())),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(energyContainer.getNeeded()))));
     }
 
+    //TODO: Re-evaluate uses of this constructor at some point
     public GuiEnergyTab(IGuiWrapper gui, MachineEnergyContainer<?> energyContainer, BooleanSupplier isActive) {
         this(gui, () -> {
             //Note: This isn't the most accurate using calculation as deactivation doesn't sync instantly

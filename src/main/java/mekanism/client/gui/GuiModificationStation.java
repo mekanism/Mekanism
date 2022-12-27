@@ -34,7 +34,7 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 154, 40));
-        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer()));
+        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::usedEnergy));
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 65, 123));
         removeButton = addRenderableWidget(new TranslationButton(this, 34, 96, 108, 17, MekanismLang.BUTTON_REMOVE,
               () -> Mekanism.packetHandler().sendToServer(new PacketRemoveModule(tile.getBlockPos(), selectedModule.getData()))));
