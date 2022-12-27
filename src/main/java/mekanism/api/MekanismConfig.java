@@ -74,9 +74,9 @@ public class MekanismConfig
 		public static boolean OreDictOsmium;
 		public static boolean OreDictPlatinum;
 		public static boolean enableSiliconCompat;
-    public static int IC2SinkTier;
+    	public static int IC2SinkTier;
 		public static int IC2SourceTier;
-    public static int digitalMinerMaxRadius;
+    	public static int digitalMinerMaxRadius;
 	}
 
 	public static class client
@@ -145,9 +145,7 @@ public class MekanismConfig
 		public static double advancedSolarGeneration;
 		public static double bioGeneration;
 		public static int ethanolDuration;
-
 		public static int biogasDuration;
-
 		public static double ethanolMultiplier;
 		public static double heatGeneration;
 		public static double heatGenerationLava;
@@ -155,13 +153,10 @@ public class MekanismConfig
 		public static int heatGenerationFluidRate;
 		public static boolean heatGenEnable;
 		public static double solarGeneration;
-
 		public static double windGenerationMin;
 		public static double windGenerationMax;
-
 		public static int windGenerationMinY;
 		public static int windGenerationMaxY;
-		
 		public static int turbineBladesPerCoil;
 		public static double turbineVentGasFlow;
 		public static double turbineDisperserGasFlow;
@@ -272,9 +267,8 @@ public class MekanismConfig
 		public static boolean enableFlamethrower = true;
 		public static boolean enableGaugeDropper = true;
 		public static boolean enableTierInstaller = true;
-
-
 	}
+
 	public static class generatorsrecipes {
 		public static boolean enableHeatGenerator = true;
 		public static boolean enableSolarGenerator = true;

@@ -274,7 +274,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			general.OreDictOsmium = dataStream.readBoolean();
 			general.OreDictPlatinum = dataStream.readBoolean();
 			general.enableSiliconCompat = dataStream.readBoolean();
-      general.IC2SinkTier = dataStream.readInt();
+      		general.IC2SinkTier = dataStream.readInt();
 			general.IC2SourceTier = dataStream.readInt();
 			general.digitalMinerMaxRadius = dataStream.readInt();
 			
