@@ -173,23 +173,11 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IGasH
 	public int getFuelType()
 	{
 		if (fuelTank.getStored() > 0) {
-
 			Gas gas = fuelTank.getGas().getGas();
-			if (gas != null && isValidGas(gas)) {
-				if (gas == GasRegistry.getGas("bioethanol"))
-					return 1; //Ethanol
-			}
+			if (isValidGas(gas) && gas == GasRegistry.getGas("bioethanol"))
+					return 1;
 		}
 		return 0; //Biogas
-	}
-
-	public int getTypeGas()
-	{
-		if(fuelTank.getGas().getGas() == GasRegistry.getGas("bioethanol"))
-		{
-			return 1; //Orange
-		}
-		return 0; //Green
 	}
 
 	/**
@@ -229,10 +217,12 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IGasH
 
 	public boolean isValidGas(Gas gas)
 	{
-		if (gas == GasRegistry.getGas("biomass") || gas == GasRegistry.getGas("bioethanol")){
-			return true;}
-		else
-			return false;
+		if (gas != null) {
+			if (gas == GasRegistry.getGas("biomass") || gas == GasRegistry.getGas("bioethanol")) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
