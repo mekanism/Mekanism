@@ -42,12 +42,13 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 		{
 			push();
 
-			int gasType = tileEntity.getFuelType();
+			boolean isEthanol = tileEntity.getFuelType() == 1;
+			System.out.println("IsEthanol= " + isEthanol);
 
 			MekanismRenderer.glowOn();
 			GL11.glTranslatef((float)x, (float)y, (float)z);
 			bindTexture(MekanismRenderer.getBlocksTexture());
-			getDisplayList(gasType, ForgeDirection.getOrientation(tileEntity.facing)) [tileEntity.getScaledFuelLevel(stages-1)].render();
+			getDisplayList(isEthanol, ForgeDirection.getOrientation(tileEntity.facing)) [tileEntity.getScaledFuelLevel(stages-1)].render();
 			MekanismRenderer.glowOff();
 
 			pop();
@@ -71,7 +72,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 	}
 
 	@SuppressWarnings("incomplete-switch")
-	private DisplayInteger[] getDisplayList(int gasType, ForgeDirection side)
+	private DisplayInteger[] getDisplayList(boolean isEthanol, ForgeDirection side)
 	{
 		if(energyDisplays.containsKey(side))
 		{
@@ -83,7 +84,7 @@ public class RenderBioGenerator extends TileEntitySpecialRenderer
 		Model3D model3D = new Model3D();
 		model3D.baseBlock = Blocks.water;
 
-		if (gasType == 1)
+		if (isEthanol)
 		model3D.setTexture(MekanismRenderer.ethanolIcon);
 		else
 			model3D.setTexture(MekanismRenderer.biomassIcon);

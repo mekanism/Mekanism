@@ -80,6 +80,8 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(general.OreDictOsmium);
 			dataStream.writeBoolean(general.OreDictPlatinum);
 			dataStream.writeBoolean(general.enableSiliconCompat);
+			dataStream.writeInt(general.IC2SinkTier);
+			dataStream.writeInt(general.IC2SourceTier);
 			dataStream.writeInt(general.digitalMinerMaxRadius);
 			
 			for(MachineType type : MachineType.getValidMachines())
@@ -205,9 +207,6 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeBoolean(recipes.enableFlamethrower);
 			dataStream.writeBoolean(recipes.enableGaugeDropper);
 			dataStream.writeBoolean(recipes.enableTierInstaller);
-			dataStream.writeInt(general.IC2SinkTier);
-			dataStream.writeInt(general.IC2SourceTier);
-
 			
 			Tier.writeConfig(dataStream);
 	
