@@ -1156,12 +1156,15 @@ public class Mekanism
 		//T4 Processing Recipes
 		for(Gas gas : GasRegistry.getRegisteredGasses())
 		{
-			if(gas instanceof OreGas && !((OreGas)gas).isClean())
-			{
-				OreGas oreGas = (OreGas)gas;
+			if(gas instanceof OreGas && !((OreGas)gas).isClean()) {
+				OreGas oreGas = (OreGas) gas;
 
 				RecipeHandler.addChemicalWasherRecipe(new GasStack(oreGas, 1), new GasStack(oreGas.getCleanGas(), 1));
-				RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(oreGas.getCleanGas(), 200), new ItemStack(MekanismItems.Crystal, 1, Resource.getFromName(oreGas.getName()).ordinal()));
+				if (Resource.getFromName(oreGas.getName()) != null) {
+					if (Resource.getFromName(oreGas.getName()) == Resource.OSMIUM && (!general.OreDictOsmium && general.OreDictPlatinum)) continue;
+
+					RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(oreGas.getCleanGas(), 200), new ItemStack(MekanismItems.Crystal, 1, Resource.getFromName(oreGas.getName()).ordinal()));
+			}
 			}
 		}
 
@@ -1420,6 +1423,7 @@ public class Mekanism
 		GasRegistry.register(new Gas("sulfuricAcid")).registerFluid();
 		GasRegistry.register(new Gas("hydrogenChloride")).registerFluid();
 		GasRegistry.register(new Gas("liquidOsmium").setVisible(false));
+		GasRegistry.register(new Gas("liquidPlatinum").setVisible(false));
 		GasRegistry.register(new Gas("liquidStone").setVisible(false));
 		GasRegistry.register(new Gas("ethene").registerFluid());
 		GasRegistry.register(new Gas("sodium").registerFluid());
@@ -1443,6 +1447,8 @@ public class Mekanism
 			OreGas clean = (OreGas)GasRegistry.register(new OreGas("clean" + name, "oregas." + name.toLowerCase()).setVisible(false));
 			GasRegistry.register(new OreGas(name.toLowerCase(), "oregas." + name.toLowerCase()).setCleanGas(clean).setVisible(false));
 		}
+		OreGas clean = (OreGas) GasRegistry.register(new OreGas("cleanPlatinum", "oregas.Platinum").setVisible(false));
+		GasRegistry.register(new OreGas("platinum", "oregas." + "platinum").setCleanGas(clean).setVisible(false));
 
 		Mekanism.proxy.preInit();
 

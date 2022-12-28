@@ -10,6 +10,7 @@ import java.util.List;
 import mekanism.api.MekanismConfig;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.OreGas;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.recipe.RecipeHelper;
@@ -120,6 +121,12 @@ public final class OreDictManager
 				}
 			} catch (Exception e) {
 			}
+		}
+		if (MekanismConfig.general.OreDictPlatinum) {
+			for (ItemStack ore : OreDictionary.getOres("orePlatinum")) {
+				RecipeHandler.addChemicalDissolutionChamberRecipe(StackUtils.size(ore, 1), new GasStack(GasRegistry.getGas("platinum"), 1000));
+			}
+			RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(clean, 200), new ItemStack(MekanismItems.Crystal, 1, 2));
 		}
 		if (MekanismConfig.general.OreDictOsmium || MekanismConfig.general.OreDictPlatinum) {
 			for (String s : osmiumcompat) {
