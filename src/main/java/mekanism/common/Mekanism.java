@@ -1447,8 +1447,6 @@ public class Mekanism
 			OreGas clean = (OreGas)GasRegistry.register(new OreGas("clean" + name, "oregas." + name.toLowerCase()).setVisible(false));
 			GasRegistry.register(new OreGas(name.toLowerCase(), "oregas." + name.toLowerCase()).setCleanGas(clean).setVisible(false));
 		}
-		OreGas clean = (OreGas) GasRegistry.register(new OreGas("cleanPlatinum", "oregas.Platinum").setVisible(false));
-		GasRegistry.register(new OreGas("platinum", "oregas." + "platinum").setCleanGas(clean).setVisible(false));
 
 		Mekanism.proxy.preInit();
 
@@ -1517,6 +1515,7 @@ public class Mekanism
 				}
 			}
 		}
+		//Silicon Module
 		if (MekanismConfig.general.enableSiliconCompat)
 		{
 			if (Loader.isModLoaded("EnderIO") || Loader.isModLoaded("GalacticraftCore") || Loader.isModLoaded("ProjRed|Core")) {
@@ -1525,6 +1524,14 @@ public class Mekanism
 		}
 		//Integrate certain OreDictionary recipes
 		registerOreDict();
+
+		//Platinum Oredict Module
+		if (general.OreDictPlatinum)
+		{
+			OreGas clean = (OreGas) GasRegistry.register(new OreGas("cleanPlatinum", "oregas.Platinum").setVisible(false));
+			GasRegistry.register(new OreGas("platinum", "oregas." + "platinum").setCleanGas(clean).setVisible(false));
+			RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(clean, 200), new ItemStack(MekanismItems.Crystal, 1, 2));
+		}
 
 		//Load this module
 		addRecipes();
