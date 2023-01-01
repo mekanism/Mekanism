@@ -126,7 +126,6 @@ public final class OreDictManager
 			for (ItemStack ore : OreDictionary.getOres("orePlatinum")) {
 				RecipeHandler.addChemicalDissolutionChamberRecipe(StackUtils.size(ore, 1), new GasStack(GasRegistry.getGas("platinum"), 1000));
 			}
-			RecipeHandler.addChemicalCrystallizerRecipe(new GasStack(clean, 200), new ItemStack(MekanismItems.Crystal, 1, 2));
 		}
 		if (MekanismConfig.general.OreDictOsmium || MekanismConfig.general.OreDictPlatinum) {
 			for (String s : osmiumcompat) {
