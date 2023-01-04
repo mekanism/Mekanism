@@ -1,0 +1,104 @@
+name: Bug Report
+description: File a bug report
+title: "[BUG]: "
+labels: ["TYPE: BUG", "STATUS: NOT STARTED"]
+body:
+  - type: textarea
+    id: Describe-the-bug
+    attributes:
+      label: Describe the bug
+      placeholder: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: To-Reproduce
+    attributes:
+      label: To Reproduce
+      description: Steps to reproduce the behavior
+      placeholder:
+      value: "1. Go to '...'
+
+2. Click on '....'
+
+3. Scroll down to '....'
+
+4. See error"
+    validations:
+      required: true
+  - type: textarea
+    id: Expected-behavior
+    attributes:
+      label: Expected behavior
+      placeholder: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: input
+    id: mkversion
+    attributes:
+      label: Mekanism Version
+      description: What version of mekanism are you running?
+    validations:
+      required: true
+  - type: dropdown
+    id: mcversion
+    attributes:
+      label: Minecraft Version is this regarding?
+      options:
+        - 1.7.10
+        - 1.12.2
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: What OS are you seeing the problem on?
+      multiple: true
+      options:
+        - Windows
+        - Linux
+        - MAC
+        - BSD
+  - type: input
+    id: modpack
+    attributes:
+      label: Name of modpack
+    validations:
+      required: false
+  - type: input
+    id: modpackversion
+    attributes:
+      label: Version of said modpack
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: "Note that we only provide cross-mod support in the official modpacks for this mod. We always offer help and we may fix issues in public packs not on curseforge."
+  - type: textarea
+    id: Screenshots
+    attributes:
+      label: Screenshots
+      description:
+      placeholder: "Add screenshots to help explain your problem here. If you don't, we may not help you."
+  - type: textarea
+    id: logs
+    attributes:
+      label: The crash report in folder ./crash-reports (both server and client logs)
+      description:
+      placeholder: Paste crash-report here
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: tlogs
+    attributes:
+      label: Please provide the following other files
+      value: "+ The full log located in the folder ./logs
+
++ The configfiles in ./config/mekanism/ if edited
+
++ If the issue is with multiblock structures or similar complex stuff, also provide the save file where the error occurs. So that our time is saved for other bugs instead of trying to copy your build.
+
+Use gist.github.com to provide such files."
+  - type: markdown
+    attributes:
+      value: "## Issues not providing the required files will not get help"
