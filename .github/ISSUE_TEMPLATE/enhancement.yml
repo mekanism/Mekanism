@@ -1,6 +1,6 @@
-name: Bug Report
-description: File a bug report
-title: "[BUG]: "
+name: Enhancement request
+description: File a enhancement request
+title: "[ENHANCEMENT]: "
 labels: ["TYPE: ENHANCEMENT", "STATUS: NOT STARTED"]
 body:
   - type: textarea
