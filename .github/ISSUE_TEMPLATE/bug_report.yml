@@ -1,7 +1,7 @@
 name: Bug Report
 description: File a bug report
 title: "[BUG]: "
-labels: ["TYPE: BUG", "STATUS: NOT STARTED"]
+labels: ["TYPE: BUG", "STATUS: NOT STARTED", "PRIORITY: N/A"]
 body:
   - type: textarea
     id: Describe-the-bug

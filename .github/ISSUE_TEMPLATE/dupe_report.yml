@@ -1,7 +1,7 @@
 name: Dupe Report
 description: File a dupe report
 title: "[DUPE]: "
-labels: ["TYPE: DUPE", "STATUS: NOT STARTED"]
+labels: ["TYPE: DUPE", "STATUS: NOT STARTED", "PRIORITY: N/A"]
 body:
   - type: textarea
     id: Describe-the-dupe

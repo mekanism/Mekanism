@@ -1,7 +1,7 @@
 name: Enhancement request
 description: File a enhancement request
 title: "[ENHANCEMENT]: "
-labels: ["TYPE: ENHANCEMENT", "STATUS: NOT STARTED"]
+labels: ["TYPE: ENHANCEMENT", "STATUS: NOT STARTED", "PRIORITY: N/A"]
 body:
   - type: textarea
     id: prob
