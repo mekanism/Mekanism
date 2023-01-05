@@ -61,13 +61,13 @@ body:
   - type: input
     id: modpack
     attributes:
-      label: Name of modpack
+      label: Name of modpack if applicable
     validations:
       required: false
   - type: input
     id: modpackversion
     attributes:
-      label: Version of said modpack
+      label: Version of said modpack if applicable
     validations:
       required: false
   - type: markdown
@@ -92,7 +92,14 @@ body:
     id: tlogs
     attributes:
       label: Please provide the following other files
-      value: "+ The full log located in the folder ./logs
+      description: "+ The full log located in the folder ./logs
+
++ The configfiles in ./config/mekanism/ if edited
+
++ If the issue is with multiblock structures or similar complex stuff, also provide the save file where the error occurs. So that our time is saved for other bugs instead of trying to copy your build.
+
+Use gist.github.com to provide such files."
+      placeholder: "+ The full log located in the folder ./logs
 
 + The configfiles in ./config/mekanism/ if edited
 
