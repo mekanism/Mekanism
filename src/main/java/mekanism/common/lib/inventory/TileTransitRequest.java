@@ -65,7 +65,9 @@ public class TileTransitRequest extends TransitRequest {
         public ItemStack use(int amount) {
             Direction side = getSide();
             IItemHandler handler = InventoryUtils.assertItemHandler("TileTransitRequest", tile, side);
-            if (handler != null) {
+            if (handler != null && !slotMap.isEmpty()) {
+                HashedItem itemType = getItemType();
+                ItemStack itemStack = itemType.getInternalStack();
                 ObjectIterator<Int2IntMap.Entry> iterator = slotMap.int2IntEntrySet().iterator();
                 while (iterator.hasNext()) {
                     Int2IntMap.Entry entry = iterator.next();
@@ -73,16 +75,16 @@ public class TileTransitRequest extends TransitRequest {
                     int currentCount = entry.getIntValue();
                     int toUse = Math.min(amount, currentCount);
                     ItemStack ret = handler.extractItem(slot, toUse, false);
-                    boolean stackable = InventoryUtils.areItemsStackable(getItemType().getStack(), ret);
+                    boolean stackable = InventoryUtils.areItemsStackable(itemStack, ret);
                     if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
                         Mekanism.logger.warn("An inventory's returned content {} does not line up with TileTransitRequest's prediction.", stackable ? "count" : "type");
-                        Mekanism.logger.warn("TileTransitRequest item: {}, toUse: {}, ret: {}, slot: {}", getItemType().getStack(), toUse, ret, slot);
+                        Mekanism.logger.warn("TileTransitRequest item: {}, toUse: {}, ret: {}, slot: {}", itemStack, toUse, ret, slot);
                         Mekanism.logger.warn("Tile: {} {} {}", RegistryUtils.getName(tile.getType()), tile.getBlockPos(), side);
                     }
                     amount -= toUse;
                     totalCount -= toUse;
                     if (totalCount == 0) {
-                        itemMap.remove(getItemType());
+                        itemMap.remove(itemType);
                     }
                     currentCount = currentCount - toUse;
                     if (currentCount == 0) {

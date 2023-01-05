@@ -3,6 +3,7 @@ package mekanism.api.inventory.qio;
 import java.util.function.ObjLongConsumer;
 import mekanism.api.Action;
 import mekanism.api.IFrequency;
+import mekanism.api.inventory.IHashedItem;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -28,6 +29,16 @@ public interface IQIOFrequency extends IFrequency {
      * @param consumer Action to be performed.
      */
     void forAllStored(ObjLongConsumer<ItemStack> consumer);
+
+    /**
+     * Performs the given action for every item type stored in this QIO Frequency. Each action will be provided with the stored {@link IHashedItem} representing the type,
+     * and a long representing the amount of that item type that is stored.
+     *
+     * @param consumer Action to be performed.
+     *
+     * @since 10.3.6
+     */
+    void forAllHashedStored(ObjLongConsumer<IHashedItem> consumer);
 
     /**
      * Attempts to insert a given item type into this QIO Frequency.

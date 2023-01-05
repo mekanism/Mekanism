@@ -24,12 +24,14 @@ import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
     public static final ModelProperty<Void> POWERING_PROPERTY = new ModelProperty<>();
 
     private boolean prevPowering;
+    @Nullable
     private HashedItem itemType = null;
     private boolean fuzzy;
     private long count = 0;
@@ -52,7 +54,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         if (freq == null || itemType == null) {
             return 0;
         } else if (fuzzy) {
-            return freq.getTypesForItem(itemType.getStack().getItem()).stream().mapToLong(freq::getStored).sum();
+            return freq.getTypesForItem(itemType.getItem()).stream().mapToLong(freq::getStored).sum();
         }
         return freq.getStored(itemType);
     }
@@ -104,7 +106,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     public void writeSustainedData(CompoundTag dataMap) {
         super.writeSustainedData(dataMap);
         if (itemType != null) {
-            dataMap.put(NBTConstants.SINGLE_ITEM, itemType.getStack().serializeNBT());
+            dataMap.put(NBTConstants.SINGLE_ITEM, itemType.internalToNBT());
         }
         dataMap.putLong(NBTConstants.AMOUNT, count);
         dataMap.putBoolean(NBTConstants.FUZZY_MODE, fuzzy);
@@ -146,7 +148,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
     @ComputerMethod(nameOverride = "getTargetItem")
     public ItemStack getItemType() {
-        return itemType == null ? ItemStack.EMPTY : itemType.getStack();
+        return itemType == null ? ItemStack.EMPTY : itemType.getInternalStack();
     }
 
     @ComputerMethod(nameOverride = "getTriggerAmount")

@@ -59,7 +59,7 @@ public class PacketQIOItemViewerGuiSync implements IMekanismPacket {
             buffer.writeVarLong(countCapacity);
             buffer.writeVarInt(typeCapacity);
             BasePacketHandler.writeMap(buffer, itemMap, (key, value, buf) -> {
-                buf.writeItem(key.getStack());
+                buf.writeItem(key.getInternalStack());
                 //Shouldn't be null unless something failed, but if it does try to handle it relatively gracefully
                 BasePacketHandler.writeOptional(buf, key.getUUID(), FriendlyByteBuf::writeUUID);
                 buf.writeVarLong(value);

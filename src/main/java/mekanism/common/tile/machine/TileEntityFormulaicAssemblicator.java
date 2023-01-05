@@ -146,11 +146,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     }
                     IntList indices = formula.getIngredientIndices(level, stack);
                     if (!indices.isEmpty()) {
-                        HashedItem stockItem = stockControlMap[index];
-                        if (!stockControl || stockItem == null) {
-                            return true;
+                        if (stockControl) {
+                            HashedItem stockItem = stockControlMap[index];
+                            return stockItem == null || ItemHandlerHelper.canItemStacksStack(stockItem.getInternalStack(), stack);
                         }
-                        return ItemHandlerHelper.canItemStacksStack(stockItem.getStack(), stack);
+                        return true;
                     }
                     return false;
                 }, BasicInventorySlot.alwaysTrue, listener, 8 + slotX * 18, 98 + slotY * 18);
@@ -486,8 +486,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         // build map of what items we have to organize
         Object2IntMap<HashedItem> storedMap = new Object2IntOpenHashMap<>();
         for (IInventorySlot inputSlot : inputSlots) {
-            ItemStack stack = inputSlot.getStack();
-            if (!stack.isEmpty()) {
+            if (!inputSlot.isEmpty()) {
+                ItemStack stack = inputSlot.getStack();
                 HashedItem hashed = HashedItem.create(stack);
                 storedMap.put(hashed, storedMap.getOrDefault(hashed, 0) + stack.getCount());
             }
@@ -500,7 +500,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 unused.add(i);
             } else if (storedMap.containsKey(hashedItem)) {
                 int stored = storedMap.getInt(hashedItem);
-                int count = Math.min(hashedItem.getStack().getMaxStackSize(), stored);
+                int count = Math.min(hashedItem.getMaxStackSize(), stored);
                 if (count == stored) {
                     storedMap.removeInt(hashedItem);
                 } else {
@@ -558,7 +558,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         Object2IntMap.Entry<HashedItem> next = storedMap.object2IntEntrySet().iterator().next();
         HashedItem item = next.getKey();
         int stored = next.getIntValue();
-        int count = Math.min(item.getStack().getMaxStackSize(), stored);
+        int count = Math.min(item.getMaxStackSize(), stored);
         if (count == stored) {
             storedMap.removeInt(item);
             empty = storedMap.isEmpty();

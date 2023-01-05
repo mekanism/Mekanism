@@ -58,7 +58,7 @@ public class PacketQIOItemViewerSlotInteract implements IMekanismPacket {
                     if (itemType != null) {
                         if (type == Type.TAKE) {
                             //Should always be true but validate it before actually removing from the QIO
-                            if (InventoryUtils.areItemsStackable(curStack, itemType.getStack())) {
+                            if (InventoryUtils.areItemsStackable(curStack, itemType.getInternalStack())) {
                                 ItemStack ret = freq.removeByType(itemType, count);
                                 if (curStack.isEmpty()) {
                                     player.containerMenu.setCarried(ret);
@@ -69,7 +69,7 @@ public class PacketQIOItemViewerSlotInteract implements IMekanismPacket {
                                       player.containerMenu.getCarried()));
                             }
                         } else if (type == Type.SHIFT_TAKE) {
-                            ItemStack ret = freq.removeByType(itemType, itemType.getStack().getMaxStackSize());
+                            ItemStack ret = freq.removeByType(itemType, itemType.getMaxStackSize());
                             if (!ret.isEmpty()) {
                                 ItemStack remainder = container.insertIntoPlayerInventory(player.getUUID(), ret);
                                 if (!remainder.isEmpty()) {

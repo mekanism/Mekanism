@@ -251,8 +251,9 @@ public class QIOServerCraftingTransferHandler {
             used = slotData.getAvailable();
         }
         ItemStack currentRecipeTarget = recipeToTest.get(targetSlot);
+        ItemStack slotStack = slotData.getStack();
         if (currentRecipeTarget.isEmpty()) {
-            int max = slotData.getStack().getMaxStackSize();
+            int max = slotStack.getMaxStackSize();
             if (used > max) {
                 //This should never happen unless the player has an oversized stack in their inventory
                 Mekanism.logger.warn("Received transfer request from: {}, for: {}, but the item being moved can only stack to: {} but a stack of size: {} was "
@@ -260,8 +261,8 @@ public class QIOServerCraftingTransferHandler {
                 used = max;
             }
             //We copy the stack in case any mods do dumb things in their recipes and would end up mutating our stacks that shouldn't be mutated by accident
-            recipeToTest.set(targetSlot, slotData.getStack().copy());
-        } else if (!ItemHandlerHelper.canItemStacksStack(currentRecipeTarget, slotData.getStack())) {
+            recipeToTest.set(targetSlot, slotStack.copy());
+        } else if (!ItemHandlerHelper.canItemStacksStack(currentRecipeTarget, slotStack)) {
             //If our stack can't stack with the item we already are going to put in the slot, fail "gracefully"
             //Note: debug level because this may happen due to not knowing all NBT
             Mekanism.logger.debug("Received transfer request from: {}, for: {}, but found items for target slot: {} cannot stack. "
@@ -426,13 +427,13 @@ public class QIOServerCraftingTransferHandler {
                     stack = frequency.removeByType(storedItem, source.getUsed());
                     if (stack.isEmpty()) {
                         bail(targetContents, "Received transfer request from: {}, for: {}, but could not extract item: {} with nbt: {} from the QIO.",
-                              player, recipeID, storedItem.getStack().getItem(), storedItem.getStack().getTag());
+                              player, recipeID, storedItem.getItem(), storedItem.getInternalTag());
                         return;
                     } else if (stack.getCount() < source.getUsed()) {
                         Mekanism.logger.warn("Received transfer request from: {}, for: {}, but was unable to extract the expected amount: {} of item: {} "
                                              + "with nbt: {} from the QIO. This should not be possible as it should have been caught during simulation. Attempting "
-                                             + "to continue anyways with the actual extracted amount of {}.", player, recipeID, source.getUsed(),
-                              storedItem.getStack().getItem(), storedItem.getStack().getTag(), stack.getCount());
+                                             + "to continue anyways with the actual extracted amount of {}.", player, recipeID, source.getUsed(), storedItem.getItem(),
+                              storedItem.getInternalTag(), stack.getCount());
                     }
                 } else {
                     int actualSlot;
@@ -781,7 +782,7 @@ public class QIOServerCraftingTransferHandler {
 
         @Override
         public ItemStack getStack() {
-            return type == null ? ItemStack.EMPTY : type.getStack();
+            return type == null ? ItemStack.EMPTY : type.getInternalStack();
         }
 
         @Override

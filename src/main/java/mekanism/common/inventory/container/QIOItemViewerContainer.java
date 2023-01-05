@@ -455,7 +455,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         list = new ArrayList<>();
         ISearchQuery query = SearchQueryParser.parse(queryText);
         for (IScrollableSlot slot : itemList) {
-            if (query.matches(slot.getItem().getStack())) {
+            if (query.matches(slot.getItem().getInternalStack())) {
                 list.add(slot);
             }
         }
@@ -474,7 +474,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         }
         if (button == 0) {
             if (heldItem.isEmpty() && slot != null) {
-                int toTake = Math.min(slot.getItem().getStack().getMaxStackSize(), MathUtils.clampToInt(slot.getCount()));
+                int toTake = Math.min(slot.getItem().getMaxStackSize(), MathUtils.clampToInt(slot.getCount()));
                 Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.take(slot.getItemUUID(), toTake));
             } else if (!heldItem.isEmpty()) {
                 Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.put(heldItem.getCount()));
@@ -482,7 +482,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         } else if (button == 1) {
             if (heldItem.isEmpty() && slot != null) {
                 //Cap it out at the max stack size of the item, but try to take half of what is stored (taking at least one if it is a single item)
-                int toTake = Mth.clamp(MathUtils.clampToInt(slot.getCount() / 2), 1, slot.getItem().getStack().getMaxStackSize());
+                int toTake = Mth.clamp(MathUtils.clampToInt(slot.getCount() / 2), 1, slot.getItem().getMaxStackSize());
                 Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.take(slot.getItemUUID(), toTake));
             } else if (!heldItem.isEmpty()) {
                 Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.put(1));
@@ -519,12 +519,12 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
         @Override
         public String getModID() {
-            return MekanismUtils.getModId(getItem().getStack());
+            return MekanismUtils.getModId(getItem().getInternalStack());
         }
 
         @Override
         public String getDisplayName() {
-            return getItem().getStack().getHoverName().getString();
+            return getItem().getInternalStack().getHoverName().getString();
         }
     }
 

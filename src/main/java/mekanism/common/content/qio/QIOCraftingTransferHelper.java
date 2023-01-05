@@ -288,7 +288,7 @@ public class QIOCraftingTransferHelper {
                     inventorySlot = mainInventorySlots.get(slot - hotBarSize);
                 }
                 ItemStack stack = inventorySlot.getItem();
-                int remaining = getRemaining(slot, stack);
+                int remaining = stack.isEmpty() ? 0 : getRemaining(slot, stack);
                 if (remaining == 0) {
                     //If there is nothing "available" in the slot anymore that means the slot is "empty"
                     stack = ItemStack.EMPTY;
@@ -318,7 +318,7 @@ public class QIOCraftingTransferHelper {
             if (amount == 0) {
                 return 0;
             }
-            ItemStack stack = type.getStack();
+            ItemStack stack = type.getInternalStack();
             //Start by checking for slots it can stack with
             for (int slot = 0; slot < inventory.length; slot++) {
                 int currentAmount = stackSizes[slot];
@@ -344,6 +344,8 @@ public class QIOCraftingTransferHelper {
                         // track of the actual backing slot we could check it if needed, though that would have a chance
                         // of giving incorrect information anyway if it returns false for mayPlace based oen what was
                         // stored and is no longer stored
+                        //Note: We also can use the raw backing stack in this array as we do not do any mutations,
+                        // and this allows us to then avoid an extra copy call
                         inventory[slot] = stack;
                         slotLimits[slot] = max = Math.min(max, stack.getMaxStackSize());
                         int toPlace = stackSizes[slot] = Math.min(amount, max);

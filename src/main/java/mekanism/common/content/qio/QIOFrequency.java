@@ -20,6 +20,7 @@ import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
+import mekanism.api.inventory.IHashedItem;
 import mekanism.api.inventory.qio.IQIOFrequency;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
@@ -107,6 +108,11 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     @Override
+    public void forAllHashedStored(ObjLongConsumer<IHashedItem> consumer) {
+        itemDataMap.forEach((type, data) -> consumer.accept(type, data.getCount()));
+    }
+
+    @Override
     public long massInsert(ItemStack stack, long amount, Action action) {
         if (stack.isEmpty() || amount <= 0) {
             return 0;
@@ -148,7 +154,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     private QIOItemTypeData createTypeDataForAbsent(HashedItem type) {
-        ItemStack stack = type.getStack();
+        ItemStack stack = type.getInternalStack();
         List<String> tags = TagCache.getItemTags(stack);
         if (!tags.isEmpty()) {
             boolean hasAllKeys = tagLookupMap.hasAllKeys(tags);
@@ -238,7 +244,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             tagWildcardCache.clear();
             //Note: We don't need to clear the failed wildcard tags as if we are removing tags they still won't have any matches
         }
-        ItemStack stack = type.getStack();
+        ItemStack stack = type.getInternalStack();
         String modID = MekanismUtils.getModId(stack);
         Set<HashedItem> itemsForMod = modIDLookupMap.get(modID);
         //In theory if we are removing an item, and it existed we should have a set corresponding to it,
@@ -390,7 +396,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     @Override
     public long getStored(ItemStack type) {
-        return getStored(HashedItem.raw(type));
+        return type.isEmpty() ? 0 : getStored(HashedItem.raw(type));
     }
 
     public long getStored(HashedItem itemType) {
@@ -444,7 +450,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             //Note: We only need to clear tags here as the modids cannot change just because a reload happened
             tagLookupMap.clear();
             tagWildcardCache.clear();
-            itemDataMap.values().forEach(item -> tagLookupMap.putAll(TagCache.getItemTags(item.itemType.getStack()), item.itemType));
+            itemDataMap.values().forEach(item -> tagLookupMap.putAll(TagCache.getItemTags(item.itemType.getInternalStack()), item.itemType));
         }
     }
 

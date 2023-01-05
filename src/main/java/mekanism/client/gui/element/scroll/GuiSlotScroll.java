@@ -16,6 +16,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
+import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextUtils;
@@ -137,7 +138,7 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
         if (isSlotEmpty(slot)) {
             return;
         }
-        gui().renderItemWithOverlay(matrix, slot.getItem().getStack(), slotX + 1, slotY + 1, 1, "");
+        gui().renderItemWithOverlay(matrix, slot.getItem().getInternalStack(), slotX + 1, slotY + 1, 1, "");
         if (slot.getCount() > 1) {
             renderSlotText(matrix, getCountText(slot.getCount()), slotX + 1, slotY + 1);
         }
@@ -148,7 +149,7 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
         if (isSlotEmpty(slot)) {
             return;
         }
-        ItemStack stack = slot.getItem().getStack();
+        ItemStack stack = slot.getItem().getInternalStack();
         long count = slot.getCount();
         if (count < 10_000) {
             gui().renderItemTooltip(matrix, stack, slotX, slotY);
@@ -160,7 +161,10 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
     }
 
     private boolean isSlotEmpty(IScrollableSlot slot) {
-        return slot.getItem() == null || slot.getItem().getStack().isEmpty();
+        //Slot's item is not null in default impl, but check in case we make it null at some point
+        // and also validate if the internal stack is empty in case it is raw and there is some edge case
+        HashedItem item = slot.getItem();
+        return item == null || item.getInternalStack().isEmpty();
     }
 
     private void renderSlotText(PoseStack matrix, String text, int x, int y) {
@@ -203,6 +207,6 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
     @Override
     public Object getIngredient(double mouseX, double mouseY) {
         IScrollableSlot slot = getSlot(mouseX, mouseY);
-        return slot == null ? null : slot.getItem().getStack();
+        return slot == null ? null : slot.getItem().getInternalStack();
     }
 }

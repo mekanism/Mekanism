@@ -557,7 +557,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                     // until it is needed. That way if we have no empty slots and all our input slots are filled
                     // we don't do any extra processing here, and can properly short circuit
                     HashedItem item = entry.getKey();
-                    ItemStack largerInput = item.createStack(Math.min(item.getStack().getMaxStackSize(), recipeProcessInfo.totalCount));
+                    ItemStack largerInput = item.createStack(Math.min(item.getMaxStackSize(), recipeProcessInfo.totalCount));
                     ProcessInfo processInfo = recipeProcessInfo.processes.get(0);
                     //Try getting a recipe for our input with a larger size, and update the cache if we find one
                     RECIPE recipe = getRecipeForInput(processInfo.process(), largerInput, processInfo.outputSlot(), processInfo.secondaryOutputSlot(), true);
@@ -594,7 +594,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                 continue;
             }
             //Note: This is some arbitrary input stack one of the stacks contained
-            ItemStack sourceStack = entry.getKey().getStack();
+            ItemStack sourceStack = entry.getKey().getInternalStack();
             int emptyToAdd = maxSlots - processCount;
             int added = 0;
             List<ProcessInfo> toRemove = new ArrayList<>();
@@ -631,7 +631,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             }
             HashedItem item = entry.getKey();
             //Note: This isn't based on any limits the slot may have (but we currently don't have any reduced ones here, so it doesn't matter)
-            int maxStackSize = item.getStack().getMaxStackSize();
+            int maxStackSize = item.getMaxStackSize();
             int numberPerSlot = recipeProcessInfo.totalCount / processCount;
             if (numberPerSlot == maxStackSize) {
                 //If all the slots are already maxed out; short-circuit, no balancing is needed
