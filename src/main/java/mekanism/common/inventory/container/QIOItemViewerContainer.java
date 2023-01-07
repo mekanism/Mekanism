@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Supplier;
+import mekanism.api.Action;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
@@ -340,6 +342,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         searchCache.clear();
         totalItems = 0;
         cachedInventory.forEach((key, value) -> {
+            //TODO: See if we can optimize how we update the item list when it isn't a batch update?
             itemList.add(new ItemSlotData(key, key.getUUID(), value));
             totalItems += value;
         });
@@ -440,6 +443,16 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         return stack;
     }
 
+    /**
+     * @apiNote Only call on server
+     */
+    public ItemStack simulateInsertIntoPlayerInventory(UUID player, ItemStack stack) {
+        SelectedWindowData selectedWindow = getSelectedWindow(player);
+        stack = insertItemCheckAll(hotBarSlots, stack, selectedWindow, Action.SIMULATE);
+        stack = insertItemCheckAll(mainInventorySlots, stack, selectedWindow, Action.SIMULATE);
+        return stack;
+    }
+
     public void updateSearch(String queryText) {
         // searches should only be updated on the client-side
         if (!isRemote() || itemList == null) {
@@ -465,27 +478,26 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     @Override
-    public void onClick(IScrollableSlot slot, int button, boolean hasShiftDown, ItemStack heldItem) {
+    public void onClick(Supplier<@Nullable IScrollableSlot> slotProvider, int button, boolean hasShiftDown, ItemStack heldItem) {
         if (hasShiftDown) {
+            IScrollableSlot slot = slotProvider.get();
             if (slot != null) {
                 Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.shiftTake(slot.getItemUUID()));
             }
-            return;
-        }
-        if (button == 0) {
-            if (heldItem.isEmpty() && slot != null) {
-                int toTake = Math.min(slot.getItem().getMaxStackSize(), MathUtils.clampToInt(slot.getCount()));
-                Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.take(slot.getItemUUID(), toTake));
-            } else if (!heldItem.isEmpty()) {
-                Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.put(heldItem.getCount()));
-            }
-        } else if (button == 1) {
-            if (heldItem.isEmpty() && slot != null) {
-                //Cap it out at the max stack size of the item, but try to take half of what is stored (taking at least one if it is a single item)
-                int toTake = Mth.clamp(MathUtils.clampToInt(slot.getCount() / 2), 1, slot.getItem().getMaxStackSize());
-                Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.take(slot.getItemUUID(), toTake));
-            } else if (!heldItem.isEmpty()) {
-                Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.put(1));
+        } else if (button == 0 || button == 1) {
+            if (heldItem.isEmpty()) {
+                IScrollableSlot slot = slotProvider.get();
+                if (slot != null) {
+                    //Left click -> as much as possible, right click -> half of available
+                    long baseExtract = button == 0 ? slot.getCount() : slot.getCount() / 2;
+                    //Cap it out at the max stack size of the item, but otherwise try to take the desired amount (taking at least one if it is a single item)
+                    int toTake = Mth.clamp(MathUtils.clampToInt(baseExtract), 1, slot.getItem().getMaxStackSize());
+                    Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.take(slot.getItemUUID(), toTake));
+                }
+            } else {
+                //Left click -> all held, right click -> single item
+                int toAdd = button == 0 ? heldItem.getCount() : 1;
+                Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.put(toAdd));
             }
         }
     }
@@ -515,16 +527,6 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         @Override
         public long getCount() {
             return count;
-        }
-
-        @Override
-        public String getModID() {
-            return MekanismUtils.getModId(getItem().getInternalStack());
-        }
-
-        @Override
-        public String getDisplayName() {
-            return getItem().getInternalStack().getHoverName().getString();
         }
     }
 

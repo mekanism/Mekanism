@@ -141,15 +141,25 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     public ItemStack addItem(ItemStack stack) {
         if (stack.isEmpty()) {
             return ItemStack.EMPTY;
-        }
-        HashedItem type = HashedItem.create(stack);
-        // these checks are extremely important; they prevent us from wasting CPU searching for a place to put the new items,
-        // and they also prevent us from adding a ghost type to the itemDataMap if nothing is inserted
-        if (totalCount == totalCountCapacity || (!itemDataMap.containsKey(type) && itemDataMap.size() == totalTypeCapacity)) {
+        } else if (totalCount == totalCountCapacity) {
+            //This check and the pre-check in the computeIfAbsent are extremely important; they prevent us from wasting CPU searching for
+            // a place to put the new items, and they also prevent us from adding a ghost type to the itemDataMap if nothing is inserted
             return stack;
         }
-        // at this point we're guaranteed at least part of the input stack will be inserted
-        QIOItemTypeData data = itemDataMap.computeIfAbsent(type, this::createTypeDataForAbsent);
+        HashedItem type = HashedItem.create(stack);
+        QIOItemTypeData data = itemDataMap.computeIfAbsent(type, t -> {
+            if (itemDataMap.size() == totalTypeCapacity) {
+                //Don't add any ghost item types if there is no room for new ones. We do this inside of a computeIfAbsent
+                // so that we don't have to check if the map contains it twice
+                return null;
+            }
+            // at this point we're guaranteed at least part of the input stack will be inserted
+            return createTypeDataForAbsent(t);
+        });
+        if (data == null) {
+            //Failed to insert
+            return stack;
+        }
         return type.createStack(MathUtils.clampToInt(data.add(stack.getCount(), Action.EXECUTE)));
     }
 
