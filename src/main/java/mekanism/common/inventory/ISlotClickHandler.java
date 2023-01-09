@@ -13,18 +13,18 @@ public interface ISlotClickHandler {
 
     interface IScrollableSlot {
 
-        HashedItem getItem();
+        HashedItem item();
 
-        UUID getItemUUID();
+        UUID itemUUID();
 
-        long getCount();
+        long count();
 
         default String getDisplayName() {
-            return getItem().getInternalStack().getHoverName().getString();
+            return item().getInternalStack().getHoverName().getString();
         }
 
         default String getModID() {
-            return MekanismUtils.getModId(getItem().getInternalStack());
+            return MekanismUtils.getModId(item().getInternalStack());
         }
     }
 }

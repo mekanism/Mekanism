@@ -45,6 +45,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 
 public class QIOFrequency extends Frequency implements IColorableFrequency, IQIOFrequency {
@@ -433,17 +434,28 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     public void tick() {
         super.tick();
         if (!updatedItems.isEmpty() || needsUpdate) {
-            Object2LongMap<UUIDAwareHashedItem> map = new Object2LongOpenHashMap<>(updatedItems.size());
-            updatedItems.forEach(uuid -> {
-                HashedItem type = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(uuid);
-                if (type != null) {//The type should never be null as we create a UUID if there isn't one before adding but validate it
-                    QIOItemTypeData data = itemDataMap.get(type);
-                    map.put(new UUIDAwareHashedItem(type, uuid), data == null ? 0 : data.count);
-                }
+            //Only calculate the packet and the update map if there are actually players viewing this frequency,
+            // otherwise we can just skip looking up UUIDs and counts
+            Lazy<PacketQIOItemViewerGuiSync> lazyPacket = Lazy.of(() -> {
+                Object2LongMap<UUIDAwareHashedItem> map = new Object2LongOpenHashMap<>(updatedItems.size());
+                updatedItems.forEach(uuid -> {
+                    HashedItem type = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(uuid);
+                    if (type != null) {//The type should never be null as we create a UUID if there isn't one before adding but validate it
+                        QIOItemTypeData data = itemDataMap.get(type);
+                        map.put(new UUIDAwareHashedItem(type, uuid), data == null ? 0 : data.count);
+                    }
+                });
+                return PacketQIOItemViewerGuiSync.update(map, totalCountCapacity, totalTypeCapacity);
             });
-            // flush players that somehow didn't send a container close packet
-            playersViewingItems.removeIf(player -> !(player.containerMenu instanceof QIOItemViewerContainer));
-            playersViewingItems.forEach(player -> Mekanism.packetHandler().sendTo(PacketQIOItemViewerGuiSync.update(map, totalCountCapacity, totalTypeCapacity), player));
+            for (Iterator<ServerPlayer> viewingIterator = playersViewingItems.iterator(); viewingIterator.hasNext(); ) {
+                ServerPlayer player = viewingIterator.next();
+                if (player.containerMenu instanceof QIOItemViewerContainer) {
+                    Mekanism.packetHandler().sendTo(lazyPacket.get(), player);
+                } else {
+                    //flush players that somehow didn't send a container close packet
+                    viewingIterator.remove();
+                }
+            }
             updatedItems.clear();
             needsUpdate = false;
         }
@@ -551,7 +563,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             driveMap.put(key, data);
             data.getItemMap().forEach((storedKey, value) -> {
                 itemDataMap.computeIfAbsent(storedKey, this::createTypeDataForAbsent).addFromDrive(data, value);
-                updatedItems.add(QIOGlobalItemLookup.INSTANCE.getUUIDForType(storedKey));
+                markForUpdate(storedKey);
             });
             setNeedsUpdate();
         }
@@ -569,7 +581,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                     itemData.containingDrives.remove(key);
                     itemData.count -= value;
                     totalCount -= value;
-                    updatedItems.add(QIOGlobalItemLookup.INSTANCE.getUUIDForType(storedKey));
+                    markForUpdate(storedKey);
                     // remove this entry from the item data map if it's now empty
                     if (itemData.containingDrives.isEmpty() || itemData.count == 0) {
                         removeItemData(storedKey);
@@ -602,9 +614,17 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     private void setNeedsUpdate(@Nullable HashedItem changedItem) {
-        needsUpdate = true;
         isDirty = true;
-        if (changedItem != null) {
+        if (!playersViewingItems.isEmpty()) {//Skip marking for update if there are no players viewing the items
+            needsUpdate = true;
+            if (changedItem != null) {
+                updatedItems.add(QIOGlobalItemLookup.INSTANCE.getUUIDForType(changedItem));
+            }
+        }
+    }
+
+    private void markForUpdate(HashedItem changedItem) {
+        if (!playersViewingItems.isEmpty()) {//Skip marking for update if there are no players viewing the items
             updatedItems.add(QIOGlobalItemLookup.INSTANCE.getUUIDForType(changedItem));
         }
     }

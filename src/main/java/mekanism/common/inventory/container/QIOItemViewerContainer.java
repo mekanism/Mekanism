@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.math.MathUtils;
@@ -25,6 +26,7 @@ import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.inventory.GuiComponents.IToggleEnum;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
+import mekanism.common.inventory.container.slot.InsertableSlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.VirtualCraftingOutputSlot;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
@@ -68,7 +70,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private int cachedTypeCapacity;
     private long totalItems;
 
+    @Nullable
     private List<IScrollableSlot> itemList;
+    @Nullable
     private List<IScrollableSlot> searchList;
 
     private Map<String, List<IScrollableSlot>> searchCache = new Object2ObjectOpenHashMap<>();
@@ -207,16 +211,15 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     private void doDoubleClickTransfer(Player player) {
         QIOFrequency freq = getFrequency();
-        mainInventorySlots.forEach(slot -> {
-            if (freq != null && slot.hasItem() && slot.mayPickup(player) && InventoryUtils.areItemsStackable(lastStack, slot.getItem())) {
-                updateSlot(player, slot, freq.addItem(slot.getItem()));
-            }
-        });
-        hotBarSlots.forEach(slot -> {
-            if (freq != null && slot.hasItem() && slot.mayPickup(player) && InventoryUtils.areItemsStackable(lastStack, slot.getItem())) {
-                updateSlot(player, slot, freq.addItem(slot.getItem()));
-            }
-        });
+        if (freq != null) {
+            Consumer<InsertableSlot> slotConsumer = slot -> {
+                if (slot.hasItem() && slot.mayPickup(player) && InventoryUtils.areItemsStackable(lastStack, slot.getItem())) {
+                    updateSlot(player, slot, freq.addItem(slot.getItem()));
+                }
+            };
+            mainInventorySlots.forEach(slotConsumer);
+            hotBarSlots.forEach(slotConsumer);
+        }
     }
 
     /**
@@ -311,6 +314,13 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     public void handleUpdate(Object2LongMap<UUIDAwareHashedItem> itemMap, long countCapacity, int typeCapacity) {
+        cachedCountCapacity = countCapacity;
+        cachedTypeCapacity = typeCapacity;
+        if (itemMap.isEmpty()) {
+            //No items need updating, we just changed the counts/capacities, in general this should never be the case, but in case it is
+            // just short circuit a lot of logic
+            return;
+        }
         itemMap.object2LongEntrySet().forEach(entry -> {
             long value = entry.getLongValue();
             if (value == 0) {
@@ -319,8 +329,6 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                 cachedInventory.put(entry.getKey(), value);
             }
         });
-        cachedCountCapacity = countCapacity;
-        cachedTypeCapacity = typeCapacity;
         syncItemList();
     }
 
@@ -341,8 +349,11 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         itemList.clear();
         searchCache.clear();
         totalItems = 0;
+        //Note: While when only updating some items it would be better in terms of memory churn to just update
+        // the entries in the itemList that changed instead of creating a new ItemSlotData for each one that is the same,
+        // this greatly increases the time complexity of doing so due to having to find the matching entry in the itemList
+        // so is not worth doing so
         cachedInventory.forEach((key, value) -> {
-            //TODO: See if we can optimize how we update the item list when it isn't a batch update?
             itemList.add(new ItemSlotData(key, key.getUUID(), value));
             totalItems += value;
         });
@@ -386,6 +397,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         return sortType;
     }
 
+    @Nullable
     public List<IScrollableSlot> getQIOItemList() {
         return searchQuery.isEmpty() ? itemList : searchList;
     }
@@ -458,23 +470,17 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         if (!isRemote() || itemList == null) {
             return;
         }
-
-        List<IScrollableSlot> list = searchCache.get(queryText);
-        if (list != null) {
-            searchList = list;
-            searchQuery = queryText;
-            return;
-        }
-        list = new ArrayList<>();
-        ISearchQuery query = SearchQueryParser.parse(queryText);
-        for (IScrollableSlot slot : itemList) {
-            if (query.matches(slot.getItem().getInternalStack())) {
-                list.add(slot);
-            }
-        }
-        searchList = list;
         searchQuery = queryText;
-        searchCache.put(queryText, searchList);
+        searchList = searchCache.computeIfAbsent(queryText, text -> {
+            List<IScrollableSlot> list = new ArrayList<>();
+            ISearchQuery query = SearchQueryParser.parse(text);
+            for (IScrollableSlot slot : itemList) {
+                if (query.matches(slot.item().getInternalStack())) {
+                    list.add(slot);
+                }
+            }
+            return list;
+        });
     }
 
     @Override
@@ -482,17 +488,17 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         if (hasShiftDown) {
             IScrollableSlot slot = slotProvider.get();
             if (slot != null) {
-                Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.shiftTake(slot.getItemUUID()));
+                Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.shiftTake(slot.itemUUID()));
             }
         } else if (button == 0 || button == 1) {
             if (heldItem.isEmpty()) {
                 IScrollableSlot slot = slotProvider.get();
                 if (slot != null) {
                     //Left click -> as much as possible, right click -> half of available
-                    long baseExtract = button == 0 ? slot.getCount() : slot.getCount() / 2;
+                    long baseExtract = button == 0 ? slot.count() : slot.count() / 2;
                     //Cap it out at the max stack size of the item, but otherwise try to take the desired amount (taking at least one if it is a single item)
-                    int toTake = Mth.clamp(MathUtils.clampToInt(baseExtract), 1, slot.getItem().getMaxStackSize());
-                    Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.take(slot.getItemUUID(), toTake));
+                    int toTake = Mth.clamp(MathUtils.clampToInt(baseExtract), 1, slot.item().getMaxStackSize());
+                    Mekanism.packetHandler().sendToServer(PacketQIOItemViewerSlotInteract.take(slot.itemUUID(), toTake));
                 }
             } else {
                 //Left click -> all held, right click -> single item
@@ -502,32 +508,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         }
     }
 
-    public static class ItemSlotData implements IScrollableSlot {
-
-        private final HashedItem itemType;
-        private final UUID typeUUID;
-        private final long count;
-
-        private ItemSlotData(HashedItem itemType, UUID typeUUID, long count) {
-            this.itemType = itemType;
-            this.typeUUID = typeUUID;
-            this.count = count;
-        }
-
-        @Override
-        public HashedItem getItem() {
-            return itemType;
-        }
-
-        @Override
-        public UUID getItemUUID() {
-            return typeUUID;
-        }
-
-        @Override
-        public long getCount() {
-            return count;
-        }
+    private record ItemSlotData(HashedItem item, UUID itemUUID, long count) implements IScrollableSlot {
     }
 
     public enum SortDirection implements IToggleEnum<SortDirection> {
@@ -559,8 +540,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     public enum ListSortType implements IDropdownEnum<ListSortType> {
         NAME(MekanismLang.LIST_SORT_NAME, MekanismLang.LIST_SORT_NAME_DESC, Comparator.comparing(IScrollableSlot::getDisplayName)),
-        SIZE(MekanismLang.LIST_SORT_COUNT, MekanismLang.LIST_SORT_COUNT_DESC, Comparator.comparingLong(IScrollableSlot::getCount).thenComparing(IScrollableSlot::getDisplayName),
-              Comparator.comparingLong(IScrollableSlot::getCount).reversed().thenComparing(IScrollableSlot::getDisplayName)),
+        SIZE(MekanismLang.LIST_SORT_COUNT, MekanismLang.LIST_SORT_COUNT_DESC, Comparator.comparingLong(IScrollableSlot::count).thenComparing(IScrollableSlot::getDisplayName),
+              Comparator.comparingLong(IScrollableSlot::count).reversed().thenComparing(IScrollableSlot::getDisplayName)),
         MOD(MekanismLang.LIST_SORT_MOD, MekanismLang.LIST_SORT_MOD_DESC, Comparator.comparing(IScrollableSlot::getModID).thenComparing(IScrollableSlot::getDisplayName),
               Comparator.comparing(IScrollableSlot::getModID).reversed().thenComparing(IScrollableSlot::getDisplayName));
 
