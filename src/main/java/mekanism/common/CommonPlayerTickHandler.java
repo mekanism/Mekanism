@@ -85,7 +85,7 @@ public class CommonPlayerTickHandler {
         ItemStack stack = player.getItemBySlot(EquipmentSlot.LEGS);
         if (!stack.isEmpty()) {
             IModule<ModuleHydrostaticRepulsorUnit> module = MekanismAPI.getModuleHelper().load(stack, MekanismModules.HYDROSTATIC_REPULSOR_UNIT);
-            if (module != null && module.isEnabled() && module.getCustomInstance().isSwimBoost(module)) {
+            if (module != null && module.isEnabled() && module.getCustomInstance().isSwimBoost(module, player)) {
                 return 1F;
             }
         }
