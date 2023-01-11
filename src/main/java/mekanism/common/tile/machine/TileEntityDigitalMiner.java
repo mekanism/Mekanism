@@ -406,6 +406,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private void tryMineBlock() {
+        BlockPos startingPos = getStartingPos();
+        int diameter = getDiameter();
         long target = targetChunk == null ? ChunkPos.INVALID_CHUNK_POS : targetChunk.toLong();
         for (ObjectIterator<Long2ObjectMap.Entry<BitSet>> it = oresToMine.long2ObjectEntrySet().iterator(); it.hasNext(); ) {
             Long2ObjectMap.Entry<BitSet> entry = it.next();
@@ -417,9 +419,16 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 // do any initialization
                 currentChunk = targetChunk;
             }
-            int next = 0;
+            //Note: We go in reverse order instead of normal order to avoid issues where we break blocks supporting ones
+            // that are affected by gravity and then are unable to break them after they have fallen. The reason we do it
+            // this way instead of changing how the bits are indexed in correspondence with locations in the world is because
+            // it is much more likely for there to be blocks lower down, and this allows us to avoid having to add large indices
+            // to our bitset because of all the small indices having been taken up by air
+            //Length returns the largest set bit + 1, so we subtract one to get the largest set bit as previousSetBit is inclusive,
+            // and if none are set and this becomes -1, previousSetBit will still just return -1
+            int previous = chunkToMine.length() - 1;
             while (true) {
-                int index = chunkToMine.nextSetBit(next);
+                int index = chunkToMine.previousSetBit(previous);
                 if (index == -1) {
                     //If there is no found index, remove it and continue on
                     it.remove();
@@ -430,7 +439,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                     updateTargetChunk(currentChunk = new ChunkPos(chunk));
                     target = chunk;
                 }
-                BlockPos pos = getPosFromIndex(index);
+                BlockPos pos = getOffsetForIndex(startingPos, diameter, index);
                 Optional<BlockState> blockState = WorldUtils.getBlockState(level, pos);
                 if (blockState.isPresent()) {
                     BlockState state = blockState.get();
@@ -479,9 +488,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                     it.remove();
                     break;
                 }
-                // if we still have elements in this chunk that can potentially be mined, increment our index
-                // to the next one and attempt to mine it
-                next = index + 1;
+                // if we still have elements in this chunk that can potentially be mined, decrement our index
+                // to the previous one and attempt to mine it
+                previous = index - 1;
             }
         }
         //If we didn't exit early due to actually mining a block that means we don't have a target chunk anymore
@@ -661,7 +670,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
         if (searcher.state == State.IDLE) {
             BlockPos startingPos = getStartingPos();
-            searcher.setChunkCache(new PathNavigationRegion(getLevel(), startingPos, startingPos.offset(getDiameter(), getMaxY() - getMinY() + 1, getDiameter())));
+            int diameter = getDiameter();
+            searcher.setChunkCache(new PathNavigationRegion(getLevel(), startingPos, startingPos.offset(diameter, getMaxY() - getMinY() + 1, diameter)));
             searcher.start();
         }
         running = true;
@@ -749,7 +759,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     public int getTotalSize() {
-        return getDiameter() * getDiameter() * (getMaxY() - getMinY() + 1);
+        int diameter = getDiameter();
+        return diameter * diameter * (getMaxY() - getMinY() + 1);
     }
 
     public int getDiameter() {
@@ -760,9 +771,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return new BlockPos(getBlockPos().getX() - radius, getMinY(), getBlockPos().getZ() - radius);
     }
 
-    private BlockPos getPosFromIndex(int index) {
-        int diameter = getDiameter();
-        BlockPos start = getStartingPos();
+    public static BlockPos getOffsetForIndex(BlockPos start, int diameter, int index) {
         return start.offset(index % diameter, index / diameter / diameter, (index / diameter) % diameter);
     }
 

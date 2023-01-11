@@ -56,7 +56,7 @@ public class ThreadMinerSearch extends Thread {
                 //Make sure the miner is still valid and something hasn't gone wrong
                 return;
             }
-            BlockPos testPos = pos.offset(i % diameter, i / diameter / diameter, (i / diameter) % diameter);
+            BlockPos testPos = TileEntityDigitalMiner.getOffsetForIndex(pos, diameter, i);
             if (minerPos.equals(testPos) || WorldUtils.getTileEntity(TileEntityBoundingBlock.class, chunkCache, testPos) != null) {
                 //Skip the miner itself, and also skip any bounding blocks
                 continue;
