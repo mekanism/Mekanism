@@ -21,7 +21,7 @@ plugins {
 
 tasks.named('wrapper', Wrapper).configure {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '7.5.1'
+    gradleVersion = '7.6'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -39,7 +39,7 @@ idea {
 ext {
     versionProperties = ["version"       : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
                          "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range, "jei_version": jei_version_range,
-                         "curios_version": curios_version_range]
+                         "curios_version": curios_version_range, "recipe_stages_version": recipe_stages_version_range]
     //Fallback pack format is the larger of the resource and data pack formats
     packProperties = ["pack_format"         : Math.max(Integer.parseInt(resource_pack_format), Integer.parseInt(data_pack_format)),
                       "resource_pack_format": resource_pack_format, "data_pack_format": data_pack_format]
@@ -354,6 +354,7 @@ repositories {
         content {
             includeGroup 'com.blamejared.crafttweaker'
             includeGroup 'com.blamejared.jeitweaker'
+            includeGroup 'com.blamejared.recipestages'
         }
     }
     maven {
@@ -406,6 +407,7 @@ repositories {
                         excludeGroup 'appeng'
                         excludeGroup 'com.blamejared.crafttweaker'
                         excludeGroup 'com.blamejared.jeitweaker'
+                        excludeGroup 'com.blamejared.recipestages'
                         excludeGroup 'org.squiddev'
                         excludeGroup 'top.theillusivec4.curios'
                     }
@@ -458,6 +460,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
     compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}:api")
+    compileOnly fg.deobf("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     compileOnly fg.deobf("curse.maven:opencomputers2-437654:${oc2_id}")
     def cc = fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${cc_tweaked_version}:api")
     compileOnly cc
@@ -791,6 +794,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     optionalDependency "oh-the-biomes-youll-go"
                     optionalDependency "perviaminvenire"
                     optionalDependency "projecte"
+                    optionalDependency "recipe-stages"
                     optionalDependency "the-one-probe"
                     optionalDependency "wthit-forge"
                 }
@@ -889,6 +893,7 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
         dependencies = [
                 new ModDependency("XxWD5pD3", "optional"),//AE2
                 new ModDependency("gu7yAYhd", "optional"),//CC: Tweaked
+                new ModDependency("nvQzSEkH", "optional"),//Jade
                 new ModDependency("uE1WpIAk", "optional"),//Oh the Biomes You'll Go
                 new ModDependency("bcOsQHnC", "optional"),//Wildfire's Female Gender Mod
                 new ModDependency("6AQIaxuO", "optional"),//WTHIT
