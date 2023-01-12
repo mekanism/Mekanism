@@ -328,7 +328,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addFluid(MekanismFluids.CHLORINE, "Liquid Chlorine");
         addFluid(MekanismFluids.SULFUR_DIOXIDE, "Liquid Sulfur Dioxide");
         addFluid(MekanismFluids.SULFUR_TRIOXIDE, "Liquid Sulfur Trioxide");
-        addFluid(MekanismFluids.SULFURIC_ACID, "Sulfuric Acid");
+        addFluid(MekanismFluids.SULFURIC_ACID, "Liquid Sulfuric Acid");
         addFluid(MekanismFluids.HYDROGEN_CHLORIDE, "Liquid Hydrogen Chloride");
         addFluid(MekanismFluids.HYDROFLUORIC_ACID, "Liquid Hydrofluoric Acid");
         addFluid(MekanismFluids.URANIUM_OXIDE, "Liquid Uranium Oxide");
@@ -1428,7 +1428,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_ENABLED, "Enabled");
         add(MekanismLang.MODULE_ENABLED_LOWER, "enabled");
         add(MekanismLang.MODULE_DISABLED_LOWER, "disabled");
-        add(MekanismLang.MODULE_DAMAGE, "Damage: %1$s");
+        add(MekanismLang.MODULE_DAMAGE, "Damage Amplification: %1$s");
         add(MekanismLang.MODULE_TWEAKER, "Module Tweaker");
         add(MekanismLang.MODULE_INSTALLED, "Installed: %1$s");
         add(MekanismLang.MODULE_SUPPORTED, "Supported by:");
