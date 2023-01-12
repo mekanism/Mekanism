@@ -208,7 +208,8 @@ public class CommonWorldTickHandler {
             //Credit to E. Beef
             if (chunkRegenMap.containsKey(dimensionName)) {
                 Queue<ChunkPos> chunksToGen = chunkRegenMap.get(dimensionName);
-                Object2IntMap<ChunkPos> dimensionChunkVersions = chunkVersions.getOrDefault(dimensionName, Object2IntMaps.emptyMap());
+                //Chunk versions may be null if retrogen is forced by command
+                Object2IntMap<ChunkPos> dimensionChunkVersions = chunkVersions == null ? Object2IntMaps.emptyMap() : chunkVersions.getOrDefault(dimensionName, Object2IntMaps.emptyMap());
                 long startTime = System.nanoTime();
                 while (System.nanoTime() - startTime < maximumDeltaTimeNanoSecs && !chunksToGen.isEmpty()) {
                     ChunkPos nextChunk = chunksToGen.poll();
