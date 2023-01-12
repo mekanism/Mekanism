@@ -1,5 +1,7 @@
 package mekanism.common.tile.multiblock;
 
+import java.util.Collections;
+import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -13,20 +15,23 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.content.sps.SPSMultiblockData;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.lib.multiblock.IMultiblockEjector;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-public class TileEntitySPSPort extends TileEntitySPSCasing {
+public class TileEntitySPSPort extends TileEntitySPSCasing implements IMultiblockEjector {
 
     private MachineEnergyContainer<TileEntitySPSPort> energyContainer;
+    private Set<Direction> outputDirections = Collections.emptySet();
 
     public TileEntitySPSPort(BlockPos pos, BlockState state) {
         super(MekanismBlocks.SPS_PORT, pos, state);
@@ -38,7 +43,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
         boolean needsPacket = super.onUpdateServer(multiblock);
         if (multiblock.isFormed()) {
             if (getActive()) {
-                ChemicalUtil.emit(multiblock.getDirectionsToEmit(getBlockPos()), multiblock.outputTank, this);
+                ChemicalUtil.emit(outputDirections, multiblock.outputTank, this);
             }
             if (!energyContainer.isEmpty() && multiblock.canSupplyCoilEnergy(this)) {
                 multiblock.supplyCoilEnergy(this, energyContainer.extract(energyContainer.getEnergy(), Action.EXECUTE, AutomationType.INTERNAL));
@@ -68,6 +73,11 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
             return false;
         }
         return super.persists(type);
+    }
+
+    @Override
+    public void setEjectSides(Set<Direction> sides) {
+        outputDirections = sides;
     }
 
     @Override

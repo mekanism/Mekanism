@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiPredicate;
@@ -57,6 +59,7 @@ import org.jetbrains.annotations.Nullable;
 public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTracker, IInfusionTracker,
       IPigmentTracker, ISlurryTracker {
 
+    protected static final Map<Direction, Set<Direction>> SIDE_REFERENCES = new EnumMap<>(Direction.class);
     public Set<BlockPos> locations = new ObjectOpenHashSet<>();
     /**
      * @apiNote This set is only used for purposes of caching all known valid inner blocks of a multiblock structure, for use in checking if we need to revalidate the
@@ -232,8 +235,19 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
                 container.setEnergy(container.getEnergy().min(container.getMaxEnergy()));
             }
         }
-
+        updateEjectors(world);
         forceUpdateComparatorLevel();
+    }
+
+    protected void updateEjectors(Level world) {
+        for (ValveData valve : valves) {
+            BlockEntity tile = WorldUtils.getTileEntity(world, valve.location);
+            if (tile instanceof IMultiblockEjector ejector) {//Check if this valve is an ejector as not all of them are
+                //Ensure we don't use create a bunch of identical collections potentially using up a bunch of memory
+                Set<Direction> sides = SIDE_REFERENCES.computeIfAbsent(valve.side, Collections::singleton);
+                ejector.setEjectSides(sides);
+            }
+        }
     }
 
     protected boolean isRemote() {
@@ -385,14 +399,17 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     }
 
     public Set<Direction> getDirectionsToEmit(BlockPos pos) {
-        Set<Direction> directionsToEmit = EnumSet.noneOf(Direction.class);
+        Set<Direction> directionsToEmit = null;
         for (Direction direction : EnumUtils.DIRECTIONS) {
             BlockPos neighborPos = pos.relative(direction);
             if (!isKnownLocation(neighborPos)) {
+                if (directionsToEmit == null) {
+                    directionsToEmit = EnumSet.noneOf(Direction.class);
+                }
                 directionsToEmit.add(direction);
             }
         }
-        return directionsToEmit;
+        return directionsToEmit == null ? Collections.emptySet() : directionsToEmit;
     }
 
     public boolean isKnownLocation(BlockPos pos) {

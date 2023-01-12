@@ -31,10 +31,10 @@ public interface IValveHandler {
             ListTag valves = updateTag.getList(NBTConstants.VALVE, Tag.TAG_COMPOUND);
             for (int i = 0; i < valves.size(); i++) {
                 CompoundTag valveNBT = valves.getCompound(i);
-                ValveData data = new ValveData();
-                NBTUtils.setBlockPosIfPresent(valveNBT, NBTConstants.POSITION, pos -> data.location = pos);
-                data.side = Direction.from3DDataValue(valveNBT.getInt(NBTConstants.SIDE));
-                getValveData().add(data);
+                NBTUtils.setBlockPosIfPresent(valveNBT, NBTConstants.POSITION, pos -> {
+                    Direction side = Direction.from3DDataValue(valveNBT.getInt(NBTConstants.SIDE));
+                    getValveData().add(new ValveData(pos, side));
+                });
             }
         }
     }
@@ -54,11 +54,16 @@ public interface IValveHandler {
 
     class ValveData {
 
-        public Direction side;
-        public BlockPos location;
+        public final BlockPos location;
+        public final Direction side;
 
         public boolean prevActive;
         public int activeTicks;
+
+        public ValveData(BlockPos location, Direction side) {
+            this.location = location;
+            this.side = side;
+        }
 
         public void onTransfer() {
             activeTicks = 30;

@@ -1,5 +1,7 @@
 package mekanism.generators.common.tile.fission;
 
+import java.util.Collections;
+import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
@@ -13,6 +15,7 @@ import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.lib.multiblock.IMultiblockEjector;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChemicalUtil;
@@ -32,7 +35,9 @@ import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing {
+public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing implements IMultiblockEjector {
+
+    private Set<Direction> outputDirections = Collections.emptySet();
 
     public TileEntityFissionReactorPort(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.FISSION_REACTOR_PORT, pos, state);
@@ -44,9 +49,9 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         if (multiblock.isFormed()) {
             FissionPortMode mode = getMode();
             if (mode == FissionPortMode.OUTPUT_COOLANT) {
-                ChemicalUtil.emit(multiblock.getDirectionsToEmit(getBlockPos()), multiblock.heatedCoolantTank, this);
+                ChemicalUtil.emit(outputDirections, multiblock.heatedCoolantTank, this);
             } else if (mode == FissionPortMode.OUTPUT_WASTE) {
-                ChemicalUtil.emit(multiblock.getDirectionsToEmit(getBlockPos()), multiblock.wasteTank, this);
+                ChemicalUtil.emit(outputDirections, multiblock.wasteTank, this);
             }
         }
         return needsPacket;
@@ -88,6 +93,11 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
             return false;
         }
         return super.persists(type);
+    }
+
+    @Override
+    public void setEjectSides(Set<Direction> sides) {
+        outputDirections = sides;
     }
 
     @ComputerMethod
