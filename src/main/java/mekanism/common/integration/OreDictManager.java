@@ -66,9 +66,14 @@ public final class OreDictManager
 			RecipeHandler.addEnrichmentChamberRecipe(StackUtils.size(ore, 1), new ItemStack(MekanismItems.OtherDust, 4, 1));
 		}
 
-		if (OreDictionary.getOres("itemRubber").size() > 0) {
+		if (OreDictionary.getOres("itemRawRubber").size() > 0) {
 			for (ItemStack ore : OreDictionary.getOres("woodRubber")) {
-			RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ItemStack(Blocks.planks, 4), StackUtils.size(OreDictionary.getOres("itemRawRubber").get(0), 2), 1F);			}
+				RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ItemStack(Blocks.planks, 4), StackUtils.size(OreDictionary.getOres("itemRawRubber").get(0), 2), 1F);
+			}
+		} else if (OreDictionary.getOres("itemRubber").size() > 0) {
+			for (ItemStack ore : OreDictionary.getOres("woodRubber")) {
+				RecipeHandler.addPrecisionSawmillRecipe(StackUtils.size(ore, 1), new ItemStack(Blocks.planks, 4), StackUtils.size(OreDictionary.getOres("itemRubber").get(0), 2), 1F);
+			}
 		}
 
 		for (ItemStack ore : OreDictionary.getOres("dustSulfur")) {
