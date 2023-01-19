@@ -342,19 +342,11 @@ def setupRunConfig(RunConfig runConfig, boolean supportsGameTests, String direct
 
 repositories {
     maven {
-        name 'prog'
-        url 'https://dvs1.progwml6.com/files/maven'
-        content {
-            includeGroup 'mezz.jei'
-        }
-    }
-    maven {
         name 'CraftTweaker'
         url "https://maven.blamejared.com"
         content {
-            includeGroup 'com.blamejared.crafttweaker'
-            includeGroup 'com.blamejared.jeitweaker'
-            includeGroup 'com.blamejared.recipestages'
+            includeGroupByRegex 'com\\.blamejared.*'
+            includeGroup 'mezz.jei'
         }
     }
     maven {
@@ -405,9 +397,7 @@ repositories {
                         excludeGroup 'mcjty.theoneprobe'
                         excludeGroup 'team.chisel.ctm'
                         excludeGroup 'appeng'
-                        excludeGroup 'com.blamejared.crafttweaker'
-                        excludeGroup 'com.blamejared.jeitweaker'
-                        excludeGroup 'com.blamejared.recipestages'
+                        excludeGroupByRegex 'com\\.blamejared.*'
                         excludeGroup 'org.squiddev'
                         excludeGroup 'top.theillusivec4.curios'
                     }
