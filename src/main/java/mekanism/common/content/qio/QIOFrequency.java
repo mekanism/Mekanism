@@ -385,7 +385,10 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     @Override
     public void setColor(EnumColor color) {
-        this.color = color;
+        if (this.color != color) {
+            this.color = color;
+            this.dirty = true;
+        }
     }
 
     // utility methods for accessing descriptors
@@ -431,8 +434,8 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public boolean tick() {
+        boolean superDirty = super.tick();
         if (!updatedItems.isEmpty() || needsUpdate) {
             //Only calculate the packet and the update map if there are actually players viewing this frequency,
             // otherwise we can just skip looking up UUIDs and counts
@@ -464,6 +467,8 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         // this isn't a fully necessary operation, but it'll help avoid all item data getting lost if the server
         // is forcibly shut down.
         if (isDirty && rand.nextInt(100) == 0) {
+            //Note: We don't have this affect our super dirty value as this is for if the drives are dirty,
+            // not for if the frequency is dirty
             saveAll();
             isDirty = false;
         }
@@ -474,27 +479,32 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             tagWildcardCache.clear();
             itemDataMap.values().forEach(item -> tagLookupMap.putAll(TagCache.getItemTags(item.itemType.getInternalStack()), item.itemType));
         }
+        return superDirty;
     }
 
     @Override
-    public void onDeactivate(BlockEntity tile) {
-        super.onDeactivate(tile);
-
+    public boolean onDeactivate(BlockEntity tile) {
+        boolean changedData = super.onDeactivate(tile);
         if (tile instanceof IQIODriveHolder holder) {
-            for (int i = 0; i < holder.getDriveSlots().size(); i++) {
+            for (int i = 0, size = holder.getDriveSlots().size(); i < size; i++) {
                 QIODriveKey key = new QIODriveKey(holder, i);
                 removeDrive(key, true);
-                driveMap.remove(key);
             }
+            //Uncache the holder when it stops being part of the frequency
+            driveHolders.remove(holder);
         }
+        return changedData;
     }
 
     @Override
-    public void update(BlockEntity tile) {
-        super.update(tile);
-        if (tile instanceof IQIODriveHolder holder && !driveHolders.contains(holder)) {
-            addHolder(holder);
+    public boolean update(BlockEntity tile) {
+        boolean changedData = super.update(tile);
+        if (tile instanceof IQIODriveHolder holder && driveHolders.add(holder)) {
+            for (int i = 0, slots = holder.getDriveSlots().size(); i < slots; i++) {
+                addDrive(new QIODriveKey(holder, i));
+            }
         }
+        return changedData;
     }
 
     @Override
@@ -535,7 +545,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         totalCountCapacity = buf.readVarLong();
         clientTypes = buf.readVarInt();
         totalTypeCapacity = buf.readVarInt();
-        setColor(buf.readEnum(EnumColor.class));
+        this.color = buf.readEnum(EnumColor.class);
     }
 
     @Override
@@ -547,7 +557,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     @Override
     protected void read(CompoundTag nbtTags) {
         super.read(nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, this::setColor);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, color -> this.color = color);
     }
 
     public void addDrive(QIODriveKey key) {
@@ -604,13 +614,6 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             key.updateMetadata(value);
             key.save(value);
         });
-    }
-
-    private void addHolder(IQIODriveHolder holder) {
-        driveHolders.add(holder);
-        for (int i = 0; i < holder.getDriveSlots().size(); i++) {
-            addDrive(new QIODriveKey(holder, i));
-        }
     }
 
     private void setNeedsUpdate(@Nullable HashedItem changedItem) {

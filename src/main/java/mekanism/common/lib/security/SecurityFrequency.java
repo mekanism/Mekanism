@@ -62,13 +62,13 @@ public class SecurityFrequency extends Frequency {
     @Override
     protected void read(CompoundTag nbtTags) {
         super.read(nbtTags);
-        override = nbtTags.getBoolean(NBTConstants.OVERRIDE);
+        NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.OVERRIDE, value -> override = value);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
         if (nbtTags.contains(NBTConstants.TRUSTED, Tag.TAG_LIST)) {
             ListTag trustedList = nbtTags.getList(NBTConstants.TRUSTED, Tag.TAG_INT_ARRAY);
             for (Tag trusted : trustedList) {
                 UUID uuid = NbtUtils.loadUUID(trusted);
-                addTrusted(uuid, MekanismUtils.getLastKnownUsername(uuid));
+                addTrustedRaw(uuid, MekanismUtils.getLastKnownUsername(uuid));
             }
         }
     }
@@ -99,7 +99,10 @@ public class SecurityFrequency extends Frequency {
     }
 
     public void setOverridden(boolean override) {
-        this.override = override;
+        if (this.override != override) {
+            this.override = override;
+            this.dirty = true;
+        }
     }
 
     public boolean isOverridden() {
@@ -107,7 +110,10 @@ public class SecurityFrequency extends Frequency {
     }
 
     public void setSecurityMode(SecurityMode securityMode) {
-        this.securityMode = securityMode;
+        if (this.securityMode != securityMode) {
+            this.securityMode = securityMode;
+            this.dirty = true;
+        }
     }
 
     public SecurityMode getSecurityMode() {
@@ -123,6 +129,13 @@ public class SecurityFrequency extends Frequency {
     }
 
     public void addTrusted(UUID uuid, String name) {
+        if (!trusted.contains(uuid)) {
+            addTrustedRaw(uuid, name);
+            this.dirty = true;
+        }
+    }
+
+    private void addTrustedRaw(UUID uuid, String name) {
         trusted.add(uuid);
         trustedCache.add(name);
         trustedCacheHash = trustedCache.hashCode();
@@ -133,6 +146,7 @@ public class SecurityFrequency extends Frequency {
         UUID uuid = null;
         if (index >= 0 && index < trusted.size()) {
             uuid = trusted.remove(index);
+            this.dirty = true;
         }
         if (index >= 0 && index < trustedCache.size()) {
             trustedCache.remove(index);

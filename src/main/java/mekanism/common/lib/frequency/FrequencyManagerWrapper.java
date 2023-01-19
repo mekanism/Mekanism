@@ -46,12 +46,11 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
             return null;
         }
 
-        if (!privateManagers.containsKey(ownerUUID)) {
-            FrequencyManager<FREQ> manager = new FrequencyManager<>(frequencyType, ownerUUID);
-            privateManagers.put(ownerUUID, manager);
+        return privateManagers.computeIfAbsent(ownerUUID, owner -> {
+            FrequencyManager<FREQ> manager = new FrequencyManager<>(frequencyType, owner);
             manager.createOrLoad();
-        }
-        return privateManagers.get(ownerUUID);
+            return manager;
+        });
     }
 
     public void clear() {
