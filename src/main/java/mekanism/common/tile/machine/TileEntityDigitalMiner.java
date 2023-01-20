@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
@@ -1025,12 +1024,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 targetChunk.z <= SectionPos.blockToSectionCoord(worldPosition.getZ() + radius)) {
                 // if it is, return the chunks we should be loading, provide the chunk the miner is in
                 // and the chunk that the miner is currently mining
-                Set<ChunkPos> chunks = new ObjectArraySet<>(2);
-                chunks.add(minerChunk);
                 //TODO: At some point we may want to change the ticket of the chunk the miner is mining to be
                 // at a lower level and not cause tiles in it to actually tick
-                chunks.add(targetChunk);
-                return chunks;
+                return Set.of(minerChunk, targetChunk);
             }
         }
         //Otherwise, just return the miner's chunk

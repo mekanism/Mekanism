@@ -15,6 +15,8 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class Frequency implements IFrequency {
 
+    protected boolean dirty;
+    private boolean removed;
     private String name;
 
     @Nullable
@@ -39,16 +41,33 @@ public abstract class Frequency implements IFrequency {
         this.frequencyType = frequencyType;
     }
 
-    public void tick() {
+    /**
+     * @return {@code true} if persistent data was changed and the frequency needs to be saved.
+     */
+    public boolean tick() {
+        return dirty;
     }
 
     public void onRemove() {
+        removed = true;
     }
 
-    public void onDeactivate(BlockEntity tile) {
+    public boolean isRemoved() {
+        return removed;
     }
 
-    public void update(BlockEntity tile) {
+    /**
+     * @return {@code true} if persistent data was changed by deactivating the block and the frequency needs to be saved.
+     */
+    public boolean onDeactivate(BlockEntity tile) {
+        return false;
+    }
+
+    /**
+     * @return {@code true} if persistent data was changed by updating the block and the frequency needs to be saved.
+     */
+    public boolean update(BlockEntity tile) {
+        return false;
     }
 
     public FrequencyType<?> getType() {
@@ -71,7 +90,10 @@ public abstract class Frequency implements IFrequency {
     }
 
     public Frequency setPublic(boolean isPublic) {
-        publicFreq = isPublic;
+        if (publicFreq != isPublic) {
+            publicFreq = isPublic;
+            dirty = true;
+        }
         return this;
     }
 

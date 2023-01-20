@@ -559,9 +559,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (tile.supportsUpgrades()) {
             tile.upgradeComponent.tickServer();
         }
-        if (tile.hasSecurity()) {
-            tile.securityComponent.tickServer();
-        }
         if (tile.hasChunkloader) {
             ((IChunkLoader) tile).getChunkLoader().tickServer();
         }

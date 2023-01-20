@@ -92,15 +92,7 @@ public class QIODriveData {
         return itemMap.size();
     }
 
-    public static class QIODriveKey {
-
-        private final IQIODriveHolder holder;
-        private final int driveSlot;
-
-        public QIODriveKey(IQIODriveHolder holder, int driveSlot) {
-            this.holder = holder;
-            this.driveSlot = driveSlot;
-        }
+    public record QIODriveKey(IQIODriveHolder holder, int driveSlot) {
 
         public void save(QIODriveData data) {
             holder.save(driveSlot, data);
@@ -112,30 +104,16 @@ public class QIODriveData {
 
         public void updateMetadata(QIODriveData data) {
             ItemStack stack = getDriveStack();
-            if (!(stack.getItem() instanceof IQIODriveItem)) {
+            if (stack.getItem() instanceof IQIODriveItem) {
+                DriveMetadata meta = new DriveMetadata(data.itemCount, data.itemMap.size());
+                meta.write(stack);
+            } else {
                 Mekanism.logger.error("Tried to update QIO meta values on an invalid ItemStack. Something has gone very wrong!");
-                return;
             }
-            DriveMetadata meta = new DriveMetadata(data.itemCount, data.itemMap.size());
-            meta.write(stack);
         }
 
         public ItemStack getDriveStack() {
             return holder.getDriveSlots().get(driveSlot).getStack();
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + driveSlot;
-            result = prime * result + ((holder == null) ? 0 : holder.hashCode());
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return obj instanceof QIODriveKey filter && filter.holder == holder && filter.driveSlot == driveSlot;
         }
     }
 }

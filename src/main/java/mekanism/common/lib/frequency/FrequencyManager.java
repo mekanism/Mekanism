@@ -81,18 +81,6 @@ public class FrequencyManager<FREQ extends Frequency> {
         loaded = false;
     }
 
-    public FREQ update(BlockEntity tile, FREQ freq) {
-        FREQ storedFreq = getFrequency(freq.getKey());
-        if (storedFreq != null) {
-            storedFreq.update(tile);
-            markDirty();
-            return storedFreq;
-        }
-
-        deactivate(freq, tile);
-        return null;
-    }
-
     public boolean remove(Object key, UUID ownerUUID) {
         FREQ freq = getFrequency(key);
         if (freq != null && freq.ownerMatches(ownerUUID)) {
@@ -104,22 +92,21 @@ public class FrequencyManager<FREQ extends Frequency> {
         return false;
     }
 
-    public void deactivate(Frequency freq, BlockEntity tile) {
-        if (freq != null) {
-            freq.onDeactivate(tile);
+    public void deactivate(@Nullable Frequency freq, BlockEntity tile) {
+        if (freq != null && freq.onDeactivate(tile)) {
             markDirty();
         }
     }
 
-    public FREQ validateFrequency(BlockEntity tile, FREQ freq) {
-        FREQ storedFreq = getFrequency(freq.getKey());
-        if (storedFreq == null) {
+    public FREQ validateAndUpdate(BlockEntity tile, FREQ freq) {
+        FREQ storedFreq = frequencies.computeIfAbsent(freq.getKey(), key -> {
             freq.setValid(true);
-            addFrequency(freq);
-            storedFreq = freq;
+            markDirty();
+            return freq;
+        });
+        if (storedFreq.update(tile)) {
+            markDirty();
         }
-        storedFreq.update(tile);
-        markDirty();
         return storedFreq;
     }
 
@@ -149,13 +136,12 @@ public class FrequencyManager<FREQ extends Frequency> {
     }
 
     public FREQ getOrCreateFrequency(FrequencyIdentity identity, @Nullable UUID ownerUUID) {
-        FREQ freq = getFrequency(identity.key());
-        if (freq == null) {
-            freq = frequencyType.create(identity.key(), ownerUUID);
+        return frequencies.computeIfAbsent(identity.key(), key -> {
+            FREQ freq = frequencyType.create(key, ownerUUID);
             freq.setPublic(identity.isPublic());
-            addFrequency(freq);
-        }
-        return freq;
+            markDirty();
+            return freq;
+        });
     }
 
     public void addFrequency(FREQ freq) {
@@ -174,7 +160,13 @@ public class FrequencyManager<FREQ extends Frequency> {
     }
 
     private void tickSelf() {
-        getFrequencies().forEach(Frequency::tick);
+        boolean dirty = false;
+        for (FREQ freq : getFrequencies()) {
+            dirty |= freq.tick();
+        }
+        if (dirty) {
+            markDirty();
+        }
     }
 
     public String getName() {
