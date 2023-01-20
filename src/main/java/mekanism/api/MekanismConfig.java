@@ -77,6 +77,7 @@ public class MekanismConfig
     	public static int IC2SinkTier;
 		public static int IC2SourceTier;
     	public static int digitalMinerMaxRadius;
+		public static boolean enableSingleUseCardboxes;
 	}
 
 	public static class client

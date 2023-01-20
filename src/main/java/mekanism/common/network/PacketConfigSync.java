@@ -83,6 +83,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
 			dataStream.writeInt(general.IC2SinkTier);
 			dataStream.writeInt(general.IC2SourceTier);
 			dataStream.writeInt(general.digitalMinerMaxRadius);
+			dataStream.writeBoolean(general.enableSingleUseCardboxes);
 			
 			for(MachineType type : MachineType.getValidMachines())
 			{
@@ -276,6 +277,7 @@ public class PacketConfigSync implements IMessageHandler<ConfigSyncMessage, IMes
       		general.IC2SinkTier = dataStream.readInt();
 			general.IC2SourceTier = dataStream.readInt();
 			general.digitalMinerMaxRadius = dataStream.readInt();
+			general.enableSingleUseCardboxes = dataStream.readBoolean();
 			
 			for(MachineType type : MachineType.getValidMachines())
 			{
