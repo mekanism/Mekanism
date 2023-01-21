@@ -2,7 +2,10 @@
 
 Originally made for Terralization Modpack with fixes from several different forks. Now with new features, bugfixes and performance enhancement.
 
-#### Download at [curseforge](https://www.curseforge.com/minecraft/mc-mods/mekanism-ce)
+#### Download at 
++ [MEK:CE at curseforge](https://www.curseforge.com/minecraft/mc-mods/mekanism-ce)
++ [MEK:CE TOOLS at curseforge](https://www.curseforge.com/minecraft/mc-mods/mekanism-ce-tools)
++ [MEK:CE GENERATORS at curseforge](https://www.curseforge.com/minecraft/mc-mods/mekanism-ce-generators)
 
 #### Builds at our [maven](https://maven.thorfusion.com/ui/repos/tree/General/thorfusion/mekanism/Mekanism-1.7.10-Community-Edition)
 
@@ -12,6 +15,10 @@ Originally made for Terralization Modpack with fixes from several different fork
 ./gradlew fullBuild
 ```
 You will find the files inside ./output/
+
+## Mod examples on how to use the new api for MEK:CE
++ Thorfusion/TerralizationCompat
++ Thorfusion/Titanpower
 
 ## Official Modpacks
 ### [Terralization](https://www.technicpack.net/modpack/terralization.654195)
