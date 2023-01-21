@@ -4,6 +4,7 @@ import mekanism.api.NBTConstants;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
+import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.core.BlockPos;
@@ -93,6 +94,11 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
                 // This will also handle sending the update to the client
                 scanRotors(0);
             } else {
+                if (hasFormedMultiblock() && getMultiblock() instanceof TurbineMultiblockData multiblock) {
+                    //If for some reason someone is modifying the number of blades on a running turbine (which is unsupported),
+                    // update the turbine's blade count as best we can
+                    multiblock.blades++;
+                }
                 // Update client state
                 sendUpdatePacket();
             }
@@ -113,6 +119,11 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
         } else if (blades > 0) {
             // Remove blades from this rotor
             blades--;
+            if (hasFormedMultiblock() && getMultiblock() instanceof TurbineMultiblockData multiblock) {
+                //If for some reason someone is modifying the number of blades on a running turbine (which is unsupported),
+                // update the turbine's blade count as best we can
+                multiblock.blades--;
+            }
 
             // Update client state
             sendUpdatePacket();
