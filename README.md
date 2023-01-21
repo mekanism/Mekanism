@@ -17,8 +17,8 @@ Originally made for Terralization Modpack with fixes from several different fork
 You will find the files inside ./output/
 
 ## Mod examples on how to use the new api for MEK:CE
-+ Thorfusion/TerralizationCompat
-+ Thorfusion/Titanpower
++ [Thorfusion/TerralizationCompat](https://github.com/Thorfusion/TerralizationCompat)
++ [Thorfusion/Titanpower](https://github.com/Thorfusion/Titanpower)
 
 ## Official Modpacks
 ### [Terralization](https://www.technicpack.net/modpack/terralization.654195)
