@@ -12,11 +12,13 @@ import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.config.value.CachedOredictionificatorConfigValue;
+import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FluidTankTier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
 public class GeneralConfig extends BaseMekanismConfig {
@@ -31,6 +33,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     private static final String PUMP_CATEGORY = "pump";
     private static final String ENTANGLOPORTER_CATEGORY = "quantum_entangloporter";
     private static final String SECURITY_CATEGORY = "security";
+    private static final String BOILER_CATEGORY = "boiler";
     private static final String EVAPORATION_CATEGORY = "thermal_evaporation";
     private static final String SPS_CATEGORY = "sps";
     private static final String RADIATION_CATEGORY = "radiation";
@@ -107,13 +110,21 @@ public class GeneralConfig extends BaseMekanismConfig {
     //Nutritional Paste
     public final CachedFloatValue nutritionalPasteSaturation;
     public final CachedIntValue nutritionalPasteMBPerFood;
+    //Boiler
+    public final CachedIntValue boilerWaterPerTank;
+    public final CachedLongValue boilerSteamPerTank;
+    public final CachedLongValue boilerHeatedCoolantPerTank;
+    public final CachedLongValue boilerCooledCoolantPerTank;
     //Thermal Evaporation Tower
     public final CachedDoubleValue evaporationHeatDissipation;
     public final CachedDoubleValue evaporationTempMultiplier;
     public final CachedDoubleValue evaporationSolarMultiplier;
     public final CachedDoubleValue evaporationHeatCapacity;
+    public final CachedIntValue evaporationFluidPerTank;
+    public final CachedIntValue evaporationOutputTankCapacity;
     //SPS
     public final CachedIntValue spsInputPerAntimatter;
+    public final CachedLongValue spsOutputTankCapacity;
     public final CachedFloatingLongValue spsEnergyPerInput;
 
     GeneralConfig() {
@@ -278,6 +289,18 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("mbPerFood", 50, 1, Integer.MAX_VALUE));
         builder.pop();
 
+        builder.comment("Boiler Settings").push(BOILER_CATEGORY);
+        //Note: We use maxVolume as it still is a large number, and we have no reason to go higher even if some things we technically could
+        boilerWaterPerTank = CachedIntValue.wrap(this, builder.comment("Amount of fluid (mB) that each block of the boiler's water portion contributes to the volume. Max = volume * waterPerTank")
+              .defineInRange("waterPerTank", 16 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / maxVolume));
+        boilerSteamPerTank = CachedLongValue.wrap(this, builder.comment("Amount of steam (mB) that each block of the boiler's steam portion contributes to the volume. Max = volume * steamPerTank")
+              .defineInRange("steamPerTank", 160 * FluidType.BUCKET_VOLUME, 10, Long.MAX_VALUE / maxVolume));
+        boilerHeatedCoolantPerTank = CachedLongValue.wrap(this, builder.comment("Amount of steam (mB) that each block of the boiler's heated coolant portion contributes to the volume. Max = volume * heatedCoolantPerTank")
+              .defineInRange("heatedCoolantPerTank", 256 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxVolume));
+        boilerCooledCoolantPerTank = CachedLongValue.wrap(this, builder.comment("Amount of steam (mB) that each block of the boiler's cooled coolant portion contributes to the volume. Max = volume * cooledCoolantPerTank")
+              .defineInRange("cooledCoolantPerTank", 256 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxVolume));
+        builder.pop();
+
         builder.comment("Thermal Evaporation Plant Settings").push(EVAPORATION_CATEGORY);
         evaporationHeatDissipation = CachedDoubleValue.wrap(this, builder.comment("Thermal Evaporation Tower heat loss per tick.")
               .defineInRange("heatDissipation", 0.02, 0.001, 1_000));
@@ -287,11 +310,17 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("solarMultiplier", 0.2, 0.001, 1_000_000));
         evaporationHeatCapacity = CachedDoubleValue.wrap(this, builder.comment("Heat capacity of Thermal Evaporation Tower layers (increases amount of energy needed to increase temperature).")
               .defineInRange("heatCapacity", 100D, 1, 1_000_000));
+        evaporationFluidPerTank = CachedIntValue.wrap(this, builder.comment("Amount of fluid (mB) that each block of the evaporation plant contributes to the input tank capacity. Max = volume * fluidPerTank")
+              .defineInRange("fluidPerTank", 64 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / (EvaporationMultiblockData.MAX_HEIGHT * 4)));
+        evaporationOutputTankCapacity = CachedIntValue.wrap(this, builder.comment("Amount of output fluid (mB) that the evaporation plant can store.")
+              .defineInRange("outputTankCapacity", 10 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
         builder.pop();
 
         builder.comment("SPS Settings").push(SPS_CATEGORY);
-        spsInputPerAntimatter = CachedIntValue.wrap(this, builder.comment("How much input gas (polonium) in mB must be processed to make 1 mB of antimatter.")
+        spsInputPerAntimatter = CachedIntValue.wrap(this, builder.comment("How much input gas (polonium) in mB must be processed to make 1 mB of antimatter. Input tank capacity is 2x this value.")
               .defineInRange("inputPerAntimatter", 1_000, 1, Integer.MAX_VALUE));
+        spsOutputTankCapacity = CachedLongValue.wrap(this, builder.comment("Amount of output gas (mB, antimatter) that the SPS can store.")
+              .defineInRange("outputTankCapacity", FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         spsEnergyPerInput = CachedFloatingLongValue.define(this, builder, "Energy needed to process 1 mB of input (inputPerAntimatter * energyPerInput = energy to produce 1 mB of antimatter).",
               "energyPerInput", FloatingLong.createConst(1_000_000));
         builder.pop();

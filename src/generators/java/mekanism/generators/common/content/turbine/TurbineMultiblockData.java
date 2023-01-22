@@ -17,7 +17,6 @@ import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
@@ -39,11 +38,10 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
 public class TurbineMultiblockData extends MultiblockData {
-
-    public static final long GAS_PER_TANK = EvaporationMultiblockData.FLUID_PER_TANK;
 
     public static final float ROTATION_THRESHOLD = 0.001F;
     public static final Object2FloatMap<UUID> clientRotationMap = new Object2FloatOpenHashMap<>();
@@ -94,7 +92,7 @@ public class TurbineMultiblockData extends MultiblockData {
     public TurbineMultiblockData(TileEntityTurbineCasing tile) {
         super(tile);
         gasTanks.add(gasTank = new TurbineGasTank(this, createSaveAndComparator()));
-        ventTank = VariableCapacityFluidTank.output(this, () -> isFormed() ? condensers * MekanismGeneratorsConfig.generators.condenserRate.get() : 1_000,
+        ventTank = VariableCapacityFluidTank.output(this, () -> isFormed() ? condensers * MekanismGeneratorsConfig.generators.condenserRate.get() : FluidType.BUCKET_VOLUME,
               fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()), this);
         ventTanks = Collections.singletonList(ventTank);
         energyContainer = VariableCapacityEnergyContainer.create(this::getEnergyCapacity, automationType -> isFormed(),
@@ -213,7 +211,7 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     public long getSteamCapacity() {
-        return lowerVolume * GAS_PER_TANK;
+        return lowerVolume * MekanismGeneratorsConfig.generators.turbineGasPerTank.get();
     }
 
     @NotNull
@@ -223,8 +221,10 @@ public class TurbineMultiblockData extends MultiblockData {
 
     @Override
     public void setVolume(int volume) {
-        super.setVolume(volume);
-        energyCapacity = FloatingLong.createConst(getVolume() * 16_000_000L); //16 MJ energy capacity per volume
+        if (getVolume() != volume) {
+            super.setVolume(volume);
+            energyCapacity = MekanismGeneratorsConfig.generators.turbineEnergyCapacityPerVolume.get().multiply(volume).copyAsConst();
+        }
     }
 
     @Override

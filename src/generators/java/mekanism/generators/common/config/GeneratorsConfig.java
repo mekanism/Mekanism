@@ -11,9 +11,11 @@ import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.config.value.CachedResourceLocationListValue;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
+import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
 public class GeneratorsConfig extends BaseMekanismConfig {
@@ -42,7 +44,10 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedIntValue turbineBladesPerCoil;
     public final CachedDoubleValue turbineVentGasFlow;
     public final CachedDoubleValue turbineDisperserGasFlow;
+    public final CachedFloatingLongValue turbineEnergyCapacityPerVolume;
+    public final CachedLongValue turbineGasPerTank;
     public final CachedIntValue condenserRate;
+
     public final CachedFloatingLongValue energyPerFusionFuel;
     public final CachedFloatingLongValue windGenerationMin;
     public final CachedFloatingLongValue windGenerationMax;
@@ -60,6 +65,9 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedDoubleValue fissionPostMeltdownDamage;
     public final CachedDoubleValue defaultBurnRate;
     public final CachedLongValue burnPerAssembly;
+    public final CachedLongValue maxFuelPerAssembly;
+    public final CachedIntValue fissionCooledCoolantPerTank;
+    public final CachedLongValue fissionHeatedCoolantPerTank;
 
     public final CachedLongValue hohlraumMaxGas;
     public final CachedLongValue hohlraumFillRate;
@@ -67,6 +75,10 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedDoubleValue fusionThermocoupleEfficiency;
     public final CachedDoubleValue fusionCasingThermalConductivity;
     public final CachedDoubleValue fusionWaterHeatingRatio;
+    public final CachedLongValue fusionFuelCapacity;
+    public final CachedFloatingLongValue fusionEnergyCapacity;
+    public final CachedIntValue fusionWaterPerInjection;
+    public final CachedLongValue fusionSteamPerInjection;
 
     GeneratorsConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -106,6 +118,12 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .defineInRange("turbineVentGasFlow", 32_000D, 0.1, 1_024_000));
         turbineDisperserGasFlow = CachedDoubleValue.wrap(this, builder.comment("The rate at which steam is dispersed into the turbine.")
               .defineInRange("turbineDisperserGasFlow", 1_280D, 0.1, 1_024_000));
+        turbineEnergyCapacityPerVolume = CachedFloatingLongValue.define(this, builder, "Amount of energy (J) that each block of the turbine contributes to the total energy capacity. Max = volume * energyCapacityPerVolume",
+              "energyCapacityPerVolume", FloatingLong.createConst(16_000_000L), CachedFloatingLongValue.greaterZeroLessThan(FloatingLong.createConst(1_000_000_000_000L)));
+        //Note: We use maxVolume as it still is a large number, and we have no reason to go higher even if some things we technically could
+        int maxTurbine = 17 * 17 * 18;
+        turbineGasPerTank = CachedLongValue.wrap(this, builder.comment("Amount of gas (mB) that each block of the turbine's steam cavity contributes to the volume. Max = volume * gasPerTank")
+              .defineInRange("gasPerTank", 64 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxTurbine));
         condenserRate = CachedIntValue.wrap(this, builder.comment("The rate at which steam is condensed in the turbine.")
               .defineInRange("condenserRate", 64_000, 1, 2_000_000));
         builder.pop();
@@ -134,6 +152,15 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .defineInRange("casingThermalConductivity", 0.1D, 0.001D, 1D));
         fusionWaterHeatingRatio = CachedDoubleValue.wrap(this, builder.comment("The fraction of the heat from the casing that is dissipated to water when water cooling is in use. Will impact max heat, and steam generation.")
               .defineInRange("waterHeatingRatio", 0.3D, 0D, 1D));
+        fusionFuelCapacity = CachedLongValue.wrap(this, builder.comment("Amount of fuel (mB) that the fusion reactor can store.")
+              .defineInRange("fuelCapacity", (long) FluidType.BUCKET_VOLUME, 2, 1_000 * FluidType.BUCKET_VOLUME));
+        fusionEnergyCapacity = CachedFloatingLongValue.define(this, builder, "Amount of energy (J) the fusion reactor can store.",
+              "energyCapacity", FloatingLong.createConst(1_000_000_000), CachedFloatingLongValue.POSITIVE);
+        int baseMaxWater = 1_000 * FluidType.BUCKET_VOLUME;
+        fusionWaterPerInjection = CachedIntValue.wrap(this, builder.comment("Amount of water (mB) per injection rate that the fusion reactor can store. Max = injectionRate * waterPerInjection")
+              .defineInRange("waterPerInjection", 1_000 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / FusionReactorMultiblockData.MAX_INJECTION));
+        fusionSteamPerInjection = CachedLongValue.wrap(this, builder.comment("Amount of steam (mB) per injection rate that the fusion reactor can store. Max = injectionRate * steamPerInjection")
+              .defineInRange("steamPerInjection", 100 * baseMaxWater, 1, Long.MAX_VALUE / FusionReactorMultiblockData.MAX_INJECTION));
         builder.pop();
 
         builder.comment("Hohlraum Settings").push(HOHLRAUM_CATEGORY);
@@ -164,6 +191,13 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .defineInRange("defaultBurnRate", 0.1D, 0.001D, 1D));
         burnPerAssembly = CachedLongValue.wrap(this, builder.comment("The burn rate increase each fuel assembly provides. Max Burn Rate = fuelAssemblies * burnPerAssembly")
               .defineInRange("burnPerAssembly", 1L, 1, 1_000_000));
+        maxFuelPerAssembly = CachedLongValue.wrap(this, builder.comment("Amount of fuel (mB) that each assembly contributes to the fuel and waste capacity. Max = fuelAssemblies * maxFuelPerAssembly")
+              .defineInRange("maxFuelPerAssembly", 8 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / 4_096));
+        int maxVolume = 18 * 18 * 18;
+        fissionCooledCoolantPerTank = CachedIntValue.wrap(this, builder.comment("Amount of cooled coolant (mB) that each block of the fission reactor contributes to the volume. Max = volume * cooledCoolantPerTank")
+              .defineInRange("cooledCoolantPerTank", 100 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / maxVolume));
+        fissionHeatedCoolantPerTank = CachedLongValue.wrap(this, builder.comment("Amount of heated coolant (mB) that each block of the fission reactor contributes to the volume. Max = volume * heatedCoolantPerTank")
+              .defineInRange("heatedCoolantPerTank", 1_000 * FluidType.BUCKET_VOLUME, 1_000, Long.MAX_VALUE / maxVolume));
         builder.pop();
 
         builder.pop();

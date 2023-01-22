@@ -62,10 +62,8 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
           RecipeError.NOT_ENOUGH_OUTPUT_SPACE,
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
-    private static final int MAX_OUTPUT = 10_000;
     public static final int MAX_HEIGHT = 18;
     public static final double MAX_MULTIPLIER_TEMP = 3_000;
-    public static final int FLUID_PER_TANK = 64_000;
 
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded", "getInputFilledPercentage"})
@@ -79,6 +77,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     private double biomeAmbientTemp;
     private double tempMultiplier;
 
+    private int inputTankCapacity;
     public float prevScale;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getProductionAmount")
@@ -114,7 +113,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         //Default biome temp to the ambient temperature at the block we are at
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getTilePos());
         fluidTanks.add(inputTank = VariableCapacityFluidTank.input(this, this::getMaxFluid, this::containsRecipe, createSaveAndComparator(recipeCacheLookupMonitor)));
-        fluidTanks.add(outputTank = VariableCapacityFluidTank.output(this, () -> MAX_OUTPUT, BasicFluidTank.alwaysTrue, this));
+        fluidTanks.add(outputTank = VariableCapacityFluidTank.output(this, MekanismConfig.general.evaporationOutputTankCapacity, BasicFluidTank.alwaysTrue, this));
         inputHandler = InputHelper.getInputHandler(inputTank, RecipeError.NOT_ENOUGH_INPUT);
         outputHandler = OutputHelper.getOutputHandler(outputTank, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
         inventorySlots.add(inputInputSlot = FluidInventorySlot.fill(inputTank, this, 28, 20));
@@ -198,8 +197,17 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         return heatCapacitor.getTemperature();
     }
 
+    @Override
+    public void setVolume(int volume) {
+        if (getVolume() != volume) {
+            super.setVolume(volume);
+            //Note: We only count the inner volume for the tank capacity for the evap tower
+            inputTankCapacity = height() * 4 * MekanismConfig.general.evaporationFluidPerTank.get();
+        }
+    }
+
     public int getMaxFluid() {
-        return height() * 4 * FLUID_PER_TANK;
+        return inputTankCapacity;
     }
 
     @NotNull

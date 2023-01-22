@@ -37,8 +37,6 @@ import net.minecraft.world.phys.AABB;
 
 public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
-    private static final long MAX_OUTPUT_GAS = 1_000;
-
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded", "getInputFilledPercentage"})
     public IGasTank inputTank;
@@ -66,8 +64,8 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         super(tile);
         gasTanks.add(inputTank = MultiblockChemicalTankBuilder.GAS.input(this, this::getMaxInputGas, gas -> gas == MekanismGases.POLONIUM.get(),
               ChemicalAttributeValidator.ALWAYS_ALLOW, createSaveAndComparator()));
-        gasTanks.add(outputTank = MultiblockChemicalTankBuilder.GAS.output(this, () -> MAX_OUTPUT_GAS, gas -> gas == MekanismGases.ANTIMATTER.get(),
-              ChemicalAttributeValidator.ALWAYS_ALLOW, this));
+        gasTanks.add(outputTank = MultiblockChemicalTankBuilder.GAS.output(this, MekanismConfig.general.spsOutputTankCapacity,
+              gas -> gas == MekanismGases.ANTIMATTER.get(), ChemicalAttributeValidator.ALWAYS_ALLOW, this));
     }
 
     @Override
