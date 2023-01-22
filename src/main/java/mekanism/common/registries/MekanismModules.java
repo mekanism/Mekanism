@@ -5,6 +5,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.gear.mekasuit.ModuleChargeDistributionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleDosimeterUnit;
 import mekanism.common.content.gear.mekasuit.ModuleElectrolyticBreathingUnit;
+import mekanism.common.content.gear.mekasuit.ModuleElytraUnit;
 import mekanism.common.content.gear.mekasuit.ModuleGeigerUnit;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
@@ -95,8 +96,8 @@ public class MekanismModules {
     public static final ModuleRegistryObject<ModuleGravitationalModulatingUnit> GRAVITATIONAL_MODULATING_UNIT = MODULES.register("gravitational_modulating_unit",
           ModuleGravitationalModulatingUnit::new, () -> MekanismItems.MODULE_GRAVITATIONAL_MODULATING.asItem(), builder -> builder.rarity(Rarity.EPIC).handlesModeChange()
                 .rendersHUD().exclusive(ExclusiveFlag.OVERRIDE_JUMP));
-    public static final ModuleRegistryObject<?> ELYTRA_UNIT = MODULES.registerMarker("elytra_unit", () -> MekanismItems.MODULE_ELYTRA.asItem(),
-          builder -> builder.rarity(Rarity.EPIC));
+    public static final ModuleRegistryObject<ModuleElytraUnit> ELYTRA_UNIT = MODULES.register("elytra_unit", ModuleElytraUnit::new,
+          () -> MekanismItems.MODULE_ELYTRA.asItem(), builder -> builder.rarity(Rarity.EPIC).handlesModeChange());
 
     //Pants
     public static final ModuleRegistryObject<ModuleLocomotiveBoostingUnit> LOCOMOTIVE_BOOSTING_UNIT = MODULES.register("locomotive_boosting_unit",
