@@ -22,7 +22,7 @@ public class MekaSuitEnergyLevel implements IGuiOverlay {
     private static final ResourceLocation POWER_BAR = MekanismUtils.getResource(ResourceType.GUI_BAR, "horizontal_power_long.png");
 
     @Override
-    public void render(ForgeGui gui, PoseStack poseStack, float partialTicks, int width, int height) {
+    public void render(ForgeGui gui, PoseStack poseStack, float partialTicks, int screenWidth, int screenHeight) {
         if (!Minecraft.getInstance().options.hideGui && gui.shouldDrawSurvivalElements()) {
             gui.setupOverlayRenderState(true, false);
             FloatingLong capacity = FloatingLong.ZERO, stored = FloatingLong.ZERO;
@@ -36,8 +36,8 @@ public class MekaSuitEnergyLevel implements IGuiOverlay {
                 }
             }
             if (!capacity.isZero()) {
-                int x = width / 2 - 91;
-                int y = height - gui.leftHeight + 2;
+                int x = screenWidth / 2 - 91;
+                int y = screenHeight - gui.leftHeight + 2;
                 int length = (int) Math.round(stored.divide(capacity).doubleValue() * 79);
                 GuiUtils.renderExtendedTexture(poseStack, GuiBar.BAR, 2, 2, x, y, 81, 6);
                 RenderSystem.setShaderTexture(0, POWER_BAR);

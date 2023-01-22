@@ -108,6 +108,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DIRTY_DUST, PrimaryResource.GOLD),
               MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CLUMP, PrimaryResource.GOLD)
         );
+        addToTag(MekanismTags.Items.MEKASUIT_HUD_RENDERER, MekanismItems.MEKASUIT_HELMET);
         addEntities();
         getBlockBuilder(MekanismTags.Blocks.MINER_BLACKLIST);
         addHarvestRequirements();

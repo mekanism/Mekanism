@@ -111,7 +111,7 @@ import mekanism.client.render.armor.ScubaTankArmor;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.hud.MekaSuitEnergyLevel;
-import mekanism.client.render.hud.MekaSuitHUD;
+import mekanism.client.render.hud.MekanismHUD;
 import mekanism.client.render.item.MekaSuitBarDecorator;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
@@ -293,7 +293,8 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerOverlays(RegisterGuiOverlaysEvent event) {
         event.registerAbove(VanillaGuiOverlay.ARMOR_LEVEL.id(), "mekasuit_energy_level", new MekaSuitEnergyLevel());
-        event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "mekasuit_hud", new MekaSuitHUD());
+        //TODO - 1.20: Rename this to just being HUDOverlay or something as it includes the HUD that displays regardless of having a mekasuit
+        event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "mekasuit_hud", new MekanismHUD());
     }
 
     @SubscribeEvent
