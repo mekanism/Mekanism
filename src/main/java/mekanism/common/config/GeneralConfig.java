@@ -294,11 +294,11 @@ public class GeneralConfig extends BaseMekanismConfig {
         boilerWaterPerTank = CachedIntValue.wrap(this, builder.comment("Amount of fluid (mB) that each block of the boiler's water portion contributes to the volume. Max = volume * waterPerTank")
               .defineInRange("waterPerTank", 16 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / maxVolume));
         boilerSteamPerTank = CachedLongValue.wrap(this, builder.comment("Amount of steam (mB) that each block of the boiler's steam portion contributes to the volume. Max = volume * steamPerTank")
-              .defineInRange("steamPerTank", 160 * FluidType.BUCKET_VOLUME, 10, Long.MAX_VALUE / maxVolume));
+              .defineInRange("steamPerTank", 160L * FluidType.BUCKET_VOLUME, 10, Long.MAX_VALUE / maxVolume));
         boilerHeatedCoolantPerTank = CachedLongValue.wrap(this, builder.comment("Amount of steam (mB) that each block of the boiler's heated coolant portion contributes to the volume. Max = volume * heatedCoolantPerTank")
-              .defineInRange("heatedCoolantPerTank", 256 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxVolume));
+              .defineInRange("heatedCoolantPerTank", 256L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxVolume));
         boilerCooledCoolantPerTank = CachedLongValue.wrap(this, builder.comment("Amount of steam (mB) that each block of the boiler's cooled coolant portion contributes to the volume. Max = volume * cooledCoolantPerTank")
-              .defineInRange("cooledCoolantPerTank", 256 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxVolume));
+              .defineInRange("cooledCoolantPerTank", 256L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxVolume));
         builder.pop();
 
         builder.comment("Thermal Evaporation Plant Settings").push(EVAPORATION_CATEGORY);

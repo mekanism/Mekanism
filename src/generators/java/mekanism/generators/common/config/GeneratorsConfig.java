@@ -118,7 +118,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
 
         builder.comment("Gas-Burning Generator Settings").push(GAS_CATEGORY);
         gbgTankCapacity = CachedLongValue.wrap(this, builder.comment("The capacity in mB of the gas tank in the Gas-Burning Generator.")
-              .defineInRange("tankCapacity", 18 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
+              .defineInRange("tankCapacity", 18L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         ethyleneBurnTicks = CachedIntValue.wrap(this, builder.comment("The number of ticks each mB of Ethylene burns for in the Gas-Burning Generator.")
               .defineInRange("ethyleneBurnTicks", 40, 1, Integer.MAX_VALUE));
         ethyleneDensityMultiplier = CachedFloatingLongValue.define(this, builder, "Multiplier for calculating the energy density of Ethylene (1 mB Hydrogen + 2 * bioGeneration * densityMultiplier).",
@@ -137,7 +137,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         //Note: We use maxVolume as it still is a large number, and we have no reason to go higher even if some things we technically could
         int maxTurbine = 17 * 17 * 18;
         turbineGasPerTank = CachedLongValue.wrap(this, builder.comment("Amount of gas (mB) that each block of the turbine's steam cavity contributes to the volume. Max = volume * gasPerTank")
-              .defineInRange("gasPerTank", 64 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxTurbine));
+              .defineInRange("gasPerTank", 64L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxTurbine));
         condenserRate = CachedIntValue.wrap(this, builder.comment("The rate at which steam is condensed in the turbine.")
               .defineInRange("condenserRate", 64_000, 1, 2_000_000));
         builder.pop();
@@ -167,14 +167,14 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         fusionWaterHeatingRatio = CachedDoubleValue.wrap(this, builder.comment("The fraction of the heat from the casing that is dissipated to water when water cooling is in use. Will impact max heat, and steam generation.")
               .defineInRange("waterHeatingRatio", 0.3D, 0D, 1D));
         fusionFuelCapacity = CachedLongValue.wrap(this, builder.comment("Amount of fuel (mB) that the fusion reactor can store.")
-              .defineInRange("fuelCapacity", (long) FluidType.BUCKET_VOLUME, 2, 1_000 * FluidType.BUCKET_VOLUME));
+              .defineInRange("fuelCapacity", (long) FluidType.BUCKET_VOLUME, 2, 1_000L * FluidType.BUCKET_VOLUME));
         fusionEnergyCapacity = CachedFloatingLongValue.define(this, builder, "Amount of energy (J) the fusion reactor can store.",
               "energyCapacity", FloatingLong.createConst(1_000_000_000), CachedFloatingLongValue.POSITIVE);
         int baseMaxWater = 1_000 * FluidType.BUCKET_VOLUME;
         fusionWaterPerInjection = CachedIntValue.wrap(this, builder.comment("Amount of water (mB) per injection rate that the fusion reactor can store. Max = injectionRate * waterPerInjection")
               .defineInRange("waterPerInjection", 1_000 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / FusionReactorMultiblockData.MAX_INJECTION));
         fusionSteamPerInjection = CachedLongValue.wrap(this, builder.comment("Amount of steam (mB) per injection rate that the fusion reactor can store. Max = injectionRate * steamPerInjection")
-              .defineInRange("steamPerInjection", 100 * baseMaxWater, 1, Long.MAX_VALUE / FusionReactorMultiblockData.MAX_INJECTION));
+              .defineInRange("steamPerInjection", 100L * baseMaxWater, 1, Long.MAX_VALUE / FusionReactorMultiblockData.MAX_INJECTION));
         builder.pop();
 
         builder.comment("Hohlraum Settings").push(HOHLRAUM_CATEGORY);
@@ -206,12 +206,12 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         burnPerAssembly = CachedLongValue.wrap(this, builder.comment("The burn rate increase each fuel assembly provides. Max Burn Rate = fuelAssemblies * burnPerAssembly")
               .defineInRange("burnPerAssembly", 1L, 1, 1_000_000));
         maxFuelPerAssembly = CachedLongValue.wrap(this, builder.comment("Amount of fuel (mB) that each assembly contributes to the fuel and waste capacity. Max = fuelAssemblies * maxFuelPerAssembly")
-              .defineInRange("maxFuelPerAssembly", 8 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / 4_096));
+              .defineInRange("maxFuelPerAssembly", 8L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / 4_096));
         int maxVolume = 18 * 18 * 18;
         fissionCooledCoolantPerTank = CachedIntValue.wrap(this, builder.comment("Amount of cooled coolant (mB) that each block of the fission reactor contributes to the volume. Max = volume * cooledCoolantPerTank")
               .defineInRange("cooledCoolantPerTank", 100 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / maxVolume));
         fissionHeatedCoolantPerTank = CachedLongValue.wrap(this, builder.comment("Amount of heated coolant (mB) that each block of the fission reactor contributes to the volume. Max = volume * heatedCoolantPerTank")
-              .defineInRange("heatedCoolantPerTank", 1_000 * FluidType.BUCKET_VOLUME, 1_000, Long.MAX_VALUE / maxVolume));
+              .defineInRange("heatedCoolantPerTank", 1_000L * FluidType.BUCKET_VOLUME, 1_000, Long.MAX_VALUE / maxVolume));
         builder.pop();
 
         builder.pop();
