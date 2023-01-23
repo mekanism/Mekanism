@@ -5,12 +5,12 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.ChemicalTankBuilder;
-import mekanism.api.chemical.ChemicalTankBuilder.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.capabilities.chemical.variable.VariableCapacityChemicalTankBuilder.VariableCapacityGasTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -29,6 +29,7 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,10 +38,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityGasGenerator extends TileEntityGenerator {
 
-    /**
-     * The maximum amount of gas this block can store.
-     */
-    private static final long MAX_GAS = 18_000;
     /**
      * The tank this block is storing fuel in.
      */
@@ -173,10 +170,11 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     //End methods IComputerTile
 
     //Implementation of gas tank that on no longer being empty updates the output rate of this generator
-    private class FuelTank extends BasicGasTank {
+    private class FuelTank extends VariableCapacityGasTank {
 
         protected FuelTank(@Nullable IContentsListener listener) {
-            super(MAX_GAS, ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi, gas -> gas.has(Fuel.class), null, listener);
+            super(MekanismGeneratorsConfig.generators.gbgTankCapacity, ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi,
+                  gas -> gas.has(Fuel.class), null, listener);
         }
 
         @Override

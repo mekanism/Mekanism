@@ -7,6 +7,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -33,8 +34,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityBioGenerator extends TileEntityGenerator {
 
-    private static final int MAX_FLUID = 24_000;
-
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getBioFuel", "getBioFuelCapacity", "getBioFuelNeeded",
                                                                                      "getBioFuelFilledPercentage"})
     public BasicFluidTank bioFuelTank;
@@ -52,8 +51,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        builder.addTank(bioFuelTank = BasicFluidTank.input(MAX_FLUID, fluidStack -> GeneratorTags.Fluids.BIOETHANOL_LOOKUP.contains(fluidStack.getFluid()), listener),
-              RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
+        builder.addTank(bioFuelTank = VariableCapacityFluidTank.input(MekanismGeneratorsConfig.generators.bioTankCapacity,
+                    fluidStack -> GeneratorTags.Fluids.BIOETHANOL_LOOKUP.contains(fluidStack.getFluid()), listener), RelativeSide.LEFT, RelativeSide.RIGHT,
+              RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
     }
 

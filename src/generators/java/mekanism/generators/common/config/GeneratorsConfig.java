@@ -12,7 +12,6 @@ import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.config.value.CachedResourceLocationListValue;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
-import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fluids.FluidType;
@@ -22,6 +21,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
 
     private static final String TURBINE_CATEGORY = "turbine";
     private static final String WIND_CATEGORY = "wind_generator";
+    private static final String BIO_CATEGORY = "bio_generator";
     private static final String HEAT_CATEGORY = "heat_generator";
     private static final String GAS_CATEGORY = "gas_generator";
     private static final String HOHLRAUM_CATEGORY = "hohlraum";
@@ -31,12 +31,17 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     private final ForgeConfigSpec configSpec;
 
     public final CachedFloatingLongValue advancedSolarGeneration;
+
     public final CachedFloatingLongValue bioGeneration;
+    public final CachedIntValue bioTankCapacity;
+
     public final CachedFloatingLongValue heatGeneration;
     public final CachedFloatingLongValue heatGenerationLava;
     public final CachedFloatingLongValue heatGenerationNether;
+    public final CachedIntValue heatTankCapacity;
     public final CachedIntValue heatGenerationFluidRate;
 
+    public final CachedLongValue gbgTankCapacity;
     public final CachedIntValue ethyleneBurnTicks;
     public final CachedFloatingLongValue ethyleneDensityMultiplier;
 
@@ -84,14 +89,19 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("Mekanism Generators Config. This config is synced between server and client.").push("generators");
 
-        bioGeneration = CachedFloatingLongValue.define(this, builder, "Amount of energy in Joules the Bio Generator produces per tick.",
-              "bioGeneration", FloatingLong.createConst(350));
         energyPerFusionFuel = CachedFloatingLongValue.define(this, builder, "Affects the Injection Rate, Max Temp, and Ignition Temp.",
               "energyPerFusionFuel", FloatingLong.createConst(10_000_000));
         solarGeneration = CachedFloatingLongValue.define(this, builder, "Peak output for the Solar Generator. Note: It can go higher than this value in some extreme environments.",
               "solarGeneration", FloatingLong.createConst(50));
         advancedSolarGeneration = CachedFloatingLongValue.define(this, builder, "Peak output for the Advanced Solar Generator. Note: It can go higher than this value in some extreme environments.",
               "advancedSolarGeneration", FloatingLong.createConst(300));
+
+        builder.comment("Bio Generator Settings").push(BIO_CATEGORY);
+        bioGeneration = CachedFloatingLongValue.define(this, builder, "Amount of energy in Joules the Bio Generator produces per tick.",
+              "bioGeneration", FloatingLong.createConst(350));
+        bioTankCapacity = CachedIntValue.wrap(this, builder.comment("The capacity in mB of the fluid tank in the Bio Generator.")
+              .defineInRange("tankCapacity", 24 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
+        builder.pop();
 
         builder.comment("Heat Generator Settings").push(HEAT_CATEGORY);
         heatGeneration = CachedFloatingLongValue.define(this, builder, "Amount of energy in Joules the Heat Generator produces per tick. heatGeneration + heatGenerationLava * lavaSides + heatGenerationNether. Note: lavaSides is how many sides are adjacent to lava, this includes the block itself if it is lava logged allowing for a max of 7 \"sides\".",
@@ -100,11 +110,15 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               "heatGenerationLava", FloatingLong.createConst(30));
         heatGenerationNether = CachedFloatingLongValue.define(this, builder, "Add this amount of Joules to the energy produced by a heat generator if it is in an 'ultrawarm' dimension, in vanilla this is just the Nether.",
               "heatGenerationNether", FloatingLong.createConst(100));
+        heatTankCapacity = CachedIntValue.wrap(this, builder.comment("The capacity in mB of the fluid tank in the Heat Generator.")
+              .defineInRange("tankCapacity", 24 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
         heatGenerationFluidRate = CachedIntValue.wrap(this, builder.comment("The amount of lava in mB that gets consumed to transfer heatGeneration Joules to the Heat Generator.")
-              .defineInRange("heatGenerationFluidRate", 10, 1, TileEntityHeatGenerator.MAX_FLUID));
+              .define("heatGenerationFluidRate", 10, value -> value instanceof Integer i && i > 0 && i <= heatTankCapacity.get()));
         builder.pop();
 
         builder.comment("Gas-Burning Generator Settings").push(GAS_CATEGORY);
+        gbgTankCapacity = CachedLongValue.wrap(this, builder.comment("The capacity in mB of the gas tank in the Gas-Burning Generator.")
+              .defineInRange("tankCapacity", 18 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         ethyleneBurnTicks = CachedIntValue.wrap(this, builder.comment("The number of ticks each mB of Ethylene burns for in the Gas-Burning Generator.")
               .defineInRange("ethyleneBurnTicks", 40, 1, Integer.MAX_VALUE));
         ethyleneDensityMultiplier = CachedFloatingLongValue.define(this, builder, "Multiplier for calculating the energy density of Ethylene (1 mB Hydrogen + 2 * bioGeneration * densityMultiplier).",

@@ -11,6 +11,7 @@ import mekanism.api.heat.IHeatHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
@@ -52,7 +53,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityHeatGenerator extends TileEntityGenerator {
 
-    public static final int MAX_FLUID = 24_000;
     private static final double THERMAL_EFFICIENCY = 0.5;
     //Default configs this is 510 compared to the previous 500
     private static final ConfigBasedCachedFLSupplier MAX_PRODUCTION = new ConfigBasedCachedFLSupplier(() -> {
@@ -85,8 +85,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        builder.addTank(lavaTank = BasicFluidTank.input(MAX_FLUID, fluidStack -> MekanismTags.Fluids.LAVA_LOOKUP.contains(fluidStack.getFluid()), listener),
-              RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
+        builder.addTank(lavaTank = VariableCapacityFluidTank.input(MekanismGeneratorsConfig.generators.heatTankCapacity,
+                    fluidStack -> MekanismTags.Fluids.LAVA_LOOKUP.contains(fluidStack.getFluid()), listener), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK,
+              RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
     }
 
