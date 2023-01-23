@@ -19,9 +19,12 @@ public class MekanismShaders {
     static final ShaderTracker MEKASUIT = new ShaderTracker();
     //Merge of position_color_tex and rendertype_lightning
     static final ShaderTracker SPS = new ShaderTracker();
+    //Copy of position_color_tex with support for fog
+    static final ShaderTracker FLAME = new ShaderTracker();
 
     @SubscribeEvent
     public static void shaderRegistry(RegisterShadersEvent event) throws IOException {
+        registerShader(event, Mekanism.rl("rendertype_flame"), DefaultVertexFormat.POSITION_COLOR_TEX, FLAME);
         registerShader(event, Mekanism.rl("rendertype_mekasuit"), DefaultVertexFormat.NEW_ENTITY, MEKASUIT);
         registerShader(event, Mekanism.rl("rendertype_sps"), DefaultVertexFormat.POSITION_COLOR_TEX, SPS);
     }

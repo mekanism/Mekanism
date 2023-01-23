@@ -55,7 +55,9 @@ public class MekanismRenderType extends RenderType {
     private static RenderType createStandard(String name, ResourceLocation resourceLocation, UnaryOperator<RenderType.CompositeState.CompositeStateBuilder> stateModifier,
           boolean sortOnUpload) {
         RenderType.CompositeState state = stateModifier.apply(RenderType.CompositeState.builder()
-              .setShaderState(NEW_ENTITY_SHADER)
+              //Note: We use the eyes shader as it is effectively equivalent to NEW_ENTITY except takes fog into account for purposes of
+              // things like blindness and darkness
+              .setShaderState(RENDERTYPE_EYES_SHADER)
               .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
               .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
         ).createCompositeState(true);
@@ -64,7 +66,9 @@ public class MekanismRenderType extends RenderType {
 
     public static final Function<ResourceLocation, RenderType> BLADE = Util.memoize(resourceLocation -> {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
-              .setShaderState(RenderStateShard.NEW_ENTITY_SHADER)
+              //Note: We use the eyes shader as it is effectively equivalent to NEW_ENTITY except takes fog into account for purposes of
+              // things like blindness and darkness
+              .setShaderState(RENDERTYPE_EYES_SHADER)
               .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
               .setTransparencyState(BLADE_TRANSPARENCY)
               .createCompositeState(true);
@@ -73,7 +77,7 @@ public class MekanismRenderType extends RenderType {
 
     public static final Function<ResourceLocation, RenderType> FLAME = Util.memoize(resourceLocation -> {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
-              .setShaderState(RenderStateShard.POSITION_COLOR_TEX_SHADER)
+              .setShaderState(MekanismShaders.FLAME.shard)
               .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
               .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
               .createCompositeState(true);
