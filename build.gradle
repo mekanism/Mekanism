@@ -201,7 +201,7 @@ artifactory {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = rootProject.name
+            artifactId = project.archivesBaseName
             groupId = project.group
             version = project.version
             artifacts = [toolsJar, coreJar, generatorsJar, MDKZip, alltJar, apiJar]
@@ -209,12 +209,12 @@ publishing {
                 skip()
             }
             pom {
-                name.set("Mekanism 1.7.10 Community Edition")
+                name.set("Mekanism Community Edition")
                 description.set('Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.')
-                url.set('https://aidancbrady.com/mekanism/')
+                url.set('https://github.com/Thorfusion/Mekanism-Community-Edition')
                 issueManagement {
                     system.set('github')
-                    url.set('https://github.com/Thorfusion/Mekanism-1.7.10-Community-Edition/issues')
+                    url.set('https://github.com/Thorfusion/Mekanism-Community-Edition/issues')
                 }
                 licenses {
                     license {
