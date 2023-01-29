@@ -4,11 +4,7 @@ import java.util.Map;
 
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismConfig.usage;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasRegistry;
-import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTransmission;
-import mekanism.api.gas.IGasItem;
+import mekanism.api.gas.*;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.SideData;
@@ -43,9 +39,11 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	@Override
 	public GasStack getItemGas(ItemStack itemstack)
 	{
-		if(MekanismUtils.getOreDictName(itemstack).contains("dustSulfur")) return new GasStack(GasRegistry.getGas("sulfuricAcid"), 2);
-		if(MekanismUtils.getOreDictName(itemstack).contains("dustSalt")) return new GasStack(GasRegistry.getGas("hydrogenChloride"), 2);
-		if(MekanismUtils.getOreDictName(itemstack).contains("dustSugar") || MekanismUtils.getOreDictName(itemstack).contains("listAllSugar")) return new GasStack(GasRegistry.getGas("molasse"), 90);
+		if (GasifyableItems.getGasFromItem(itemstack) != null) {
+			System.out.println(GasifyableItems.getGasFromItem(itemstack).getGas().getUnlocalizedName());
+			return GasifyableItems.getGasFromItem(itemstack);
+		}
+		else
 		if(Block.getBlockFromItem(itemstack.getItem()) == MekanismBlocks.GasTank && ((IGasItem)itemstack.getItem()).getGas(itemstack) != null &&
 				isValidGas(((IGasItem)itemstack.getItem()).getGas(itemstack).getGas())) return new GasStack(GasRegistry.getGas("sulfuricAcid"), 1);
 
@@ -102,7 +100,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
 	@Override
 	public boolean isValidGas(Gas gas)
 	{
-		return gas == GasRegistry.getGas("sulfuricAcid") || gas == GasRegistry.getGas("water") || gas == GasRegistry.getGas("hydrogenChloride")|| gas == GasRegistry.getGas("molasse");
+		return (gas == GasRegistry.getGas("water") || GasifyableItems.isGasValidGasifyable(gas));
 	}
 
 	@Override

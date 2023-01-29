@@ -18,11 +18,8 @@ import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.api.MekanismConfig;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.MekanismConfig.usage;
-import mekanism.api.gas.Gas;
+import mekanism.api.gas.*;
 import mekanism.api.gas.GasNetwork.GasTransferEvent;
-import mekanism.api.gas.GasRegistry;
-import mekanism.api.gas.GasStack;
-import mekanism.api.gas.OreGas;
 import mekanism.api.infuse.InfuseObject;
 import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
@@ -1440,13 +1437,18 @@ public class Mekanism
 		FluidRegistry.registerFluid(new Fluid("heavyWater"));
 		FluidRegistry.registerFluid(new Fluid("steam").setGaseous(true));
 
-		for(Resource resource : Resource.values())
-		{
+		for(Resource resource : Resource.values()) {
 			String name = resource.getName();
 
-			OreGas clean = (OreGas)GasRegistry.register(new OreGas("clean" + name, "oregas." + name.toLowerCase()).setVisible(false));
+			OreGas clean = (OreGas) GasRegistry.register(new OreGas("clean" + name, "oregas." + name.toLowerCase()).setVisible(false));
 			GasRegistry.register(new OreGas(name.toLowerCase(), "oregas." + name.toLowerCase()).setCleanGas(clean).setVisible(false));
 		}
+
+		//Register Gasifyable Items
+		GasifyableItems.registerGasifyables("dustSulfur", GasRegistry.getGas("sulfuricAcid"), 2);
+		GasifyableItems.registerGasifyables("dustSalt", GasRegistry.getGas("hydrogenChloride"), 2);
+		GasifyableItems.registerGasifyables("dustSugar", GasRegistry.getGas("molasse"), 90);
+		GasifyableItems.registerGasifyables("listAllSugar", GasRegistry.getGas("molasse"), 90);
 
 		Mekanism.proxy.preInit();
 
