@@ -227,7 +227,7 @@ public class RenderTickHandler {
 
     @SubscribeEvent
     public void renderCrosshair(RenderGuiOverlayEvent.Pre event) {
-        if (event.getOverlay().id().equals(VanillaGuiOverlay.CROSSHAIR.id()) && minecraft.screen instanceof GuiRadialSelector screen && screen.shouldHideCrosshair()) {
+        if (event.getOverlay() == VanillaGuiOverlay.CROSSHAIR.type() && minecraft.screen instanceof GuiRadialSelector screen && screen.shouldHideCrosshair()) {
             //Hide the crosshair if we have a radial menu open and are drawing the back button
             event.setCanceled(true);
         }

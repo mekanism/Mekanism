@@ -50,7 +50,8 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
         adoptAllAndRegister(networks);
     }
 
-    public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<ChunkAccess> chunkMap) {
+    public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<ChunkAccess> chunkMap,
+          Map<Coord4D, Set<TransporterStack>> additionalFlowingStacks) {
         List<AcceptorData> toReturn = new ArrayList<>();
         for (Map.Entry<BlockPos, Map<Direction, LazyOptional<IItemHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
             BlockPos pos = entry.getKey();
@@ -76,7 +77,7 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
                                 }
                             }
                         }
-                        TransitResponse response = TransporterManager.getPredictedInsert(position, side, handler.get(), request);
+                        TransitResponse response = TransporterManager.getPredictedInsert(position, side, handler.get(), request, additionalFlowingStacks);
                         if (!response.isEmpty()) {
                             Direction opposite = side.getOpposite();
                             //If the response isn't empty, check if we already have acceptor data for

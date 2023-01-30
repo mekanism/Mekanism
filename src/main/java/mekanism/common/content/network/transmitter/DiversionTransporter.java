@@ -20,11 +20,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class DiversionTransporter extends LogisticalTransporterBase {
 
     public final DiversionControl[] modes;
+    @Nullable
+    private Boolean wasGettingPower;
 
     public DiversionTransporter(TileEntityTransmitter tile) {
         super(tile, TransporterTier.BASIC);
@@ -35,14 +39,33 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     @Override
     public void onNeighborBlockChange(Direction side) {
         //Override onNeighborBlockChange to recheck all connections as our connections
-        // might have changed due to redstone
-        byte current = getAllCurrentConnections();
-        refreshConnections();
-        if (current != getAllCurrentConnections()) {
-            //Has to be markDirtyTransmitters instead of notify tile change,
-            // or it will not properly tell the neighboring connections that
-            // it is no longer valid
-            markDirtyTransmitters();
+        // might have changed due to the redstone mode changing
+        boolean receivingPower = isGettingPowered();
+        //Lazy init our wasGetting power. In theory that may mean we check when going to the same state for the first go around
+        // but at least it will reduce the number of times we check
+        //TODO - 1.20: Evaluate storing it in nbt instead so it can persist and we can do it more accurately without worrying about
+        // not properly invalidating pre-existing ones
+        if (wasGettingPower == null || wasGettingPower != receivingPower) {
+            wasGettingPower = receivingPower;
+            byte current = getAllCurrentConnections();
+            refreshConnections();
+            if (current != getAllCurrentConnections()) {
+                //Has to be markDirtyTransmitters instead of notify tile change,
+                // or it will not properly tell the neighboring connections that
+                // it is no longer valid
+                markDirtyTransmitters();
+            }
+
+            //If the mode reqs being met changed, we need to update our stored value and update if there is a cap exposed
+            TileEntityTransmitter transmitterTile = getTransmitterTile();
+            for (Direction direction : EnumUtils.DIRECTIONS) {
+                if (super.exposesInsertCap(direction)) {
+                    if (!modeReqsMet(direction)) {
+                        transmitterTile.invalidateCapability(ForgeCapabilities.ITEM_HANDLER, direction);
+                    }
+                    WorldUtils.notifyNeighborOfChange(transmitterTile.getLevel(), direction, transmitterTile.getTilePos());
+                }
+            }
         }
     }
 
@@ -87,11 +110,24 @@ public class DiversionTransporter extends LogisticalTransporterBase {
 
     public void updateMode(Direction side, DiversionControl mode) {
         int ordinal = side.ordinal();
-        if (modes[ordinal] != mode) {
+        DiversionControl oldMode = modes[ordinal];
+        if (oldMode != mode) {
             modes[ordinal] = mode;
+            TileEntityTransmitter transmitterTile = getTransmitterTile();
+            if (super.exposesInsertCap(side)) {
+                //If our super impl would expose a cap see if our overrides that just changed also changed if we should provide it
+                boolean nowExposes = modeReqsMet(mode);
+                if (nowExposes != modeReqsMet(oldMode)) {
+                    //If the only thing that changed whether the cap should be exposed is the mode we need to invalidate the cap
+                    if (!nowExposes) {
+                        transmitterTile.invalidateCapability(ForgeCapabilities.ITEM_HANDLER, side);
+                    }
+                    WorldUtils.notifyNeighborOfChange(transmitterTile.getLevel(), side, transmitterTile.getTilePos());
+                }
+            }
             refreshConnections();
             notifyTileChange();
-            getTransmitterTile().sendUpdatePacket();
+            transmitterTile.sendUpdatePacket();
         }
     }
 
@@ -105,17 +141,27 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @Override
+    public boolean exposesInsertCap(@NotNull Direction side) {
+        return super.exposesInsertCap(side) && modeReqsMet(side);
+    }
+
+    @Override
     public boolean canConnect(Direction side) {
-        if (super.canConnect(side)) {
-            DiversionControl mode = modes[side.ordinal()];
-            if (mode == DiversionControl.HIGH) {
-                return isGettingPowered();
-            } else if (mode == DiversionControl.LOW) {
-                return !isGettingPowered();
-            }
-            return true;
-        }
-        return false;
+        return super.canConnect(side) && modeReqsMet(side);
+    }
+
+    private boolean modeReqsMet(Direction side) {
+        return modeReqsMet(modes[side.ordinal()]);
+    }
+
+    private boolean modeReqsMet(DiversionControl mode) {
+        //TODO: Eventually it might be nice to make this use wasGettingPowered so as to avoid looking at the world when checking the mode reqs
+        // as this might provide a decent boost to diversion transporter performance
+        return switch (mode) {
+            case HIGH -> isGettingPowered();
+            case LOW -> !isGettingPowered();
+            default -> true;
+        };
     }
 
     private boolean isGettingPowered() {

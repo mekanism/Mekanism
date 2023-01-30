@@ -11,6 +11,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.network.InventoryNetwork;
 import mekanism.common.content.network.InventoryNetwork.AcceptorData;
@@ -40,13 +41,14 @@ public final class TransporterPathfinder {
     private TransporterPathfinder() {
     }
 
-    private static List<Destination> getPaths(LogisticalTransporterBase start, TransporterStack stack, TransitRequest request, int min) {
+    private static List<Destination> getPaths(LogisticalTransporterBase start, TransporterStack stack, TransitRequest request, int min,
+          Map<Coord4D, Set<TransporterStack>> additionalFlowingStacks) {
         InventoryNetwork network = start.getTransmitterNetwork();
         if (network == null) {
             return Collections.emptyList();
         }
         Long2ObjectMap<ChunkAccess> chunkMap = new Long2ObjectOpenHashMap<>();
-        List<AcceptorData> acceptors = network.calculateAcceptors(request, stack, chunkMap);
+        List<AcceptorData> acceptors = network.calculateAcceptors(request, stack, chunkMap, additionalFlowingStacks);
         List<Destination> paths = new ArrayList<>();
         for (AcceptorData data : acceptors) {
             Destination path = getPath(network, data, start, stack, min, chunkMap);
@@ -100,7 +102,13 @@ public final class TransporterPathfinder {
 
     @Nullable
     public static Destination getNewBasePath(LogisticalTransporterBase start, TransporterStack stack, TransitRequest request, int min) {
-        List<Destination> paths = getPaths(start, stack, request, min);
+        return getNewBasePath(start, stack, request, min, Collections.emptyMap());
+    }
+
+    @Nullable
+    public static Destination getNewBasePath(LogisticalTransporterBase start, TransporterStack stack, TransitRequest request, int min,
+          Map<Coord4D, Set<TransporterStack>> additionalFlowingStacks) {
+        List<Destination> paths = getPaths(start, stack, request, min, additionalFlowingStacks);
         if (paths.isEmpty()) {
             return null;
         }
@@ -110,7 +118,7 @@ public final class TransporterPathfinder {
     @Nullable
     public static Destination getNewRRPath(LogisticalTransporterBase start, TransporterStack stack, TransitRequest request, TileEntityLogisticalSorter outputter,
           int min) {
-        List<Destination> destinations = getPaths(start, stack, request, min);
+        List<Destination> destinations = getPaths(start, stack, request, min, Collections.emptyMap());
         int destinationCount = destinations.size();
         if (destinationCount == 0) {
             return null;

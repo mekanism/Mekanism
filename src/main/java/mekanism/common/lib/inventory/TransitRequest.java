@@ -1,7 +1,7 @@
 package mekanism.common.lib.inventory;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -155,7 +155,7 @@ public abstract class TransitRequest {
             if (isEmpty()) {
                 return ItemStack.EMPTY;
             }
-            return StackUtils.size(slotData.getStack(), slotData.getStack().getCount() - getSendingAmount());
+            return slotData.getItemType().createStack(slotData.getTotalCount() - getSendingAmount());
         }
 
         public ItemStack use(int amount) {
@@ -235,10 +235,10 @@ public abstract class TransitRequest {
 
     public static class SimpleTransitRequest extends TransitRequest {
 
-        private final List<ItemData> slotData = new ArrayList<>();
+        private final List<ItemData> slotData;
 
         protected SimpleTransitRequest(ItemStack stack) {
-            slotData.add(new SimpleItemData(stack));
+            slotData = Collections.singletonList(new SimpleItemData(stack));
         }
 
         @Override
@@ -249,6 +249,8 @@ public abstract class TransitRequest {
         public static class SimpleItemData extends ItemData {
 
             public SimpleItemData(ItemStack stack) {
+                //TODO: Can this use raw to avoid a copy? My intuition says yes as I don't think the item data stays around when the stack can mutate
+                // but this definitely needs more thought
                 super(HashedItem.create(stack));
                 totalCount = stack.getCount();
             }

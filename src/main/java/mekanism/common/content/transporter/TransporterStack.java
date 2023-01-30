@@ -1,7 +1,11 @@
 package mekanism.common.content.transporter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
@@ -140,14 +144,16 @@ public class TransporterStack {
         itemStack = ItemStack.of(nbtTags);
     }
 
-    private void setPath(Level world, List<BlockPos> path, Path type) {
+    private void setPath(Level world, List<BlockPos> path, Path type, boolean updateFlowing) {
         //Make sure old path isn't null
-        if (pathType != Path.NONE) {
+        if (updateFlowing && pathType != Path.NONE) {
+            //Only update the actual flowing stacks if we want to modify more than our current stack
             TransporterManager.remove(world, this);
         }
         pathToTarget = path;
         pathType = type;
-        if (pathType != Path.NONE) {
+        if (updateFlowing && pathType != Path.NONE) {
+            //Only update the actual flowing stacks if we want to modify more than our current stack
             TransporterManager.add(world, this);
         }
     }
@@ -165,23 +171,41 @@ public class TransporterStack {
     }
 
     public TransitResponse recalculatePath(TransitRequest request, LogisticalTransporterBase transporter, int min) {
-        Destination newPath = TransporterPathfinder.getNewBasePath(transporter, this, request, min);
+        return recalculatePath(request, transporter, min, true);
+    }
+
+    public TransitResponse recalculatePath(TransitRequest request, LogisticalTransporterBase transporter, int min, boolean updateFlowing) {
+        return recalculatePath(request, transporter, min, updateFlowing, Collections.emptyMap());
+    }
+
+    public TransitResponse recalculatePath(TransitRequest request, LogisticalTransporterBase transporter, int min,
+          Map<Coord4D, Set<TransporterStack>> additionalFlowingStacks) {
+        return recalculatePath(request, transporter, min, false, additionalFlowingStacks);
+    }
+
+    private TransitResponse recalculatePath(TransitRequest request, LogisticalTransporterBase transporter, int min, boolean updateFlowing,
+          Map<Coord4D, Set<TransporterStack>> additionalFlowingStacks) {
+        Destination newPath = TransporterPathfinder.getNewBasePath(transporter, this, request, min, additionalFlowingStacks);
         if (newPath == null) {
             return request.getEmptyResponse();
         }
         idleDir = null;
-        setPath(transporter.getTileWorld(), newPath.getPath(), Path.DEST);
+        setPath(transporter.getTileWorld(), newPath.getPath(), Path.DEST, updateFlowing);
         initiatedPath = true;
         return newPath.getResponse();
     }
 
     public TransitResponse recalculateRRPath(TransitRequest request, TileEntityLogisticalSorter outputter, LogisticalTransporterBase transporter, int min) {
+        return recalculateRRPath(request, outputter, transporter, min, true);
+    }
+
+    public TransitResponse recalculateRRPath(TransitRequest request, TileEntityLogisticalSorter outputter, LogisticalTransporterBase transporter, int min, boolean updateFlowing) {
         Destination newPath = TransporterPathfinder.getNewRRPath(transporter, this, request, outputter, min);
         if (newPath == null) {
             return request.getEmptyResponse();
         }
         idleDir = null;
-        setPath(transporter.getTileWorld(), newPath.getPath(), Path.DEST);
+        setPath(transporter.getTileWorld(), newPath.getPath(), Path.DEST, updateFlowing);
         initiatedPath = true;
         return newPath.getResponse();
     }
@@ -194,7 +218,7 @@ public class TransporterStack {
         if (newPath.type() == Path.HOME) {
             idleDir = null;
         }
-        setPath(transporter.getTileWorld(), newPath.path(), newPath.type());
+        setPath(transporter.getTileWorld(), newPath.path(), newPath.type(), true);
         originalLocation = transporter.getTilePos();
         initiatedPath = true;
         return true;
