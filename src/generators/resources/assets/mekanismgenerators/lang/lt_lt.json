@@ -33,6 +33,8 @@
   "description.mekanismgenerators.reactor.logic.capacity": "The reactor's core heat capacity has been met",
   "description.mekanismgenerators.reactor.logic.depleted": "The reactor has insufficient fuel to sustain a reaction",
   "description.mekanismgenerators.reactor.logic.ready": "Reactor has reached the required heat level to ignite",
+  "fission.mekanismgenerators.activate": "Aktyvuoti",
   "fission.mekanismgenerators.burn_rate": "Dabartinis Degimo Greitis:",
-  "fission.mekanismgenerators.coolant_tank": "Aušinimo Skysčio Bakas"
+  "fission.mekanismgenerators.coolant_tank": "Aušinimo Skysčio Bakas",
+  "fission.mekanismgenerators.fuel_tank": "Kuro bakai"
 }
