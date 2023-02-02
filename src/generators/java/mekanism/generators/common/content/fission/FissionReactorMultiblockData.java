@@ -67,7 +67,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     public final Set<FormedAssembly> assemblies = new LinkedHashSet<>();
     @ContainerSync(setter = "setAssemblies")
     @SyntheticComputerMethod(getter = "getFuelAssemblies")
-    private int fuelAssemblies = 1;
+    private int fuelAssemblies = 0;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getFuelSurfaceArea")
     public int surfaceArea;
@@ -455,6 +455,11 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     @ComputerMethod
     public double getBoilEfficiency() {
+        if (fuelAssemblies == 0) {
+            //If for some reason the assemblies somehow haven't been initialized (even though they have to be to form)
+            // just return that it can't boil
+            return 0;
+        }
         double avgSurfaceArea = (double) surfaceArea / (double) fuelAssemblies;
         return Math.min(1, avgSurfaceArea / MekanismGeneratorsConfig.generators.fissionSurfaceAreaTarget.get());
     }
