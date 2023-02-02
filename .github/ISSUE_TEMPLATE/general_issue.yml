@@ -33,7 +33,7 @@ body:
     attributes:
       label: Forge version
       description: What version of Forge are you using?
-      placeholder: e.g. 43.1.43
+      placeholder: e.g. 43.1.61
     validations:
       required: true
   - type: dropdown
@@ -43,13 +43,10 @@ body:
       description: What version of Mekanism are you using?
       options:
         - Current Dev Branch (Manually Compiled)
-        - 10.3.6 (Latest)
+        - 10.3.7 (Latest)
+        - 10.3.6
         - 10.3.5
         - 10.3.4
-        - 10.3.3
-        - 10.3.2
-        - 10.3.1
-        - 10.3.0
         - Older
     validations:
       required: true
