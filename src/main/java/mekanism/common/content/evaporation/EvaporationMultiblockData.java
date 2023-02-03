@@ -202,7 +202,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         if (getVolume() != volume) {
             super.setVolume(volume);
             //Note: We only count the inner volume for the tank capacity for the evap tower
-            inputTankCapacity = height() * 4 * MekanismConfig.general.evaporationFluidPerTank.get();
+            inputTankCapacity = (volume / 4) * MekanismConfig.general.evaporationFluidPerTank.get();
         }
     }
 
