@@ -1026,6 +1026,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 // and the chunk that the miner is currently mining
                 //TODO: At some point we may want to change the ticket of the chunk the miner is mining to be
                 // at a lower level and not cause tiles in it to actually tick
+                if (minerChunk.equals(targetChunk)) {
+                    return Set.of(minerChunk);
+                }
                 return Set.of(minerChunk, targetChunk);
             }
         }
