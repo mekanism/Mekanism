@@ -2,6 +2,8 @@ package mekanism.common.item.block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
@@ -100,8 +102,12 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
                 //Otherwise, just return that the max is what the base max is
                 maxEnergy = attributeEnergy::getStorage;
             }
-            capabilities.add(RateLimitEnergyHandler.create(maxEnergy, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue));
+            capabilities.add(RateLimitEnergyHandler.create(maxEnergy, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate()));
         }
+    }
+
+    protected Predicate<@NotNull AutomationType> getEnergyCapInsertPredicate() {
+        return BasicEnergyContainer.alwaysTrue;
     }
 
     protected boolean exposesEnergyCap(ItemStack stack) {

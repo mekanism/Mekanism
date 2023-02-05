@@ -51,6 +51,7 @@ import mekanism.common.item.block.ItemBlockChemicalTank;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.item.block.ItemBlockInductionCell;
 import mekanism.common.item.block.ItemBlockInductionProvider;
+import mekanism.common.item.block.ItemBlockLaserAmplifier;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.item.block.ItemBlockRadioactiveWasteBarrel;
 import mekanism.common.item.block.ItemBlockResource;
@@ -58,6 +59,7 @@ import mekanism.common.item.block.ItemBlockSecurityDesk;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
+import mekanism.common.item.block.machine.ItemBlockLaserTractorBeam;
 import mekanism.common.item.block.machine.ItemBlockMachine;
 import mekanism.common.item.block.machine.ItemBlockQIOComponent;
 import mekanism.common.item.block.machine.ItemBlockQIOComponent.ItemBlockQIOInventoryComponent;
@@ -277,8 +279,8 @@ public class MekanismBlocks {
 
     public static final BlockRegistryObject<BlockTileModel<TileEntityFluidicPlenisher, Machine<TileEntityFluidicPlenisher>>, ItemBlockMachine> FLUIDIC_PLENISHER = BLOCKS.register("fluidic_plenisher", () -> new BlockTileModel<>(MekanismBlockTypes.FLUIDIC_PLENISHER), ItemBlockMachine::new);
     public static final BlockRegistryObject<BlockTileModel<TileEntityLaser, BlockTypeTile<TileEntityLaser>>, ItemBlockTooltip<BlockTileModel<TileEntityLaser, BlockTypeTile<TileEntityLaser>>>> LASER = BLOCKS.register("laser", () -> new BlockTileModel<>(MekanismBlockTypes.LASER), ItemBlockTooltip::new);
-    public static final BlockRegistryObject<BlockTileModel<TileEntityLaserAmplifier, BlockTypeTile<TileEntityLaserAmplifier>>, ItemBlockTooltip<BlockTileModel<TileEntityLaserAmplifier, BlockTypeTile<TileEntityLaserAmplifier>>>> LASER_AMPLIFIER = BLOCKS.register("laser_amplifier", () -> new BlockTileModel<>(MekanismBlockTypes.LASER_AMPLIFIER), ItemBlockTooltip::new);
-    public static final BlockRegistryObject<BlockTileModel<TileEntityLaserTractorBeam, BlockTypeTile<TileEntityLaserTractorBeam>>, ItemBlockMachine> LASER_TRACTOR_BEAM = BLOCKS.register("laser_tractor_beam", () -> new BlockTileModel<>(MekanismBlockTypes.LASER_TRACTOR_BEAM), ItemBlockMachine::new);
+    public static final BlockRegistryObject<BlockTileModel<TileEntityLaserAmplifier, BlockTypeTile<TileEntityLaserAmplifier>>, ItemBlockLaserAmplifier> LASER_AMPLIFIER = BLOCKS.register("laser_amplifier", () -> new BlockTileModel<>(MekanismBlockTypes.LASER_AMPLIFIER), ItemBlockLaserAmplifier::new);
+    public static final BlockRegistryObject<BlockTileModel<TileEntityLaserTractorBeam, BlockTypeTile<TileEntityLaserTractorBeam>>, ItemBlockLaserTractorBeam> LASER_TRACTOR_BEAM = BLOCKS.register("laser_tractor_beam", () -> new BlockTileModel<>(MekanismBlockTypes.LASER_TRACTOR_BEAM), ItemBlockLaserTractorBeam::new);
     public static final BlockRegistryObject<BlockTileModel<TileEntityQuantumEntangloporter, BlockTypeTile<TileEntityQuantumEntangloporter>>, ItemBlockQuantumEntangloporter> QUANTUM_ENTANGLOPORTER = BLOCKS.register("quantum_entangloporter", () -> new BlockTileModel<>(MekanismBlockTypes.QUANTUM_ENTANGLOPORTER), ItemBlockQuantumEntangloporter::new);
     public static final BlockRegistryObject<BlockTileModel<TileEntitySolarNeutronActivator, Machine<TileEntitySolarNeutronActivator>>, ItemBlockMachine> SOLAR_NEUTRON_ACTIVATOR = BLOCKS.register("solar_neutron_activator", () -> new BlockTileModel<>(MekanismBlockTypes.SOLAR_NEUTRON_ACTIVATOR), ItemBlockMachine::new);
     public static final BlockRegistryObject<BlockTile<TileEntityOredictionificator, BlockTypeTile<TileEntityOredictionificator>>, ItemBlockMachine> OREDICTIONIFICATOR = BLOCKS.register("oredictionificator", () -> new BlockTile<>(MekanismBlockTypes.OREDICTIONIFICATOR), ItemBlockMachine::new);
