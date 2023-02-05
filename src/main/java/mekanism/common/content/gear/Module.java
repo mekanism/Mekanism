@@ -105,7 +105,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         });
         if (data.handlesModeChange()) {
             handleModeChange = addConfigItem(new ModuleConfigItem<>(this, "handleModeChange", MekanismLang.MODULE_HANDLE_MODE_CHANGE,
-                  new ModuleBooleanData(data.isModeChangeDisabledByDefault())) {
+                  new ModuleBooleanData(!data.isModeChangeDisabledByDefault())) {
                 @Override
                 protected void checkValidity(@NotNull Boolean value, @Nullable Runnable callback) {
                     //If the mode change is being enabled, and we handle mode changes
