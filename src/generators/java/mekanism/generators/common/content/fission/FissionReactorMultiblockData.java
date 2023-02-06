@@ -529,7 +529,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         long max = getMaxBurnRate();
         if (rate < 0 || rate > max) {
             //Validate bounds even though we can clamp
-            throw new ComputerException("Burn Rate '%d' is out of range must be between 0 and %d. (Inclusive)", rate, max);
+            throw new ComputerException("Burn Rate '%.2f' is out of range must be between 0 and %d. (Inclusive)", rate, max);
         }
         setRateLimit(rate);
     }
