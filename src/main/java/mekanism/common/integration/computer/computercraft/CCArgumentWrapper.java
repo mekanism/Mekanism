@@ -41,6 +41,7 @@ import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.text.InputValidator;
+import net.minecraft.Util;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.ByteTag;
@@ -62,6 +63,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
@@ -224,6 +229,22 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             return wrapStack(stack.getFluid(), "amount", stack.getAmount(), stack.getTag());
         } else if (result instanceof ItemStack stack) {
             return wrapStack(stack.getItem(), "count", stack.getCount(), stack.getTag());
+        } else if (result instanceof BlockState state) {
+            Map<String, Object> wrapped = new HashMap<>(2);
+            wrapped.put("block", getName(state.getBlock()));
+            Map<String, Object> stateData = new HashMap<>();
+            for (Map.Entry<Property<?>, Comparable<?>> entry : state.getValues().entrySet()) {
+                Property<?> property = entry.getKey();
+                Object value = entry.getValue();
+                if (!(property instanceof IntegerProperty) && !(property instanceof BooleanProperty)) {
+                    value = Util.getPropertyName(property, value);
+                }
+                stateData.put(property.getName(), value);
+            }
+            if (!stateData.isEmpty()) {
+                wrapped.put("state", stateData);
+            }
+            return wrapped;
         } else if (result instanceof Tag tag) {
             Object wrapped = wrapNBT(tag);
             if (wrapped != null) {

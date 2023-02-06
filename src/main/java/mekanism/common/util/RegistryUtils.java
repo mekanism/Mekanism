@@ -1,8 +1,10 @@
 package mekanism.common.util;
 
+import java.util.Optional;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
@@ -78,9 +80,10 @@ public class RegistryUtils {
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static ResourceLocation getName(Registry<? extends Registry<?>> registries, Object element) {
         for (Registry<?> registry : registries) {
-            ResourceLocation registryName = ((Registry) registry).getKey(element);
-            if (registryName != null) {
-                return registryName;
+            //Note: We have to use getResourceKey as getKey for defaulted registries returns the default key
+            Optional<ResourceKey<?>> resourceKey = ((Registry) registry).getResourceKey(element);
+            if (resourceKey.isPresent()) {
+                return resourceKey.get().location();
             }
         }
         return null;
