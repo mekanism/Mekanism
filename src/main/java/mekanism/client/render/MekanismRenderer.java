@@ -352,22 +352,6 @@ public class MekanismRenderer {
         addChemicalSprites(event, MekanismAPI.infuseTypeRegistry());
         addChemicalSprites(event, MekanismAPI.pigmentRegistry());
         addChemicalSprites(event, MekanismAPI.slurryRegistry());
-
-        ModelRenderer.resetCachedModels();
-        RenderDigitalMiner.resetCachedVisuals();
-        RenderDimensionalStabilizer.resetCachedVisuals();
-        RenderFluidTank.resetCachedModels();
-        RenderNutritionalLiquifier.resetCachedModels();
-        RenderPigmentMixer.resetCached();
-        RenderMechanicalPipe.onStitch();
-        RenderSeismicVibrator.resetCached();
-        RenderTickHandler.resetCached();
-        RenderTeleporter.resetCachedModels();
-
-        parseColorAtlas(Mekanism.rl("textures/colormap/primary.png"));
-        SpecialColors.GUI_OBJECTS.parse(Mekanism.rl("textures/colormap/gui_objects.png"));
-        SpecialColors.GUI_TEXT.parse(Mekanism.rl("textures/colormap/gui_text.png"));
-        GuiElementHolder.updateBackgroundColor();
     }
 
     private static void parseColorAtlas(ResourceLocation rl) {
@@ -409,6 +393,23 @@ public class MekanismRenderer {
         //Note: These are called in post rather than pre to make sure the icons have properly been stitched/attached
         RenderLogisticalTransporter.onStitch(map);
         RenderTransmitterBase.onStitch();
+
+        //Reset any cached models now that the atlases are built
+        ModelRenderer.resetCachedModels();
+        RenderDigitalMiner.resetCachedVisuals();
+        RenderDimensionalStabilizer.resetCachedVisuals();
+        RenderFluidTank.resetCachedModels();
+        RenderNutritionalLiquifier.resetCachedModels();
+        RenderPigmentMixer.resetCached();
+        RenderMechanicalPipe.onStitch();
+        RenderSeismicVibrator.resetCached();
+        RenderTickHandler.resetCached();
+        RenderTeleporter.resetCachedModels();
+
+        parseColorAtlas(Mekanism.rl("textures/colormap/primary.png"));
+        SpecialColors.GUI_OBJECTS.parse(Mekanism.rl("textures/colormap/gui_objects.png"));
+        SpecialColors.GUI_TEXT.parse(Mekanism.rl("textures/colormap/gui_text.png"));
+        GuiElementHolder.updateBackgroundColor();
     }
 
     public enum FluidTextureType {
