@@ -43,7 +43,8 @@ body:
       description: What version of Mekanism are you using?
       options:
         - Current Dev Branch (Manually Compiled)
-        - 10.3.7 (Latest)
+        - 10.3.8 (Latest)
+        - 10.3.7
         - 10.3.6
         - 10.3.5
         - 10.3.4
