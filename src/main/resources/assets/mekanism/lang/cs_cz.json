@@ -1,4 +1,10 @@
 {
+  "advancements.mekanism.advanced_control_circuit.description": "Vyrob Pokročilý Ovládací Obvod",
+  "advancements.mekanism.advanced_control_circuit.title": "Postupující technologie",
+  "advancements.mekanism.advanced_qio_drive.description": "Zvětši šířku pásma úložíště tvého QIO disku",
+  "advancements.mekanism.advanced_qio_drive.title": "Vysoce hustotné úložíště",
+  "advancements.mekanism.alarm.description": "Poplašná zařížení jsou hlasitá, zejména průmyslový typ",
+  "advancements.mekanism.alarm.title": "Dělá hluk",
   "advancements.mekanism.environmental_radiation.title": "Mysli na přírodu",
   "advancements.mekanism.factory.description": "Vytvoř jakoukoliv továrnu",
   "advancements.mekanism.fluid_tank.description": "Vytvoř nádrž na skladování kapalin",
