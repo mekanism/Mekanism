@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismgenerators.burn_the_gas.description": "Vyrob spalovací plynový generátor pro spalování Ethylenu",
+  "advancements.mekanismgenerators.burn_the_gas.title": "Spaluj plyn",
+  "advancements.mekanismgenerators.heat_generator.description": "Vyrob tepelný generátor, aby jsi mohl začít vyrábět energii",
+  "advancements.mekanismgenerators.heat_generator.title": "Tvůj první generátor",
+  "advancements.mekanismgenerators.solar_generator.description": "Obnovitelná denní energie",
+  "advancements.mekanismgenerators.solar_generator.title": "Síla slunce",
+  "advancements.mekanismgenerators.wind_generator.description": "Doufejme, že poblíž je vítr",
+  "advancements.mekanismgenerators.wind_generator.title": "Dítě, toč se dítě",
   "block.mekanismgenerators.advanced_solar_generator": "Pokročilý Solární Generátor",
   "block.mekanismgenerators.bio_generator": "Bio-Generátor",
   "block.mekanismgenerators.bioethanol": "Bioethanol",
