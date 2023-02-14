@@ -170,5 +170,9 @@
   "block.mekanismadditions.yellow_plastic_transparent_stairs": "Yellow Transparent Plastic Stairs",
   "block.mekanismadditions.yellow_reinforced_plastic": "Yellow Reinforced Plastic Block",
   "block.mekanismadditions.yellow_slick_plastic": "Yellow Slick Plastic Block",
-  "description.mekanismadditions.obsidian_tnt": "An extremely powerful, obsidian-infused block of TNT. Don't ask us how adding the hardest material in the game to an explosive makes it more powerful."
+  "description.mekanismadditions.glow_panel": "A modern, energy independent light source. Available in multiple colours!",
+  "description.mekanismadditions.obsidian_tnt": "An extremely powerful, obsidian-infused block of TNT. Don't ask us how adding the hardest material in the game to an explosive makes it more powerful.",
+  "entity.mekanismadditions.baby_creeper": "Baby Creeper",
+  "entity.mekanismadditions.baby_enderman": "Baby Enderman",
+  "entity.mekanismadditions.baby_skeleton": "Baby Skeleton"
 }
