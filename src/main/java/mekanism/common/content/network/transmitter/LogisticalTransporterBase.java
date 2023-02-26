@@ -44,6 +44,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     protected final Int2ObjectMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
     protected final Int2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
     public final TransporterTier tier;
+    private long lastRenderUpdate;
     protected int nextId = 0;
     protected int delay = 0;
     protected int delayCount = 0;
@@ -99,8 +100,14 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     public void onUpdateClient() {
         //TODO: For this to actually appear smooth, this assumes that packets with updates won't be delayed
         // even though they may be by at least one tick. Which then can cause it to jitter especially at high speeds
-        for (TransporterStack stack : transit.values()) {
-            stack.progress = Math.min(100, stack.progress + tier.getSpeed());
+        long time = getTileWorld().getGameTime();
+        //TODO: Compare against game time and if game time hasn't progressed then don't actually increment this. TEST THIS
+        if (lastRenderUpdate != time) {
+            //TODO: If it has been more than one tick do we want to progress multiple pieces at once?
+            lastRenderUpdate = time;
+            for (TransporterStack stack : transit.values()) {
+                stack.progress = Math.min(100, stack.progress + tier.getSpeed());
+            }
         }
     }
 

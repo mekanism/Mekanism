@@ -152,7 +152,8 @@ public class TransporterStack {
         }
         pathToTarget = path;
         pathType = type;
-        if (updateFlowing && pathType != null && pathType.hasTarget()) {
+        //Note: new path should never be null, so we don't have to check it here
+        if (updateFlowing && pathType.hasTarget()) {
             //Only update the actual flowing stacks if we want to modify more than our current stack
             TransporterManager.add(world, this);
         }

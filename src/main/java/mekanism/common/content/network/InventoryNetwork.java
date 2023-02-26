@@ -58,6 +58,10 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
     //TODO: I think current system might be recalculating the path every time it gets out of current transmitter??? Seems super inefficient
     // even just recalculating the paths of all stacks in the network when the transporters or destination change seems like it would be better than current
 
+    //TODO: Can we make use of PathfinderCache that already keeps track of paths based on network to then just know which ones are in need of an update?
+    // Given then we calculate/keep a list of changed paths and then can just do instance comparison (==) to see if the stack has one of the cached paths
+    // and if so then recalculate it. The one issue that may not handle properly is IDLE paths
+
     //TODO: Should it be a list or a Int2Object map like it used to be
     private final Map<BlockPos, List<TrackedTransporterStack>> transit = new Object2ObjectOpenHashMap<>();
 

@@ -7,6 +7,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.content.network.transmitter.LogisticalTransporter;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.content.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -89,6 +90,10 @@ public final class TransporterUtils {
                 tile.setColor(colors.get(index + 1));
             }
         }
+    }
+
+    public static DestChecker simpleInsertCheck(ItemStack itemStack, boolean force) {
+        return (stack, side, tile) -> TransporterUtils.canInsert(tile, stack.color, itemStack, side, force);
     }
 
     public static boolean canInsert(BlockEntity tile, EnumColor color, ItemStack itemStack, Direction side, boolean force) {

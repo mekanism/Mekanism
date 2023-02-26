@@ -1,5 +1,6 @@
 package mekanism.common.content.transporter;
 
+import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
@@ -17,8 +18,6 @@ import mekanism.common.content.network.InventoryNetwork;
 import mekanism.common.content.network.InventoryNetwork.AcceptorData;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.PathfinderCache.CachedPath;
-import mekanism.common.content.transporter.PathfinderCache.PathData;
-import mekanism.common.content.transporter.TransporterPathfinder.Pathfinder.DestChecker;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.lib.SidedBlockPos;
 import mekanism.common.lib.inventory.TransitRequest;
@@ -82,19 +81,15 @@ public final class TransporterPathfinder {
             BlockPos dest = data.getLocation();
             CachedPath test = PathfinderCache.getCache(start, dest, data.getSides());
             if (test != null && checkPath(network, test.path(), stack)) {
-                return new Destination(test.path(), false, response, test.cost());
+                return new Destination(test, response);
             }
-            Pathfinder p = new Pathfinder(new DestChecker() {
-                @Override
-                public boolean isValid(TransporterStack stack, Direction side, BlockEntity tile) {
-                    return TransporterUtils.canInsert(tile, stack.color, response.getStack(), side, false);
-                }
-            }, network, start.getTileWorld(), dest, start.getTilePos(), stack);
+            //Use the actual stack we have as a response for our insert check
+            Pathfinder p = new Pathfinder(TransporterUtils.simpleInsertCheck(response.getStack(), false), network, start.getTileWorld(), dest, start.getTilePos(), stack);
             p.find(chunkMap);
             List<BlockPos> path = p.getPath();
             if (path.size() >= 2) {
-                PathfinderCache.addCachedPath(start, new PathData(start.getTilePos(), dest, p.getSide()), path, p.finalScore);
-                return new Destination(path, false, response, p.finalScore);
+                PathfinderCache.addCachedPath(start, dest, p.getSide(), path, p.finalScore);
+                return new Destination(path, response, p.finalScore);
             }
         }
         return null;
@@ -174,12 +169,8 @@ public final class TransporterPathfinder {
         }
         if (stack.homeLocation != null) {
             Long2ObjectMap<ChunkAccess> chunkMap = new Long2ObjectOpenHashMap<>();
-            Pathfinder p = new Pathfinder(new DestChecker() {
-                @Override
-                public boolean isValid(TransporterStack stack, Direction side, BlockEntity tile) {
-                    return TransporterUtils.canInsert(tile, stack.color, stack.itemStack, side, true);
-                }
-            }, network, start.getTileWorld(), stack.homeLocation, start.getTilePos(), stack);
+            //We are idling use the base stack
+            Pathfinder p = new Pathfinder(TransporterUtils.simpleInsertCheck(stack.itemStack, true), network, start.getTileWorld(), stack.homeLocation, start.getTilePos(), stack);
             p.find(chunkMap);
             List<BlockPos> path = p.getPath();
             if (path.size() >= 2) {
@@ -209,7 +200,7 @@ public final class TransporterPathfinder {
         }
 
         public Destination find() {
-            ArrayList<BlockPos> ret = new ArrayList<>();
+            List<BlockPos> ret = new ArrayList<>();
             ret.add(start);
             LogisticalTransporterBase startTransmitter = network.getTransmitter(start);
             if (transportStack.idleDir == null) {
@@ -218,7 +209,7 @@ public final class TransporterPathfinder {
             LogisticalTransporterBase transmitter = network.getTransmitter(start.relative(transportStack.idleDir));
             if (transportStack.canInsertToTransporter(transmitter, transportStack.idleDir, startTransmitter)) {
                 loopSide(ret, transportStack.idleDir, startTransmitter);
-                return new Destination(ret, true, null, 0).setPathType(Path.NONE);
+                return createDestination(ret);
             }
             TransitRequest request = TransitRequest.simple(transportStack.itemStack);
             if (startTransmitter != null) {
@@ -248,7 +239,7 @@ public final class TransporterPathfinder {
                             // is gracefully handled
                             transportStack.idleDir = side;
                             ret.add(start.relative(side));
-                            return new Destination(ret, true, null, 0).setPathType(Path.NONE);
+                            return createDestination(ret);
                         }
                     }
                 }
@@ -256,7 +247,13 @@ public final class TransporterPathfinder {
             }
             transportStack.idleDir = newSide;
             loopSide(ret, newSide, startTransmitter);
-            return new Destination(ret, true, null, 0).setPathType(Path.NONE);
+            return createDestination(ret);
+        }
+
+        private Destination createDestination(List<BlockPos> ret) {
+            List<BlockPos> path = new ArrayList<>(ret);
+            Collections.reverse(path);
+            return new Destination(Collections.unmodifiableList(path), null, 0);
         }
 
         private void loopSide(List<BlockPos> list, Direction side, @Nullable LogisticalTransporterBase startTransmitter) {
@@ -301,16 +298,22 @@ public final class TransporterPathfinder {
 
         private final TransitResponse response;
         private final List<BlockPos> path;
+        private final int cachedHash;
         private final double score;
-        private Path pathType;
+        private Path pathType = Path.NONE;
 
-        public Destination(List<BlockPos> list, boolean inv, TransitResponse ret, double gScore) {
-            path = new ArrayList<>(list);
-            if (inv) {
-                Collections.reverse(path);
-            }
-            response = ret;
-            score = gScore;
+        public Destination(CachedPath path, TransitResponse ret) {
+            this(path.path(), ret, path.cost());
+        }
+
+        /**
+         * @apiNote Excepts list to be unmodifiable/immutable (at the very least not mutated after being passed).
+         */
+        public Destination(List<BlockPos> list, TransitResponse ret, double gScore) {
+            this.path = list;
+            this.cachedHash = this.path.hashCode();
+            this.response = ret;
+            this.score = gScore;
         }
 
         public Destination setPathType(Path type) {
@@ -320,9 +323,7 @@ public final class TransporterPathfinder {
 
         @Override
         public int hashCode() {
-            int code = 1;
-            code = 31 * code + path.hashCode();
-            return code;
+            return cachedHash;
         }
 
         @Override
@@ -490,21 +491,20 @@ public final class TransporterPathfinder {
         }
 
         public List<BlockPos> getPath() {
-            List<BlockPos> path = new ArrayList<>();
+            ImmutableList.Builder<BlockPos> path = ImmutableList.builder();
             path.add(finalNode);
             path.addAll(results);
-            return path;
+            return path.build();
         }
 
         public Direction getSide() {
             return side;
         }
 
-        public static class DestChecker {
+        @FunctionalInterface
+        public interface DestChecker {
 
-            public boolean isValid(TransporterStack stack, Direction side, BlockEntity tile) {
-                return false;
-            }
+            boolean isValid(TransporterStack stack, Direction side, BlockEntity tile);
         }
     }
 }

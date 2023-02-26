@@ -1,14 +1,17 @@
 package mekanism.common.content.transporter;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.common.content.network.InventoryNetwork;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.Nullable;
 
 public class PathfinderCache {
 
@@ -23,23 +26,24 @@ public class PathfinderCache {
         }
     }
 
-    public static void addCachedPath(LogisticalTransporterBase start, PathData data, List<BlockPos> positions, double cost) {
+    /**
+     * @apiNote Expects positions to be unmodifiable/immutable (at the very least not mutated after being passed).
+     */
+    public static void addCachedPath(LogisticalTransporterBase start, BlockPos destination, Direction destinationSide, List<BlockPos> positions, double cost) {
+        PathData data = new PathData(start.getTilePos(), destination, destinationSide);
         cachedPaths.computeIfAbsent(start.getTransmitterNetwork().getUUID(), uuid -> new Object2ObjectOpenHashMap<>()).put(data, new CachedPath(positions, cost));
     }
 
+    @Nullable
     public static CachedPath getCache(LogisticalTransporterBase start, BlockPos end, Set<Direction> sides) {
-        CachedPath ret = null;
         UUID uuid = start.getTransmitterNetwork().getUUID();
-        if (cachedPaths.containsKey(uuid)) {
-            Map<PathData, CachedPath> pathMap = cachedPaths.get(uuid);
-            for (Direction side : sides) {
-                CachedPath test = pathMap.get(new PathData(start.getTilePos(), end, side));
-                if (ret == null || (test != null && test.cost() < ret.cost())) {
-                    ret = test;
-                }
-            }
+        Map<PathData, CachedPath> pathMap = cachedPaths.get(uuid);
+        if (pathMap != null) {
+            BlockPos startPos = start.getTilePos();
+            return sides.stream().map(side -> pathMap.get(new PathData(startPos, end, side))).filter(Objects::nonNull)
+                  .min(Comparator.comparingDouble(CachedPath::cost)).orElse(null);
         }
-        return ret;
+        return null;
     }
 
     public static void reset() {
@@ -49,32 +53,6 @@ public class PathfinderCache {
     public record CachedPath(List<BlockPos> path, double cost) {
     }
 
-    public static class PathData {
-
-        private final BlockPos startTransporter;
-        private final BlockPos end;
-        private final Direction endSide;
-        private final int hash;
-
-        public PathData(BlockPos s, BlockPos e, Direction es) {
-            startTransporter = s;
-            end = e;
-            endSide = es;
-            int code = 1;
-            code = 31 * code + startTransporter.hashCode();
-            code = 31 * code + end.hashCode();
-            code = 31 * code + endSide.hashCode();
-            hash = code;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return obj instanceof PathData data && data.startTransporter.equals(startTransporter) && data.end.equals(end) && data.endSide == endSide;
-        }
-
-        @Override
-        public int hashCode() {
-            return hash;
-        }
+    private record PathData(BlockPos startTransporter, BlockPos end, Direction endSide) {
     }
 }
