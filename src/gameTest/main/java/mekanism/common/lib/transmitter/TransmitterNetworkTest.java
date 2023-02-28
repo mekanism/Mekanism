@@ -28,7 +28,7 @@ public class TransmitterNetworkTest {
     private static final int SETUP_TICKS = 5;
 
     @GameTest(template = BASE_PATH + "straight_3c_cable", setupTicks = SETUP_TICKS, batch = "1")
-    public static void reloadIntermediary(GameTestHelper helper) {
+    public static void reload_intermediary(GameTestHelper helper) {
         GameTestUtils.succeedIfAfterReload(helper, new ChunkPos(1, 0), new MatchingNetworkValidator(helper));
     }
 
@@ -37,7 +37,7 @@ public class TransmitterNetworkTest {
      * remaining cause of <a href="https://github.com/mekanism/Mekanism/issues/6356">Issue 6356</a>.
      */
     @GameTest(template = BASE_PATH + "straight_3c_cable", setupTicks = SETUP_TICKS, batch = "2")
-    public static void inaccessibleNotUnloaded(GameTestHelper helper) {
+    public static void inaccessible_not_unloaded(GameTestHelper helper) {
         ChunkPos relativeChunk = new ChunkPos(1, 0);
         BlockPos relativeTargetTransmitter = new BlockPos(0, 1, 0);
         MutableInt lastLevel = new MutableInt();
@@ -46,21 +46,18 @@ public class TransmitterNetworkTest {
         GameTestUtils.succeedIfSequence(helper, sequence -> sequence
               .thenWaitUntil(() -> lastLevel.setValue(GameTestUtils.setChunkLoadLevel(helper, relativeChunk, GameTestUtils.INACCESSIBLE_LEVEL)))
               //Wait 5 ticks in case anything needs more time to process after the chunk unloads
-              .thenIdle(5)
               //Force a rebuild of the network by breaking one transmitter
-              .thenExecute(() -> {
+              .thenExecuteAfter(5, () -> {
                   //Update the last state, so we can set it again afterwards
                   lastState.setValue(helper.getBlockState(relativeTargetTransmitter));
                   helper.setBlock(relativeTargetTransmitter, Blocks.AIR);
               })
               //Wait 5 ticks to ensure it has time to process everything (expected to only take two ticks)
-              .thenIdle(5)
               //Set the block back to what it was before (the transmitter)
-              .thenExecute(() -> helper.setBlock(relativeTargetTransmitter, lastState.getValue()))
+              .thenExecuteAfter(5, () -> helper.setBlock(relativeTargetTransmitter, lastState.getValue()))
               //Wait 5 ticks to ensure it has time to process everything (expected to only take two ticks)
-              .thenIdle(5)
               //Set the chunk level back to what it was before (aka loading it fully again)
-              .thenWaitUntil(() -> GameTestUtils.setChunkLoadLevel(helper, relativeChunk, lastLevel.getValue()))
+              .thenExecuteAfter(5, () -> GameTestUtils.setChunkLoadLevel(helper, relativeChunk, lastLevel.getValue()))
               //Wait 5 ticks in case anything needs more time to process after the chunk loads
               .thenIdle(5)
               .thenWaitUntil(0, new MatchingNetworkValidator(helper))

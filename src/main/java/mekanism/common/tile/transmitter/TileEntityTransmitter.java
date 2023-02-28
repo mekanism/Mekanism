@@ -47,6 +47,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
+import net.minecraftforge.common.util.FakePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -207,6 +208,9 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
 
     @Nullable
     public Direction getSideLookingAt(Player player) {
+        if (player instanceof FakePlayer) {
+            return null;
+        }
         AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(player, getBlockPos(), getCollisionBoxes());
         if (result != null && result.valid()) {
             List<Direction> list = new ArrayList<>(EnumUtils.DIRECTIONS.length);
