@@ -278,6 +278,10 @@ public class Mekanism {
         }
     }
 
+    public static synchronized void addModule(IModModule modModule) {
+        modulesLoaded.add(modModule);
+    }
+
     public static PacketHandler packetHandler() {
         return instance.packetHandler;
     }
