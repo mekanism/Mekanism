@@ -51,7 +51,7 @@ public class MekanismAdditions implements IModModule {
     public static VoiceServerManager voiceManager;
 
     public MekanismAdditions() {
-        Mekanism.modulesLoaded.add(instance = this);
+        Mekanism.addModule(instance = this);
         MekanismAdditionsConfig.registerConfigs(ModLoadingContext.get());
         MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopping);

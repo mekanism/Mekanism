@@ -63,7 +63,7 @@ public class MekanismGenerators implements IModModule {
     public static final MultiblockManager<FusionReactorMultiblockData> fusionReactorManager = new MultiblockManager<>("fusionReactor", FusionReactorCache::new, FusionReactorValidator::new);
 
     public MekanismGenerators() {
-        Mekanism.modulesLoaded.add(instance = this);
+        Mekanism.addModule(instance = this);
         MekanismGeneratorsConfig.registerConfigs(ModLoadingContext.get());
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
