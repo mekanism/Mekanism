@@ -54,6 +54,10 @@ public class PacketUpdateModuleSettings implements IMekanismPacket {
                     List<ModuleConfigItem<?>> configItems = module.getConfigItems();
                     if (dataIndex < configItems.size()) {
                         setValue(configItems.get(dataIndex));
+                        // This would be the best place to put this if we want it to sync changes to the current mode on the server
+                        // if (stack.getItem() instanceof ISaveModeItem saveModeItem) {
+                        //     saveModeItem.saveMode(stack, ItemDataUtils.getInt(stack, NBTConstants.MODE));
+                        // }
                     }
                 }
             }
