@@ -1,6 +1,6 @@
 #modloaded jeitweaker
 
-import mods.jei.JEI;
+import mods.jeitweaker.Jei;
 
 //If JEITweaker is installed, Mekanism will add integration with it that allows for hiding our chemicals, and adding descriptions to them.
 
@@ -12,21 +12,21 @@ import mods.jei.JEI;
  * 4) Hides clean copper slurry
 */
 
-//JEI.hideIngredient(stack as ICrTGasStack)
-//JEI.hideIngredient(stack as ICrTInfusionStack)
-//JEI.hideIngredient(stack as ICrTPigmentStack)
-//JEI.hideIngredient(stack as ICrTSlurryStack)
+//Jei.hideIngredient(stack as ICrTGasStack)
+//Jei.hideIngredient(stack as ICrTInfusionStack)
+//Jei.hideIngredient(stack as ICrTPigmentStack)
+//Jei.hideIngredient(stack as ICrTSlurryStack)
 
-JEI.hideIngredient(<gas:mekanism:brine> * 1000);
-JEI.hideIngredient(<infuse_type:mekanism:bio> * 1000);
-JEI.hideIngredient(<pigment:mekanism:dark_red> * 1000);
-JEI.hideIngredient(<slurry:mekanism:clean_gold> * 1000);
+Jei.hideIngredient(<gas:mekanism:brine> * 1000);
+Jei.hideIngredient(<infuse_type:mekanism:bio> * 1000);
+Jei.hideIngredient(<pigment:mekanism:dark_red> * 1000);
+Jei.hideIngredient(<slurry:mekanism:clean_gold> * 1000);
 
 //Adds a description to the passed in chemical. This example adds some basic text to JEI's information tab when looking at Hydrogen.
 
-//JEI.addDescription(stack as ICrTGasStack, Component...)
-//JEI.addDescription(stack as ICrTInfusionStack, Component...)
-//JEI.addDescription(stack as ICrTPigmentStack, Component...)
-//JEI.addDescription(stack as ICrTSlurryStack, Component...)
+//Jei.addIngredientInformation(stack as ICrTGasStack, Component...)
+//Jei.addIngredientInformation(stack as ICrTInfusionStack, Component...)
+//Jei.addIngredientInformation(stack as ICrTPigmentStack, Component...)
+//Jei.addIngredientInformation(stack as ICrTSlurryStack, Component...)
 
-JEI.addDescription(<gas:mekanism:hydrogen> * 1000, "Hydrogen is a basic gas that is produced in an electrolytic separator");
+Jei.addIngredientInformation(<gas:mekanism:hydrogen> * 1000, "Hydrogen is a basic gas that is produced in an electrolytic separator");
