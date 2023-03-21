@@ -3,11 +3,14 @@
   "key": {
     "#": {
       "tag": "forge:nuggets/osmium"
+    },
+    "P": {
+      "item": "mekanism:nugget_osmium"
     }
   },
   "pattern": [
     "###",
-    "###",
+    "#P#",
     "###"
   ],
   "result": {

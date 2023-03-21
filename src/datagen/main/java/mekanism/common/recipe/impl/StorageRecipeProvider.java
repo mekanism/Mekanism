@@ -18,6 +18,7 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 
 class StorageRecipeProvider implements ISubRecipeProvider {
 
@@ -43,11 +44,11 @@ class StorageRecipeProvider implements ISubRecipeProvider {
 
     private void addStorageBlockRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "storage_blocks/";
-        addStorageBlockRecipe(consumer, MekanismBlocks.BRONZE_BLOCK, MekanismTags.Items.INGOTS_BRONZE, basePath);
-        addStorageBlockRecipe(consumer, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE, basePath);
-        addStorageBlockRecipe(consumer, MekanismBlocks.REFINED_OBSIDIAN_BLOCK, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN, basePath);
-        addStorageBlockRecipe(consumer, MekanismBlocks.STEEL_BLOCK, MekanismTags.Items.INGOTS_STEEL, basePath);
-        addStorageBlockRecipe(consumer, MekanismBlocks.FLUORITE_BLOCK, MekanismTags.Items.GEMS_FLUORITE, basePath);
+        addStorageBlockRecipe(consumer, MekanismBlocks.BRONZE_BLOCK, MekanismItems.BRONZE_INGOT, MekanismTags.Items.INGOTS_BRONZE, basePath);
+        addStorageBlockRecipe(consumer, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismItems.REFINED_GLOWSTONE_INGOT, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE, basePath);
+        addStorageBlockRecipe(consumer, MekanismBlocks.REFINED_OBSIDIAN_BLOCK, MekanismItems.REFINED_OBSIDIAN_INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN, basePath);
+        addStorageBlockRecipe(consumer, MekanismBlocks.STEEL_BLOCK, MekanismItems.STEEL_INGOT, MekanismTags.Items.INGOTS_STEEL, basePath);
+        addStorageBlockRecipe(consumer, MekanismBlocks.FLUORITE_BLOCK, MekanismItems.FLUORITE_GEM, MekanismTags.Items.GEMS_FLUORITE, basePath);
         //Charcoal
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHARCOAL_BLOCK)
               .pattern(MekanismRecipeProvider.STORAGE_PATTERN)
@@ -62,9 +63,11 @@ class StorageRecipeProvider implements ISubRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "salt"));
     }
 
-    private void addStorageBlockRecipe(Consumer<FinishedRecipe> consumer, BlockRegistryObject<BlockResource, ?> block, TagKey<Item> ingotTag, String basePath) {
+    private void addStorageBlockRecipe(Consumer<FinishedRecipe> consumer, BlockRegistryObject<BlockResource, ?> block, ItemLike ingot, TagKey<Item> ingotTag,
+          String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(block)
-              .pattern(MekanismRecipeProvider.STORAGE_PATTERN)
+              .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
+              .key(Pattern.PREVIOUS, ingot)
               .key(Pattern.CONSTANT, ingotTag)
               .build(consumer, Mekanism.rl(basePath + block.getBlock().getResourceInfo().getRegistrySuffix()));
     }

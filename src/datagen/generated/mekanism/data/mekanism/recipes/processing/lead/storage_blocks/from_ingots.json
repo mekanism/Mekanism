@@ -3,11 +3,14 @@
   "key": {
     "#": {
       "tag": "forge:ingots/lead"
+    },
+    "P": {
+      "item": "mekanism:ingot_lead"
     }
   },
   "pattern": [
     "###",
-    "###",
+    "#P#",
     "###"
   ],
   "result": {

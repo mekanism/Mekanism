@@ -3,11 +3,14 @@
   "key": {
     "#": {
       "tag": "forge:nuggets/tin"
+    },
+    "P": {
+      "item": "mekanism:nugget_tin"
     }
   },
   "pattern": [
     "###",
-    "###",
+    "#P#",
     "###"
   ],
   "result": {

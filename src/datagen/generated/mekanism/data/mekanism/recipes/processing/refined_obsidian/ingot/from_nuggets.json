@@ -3,11 +3,14 @@
   "key": {
     "#": {
       "tag": "forge:nuggets/refined_obsidian"
+    },
+    "P": {
+      "item": "mekanism:nugget_refined_obsidian"
     }
   },
   "pattern": [
     "###",
-    "###",
+    "#P#",
     "###"
   ],
   "result": {

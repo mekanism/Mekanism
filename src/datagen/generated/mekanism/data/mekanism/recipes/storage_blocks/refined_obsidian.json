@@ -3,11 +3,14 @@
   "key": {
     "#": {
       "tag": "forge:ingots/refined_obsidian"
+    },
+    "P": {
+      "item": "mekanism:ingot_refined_obsidian"
     }
   },
   "pattern": [
     "###",
-    "###",
+    "#P#",
     "###"
   ],
   "result": {

@@ -161,12 +161,14 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
             ExtendedShapelessRecipeBuilder.shapelessRecipe(ingot, 9).addIngredient(blockTag).build(consumer, Mekanism.rl(basePath + "ingot/from_block"));
             // to block
             ExtendedShapedRecipeBuilder.shapedRecipe(block)
-                  .pattern(MekanismRecipeProvider.STORAGE_PATTERN)
+                  .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
+                  .key(Pattern.PREVIOUS, ingot)
                   .key(Pattern.CONSTANT, ingotTag)
                   .build(consumer, Mekanism.rl(basePath + "storage_blocks/from_ingots"));
             // from nuggets
             ExtendedShapedRecipeBuilder.shapedRecipe(ingot)
-                  .pattern(MekanismRecipeProvider.STORAGE_PATTERN)
+                  .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
+                  .key(Pattern.PREVIOUS, nugget)
                   .key(Pattern.CONSTANT, nuggetTag)
                   .build(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
             // to nuggets
@@ -183,7 +185,8 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
             ExtendedShapelessRecipeBuilder.shapelessRecipe(raw, 9).addIngredient(rawBlockTag).build(consumer, Mekanism.rl(basePath + "raw/from_raw_block"));
             // raw to raw block
             ExtendedShapedRecipeBuilder.shapedRecipe(rawBlock)
-                  .pattern(MekanismRecipeProvider.STORAGE_PATTERN)
+                  .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
+                  .key(Pattern.PREVIOUS, raw)
                   .key(Pattern.CONSTANT, rawTag)
                   .build(consumer, Mekanism.rl(basePath + "raw_storage_blocks/from_raw"));
         }
@@ -447,7 +450,8 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "ingot/from_infusing"));
         //from nuggets
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.BRONZE_INGOT)
-              .pattern(MekanismRecipeProvider.STORAGE_PATTERN)
+              .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
+              .key(Pattern.PREVIOUS, MekanismItems.BRONZE_NUGGET)
               .key(Pattern.CONSTANT, MekanismTags.Items.NUGGETS_BRONZE)
               .build(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
     }
@@ -487,7 +491,8 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "ingot/from_dust"));
         //from nuggets
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.REFINED_GLOWSTONE_INGOT)
-              .pattern(MekanismRecipeProvider.STORAGE_PATTERN)
+              .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
+              .key(Pattern.PREVIOUS, MekanismItems.REFINED_GLOWSTONE_NUGGET)
               .key(Pattern.CONSTANT, MekanismTags.Items.NUGGETS_REFINED_GLOWSTONE)
               .build(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
         //Ingot -> dust
@@ -523,7 +528,8 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "ingot/from_dust"));
         //from nuggets
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.REFINED_OBSIDIAN_INGOT)
-              .pattern(MekanismRecipeProvider.STORAGE_PATTERN)
+              .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
+              .key(Pattern.PREVIOUS, MekanismItems.REFINED_OBSIDIAN_NUGGET)
               .key(Pattern.CONSTANT, MekanismTags.Items.NUGGETS_REFINED_OBSIDIAN)
               .build(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
     }
@@ -539,7 +545,8 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               Mekanism.rl(basePath + "ingot/from_dust_blasting"), Mekanism.rl(basePath + "ingot/from_dust_smelting"));
         //from nuggets
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.STEEL_INGOT)
-              .pattern(MekanismRecipeProvider.STORAGE_PATTERN)
+              .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
+              .key(Pattern.PREVIOUS, MekanismItems.STEEL_NUGGET)
               .key(Pattern.CONSTANT, MekanismTags.Items.NUGGETS_STEEL)
               .build(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
         //Enriched iron -> dust

@@ -3,11 +3,14 @@
   "key": {
     "#": {
       "tag": "forge:ingots/tin"
+    },
+    "P": {
+      "item": "mekanism:ingot_tin"
     }
   },
   "pattern": [
     "###",
-    "###",
+    "#P#",
     "###"
   ],
   "result": {
