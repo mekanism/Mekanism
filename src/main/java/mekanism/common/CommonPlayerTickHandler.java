@@ -128,7 +128,7 @@ public class CommonPlayerTickHandler {
                 JetpackMode mode = IJetpackItem.getPlayerJetpackMode(player, primaryMode, () -> Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND));
                 if (mode != JetpackMode.DISABLED) {
                     if (IJetpackItem.handleJetpackMotion(player, mode, () -> Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND))) {
-                        player.fallDistance = 0.0F;
+                        player.resetFallDistance();
                         if (player instanceof ServerPlayer serverPlayer) {
                             serverPlayer.connection.aboveGroundTickCount = 0;
                         }
