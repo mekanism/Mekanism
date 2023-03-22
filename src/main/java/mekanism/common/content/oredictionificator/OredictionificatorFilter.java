@@ -198,7 +198,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), filterLocation);
+        return Objects.hash(super.hashCode(), filterLocation, selectedOutput);
     }
 
     @Override
@@ -208,7 +208,8 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
         } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
             return false;
         }
-        return Objects.equals(filterLocation, ((OredictionificatorFilter<?, ?, ?>) o).filterLocation);
+        OredictionificatorFilter<?, ?, ?> other = (OredictionificatorFilter<?, ?, ?>) o;
+        return Objects.equals(filterLocation, other.filterLocation) && selectedOutput == other.selectedOutput;
     }
 
     public abstract TYPE getResultElement();
