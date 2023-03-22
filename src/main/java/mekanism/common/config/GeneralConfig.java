@@ -99,6 +99,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     //Pump
     public final CachedIntValue maxPumpRange;
     public final CachedBooleanValue pumpWaterSources;
+    public final CachedIntValue pumpHeavyWaterAmount;
     public final CachedIntValue maxPlenisherNodes;
     //Quantum Entangloporter
     public final CachedFloatingLongValue entangloporterEnergyBuffer;
@@ -260,6 +261,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("maxPumpRange", 80, 1, 512));
         pumpWaterSources = CachedBooleanValue.wrap(this, builder.comment("If enabled makes Water and Heavy Water blocks be removed from the world on pump.")
               .define("pumpWaterSources", false));
+        pumpHeavyWaterAmount = CachedIntValue.wrap(this, builder.comment("mB of Heavy Water that is extracted per block of Water by the Electric Pump with a Filter Upgrade.")
+              .defineInRange("pumpHeavyWaterAmount", FluidType.BUCKET_VOLUME / 100, 1, FluidType.BUCKET_VOLUME));
         maxPlenisherNodes = CachedIntValue.wrap(this, builder.comment("Fluidic Plenisher stops after this many blocks.")
               .defineInRange("maxPlenisherNodes", 4_000, 1, 1_000_000));
         builder.pop();
