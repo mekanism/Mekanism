@@ -7,6 +7,8 @@ import mekanism.MergeJars
 import net.minecraftforge.gradle.common.util.RunConfig
 import net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace
 
+import java.util.function.Consumer
+
 plugins {
     id 'org.ajoberstar.grgit' version '5.0.0'
     id "com.matthewprenger.cursegradle" version '1.4.0'
@@ -340,74 +342,35 @@ def setupRunConfig(RunConfig runConfig, boolean supportsGameTests, String direct
     }
 }
 
-repositories {
-    maven {
-        name 'CraftTweaker'
-        url "https://maven.blamejared.com"
-        content {
-            includeGroupByRegex 'com\\.blamejared.*'
-            includeGroup 'mezz.jei'
+void exclusiveRepo(RepositoryHandler handler, String url, String... groups) {
+    exclusiveRepo(handler, url, filter -> {
+        for (def group : groups) {
+            filter.includeGroup(group)
         }
-    }
-    maven {
-        name 'curios'
-        url "https://maven.theillusivec4.top/"
-        content {
-            includeGroup 'top.theillusivec4.curios'
-        }
-    }
-    maven {
-        name 'tterrag'
-        url 'https://maven.tterrag.com/'
-        content {
-            includeGroup 'team.chisel.ctm'
-        }
-    }
-    maven {
-        name 'ComputerCraft'
-        url "https://squiddev.cc/maven/"
-        content {
-            includeGroup 'org.squiddev'
-        }
-    }
-    maven {
-        name 'CurseMaven'
-        url 'https://www.cursemaven.com'
-        content {
-            includeGroup 'curse.maven'
-        }
-    }
-    maven {
-        name 'Modmaven'
-        url 'https://modmaven.dev/'
-        content {
-            includeGroup 'appeng'
-            includeGroup 'mcjty.theoneprobe'
-        }
-    }
+    })
+}
 
-    configureEach {//ForgeGradle adds these in an afterEvaluate, so we need to catch them as they're added and exclude mod artifacts/groups
-        if (it instanceof MavenArtifactRepository) {
-            def url = it.url.toString()
-            if (url == 'https://maven.minecraftforge.net/' || url == 'https://libraries.minecraft.net/' || url == 'https://repo.maven.apache.org/maven2/') {
-                try {
-                    it.content {
-                        excludeGroup 'curse.maven'
-                        excludeGroup 'mezz.jei'
-                        excludeGroup 'mcjty.theoneprobe'
-                        excludeGroup 'team.chisel.ctm'
-                        excludeGroup 'appeng'
-                        excludeGroupByRegex 'com\\.blamejared.*'
-                        excludeGroup 'org.squiddev'
-                        excludeGroup 'top.theillusivec4.curios'
-                    }
-                    println("Adding exclusions to ${url}")
-                } catch (Exception ignored) {
-                    //oh well
-                }
-            }
-        }
+//Note: This cannot be static so that fg.repository can be properly accessed
+@SuppressWarnings('GrMethodMayBeStatic')
+void exclusiveRepo(RepositoryHandler handler, String url, Consumer<InclusiveRepositoryContentDescriptor> filterSetup) {
+    handler.exclusiveContent {
+        it.forRepositories(handler.maven {
+            setUrl(url)
+        }, fg.repository)//Add FG's repo so we make sure we are able to then find the mapped deps
+        it.filter { f -> filterSetup.accept(f) }
     }
+}
+
+repositories { RepositoryHandler handler ->
+    exclusiveRepo(handler, 'https://maven.blamejared.com', filter -> {
+        filter.includeGroupByRegex 'com\\.blamejared.*'
+        filter.includeGroup 'mezz.jei'
+    })
+    exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
+    exclusiveRepo(handler, 'https://maven.tterrag.com/', 'team.chisel.ctm')
+    exclusiveRepo(handler, 'https://squiddev.cc/maven/', 'org.squiddev')
+    exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
+    exclusiveRepo(handler, 'https://modmaven.dev/', 'appeng', 'mcjty.theoneprobe')
 }
 
 test {
