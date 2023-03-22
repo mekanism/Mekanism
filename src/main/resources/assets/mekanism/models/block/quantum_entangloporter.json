@@ -510,30 +510,30 @@
 			]
 		},
 		"core": {
-			"loader": "mekanism:rotated",
-			"rotation": [45, 0, 45],
-			"model": {
-				"render_type": "minecraft:translucent",
-				"textures": {
-					"0": "mekanism:block/models/quantum_entangloporter"
-				},
-				"elements": [
-					{
-						"name": "core_led",
-						"from": [5.5, 5.5, 5.5],
-						"to": [10.5, 10.5, 10.5],
-						"shade": false,
-						"faces": {
-							"north": {"uv": [15, 15, 16, 16], "texture": "#0", "emissivity": 15},
-							"east": {"uv": [15, 15, 16, 16], "texture": "#0", "emissivity": 15},
-							"south": {"uv": [15, 15, 16, 16], "texture": "#0", "emissivity": 15},
-							"west": {"uv": [15, 15, 16, 16], "texture": "#0", "emissivity": 15},
-							"up": {"uv": [15, 15, 16, 16], "texture": "#0", "emissivity": 15},
-							"down": {"uv": [15, 15, 16, 16], "texture": "#0", "emissivity": 15}
-						}
+			"transform": {
+				"origin": "center",
+				"rotation": [45, 0, -45]
+			},
+			"render_type": "minecraft:translucent",
+			"textures": {
+				"0": "mekanism:block/models/quantum_entangloporter"
+			},
+			"elements": [
+				{
+					"name": "core_led",
+					"from": [5.5, 5.5, 5.5],
+					"to": [10.5, 10.5, 10.5],
+					"shade": false,
+					"faces": {
+						"north": {"uv": [15, 15, 16, 16], "texture": "#0", "emissivity": 15},
+						"east": {"uv": [15, 15, 16, 16], "texture": "#0", "emissivity": 15},
+						"south": {"uv": [15, 15, 16, 16], "texture": "#0", "emissivity": 15},
+						"west": {"uv": [15, 15, 16, 16], "texture": "#0", "emissivity": 15},
+						"up": {"uv": [15, 15, 16, 16], "texture": "#0", "emissivity": 15},
+						"down": {"uv": [15, 15, 16, 16], "texture": "#0", "emissivity": 15}
 					}
-				]
-			}
+				}
+			]
 		}
 	}
 }

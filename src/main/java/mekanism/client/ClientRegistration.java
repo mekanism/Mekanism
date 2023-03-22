@@ -78,7 +78,6 @@ import mekanism.client.gui.robit.GuiRobitMain;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.gui.robit.GuiRobitSmelting;
 import mekanism.client.key.MekanismKeyHandler;
-import mekanism.client.model.CustomRotationModel;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.model.ModelArmoredFreeRunners;
 import mekanism.client.model.ModelArmoredJetpack;
@@ -453,7 +452,6 @@ public class ClientRegistration {
     public static void registerModelLoaders(RegisterGeometryLoaders event) {
         event.register("robit", RobitModel.Loader.INSTANCE);
         event.register("energy_cube", EnergyCubeModelLoader.INSTANCE);
-        event.register("rotated", CustomRotationModel.Loader.INSTANCE);
         event.register("transmitter", TransmitterLoader.INSTANCE);
     }
 
