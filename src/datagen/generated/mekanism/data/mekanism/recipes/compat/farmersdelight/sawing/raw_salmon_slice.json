@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "farmersdelight"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "minecraft:salmon"
+    }
+  },
+  "mainOutput": {
+    "count": 2,
+    "item": "farmersdelight:salmon_slice"
+  },
+  "secondaryChance": 1.0,
+  "secondaryOutput": {
+    "item": "minecraft:bone_meal"
+  }
+}

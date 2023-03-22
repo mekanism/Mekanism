@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "farmersdelight"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "farmersdelight:smoked_ham"
+    }
+  },
+  "mainOutput": {
+    "count": 2,
+    "item": "minecraft:cooked_porkchop"
+  },
+  "secondaryChance": 1.0,
+  "secondaryOutput": {
+    "item": "minecraft:bone"
+  }
+}

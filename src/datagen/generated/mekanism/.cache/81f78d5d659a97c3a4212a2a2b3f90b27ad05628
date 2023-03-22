@@ -1,4 +1,4 @@
-// 1.19.2	2023-03-21T10:42:00.5170457	Recipes: mekanism
+// 1.19.2	2023-03-22T09:45:32.653017	Recipes: mekanism
 76d04fb8c6d3843742c65aa81fc27c7baf08a732 data/mekanism/recipes/antiprotonic_nucleosynthesizer.json
 c55e764416488800531198c1a7605739ece64535 data/mekanism/recipes/atomic_disassembler.json
 b8659417402b744db4a14e2d085d5111877ab4a4 data/mekanism/recipes/bin/advanced.json
@@ -575,6 +575,18 @@ aa8886b21d2572bc01da58c018fb00baee69ea04 data/mekanism/recipes/compat/byg/sawing
 c717be95c0cbbc413b53ce42b1e0a1bf1d57f7c8 data/mekanism/recipes/compat/byg/sawing/trapdoor/willow.json
 cabd18a799591b144ac197e1610fda44a0b41f4e data/mekanism/recipes/compat/byg/sawing/trapdoor/witch_hazel.json
 4ea4af6520728e3db0da7c7793daee7f1543b8c9 data/mekanism/recipes/compat/byg/sawing/trapdoor/zelkova.json
+4383909da9bf34e25924f87a4a189f3237a731ea data/mekanism/recipes/compat/farmersdelight/sawing/chicken_cuts.json
+7d9b6bbcfd81421c5ac642736da9c1636ec8dbab data/mekanism/recipes/compat/farmersdelight/sawing/cod_slice.json
+999e8a3086ee511033d84219a650f5df6f936101 data/mekanism/recipes/compat/farmersdelight/sawing/ham_processing.json
+cf2aa883917470829b6f7241142c03984493f228 data/mekanism/recipes/compat/farmersdelight/sawing/minced_beef.json
+8adefd8fbd1b16fd4ed43b5f900971580b2d87c2 data/mekanism/recipes/compat/farmersdelight/sawing/mutton_chops.json
+55dc9b5589d3a038954514eda1df68c10c584e48 data/mekanism/recipes/compat/farmersdelight/sawing/raw_bacon.json
+1210456f6d0a0672c373eb139a62b1125e4a0ef9 data/mekanism/recipes/compat/farmersdelight/sawing/raw_chicken_cuts.json
+8c0a07cfa25bce71ce9552abae26a89db33636ba data/mekanism/recipes/compat/farmersdelight/sawing/raw_cod_slice.json
+4394087f3a5aa81311193e83030de90cf1a0b676 data/mekanism/recipes/compat/farmersdelight/sawing/raw_mutton_chops.json
+ffa024ca85fbf411f55430f72c5ff0a279ea9f3b data/mekanism/recipes/compat/farmersdelight/sawing/raw_salmon_slice.json
+cc52cd36531f3938f02746ec646cce6e5b575923 data/mekanism/recipes/compat/farmersdelight/sawing/salmon_slice.json
+cf1168b565a1729e76d894cdf9dda083c57f3f4a data/mekanism/recipes/compat/farmersdelight/sawing/smoked_ham_processing.json
 b1888b290bfd828c6d5eafe7d0f33cf4d3c21aa2 data/mekanism/recipes/compat/ilikewoodxbiomesoplenty/barrel/cherry.json
 0c6755a63b11b91d077321d5082c60a6c3652133 data/mekanism/recipes/compat/ilikewoodxbiomesoplenty/barrel/dead.json
 6ed0b0cb65c456eab435a6a422959108c734be50 data/mekanism/recipes/compat/ilikewoodxbiomesoplenty/barrel/fir.json

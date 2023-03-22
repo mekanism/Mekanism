@@ -426,6 +426,7 @@ dependencies {
     datagenMainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
     datagenMainRuntimeOnly fg.deobf("curse.maven:terrablender-563928:${terrablender_id}")
     datagenMainImplementation fg.deobf("curse.maven:biomes-youll-go-247560:${byg_id}")
+    datagenMainImplementation fg.deobf("curse.maven:farmers-delight-398521:${farmers_delight_id}")
     datagenMainImplementation fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
     datagenMainImplementation fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
     datagenMainImplementation fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
@@ -734,6 +735,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     optionalDependency "crafttweaker"
                     optionalDependency "ctm"
                     optionalDependency "curios"
+                    optionalDependency "farmers-delight"
                     optionalDependency "female-gender-forge"
                     optionalDependency "flux-networks"
                     optionalDependency "i-like-wood"
@@ -847,6 +849,7 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
         getDependencies().value([
             new ModDependency("XxWD5pD3", "optional"),//AE2
             new ModDependency("gu7yAYhd", "optional"),//CC: Tweaked
+            new ModDependency("R2OftAxM", "optional"),//Farmer's Delight
             new ModDependency("nvQzSEkH", "optional"),//Jade
             new ModDependency("uE1WpIAk", "optional"),//Oh the Biomes You'll Go
             new ModDependency("bcOsQHnC", "optional"),//Wildfire's Female Gender Mod
