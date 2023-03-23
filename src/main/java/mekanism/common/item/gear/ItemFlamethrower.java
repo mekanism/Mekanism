@@ -84,7 +84,7 @@ public class ItemFlamethrower extends CapabilityItem implements IItemHUDProvider
     public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
         if (allowedIn(group)) {
-            items.add(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismConfig.gear.flamethrowerMaxGas.get(), MekanismGases.HYDROGEN));
+            items.add(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismConfig.gear.flamethrowerMaxGas, MekanismGases.HYDROGEN));
         }
     }
 
@@ -94,6 +94,11 @@ public class ItemFlamethrower extends CapabilityItem implements IItemHUDProvider
 
     public void setMode(ItemStack stack, FlamethrowerMode mode) {
         ItemDataUtils.setInt(stack, NBTConstants.MODE, mode.ordinal());
+    }
+
+    @Override
+    protected boolean areCapabilityConfigsLoaded() {
+        return super.areCapabilityConfigsLoaded() && MekanismConfig.gear.isLoaded();
     }
 
     @Override

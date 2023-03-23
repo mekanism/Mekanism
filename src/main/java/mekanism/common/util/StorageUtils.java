@@ -30,6 +30,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
+import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
@@ -232,6 +233,10 @@ public class StorageUtils {
         BasicEnergyContainer container = BasicEnergyContainer.create(FloatingLong.MAX_VALUE, null);
         ItemDataUtils.readContainers(stack, NBTConstants.ENERGY_CONTAINERS, Collections.singletonList(container));
         return container.getEnergy();
+    }
+
+    public static ItemStack getFilledEnergyVariant(ItemStack toFill, CachedFloatingLongValue capacity) {
+        return getFilledEnergyVariant(toFill, capacity.getOrDefault());
     }
 
     public static ItemStack getFilledEnergyVariant(ItemStack toFill, FloatingLong capacity) {

@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismgenerators.burn_the_gas.description": "Crea un Generatore a Gas per bruciare l'Etilene",
+  "advancements.mekanismgenerators.burn_the_gas.title": "Brucia il Gas",
+  "advancements.mekanismgenerators.heat_generator.description": "Crea un Generatore di Calore per iniziare a fare energia",
+  "advancements.mekanismgenerators.heat_generator.title": "Il Tuo Primo Generatore",
+  "advancements.mekanismgenerators.solar_generator.description": "Energia diurna rinnovabile",
+  "advancements.mekanismgenerators.solar_generator.title": "Potenza del Sole",
+  "advancements.mekanismgenerators.wind_generator.description": "Speriamo che ci sia del vento nelle vicinanze",
+  "advancements.mekanismgenerators.wind_generator.title": "Spin Baby Spin",
   "block.mekanismgenerators.advanced_solar_generator": "Generatore Solare Avanzato",
   "block.mekanismgenerators.bio_generator": "Bio-Generatore",
   "block.mekanismgenerators.bioethanol": "Bioetanolo",

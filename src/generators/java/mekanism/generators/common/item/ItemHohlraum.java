@@ -75,8 +75,13 @@ public class ItemHohlraum extends CapabilityItem {
     public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
         if (allowedIn(group)) {
-            items.add(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismGeneratorsConfig.generators.hohlraumMaxGas.get(), GeneratorsGases.FUSION_FUEL));
+            items.add(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismGeneratorsConfig.generators.hohlraumMaxGas, GeneratorsGases.FUSION_FUEL));
         }
+    }
+
+    @Override
+    protected boolean areCapabilityConfigsLoaded() {
+        return super.areCapabilityConfigsLoaded() && MekanismGeneratorsConfig.generators.isLoaded();
     }
 
     @Override

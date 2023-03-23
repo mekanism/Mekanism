@@ -58,7 +58,7 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
         super.fillItemCategory(group, items);
         if (allowedIn(group)) {
             ChemicalTankTier tier = Attribute.getTier(getBlock(), ChemicalTankTier.class);
-            if (tier == ChemicalTankTier.CREATIVE) {
+            if (tier == ChemicalTankTier.CREATIVE && MekanismConfig.general.isLoaded()) {
                 long capacity = tier.getStorage();
                 fillItemGroup(MekanismConfig.general.prefilledGasTanks, MekanismAPI.gasRegistry(), items, capacity);
                 fillItemGroup(MekanismConfig.general.prefilledInfusionTanks, MekanismAPI.infuseTypeRegistry(), items, capacity);
@@ -101,6 +101,6 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
     @Override
     protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
         super.gatherCapabilities(capabilities, stack, nbt);
-        capabilities.add(ChemicalTankContentsHandler.create(Attribute.getTier(getBlock(), ChemicalTankTier.class)));
+        capabilities.add(ChemicalTankContentsHandler.create(getTier()));
     }
 }

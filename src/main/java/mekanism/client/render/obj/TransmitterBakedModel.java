@@ -80,7 +80,7 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
           Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
         //We define our baked variant to be how the item is. As we should always have model data when we have a state
         super(internal.bake(new VisibleModelConfiguration(owner, Arrays.stream(EnumUtils.DIRECTIONS).map(side ->
-              getPartName(side, side.getAxis().isVertical() ? ConnectionType.NORMAL : ConnectionType.NONE)).toList()), bakery, spriteGetter,
+                    getPartName(side, side.getAxis().isVertical() ? ConnectionType.NORMAL : ConnectionType.NONE)).toList()), bakery, spriteGetter,
               modelTransform, overrides, modelLocation));
         this.owner = owner;
         this.bakery = bakery;
@@ -157,7 +157,7 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
                     //If the part should be rotated, then we need to use a custom IModelTransform
                     Vector3f vecForDirection = new Vector3f(Vec3.atLowerCornerOf(side.getNormal()));
                     vecForDirection.mul(-1);
-                    Transformation matrix = new Transformation(null, new Quaternion(vecForDirection,  iconStatus.getAngle(), true), null, null);
+                    Transformation matrix = new Transformation(null, new Quaternion(vecForDirection, iconStatus.getAngle(), true), null, null);
                     transform = new SimpleModelState(transform.getRotation().compose(matrix), transform.isUvLocked());
                 }
                 BakedModel bakedModel = model.bake(new TransmitterModelConfiguration(owner, part, iconStatus), bakery, spriteGetter, transform, overrides, modelLocation);

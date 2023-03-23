@@ -38,11 +38,11 @@ public enum TransporterTier implements ITier {
     }
 
     public int getPullAmount() {
-        return pullReference == null ? getBasePull() : pullReference.get();
+        return pullReference == null ? getBasePull() : pullReference.getOrDefault();
     }
 
     public int getSpeed() {
-        return speedReference == null ? getBaseSpeed() : speedReference.get();
+        return speedReference == null ? getBaseSpeed() : speedReference.getOrDefault();
     }
 
     public int getBasePull() {

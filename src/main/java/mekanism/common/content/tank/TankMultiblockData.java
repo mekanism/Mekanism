@@ -138,9 +138,11 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
 
     @Override
     public void setVolume(int volume) {
-        super.setVolume(volume);
-        tankCapacity = getVolume() * MekanismConfig.general.dynamicTankFluidPerTank.get();
-        chemicalTankCapacity = getVolume() * MekanismConfig.general.dynamicTankChemicalPerTank.get();
+        if (getVolume() != volume) {
+            super.setVolume(volume);
+            tankCapacity = volume * MekanismConfig.general.dynamicTankFluidPerTank.get();
+            chemicalTankCapacity = volume * MekanismConfig.general.dynamicTankChemicalPerTank.get();
+        }
     }
 
     @Override

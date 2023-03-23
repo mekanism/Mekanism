@@ -15,6 +15,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IModeItem;
@@ -51,7 +52,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     }
 
     @Override
-    protected LongSupplier getMaxGas() {
+    protected CachedLongValue getMaxGas() {
         return MekanismConfig.gear.jetpackMaxGas;
     }
 

@@ -1,5 +1,6 @@
 package mekanism.common.content.filter;
 
+import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.miner.MinerItemStackFilter;
 import mekanism.common.content.miner.MinerMaterialFilter;
@@ -21,45 +22,77 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements IFilter<FILTER> {
 
+    //Enabled by default
+    private boolean enabled = true;
+
     //Mark it as abstract, so it does not think clone is being implemented by Object
     @Override
     public abstract FILTER clone();
 
     @Override
-    public abstract int hashCode();
+    public int hashCode() {
+        return Objects.hash(enabled);
+    }
 
     @Override
-    public abstract boolean equals(Object o);
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        //TODO: Eventually it might be nice to go back to having some way to not allow duplicate filters that are duplicates except for a few states
+        // for example different enabled state or different allow default state for sorter filters
+        BaseFilter<?> other = (BaseFilter<?>) o;
+        return enabled == other.enabled;
+    }
+
+    @Override
+    public final boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public final void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     @Override
     public CompoundTag write(CompoundTag nbtTags) {
         NBTUtils.writeEnum(nbtTags, NBTConstants.TYPE, getFilterType());
+        nbtTags.putBoolean(NBTConstants.ENABLED, isEnabled());
         return nbtTags;
+    }
+
+    @Override
+    public void read(CompoundTag nbtTags) {
+        NBTUtils.setBooleanIfPresentElse(nbtTags, NBTConstants.ENABLED, true, this::setEnabled);
     }
 
     @Override
     public void write(FriendlyByteBuf buffer) {
         buffer.writeEnum(getFilterType());
+        buffer.writeBoolean(isEnabled());
+    }
+
+    @Override
+    public void read(FriendlyByteBuf buffer) {
+        setEnabled(buffer.readBoolean());
     }
 
     @Nullable
     public static IFilter<?> readFromNBT(CompoundTag nbt) {
         if (nbt.contains(NBTConstants.TYPE, Tag.TAG_INT)) {
             IFilter<?> filter = fromType(FilterType.byIndexStatic(nbt.getInt(NBTConstants.TYPE)));
-            if (filter != null) {
-                filter.read(nbt);
-            }
+            filter.read(nbt);
             return filter;
         }
         return null;
     }
 
-    @Nullable
     public static IFilter<?> readFromPacket(FriendlyByteBuf dataStream) {
         IFilter<?> filter = fromType(dataStream.readEnum(FilterType.class));
-        if (filter != null) {
-            filter.read(dataStream);
-        }
+        filter.read(dataStream);
         return filter;
     }
 

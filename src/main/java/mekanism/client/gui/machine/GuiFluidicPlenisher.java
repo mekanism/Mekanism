@@ -53,7 +53,7 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
                   return energyContainer.getEnergyPerTick().greaterThan(energyContainer.getEnergy());
               });
         addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
-        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer()));
+        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::usedEnergy));
     }
 
     @Override

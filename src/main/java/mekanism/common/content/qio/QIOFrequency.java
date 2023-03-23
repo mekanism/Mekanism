@@ -20,6 +20,7 @@ import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
+import mekanism.api.inventory.IHashedItem;
 import mekanism.api.inventory.qio.IQIOFrequency;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
@@ -44,6 +45,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 
 public class QIOFrequency extends Frequency implements IColorableFrequency, IQIOFrequency {
@@ -107,6 +109,11 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     @Override
+    public void forAllHashedStored(ObjLongConsumer<IHashedItem> consumer) {
+        itemDataMap.forEach((type, data) -> consumer.accept(type, data.getCount()));
+    }
+
+    @Override
     public long massInsert(ItemStack stack, long amount, Action action) {
         if (stack.isEmpty() || amount <= 0) {
             return 0;
@@ -135,20 +142,30 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     public ItemStack addItem(ItemStack stack) {
         if (stack.isEmpty()) {
             return ItemStack.EMPTY;
-        }
-        HashedItem type = HashedItem.create(stack);
-        // these checks are extremely important; they prevent us from wasting CPU searching for a place to put the new items,
-        // and they also prevent us from adding a ghost type to the itemDataMap if nothing is inserted
-        if (totalCount == totalCountCapacity || (!itemDataMap.containsKey(type) && itemDataMap.size() == totalTypeCapacity)) {
+        } else if (totalCount == totalCountCapacity) {
+            //This check and the pre-check in the computeIfAbsent are extremely important; they prevent us from wasting CPU searching for
+            // a place to put the new items, and they also prevent us from adding a ghost type to the itemDataMap if nothing is inserted
             return stack;
         }
-        // at this point we're guaranteed at least part of the input stack will be inserted
-        QIOItemTypeData data = itemDataMap.computeIfAbsent(type, this::createTypeDataForAbsent);
+        HashedItem type = HashedItem.create(stack);
+        QIOItemTypeData data = itemDataMap.computeIfAbsent(type, t -> {
+            if (itemDataMap.size() == totalTypeCapacity) {
+                //Don't add any ghost item types if there is no room for new ones. We do this inside of a computeIfAbsent
+                // so that we don't have to check if the map contains it twice
+                return null;
+            }
+            // at this point we're guaranteed at least part of the input stack will be inserted
+            return createTypeDataForAbsent(t);
+        });
+        if (data == null) {
+            //Failed to insert
+            return stack;
+        }
         return type.createStack(MathUtils.clampToInt(data.add(stack.getCount(), Action.EXECUTE)));
     }
 
     private QIOItemTypeData createTypeDataForAbsent(HashedItem type) {
-        ItemStack stack = type.getStack();
+        ItemStack stack = type.getInternalStack();
         List<String> tags = TagCache.getItemTags(stack);
         if (!tags.isEmpty()) {
             boolean hasAllKeys = tagLookupMap.hasAllKeys(tags);
@@ -238,7 +255,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             tagWildcardCache.clear();
             //Note: We don't need to clear the failed wildcard tags as if we are removing tags they still won't have any matches
         }
-        ItemStack stack = type.getStack();
+        ItemStack stack = type.getInternalStack();
         String modID = MekanismUtils.getModId(stack);
         Set<HashedItem> itemsForMod = modIDLookupMap.get(modID);
         //In theory if we are removing an item, and it existed we should have a set corresponding to it,
@@ -368,7 +385,10 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     @Override
     public void setColor(EnumColor color) {
-        this.color = color;
+        if (this.color != color) {
+            this.color = color;
+            this.dirty = true;
+        }
     }
 
     // utility methods for accessing descriptors
@@ -390,7 +410,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     @Override
     public long getStored(ItemStack type) {
-        return getStored(HashedItem.raw(type));
+        return type.isEmpty() ? 0 : getStored(HashedItem.raw(type));
     }
 
     public long getStored(HashedItem itemType) {
@@ -414,20 +434,31 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public boolean tick() {
+        boolean superDirty = super.tick();
         if (!updatedItems.isEmpty() || needsUpdate) {
-            Object2LongMap<UUIDAwareHashedItem> map = new Object2LongOpenHashMap<>(updatedItems.size());
-            updatedItems.forEach(uuid -> {
-                HashedItem type = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(uuid);
-                if (type != null) {//The type should never be null as we create a UUID if there isn't one before adding but validate it
-                    QIOItemTypeData data = itemDataMap.get(type);
-                    map.put(new UUIDAwareHashedItem(type, uuid), data == null ? 0 : data.count);
-                }
+            //Only calculate the packet and the update map if there are actually players viewing this frequency,
+            // otherwise we can just skip looking up UUIDs and counts
+            Lazy<PacketQIOItemViewerGuiSync> lazyPacket = Lazy.of(() -> {
+                Object2LongMap<UUIDAwareHashedItem> map = new Object2LongOpenHashMap<>(updatedItems.size());
+                updatedItems.forEach(uuid -> {
+                    HashedItem type = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(uuid);
+                    if (type != null) {//The type should never be null as we create a UUID if there isn't one before adding but validate it
+                        QIOItemTypeData data = itemDataMap.get(type);
+                        map.put(new UUIDAwareHashedItem(type, uuid), data == null ? 0 : data.count);
+                    }
+                });
+                return PacketQIOItemViewerGuiSync.update(map, totalCountCapacity, totalTypeCapacity);
             });
-            // flush players that somehow didn't send a container close packet
-            playersViewingItems.removeIf(player -> !(player.containerMenu instanceof QIOItemViewerContainer));
-            playersViewingItems.forEach(player -> Mekanism.packetHandler().sendTo(PacketQIOItemViewerGuiSync.update(map, totalCountCapacity, totalTypeCapacity), player));
+            for (Iterator<ServerPlayer> viewingIterator = playersViewingItems.iterator(); viewingIterator.hasNext(); ) {
+                ServerPlayer player = viewingIterator.next();
+                if (player.containerMenu instanceof QIOItemViewerContainer) {
+                    Mekanism.packetHandler().sendTo(lazyPacket.get(), player);
+                } else {
+                    //flush players that somehow didn't send a container close packet
+                    viewingIterator.remove();
+                }
+            }
             updatedItems.clear();
             needsUpdate = false;
         }
@@ -436,6 +467,8 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         // this isn't a fully necessary operation, but it'll help avoid all item data getting lost if the server
         // is forcibly shut down.
         if (isDirty && rand.nextInt(100) == 0) {
+            //Note: We don't have this affect our super dirty value as this is for if the drives are dirty,
+            // not for if the frequency is dirty
             saveAll();
             isDirty = false;
         }
@@ -444,29 +477,34 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             //Note: We only need to clear tags here as the modids cannot change just because a reload happened
             tagLookupMap.clear();
             tagWildcardCache.clear();
-            itemDataMap.values().forEach(item -> tagLookupMap.putAll(TagCache.getItemTags(item.itemType.getStack()), item.itemType));
+            itemDataMap.values().forEach(item -> tagLookupMap.putAll(TagCache.getItemTags(item.itemType.getInternalStack()), item.itemType));
         }
+        return superDirty;
     }
 
     @Override
-    public void onDeactivate(BlockEntity tile) {
-        super.onDeactivate(tile);
-
+    public boolean onDeactivate(BlockEntity tile) {
+        boolean changedData = super.onDeactivate(tile);
         if (tile instanceof IQIODriveHolder holder) {
-            for (int i = 0; i < holder.getDriveSlots().size(); i++) {
+            for (int i = 0, size = holder.getDriveSlots().size(); i < size; i++) {
                 QIODriveKey key = new QIODriveKey(holder, i);
                 removeDrive(key, true);
-                driveMap.remove(key);
             }
+            //Uncache the holder when it stops being part of the frequency
+            driveHolders.remove(holder);
         }
+        return changedData;
     }
 
     @Override
-    public void update(BlockEntity tile) {
-        super.update(tile);
-        if (tile instanceof IQIODriveHolder holder && !driveHolders.contains(holder)) {
-            addHolder(holder);
+    public boolean update(BlockEntity tile) {
+        boolean changedData = super.update(tile);
+        if (tile instanceof IQIODriveHolder holder && driveHolders.add(holder)) {
+            for (int i = 0, slots = holder.getDriveSlots().size(); i < slots; i++) {
+                addDrive(new QIODriveKey(holder, i));
+            }
         }
+        return changedData;
     }
 
     @Override
@@ -507,7 +545,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         totalCountCapacity = buf.readVarLong();
         clientTypes = buf.readVarInt();
         totalTypeCapacity = buf.readVarInt();
-        setColor(buf.readEnum(EnumColor.class));
+        this.color = buf.readEnum(EnumColor.class);
     }
 
     @Override
@@ -519,7 +557,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     @Override
     protected void read(CompoundTag nbtTags) {
         super.read(nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, this::setColor);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, color -> this.color = color);
     }
 
     public void addDrive(QIODriveKey key) {
@@ -535,7 +573,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             driveMap.put(key, data);
             data.getItemMap().forEach((storedKey, value) -> {
                 itemDataMap.computeIfAbsent(storedKey, this::createTypeDataForAbsent).addFromDrive(data, value);
-                updatedItems.add(QIOGlobalItemLookup.INSTANCE.getUUIDForType(storedKey));
+                markForUpdate(storedKey);
             });
             setNeedsUpdate();
         }
@@ -553,7 +591,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                     itemData.containingDrives.remove(key);
                     itemData.count -= value;
                     totalCount -= value;
-                    updatedItems.add(QIOGlobalItemLookup.INSTANCE.getUUIDForType(storedKey));
+                    markForUpdate(storedKey);
                     // remove this entry from the item data map if it's now empty
                     if (itemData.containingDrives.isEmpty() || itemData.count == 0) {
                         removeItemData(storedKey);
@@ -578,17 +616,18 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         });
     }
 
-    private void addHolder(IQIODriveHolder holder) {
-        driveHolders.add(holder);
-        for (int i = 0; i < holder.getDriveSlots().size(); i++) {
-            addDrive(new QIODriveKey(holder, i));
+    private void setNeedsUpdate(@Nullable HashedItem changedItem) {
+        isDirty = true;
+        if (!playersViewingItems.isEmpty()) {//Skip marking for update if there are no players viewing the items
+            needsUpdate = true;
+            if (changedItem != null) {
+                updatedItems.add(QIOGlobalItemLookup.INSTANCE.getUUIDForType(changedItem));
+            }
         }
     }
 
-    private void setNeedsUpdate(@Nullable HashedItem changedItem) {
-        needsUpdate = true;
-        isDirty = true;
-        if (changedItem != null) {
+    private void markForUpdate(HashedItem changedItem) {
+        if (!playersViewingItems.isEmpty()) {//Skip marking for update if there are no players viewing the items
             updatedItems.add(QIOGlobalItemLookup.INSTANCE.getUUIDForType(changedItem));
         }
     }

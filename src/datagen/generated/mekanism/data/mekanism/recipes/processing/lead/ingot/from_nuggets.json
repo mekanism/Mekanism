@@ -3,11 +3,14 @@
   "key": {
     "#": {
       "tag": "forge:nuggets/lead"
+    },
+    "P": {
+      "item": "mekanism:nugget_lead"
     }
   },
   "pattern": [
     "###",
-    "###",
+    "#P#",
     "###"
   ],
   "result": {

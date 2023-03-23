@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
@@ -36,8 +35,7 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.filter.BaseFilter;
-import mekanism.common.content.filter.IFilter;
+import mekanism.common.content.filter.SortableFilterManager;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.miner.ThreadMinerSearch;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
@@ -52,12 +50,10 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableRegistryEntry;
-import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.inventory.container.tile.DigitalMinerConfigContainer;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.chunkloading.IChunkLoader;
-import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
@@ -67,7 +63,6 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.IBoundingBlock;
-import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.interfaces.IHasVisualization;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
@@ -83,8 +78,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -116,13 +109,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IBoundingBlock, ITileFilterHolder<MinerFilter<?>>,
-      IHasSortableFilters, IHasVisualization {
+      IHasVisualization {
 
     public static final int DEFAULT_HEIGHT_RANGE = 60;
     public static final int DEFAULT_RADIUS = 10;
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private final SortableFilterManager<MinerFilter<?>> filterManager = new SortableFilterManager<MinerFilter<?>>((Class) MinerFilter.class, this::markForSave);
     private Long2ObjectMap<BitSet> oresToMine = Long2ObjectMaps.emptyMap();
-    private HashList<MinerFilter<?>> filters = new HashList<>();
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
 
     private int radius;
@@ -251,7 +245,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 if (!ejectMap.isEmpty()) {
                     TransitResponse response;
                     if (ejectInv instanceof TileEntityLogisticalTransporterBase transporter) {
-                        response = transporter.getTransmitter().insert(ejectTile, ejectMap, null, true, 0);
+                        response = transporter.getTransmitter().insert(ejectTile, ejectMap, transporter.getTransmitter().getColor(), true, 0);
                     } else {
                         response = ejectMap.addToInventory(ejectInv, oppositeDirection, 0, false);
                     }
@@ -410,19 +404,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
     }
 
-    @Override
-    public void moveUp(int filterIndex) {
-        filters.swap(filterIndex, filterIndex - 1);
-        markForSave();
-    }
-
-    @Override
-    public void moveDown(int filterIndex) {
-        filters.swap(filterIndex, filterIndex + 1);
-        markForSave();
-    }
-
     private void tryMineBlock() {
+        BlockPos startingPos = getStartingPos();
+        int diameter = getDiameter();
         long target = targetChunk == null ? ChunkPos.INVALID_CHUNK_POS : targetChunk.toLong();
         for (ObjectIterator<Long2ObjectMap.Entry<BitSet>> it = oresToMine.long2ObjectEntrySet().iterator(); it.hasNext(); ) {
             Long2ObjectMap.Entry<BitSet> entry = it.next();
@@ -434,9 +418,16 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 // do any initialization
                 currentChunk = targetChunk;
             }
-            int next = 0;
+            //Note: We go in reverse order instead of normal order to avoid issues where we break blocks supporting ones
+            // that are affected by gravity and then are unable to break them after they have fallen. The reason we do it
+            // this way instead of changing how the bits are indexed in correspondence with locations in the world is because
+            // it is much more likely for there to be blocks lower down, and this allows us to avoid having to add large indices
+            // to our bitset because of all the small indices having been taken up by air
+            //Length returns the largest set bit + 1, so we subtract one to get the largest set bit as previousSetBit is inclusive,
+            // and if none are set and this becomes -1, previousSetBit will still just return -1
+            int previous = chunkToMine.length() - 1;
             while (true) {
-                int index = chunkToMine.nextSetBit(next);
+                int index = chunkToMine.previousSetBit(previous);
                 if (index == -1) {
                     //If there is no found index, remove it and continue on
                     it.remove();
@@ -447,7 +438,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                     updateTargetChunk(currentChunk = new ChunkPos(chunk));
                     target = chunk;
                 }
-                BlockPos pos = getPosFromIndex(index);
+                BlockPos pos = getOffsetForIndex(startingPos, diameter, index);
                 Optional<BlockState> blockState = WorldUtils.getBlockState(level, pos);
                 if (blockState.isPresent()) {
                     BlockState state = blockState.get();
@@ -455,7 +446,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                         //Make sure the block is loaded and is not air, and is not in the blacklist of blocks the miner can break
                         // then check if the block matches one of our filters
                         MinerFilter<?> matchingFilter = null;
-                        for (MinerFilter<?> filter : filters) {
+                        for (MinerFilter<?> filter : filterManager.getEnabledFilters()) {
                             if (filter.canFilter(state)) {
                                 matchingFilter = filter;
                                 break;
@@ -496,9 +487,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                     it.remove();
                     break;
                 }
-                // if we still have elements in this chunk that can potentially be mined, increment our index
-                // to the next one and attempt to mine it
-                next = index + 1;
+                // if we still have elements in this chunk that can potentially be mined, decrement our index
+                // to the previous one and attempt to mine it
+                previous = index - 1;
             }
         }
         //If we didn't exit early due to actually mining a block that means we don't have a target chunk anymore
@@ -678,7 +669,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
         if (searcher.state == State.IDLE) {
             BlockPos startingPos = getStartingPos();
-            searcher.setChunkCache(new PathNavigationRegion(getLevel(), startingPos, startingPos.offset(getDiameter(), getMaxY() - getMinY() + 1, getDiameter())));
+            int diameter = getDiameter();
+            searcher.setChunkCache(new PathNavigationRegion(getLevel(), startingPos, startingPos.offset(diameter, getMaxY() - getMinY() + 1, diameter)));
             searcher.start();
         }
         running = true;
@@ -718,12 +710,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             // things we are mining
             return inverseReplaceTargetMatches(target);
         }
-        for (MinerFilter<?> filter : filters) {
-            if (filter.replaceTargetMatches(target)) {
-                return true;
-            }
-        }
-        return false;
+        return filterManager.anyEnabledMatch(filter -> filter.replaceTargetMatches(target));
     }
 
     /**
@@ -771,7 +758,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     public int getTotalSize() {
-        return getDiameter() * getDiameter() * (getMaxY() - getMinY() + 1);
+        int diameter = getDiameter();
+        return diameter * diameter * (getMaxY() - getMinY() + 1);
     }
 
     public int getDiameter() {
@@ -782,9 +770,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return new BlockPos(getBlockPos().getX() - radius, getMinY(), getBlockPos().getZ() - radius);
     }
 
-    private BlockPos getPosFromIndex(int index) {
-        int diameter = getDiameter();
-        BlockPos start = getStartingPos();
+    public static BlockPos getOffsetForIndex(BlockPos start, int diameter, int index) {
         return start.offset(index % diameter, index / diameter / diameter, (index / diameter) % diameter);
     }
 
@@ -891,13 +877,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             NBTUtils.writeRegistryEntry(dataMap, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, inverseReplaceTarget);
         }
         dataMap.putBoolean(NBTConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
-        if (!filters.isEmpty()) {
-            ListTag filterTags = new ListTag();
-            for (MinerFilter<?> filter : filters) {
-                filterTags.add(filter.write(new CompoundTag()));
-            }
-            dataMap.put(NBTConstants.FILTERS, filterTags);
-        }
+        filterManager.writeToNBT(dataMap);
     }
 
     @Override
@@ -923,15 +903,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.INVERSE, inverse -> this.inverse = inverse);
         inverseReplaceTarget = NBTUtils.readRegistryEntry(dataMap, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, Items.AIR);
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.INVERSE_REQUIRES_REPLACE, requiresReplace -> inverseRequiresReplacement = requiresReplace);
-        filters.clear();
-        NBTUtils.setListIfPresent(dataMap, NBTConstants.FILTERS, Tag.TAG_COMPOUND, tagList -> {
-            for (int i = 0, size = tagList.size(); i < size; i++) {
-                IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
-                if (filter instanceof MinerFilter<?> minerFilter) {
-                    filters.add(minerFilter);
-                }
-            }
-        });
+        filterManager.readFromNBT(dataMap);
     }
 
     @Override
@@ -1052,12 +1024,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 targetChunk.z <= SectionPos.blockToSectionCoord(worldPosition.getZ() + radius)) {
                 // if it is, return the chunks we should be loading, provide the chunk the miner is in
                 // and the chunk that the miner is currently mining
-                Set<ChunkPos> chunks = new ObjectArraySet<>(2);
-                chunks.add(minerChunk);
                 //TODO: At some point we may want to change the ticket of the chunk the miner is mining to be
                 // at a lower level and not cause tiles in it to actually tick
-                chunks.add(targetChunk);
-                return chunks;
+                if (minerChunk.equals(targetChunk)) {
+                    return Set.of(minerChunk);
+                }
+                return Set.of(minerChunk, targetChunk);
             }
         }
         //Otherwise, just return the miner's chunk
@@ -1065,9 +1037,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    @ComputerMethod
-    public HashList<MinerFilter<?>> getFilters() {
-        return filters;
+    public SortableFilterManager<MinerFilter<?>> getFilterManager() {
+        return filterManager;
     }
 
     public MinerEnergyContainer getEnergyContainer() {
@@ -1114,13 +1085,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         container.track(SyncableBoolean.create(this::getInverse, value -> inverse = value));
         container.track(SyncableBoolean.create(this::getInverseRequiresReplacement, value -> inverseRequiresReplacement = value));
         container.track(SyncableRegistryEntry.create(ForgeRegistries.ITEMS, this::getInverseReplaceTarget, value -> inverseReplaceTarget = value));
-        container.track(SyncableFilterList.create(this::getFilters, value -> {
-            if (value instanceof HashList<MinerFilter<?>> filters) {
-                this.filters = filters;
-            } else {
-                this.filters = new HashList<>(value);
-            }
-        }));
+        filterManager.addContainerTrackers(container);
     }
 
     @NotNull
@@ -1299,15 +1264,20 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @ComputerMethod
+    private List<MinerFilter<?>> getFilters() {
+        return filterManager.getFilters();
+    }
+
+    @ComputerMethod
     private boolean addFilter(MinerFilter<?> filter) throws ComputerException {
         validateCanChangeConfiguration();
-        return filters.add(filter);
+        return filterManager.addFilter(filter);
     }
 
     @ComputerMethod
     private boolean removeFilter(MinerFilter<?> filter) throws ComputerException {
         validateCanChangeConfiguration();
-        return filters.remove(filter);
+        return filterManager.removeFilter(filter);
     }
     //End methods IComputerTile
 

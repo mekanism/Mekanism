@@ -1,5 +1,6 @@
 package mekanism.common.content.qio.filter;
 
+import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IModIDFilter;
@@ -26,6 +27,7 @@ public class QIOModIDFilter extends QIOFilter<QIOModIDFilter> implements IModIDF
 
     @Override
     public void read(CompoundTag nbtTags) {
+        super.read(nbtTags);
         modID = nbtTags.getString(NBTConstants.MODID);
     }
 
@@ -37,19 +39,24 @@ public class QIOModIDFilter extends QIOFilter<QIOModIDFilter> implements IModIDF
 
     @Override
     public void read(FriendlyByteBuf dataStream) {
+        super.read(dataStream);
         modID = BasePacketHandler.readString(dataStream);
     }
 
     @Override
     public int hashCode() {
-        int code = 1;
-        code = 31 * code + modID.hashCode();
-        return code;
+        return Objects.hash(super.hashCode(), modID);
     }
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof QIOModIDFilter filter && filter.modID.equals(modID);
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
+            return false;
+        }
+        QIOModIDFilter other = (QIOModIDFilter) o;
+        return modID.equals(other.modID);
     }
 
     @Override

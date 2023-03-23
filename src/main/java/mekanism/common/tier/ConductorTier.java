@@ -46,15 +46,15 @@ public enum ConductorTier implements ITier {
     }
 
     public double getInverseConduction() {
-        return conductionReference == null ? getBaseConduction() : conductionReference.get();
+        return conductionReference == null ? getBaseConduction() : conductionReference.getOrDefault();
     }
 
     public double getInverseConductionInsulation() {
-        return insulationReference == null ? getBaseConductionInsulation() : insulationReference.get();
+        return insulationReference == null ? getBaseConductionInsulation() : insulationReference.getOrDefault();
     }
 
     public double getHeatCapacity() {
-        return capacityReference == null ? getBaseHeatCapacity() : capacityReference.get();
+        return capacityReference == null ? getBaseHeatCapacity() : capacityReference.getOrDefault();
     }
 
     public Color getBaseColor() {

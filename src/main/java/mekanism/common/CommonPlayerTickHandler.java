@@ -85,7 +85,7 @@ public class CommonPlayerTickHandler {
         ItemStack stack = player.getItemBySlot(EquipmentSlot.LEGS);
         if (!stack.isEmpty()) {
             IModule<ModuleHydrostaticRepulsorUnit> module = MekanismAPI.getModuleHelper().load(stack, MekanismModules.HYDROSTATIC_REPULSOR_UNIT);
-            if (module != null && module.isEnabled() && module.getCustomInstance().isSwimBoost(module)) {
+            if (module != null && module.isEnabled() && module.getCustomInstance().isSwimBoost(module, player)) {
                 return 1F;
             }
         }
@@ -128,7 +128,7 @@ public class CommonPlayerTickHandler {
                 JetpackMode mode = IJetpackItem.getPlayerJetpackMode(player, primaryMode, () -> Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND));
                 if (mode != JetpackMode.DISABLED) {
                     if (IJetpackItem.handleJetpackMotion(player, mode, () -> Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND))) {
-                        player.fallDistance = 0.0F;
+                        player.resetFallDistance();
                         if (player instanceof ServerPlayer serverPlayer) {
                             serverPlayer.connection.aboveGroundTickCount = 0;
                         }

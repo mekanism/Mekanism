@@ -6,18 +6,17 @@ import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.ObjIntConsumer;
-import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.filter.FilterManager;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
-import mekanism.common.lib.collection.HashList;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,20 +25,30 @@ public class MovableFilterButton extends FilterButton {
     private final FilterSelectButton upButton;
     private final FilterSelectButton downButton;
 
-    public MovableFilterButton(IGuiWrapper gui, int x, int y, int index, IntSupplier filterIndex, Supplier<HashList<? extends IFilter<?>>> filters,
-          IntConsumer upButtonPress, IntConsumer downButtonPress, ObjIntConsumer<IFilter<?>> onPress, Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
-        this(gui, x, y, TEXTURE_WIDTH, TEXTURE_HEIGHT / 2, index, filterIndex, filters, upButtonPress, downButtonPress, onPress, renderStackSupplier);
+    public MovableFilterButton(IGuiWrapper gui, int x, int y, int index, IntSupplier filterIndex, FilterManager<?> filterManager, IntConsumer upButtonPress,
+          IntConsumer downButtonPress, ObjIntConsumer<IFilter<?>> onPress, IntConsumer toggleButtonPress, Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
+        this(gui, x, y, TEXTURE_WIDTH, TEXTURE_HEIGHT / 2, index, filterIndex, filterManager, upButtonPress, downButtonPress, onPress, toggleButtonPress, renderStackSupplier);
     }
 
-    public MovableFilterButton(IGuiWrapper gui, int x, int y, int width, int height, int index, IntSupplier filterIndex,
-          Supplier<HashList<? extends IFilter<?>>> filters, IntConsumer upButtonPress, IntConsumer downButtonPress, ObjIntConsumer<IFilter<?>> onPress,
+    public MovableFilterButton(IGuiWrapper gui, int x, int y, int width, int height, int index, IntSupplier filterIndex, FilterManager<?> filterManager,
+          IntConsumer upButtonPress, IntConsumer downButtonPress, ObjIntConsumer<IFilter<?>> onPress, IntConsumer toggleButtonPress,
           Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
-        super(gui, x, y, width, height, index, filterIndex, filters, onPress, renderStackSupplier);
+        super(gui, x, y, width, height, index, filterIndex, filterManager, onPress, toggleButtonPress, renderStackSupplier);
         int arrowX = relativeX + width - 12;
-        upButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + 1, false, () -> upButtonPress.accept(index + filterIndex.getAsInt()),
-              getOnHover(MekanismLang.MOVE_UP)));
+        upButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + 1, false,
+              () -> upButtonPress.accept(getActualIndex()), getOnHover(MekanismLang.MOVE_UP)));
         downButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + height - 8, true,
-              () -> downButtonPress.accept(index + filterIndex.getAsInt()), getOnHover(MekanismLang.MOVE_DOWN)));
+              () -> downButtonPress.accept(getActualIndex()), getOnHover(MekanismLang.MOVE_DOWN)));
+    }
+
+    @Override
+    protected int getToggleXShift() {
+        return 13;
+    }
+
+    @Override
+    protected int getToggleYShift() {
+        return 1;
     }
 
     @Override
@@ -77,17 +86,16 @@ public class MovableFilterButton extends FilterButton {
     }
 
     private void updateButtonVisibility() {
-        int index = filterIndex.getAsInt() + this.index;
-        HashList<? extends IFilter<?>> filterList = filters.get();
-        IFilter<?> filter = filterList.getOrNull(index);
+        int index = getActualIndex();
+        IFilter<?> filter = getFilter();
         upButton.visible = filter != null && index > 0;
-        downButton.visible = filter != null && index < filterList.size() - 1;
+        downButton.visible = filter != null && index < filterManager.count() - 1;
     }
 
     @Override
     public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        IFilter<?> filter = getFilter(filters, filterIndex, index);
+        IFilter<?> filter = getFilter();
         EnumColor color;
         if (filter instanceof IItemStackFilter) {
             color = EnumColor.INDIGO;

@@ -334,7 +334,7 @@ public class WorldUtils {
         if (clazz.isInstance(tile)) {
             return clazz.cast(tile);
         } else if (logWrongType) {
-            Mekanism.logger.warn("Unexpected TileEntity class at {}, expected {}, but found: {}", pos, clazz, tile.getClass());
+            Mekanism.logger.warn("Unexpected BlockEntity class at {}, expected {}, but found: {}", pos, clazz, tile.getClass());
         }
         return null;
     }

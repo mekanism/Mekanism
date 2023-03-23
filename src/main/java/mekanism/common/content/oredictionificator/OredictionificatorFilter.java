@@ -110,6 +110,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
 
     @Override
     public void read(CompoundTag nbtTags) {
+        super.read(nbtTags);
         NBTUtils.setResourceLocationIfPresentElse(nbtTags, NBTConstants.FILTER, this::setFilter, () -> setFilter(null));
         NBTUtils.setResourceLocationIfPresent(nbtTags, NBTConstants.SELECTED, this::setSelectedOrFallback);
         //Recheck filter validity after reading from nbt
@@ -128,6 +129,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
 
     @Override
     public void read(FriendlyByteBuf buffer) {
+        super.read(buffer);
         setFilter(BasePacketHandler.readOptional(buffer, FriendlyByteBuf::readResourceLocation));
         setSelectedOrFallback(buffer.readResourceLocation());
         isValid = buffer.readBoolean();
@@ -196,17 +198,18 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
 
     @Override
     public int hashCode() {
-        return Objects.hash(filterLocation);
+        return Objects.hash(super.hashCode(), filterLocation, selectedOutput);
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == this) {
             return true;
-        } else if (o == null || getClass() != o.getClass()) {
+        } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
             return false;
         }
-        return Objects.equals(filterLocation, ((OredictionificatorFilter<?, ?, ?>) o).filterLocation);
+        OredictionificatorFilter<?, ?, ?> other = (OredictionificatorFilter<?, ?, ?>) o;
+        return Objects.equals(filterLocation, other.filterLocation) && selectedOutput == other.selectedOutput;
     }
 
     public abstract TYPE getResultElement();

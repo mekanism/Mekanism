@@ -66,7 +66,8 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * Inserts a {@link ChemicalStack} into this {@link IChemicalTank} and return the remainder. The {@link ChemicalStack} <em>should not</em> be modified in this
      * function!
      * </p>
-     * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
+     * Note: This behaviour is subtly different from
+     * {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
      * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param stack          {@link ChemicalStack} to insert. This must not be modified by the tank.
@@ -76,8 +77,9 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * @return The remaining {@link ChemicalStack} that was not inserted (if the entire stack is accepted, then return an empty {@link ChemicalStack}). May be the same as
      * the input {@link ChemicalStack} if unchanged, otherwise a new {@link ChemicalStack}. The returned {@link ChemicalStack} can be safely modified after
      *
-     * @implNote The {@link ChemicalStack} <em>should not</em> be modified in this function! If the internal stack does get updated make sure to call {@link
-     * #onContentsChanged()}. It is also recommended to override this if your internal {@link ChemicalStack} is mutable so that a copy does not have to be made every run
+     * @implNote The {@link ChemicalStack} <em>should not</em> be modified in this function! If the internal stack does get updated make sure to call
+     * {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link ChemicalStack} is mutable so that a copy does not have to be made
+     * every run
      */
     default STACK insert(STACK stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isValid(stack)) {
@@ -166,7 +168,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
 
     /**
      * Convenience method for modifying the size of the stored stack.
-     *
+     * <p>
      * If there is a stack stored in this tank, set the size of it to the given amount. Capping at this chemical tank's limit. If the amount is less than or equal to
      * zero, then this instead sets the stack to the empty stack.
      *
@@ -201,7 +203,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
 
     /**
      * Convenience method for growing the size of the stored stack.
-     *
+     * <p>
      * If there is a stack stored in this tank, increase its size by the given amount. Capping at this chemical tank's limit. If the stack shrinks to an amount of less
      * than or equal to zero, then this instead sets the stack to the empty stack.
      *
@@ -225,7 +227,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
 
     /**
      * Convenience method for shrinking the size of the stored stack.
-     *
+     * <p>
      * If there is a stack stored in this tank, shrink its size by the given amount. If this causes its size to become less than or equal to zero, then the stack is set
      * to the empty stack. If this method is used to grow the stack the size gets capped at this chemical tank's limit.
      *

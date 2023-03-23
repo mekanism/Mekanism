@@ -2,15 +2,8 @@ package mekanism.common.network.to_server;
 
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
-import mekanism.common.content.miner.MinerFilter;
-import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
-import mekanism.common.content.qio.filter.QIOFilter;
-import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import mekanism.common.tile.machine.TileEntityOredictionificator;
-import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
+import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -33,17 +26,8 @@ public class PacketNewFilter implements IMekanismPacket {
         Player player = context.getSender();
         if (player != null) {
             BlockEntity blockEntity = WorldUtils.getTileEntity(player.level, pos);
-            if (blockEntity != null) {
-                if (filter instanceof SorterFilter<?> filter && blockEntity instanceof TileEntityLogisticalSorter tile) {
-                    tile.getFilters().add(filter);
-                } else if (filter instanceof MinerFilter<?> filter && blockEntity instanceof TileEntityDigitalMiner tile) {
-                    tile.getFilters().add(filter);
-                } else if (filter instanceof OredictionificatorItemFilter filter && blockEntity instanceof TileEntityOredictionificator tile) {
-                    tile.getFilters().add(filter);
-                } else if (filter instanceof QIOFilter<?> filter && blockEntity instanceof TileEntityQIOFilterHandler tile) {
-                    tile.getFilters().add(filter);
-                }
-                blockEntity.setChanged();
+            if (blockEntity instanceof ITileFilterHolder<?> filterHolder) {
+                filterHolder.getFilterManager().tryAddFilter(filter, true);
             }
         }
     }

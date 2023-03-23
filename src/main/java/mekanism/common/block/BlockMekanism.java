@@ -278,7 +278,6 @@ public abstract class BlockMekanism extends Block {
             // the same as we would normally do if we had to add the data map
             dataMap = new CompoundTag();
         }
-        setTileData(world, pos, state, placer, stack, tile);
 
         //TODO - 1.18: Re-evaluate the entirety of this method and see what parts potentially should not be getting called at all when on the client side.
         // We previously had issues in readSustainedData regarding frequencies when on the client side so that is why the frequency data has this check
@@ -323,10 +322,6 @@ public abstract class BlockMekanism extends Block {
         if (item instanceof ISustainedInventory sustainedInventory && tile.persistInventory()) {
             tile.setInventory(sustainedInventory.getInventory(stack));
         }
-    }
-
-    //Method to override for setting some simple tile specific stuff
-    public void setTileData(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, TileEntityMekanism tile) {
     }
 
     @Override

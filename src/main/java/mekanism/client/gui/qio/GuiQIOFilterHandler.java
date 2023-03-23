@@ -22,8 +22,10 @@ import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
+import mekanism.common.content.filter.SortableFilterManager;
 import mekanism.common.content.qio.IQIOFrequencyHolder;
 import mekanism.common.content.qio.QIOFrequency;
+import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.content.qio.filter.QIOModIDFilter;
 import mekanism.common.content.qio.filter.QIOTagFilter;
@@ -85,18 +87,19 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
         addRenderableWidget(new GuiElementHolder(this, 9, 98, 144, 22));
         addRenderableWidget(new TranslationButton(this, 10, 99, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(new GuiQIOFilerSelect(this, tile))));
-        scrollBar = addRenderableWidget(new GuiScrollBar(this, 153, 30, 90, () -> tile.getFilters().size(), () -> FILTER_COUNT));
+        SortableFilterManager<QIOFilter<?>> filterManager = tile.getFilterManager();
+        scrollBar = addRenderableWidget(new GuiScrollBar(this, 153, 30, 90, filterManager::count, () -> FILTER_COUNT));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
-            addRenderableWidget(new MovableFilterButton(this, 10, 31 + i * 22, 142, 22, i, scrollBar::getCurrentSelection, tile::getFilters, index -> {
+            addRenderableWidget(new MovableFilterButton(this, 10, 31 + i * 22, 142, 22, i, scrollBar::getCurrentSelection, filterManager, index -> {
                 if (index > 0) {
                     Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_UP, tile, index));
                 }
             }, index -> {
-                if (index < tile.getFilters().size() - 1) {
+                if (index < filterManager.count() - 1) {
                     Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_DOWN, tile, index));
                 }
-            }, this::onClick, filter -> {
+            }, this::onClick, index -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_FILTER_STATE, tile, index)), filter -> {
                 List<ItemStack> list = new ArrayList<>();
                 if (filter != null) {
                     if (filter instanceof IItemStackFilter<?> itemFilter) {

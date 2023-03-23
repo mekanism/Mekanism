@@ -1,4 +1,6 @@
 {
+  "advancements.mekanismgenerators.heat_generator.title": "Tvoj Prvý Generátor",
+  "advancements.mekanismgenerators.solar_generator.title": "Sila Slnka",
   "block.mekanismgenerators.advanced_solar_generator": "Pokročilý Solárny Generátor",
   "block.mekanismgenerators.bio_generator": "Bio-Generátor",
   "block.mekanismgenerators.bioethanol": "Bioetanol",
@@ -57,6 +59,7 @@
   "fission.mekanismgenerators.force_disabled": "Reaktor musí dosiahnuť bezpečné úrovne poškodenia a teploty predtým ako môže byť reaktivovaný.",
   "fission.mekanismgenerators.fuel_statistics": "Štatistika Paliva",
   "fission.mekanismgenerators.fuel_tank": "Palivová nádrž",
+  "fission.mekanismgenerators.heat_capacity": "Tepelná Kapacita: %1$s J/K",
   "fission.mekanismgenerators.heat_graph": "Graf Tepla:",
   "fission.mekanismgenerators.heat_statistics": "Štatistika Tepla",
   "fission.mekanismgenerators.heated_coolant_tank": "Vyhrievaná Chladiaca Nádrž",
@@ -81,6 +84,7 @@
   "reactor.mekanismgenerators.fuel": "Palivo",
   "reactor.mekanismgenerators.fusion_reactor": "Fúzny Reaktor",
   "reactor.mekanismgenerators.heat": "Teplo",
+  "reactor.mekanismgenerators.heat.plasma": "Plazma: %1$s",
   "reactor.mekanismgenerators.logic.activation": "Aktivácia",
   "reactor.mekanismgenerators.logic.capacity": "Tepelná Kapacita Plná",
   "reactor.mekanismgenerators.logic.damaged": "Kritické Poškodenie",

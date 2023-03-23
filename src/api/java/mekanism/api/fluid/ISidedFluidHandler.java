@@ -24,7 +24,7 @@ public interface ISidedFluidHandler extends IExtendedFluidHandler {
 
     /**
      * A sided variant of {@link net.minecraftforge.fluids.capability.IFluidHandler#getTanks()}, docs copied for convenience.
-     *
+     * <p>
      * Returns the number of fluid storage units ("tanks") available
      *
      * @param side The side we are interacting with the handler from (null for internal).
@@ -40,7 +40,7 @@ public interface ISidedFluidHandler extends IExtendedFluidHandler {
 
     /**
      * A sided variant of {@link net.minecraftforge.fluids.capability.IFluidHandler#getFluidInTank(int)}, docs copied for convenience.
-     *
+     * <p>
      * Returns the {@link FluidStack} in a given tank.
      *
      * <p>
@@ -66,7 +66,7 @@ public interface ISidedFluidHandler extends IExtendedFluidHandler {
 
     /**
      * A sided variant of {@link IExtendedFluidHandler#setFluidInTank(int, FluidStack)}, docs copied for convenience.
-     *
+     * <p>
      * Overrides the stack in the given tank. This method may throw an error if it is called unexpectedly.
      *
      * @param tank  Tank to modify
@@ -84,7 +84,7 @@ public interface ISidedFluidHandler extends IExtendedFluidHandler {
 
     /**
      * A sided variant of {@link IExtendedFluidHandler#getTankCapacity(int)}, docs copied for convenience.
-     *
+     * <p>
      * Retrieves the maximum amount of fluid that can be stored in a given tank.
      *
      * @param tank Tank to query.
@@ -115,8 +115,8 @@ public interface ISidedFluidHandler extends IExtendedFluidHandler {
      * @param tank  Tank to query.
      * @param stack Stack to test with for validity @param side   The side we are interacting with the handler from (null for internal).
      *
-     * @return true if the tank can accept the {@link FluidStack}, not considering the current state of the tank. false if the tank can never support the given {@link
-     * FluidStack} in any situation.
+     * @return true if the tank can accept the {@link FluidStack}, not considering the current state of the tank. false if the tank can never support the given
+     * {@link FluidStack} in any situation.
      */
     boolean isFluidValid(int tank, FluidStack stack, @Nullable Direction side);
 
@@ -131,8 +131,8 @@ public interface ISidedFluidHandler extends IExtendedFluidHandler {
      * <p>
      * Inserts a {@link FluidStack} into a given tank and return the remainder. The {@link FluidStack} <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly <strong>different</strong> from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(FluidStack,
-     * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
+     * Note: This behaviour is subtly <strong>different</strong> from
+     * {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(FluidStack, net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param tank   Tank to insert to.
      * @param stack  {@link FluidStack} to insert. This must not be modified by the tank.
@@ -151,7 +151,7 @@ public interface ISidedFluidHandler extends IExtendedFluidHandler {
 
     /**
      * A sided variant of {@link IExtendedFluidHandler#extractFluid(int, int, Action)}, docs copied for convenience.
-     *
+     * <p>
      * Extracts a {@link FluidStack} from a specific tank in this handler.
      * <p>
      * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.
@@ -179,8 +179,8 @@ public interface ISidedFluidHandler extends IExtendedFluidHandler {
      * Inserts a {@link FluidStack} into this handler, distribution is left <strong>entirely</strong> to this {@link IExtendedFluidHandler}. The {@link FluidStack}
      * <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly <strong>different</strong> from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(FluidStack,
-     * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
+     * Note: This behaviour is subtly <strong>different</strong> from
+     * {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(FluidStack, net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param stack  {@link FluidStack} to insert. This must not be modified by the handler.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
@@ -199,7 +199,7 @@ public interface ISidedFluidHandler extends IExtendedFluidHandler {
 
     /**
      * A sided variant of {@link IExtendedFluidHandler#extractFluid(int, Action)}, docs copied for convenience.
-     *
+     * <p>
      * Extracts a {@link FluidStack} from this handler, distribution is left <strong>entirely</strong> to this {@link IExtendedFluidHandler}.
      * <p>
      * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.
@@ -222,7 +222,7 @@ public interface ISidedFluidHandler extends IExtendedFluidHandler {
 
     /**
      * A sided variant of {@link IExtendedFluidHandler#extractFluid(FluidStack, Action)}, docs copied for convenience.
-     *
+     * <p>
      * Extracts a {@link FluidStack} from this handler, distribution is left <strong>entirely</strong> to this {@link IExtendedFluidHandler}.
      * <p>
      * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.

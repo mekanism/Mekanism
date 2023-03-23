@@ -23,7 +23,7 @@ public interface ISidedChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STAC
 
     /**
      * A sided variant of {@link IChemicalHandler#getTanks()}, docs copied for convenience.
-     *
+     * <p>
      * Returns the number of chemical storage units ("tanks") available
      *
      * @param side The side we are interacting with the handler from (null for internal).
@@ -39,7 +39,7 @@ public interface ISidedChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STAC
 
     /**
      * A sided variant of {@link IChemicalHandler#getChemicalInTank(int)}, docs copied for convenience.
-     *
+     * <p>
      * Returns the {@link STACK} in a given tank.
      *
      * <p>
@@ -65,7 +65,7 @@ public interface ISidedChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STAC
 
     /**
      * A sided variant of {@link IChemicalHandler#setChemicalInTank(int, STACK)}, docs copied for convenience.
-     *
+     * <p>
      * Overrides the stack in the given tank. This method may throw an error if it is called unexpectedly.
      *
      * @param tank  Tank to modify
@@ -83,7 +83,7 @@ public interface ISidedChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STAC
 
     /**
      * A sided variant of {@link IChemicalHandler#getTankCapacity(int)}, docs copied for convenience.
-     *
+     * <p>
      * Retrieves the maximum amount of chemical that can be stored in a given tank.
      *
      * @param tank Tank to query.
@@ -130,7 +130,8 @@ public interface ISidedChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STAC
      * <p>
      * Inserts a {@link STACK} into a given tank and return the remainder. The {@link STACK} <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
+     * Note: This behaviour is subtly different from
+     * {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
      * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param tank   Tank to insert to.
@@ -150,7 +151,7 @@ public interface ISidedChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STAC
 
     /**
      * A sided variant of {@link IChemicalHandler#extractChemical(int, long, Action)}, docs copied for convenience.
-     *
+     * <p>
      * Extracts a {@link STACK} from a specific tank in this handler.
      * <p>
      * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.
@@ -178,7 +179,8 @@ public interface ISidedChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STAC
      * Inserts a {@link STACK} into this handler, distribution is left <strong>entirely</strong> to this {@link IChemicalHandler}. The {@link STACK}
      * <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
+     * Note: This behaviour is subtly different from
+     * {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
      * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param stack  {@link STACK} to insert. This must not be modified by the handler.
@@ -199,7 +201,7 @@ public interface ISidedChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STAC
 
     /**
      * A sided variant of {@link IChemicalHandler#extractChemical(long, Action)}, docs copied for convenience.
-     *
+     * <p>
      * Extracts a {@link STACK} from this handler, distribution is left <strong>entirely</strong> to this {@link IChemicalHandler}.
      * <p>
      * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.
@@ -223,7 +225,7 @@ public interface ISidedChemicalHandler<CHEMICAL extends Chemical<CHEMICAL>, STAC
 
     /**
      * A sided variant of {@link IChemicalHandler#extractChemical(STACK, Action)}, docs copied for convenience.
-     *
+     * <p>
      * Extracts a {@link STACK} from this handler, distribution is left <strong>entirely</strong> to this {@link IChemicalHandler}.
      * <p>
      * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.

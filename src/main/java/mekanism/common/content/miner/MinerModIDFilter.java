@@ -1,5 +1,6 @@
 package mekanism.common.content.miner;
 
+import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.FilterType;
@@ -64,14 +65,18 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
 
     @Override
     public int hashCode() {
-        int code = super.hashCode();
-        code = 31 * code + modID.hashCode();
-        return code;
+        return Objects.hash(super.hashCode(), modID);
     }
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(o) && o instanceof MinerModIDFilter filter && filter.modID.equals(modID);
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
+            return false;
+        }
+        MinerModIDFilter other = (MinerModIDFilter) o;
+        return modID.equals(other.modID);
     }
 
     @Override

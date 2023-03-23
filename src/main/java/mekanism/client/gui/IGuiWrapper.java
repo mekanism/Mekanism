@@ -39,28 +39,28 @@ public interface IGuiWrapper {
     }
 
     default int getLeft() {
-        if (this instanceof AbstractContainerScreen screen) {
+        if (this instanceof AbstractContainerScreen<?> screen) {
             return screen.getGuiLeft();
         }
         return 0;
     }
 
     default int getTop() {
-        if (this instanceof AbstractContainerScreen screen) {
+        if (this instanceof AbstractContainerScreen<?> screen) {
             return screen.getGuiTop();
         }
         return 0;
     }
 
     default int getWidth() {
-        if (this instanceof AbstractContainerScreen screen) {
+        if (this instanceof AbstractContainerScreen<?> screen) {
             return screen.getXSize();
         }
         return 0;
     }
 
     default int getHeight() {
-        if (this instanceof AbstractContainerScreen screen) {
+        if (this instanceof AbstractContainerScreen<?> screen) {
             return screen.getYSize();
         }
         return 0;

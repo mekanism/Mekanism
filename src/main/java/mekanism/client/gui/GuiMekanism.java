@@ -529,7 +529,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Nullable
     protected DataType findDataType(InventoryContainerSlot slot) {
-        if (menu instanceof MekanismTileContainer container && container.getTileEntity() instanceof ISideConfiguration sideConfig) {
+        if (menu instanceof MekanismTileContainer<?> container && container.getTileEntity() instanceof ISideConfiguration sideConfig) {
             return sideConfig.getActiveDataType(slot.getInventorySlot());
         }
         return null;

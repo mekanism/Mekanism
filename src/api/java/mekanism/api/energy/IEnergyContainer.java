@@ -42,7 +42,8 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
      * <p>
      * Inserts energy into this {@link IEnergyContainer} and return the remainder. The {@link FloatingLong} <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
+     * Note: This behaviour is subtly different from
+     * {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
      * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param amount         Energy to insert. This must not be modified by the container.
@@ -52,8 +53,9 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
      * @return The remaining energy that was not inserted (if the entire amount is accepted, then return {@link FloatingLong#ZERO}). The returned {@link FloatingLong} can
      * be safely modified afterwards.
      *
-     * @implNote The {@link FloatingLong} <em>should not</em> be modified in this function! If the internal amount does get updated make sure to call {@link
-     * #onContentsChanged()}. It is also recommended to override this if your internal {@link FloatingLong} is mutable so that a copy does not have to be made every run.
+     * @implNote The {@link FloatingLong} <em>should not</em> be modified in this function! If the internal amount does get updated make sure to call
+     * {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link FloatingLong} is mutable so that a copy does not have to be made
+     * every run.
      */
     default FloatingLong insert(FloatingLong amount, Action action, AutomationType automationType) {
         if (amount.isZero()) {

@@ -4,6 +4,7 @@ import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.SecurityMode;
+import mekanism.common.capabilities.Capabilities;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,6 +32,10 @@ public class SecurityRecipeData implements RecipeUpgradeData<SecurityRecipeData>
 
     @Override
     public boolean applyToStack(ItemStack stack) {
+        stack.getCapability(Capabilities.OWNER_OBJECT).ifPresent(ownerObject -> {
+            ownerObject.setOwnerUUID(owner);
+            stack.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> security.setSecurityMode(mode));
+        });
         return true;
     }
 }

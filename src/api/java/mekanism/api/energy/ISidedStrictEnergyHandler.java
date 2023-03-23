@@ -25,7 +25,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
 
     /**
      * A sided variant of {@link IStrictEnergyHandler#getEnergyContainerCount()}, docs copied for convenience.
-     *
+     * <p>
      * Returns the number of energy storage units ("containers") available
      *
      * @param side The side we are interacting with the handler from (null for internal).
@@ -41,7 +41,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
 
     /**
      * A sided variant of {@link IStrictEnergyHandler#getEnergy(int)}, docs copied for convenience.
-     *
+     * <p>
      * Returns the energy stored in a given container.
      *
      * <p>
@@ -67,7 +67,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
 
     /**
      * A sided variant of {@link IStrictEnergyHandler#setEnergy(int, FloatingLong)}, docs copied for convenience.
-     *
+     * <p>
      * Overrides the energy stored in the given container. This method may throw an error if it is called unexpectedly.
      *
      * @param container Container to modify
@@ -85,7 +85,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
 
     /**
      * A sided variant of {@link IStrictEnergyHandler#getMaxEnergy(int)}, docs copied for convenience.
-     *
+     * <p>
      * Retrieves the maximum amount of energy that can be stored in a given container.
      *
      * <p>
@@ -111,7 +111,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
 
     /**
      * A sided variant of {@link IStrictEnergyHandler#getNeededEnergy(int)}, docs copied for convenience.
-     *
+     * <p>
      * Retrieves the amount of energy that is needed to fill a given container.
      *
      * <p>
@@ -141,7 +141,8 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      * <p>
      * Inserts energy into a given container and return the remainder. The {@link FloatingLong} <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
+     * Note: This behaviour is subtly different from
+     * {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
      * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param container Container to insert to.
@@ -161,7 +162,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
 
     /**
      * A sided variant of {@link IStrictEnergyHandler#extractEnergy(int, FloatingLong, Action)}, docs copied for convenience.
-     *
+     * <p>
      * Extracts energy from a specific container in this handler.
      * <p>
      * The returned value must be {@link FloatingLong#ZERO} if nothing is extracted, otherwise its must be less than or equal to {@code amount}.
@@ -189,7 +190,8 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      * Inserts energy into this handler, distribution is left <strong>entirely</strong> to this {@link IStrictEnergyHandler}. The {@link FloatingLong} <em>should not</em>
      * be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
+     * Note: This behaviour is subtly different from
+     * {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
      * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param amount Energy to insert. This must not be modified by the handler.
@@ -210,7 +212,7 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
 
     /**
      * A sided variant of {@link IStrictEnergyHandler#extractEnergy(FloatingLong, Action)}, docs copied for convenience.
-     *
+     * <p>
      * Extracts energy from this handler, distribution is left <strong>entirely</strong> to this {@link IStrictEnergyHandler}.
      * <p>
      * The returned value must be {@link FloatingLong#ZERO} if nothing is extracted, otherwise its must be less than or equal to {@code amount}.

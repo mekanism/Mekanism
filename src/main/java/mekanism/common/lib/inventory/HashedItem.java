@@ -1,7 +1,11 @@
 package mekanism.common.lib.inventory;
 
+import java.util.Objects;
 import java.util.UUID;
+import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.inventory.IHashedItem;
 import mekanism.common.util.StackUtils;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
@@ -12,9 +16,10 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author aidancbrady
  */
-public class HashedItem {
+@NothingNullByDefault
+public class HashedItem implements IHashedItem {
 
-    public static HashedItem create(@NotNull ItemStack stack) {
+    public static HashedItem create(ItemStack stack) {
         return new HashedItem(StackUtils.size(stack, 1));
     }
 
@@ -24,32 +29,57 @@ public class HashedItem {
      * @apiNote When using this, you should be very careful to not accidentally modify the backing stack, this is mainly for use where we want to use an {@link ItemStack}
      * as a key in a map that is local to a single method, and don't want the overhead of copying the stack when it is not needed.
      */
-    public static HashedItem raw(@NotNull ItemStack stack) {
+    public static HashedItem raw(ItemStack stack) {
         return new HashedItem(stack);
     }
 
-    @NotNull
     private final ItemStack itemStack;
     private final int hashCode;
 
-    protected HashedItem(@NotNull ItemStack stack) {
+    protected HashedItem(ItemStack stack) {
         this.itemStack = stack;
         this.hashCode = initHashCode();
     }
 
     protected HashedItem(HashedItem other) {
-        this.itemStack = other.itemStack;
-        this.hashCode = other.hashCode;
+        this(other.itemStack, other.hashCode);
     }
 
-    @NotNull
+    protected HashedItem(ItemStack stack, int hashCode) {
+        this.itemStack = stack;
+        this.hashCode = hashCode;
+    }
+
+    //TODO: Deprecate in favor of getInternalStack?
+    @Deprecated(forRemoval = true, since = "10.3.6")
     public ItemStack getStack() {
         return itemStack;
     }
 
-    @NotNull
+    @Override
+    public ItemStack getInternalStack() {
+        return itemStack;
+    }
+
+    @Override
     public ItemStack createStack(int size) {
         return StackUtils.size(itemStack, size);
+    }
+
+    /**
+     * @apiNote Main use is to ensure that this HashedItem is not raw, but to allow skipping recalculating the hash code. This will cause a stack copy if used on an
+     * already not-raw HashedItem, so ideally this should only be called on raw stacks and otherwise properly kept track of by the caller.
+     */
+    public HashedItem recreate() {
+        return new HashedItem(createStack(1), hashCode);
+    }
+
+    /**
+     * Helper to serialize the internal stack to nbt.
+     */
+    @NotNull
+    public CompoundTag internalToNBT() {
+        return itemStack.serializeNBT();
     }
 
     @Override
@@ -57,7 +87,7 @@ public class HashedItem {
         if (obj == this) {
             return true;
         }
-        return obj instanceof HashedItem other && ItemHandlerHelper.canItemStacksStack(itemStack, other.itemStack);
+        return obj instanceof IHashedItem other && ItemHandlerHelper.canItemStacksStack(itemStack, other.getInternalStack());
     }
 
     @Override
@@ -66,8 +96,7 @@ public class HashedItem {
     }
 
     private int initHashCode() {
-        int code = 1;
-        code = 31 * code + itemStack.getItem().hashCode();
+        int code = itemStack.getItem().hashCode();
         if (itemStack.hasTag()) {
             code = 31 * code + itemStack.getTag().hashCode();
         }
@@ -79,21 +108,32 @@ public class HashedItem {
 
     public static class UUIDAwareHashedItem extends HashedItem {
 
+        @Nullable
         private final UUID uuid;
+        private final int uuidBasedHash;
         private final boolean overrideHash;
 
         /**
+         * @param uuid Should not be null unless something went wrong reading the packet.
+         *
          * @apiNote For use on the client side, hash is taken into account for equals and hashCode
          */
-        public UUIDAwareHashedItem(ItemStack stack, UUID uuid) {
+        public UUIDAwareHashedItem(ItemStack stack, @Nullable UUID uuid) {
             super(StackUtils.size(stack, 1));
             this.uuid = uuid;
-            this.overrideHash = true;
+            if (this.uuid == null) {
+                this.overrideHash = false;
+                this.uuidBasedHash = super.hashCode();
+            } else {
+                this.overrideHash = true;
+                this.uuidBasedHash = Objects.hash(super.hashCode(), this.uuid);
+            }
         }
 
-        public UUIDAwareHashedItem(HashedItem other, UUID uuid) {
+        public UUIDAwareHashedItem(HashedItem other, @NotNull UUID uuid) {
             super(other);
             this.uuid = uuid;
+            this.uuidBasedHash = super.hashCode();
             this.overrideHash = false;
         }
 
@@ -106,8 +146,9 @@ public class HashedItem {
         public boolean equals(Object obj) {
             if (obj == this) {
                 return true;
-            }
-            if (overrideHash && uuid != null) {
+            } else if (overrideHash) {
+                //Note: UUID cannot be null if overrideHash is true
+                //noinspection DataFlowIssue
                 return obj instanceof UUIDAwareHashedItem uuidAware && uuid.equals(uuidAware.uuid) && super.equals(obj);
             }
             return super.equals(obj);
@@ -115,10 +156,7 @@ public class HashedItem {
 
         @Override
         public int hashCode() {
-            if (overrideHash && uuid != null) {
-                return 31 * super.hashCode() + uuid.hashCode();
-            }
-            return super.hashCode();
+            return uuidBasedHash;
         }
 
         /**

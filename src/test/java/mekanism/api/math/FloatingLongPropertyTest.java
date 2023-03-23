@@ -118,4 +118,31 @@ class FloatingLongPropertyTest implements WithQuickTheories {
               longs().all()
         ).check((a, b) -> b == 0 || a.divide(b).equals(divideViaBigDecimal(a, FloatingLong.create(b))));
     }
+
+    @Test
+    @DisplayName("Test multiplying by long")
+    void testMultiplicationByLong() {
+        qt().forAll(
+              allFloatingLongs(),
+              longs().all()
+        ).check((a, b) -> a.multiply(b).equals(multiplyViaBigDecimal(a, FloatingLong.create(b))));
+    }
+
+    @Test
+    @DisplayName("Test addition by long")
+    void testAdditionByLong() {
+        qt().forAll(
+              allFloatingLongs(),
+              longs().all()
+        ).check((a, b) -> a.add(b).equals(addViaBigDecimal(a, FloatingLong.create(b))));
+    }
+
+    @Test
+    @DisplayName("Test subtraction by long")
+    void testSubtractionByLong() {
+        qt().forAll(
+              allFloatingLongs(),
+              longs().all()
+        ).check((a, b) -> a.subtract(b).equals(subtractViaBigDecimal(a, FloatingLong.create(b))));
+    }
 }

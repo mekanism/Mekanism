@@ -18,4 +18,8 @@ public interface IFilter<FILTER extends IFilter<FILTER>> {
     void read(FriendlyByteBuf dataStream);
 
     boolean hasFilter();
+
+    boolean isEnabled();
+
+    void setEnabled(boolean enabled);
 }

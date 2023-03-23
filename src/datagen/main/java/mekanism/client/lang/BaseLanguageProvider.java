@@ -77,7 +77,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     @Override
     public void add(@NotNull String key, @NotNull String value) {
         if (value.contains("%s")) {
-            throw new IllegalArgumentException("Values containing substitutions should use explicit numbered indices: "+key+" - "+value);
+            throw new IllegalArgumentException("Values containing substitutions should use explicit numbered indices: " + key + " - " + value);
         }
         super.add(key, value);
         if (altProviders.length > 0) {

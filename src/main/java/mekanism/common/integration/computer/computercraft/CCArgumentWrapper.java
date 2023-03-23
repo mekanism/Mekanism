@@ -41,6 +41,7 @@ import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.text.InputValidator;
+import net.minecraft.Util;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.ByteTag;
@@ -62,6 +63,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
@@ -224,6 +229,22 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             return wrapStack(stack.getFluid(), "amount", stack.getAmount(), stack.getTag());
         } else if (result instanceof ItemStack stack) {
             return wrapStack(stack.getItem(), "count", stack.getCount(), stack.getTag());
+        } else if (result instanceof BlockState state) {
+            Map<String, Object> wrapped = new HashMap<>(2);
+            wrapped.put("block", getName(state.getBlock()));
+            Map<String, Object> stateData = new HashMap<>();
+            for (Map.Entry<Property<?>, Comparable<?>> entry : state.getValues().entrySet()) {
+                Property<?> property = entry.getKey();
+                Object value = entry.getValue();
+                if (!(property instanceof IntegerProperty) && !(property instanceof BooleanProperty)) {
+                    value = Util.getPropertyName(property, value);
+                }
+                stateData.put(property.getName(), value);
+            }
+            if (!stateData.isEmpty()) {
+                wrapped.put("state", stateData);
+            }
+            return wrapped;
         } else if (result instanceof Tag tag) {
             Object wrapped = wrapNBT(tag);
             if (wrapped != null) {
@@ -252,9 +273,10 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             return wrapped;
         } else if (result instanceof Enum<?> res) {
             return res.name();
-        } else if (result instanceof IFilter res) {
+        } else if (result instanceof IFilter<?> res) {
             Map<String, Object> wrapped = new HashMap<>();
             wrapped.put("type", wrapReturnType(res.getFilterType()));
+            wrapped.put("enabled", res.isEnabled());
             if (result instanceof IItemStackFilter<?> itemFilter) {
                 ItemStack stack = itemFilter.getItemStack();
                 wrapped.put("item", wrapReturnType(stack.getItem()));
@@ -447,6 +469,10 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                 IFilter<?> filter = BaseFilter.fromType(filterType);
                 if (expectedType.isInstance(filter)) {
                     //Validate the filter is of the type we expect
+                    Object enabled = map.get("enabled");
+                    if (enabled instanceof Boolean enable) {
+                        filter.setEnabled(enable);
+                    }
                     if (filter instanceof IItemStackFilter<?> itemFilter) {
                         ItemStack stack = tryCreateFilterItem(map.get("item"), map.get("itemNBT"));
                         if (stack.isEmpty()) {

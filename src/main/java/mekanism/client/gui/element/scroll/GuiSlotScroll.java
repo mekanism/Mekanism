@@ -16,6 +16,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
+import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextUtils;
@@ -35,10 +36,10 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
     private final GuiScrollBar scrollBar;
 
     private final int xSlots, ySlots;
-    private final Supplier<List<IScrollableSlot>> slotList;
+    private final Supplier<@Nullable List<IScrollableSlot>> slotList;
     private final ISlotClickHandler clickHandler;
 
-    public GuiSlotScroll(IGuiWrapper gui, int x, int y, int xSlots, int ySlots, Supplier<List<IScrollableSlot>> slotList, ISlotClickHandler clickHandler) {
+    public GuiSlotScroll(IGuiWrapper gui, int x, int y, int xSlots, int ySlots, Supplier<@Nullable List<IScrollableSlot>> slotList, ISlotClickHandler clickHandler) {
         super(gui, x, y, xSlots * 18 + 18, ySlots * 18);
         this.xSlots = xSlots;
         this.ySlots = ySlots;
@@ -51,10 +52,9 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
     @Override
     public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        RenderSystem.setShaderTexture(0, getSlotList() == null ? SLOTS_DARK : SLOTS);
-        blit(matrix, x, y, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
-
         List<IScrollableSlot> list = getSlotList();
+        RenderSystem.setShaderTexture(0, list == null ? SLOTS_DARK : SLOTS);
+        blit(matrix, x, y, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
         if (list != null) {
             int slotStart = scrollBar.getCurrentSelection() * xSlots, max = xSlots * ySlots;
             for (int i = 0; i < max; i++) {
@@ -104,8 +104,7 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
             return super.mouseReleased(mouseX, mouseY, button);
         }
         super.mouseReleased(mouseX, mouseY, button);
-        IScrollableSlot slot = getSlot(mouseX, mouseY);
-        clickHandler.onClick(slot, button, Screen.hasShiftDown(), minecraft.player.containerMenu.getCarried());
+        clickHandler.onClick(() -> getSlot(mouseX, mouseY), button, Screen.hasShiftDown(), minecraft.player.containerMenu.getCarried());
         return true;
     }
 
@@ -137,9 +136,9 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
         if (isSlotEmpty(slot)) {
             return;
         }
-        gui().renderItemWithOverlay(matrix, slot.getItem().getStack(), slotX + 1, slotY + 1, 1, "");
-        if (slot.getCount() > 1) {
-            renderSlotText(matrix, getCountText(slot.getCount()), slotX + 1, slotY + 1);
+        gui().renderItemWithOverlay(matrix, slot.item().getInternalStack(), slotX + 1, slotY + 1, 1, "");
+        if (slot.count() > 1) {
+            renderSlotText(matrix, getCountText(slot.count()), slotX + 1, slotY + 1);
         }
     }
 
@@ -148,8 +147,8 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
         if (isSlotEmpty(slot)) {
             return;
         }
-        ItemStack stack = slot.getItem().getStack();
-        long count = slot.getCount();
+        ItemStack stack = slot.item().getInternalStack();
+        long count = slot.count();
         if (count < 10_000) {
             gui().renderItemTooltip(matrix, stack, slotX, slotY);
         } else {
@@ -160,7 +159,14 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
     }
 
     private boolean isSlotEmpty(IScrollableSlot slot) {
-        return slot.getItem() == null || slot.getItem().getStack().isEmpty();
+        if (slot.count() == 0) {
+            //Count is not expected to be zero, but validate it anyway
+            return true;
+        }
+        //Slot's item is not null in default impl, but check in case we make it null at some point
+        // and also validate if the internal stack is empty in case it is raw and there is some edge case
+        HashedItem item = slot.item();
+        return item == null || item.getInternalStack().isEmpty();
     }
 
     private void renderSlotText(PoseStack matrix, String text, int x, int y) {
@@ -203,6 +209,6 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
     @Override
     public Object getIngredient(double mouseX, double mouseY) {
         IScrollableSlot slot = getSlot(mouseX, mouseY);
-        return slot == null ? null : slot.getItem().getStack();
+        return slot == null ? null : slot.item().getInternalStack();
     }
 }

@@ -57,7 +57,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
 
     @Override
     public float getExplosionResistance(BlockState state, BlockGetter world, BlockPos pos, Explosion explosion) {
-        return type.has(AttributeCustomResistance.class) ? type.get(AttributeCustomResistance.class).getResistance()
+        return type.has(AttributeCustomResistance.class) ? type.get(AttributeCustomResistance.class).resistance()
                                                          : super.getExplosionResistance(state, world, pos, explosion);
     }
 

@@ -16,10 +16,8 @@ import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -56,20 +54,6 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     }
 
     @Override
-    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
-        if (allowedIn(group)) {
-            EnergyCubeTier tier = Attribute.getTier(getBlock(), EnergyCubeTier.class);
-            ItemStack stack = new ItemStack(this);
-            if (tier == EnergyCubeTier.CREATIVE) {
-                //TODO: Add side specific NBT configuration here rather than in BlockEnergyCube
-            }
-            //Add the empty and charged variants
-            items.add(stack);
-            items.add(StorageUtils.getFilledEnergyVariant(stack.copy(), tier.getMaxEnergy()));
-        }
-    }
-
-    @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
         return true;
     }
@@ -87,7 +71,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     @Override
     protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
         super.gatherCapabilities(capabilities, stack, nbt);
-        ItemCapability capability = RateLimitEnergyHandler.create(Attribute.getTier(getBlock(), EnergyCubeTier.class));
+        ItemCapability capability = RateLimitEnergyHandler.create(getTier());
         int index = IntStream.range(0, capabilities.size()).filter(i -> capabilities.get(i) instanceof ItemStackEnergyHandler).findFirst().orElse(-1);
         if (index != -1) {
             //This is likely always the path that will be taken

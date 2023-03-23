@@ -46,8 +46,8 @@ public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator
     /**
      * {@inheritDoc}
      *
-     * @implNote Converts a stream of ingredients into a single ingredient by converting the stream to an array and calling {@link
-     * #createMulti(SlurryStackIngredient[])}.
+     * @implNote Converts a stream of ingredients into a single ingredient by converting the stream to an array and calling
+     * {@link #createMulti(SlurryStackIngredient[])}.
      */
     @Override
     public SlurryStackIngredient from(Stream<SlurryStackIngredient> ingredients) {

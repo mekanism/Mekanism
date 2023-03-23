@@ -133,10 +133,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     public void addTrusted(String name) {
         SecurityFrequency frequency = getFreq();
         if (frequency != null) {
-            ServerLifecycleHooks.getCurrentServer().getProfileCache().get(name).ifPresent(profile -> {
-                frequency.addTrusted(profile.getId(), profile.getName());
-                markForSave();
-            });
+            ServerLifecycleHooks.getCurrentServer().getProfileCache().get(name).ifPresent(profile -> frequency.addTrusted(profile.getId(), profile.getName()));
         }
     }
 

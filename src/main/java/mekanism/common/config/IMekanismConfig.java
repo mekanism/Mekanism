@@ -10,6 +10,10 @@ public interface IMekanismConfig {
 
     ForgeConfigSpec getConfigSpec();
 
+    default boolean isLoaded() {
+        return getConfigSpec().isLoaded();
+    }
+
     ModConfig.Type getConfigType();
 
     default void save() {

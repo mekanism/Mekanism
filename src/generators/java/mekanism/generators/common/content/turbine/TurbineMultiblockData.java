@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -16,7 +17,6 @@ import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
@@ -27,19 +27,21 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
 public class TurbineMultiblockData extends MultiblockData {
-
-    public static final long GAS_PER_TANK = EvaporationMultiblockData.FLUID_PER_TANK;
 
     public static final float ROTATION_THRESHOLD = 0.001F;
     public static final Object2FloatMap<UUID> clientRotationMap = new Object2FloatOpenHashMap<>();
@@ -63,6 +65,7 @@ public class TurbineMultiblockData extends MultiblockData {
     @ContainerSync
     @SyntheticComputerMethod(getter = "getVents")
     public int vents;
+    private List<VentData> ventData = Collections.emptyList();
     @ContainerSync
     @SyntheticComputerMethod(getter = "getCoils")
     public int coils;
@@ -89,12 +92,25 @@ public class TurbineMultiblockData extends MultiblockData {
     public TurbineMultiblockData(TileEntityTurbineCasing tile) {
         super(tile);
         gasTanks.add(gasTank = new TurbineGasTank(this, createSaveAndComparator()));
-        ventTank = VariableCapacityFluidTank.output(this, () -> isFormed() ? condensers * MekanismGeneratorsConfig.generators.condenserRate.get() : 1_000,
+        ventTank = VariableCapacityFluidTank.output(this, () -> isFormed() ? condensers * MekanismGeneratorsConfig.generators.condenserRate.get() : FluidType.BUCKET_VOLUME,
               fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()), this);
         ventTanks = Collections.singletonList(ventTank);
         energyContainer = VariableCapacityEnergyContainer.create(this::getEnergyCapacity, automationType -> isFormed(),
               automationType -> automationType == AutomationType.INTERNAL && isFormed(), this);
         energyContainers.add(energyContainer);
+    }
+
+    @Override
+    protected void updateEjectors(Level world) {
+        super.updateEjectors(world);
+        for (VentData data : ventData) {
+            TileEntityTurbineVent vent = WorldUtils.getTileEntity(TileEntityTurbineVent.class, world, data.location);
+            if (vent != null) {
+                //Ensure we don't use create a bunch of identical collections potentially using up a bunch of memory
+                Set<Direction> sides = SIDE_REFERENCES.computeIfAbsent(data.side, Collections::singleton);
+                vent.setEjectSides(sides);
+            }
+        }
     }
 
     @Override
@@ -161,6 +177,11 @@ public class TurbineMultiblockData extends MultiblockData {
         return Math.min(stored, Math.max(stored / 50, lastSteamInput * 2));
     }
 
+    public void updateVentData(List<VentData> vents) {
+        this.ventData = vents;
+        this.vents = this.ventData.size();
+    }
+
     @Override
     public void readUpdateTag(CompoundTag tag) {
         super.readUpdateTag(tag);
@@ -190,7 +211,7 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     public long getSteamCapacity() {
-        return lowerVolume * GAS_PER_TANK;
+        return lowerVolume * MekanismGeneratorsConfig.generators.turbineGasPerTank.get();
     }
 
     @NotNull
@@ -200,8 +221,10 @@ public class TurbineMultiblockData extends MultiblockData {
 
     @Override
     public void setVolume(int volume) {
-        super.setVolume(volume);
-        energyCapacity = FloatingLong.createConst(getVolume() * 16_000_000L); //16 MJ energy capacity per volume
+        if (getVolume() != volume) {
+            super.setVolume(volume);
+            energyCapacity = MekanismGeneratorsConfig.generators.turbineEnergyCapacityPerVolume.get().multiply(volume).copyAsConst();
+        }
     }
 
     @Override
@@ -256,4 +279,7 @@ public class TurbineMultiblockData extends MultiblockData {
         setDumpMode(dumpMode.getPrevious());
     }
     //End computer related methods
+
+    public record VentData(BlockPos location, Direction side) {
+    }
 }

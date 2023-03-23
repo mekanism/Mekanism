@@ -30,7 +30,7 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedFloatValue baseSoundVolume;
     public final CachedBooleanValue opaqueTransmitters;
     public final CachedBooleanValue allowModeScroll;
-    public final CachedBooleanValue alignHUDLeft;
+    public final CachedBooleanValue reverseHUD;
     public final CachedFloatValue hudScale;
     public final CachedBooleanValue enableHUD;
     public final CachedIntValue energyColor;
@@ -74,8 +74,8 @@ public class ClientConfig extends BaseMekanismConfig {
               .define("opaqueTransmitters", false));
         allowModeScroll = CachedBooleanValue.wrap(this, builder.comment("Allow sneak + scroll to change item modes.")
               .define("allowModeScroll", true));
-        alignHUDLeft = CachedBooleanValue.wrap(this, builder.comment("Align HUD (text) with left (if true) or right (if false)")
-              .define("alignHUDLeft", true));
+        reverseHUD = CachedBooleanValue.wrap(this, builder.comment("If true will move HUD text alignment and compass rendering to the right side of the screen, and move the MekaSuit module rendering to the left side.")
+              .define("reverseHUD", false));
         hudScale = CachedFloatValue.wrap(this, builder.comment("Scale of the text displayed on the HUD.")
               .defineInRange("hudScale", 0.6, 0.25, 1));
         enableHUD = CachedBooleanValue.wrap(this, builder.comment("Enable item information HUD during gameplay")

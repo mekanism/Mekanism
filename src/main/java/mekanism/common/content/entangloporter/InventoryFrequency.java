@@ -220,24 +220,26 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
 
     @Override
     public void onContentsChanged() {
+        dirty = true;
     }
 
     @Override
-    public void update(BlockEntity tile) {
-        super.update(tile);
-        Coord4D coord = new Coord4D(tile);
+    public boolean update(BlockEntity tile) {
+        boolean changedData = super.update(tile);
         if (tile instanceof TileEntityQuantumEntangloporter entangloporter) {
             //This should always be the case, but validate it and remove if it isn't
-            activeQEs.put(coord, entangloporter);
+            activeQEs.put(entangloporter.getTileCoord(), entangloporter);
         } else {
-            activeQEs.remove(coord);
+            activeQEs.remove(new Coord4D(tile));
         }
+        return changedData;
     }
 
     @Override
-    public void onDeactivate(BlockEntity tile) {
-        super.onDeactivate(tile);
+    public boolean onDeactivate(BlockEntity tile) {
+        boolean changedData = super.onDeactivate(tile);
         activeQEs.remove(new Coord4D(tile));
+        return changedData;
     }
 
     public void handleEject(long gameTime) {

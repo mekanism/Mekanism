@@ -3,11 +3,14 @@
   "key": {
     "#": {
       "tag": "forge:ingots/uranium"
+    },
+    "P": {
+      "item": "mekanism:ingot_uranium"
     }
   },
   "pattern": [
     "###",
-    "###",
+    "#P#",
     "###"
   ],
   "result": {

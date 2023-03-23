@@ -77,7 +77,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-//TODO: Eventually we might want to try and support replacing but for now it isn't worth it
 public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> implements IRecipeHandler<RECIPE> {
 
     protected static final Object SKIP_OPTIONAL_PARAM = new Object();

@@ -26,10 +26,7 @@ public abstract class SyncableList<TYPE> implements ISyncableData {
     @NotNull
     public List<TYPE> get() {
         Collection<TYPE> collection = getRaw();
-        if (collection instanceof List) {
-            return (List<TYPE>) collection;
-        }
-        return new ArrayList<>(collection);
+        return collection instanceof List<TYPE> list ? list : new ArrayList<>(collection);
     }
 
     @NotNull

@@ -130,9 +130,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
         pos = pos.immutable();
         ctx.locations.add(pos);
         if (type.isValve()) {
-            ValveData data = new ValveData();
-            data.location = pos;
-            data.side = getSide(data.location);
+            ValveData data = new ValveData(pos, getSide(pos));
             ctx.valves.add(data);
         }
         return FormationResult.SUCCESS;

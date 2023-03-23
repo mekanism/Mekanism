@@ -26,7 +26,7 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     /**
      * A sided variant of {@link IItemHandlerModifiable#setStackInSlot(int, ItemStack)}, docs copied for convenience.
-     *
+     * <p>
      * Overrides the stack in the given slot. This method is used by the standard Forge helper methods and classes. It is not intended for general use by other mods, and
      * the handler may throw an error if it is called unexpectedly.
      *
@@ -45,7 +45,7 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     /**
      * A sided variant of {@link IItemHandler#getSlots()}, docs copied for convenience.
-     *
+     * <p>
      * Returns the number of slots available
      *
      * @param side The side we are interacting with the handler from (null for internal).
@@ -61,11 +61,11 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     /**
      * A sided variant of {@link IItemHandler#getStackInSlot(int)}, docs copied for convenience.
-     *
+     * <p>
      * Returns the {@link ItemStack} in a given slot.
-     *
+     * <p>
      * The result's stack size may be greater than the itemstack's max size.
-     *
+     * <p>
      * If the result is empty, then the slot is empty.
      *
      * <p>
@@ -96,7 +96,8 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
      * <p>
      * Inserts an {@link ItemStack} into the given slot and return the remainder. The {@link ItemStack} <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
+     * Note: This behaviour is subtly different from
+     * {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
      * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param slot   Slot to insert into.
@@ -118,11 +119,11 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     /**
      * A sided variant of {@link IItemHandler#extractItem(int, int, boolean)}, docs copied for convenience.
-     *
+     * <p>
      * Extracts an {@link ItemStack} from the given slot.
      * <p>
-     * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount} and {@link
-     * ItemStack#getMaxStackSize()}.
+     * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount} and
+     * {@link ItemStack#getMaxStackSize()}.
      * </p>
      *
      * @param slot   Slot to extract from.
@@ -144,7 +145,7 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     /**
      * A sided variant of {@link IItemHandler#getSlotLimit(int)}, docs copied for convenience.
-     *
+     * <p>
      * Retrieves the maximum stack size allowed to exist in the given slot.
      *
      * @param slot Slot to query.
@@ -177,8 +178,8 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
      * @param stack Stack to test with for validity
      * @param side  The side we are interacting with the handler from (null for internal).
      *
-     * @return true if the slot can accept the {@link ItemStack}, not considering the current state of the inventory. false if the slot can never insert the {@link
-     * ItemStack} in any situation.
+     * @return true if the slot can accept the {@link ItemStack}, not considering the current state of the inventory. false if the slot can never insert the
+     * {@link ItemStack} in any situation.
      */
     boolean isItemValid(int slot, ItemStack stack, @Nullable Direction side);
 

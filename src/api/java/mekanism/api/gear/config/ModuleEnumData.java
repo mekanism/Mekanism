@@ -66,7 +66,7 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
      *
      * @deprecated since 10.3.2, use the version ({@link #ModuleEnumData(Enum)}) that figures out the class automatically.
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.3.2")
     public ModuleEnumData(Class<TYPE> enumClass, TYPE def) {
         this(def);
         Objects.requireNonNull(enumClass, "Enum Class cannot be null.");
@@ -81,7 +81,7 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
      *
      * @deprecated since 10.3.2, use the version ({@link #ModuleEnumData(Enum, int)}) that figures out the class automatically.
      */
-    @Deprecated(forRemoval = true)
+    @Deprecated(forRemoval = true, since = "10.3.2")
     public ModuleEnumData(Class<TYPE> enumClass, int selectableCount, TYPE def) {
         this(def, selectableCount);
         Objects.requireNonNull(enumClass, "Enum Class cannot be null.");

@@ -3,11 +3,14 @@
   "key": {
     "#": {
       "tag": "forge:ingots/bronze"
+    },
+    "P": {
+      "item": "mekanism:ingot_bronze"
     }
   },
   "pattern": [
     "###",
-    "###",
+    "#P#",
     "###"
   ],
   "result": {

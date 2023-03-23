@@ -14,6 +14,7 @@ public class HwylaLookingAtHelper implements LookingAtHelper {
     public static final String TEXT = "text";
 
     private final ListTag data = new ListTag();
+
     @Override
     public void addText(Component text) {
         CompoundTag textData = new CompoundTag();

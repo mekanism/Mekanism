@@ -24,11 +24,15 @@ public class CachedFloatingLongValue extends CachedResolvableConfigValue<Floatin
 
     public static final Predicate<Object> ENERGY_CONVERSION = Util.make(() -> {
         FloatingLong max = FloatingLong.ONE.divide(FloatingLong.createConst(0, (short) 1)).copyAsConst();//Inverse of min positive value
+        return greaterZeroLessThan(max);
+    });
+
+    public static Predicate<Object> greaterZeroLessThan(FloatingLong max) {
         return object -> {
             FloatingLong value = tryGetValue(object);
             return value != null && value.greaterThan(FloatingLong.ZERO) && value.smallerOrEqual(max);
         };
-    });
+    };
 
     @Nullable
     private static FloatingLong tryGetValue(Object object) {

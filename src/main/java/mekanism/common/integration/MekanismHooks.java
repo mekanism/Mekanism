@@ -8,7 +8,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.
@@ -26,6 +25,7 @@ public final class MekanismHooks {
     public static final String JEITWEAKER_MOD_ID = "jeitweaker";
     public static final String OC2_MOD_ID = "oc2";
     public static final String PROJECTE_MOD_ID = "projecte";
+    public static final String RECIPE_STAGES_MOD_ID = "recipestages";
     public static final String TOP_MOD_ID = "theoneprobe";
     public static final String WILDFIRE_GENDER_MOD_ID = "wildfire_gender";
 
@@ -37,6 +37,7 @@ public final class MekanismHooks {
     public boolean JEILoaded;
     public boolean OC2Loaded;
     public boolean ProjectELoaded;
+    public boolean RecipeStagesLoaded;
     public boolean TOPLoaded;
     public boolean WildfireGenderModLoaded;
 
@@ -56,6 +57,7 @@ public final class MekanismHooks {
         JEILoaded = modList.isLoaded(JEI_MOD_ID);
         OC2Loaded = modList.isLoaded(OC2_MOD_ID);
         ProjectELoaded = modList.isLoaded(PROJECTE_MOD_ID);
+        RecipeStagesLoaded = modList.isLoaded(RECIPE_STAGES_MOD_ID);
         TOPLoaded = modList.isLoaded(TOP_MOD_ID);
         FluxNetworksLoaded = modList.isLoaded(FLUX_NETWORKS_MOD_ID);
         WildfireGenderModLoaded = modList.isLoaded(WILDFIRE_GENDER_MOD_ID);

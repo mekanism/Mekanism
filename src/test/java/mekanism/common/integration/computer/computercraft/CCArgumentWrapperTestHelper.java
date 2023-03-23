@@ -47,7 +47,7 @@ class CCArgumentWrapperTestHelper {
         return switch (id) {
             case Tag.TAG_BYTE, Tag.TAG_SHORT, Tag.TAG_INT, Tag.TAG_LONG, Tag.TAG_FLOAT, Tag.TAG_DOUBLE, Tag.TAG_ANY_NUMERIC ->
                 //Get it as a double instead of a number as we will only get it back as a double from CC
-                addTagHint(id, ((NumericTag) nbt).getAsDouble(), includeHints);
+                  addTagHint(id, ((NumericTag) nbt).getAsDouble(), includeHints);
             //Tag End is highly unlikely to ever be used outside of networking but handle it anyway
             case Tag.TAG_STRING, Tag.TAG_END -> addTagHint(id, nbt.getAsString(), includeHints);
             case Tag.TAG_BYTE_ARRAY, Tag.TAG_INT_ARRAY, Tag.TAG_LONG_ARRAY, Tag.TAG_LIST -> {

@@ -4,11 +4,7 @@ import mekanism.api.robit.RobitSkin;
 import mekanism.common.Mekanism;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.stats.StatType;
-import net.minecraft.stats.Stats;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +14,7 @@ public class AllayRobitSkin extends RobitSkin {
     private static final ResourceLocation MODEL = Mekanism.rl("item/robit_allay");
 
     public AllayRobitSkin() {
-        super(Mekanism.rl( "allay"), Mekanism.rl("allay2"));
+        super(Mekanism.rl("allay"), Mekanism.rl("allay2"));
     }
 
     @Nullable

@@ -61,7 +61,7 @@ public abstract class CachedValue<T> {
     }
 
     protected boolean isLoaded() {
-        return config.getConfigSpec().isLoaded();
+        return config.isLoaded();
     }
 
     @FunctionalInterface

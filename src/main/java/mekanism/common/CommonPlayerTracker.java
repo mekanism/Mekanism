@@ -90,7 +90,7 @@ public class CommonPlayerTracker {
         player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
             if (!event.isEndConquered()) {
                 //If the player is returning from the end don't reset radiation
-                c.set(0);
+                c.set(RadiationManager.BASELINE);
             }
             Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(c.getRadiation()), player);
         });

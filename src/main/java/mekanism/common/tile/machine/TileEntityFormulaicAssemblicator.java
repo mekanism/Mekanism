@@ -1,10 +1,12 @@
 package mekanism.common.tile.machine;
 
+import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -77,6 +79,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     private int ticksRequired = BASE_TICKS_REQUIRED;
     private int operatingTicks;
+    private boolean usedEnergy = false;
     private boolean autoMode = false;
     private boolean isRecipe = false;
     private boolean stockControl = false;
@@ -145,11 +148,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     }
                     IntList indices = formula.getIngredientIndices(level, stack);
                     if (!indices.isEmpty()) {
-                        HashedItem stockItem = stockControlMap[index];
-                        if (!stockControl || stockItem == null) {
-                            return true;
+                        if (stockControl) {
+                            HashedItem stockItem = stockControlMap[index];
+                            return stockItem == null || ItemHandlerHelper.canItemStacksStack(stockItem.getInternalStack(), stack);
                         }
-                        return ItemHandlerHelper.canItemStacksStack(stockItem.getStack(), stack);
+                        return true;
                     }
                     return false;
                 }, BasicInventorySlot.alwaysTrue, listener, 8 + slotX * 18, 98 + slotY * 18);
@@ -203,9 +206,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             recalculateRecipe();
         }
         if (formula != null && stockControl && needsOrganize) {
-            needsOrganize = false;
             buildStockControlMap();
             organizeStock();
+            //Mark as no longer needing to organize after organizing it so that it rearranging things doesn't cause it to organize again
+            needsOrganize = false;
         }
         energySlot.fillContainerOrConvert();
         if (getControlType() != RedstoneControl.PULSE) {
@@ -218,6 +222,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             nextMode();
         }
 
+        FloatingLong clientEnergyUsed = FloatingLong.ZERO;
         if (autoMode && formula != null && ((getControlType() == RedstoneControl.PULSE && pulseOperations > 0) || MekanismUtils.canFunction(this))) {
             boolean canOperate = true;
             if (!isRecipe) {
@@ -235,7 +240,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 } else {
                     FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
                     if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
-                        energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
+                        clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                         operatingTicks++;
                     }
                 }
@@ -245,6 +250,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         } else {
             operatingTicks = 0;
         }
+        usedEnergy = !clientEnergyUsed.isZero();
     }
 
     private void checkFormula() {
@@ -472,6 +478,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             stockControl = !stockControl;
             if (stockControl) {
                 organizeStock();
+                //Just organized mark as not actually needing organize in case things changed
+                needsOrganize = false;
             }
         }
     }
@@ -481,37 +489,38 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             return;
         }
         // build map of what items we have to organize
-        Object2IntMap<HashedItem> storedMap = new Object2IntOpenHashMap<>();
+        // Note: We keep track of the order so that it is more consistent
+        Object2IntMap<HashedItem> storedMap = new Object2IntLinkedOpenHashMap<>();
         for (IInventorySlot inputSlot : inputSlots) {
-            ItemStack stack = inputSlot.getStack();
-            if (!stack.isEmpty()) {
+            if (!inputSlot.isEmpty()) {
+                ItemStack stack = inputSlot.getStack();
                 HashedItem hashed = HashedItem.create(stack);
-                storedMap.put(hashed, storedMap.getOrDefault(hashed, 0) + stack.getCount());
+                storedMap.mergeInt(hashed, stack.getCount(), Integer::sum);
             }
         }
         // place items into respective controlled slots
-        IntSet unused = new IntOpenHashSet();
+        IntSet unused = new IntArraySet(stockControlMap.length);
         for (int i = 0; i < inputSlots.size(); i++) {
             HashedItem hashedItem = stockControlMap[i];
             if (hashedItem == null) {
                 unused.add(i);
-            } else if (storedMap.containsKey(hashedItem)) {
-                int stored = storedMap.getInt(hashedItem);
-                int count = Math.min(hashedItem.getStack().getMaxStackSize(), stored);
-                if (count == stored) {
-                    storedMap.removeInt(hashedItem);
-                } else {
-                    storedMap.put(hashedItem, stored - count);
-                }
-                setSlotIfChanged(inputSlots.get(i), hashedItem, count);
             } else {
-                //If we don't have the item stored anymore (already filled all previous slots with it),
-                // then we need to empty the slot as the items in it has been moved to a more "optimal" slot
-                //Note: We only set them to empty if they are not already empty to avoid onContentsChanged being called
-                // Technically our default implementation doesn't fire onContentsChanged if the stack was already empty
-                // but this is not an API contract
                 IInventorySlot slot = inputSlots.get(i);
-                if (!slot.isEmpty()) {
+                int stored = storedMap.getInt(hashedItem);
+                if (stored > 0) {
+                    int count = Math.min(hashedItem.getMaxStackSize(), stored);
+                    if (count == stored) {
+                        storedMap.removeInt(hashedItem);
+                    } else {
+                        storedMap.put(hashedItem, stored - count);
+                    }
+                    setSlotIfChanged(slot, hashedItem, count);
+                } else if (!slot.isEmpty()) {
+                    //If we don't have the item stored anymore (already filled all previous slots with it),
+                    // then we need to empty the slot as the items in it has been moved to a more "optimal" slot
+                    //Note: We only set them to empty if they are not already empty to avoid onContentsChanged being called
+                    // Technically our default implementation doesn't fire onContentsChanged if the stack was already empty
+                    // but this is not an API contract
                     slot.setEmpty();
                 }
             }
@@ -552,12 +561,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     private boolean setSlotIfChanged(Object2IntMap<HashedItem> storedMap, IInventorySlot inputSlot) {
         boolean empty = false;
-        Object2IntMap.Entry<HashedItem> next = storedMap.object2IntEntrySet().iterator().next();
+        ObjectIterator<Entry<HashedItem>> iterator = storedMap.object2IntEntrySet().iterator();
+        Object2IntMap.Entry<HashedItem> next = iterator.next();
         HashedItem item = next.getKey();
         int stored = next.getIntValue();
-        int count = Math.min(item.getStack().getMaxStackSize(), stored);
+        int count = Math.min(item.getMaxStackSize(), stored);
         if (count == stored) {
-            storedMap.removeInt(item);
+            iterator.remove();
             empty = storedMap.isEmpty();
         } else {
             next.setValue(stored - count);
@@ -670,6 +680,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return energyContainer;
     }
 
+    public boolean usedEnergy() {
+        return usedEnergy;
+    }
+
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
@@ -678,6 +692,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         container.track(SyncableInt.create(this::getTicksRequired, value -> ticksRequired = value));
         container.track(SyncableBoolean.create(this::hasRecipe, value -> isRecipe = value));
         container.track(SyncableBoolean.create(this::getStockControl, value -> stockControl = value));
+        container.track(SyncableBoolean.create(this::usedEnergy, value -> usedEnergy = value));
         container.track(SyncableBoolean.create(() -> formula != null, hasFormula -> {
             if (hasFormula) {
                 if (formula == null && isRemote()) {

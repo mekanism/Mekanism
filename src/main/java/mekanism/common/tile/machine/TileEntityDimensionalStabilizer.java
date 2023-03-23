@@ -119,6 +119,31 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         }
     }
 
+    public void adjustChunkLoadingRadius(int radius, boolean load) {
+        //Validate radius as this is called from a packet
+        if (radius > 0 && radius <= MAX_LOAD_RADIUS) {
+            boolean changed = false;
+            for (int x = -radius; x <= radius; x++) {
+                boolean skipInner = x > -radius && x < radius;
+                int actualX = x + MAX_LOAD_RADIUS;
+                for (int z = -radius; z <= radius; z += skipInner ? 2 * radius : 1) {
+                    if (setChunkLoadingAt(actualX, z + MAX_LOAD_RADIUS, load)) {
+                        changed = true;
+                    }
+                }
+            }
+            if (changed) {
+                //If something actually changed, then save the changes and update the needed energy and chunk tickets
+                // in theory from packet something will always change, but in case there is a desync or in case this
+                // is done via a computer mod on already set chunks, don't actually update anything
+                setChanged(false);
+                energyContainer.updateEnergyPerTick();
+                //Refresh the chunks that are loaded as it has changed
+                getChunkLoader().refreshChunkTickets();
+            }
+        }
+    }
+
     private boolean setChunkLoadingAt(int x, int z, boolean load) {
         if (x == MAX_LOAD_RADIUS && z == MAX_LOAD_RADIUS) {
             //Center chunk where the stabilizer is, is always loaded (unless none are loaded due to energy or control mode)
@@ -294,6 +319,26 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
             //Refresh the chunks that are loaded as it has changed
             getChunkLoader().refreshChunkTickets();
         }
+    }
+
+    private void validateRadius(int radius) throws ComputerException {
+        if (radius <= 0 || radius > MAX_LOAD_RADIUS) {
+            throw new ComputerException("Radius '%d' is not in range, must be between 1 and %d inclusive.", radius, MAX_LOAD_RADIUS);
+        }
+    }
+
+    @ComputerMethod
+    private void enableChunkLoadingFor(int radius) throws ComputerException {
+        validateSecurityIsPublic();
+        validateRadius(radius);
+        adjustChunkLoadingRadius(radius, true);
+    }
+
+    @ComputerMethod
+    private void disableChunkLoadingFor(int radius) throws ComputerException {
+        validateSecurityIsPublic();
+        validateRadius(radius);
+        adjustChunkLoadingRadius(radius, false);
     }
     //End methods IComputerTile
 

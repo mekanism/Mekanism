@@ -87,7 +87,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     public BasicFluidTank fluidTank;
     /**
      * True: fluid -> gas
-     *
+     * <p>
      * False: gas -> fluid
      */
     public boolean mode;

@@ -107,7 +107,9 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
                     return false;
                 }
                 //Output tank, so we want to drain
-                return isNonFullFluidContainer(capability);
+                //Allow for any fluid containers, but we have a more restrictive canInsert so that we don't insert all items
+                // as otherwise when we drain and replace with the container we might have issues
+                return true;
             }
             return false;
         }, listener, x, y);
@@ -142,7 +144,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
 
     /**
      * Accepts any items that can be filled with the current contents of the fluid tank, or if it is a fluid container and the tank is currently empty
-     *
+     * <p>
      * Drains the tank into this item.
      */
     public static FluidInventorySlot drain(IExtendedFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {

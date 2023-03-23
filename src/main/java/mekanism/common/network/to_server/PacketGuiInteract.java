@@ -3,10 +3,10 @@ package mekanism.common.network.to_server;
 import mekanism.api.Upgrade;
 import mekanism.api.functions.TriConsumer;
 import mekanism.api.security.SecurityMode;
+import mekanism.common.content.filter.SortableFilterManager;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -14,12 +14,13 @@ import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.interfaces.IHasMode;
-import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.tile.interfaces.ISideConfiguration;
+import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
+import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
@@ -287,13 +288,18 @@ public class PacketGuiInteract implements IMekanismPacket {
         }),
 
         MOVE_FILTER_UP((tile, player, extra) -> {
-            if (tile instanceof IHasSortableFilters hasSortableFilters) {
-                hasSortableFilters.moveUp(extra);
+            if (tile instanceof ITileFilterHolder<?> filterHolder && filterHolder.getFilterManager() instanceof SortableFilterManager<?> manager) {
+                manager.moveUp(extra);
             }
         }),
         MOVE_FILTER_DOWN((tile, player, extra) -> {
-            if (tile instanceof IHasSortableFilters hasSortableFilters) {
-                hasSortableFilters.moveDown(extra);
+            if (tile instanceof ITileFilterHolder<?> filterHolder && filterHolder.getFilterManager() instanceof SortableFilterManager<?> manager) {
+                manager.moveDown(extra);
+            }
+        }),
+        TOGGLE_FILTER_STATE((tile, player, extra) -> {
+            if (tile instanceof ITileFilterHolder<?> filterHolder) {
+                filterHolder.getFilterManager().toggleState(extra);
             }
         }),
 
@@ -385,9 +391,17 @@ public class PacketGuiInteract implements IMekanismPacket {
             if (tile instanceof TileEntityDimensionalStabilizer stabilizer) {
                 stabilizer.toggleChunkLoadingAt(extra / TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER, extra % TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER);
             }
-        })
-
-        ;
+        }),
+        ENABLE_RADIUS_CHUNKLOAD((tile, player, extra) -> {
+            if (tile instanceof TileEntityDimensionalStabilizer stabilizer) {
+                stabilizer.adjustChunkLoadingRadius(extra, true);
+            }
+        }),
+        DISABLE_RADIUS_CHUNKLOAD((tile, player, extra) -> {
+            if (tile instanceof TileEntityDimensionalStabilizer stabilizer) {
+                stabilizer.adjustChunkLoadingRadius(extra, false);
+            }
+        });
 
         private final TriConsumer<TileEntityMekanism, Player, Integer> consumerForTile;
 

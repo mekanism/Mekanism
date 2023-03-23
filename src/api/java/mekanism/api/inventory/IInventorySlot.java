@@ -17,9 +17,9 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
 
     /**
      * Returns the {@link ItemStack} in this {@link IInventorySlot}.
-     *
+     * <p>
      * The result's stack size may be greater than the itemstack's max size.
-     *
+     * <p>
      * If the result is empty, then the slot is empty.
      *
      * <p>
@@ -50,7 +50,8 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
      * <p>
      * Inserts an {@link ItemStack} into this {@link IInventorySlot} and return the remainder. The {@link ItemStack} <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
+     * Note: This behaviour is subtly different from
+     * {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
      * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
      *
      * @param stack          {@link ItemStack} to insert. This must not be modified by the slot.
@@ -60,8 +61,9 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
      * @return The remaining {@link ItemStack} that was not inserted (if the entire stack is accepted, then return an empty {@link ItemStack}). May be the same as the
      * input {@link ItemStack} if unchanged, otherwise a new {@link ItemStack}. The returned ItemStack can be safely modified after
      *
-     * @implNote The {@link ItemStack} <em>should not</em> be modified in this function! If the internal stack does get updated make sure to call {@link
-     * #onContentsChanged()}. It is also recommended to override this if your internal {@link ItemStack} is mutable so that a copy does not have to be made every run
+     * @implNote The {@link ItemStack} <em>should not</em> be modified in this function! If the internal stack does get updated make sure to call
+     * {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link ItemStack} is mutable so that a copy does not have to be made every
+     * run
      */
     default ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isItemValid(stack)) {
@@ -101,8 +103,8 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
     /**
      * Extracts an {@link ItemStack} from this {@link IInventorySlot}.
      * <p>
-     * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount} and {@link
-     * ItemStack#getMaxStackSize()}.
+     * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount} and
+     * {@link ItemStack#getMaxStackSize()}.
      * </p>
      *
      * @param amount         Amount to extract (may be greater than the current stack's max limit)
@@ -168,8 +170,8 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
      *
      * @param stack Stack to test with for validity
      *
-     * @return true if this {@link IInventorySlot} can accept the {@link ItemStack}, not considering the current state of the inventory. false if this {@link
-     * IInventorySlot} can never insert the {@link ItemStack} in any situation.
+     * @return true if this {@link IInventorySlot} can accept the {@link ItemStack}, not considering the current state of the inventory. false if this
+     * {@link IInventorySlot} can never insert the {@link ItemStack} in any situation.
      */
     boolean isItemValid(ItemStack stack);
 
@@ -183,7 +185,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
 
     /**
      * Convenience method for modifying the size of the stored stack.
-     *
+     * <p>
      * If there is a stack stored in this slot, set the size of it to the given amount. Capping at the item's max stack size and the limit of this slot. If the amount is
      * less than or equal to zero, then this instead sets the stack to the empty stack.
      *
@@ -221,7 +223,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
 
     /**
      * Convenience method for growing the size of the stored stack.
-     *
+     * <p>
      * If there is a stack stored in this slot, increase its size by the given amount. Capping at the item's max stack size and the limit of this slot. If the stack
      * shrinks to an amount of less than or equal to zero, then this instead sets the stack to the empty stack.
      *
@@ -245,7 +247,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
 
     /**
      * Convenience method for shrinking the size of the stored stack.
-     *
+     * <p>
      * If there is a stack stored in this slot, shrink its size by the given amount. If this causes its size to become less than or equal to zero, then the stack is set
      * to the empty stack. If this method is used to grow the stack the size gets capped at the item's max stack size and the limit of this slot.
      *

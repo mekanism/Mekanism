@@ -3,8 +3,6 @@ package mekanism.common.integration.energy;
 import java.util.List;
 import java.util.stream.Collectors;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.common.Mekanism;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.energy.fluxnetworks.FNEnergyCompat;
 import mekanism.common.integration.energy.forgeenergy.ForgeEnergyCompat;
 import net.minecraft.core.Direction;
@@ -135,6 +133,6 @@ public class EnergyCompatUtils {
     public static boolean useIC2() {
         //TODO: IC2
         //Note: Use default value if called before configs are loaded. In general this should never happen, but third party mods may just call it regardless
-        return Mekanism.hooks.IC2Loaded/* && EnergyNet.instance != null*/ && !MekanismConfig.general.blacklistIC2.getOrDefault();
+        return false;//Mekanism.hooks.IC2Loaded/* && EnergyNet.instance != null*/ && !MekanismConfig.general.blacklistIC2.getOrDefault();
     }
 }

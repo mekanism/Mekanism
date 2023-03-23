@@ -60,6 +60,7 @@ public interface IModuleHelper {
      * @param typeProvider Module type.
      *
      * @return Set of conflicting module types.
+     *
      * @since 10.2.3
      */
     Set<ModuleData<?>> getConflicting(IModuleDataProvider<?> typeProvider);
@@ -82,8 +83,7 @@ public interface IModuleHelper {
      *
      * @return Module, or {@code null} if no module of the given type is installed.
      */
-    @Nullable
-    <MODULE extends ICustomModule<MODULE>> IModule<MODULE> load(ItemStack container, IModuleDataProvider<MODULE> typeProvider);
+    @Nullable <MODULE extends ICustomModule<MODULE>> IModule<MODULE> load(ItemStack container, IModuleDataProvider<MODULE> typeProvider);
 
     /**
      * Gets a list of all modules on an item stack.
@@ -148,8 +148,8 @@ public interface IModuleHelper {
     /**
      * Adds a file that contains overrides and models for some custom modules.
      *
-     * @param location Asset location assumed to be for an obj file. The {@link ResourceLocation} for the modules Mekanism adds is {@code
-     *                 mekanism:models/entity/mekasuit_modules.obj}
+     * @param location Asset location assumed to be for an obj file. The {@link ResourceLocation} for the modules Mekanism adds is
+     *                 {@code mekanism:models/entity/mekasuit_modules.obj}
      *
      * @apiNote Must only be called on the client side and from {@link net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent}.
      */

@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IModule;
+import mekanism.api.radial.RadialData;
 import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.render.RenderTickHandler;
@@ -29,7 +30,6 @@ import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
-import mekanism.api.radial.RadialData;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.network.to_server.PacketModeChange;
@@ -114,7 +114,7 @@ public class ClientTickHandler {
 
     public static boolean isVisionEnhancementOn(Player player) {
         IModule<ModuleVisionEnhancementUnit> module = MekanismAPI.getModuleHelper().load(player.getItemBySlot(EquipmentSlot.HEAD), MekanismModules.VISION_ENHANCEMENT_UNIT);
-        return module != null && module.isEnabled() && module.getContainerEnergy().greaterThan(MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement.get());
+        return module != null && module.isEnabled() && module.getContainerEnergy().greaterOrEqual(MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement.get());
     }
 
     public static boolean isFlamethrowerOn(Player player) {
@@ -204,7 +204,7 @@ public class ClientTickHandler {
                     JetpackMode mode = IJetpackItem.getPlayerJetpackMode(minecraft.player, primaryMode, () -> minecraft.player.input.jumping);
                     MekanismClient.updateKey(minecraft.player.input.jumping, KeySync.ASCEND);
                     if (jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, () -> minecraft.player.input.jumping)) {
-                        minecraft.player.fallDistance = 0.0F;
+                        minecraft.player.resetFallDistance();
                     }
                 }
             }
@@ -301,7 +301,7 @@ public class ClientTickHandler {
             float fog = 384;
             IModule<ModuleVisionEnhancementUnit> module = MekanismAPI.getModuleHelper().load(minecraft.player.getItemBySlot(EquipmentSlot.HEAD), MekanismModules.VISION_ENHANCEMENT_UNIT);
             if (module != null) {
-                fog *= Math.pow(module.getInstalledCount(), 1.25) / (float) MekanismModules.VISION_ENHANCEMENT_UNIT.getModuleData().getMaxStackSize();
+                fog *= ((float) Math.pow(module.getInstalledCount(), 1.25)) / MekanismModules.VISION_ENHANCEMENT_UNIT.getModuleData().getMaxStackSize();
             }
             RenderSystem.setShaderFogStart(-8.0F);
             RenderSystem.setShaderFogEnd(fog * 0.5F);

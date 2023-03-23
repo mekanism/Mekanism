@@ -3,11 +3,14 @@
   "key": {
     "#": {
       "tag": "forge:nuggets/uranium"
+    },
+    "P": {
+      "item": "mekanism:nugget_uranium"
     }
   },
   "pattern": [
     "###",
-    "###",
+    "#P#",
     "###"
   ],
   "result": {

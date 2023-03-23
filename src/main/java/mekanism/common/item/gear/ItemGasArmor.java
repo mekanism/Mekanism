@@ -6,6 +6,8 @@ import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.providers.IGasProvider;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
+import mekanism.common.config.MekanismConfig;
+import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.StorageUtils;
@@ -28,7 +30,7 @@ public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem 
         super(material, slot, properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1));
     }
 
-    protected abstract LongSupplier getMaxGas();
+    protected abstract CachedLongValue getMaxGas();
 
     protected abstract LongSupplier getFillRate();
 
@@ -58,8 +60,13 @@ public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem 
     public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
         if (allowedIn(group)) {
-            items.add(ChemicalUtil.getFilledVariant(new ItemStack(this), getMaxGas().getAsLong(), getGasType()));
+            items.add(ChemicalUtil.getFilledVariant(new ItemStack(this), getMaxGas(), getGasType()));
         }
+    }
+
+    @Override
+    protected boolean areCapabilityConfigsLoaded() {
+        return super.areCapabilityConfigsLoaded() && MekanismConfig.gear.isLoaded();
     }
 
     @Override

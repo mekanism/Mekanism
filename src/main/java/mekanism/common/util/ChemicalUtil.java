@@ -35,6 +35,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
@@ -190,6 +191,10 @@ public class ChemicalUtil {
             case ULTIMATE -> MekanismBlocks.ULTIMATE_CHEMICAL_TANK;
             case CREATIVE -> MekanismBlocks.CREATIVE_CHEMICAL_TANK;
         }).getItemStack();
+    }
+
+    public static ItemStack getFilledVariant(ItemStack toFill, CachedLongValue capacity, IChemicalProvider<?> provider) {
+        return getFilledVariant(toFill, capacity.getOrDefault(), provider);
     }
 
     public static ItemStack getFilledVariant(ItemStack toFill, long capacity, IChemicalProvider<?> provider) {

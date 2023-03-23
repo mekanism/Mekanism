@@ -1,5 +1,5 @@
 {
-  "type": "mekanism:enriching",
+  "type": "mekanism:crushing",
   "conditions": [
     {
       "type": "forge:mod_loaded",

@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.List;
 import java.util.Map;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
@@ -10,8 +11,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
-import mekanism.common.content.filter.BaseFilter;
-import mekanism.common.content.filter.IFilter;
+import mekanism.common.content.filter.SortableFilterManager;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.integration.computer.ComputerException;
@@ -20,17 +20,14 @@ import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
-import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.inventory.slot.InternalInventorySlot;
 import mekanism.common.lib.SidedBlockPos;
-import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
@@ -42,7 +39,6 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -50,10 +46,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISustainedData, ITileFilterHolder<SorterFilter<?>>, IHasSortableFilters {
+public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISustainedData, ITileFilterHolder<SorterFilter<?>> {
 
-    private HashList<SorterFilter<?>> filters = new HashList<>();
-    private final Finder strictFinder = stack -> filters.stream().noneMatch(filter -> !filter.allowDefault && filter.getFinder().modifies(stack));
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private final SortableFilterManager<SorterFilter<?>> filterManager = new SortableFilterManager<SorterFilter<?>>((Class) SorterFilter.class, this::markForSave);
+    private final Finder strictFinder = stack -> filterManager.getEnabledFilters().stream().noneMatch(filter -> !filter.allowDefault && filter.getFinder().modifies(stack));
 
     @SyntheticComputerMethod(getter = "getDefaultColor")
     public EnumColor color;
@@ -93,7 +90,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             //If there is no tile to pull from or the push to, skip doing any checks
             if (InventoryUtils.isItemHandler(back, direction) && front != null) {
                 boolean sentItems = false;
-                for (SorterFilter<?> filter : filters) {
+                for (SorterFilter<?> filter : filterManager.getEnabledFilters()) {
                     TransitRequest request = filter.mapInventory(back, direction, singleItem);
                     if (request.isEmpty()) {
                         continue;
@@ -148,18 +145,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         if (nbt.contains(NBTConstants.ROUND_ROBIN_TARGET, Tag.TAG_COMPOUND)) {
             rrTarget = SidedBlockPos.deserialize(nbt.getCompound(NBTConstants.ROUND_ROBIN_TARGET));
         }
-    }
-
-    @Override
-    public void moveUp(int filterIndex) {
-        filters.swap(filterIndex, filterIndex - 1);
-        markForSave();
-    }
-
-    @Override
-    public void moveDown(int filterIndex) {
-        filters.swap(filterIndex, filterIndex + 1);
-        markForSave();
     }
 
     @ComputerMethod(nameOverride = "getAutoMode")
@@ -230,13 +215,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         dataMap.putBoolean(NBTConstants.EJECT, autoEject);
         dataMap.putBoolean(NBTConstants.ROUND_ROBIN, roundRobin);
         dataMap.putBoolean(NBTConstants.SINGLE_ITEM, singleItem);
-        if (!filters.isEmpty()) {
-            ListTag filterTags = new ListTag();
-            for (SorterFilter<?> filter : filters) {
-                filterTags.add(filter.write(new CompoundTag()));
-            }
-            dataMap.put(NBTConstants.FILTERS, filterTags);
-        }
+        filterManager.writeToNBT(dataMap);
     }
 
     @Override
@@ -245,15 +224,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         autoEject = dataMap.getBoolean(NBTConstants.EJECT);
         roundRobin = dataMap.getBoolean(NBTConstants.ROUND_ROBIN);
         singleItem = dataMap.getBoolean(NBTConstants.SINGLE_ITEM);
-        filters.clear();
-        NBTUtils.setListIfPresent(dataMap, NBTConstants.FILTERS, Tag.TAG_COMPOUND, tagList -> {
-            for (int i = 0, size = tagList.size(); i < size; i++) {
-                IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
-                if (filter instanceof SorterFilter<?> sorterFilter) {
-                    filters.add(sorterFilter);
-                }
-            }
-        });
+        filterManager.readFromNBT(dataMap);
     }
 
     @Override
@@ -284,9 +255,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    @ComputerMethod
-    public HashList<SorterFilter<?>> getFilters() {
-        return filters;
+    public SortableFilterManager<SorterFilter<?>> getFilterManager() {
+        return filterManager;
     }
 
     @Override
@@ -296,13 +266,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         container.track(SyncableBoolean.create(this::getRoundRobin, value -> roundRobin = value));
         container.track(SyncableBoolean.create(this::getSingleItem, value -> singleItem = value));
         container.track(SyncableInt.create(() -> TransporterUtils.getColorIndex(color), value -> color = TransporterUtils.readColor(value)));
-        container.track(SyncableFilterList.create(this::getFilters, value -> {
-            if (value instanceof HashList<SorterFilter<?>> filters) {
-                this.filters = filters;
-            } else {
-                this.filters = new HashList<>(value);
-            }
-        }));
+        filterManager.addContainerTrackers(container);
     }
 
     //Methods relating to IComputerTile
@@ -360,15 +324,20 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @ComputerMethod
+    private List<SorterFilter<?>> getFilters() {
+        return filterManager.getFilters();
+    }
+
+    @ComputerMethod
     private boolean addFilter(SorterFilter<?> filter) throws ComputerException {
         validateSecurityIsPublic();
-        return filters.add(filter);
+        return filterManager.addFilter(filter);
     }
 
     @ComputerMethod
     private boolean removeFilter(SorterFilter<?> filter) throws ComputerException {
         validateSecurityIsPublic();
-        return filters.remove(filter);
+        return filterManager.removeFilter(filter);
     }
     //End methods IComputerTile
 }

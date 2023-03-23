@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -17,13 +16,14 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileComponentFrequency implements ITileComponent {
 
     private final TileEntityMekanism tile;
 
-    private final Map<FrequencyType<?>, Frequency> heldFrequencies = new LinkedHashMap<>();
-    private final Map<FrequencyType<?>, FrequencyTrackingData> supportedFrequencies = new LinkedHashMap<>();
+    private final Map<FrequencyType<?>, FrequencyData> supportedFrequencies = new LinkedHashMap<>();
 
     private final Map<FrequencyType<?>, List<? extends Frequency>> publicCache = new LinkedHashMap<>();
     private final Map<FrequencyType<?>, List<? extends Frequency>> privateCache = new LinkedHashMap<>();
@@ -44,9 +44,8 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     public void tickServer() {
-        for (Entry<FrequencyType<?>, Frequency> entry : heldFrequencies.entrySet()) {
-            //noinspection unchecked,rawtypes
-            updateFrequency((FrequencyType) entry.getKey(), entry.getValue());
+        for (Map.Entry<FrequencyType<?>, FrequencyData> entry : supportedFrequencies.entrySet()) {
+            updateFrequency(entry.getKey(), entry.getValue());
         }
         if (needsNotify) {
             tile.invalidateCachedCapabilities();
@@ -56,28 +55,34 @@ public class TileComponentFrequency implements ITileComponent {
         if (needsSave) {
             //Mark the entire tile as dirty as maybe the frequency having changed means we need to update
             // comparators if the comparators are based on data stored in the frequency
+            //TODO: Make it so that we only update comparators and stuff if we needed to
             tile.setChanged();
             needsSave = false;
         }
     }
 
     public void track(FrequencyType<?> type, boolean needsSync, boolean needsListCache, boolean notifyNeighbors) {
-        supportedFrequencies.put(type, new FrequencyTrackingData(needsSync, needsListCache, notifyNeighbors));
+        supportedFrequencies.put(type, new FrequencyData(needsSync, needsListCache, notifyNeighbors));
     }
 
+    @Nullable
     public <FREQ extends Frequency> FREQ getFrequency(FrequencyType<FREQ> type) {
-        return (FREQ) heldFrequencies.get(type);
-    }
-
-    public void setFrequency(FrequencyType<?> type, Frequency freq) {
-        heldFrequencies.put(type, freq);
+        FrequencyData frequencyData = supportedFrequencies.get(type);
+        if (frequencyData == null) {
+            return null;
+        }
+        return (FREQ) frequencyData.selectedFrequency;
     }
 
     public <FREQ extends Frequency> void unsetFrequency(FrequencyType<FREQ> type) {
-        if (heldFrequencies.containsKey(type)) {
-            deactivate(type);
-            heldFrequencies.remove(type);
-            setNeedsNotify(type);
+        unsetFrequency(type, supportedFrequencies.get(type));
+    }
+
+    private <FREQ extends Frequency> void unsetFrequency(FrequencyType<FREQ> type, FrequencyData frequencyData) {
+        if (frequencyData != null && frequencyData.selectedFrequency != null) {
+            deactivate(type, frequencyData);
+            frequencyData.clearFrequency();
+            setNeedsNotify(frequencyData);
         }
     }
 
@@ -95,67 +100,71 @@ public class TileComponentFrequency implements ITileComponent {
 
     public <FREQ extends Frequency> void setFrequencyFromData(FrequencyType<FREQ> type, FrequencyIdentity data, UUID player) {
         if (player != null) {
-            FREQ oldFrequency = getFrequency(type);
-            FrequencyManager<FREQ> manager = type.getManager(data, player);
-            FREQ freq = manager.getOrCreateFrequency(data, player);
-            if (oldFrequency == null || !oldFrequency.equals(freq)) {
-                //If the frequency being set isn't the existing frequency, then deactivate the old one
-                // and update the tile to be using the new one
-                manager.deactivate(oldFrequency, tile);
-                freq.update(tile);
-                setFrequency(type, freq);
-                setNeedsNotify(type);
+            FrequencyData frequencyData = supportedFrequencies.get(type);
+            if (frequencyData != null) {
+                setFrequencyFromData(type, data, player, frequencyData);
             }
+        }
+    }
+
+    private <FREQ extends Frequency> void setFrequencyFromData(FrequencyType<FREQ> type, FrequencyIdentity data, @NotNull UUID player, FrequencyData frequencyData) {
+        Frequency oldFrequency = frequencyData.selectedFrequency;
+        FrequencyManager<FREQ> manager = type.getManager(data, player);
+        FREQ freq = manager.getOrCreateFrequency(data, player);
+        if (!freq.equals(oldFrequency)) {
+            //If the frequency being set isn't the existing frequency, then deactivate the old one
+            // and update the tile to be using the new one
+            manager.deactivate(oldFrequency, tile);
+            freq.update(tile);
+            frequencyData.setFrequency(freq);
+            setNeedsNotify(frequencyData);
         }
     }
 
     public void removeFrequencyFromData(FrequencyType<?> type, FrequencyIdentity data, UUID player) {
         FrequencyManager<?> manager = type.getManager(data, player);
         if (manager != null && manager.remove(data.key(), player)) {
-            setNeedsNotify(type);
+            setNeedsNotify(supportedFrequencies.get(type));
         }
     }
 
-    private <FREQ extends Frequency> void updateFrequency(FrequencyType<FREQ> type, FREQ frequency) {
-        //TODO: Instead of doing all of this every tick try and see if we can make a system to mark frequencies as being in need of an update?
-        Frequency lastFreq = frequency;
-        FrequencyManager<FREQ> manager = type.getFrequencyManager(frequency);
-        if (manager != null) {
-            if (!frequency.isValid()) {
-                frequency = manager.validateFrequency(tile, frequency);
-                setNeedsNotify(type);
-            }
-            if (frequency != null) {
-                frequency = manager.update(tile, frequency);
-                if (frequency == null) {
-                    setNeedsNotify(type);
+    private <FREQ extends Frequency> void updateFrequency(FrequencyType<FREQ> type, FrequencyData frequencyData) {
+        if (frequencyData.selectedFrequency != null) {
+            if (frequencyData.selectedFrequency.isValid()) {
+                if (frequencyData.selectedFrequency.isRemoved()) {
+                    FrequencyManager<FREQ> manager = type.getFrequencyManager((FREQ) frequencyData.selectedFrequency);
+                    if (manager != null) {
+                        manager.deactivate(frequencyData.selectedFrequency, tile);
+                    }
+                    frequencyData.clearFrequency();
+                    setNeedsNotify(frequencyData);
                 }
+                //Note: We don't need to update the frequency for this block as in cases when it isn't invalid we do it immediately
+            } else {
+                FREQ frequency = (FREQ) frequencyData.selectedFrequency;
+                FrequencyManager<FREQ> manager = type.getFrequencyManager(frequency);
+                if (manager == null) {
+                    frequencyData.clearFrequency();
+                } else {
+                    frequencyData.setFrequency(manager.validateAndUpdate(tile, frequency));
+                }
+                setNeedsNotify(frequencyData);
             }
-        } else {
-            frequency = null;
-            if (lastFreq != null) {
-                setNeedsNotify(type);
-            }
-        }
-        if (frequency != lastFreq) {
-            //If the object changed update the frequency in our table
-            setFrequency(type, frequency);
         }
     }
 
-    private void setNeedsNotify(FrequencyType<?> type) {
-        if (supportedFrequencies.get(type).notifyNeighbors) {
+    private void setNeedsNotify(FrequencyData data) {
+        if (data.notifyNeighbors) {
             needsNotify = true;
         }
         needsSave = true;
     }
 
-    private <FREQ extends Frequency> void deactivate(FrequencyType<FREQ> type) {
-        FREQ freq = getFrequency(type);
-        if (freq != null) {
-            FrequencyManager<FREQ> manager = type.getFrequencyManager(freq);
+    private <FREQ extends Frequency> void deactivate(FrequencyType<FREQ> type, FrequencyData frequencyData) {
+        if (frequencyData.selectedFrequency != null) {
+            FrequencyManager<FREQ> manager = type.getFrequencyManager((FREQ) frequencyData.selectedFrequency);
             if (manager != null) {
-                manager.deactivate(freq, tile);
+                manager.deactivate(frequencyData.selectedFrequency, tile);
             }
         }
     }
@@ -164,11 +173,12 @@ public class TileComponentFrequency implements ITileComponent {
     public void read(CompoundTag nbtTags) {
         if (nbtTags.contains(NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
             CompoundTag frequencyNBT = nbtTags.getCompound(NBTConstants.COMPONENT_FREQUENCY);
-            for (FrequencyType<?> type : supportedFrequencies.keySet()) {
+            for (Map.Entry<FrequencyType<?>, FrequencyData> entry : supportedFrequencies.entrySet()) {
+                FrequencyType<?> type = entry.getKey();
                 if (frequencyNBT.contains(type.getName(), Tag.TAG_COMPOUND)) {
                     Frequency frequency = type.create(frequencyNBT.getCompound(type.getName()));
                     frequency.setValid(false);
-                    heldFrequencies.put(type, frequency);
+                    entry.getValue().setFrequency(frequency);
                 }
             }
         }
@@ -177,11 +187,15 @@ public class TileComponentFrequency implements ITileComponent {
     @Override
     public void write(CompoundTag nbtTags) {
         CompoundTag frequencyNBT = new CompoundTag();
-        for (Frequency frequency : heldFrequencies.values()) {
+        for (FrequencyData frequencyData : supportedFrequencies.values()) {
+            Frequency frequency = frequencyData.selectedFrequency;
             if (frequency != null) {
                 //TODO: Can this be transitioned over to frequency.serializeIdentityWithOwner()
                 CompoundTag frequencyTag = new CompoundTag();
                 frequency.writeComponentData(frequencyTag);
+                //Note: While we save the full frequency data, and do make some use of it in reading
+                // in general this isn't needed and won't be used as the frequency will be grabbed
+                // from the frequency manager
                 frequencyNBT.put(frequency.getType().getName(), frequencyTag);
             }
         }
@@ -191,7 +205,8 @@ public class TileComponentFrequency implements ITileComponent {
     public void readConfiguredFrequencies(Player player, CompoundTag data) {
         if (hasCustomFrequencies() && data.contains(NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
             CompoundTag frequencyNBT = data.getCompound(NBTConstants.COMPONENT_FREQUENCY);
-            for (FrequencyType<?> type : supportedFrequencies.keySet()) {
+            for (Map.Entry<FrequencyType<?>, FrequencyData> entry : supportedFrequencies.entrySet()) {
+                FrequencyType<?> type = entry.getKey();
                 if (type != FrequencyType.SECURITY) {
                     //Don't allow transferring security data via config cards
                     if (frequencyNBT.contains(type.getName(), Tag.TAG_COMPOUND)) {
@@ -202,14 +217,14 @@ public class TileComponentFrequency implements ITileComponent {
                                 UUID owner = frequencyData.getUUID(NBTConstants.OWNER_UUID);
                                 if (identity.isPublic() || owner.equals(player.getUUID())) {
                                     //If the frequency is public or the player is the owner allow setting the frequency
-                                    setFrequencyFromData(type, identity, owner);
+                                    setFrequencyFromData(type, identity, owner, entry.getValue());
                                 }
                                 continue;
                             }
                         }
                     }
                     //If our stored data doesn't have a frequency for the specific type or there was some issue parsing the data, unset the frequency
-                    unsetFrequency(type);
+                    unsetFrequency(type, entry.getValue());
                 }
             }
         }
@@ -217,10 +232,11 @@ public class TileComponentFrequency implements ITileComponent {
 
     public void writeConfiguredFrequencies(CompoundTag data) {
         CompoundTag frequencyNBT = new CompoundTag();
-        for (Frequency frequency : heldFrequencies.values()) {
-            if (frequency != null && frequency.getType() != FrequencyType.SECURITY) {
+        for (Map.Entry<FrequencyType<?>, FrequencyData> entry : supportedFrequencies.entrySet()) {
+            Frequency frequency = entry.getValue().selectedFrequency;
+            if (frequency != null && entry.getKey() != FrequencyType.SECURITY) {
                 //Don't allow transferring security data via config cards
-                frequencyNBT.put(frequency.getType().getName(), frequency.serializeIdentityWithOwner());
+                frequencyNBT.put(entry.getKey().getName(), frequency.serializeIdentityWithOwner());
             }
         }
         if (!frequencyNBT.isEmpty()) {
@@ -231,17 +247,18 @@ public class TileComponentFrequency implements ITileComponent {
     @Override
     public void invalidate() {
         if (!tile.isRemote()) {
-            heldFrequencies.forEach((key, value) -> deactivate(key));
+            supportedFrequencies.forEach(this::deactivate);
         }
     }
 
     @Override
     public void trackForMainContainer(MekanismContainer container) {
-        for (Map.Entry<FrequencyType<?>, FrequencyTrackingData> entry : supportedFrequencies.entrySet()) {
-            if (entry.getValue().needsContainerSync) {
-                container.track(SyncableFrequency.create(() -> heldFrequencies.get(entry.getKey()), value -> heldFrequencies.put(entry.getKey(), value)));
+        for (Map.Entry<FrequencyType<?>, FrequencyData> entry : supportedFrequencies.entrySet()) {
+            FrequencyData data = entry.getValue();
+            if (data.needsContainerSync) {
+                container.track(SyncableFrequency.create(() -> data.selectedFrequency, data::setFrequency));
             }
-            if (entry.getValue().needsListCache) {
+            if (data.needsListCache) {
                 track(container, entry.getKey());
             }
         }
@@ -253,8 +270,7 @@ public class TileComponentFrequency implements ITileComponent {
             container.track(SyncableFrequencyList.create(() -> getPublicCache(type), value -> publicCache.put(type, value)));
             container.track(SyncableFrequencyList.create(() -> getPrivateCache(type), value -> privateCache.put(type, value)));
         } else {
-            container.track(SyncableFrequencyList.create(() -> type.getManagerWrapper().getPublicManager().getFrequencies(),
-                  value -> publicCache.put(type, value)));
+            container.track(SyncableFrequencyList.create(() -> type.getManagerWrapper().getPublicManager().getFrequencies(), value -> publicCache.put(type, value)));
             //Note: We take advantage of the fact that containers are one to one even on the server, and sync
             // the private frequencies of the player who opened the container rather than the private
             // frequencies of the owner of the tile
@@ -263,6 +279,26 @@ public class TileComponentFrequency implements ITileComponent {
         }
     }
 
-    private record FrequencyTrackingData(boolean needsContainerSync, boolean needsListCache, boolean notifyNeighbors) {
+    private static final class FrequencyData {
+
+        private final boolean needsContainerSync;
+        private final boolean needsListCache;
+        private final boolean notifyNeighbors;
+        @Nullable
+        private Frequency selectedFrequency;
+
+        private FrequencyData(boolean needsContainerSync, boolean needsListCache, boolean notifyNeighbors) {
+            this.needsContainerSync = needsContainerSync;
+            this.needsListCache = needsListCache;
+            this.notifyNeighbors = notifyNeighbors;
+        }
+
+        public void setFrequency(@Nullable Frequency frequency) {
+            selectedFrequency = frequency;
+        }
+
+        public void clearFrequency() {
+            setFrequency(null);
+        }
     }
 }

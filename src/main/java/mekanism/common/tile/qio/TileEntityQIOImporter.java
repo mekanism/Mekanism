@@ -2,12 +2,12 @@ package mekanism.common.tile.qio;
 
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import mekanism.api.NBTConstants;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
-import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -27,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 
 public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
@@ -54,19 +55,28 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
 
     private void tryImport() {
         QIOFrequency freq = getQIOFrequency();
+        if (freq == null) {
+            return;
+        }
         Direction direction = getDirection();
         BlockEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(direction.getOpposite()));
-        if (freq == null || !InventoryUtils.isItemHandler(back, direction)) {
+        LazyOptional<IItemHandler> lazyCapability = CapabilityUtils.getCapability(back, ForgeCapabilities.ITEM_HANDLER, direction);
+        if (!lazyCapability.isPresent()) {//Not an IItemHandler
             return;
         }
-        if (!importWithoutFilter && getFilters().isEmpty()) {
+
+        Predicate<ItemStack> canFilter;
+        if (getFilterManager().hasEnabledFilters()) {
+            canFilter = stack -> getFilterManager().anyEnabledMatch(filter -> filter.getFinder().modifies(stack));
+        } else if (importWithoutFilter) {
+            // return true if we don't have any enabled filters installed, and we allow for filterless importing
+            canFilter = ConstantPredicates.alwaysTrue();
+        } else {
+            //If we don't have any enabled filters installed, and we don't allow filterless importing
             return;
         }
-        Optional<IItemHandler> capability = CapabilityUtils.getCapability(back, ForgeCapabilities.ITEM_HANDLER, direction).resolve();
-        if (capability.isEmpty()) {
-            return;
-        }
-        IItemHandler inventory = capability.get();
+        //We know this is present from our earlier checks
+        IItemHandler inventory = lazyCapability.resolve().get();
         Set<HashedItem> typesAdded = new HashSet<>();
         int maxTypes = getMaxTransitTypes(), maxCount = getMaxTransitCount(), countAdded = 0;
 
@@ -81,31 +91,18 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
                 continue;
             }
             // if we can't filter this item type, skip
-            if (!canFilter(stack)) {
+            if (!canFilter.test(stack)) {
                 continue;
             }
             ItemStack used = TransporterManager.getToUse(stack, freq.addItem(stack));
             ItemStack ret = inventory.extractItem(i, used.getCount(), false);
             if (!InventoryUtils.areItemsStackable(used, ret) || used.getCount() != ret.getCount()) {
-                Mekanism.logger.error("QIO insertion error: item handler {} returned {} during simulated extraction, "
-                                      + "but returned {} during execution. This is wrong!", back, stack, ret);
+                Mekanism.logger.error("QIO insertion error: item handler {} returned {} during simulated extraction, but returned {} during execution. This is wrong!",
+                      back, stack, ret);
             }
             typesAdded.add(type);
             countAdded += used.getCount();
         }
-    }
-
-    private boolean canFilter(ItemStack stack) {
-        // quickly return true if we don't have any filters installed, and we allow for filterless importing
-        if (importWithoutFilter && getFilters().isEmpty()) {
-            return true;
-        }
-        for (QIOFilter<?> filter : getFilters()) {
-            if (filter.getFinder().modifies(stack)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @ComputerMethod

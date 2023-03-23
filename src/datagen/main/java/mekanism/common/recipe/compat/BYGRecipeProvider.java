@@ -136,32 +136,32 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
     private void addCombiningRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Raw Gold plus netherrack to brimstone gold ore
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(Tags.Items.RAW_MATERIALS_GOLD, 8),
-              IngredientCreatorAccess.item().from(BYGBlocks.BRIMSTONE),
-              new ItemStack(BYGBlocks.BRIMSTONE_NETHER_GOLD_ORE)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(Tags.Items.RAW_MATERIALS_GOLD, 8),
+                    IngredientCreatorAccess.item().from(BYGBlocks.BRIMSTONE),
+                    new ItemStack(BYGBlocks.BRIMSTONE_NETHER_GOLD_ORE)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "brimstone_gold_ore_from_raw"));
         //Raw Gold plus blue netherrack to blue gold ore
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(Tags.Items.RAW_MATERIALS_GOLD, 8),
-              IngredientCreatorAccess.item().from(BYGBlocks.BLUE_NETHERRACK),
-              new ItemStack(BYGBlocks.BLUE_NETHER_GOLD_ORE)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(Tags.Items.RAW_MATERIALS_GOLD, 8),
+                    IngredientCreatorAccess.item().from(BYGBlocks.BLUE_NETHERRACK),
+                    new ItemStack(BYGBlocks.BLUE_NETHER_GOLD_ORE)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "blue_gold_ore_from_raw"));
 
         //Quartz Dust plus brimstone to brimstone quartz ore
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_QUARTZ, 14),
-              IngredientCreatorAccess.item().from(BYGBlocks.BRIMSTONE),
-              new ItemStack(BYGBlocks.BRIMSTONE_NETHER_QUARTZ_ORE)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_QUARTZ, 14),
+                    IngredientCreatorAccess.item().from(BYGBlocks.BRIMSTONE),
+                    new ItemStack(BYGBlocks.BRIMSTONE_NETHER_QUARTZ_ORE)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "brimstone_quartz_ore_from_dust"));
         //Quartz Dust plus blue netherrack to blue quartz ore
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_QUARTZ, 14),
-              IngredientCreatorAccess.item().from(BYGBlocks.BLUE_NETHERRACK),
-              new ItemStack(BYGBlocks.BLUE_NETHER_QUARTZ_ORE)
-        ).addCondition(modLoaded)
+                    IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_QUARTZ, 14),
+                    IngredientCreatorAccess.item().from(BYGBlocks.BLUE_NETHERRACK),
+                    new ItemStack(BYGBlocks.BLUE_NETHER_QUARTZ_ORE)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "blue_quartz_ore_from_dust"));
     }
 

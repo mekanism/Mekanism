@@ -27,6 +27,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
     private final Rarity rarity;
     private final int exclusive;
     private final boolean handlesModeChange;
+    private final boolean modeChangeDisabledByDefault;
     private final boolean rendersHUD;
     private final boolean noDisable;
     private final boolean disabledByDefault;
@@ -45,6 +46,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
         this.maxStackSize = builder.maxStackSize;
         this.exclusive = builder.exclusive;
         this.handlesModeChange = builder.handlesModeChange;
+        this.modeChangeDisabledByDefault = builder.modeChangeDisabledByDefault;
         this.rendersHUD = builder.rendersHUD;
         this.noDisable = builder.noDisable;
         this.disabledByDefault = builder.disabledByDefault;
@@ -101,6 +103,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
 
     /**
      * Gets the mask of {@link ExclusiveFlag} for this module type.
+     *
      * @since 10.2.3
      */
     public final int getExclusiveFlags() {
@@ -114,6 +117,17 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
      */
     public final boolean handlesModeChange() {
         return handlesModeChange;
+    }
+
+    /**
+     * Gets if this module type is has mode change disabled by default in the Module Tweaker.
+     *
+     * @return {@code true} if this module type's mode change ability is disabled by default.
+     *
+     * @since 10.3.6
+     */
+    public final boolean isModeChangeDisabledByDefault() {
+        return modeChangeDisabledByDefault;
     }
 
     /**
@@ -211,6 +225,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
         private int maxStackSize = 1;
         private int exclusive;
         private boolean handlesModeChange;
+        private boolean modeChangeDisabledByDefault;
         private boolean rendersHUD;
         private boolean noDisable;
         private boolean disabledByDefault;
@@ -247,6 +262,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
          * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
          *
          * @param mask {@link ExclusiveFlag} mask
+         *
          * @since 10.2.3
          */
         public ModuleDataBuilder<MODULE> exclusive(int mask) {
@@ -258,6 +274,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
          * Marks this module type as exclusive. Exclusive modules only work one-at-a-time; when one is enabled, incompatible modules will be automatically disabled.
          *
          * @param flags {@link ExclusiveFlag} flags for the exclusive mask
+         *
          * @since 10.2.3
          */
         public ModuleDataBuilder<MODULE> exclusive(ExclusiveFlag... flags) {
@@ -270,6 +287,19 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
          */
         public ModuleDataBuilder<MODULE> handlesModeChange() {
             handlesModeChange = true;
+            return this;
+        }
+
+        /**
+         * Marks this module type as having mode change disabled by default. Requires {@link #handlesModeChange()} to be set first.
+         *
+         * @since 10.3.6
+         */
+        public ModuleDataBuilder<MODULE> isModeChangeDisabledByDefault() {//TODO - 1.20: Rename this method to `modeChangeDisabledByDefault`
+            if (!handlesModeChange) {
+                throw new IllegalStateException("Cannot have a module type that has mode change disabled by default but doesn't support changing modes.");
+            }
+            modeChangeDisabledByDefault = true;
             return this;
         }
 
@@ -311,6 +341,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
 
     /**
      * Enum of flags for module exclusivity channels
+     *
      * @since 10.2.3
      */
     public enum ExclusiveFlag {

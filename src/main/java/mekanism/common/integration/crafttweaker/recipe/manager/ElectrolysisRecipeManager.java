@@ -30,13 +30,28 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<Electrolysi
      * @param input            {@link FluidStackIngredient} representing the input of the recipe.
      * @param leftGasOutput    {@link ICrTGasStack} representing the left output of the recipe.
      * @param rightGasOutput   {@link ICrTGasStack} representing the right output of the recipe.
-     * @param energyMultiplier Optional value representing the multiplier to the energy cost in relation to the configured hydrogen separating energy cost. If this is not
-     *                         specified it will default to one. If this value is specified it must be greater than or equal to one.
+     * @param energyMultiplier Value representing the multiplier to the energy cost in relation to the configured hydrogen separating energy cost. This value must be
+     *                         greater than or equal to one.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, FluidStackIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput,
-          @ZenCodeType.Optional("1 as " + CrTConstants.CLASS_FLOATING_LONG) FloatingLong energyMultiplier) {
+    public void addRecipe(String name, FluidStackIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput, FloatingLong energyMultiplier) {
         addRecipe(makeRecipe(getAndValidateName(name), input, leftGasOutput, rightGasOutput, energyMultiplier));
+    }
+
+    /**
+     * Adds a separating recipe that separates a fluid into two gases. Electrolytic Separators can process this recipe type.
+     *
+     * @param name           Name of the new recipe.
+     * @param input          {@link FluidStackIngredient} representing the input of the recipe.
+     * @param leftGasOutput  {@link ICrTGasStack} representing the left output of the recipe.
+     * @param rightGasOutput {@link ICrTGasStack} representing the right output of the recipe.
+     *
+     * @apiNote {@code energyMultiplier} will default to one. If this value is specified it must be greater than or equal to one.
+     */
+    @ZenCodeType.Method
+    public void addRecipe(String name, FluidStackIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput) {
+        //TODO: If https://github.com/ZenCodeLang/ZenCode/issues/31 gets fixed, merge this back with the other addRecipe method using a ZC Optional
+        addRecipe(makeRecipe(getAndValidateName(name), input, leftGasOutput, rightGasOutput, FloatingLong.ONE));
     }
 
     /**

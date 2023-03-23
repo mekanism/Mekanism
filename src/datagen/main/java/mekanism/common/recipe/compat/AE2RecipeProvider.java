@@ -77,69 +77,69 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "smooth_to_stone"));
         //Smooth Sky Stone Slab -> Sky Stone Slab
-        ItemStackToItemStackRecipeBuilder.enriching(
+        ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(AEBlocks.SMOOTH_SKY_STONE_SLAB),
                     AEBlocks.SKY_STONE_SLAB.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "smooth_slab_to_slab"));
         //Smooth Sky Stone Stairs -> Sky Stone Stairs
-        ItemStackToItemStackRecipeBuilder.enriching(
+        ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(AEBlocks.SMOOTH_SKY_STONE_STAIRS),
                     AEBlocks.SKY_STONE_STAIRS.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "smooth_stairs_to_stairs"));
         //Smooth Sky Stone Wall -> Sky Stone Wall
-        ItemStackToItemStackRecipeBuilder.enriching(
+        ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(AEBlocks.SMOOTH_SKY_STONE_WALL),
                     AEBlocks.SKY_STONE_WALL.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "smooth_wall_to_wall"));
 
         //Sky Stone Brick -> Smooth Sky Stone
-        ItemStackToItemStackRecipeBuilder.enriching(
+        ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(AEBlocks.SKY_STONE_BRICK),
                     AEBlocks.SMOOTH_SKY_STONE_BLOCK.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "brick_to_smooth"));
         //Sky Stone Brick Slab -> Smooth Sky Stone Slab
-        ItemStackToItemStackRecipeBuilder.enriching(
+        ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(AEBlocks.SKY_STONE_BRICK_SLAB),
                     AEBlocks.SMOOTH_SKY_STONE_SLAB.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "brick_slab_to_smooth_slab"));
         //Sky Stone Brick Stairs -> Smooth Sky Stone Stairs
-        ItemStackToItemStackRecipeBuilder.enriching(
+        ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(AEBlocks.SKY_STONE_BRICK_STAIRS),
                     AEBlocks.SMOOTH_SKY_STONE_STAIRS.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "brick_stairs_to_smooth_stairs"));
         //Sky Stone Brick Wall -> Smooth Sky Stone Wall
-        ItemStackToItemStackRecipeBuilder.enriching(
+        ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(AEBlocks.SKY_STONE_BRICK_WALL),
                     AEBlocks.SMOOTH_SKY_STONE_WALL.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "brick_wall_to_smooth_wall"));
 
         //Sky Stone Small Brick -> Sky Stone Brick
-        ItemStackToItemStackRecipeBuilder.enriching(
+        ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(AEBlocks.SKY_STONE_SMALL_BRICK),
                     AEBlocks.SKY_STONE_BRICK.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "small_brick_to_brick"));
         //Sky Stone Small Brick Slab -> Sky Stone Brick Slab
-        ItemStackToItemStackRecipeBuilder.enriching(
+        ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(AEBlocks.SKY_STONE_SMALL_BRICK_SLAB),
                     AEBlocks.SKY_STONE_BRICK_SLAB.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "small_brick_slab_to_brick_slab"));
         //Sky Stone Small Brick Stairs -> Sky Stone Brick Stairs
-        ItemStackToItemStackRecipeBuilder.enriching(
+        ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(AEBlocks.SKY_STONE_SMALL_BRICK_STAIRS),
                     AEBlocks.SKY_STONE_BRICK_STAIRS.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "small_brick_stairs_to_brick_stairs"));
         //Sky Stone Small Brick Wall -> Sky Stone Brick Wall
-        ItemStackToItemStackRecipeBuilder.enriching(
+        ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(AEBlocks.SKY_STONE_SMALL_BRICK_WALL),
                     AEBlocks.SKY_STONE_BRICK_WALL.stack(1)
               ).addCondition(modLoaded)

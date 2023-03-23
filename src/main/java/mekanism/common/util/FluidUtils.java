@@ -11,6 +11,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.content.network.distribution.FluidHandlerTarget;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -32,6 +33,10 @@ import org.jetbrains.annotations.NotNull;
 public final class FluidUtils {
 
     private FluidUtils() {
+    }
+
+    public static ItemStack getFilledVariant(ItemStack toFill, CachedIntValue capacity, IFluidProvider provider) {
+        return getFilledVariant(toFill, capacity.getOrDefault(), provider);
     }
 
     public static ItemStack getFilledVariant(ItemStack toFill, int capacity, IFluidProvider provider) {

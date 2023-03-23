@@ -65,7 +65,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
         if (allowedIn(group)) {
-            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MekanismConfig.gear.freeRunnerMaxEnergy.get()));
+            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MekanismConfig.gear.freeRunnerMaxEnergy));
         }
     }
 
@@ -87,6 +87,11 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
         return MekanismConfig.client.energyColor.get();
+    }
+
+    @Override
+    protected boolean areCapabilityConfigsLoaded() {
+        return super.areCapabilityConfigsLoaded() && MekanismConfig.gear.isLoaded();
     }
 
     @Override

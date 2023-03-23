@@ -1,5 +1,6 @@
 package mekanism.common.content.transporter;
 
+import java.util.Objects;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.lib.inventory.Finder;
@@ -52,14 +53,18 @@ public class SorterMaterialFilter extends SorterFilter<SorterMaterialFilter> imp
 
     @Override
     public int hashCode() {
-        int code = super.hashCode();
-        code = 31 * code + materialItem.hashCode();
-        return code;
+        return Objects.hash(super.hashCode(), materialItem.getItem());
     }
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(o) && o instanceof SorterMaterialFilter filter && filter.materialItem.sameItem(materialItem);
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
+            return false;
+        }
+        SorterMaterialFilter other = (SorterMaterialFilter) o;
+        return materialItem.sameItem(other.materialItem);
     }
 
     @Override

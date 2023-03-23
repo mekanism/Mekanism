@@ -75,6 +75,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
      * How many ticks this machine has been operating for.
      */
     public int operatingTicks;
+    private boolean usedEnergy = false;
 
     private MachineEnergyContainer<TileEntityFluidicPlenisher> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded", "getFluidFilledPercentage"})
@@ -127,11 +128,12 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         inputSlot.fillTank(outputSlot);
+        FloatingLong clientEnergyUsed = FloatingLong.ZERO;
         if (MekanismUtils.canFunction(this) && !fluidTank.isEmpty()) {
             FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                 if (!finishedCalc) {
-                    energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
+                    clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                 }
                 operatingTicks++;
                 if (operatingTicks >= ticksRequired) {
@@ -141,7 +143,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                         if (canReplace(below, false, false) && canExtractBucket() &&
                             WorldUtils.tryPlaceContainedLiquid(null, level, below, fluidTank.getFluid(), null)) {
                             level.gameEvent(null, GameEvent.FLUID_PLACE, below);
-                            energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
+                            clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                             fluidTank.extract(FluidType.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
                         }
                     } else {
@@ -150,6 +152,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                 }
             }
         }
+        usedEnergy = !clientEnergyUsed.isZero();
     }
 
     private boolean canExtractBucket() {
@@ -316,6 +319,11 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(() -> finishedCalc, value -> finishedCalc = value));
+        container.track(SyncableBoolean.create(this::usedEnergy, value -> usedEnergy = value));
+    }
+
+    public boolean usedEnergy() {
+        return usedEnergy;
     }
 
     public MachineEnergyContainer<TileEntityFluidicPlenisher> getEnergyContainer() {

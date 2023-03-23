@@ -33,8 +33,8 @@ public interface ILongInputHandler<INPUT> extends IInputHandler<INPUT> {
     }
 
     /**
-     * Calculates how many operations the input can sustain and updates the given operation tracker. It can be assumed that when this method is called {@link
-     * OperationTracker#shouldContinueChecking()} is {@code true}.
+     * Calculates how many operations the input can sustain and updates the given operation tracker. It can be assumed that when this method is called
+     * {@link OperationTracker#shouldContinueChecking()} is {@code true}.
      *
      * @param tracker         Tracker of current errors and max operations.
      * @param recipeInput     Recipe input gotten from {@link #getRecipeInput(InputIngredient)}.

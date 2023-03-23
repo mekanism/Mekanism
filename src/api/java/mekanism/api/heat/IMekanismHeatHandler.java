@@ -32,8 +32,8 @@ public interface IMekanismHeatHandler extends ISidedHeatHandler, IContentsListen
      *
      * @param side The side we are interacting with the handler from (null for internal).
      *
-     * @return The list of all IHeatCapacitors that this {@link IMekanismHeatHandler} contains for the given side. If there are no capacitors for the side or {@link
-     * #canHandleHeat()} is false then it returns an empty list.
+     * @return The list of all IHeatCapacitors that this {@link IMekanismHeatHandler} contains for the given side. If there are no capacitors for the side or
+     * {@link #canHandleHeat()} is false then it returns an empty list.
      *
      * @implNote When side is null (an internal request), this method <em>MUST</em> return all capacitors in the handler. Additionally, if {@link #canHandleHeat()} is
      * false, this <em>MUST</em> return an empty list.

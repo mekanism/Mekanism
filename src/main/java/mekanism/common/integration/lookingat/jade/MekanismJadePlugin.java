@@ -26,6 +26,7 @@ import snownee.jade.api.config.IPluginConfig;
 public class MekanismJadePlugin implements IWailaPlugin {
 
     private static final ResourceLocation FORGE_ENERGY = new ResourceLocation("fe");
+    private static final ResourceLocation NEW_ENERGY = new ResourceLocation("energy_storage");
     private static final ResourceLocation FORGE_FLUID = new ResourceLocation("fluid");
 
     @Override
@@ -48,7 +49,10 @@ public class MekanismJadePlugin implements IWailaPlugin {
             @Override
             public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
                 if (accessor.getServerData().contains(NBTConstants.MEK_DATA, Tag.TAG_LIST)) {
+                    //TODO - 1.19.3: Switch to using snownee.jade.api.Identifiers.UNIVERSAL_FLUID_STORAGE and UNIVERSAL_ENERGY_STORAGE
+                    // as we will know the class exists in all versions
                     tooltip.remove(FORGE_ENERGY);
+                    tooltip.remove(NEW_ENERGY);
                     tooltip.remove(FORGE_FLUID);
                 }
             }

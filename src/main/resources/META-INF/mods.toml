@@ -41,3 +41,9 @@ license="MIT"
     versionRange="${curios_version}"
     ordering="AFTER"
     side="BOTH"
+[[dependencies.mekanism]]
+    modId="recipestages"
+    mandatory=false
+    versionRange="${recipe_stages_version}"
+    ordering="AFTER"
+    side="BOTH"

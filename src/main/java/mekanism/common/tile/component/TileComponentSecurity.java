@@ -44,8 +44,12 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     public void setOwnerUUID(UUID uuid) {
-        tile.getFrequencyComponent().setFrequency(FrequencyType.SECURITY, null);
         ownerUUID = uuid;
+        if (ownerUUID == null) {
+            tile.getFrequencyComponent().unsetFrequency(FrequencyType.SECURITY);
+        } else {
+            tile.setFrequency(FrequencyType.SECURITY, new FrequencyIdentity(ownerUUID, true), ownerUUID);
+        }
     }
 
     @ComputerMethod
@@ -68,17 +72,14 @@ public class TileComponentSecurity implements ITileComponent {
         }
     }
 
-    public void tickServer() {
-        if (getFrequency() == null && ownerUUID != null) {
-            tile.setFrequency(FrequencyType.SECURITY, new FrequencyIdentity(ownerUUID, true), ownerUUID);
-        }
-    }
-
     @Override
     public void read(CompoundTag nbtTags) {
         if (nbtTags.contains(NBTConstants.COMPONENT_SECURITY, Tag.TAG_COMPOUND)) {
             CompoundTag securityNBT = nbtTags.getCompound(NBTConstants.COMPONENT_SECURITY);
             NBTUtils.setEnumIfPresent(securityNBT, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
+            //Note: We can just set the owner uuid directly as the frequency data should be set already from the frequency component
+            // Or if it was cleared due to changing owner data as an item, the block place should update it properly
+            //TODO: If this ends up causing issues anywhere we may want to consider ensuring the frequency gets set if it is missing
             NBTUtils.setUUIDIfPresent(securityNBT, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
         }
     }

@@ -50,7 +50,7 @@ public class FormationProtocol<T extends MultiblockData> {
         manager = tile.getManager();
     }
 
-    public StructureResult buildStructure(IStructureValidator<T> validator) {
+    private StructureResult<T> buildStructure(IStructureValidator<T> validator) {
         T structure = pointer.createMultiblock();
         if (!structure.setShape(validator.getShape())) {
             return fail(FormationResult.FAIL);
@@ -79,7 +79,7 @@ public class FormationProtocol<T extends MultiblockData> {
         if (!validator.precheck()) {
             return FormationResult.FAIL;
         }
-        StructureResult result = buildStructure(validator);
+        StructureResult<T> result = buildStructure(validator);
         T structureFound = result.structureFound;
 
         BlockPos pointerPos = pointer.getTilePos();
@@ -140,7 +140,7 @@ public class FormationProtocol<T extends MultiblockData> {
             return FormationResult.SUCCESS;
         }
         pointer.getStructure().removeMultiblock(world);
-        return result.getFormationResult();
+        return result.result();
     }
 
     protected static Component text(BlockPos pos) {
@@ -229,29 +229,15 @@ public class FormationProtocol<T extends MultiblockData> {
         }
     }
 
-    private StructureResult fail(FormationResult result) {
-        return new StructureResult(result, null, null);
+    private StructureResult<T> fail(FormationResult result) {
+        return new StructureResult<>(result, null, null);
     }
 
-    private StructureResult form(T structureFound, Set<UUID> idsFound) {
-        return new StructureResult(FormationResult.SUCCESS, structureFound, idsFound);
+    private StructureResult<T> form(T structureFound, Set<UUID> idsFound) {
+        return new StructureResult<>(FormationResult.SUCCESS, structureFound, idsFound);
     }
 
-    private class StructureResult {
-
-        private final FormationResult result;
-        private final T structureFound;
-        private final Set<UUID> idsFound;
-
-        private StructureResult(FormationResult result, T structureFound, Set<UUID> idsFound) {
-            this.result = result;
-            this.structureFound = structureFound;
-            this.idsFound = idsFound;
-        }
-
-        private FormationResult getFormationResult() {
-            return result;
-        }
+    private record StructureResult<T extends MultiblockData>(FormationResult result, T structureFound, Set<UUID> idsFound) {
     }
 
     public enum CasingType {

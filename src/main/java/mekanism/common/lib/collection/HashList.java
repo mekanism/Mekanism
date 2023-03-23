@@ -4,6 +4,7 @@ import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.BiConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,11 +17,11 @@ public class HashList<T> extends AbstractList<T> {
     }
 
     public HashList() {
-        this(256);
+        this(new ArrayList<>());
     }
 
     public HashList(int initialCapacity) {
-        list = new ArrayList<>(initialCapacity);
+        this(new ArrayList<>(initialCapacity));
     }
 
     @Override
@@ -77,6 +78,26 @@ public class HashList<T> extends AbstractList<T> {
         add(index, obj);
     }
 
+    public boolean replace(T existing, @Nullable T replacement) {
+        if (existing.equals(replacement)) {
+            //If the two elements are the same don't do anything
+            return false;
+        }
+        int index = indexOf(existing);
+        if (index != -1) {
+            if (replacement == null || contains(replacement)) {
+                //If we have no replacement or the list already contains the element we want to replace it with
+                // just remove the existing element
+                remove(index);
+            } else {
+                //Just directly replace the element with the new version
+                list.set(index, replacement);
+            }
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean remove(Object obj) {
         return list.remove(obj);
@@ -98,7 +119,7 @@ public class HashList<T> extends AbstractList<T> {
         return new HashList<>(new ArrayList<>(list));
     }
 
-    public void swap(int source, int target) {
+    public void swap(int source, int target, BiConsumer<T, T> postSwap) {
         // Make sure both source and target are legal values
         if (source == target || source < 0 || target < 0) {
             return;
@@ -108,9 +129,11 @@ public class HashList<T> extends AbstractList<T> {
             return;
         }
         // Perform swap
-        T temp = list.get(source);
-        list.set(source, list.get(target));
-        list.set(target, temp);
+        T sourceT = list.get(source);
+        T targetT = list.get(target);
+        list.set(source, targetT);
+        list.set(target, sourceT);
+        postSwap.accept(sourceT, targetT);
     }
 
     @Override

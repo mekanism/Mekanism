@@ -54,10 +54,13 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
             Component environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }));
-        rateLimitField = addRenderableWidget(new GuiTextField(this, 77, 128, 49, 12));
+        rateLimitField = addRenderableWidget(new GuiTextField(this, 77, 128, 54, 12));
         rateLimitField.setEnterHandler(this::setRateLimit);
         rateLimitField.setInputValidator(InputValidator.DECIMAL);
-        rateLimitField.setMaxLength(4);
+        //Allow for an adjusted max burn (without decimals) of one less than the actual max burn rate
+        long adjustedMaxBurn = Math.max(0, tile.getMultiblock().getMaxBurnRate() - 1);
+        //Calculate length of string allowed to allow for entering the full max burn rate plus a decimal point and two decimal digits
+        rateLimitField.setMaxLength(Long.toString(adjustedMaxBurn).length() + 3);
         rateLimitField.addCheckmarkButton(this::setRateLimit);
     }
 

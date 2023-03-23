@@ -19,7 +19,7 @@ import sonar.fluxnetworks.api.energy.IFNEnergyStorage;
 @NothingNullByDefault
 public class FNEnergyCompat implements IEnergyCompat {
 
-    private static final Capability<IFNEnergyStorage> FN_ENERGY_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
+    private static final Capability<IFNEnergyStorage> FN_ENERGY_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
     @Override
     public Capability<?> getCapability() {

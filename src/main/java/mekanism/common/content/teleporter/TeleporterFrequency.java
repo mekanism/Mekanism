@@ -9,6 +9,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IColorableFrequency;
+import mekanism.common.tile.interfaces.ITileWrapper;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -49,19 +50,32 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
 
     @Override
     public void setColor(EnumColor color) {
-        this.color = color;
+        if (this.color != color) {
+            this.color = color;
+            this.dirty = true;
+        }
     }
 
     @Override
-    public void update(BlockEntity tile) {
-        super.update(tile);
-        activeCoords.add(new Coord4D(tile));
+    public boolean update(BlockEntity tile) {
+        boolean changedData = super.update(tile);
+        activeCoords.add(getCoord(tile));
+        return changedData;
     }
 
     @Override
-    public void onDeactivate(BlockEntity tile) {
-        super.onDeactivate(tile);
-        activeCoords.remove(new Coord4D(tile));
+    public boolean onDeactivate(BlockEntity tile) {
+        boolean changedData = super.onDeactivate(tile);
+        activeCoords.remove(getCoord(tile));
+        return changedData;
+    }
+
+    private Coord4D getCoord(BlockEntity tile) {
+        if (tile instanceof ITileWrapper tileWrapper) {
+            //Note: This should be the case the majority of the time, and allows us to use the cached coord4d object
+            return tileWrapper.getTileCoord();
+        }
+        return new Coord4D(tile);
     }
 
     public Coord4D getClosestCoords(Coord4D coord) {
@@ -89,13 +103,13 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
     @Override
     protected void read(CompoundTag nbtTags) {
         super.read(nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, this::setColor);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, color -> this.color = color);
     }
 
     @Override
     protected void read(FriendlyByteBuf dataStream) {
         super.read(dataStream);
-        setColor(dataStream.readEnum(EnumColor.class));
+        this.color = dataStream.readEnum(EnumColor.class);
     }
 
     @Override

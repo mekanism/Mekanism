@@ -4,8 +4,8 @@ import java.util.Objects;
 import java.util.function.UnaryOperator;
 
 /**
- * Represents an operation on a single {@code char}-valued operand that produces a {@code char}-valued result.  This is the primitive type specialization of {@link
- * UnaryOperator} for {@code char}.
+ * Represents an operation on a single {@code char}-valued operand that produces a {@code char}-valued result.  This is the primitive type specialization of
+ * {@link UnaryOperator} for {@code char}.
  *
  * <p>This is a <a href="package-summary.html">functional interface</a> whose functional method is {@link #applyAsChar(char)}.
  *

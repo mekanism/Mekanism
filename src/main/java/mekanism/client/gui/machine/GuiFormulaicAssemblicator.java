@@ -13,8 +13,10 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
@@ -45,11 +47,17 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 159, 15));
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 159, 15)).warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
+            if (tile.getAutoMode() && tile.hasRecipe()) {
+                MachineEnergyContainer<TileEntityFormulaicAssemblicator> energyContainer = tile.getEnergyContainer();
+                return energyContainer.getEnergyPerTick().greaterThan(energyContainer.getEnergy());
+            }
+            return false;
+        });
         //Overwrite the output slots with a "combined" slot
         addRenderableWidget(new GuiSlot(SlotType.OUTPUT_LARGE, this, 115, 16));
         addRenderableWidget(new GuiProgress(() -> tile.getOperatingTicks() / (double) tile.getTicksRequired(), ProgressType.TALL_RIGHT, this, 86, 43).jeiCrafting());
-        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer()));
+        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::usedEnergy));
         encodeFormulaButton = addRenderableWidget(new MekanismImageButton(this, 7, 45, 14, getButtonLocation("encode_formula"),
               () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.ENCODE_FORMULA, tile)), getOnHover(MekanismLang.ENCODE_FORMULA)));
         stockControlButton = addRenderableWidget(new MekanismImageButton(this, 26, 75, 16, getButtonLocation("stock_control"),

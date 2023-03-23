@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:mod_loaded",
+      "modid": "farmersdelight"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "minecraft:chicken"
+    }
+  },
+  "mainOutput": {
+    "count": 2,
+    "item": "farmersdelight:chicken_cuts"
+  },
+  "secondaryChance": 1.0,
+  "secondaryOutput": {
+    "item": "minecraft:bone_meal"
+  }
+}

@@ -23,7 +23,7 @@ public class CommonConfig extends BaseMekanismConfig {
         tempUnit = CachedEnumValue.wrap(this, builder.comment("Displayed temperature unit in Mekanism GUIs and network reader readings.")
               .defineEnum("temperatureUnit", TemperatureUnit.KELVIN));
         enableDecayTimers = CachedBooleanValue.wrap(this, builder.comment("Show time to decay radiation when readings are above safe levels. Set to false on the client side to disable MekaSuit Geiger and Dosimeter Unit timers. Set to false on the server side to disable handheld Geiger Counter and Dosimeter timers.")
-                .define("enableDecayTimers", true));
+              .define("enableDecayTimers", true));
         builder.pop();
         configSpec = builder.build();
     }

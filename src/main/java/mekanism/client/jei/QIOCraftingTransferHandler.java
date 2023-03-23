@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
@@ -62,12 +63,12 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
 
     private final IRecipeTransferHandlerHelper handlerHelper;
     private final Class<CONTAINER> containerClass;
-    private final IStackHelper stackHelper;
+    private final Function<HashedItem, String> recipeUUIDFunction;
 
     public QIOCraftingTransferHandler(IRecipeTransferHandlerHelper handlerHelper, IStackHelper stackHelper, Class<CONTAINER> containerClass) {
         this.handlerHelper = handlerHelper;
-        this.stackHelper = stackHelper;
         this.containerClass = containerClass;
+        this.recipeUUIDFunction = hashed -> stackHelper.getUniqueIdentifierForStack(hashed.getInternalStack(), UidContext.Recipe);
     }
 
     @Override
@@ -162,7 +163,9 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                 //Then add all valid ingredients in the order they appear in JEI. Because we are using a set
                 // we will just end up merging with the displayed ingredient when we get to it as a valid ingredient
                 for (ItemStack validIngredient : validIngredients) {
-                    representations.add(HashedItem.raw(validIngredient));
+                    if (!validIngredient.isEmpty()) {//Shouldn't be empty but validate it just in case
+                        representations.add(HashedItem.raw(validIngredient));
+                    }
                 }
                 hashedIngredients.put((byte) index, new TrackedIngredients(slotView, representations));
             }
@@ -217,24 +220,22 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                 if (source.hasMoreRemaining()) {
                     //Only look at the source if we still have more items available in it
                     HashedItem storedHashedItem = entry.getKey();
-                    ItemStack storedItem = storedHashedItem.getStack();
-                    Item storedItemType = storedItem.getItem();
+                    Item storedItemType = storedHashedItem.getItem();
                     String storedItemUUID = null;
                     for (ByteIterator missingIterator = missingSlots.iterator(); missingIterator.hasNext(); ) {
                         byte index = missingIterator.nextByte();
                         for (HashedItem validIngredient : hashedIngredients.get(index).representations()) {
                             //Compare the raw item types
-                            if (storedItemType == validIngredient.getStack().getItem()) {
+                            if (storedItemType == validIngredient.getItem()) {
                                 //If they match, compute the identifiers for both stacks as needed
                                 if (storedItemUUID == null) {
                                     //If we haven't retrieved a UUID for the stored stack yet because none of our previous ingredients
                                     // matched the basic item type, retrieve it
-                                    storedItemUUID = stackHelper.getUniqueIdentifierForStack(storedItem, UidContext.Recipe);
+                                    storedItemUUID = recipeUUIDFunction.apply(storedHashedItem);
                                 }
                                 //Next compute the UUID for the ingredient we are missing if we haven't already calculated it
                                 // either in a previous iteration or for a different slot
-                                String ingredientUUID = cachedIngredientUUIDs.computeIfAbsent(validIngredient,
-                                      ingredient -> stackHelper.getUniqueIdentifierForStack(ingredient.getStack(), UidContext.Recipe));
+                                String ingredientUUID = cachedIngredientUUIDs.computeIfAbsent(validIngredient, recipeUUIDFunction);
                                 if (storedItemUUID.equals(ingredientUUID)) {
                                     //If the items are equivalent, reduce how much of the item we have as an input
                                     source.matchFound();
@@ -280,7 +281,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                         //If something went wrong, and we don't actually have the item we think we do, error
                         return invalidSource(hashedItem);
                     }
-                    int maxStack = hashedItem.getStack().getMaxStackSize();
+                    int maxStack = hashedItem.getMaxStackSize();
                     //If we have something that only stacks to one, such as a bucket. Don't limit the max stack size
                     // of other items to one
                     long max = maxStack == 1 ? maxToTransfer : Math.min(maxToTransfer, maxStack);
@@ -306,7 +307,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                 // and other stuff with it. This only actually matters if the max stack size is one, due to
                 // the logic done above when calculating how much to transfer, but we do this regardless here
                 // as there is no reason not to and then if we decide to widen it up we only have to change one spot
-                int transferAmount = Math.min(toTransfer, hashedItem.getStack().getMaxStackSize());
+                int transferAmount = Math.min(toTransfer, hashedItem.getMaxStackSize());
                 for (byte slot : entry.getValue()) {
                     //Try to use the item and figure out where it is coming from
                     List<SingularHashedItemSource> actualSources = source.use(transferAmount);
@@ -341,8 +342,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
     }
 
     private IRecipeTransferError invalidSource(@NotNull HashedItem type) {
-        ItemStack stack = type.getStack();
-        Mekanism.logger.warn("Error finding source for: {} with nbt: {}. This should not be possible happen.", stack.getItem(), stack.getTag());
+        Mekanism.logger.warn("Error finding source for: {} with nbt: {}. This should not be possible.", type.getItem(), type.getInternalTag());
         return handlerHelper.createInternalError();
     }
 

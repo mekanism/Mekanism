@@ -45,12 +45,6 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     private static final double CASING_INVERSE_INSULATION_COEFFICIENT = 100_000;
     private static final double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
 
-    private static final int WATER_PER_VOLUME = 16_000;
-    private static final long STEAM_PER_VOLUME = 160_000;
-
-    private static final int SUPERHEATED_COOLANT_PER_VOLUME = 256_000;
-    private static final int COOLED_COOLANT_PER_VOLUME = 256_000;
-
     private static final double COOLANT_COOLING_EFFICIENCY = 0.4;
 
     @ContainerSync
@@ -236,10 +230,11 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     }
 
     public void setWaterVolume(int volume) {
-        waterVolume = volume;
-
-        waterTankCapacity = getWaterVolume() * BoilerMultiblockData.WATER_PER_VOLUME;
-        superheatedCoolantCapacity = (long) getWaterVolume() * BoilerMultiblockData.SUPERHEATED_COOLANT_PER_VOLUME;
+        if (waterVolume != volume) {
+            waterVolume = volume;
+            waterTankCapacity = volume * MekanismConfig.general.boilerWaterPerTank.get();
+            superheatedCoolantCapacity = volume * MekanismConfig.general.boilerHeatedCoolantPerTank.get();
+        }
     }
 
     public int getSteamVolume() {
@@ -247,10 +242,11 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     }
 
     public void setSteamVolume(int volume) {
-        steamVolume = volume;
-
-        steamTankCapacity = getSteamVolume() * BoilerMultiblockData.STEAM_PER_VOLUME;
-        cooledCoolantCapacity = (long) getSteamVolume() * BoilerMultiblockData.COOLED_COOLANT_PER_VOLUME;
+        if (steamVolume != volume) {
+            steamVolume = volume;
+            steamTankCapacity = volume * MekanismConfig.general.boilerSteamPerTank.get();
+            cooledCoolantCapacity = volume * MekanismConfig.general.boilerCooledCoolantPerTank.get();
+        }
     }
 
     @ComputerMethod

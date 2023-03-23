@@ -45,6 +45,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
+import mekanism.common.content.gear.mekasuit.ModuleElytraUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.item.interfaces.IJetpackItem;
@@ -230,8 +231,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
         if (allowedIn(group)) {
-            ItemStack stack = new ItemStack(this);
-            items.add(StorageUtils.getFilledEnergyVariant(stack, getMaxEnergy(stack)));
+            items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MekanismConfig.gear.mekaSuitBaseEnergyCapacity));
         }
     }
 
@@ -241,6 +241,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         for (Module<?> module : getModules(stack)) {
             module.tick(player);
         }
+    }
+
+    @Override
+    protected boolean areCapabilityConfigsLoaded() {
+        return super.areCapabilityConfigsLoaded() && MekanismConfig.gear.isLoaded();
     }
 
     @Override
@@ -328,7 +333,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public boolean canElytraFly(ItemStack stack, LivingEntity entity) {
         if (slot == EquipmentSlot.CHEST && !entity.isShiftKeyDown()) {
             //Don't allow elytra flight if the player is sneaking. This lets the player exit elytra flight early
-            IModule<?> module = getModule(stack, MekanismModules.ELYTRA_UNIT);
+            IModule<ModuleElytraUnit> module = getModule(stack, MekanismModules.ELYTRA_UNIT);
             if (module != null && module.isEnabled() && module.canUseEnergy(entity, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get())) {
                 //If we can use the elytra, check if the jetpack unit is also installed, and if it is,
                 // only mark that we can use the elytra if the jetpack is not set to hover or if it is if it has no hydrogen stored
@@ -348,7 +353,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             int nextFlightTicks = flightTicks + 1;
             if (nextFlightTicks % 10 == 0) {
                 if (nextFlightTicks % 20 == 0) {
-                    IModule<?> module = getModule(stack, MekanismModules.ELYTRA_UNIT);
+                    IModule<ModuleElytraUnit> module = getModule(stack, MekanismModules.ELYTRA_UNIT);
                     if (module != null && module.isEnabled()) {
                         module.useEnergy(entity, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get());
                     }

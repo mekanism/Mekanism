@@ -70,24 +70,24 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
 
     private void tryEject() {
         QIOFrequency freq = getQIOFrequency();
+        if (freq == null) {
+            return;
+        }
         Direction direction = getDirection();
         BlockEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(direction.getOpposite()));
-        if (freq == null || !InventoryUtils.isItemHandler(back, direction)) {
+        if (!InventoryUtils.isItemHandler(back, direction)) {
             return;
         }
-        if (!exportWithoutFilter && getFilters().isEmpty()) {
-            return;
-        }
-        if (exportWithoutFilter && getFilters().isEmpty()) {
-            filterlessEjector.eject(freq, back, freq.getItemDataMap().entrySet());
-        } else if (!getFilters().isEmpty()) {
+        if (getFilterManager().hasEnabledFilters()) {
             filterEjector.eject(freq, back, getFilterEjectMap(back, freq).object2LongEntrySet());
+        } else if (exportWithoutFilter) {
+            filterlessEjector.eject(freq, back, freq.getItemDataMap().entrySet());
         }
     }
 
     private Object2LongMap<HashedItem> getFilterEjectMap(BlockEntity back, QIOFrequency freq) {
         Object2LongMap<HashedItem> map = new Object2LongOpenHashMap<>();
-        for (QIOFilter<?> filter : getFilters()) {
+        for (QIOFilter<?> filter : getFilterManager().getEnabledFilters()) {
             if (filter instanceof QIOItemStackFilter itemFilter) {
                 if (itemFilter.fuzzyMode) {
                     map.putAll(freq.getStacksByItem(itemFilter.getItemStack().getItem()));
@@ -155,10 +155,10 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
      * An efficient way to handle large (in item type) item ejections from a QIO frequency. Each eject attempt of a certain item type will use a uniform probability
      * distribution based on a predetermined 'max eject attempt' constant to see if the ejection should take place. This makes sure we will eventually eject each item
      * type, but not attempt every item in the frequency each operation.
-     *
+     * <p>
      * Abstracting us away from the item map (using the type/count suppliers) allows us to interface directly with the entries of the QIO's item data map when running a
      * filterless ejection, rather than recreating the whole map each ejection operation.
-     *
+     * <p>
      * Complexity: O(k * s), where 'k' is our max eject attempts constant and 's' is the size of the inventory.
      *
      * @author aidancbrady

@@ -19,6 +19,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.math.FloatingLong;
@@ -80,6 +81,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolAction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -367,12 +369,22 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                         if (energyContainer == null || energyContainer.getEnergy().smallerThan(energyNeeded)) {
                             return InteractionResultHolder.fail(stack);
                         }
+                        double targetX = pos.getX() + 0.5;
+                        double targetY = pos.getY() + 1.5;
+                        double targetZ = pos.getZ() + 0.5;
+                        MekanismTeleportEvent.MekaTool event = new MekanismTeleportEvent.MekaTool(player, targetX, targetY, targetZ, stack, result);
+                        if (MinecraftForge.EVENT_BUS.post(event)) {
+                            //Fail if the event was cancelled
+                            return InteractionResultHolder.fail(stack);
+                        }
+                        //Note: We intentionally don't use the event's coordinates as we do not support changing the location the Meka-Tool is teleporting to
                         energyContainer.extract(energyNeeded, Action.EXECUTE, AutomationType.MANUAL);
                         if (player.isPassenger()) {
-                            player.stopRiding();
+                            player.dismountTo(targetX, targetY, targetZ);
+                        } else {
+                            player.teleportTo(targetX, targetY, targetZ);
                         }
-                        player.teleportTo(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
-                        player.fallDistance = 0.0F;
+                        player.resetFallDistance();
                         Mekanism.packetHandler().sendToAllTracking(new PacketPortalFX(pos.above()), world, pos);
                         world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
                         return InteractionResultHolder.success(stack);

@@ -53,6 +53,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     @NotNull
     @Override
     public ItemStack remove(int amount) {
+        //Note: This method is only called if mayPickup returns true
         if (amount == 0) {
             return ItemStack.EMPTY;
         }
@@ -83,11 +84,13 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
 
     @Override
     protected void onSwapCraft(int numItemsCrafted) {
+        //Note: This method is only called if mayPickup returns true
         amountCrafted += numItemsCrafted;
     }
 
     @Override
     public void onTake(@NotNull Player player, @NotNull ItemStack stack) {
+        //Note: This method is only called if mayPickup returns true
         ItemStack result = craftingWindow.performCraft(player, stack, amountCrafted);
         amountCrafted = 0;
     }
@@ -102,6 +105,21 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
 
     @NotNull
     @Override
+    public ItemStack getItem() {
+        //Note: We check canCraft even on the server side, as we don't have a player context here and as there is only one container per player
+        // we can just hackily update the canCraft variable while syncing it to the client
+        return canCraft ? super.getItem() : ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean hasItem() {
+        //Note: We check canCraft even on the server side, as we don't have a player context here and as there is only one container per player
+        // we can just hackily update the canCraft variable while syncing it to the client
+        return canCraft && super.hasItem();
+    }
+
+    @NotNull
+    @Override
     public ItemStack getStackToRender() {
         return canCraft ? super.getStackToRender() : ItemStack.EMPTY;
     }
@@ -109,6 +127,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     @NotNull
     public ItemStack shiftClickSlot(@NotNull Player player, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
         //Perform the craft in the crafting window. This handles moving the stacks to the proper inventory slots
+        // Note: This method is only called if mayPickup returns true
         craftingWindow.performCraft(player, hotBarSlots, mainInventorySlots);
         // afterwards we want to "stop" crafting as our window determines how much a shift click should produce
         // so even though we may still have an output in the slot, we return empty here so that vanilla's loop
@@ -134,7 +153,9 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
             // 2. The player specific one
             // and then when encoding it just add the sizes together and pretend they are all part of the first list for purposes of
             // what the client is aware of as the client shouldn't care about them
-            tracker.accept(SyncableBoolean.create(() -> craftingWindow.canViewRecipe(serverPlayer), value -> canCraft = value));
+            //Note: We also update the value of canCraft here while syncing so that we ensure a closer to up to date value on the server
+            // for purposes of our getItem and hasItem overrides
+            tracker.accept(SyncableBoolean.create(() -> canCraft = craftingWindow.canViewRecipe(serverPlayer), value -> canCraft = value));
         }
     }
 }

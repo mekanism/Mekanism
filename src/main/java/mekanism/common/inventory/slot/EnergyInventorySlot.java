@@ -67,7 +67,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
 
     /**
      * Accepts any items that can be filled with the current contents of the energy container, or if it is an energy container and the container is currently empty
-     *
+     * <p>
      * Drains the container into this item.
      */
     public static EnergyInventorySlot drain(IEnergyContainer energyContainer, @Nullable IContentsListener listener, int x, int y) {

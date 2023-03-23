@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.Coord4D;
@@ -57,20 +58,16 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     private static final double waterConductivity = 0.5;
 
-    private static final int COOLANT_PER_VOLUME = 100_000;
-    private static final long HEATED_COOLANT_PER_VOLUME = 1_000_000;
-    private static final long FUEL_PER_ASSEMBLY = 8_000;
-
     public static final double MIN_DAMAGE_TEMPERATURE = 1_200;
     public static final double MAX_DAMAGE_TEMPERATURE = 1_800;
     public static final double MAX_DAMAGE = 100;
 
-    private static final double EXPLOSION_CHANCE = 1D / (512_000);
+    private static final double EXPLOSION_CHANCE = 1D / 512_000;
 
     public final Set<FormedAssembly> assemblies = new LinkedHashSet<>();
-    @ContainerSync
+    @ContainerSync(setter = "setAssemblies")
     @SyntheticComputerMethod(getter = "getFuelAssemblies")
-    public int fuelAssemblies = 1;
+    private int fuelAssemblies = 0;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getFuelSurfaceArea")
     public int surfaceArea;
@@ -117,6 +114,10 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @ContainerSync
     private boolean forceDisable;
 
+    private int cooledCoolantCapacity;
+    private long heatedCoolantCapacity;
+    private long fuelCapacity;
+
     private AABB hotZone;
 
     public float prevCoolantScale;
@@ -128,16 +129,17 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         super(tile);
         //Default biome temp to the ambient temperature at the block we are at
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getTilePos());
-        fluidCoolantTank = VariableCapacityFluidTank.input(this, () -> getVolume() * COOLANT_PER_VOLUME,
+        LongSupplier fuelCapacitySupplier = () -> fuelCapacity;
+        fluidCoolantTank = VariableCapacityFluidTank.input(this, () -> cooledCoolantCapacity,
               fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()) && gasCoolantTank.isEmpty(), this);
         fluidTanks.add(fluidCoolantTank);
-        gasCoolantTank = MultiblockChemicalTankBuilder.GAS.input(this, () -> (long) getVolume() * COOLANT_PER_VOLUME,
+        gasCoolantTank = MultiblockChemicalTankBuilder.GAS.input(this, () -> cooledCoolantCapacity,
               gas -> gas.has(CooledCoolant.class) && fluidCoolantTank.isEmpty(), this);
-        fuelTank = MultiblockChemicalTankBuilder.GAS.input(this, () -> fuelAssemblies * FUEL_PER_ASSEMBLY, gas -> gas == MekanismGases.FISSILE_FUEL.getChemical(),
+        fuelTank = MultiblockChemicalTankBuilder.GAS.input(this, fuelCapacitySupplier, gas -> gas == MekanismGases.FISSILE_FUEL.getChemical(),
               ChemicalAttributeValidator.ALWAYS_ALLOW, createSaveAndComparator());
-        heatedCoolantTank = MultiblockChemicalTankBuilder.GAS.output(this, () -> getVolume() * HEATED_COOLANT_PER_VOLUME,
+        heatedCoolantTank = MultiblockChemicalTankBuilder.GAS.output(this, () -> heatedCoolantCapacity,
               gas -> gas == MekanismGases.STEAM.get() || gas.has(HeatedCoolant.class), this);
-        wasteTank = MultiblockChemicalTankBuilder.GAS.output(this, () -> fuelAssemblies * FUEL_PER_ASSEMBLY,
+        wasteTank = MultiblockChemicalTankBuilder.GAS.output(this, fuelCapacitySupplier,
               gas -> gas == MekanismGases.NUCLEAR_WASTE.getChemical(), ChemicalAttributeValidator.ALWAYS_ALLOW, this);
         Collections.addAll(gasTanks, fuelTank, heatedCoolantTank, wasteTank, gasCoolantTank);
         heatCapacitor = VariableHeatCapacitor.create(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
@@ -453,6 +455,11 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     @ComputerMethod
     public double getBoilEfficiency() {
+        if (fuelAssemblies == 0) {
+            //If for some reason the assemblies somehow haven't been initialized (even though they have to be to form)
+            // just return that it can't boil
+            return 0;
+        }
         double avgSurfaceArea = (double) surfaceArea / (double) fuelAssemblies;
         return Math.min(1, avgSurfaceArea / MekanismGeneratorsConfig.generators.fissionSurfaceAreaTarget.get());
     }
@@ -465,6 +472,22 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @ComputerMethod
     public long getDamagePercent() {
         return Math.round((reactorDamage / FissionReactorMultiblockData.MAX_DAMAGE) * 100);
+    }
+
+    public void setAssemblies(int assemblies) {
+        if (this.fuelAssemblies != assemblies) {
+            this.fuelAssemblies = assemblies;
+            this.fuelCapacity = assemblies * MekanismGeneratorsConfig.generators.maxFuelPerAssembly.get();
+        }
+    }
+
+    @Override
+    public void setVolume(int volume) {
+        if (getVolume() != volume) {
+            super.setVolume(volume);
+            cooledCoolantCapacity = volume * MekanismGeneratorsConfig.generators.fissionCooledCoolantPerTank.get();
+            heatedCoolantCapacity = volume * MekanismGeneratorsConfig.generators.fissionHeatedCoolantPerTank.get();
+        }
     }
 
     @Override
@@ -506,7 +529,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         long max = getMaxBurnRate();
         if (rate < 0 || rate > max) {
             //Validate bounds even though we can clamp
-            throw new ComputerException("Burn Rate '%d' is out of range must be between 0 and %d. (Inclusive)", rate, max);
+            throw new ComputerException("Burn Rate '%.2f' is out of range must be between 0 and %d. (Inclusive)", rate, max);
         }
         setRateLimit(rate);
     }

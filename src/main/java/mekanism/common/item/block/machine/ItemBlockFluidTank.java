@@ -1,6 +1,5 @@
 package mekanism.common.item.block.machine;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -17,9 +16,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
-import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.ItemDataUtils;
@@ -33,7 +30,6 @@ import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
@@ -46,7 +42,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -72,7 +67,6 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -115,28 +109,6 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
     protected void addTypeDetails(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         tooltip.add(MekanismLang.BUCKET_MODE.translateColored(EnumColor.INDIGO, YesNo.of(getBucketMode(stack))));
         super.addTypeDetails(stack, world, tooltip, flag);
-    }
-
-    @Override
-    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
-        super.fillItemCategory(group, items);
-        if (allowedIn(group)) {
-            FluidTankTier tier = Attribute.getTier(getBlock(), FluidTankTier.class);
-            if (tier == FluidTankTier.CREATIVE && MekanismConfig.general.prefilledFluidTanks.get()) {
-                int capacity = tier.getStorage();
-                for (Fluid fluid : ForgeRegistries.FLUIDS.getValues()) {
-                    //Only add sources
-                    if (fluid.isSource(fluid.defaultFluidState())) {
-                        IExtendedFluidTank dummyTank = BasicFluidTank.create(capacity, null);
-                        //Manually handle filling it as capabilities are not necessarily loaded yet
-                        dummyTank.setStack(new FluidStack(fluid, dummyTank.getCapacity()));
-                        ItemStack stack = new ItemStack(this);
-                        ItemDataUtils.writeContainers(stack, NBTConstants.FLUID_TANKS, Collections.singletonList(dummyTank));
-                        items.add(stack);
-                    }
-                }
-            }
-        }
     }
 
     @NotNull

@@ -53,9 +53,10 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
               .tooltip(GuiQIOFilterHandler.getFrequencyTooltip(tile)));
         addRenderableWidget(new GuiInnerScreen(this, 27, 30, imageWidth - 27 - 8, 64, () -> {
             List<Component> list = new ArrayList<>();
-            list.add(tile.getItemType().isEmpty() ? MekanismLang.QIO_ITEM_TYPE_UNDEFINED.translate() : tile.getItemType().getHoverName());
+            ItemStack itemType = tile.getItemType();
+            list.add(itemType.isEmpty() ? MekanismLang.QIO_ITEM_TYPE_UNDEFINED.translate() : itemType.getHoverName());
             list.add(MekanismLang.QIO_TRIGGER_COUNT.translate(TextUtils.format(tile.getCount())));
-            if (!tile.getItemType().isEmpty() && tile.getQIOFrequency() != null) {
+            if (!itemType.isEmpty() && tile.getQIOFrequency() != null) {
                 list.add(MekanismLang.QIO_STORED_COUNT.translate(TextUtils.format(tile.getStoredCount())));
             }
             list.add(MekanismLang.QIO_FUZZY_MODE.translate(tile.getFuzzyMode()));
@@ -80,9 +81,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
         drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
-        if (tile.getItemType() != null) {
-            renderItem(matrix, tile.getItemType(), 8, 31);
-        }
+        renderItem(matrix, tile.getItemType(), 8, 31);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

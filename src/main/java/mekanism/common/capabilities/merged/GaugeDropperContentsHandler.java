@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 public class GaugeDropperContentsHandler extends MergedTankContentsHandler<MergedTank> implements IMekanismFluidHandler, IFluidHandlerItem {
 
     private static final int CAPACITY = 16 * FluidType.BUCKET_VOLUME;
-    //TODO: Convert this to a long and make it a config option after making fluids be able to handle longs
+    //TODO: Convert this to a long and make it a config option after making fluids be able to handle longs. Also make the gauge dropper override areCapabilityConfigsLoaded
     private static final int TRANSFER_RATE = 256;
 
     public static GaugeDropperContentsHandler create() {

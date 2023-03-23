@@ -38,7 +38,9 @@ public class DefaultRadiationEntity implements IRadiationEntity {
 
     @Override
     public void radiate(double magnitude) {
-        radiation += magnitude;
+        if (magnitude > 0) {
+            radiation += magnitude;
+        }
     }
 
     @Override
@@ -72,7 +74,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
                     entity.hurt(MekanismDamageSource.RADIATION, strength);
                 }
             }
-            if (entity instanceof ServerPlayer player && strength > 0) {
+            if (entity instanceof ServerPlayer player) {
                 player.getFoodData().addExhaustion(strength);
             }
         }
@@ -80,12 +82,12 @@ public class DefaultRadiationEntity implements IRadiationEntity {
 
     @Override
     public void set(double magnitude) {
-        radiation = magnitude;
+        radiation = Math.max(RadiationManager.BASELINE, magnitude);
     }
 
     @Override
     public void decay() {
-        radiation = Math.max(RadiationManager.BASELINE, radiation * MekanismConfig.general.radiationTargetDecayRate.get());
+        set(radiation * MekanismConfig.general.radiationTargetDecayRate.get());
     }
 
     @Override
@@ -97,7 +99,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        radiation = nbt.getDouble(NBTConstants.RADIATION);
+        set(nbt.getDouble(NBTConstants.RADIATION));
     }
 
     public static class Provider implements ICapabilitySerializable<CompoundTag> {

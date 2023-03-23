@@ -10,6 +10,7 @@ public class CrTConstants {
 
     public static final String CONTENT_LOADER = Mekanism.MODID + "content";
     public static final ResourceLocation CONTENT_LOADER_SOURCE_ID = Mekanism.rl("content");
+    public static final String JEI_PLUGIN_NAME = Mekanism.MODID + ":crt_jei";
 
     public static final String BRACKET_GAS = "gas";
     public static final String BRACKET_INFUSE_TYPE = "infuse_type";

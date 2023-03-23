@@ -50,8 +50,9 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
      * @return The remaining {@link FluidStack} that was not inserted (if the entire stack is accepted, then return an empty {@link FluidStack}). May be the same as the
      * input {@link FluidStack} if unchanged, otherwise a new {@link FluidStack}. The returned {@link FluidStack} can be safely modified after
      *
-     * @implNote The {@link FluidStack} <em>should not</em> be modified in this function! If the internal stack does get updated make sure to call {@link
-     * #onContentsChanged()}. It is also recommended to override this if your internal {@link FluidStack} is mutable so that a copy does not have to be made every run
+     * @implNote The {@link FluidStack} <em>should not</em> be modified in this function! If the internal stack does get updated make sure to call
+     * {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link FluidStack} is mutable so that a copy does not have to be made every
+     * run
      */
     default FluidStack insert(FluidStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isFluidValid(stack)) {
@@ -115,7 +116,7 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
 
     /**
      * Convenience method for modifying the size of the stored stack.
-     *
+     * <p>
      * If there is a stack stored in this tank, set the size of it to the given amount. Capping at this fluid tank's limit. If the amount is less than or equal to zero,
      * then this instead sets the stack to the empty stack.
      *
@@ -150,7 +151,7 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
 
     /**
      * Convenience method for growing the size of the stored stack.
-     *
+     * <p>
      * If there is a stack stored in this tank, increase its size by the given amount. Capping at this fluid tank's limit. If the stack shrinks to an amount of less than
      * or equal to zero, then this instead sets the stack to the empty stack.
      *
@@ -174,7 +175,7 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
 
     /**
      * Convenience method for shrinking the size of the stored stack.
-     *
+     * <p>
      * If there is a stack stored in this tank, shrink its size by the given amount. If this causes its size to become less than or equal to zero, then the stack is set
      * to the empty stack. If this method is used to grow the stack the size gets capped at this fluid tank's limit.
      *

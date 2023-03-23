@@ -175,20 +175,33 @@ public class TransporterManager {
      * Gets the {@link TransitResponse} of what items we expect to be able to get used/inserted into the item handler at a given position, taking into account any already
      * "in-flight" items that are being transferred to the handler.
      *
-     * @param position Position of the target
-     * @param side     Side of the target we are connecting to
-     * @param handler  The item handler the target has
-     * @param request  Transit request
+     * @param position                Position of the target
+     * @param side                    Side of the target we are connecting to
+     * @param handler                 The item handler the target has
+     * @param request                 Transit request
+     * @param additionalFlowingStacks Any additional stacks to treat as flowing and in transit for simulation uses.
      *
      * @return {@link TransitResponse} of expected items to use
      */
-    public static TransitResponse getPredictedInsert(Coord4D position, Direction side, IItemHandler handler, TransitRequest request) {
+    public static TransitResponse getPredictedInsert(Coord4D position, Direction side, IItemHandler handler, TransitRequest request,
+          Map<Coord4D, Set<TransporterStack>> additionalFlowingStacks) {
         InventoryInfo inventoryInfo = new InventoryInfo(handler);
         //Before we see if this item can fit in the destination, we must first check the stacks that are
         // en-route. Note that we also have to simulate the current inventory after each stack; we'll keep
         // track of the initial size of the inventory and then simulate each in-flight addition. If any
         // in-flight stack can't be inserted, then we can fail fast.
         //Note: that stackSizes for inventoryInfo is updated each time
+        if (!predictFlowing(position, side, handler, inventoryInfo, flowingStacks) || !predictFlowing(position, side, handler, inventoryInfo, additionalFlowingStacks)) {
+            return request.getEmptyResponse();
+        }
+
+        //Now for each of the items in the request, simulate the insert, using the state from all the in-flight
+        // items to ensure we have an accurate model of what will happen in the future.
+        return getPredictedInsert(inventoryInfo, handler, request);
+    }
+
+    private static boolean predictFlowing(Coord4D position, Direction side, IItemHandler handler, InventoryInfo inventoryInfo,
+          Map<Coord4D, Set<TransporterStack>> flowingStacks) {
         Set<TransporterStack> transporterStacks = flowingStacks.get(position);
         if (transporterStacks != null) {
             for (TransporterStack stack : transporterStacks) {
@@ -213,15 +226,12 @@ public class TransporterManager {
                             }
                         }
                         // Failed to successfully insert this in-flight item; there's no room for anyone else
-                        return request.getEmptyResponse();
+                        return false;
                     }
                 }
             }
         }
-
-        //Now for each of the items in the request, simulate the insert, using the state from all the in-flight
-        // items to ensure we have an accurate model of what will happen in the future.
-        return getPredictedInsert(inventoryInfo, handler, request);
+        return true;
     }
 
     /**

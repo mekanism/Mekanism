@@ -1,5 +1,6 @@
 package mekanism.common.content.transporter;
 
+import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.ITagFilter;
@@ -52,14 +53,18 @@ public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements IT
 
     @Override
     public int hashCode() {
-        int code = super.hashCode();
-        code = 31 * code + tagName.hashCode();
-        return code;
+        return Objects.hash(super.hashCode(), tagName);
     }
 
     @Override
     public boolean equals(Object o) {
-        return super.equals(o) && o instanceof SorterTagFilter filter && filter.tagName.equals(tagName);
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
+            return false;
+        }
+        SorterTagFilter other = (SorterTagFilter) o;
+        return tagName.equals(other.tagName);
     }
 
     @Override

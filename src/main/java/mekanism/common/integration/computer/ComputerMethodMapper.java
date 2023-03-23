@@ -402,7 +402,7 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
         /**
          * Handler is a multiblock that can expose the multiblock.
          */
-        MULTIBLOCK(handler -> handler instanceof TileEntityMultiblock multiblock && multiblock.exposesMultiblockToComputer()),
+        MULTIBLOCK(handler -> handler instanceof TileEntityMultiblock<?> multiblock && multiblock.exposesMultiblockToComputer()),
         /**
          * Handler is a tile that can support redstone.
          */

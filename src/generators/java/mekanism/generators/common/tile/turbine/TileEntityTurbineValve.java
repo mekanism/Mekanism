@@ -1,20 +1,26 @@
 package mekanism.generators.common.tile.turbine;
 
+import java.util.Collections;
+import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.lib.multiblock.IMultiblockEjector;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-public class TileEntityTurbineValve extends TileEntityTurbineCasing {
+public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IMultiblockEjector {
+
+    private Set<Direction> outputDirections = Collections.emptySet();
 
     public TileEntityTurbineValve(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.TURBINE_VALVE, pos, state);
@@ -36,7 +42,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
     protected boolean onUpdateServer(TurbineMultiblockData multiblock) {
         boolean needsPacket = super.onUpdateServer(multiblock);
         if (multiblock.isFormed()) {
-            CableUtils.emit(multiblock.getDirectionsToEmit(getBlockPos()), multiblock.energyContainer, this);
+            CableUtils.emit(outputDirections, multiblock.energyContainer, this);
         }
         return needsPacket;
     }
@@ -48,6 +54,11 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
             return false;
         }
         return super.persists(type);
+    }
+
+    @Override
+    public void setEjectSides(Set<Direction> sides) {
+        outputDirections = sides;
     }
 
     @Override

@@ -1,11 +1,11 @@
 package mekanism.common.block.basic;
 
 import mekanism.api.MekanismAPI;
+import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -14,9 +14,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -31,18 +31,32 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
         super(MekanismBlockTypes.LOGISTICAL_SORTER);
     }
 
+    @Nullable
     @Override
-    public void setTileData(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, @NotNull TileEntityMekanism tile) {
-        if (tile instanceof TileEntityLogisticalSorter sorter && !sorter.hasConnectedInventory()) {
-            BlockPos tilePos = tile.getBlockPos();
+    public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
+        BlockState state = super.getStateForPlacement(context);
+        Direction facing = Attribute.getFacing(state);
+        if (facing == null) {
+            //Should never be null but if it is for some reason just return the state we already found
+            return state;
+        }
+        Direction oppositeDirection = facing.getOpposite();
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        BlockEntity back = WorldUtils.getTileEntity(level, pos.relative(oppositeDirection));
+        //Note: Check ItemHandler instead of acceptor as the back face cannot connect to transporters
+        if (!InventoryUtils.isItemHandler(back, oppositeDirection)) {
             for (Direction dir : EnumUtils.DIRECTIONS) {
-                BlockEntity tileEntity = WorldUtils.getTileEntity(world, tilePos.relative(dir));
-                if (InventoryUtils.isItemHandler(tileEntity, dir)) {
-                    sorter.setFacing(dir.getOpposite());
-                    break;
+                if (dir != oppositeDirection) {//Skip the side we already know is not a valid acceptor
+                    BlockEntity neighbor = WorldUtils.getTileEntity(level, pos.relative(dir));
+                    if (InventoryUtils.isItemHandler(neighbor, dir)) {
+                        state = Attribute.setFacing(state, dir.getOpposite());
+                        break;
+                    }
                 }
             }
         }
+        return state;
     }
 
     @NotNull

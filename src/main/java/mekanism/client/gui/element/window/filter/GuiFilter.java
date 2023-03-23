@@ -115,7 +115,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         addChild(new TranslationButton(gui(), getLeftButtonX(), screenBottom + 2, 60, 20,
               isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, () -> {
             if (origFilter != null) {
-                Mekanism.packetHandler().sendToServer(new PacketEditFilter(tile.getBlockPos(), true, origFilter, null));
+                Mekanism.packetHandler().sendToServer(new PacketEditFilter<>(tile.getBlockPos(), origFilter, null));
             }
             close();
         }));
@@ -187,7 +187,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         if (isNew) {
             Mekanism.packetHandler().sendToServer(new PacketNewFilter(tile.getBlockPos(), filter));
         } else {
-            Mekanism.packetHandler().sendToServer(new PacketEditFilter(tile.getBlockPos(), false, origFilter, filter));
+            Mekanism.packetHandler().sendToServer(new PacketEditFilter<>(tile.getBlockPos(), origFilter, filter));
         }
         close();
     }

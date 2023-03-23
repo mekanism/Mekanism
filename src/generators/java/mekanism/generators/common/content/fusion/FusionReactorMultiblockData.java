@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
@@ -19,7 +18,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
-import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
@@ -54,7 +53,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
 public class FusionReactorMultiblockData extends MultiblockData {
@@ -62,10 +60,6 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public static final String HEAT_TAB = "heat";
     public static final String FUEL_TAB = "fuel";
     public static final String STATS_TAB = "stats";
-    private static final FloatingLong MAX_ENERGY = FloatingLong.createConst(1_000_000_000);
-    private static final int MAX_WATER = 1_000 * FluidType.BUCKET_VOLUME;
-    private static final long MAX_STEAM = MAX_WATER * 100L;
-    private static final long MAX_FUEL = FluidType.BUCKET_VOLUME;
 
     public static final int MAX_INJECTION = 98;//this is the effective cap in the GUI, as text field is limited to 2 chars
     //Reaction characteristics
@@ -132,6 +126,9 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private boolean clientBurning;
     private double clientTemp;
 
+    private int maxWater;
+    private long maxSteam;
+
     private AABB deathZone;
 
     public FusionReactorMultiblockData(TileEntityFusionReactorBlock tile) {
@@ -141,13 +138,15 @@ public class FusionReactorMultiblockData extends MultiblockData {
         lastPlasmaTemperature = biomeAmbientTemp;
         lastCaseTemperature = biomeAmbientTemp;
         plasmaTemperature = biomeAmbientTemp;
-        LongSupplier maxFuel = () -> MAX_FUEL;
-        gasTanks.add(deuteriumTank = MultiblockChemicalTankBuilder.GAS.input(this, maxFuel, GeneratorTags.Gases.DEUTERIUM_LOOKUP::contains, this));
-        gasTanks.add(tritiumTank = MultiblockChemicalTankBuilder.GAS.input(this, maxFuel, GeneratorTags.Gases.TRITIUM_LOOKUP::contains, this));
-        gasTanks.add(fuelTank = MultiblockChemicalTankBuilder.GAS.input(this, maxFuel, GeneratorTags.Gases.FUSION_FUEL_LOOKUP::contains, createSaveAndComparator()));
+        gasTanks.add(deuteriumTank = MultiblockChemicalTankBuilder.GAS.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
+              GeneratorTags.Gases.DEUTERIUM_LOOKUP::contains, this));
+        gasTanks.add(tritiumTank = MultiblockChemicalTankBuilder.GAS.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
+              GeneratorTags.Gases.TRITIUM_LOOKUP::contains, this));
+        gasTanks.add(fuelTank = MultiblockChemicalTankBuilder.GAS.input(this, MekanismGeneratorsConfig.generators.fusionFuelCapacity,
+              GeneratorTags.Gases.FUSION_FUEL_LOOKUP::contains, createSaveAndComparator()));
         gasTanks.add(steamTank = MultiblockChemicalTankBuilder.GAS.output(this, this::getMaxSteam, gas -> gas == MekanismGases.STEAM.getChemical(), this));
         fluidTanks.add(waterTank = VariableCapacityFluidTank.input(this, this::getMaxWater, fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()), this));
-        energyContainers.add(energyContainer = BasicEnergyContainer.output(MAX_ENERGY, this));
+        energyContainers.add(energyContainer = VariableCapacityEnergyContainer.output(MekanismGeneratorsConfig.generators.fusionEnergyCapacity, this));
         heatCapacitors.add(heatCapacitor = VariableHeatCapacitor.create(caseHeatCapacity, FusionReactorMultiblockData::getInverseConductionCoefficient,
               () -> inverseInsulation, () -> biomeAmbientTemp, this));
         inventorySlots.add(reactorSlot = ReactorInventorySlot.at(stack -> stack.getItem() instanceof ItemHohlraum, this, 80, 39));
@@ -368,6 +367,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public void setInjectionRate(int rate) {
         if (injectionRate != rate) {
             injectionRate = rate;
+            maxWater = injectionRate * MekanismGeneratorsConfig.generators.fusionWaterPerInjection.get();
+            maxSteam = injectionRate * MekanismGeneratorsConfig.generators.fusionSteamPerInjection.get();
             if (getWorld() != null && !isRemote()) {
                 if (!waterTank.isEmpty()) {
                     waterTank.setStackSize(Math.min(waterTank.getFluidAmount(), waterTank.getCapacity()), Action.EXECUTE);
@@ -381,11 +382,11 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     public int getMaxWater() {
-        return MAX_WATER * injectionRate;
+        return maxWater;
     }
 
     public long getMaxSteam() {
-        return MAX_STEAM * injectionRate;
+        return maxSteam;
     }
 
     public boolean isBurning() {

@@ -106,7 +106,7 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
             structure.assemblies.add(assembly.build());
         }
 
-        structure.fuelAssemblies = assemblyCount;
+        structure.setAssemblies(assemblyCount);
         structure.surfaceArea = surfaceArea;
 
         return FormationResult.SUCCESS;

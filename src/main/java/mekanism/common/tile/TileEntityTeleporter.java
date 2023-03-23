@@ -2,6 +2,8 @@ package mekanism.common.tile;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
@@ -50,6 +52,7 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ClientboundMoveVehiclePacket;
@@ -76,6 +79,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader {
+
+    private static final TeleportInfo NO_FRAME = new TeleportInfo((byte) 2, null, Collections.emptyList());
+    private static final TeleportInfo NO_LINK = new TeleportInfo((byte) 3, null, Collections.emptyList());
+    private static final TeleportInfo NOT_ENOUGH_ENERGY = new TeleportInfo((byte) 4, null, Collections.emptyList());
 
     public final Set<UUID> didTeleport = new ObjectOpenHashSet<>();
     private AABB teleportBounds;
@@ -153,9 +160,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             resetBounds();
         }
 
-        status = canTeleport();
-        if (MekanismUtils.canFunction(this) && status == 1 && teleDelay == 0) {
-            teleport();
+        TeleporterFrequency freq = getFrequency(FrequencyType.TELEPORTER);
+        TeleportInfo teleportInfo = canTeleport(freq);
+        status = teleportInfo.status();
+        if (status == 1 && teleDelay == 0 && MekanismUtils.canFunction(this)) {
+            teleport(freq, teleportInfo);
         }
         if (teleDelay == 0 && teleportBounds != null && !didTeleport.isEmpty()) {
             cleanTeleportCache();
@@ -164,7 +173,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         boolean prevShouldRender = shouldRender;
         shouldRender = status == 1 || status > 4;
         EnumColor prevColor = color;
-        TeleporterFrequency freq = getFrequency(FrequencyType.TELEPORTER);
         color = freq == null ? null : freq.getColor();
         if (shouldRender != prevShouldRender) {
             //This also means the comparator output changed so notify the neighbors we have a change
@@ -178,8 +186,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @Nullable
-    private Coord4D getClosest() {
-        TeleporterFrequency frequency = getFrequency(FrequencyType.TELEPORTER);
+    private Coord4D getClosest(@Nullable TeleporterFrequency frequency) {
         return frequency == null ? null : frequency.getClosestCoords(getTileCoord());
     }
 
@@ -203,22 +210,22 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     /**
      * Checks whether, or why not, this teleporter can teleport entities.
      *
-     * @return 1: yes, 2: no frame, 3: no link found, 4: not enough electricity
+     * @return A teleport info with 1: yes, 2: no frame, 3: no link found, 4: not enough electricity. If it is one, then closest coords and to teleport will be present
      *
      * @apiNote Only call on server
      */
-    private byte canTeleport() {
+    private TeleportInfo canTeleport(@Nullable TeleporterFrequency frequency) {
         Direction direction = getFrameDirection();
         if (direction == null) {
             frameDirection = null;
-            return 2;
+            return NO_FRAME;
         } else if (frameDirection != direction) {
             frameDirection = direction;
             resetBounds();
         }
-        Coord4D closestCoords = getClosest();
+        Coord4D closestCoords = getClosest(frequency);
         if (closestCoords == null || level == null) {
-            return 3;
+            return NO_LINK;
         }
         boolean sameDimension = level.dimension() == closestCoords.dimension;
         Level targetWorld;
@@ -227,21 +234,22 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         } else {
             MinecraftServer server = level.getServer();
             if (server == null) {//Should not happen
-                return 3;
+                return NO_LINK;
             }
             targetWorld = server.getLevel(closestCoords.dimension);
             if (targetWorld == null) {//In theory should not happen
-                return 3;
+                return NO_LINK;
             }
         }
+        List<Entity> toTeleport = getToTeleport(sameDimension);
         FloatingLong sum = FloatingLong.ZERO;
-        for (Entity entity : getToTeleport(sameDimension)) {
+        for (Entity entity : toTeleport) {
             sum = sum.plusEqual(calculateEnergyCost(entity, targetWorld, closestCoords));
         }
         if (energyContainer.extract(sum, Action.SIMULATE, AutomationType.INTERNAL).smallerThan(sum)) {
-            return 4;
+            return NOT_ENOUGH_ENERGY;
         }
-        return 1;
+        return new TeleportInfo((byte) 1, closestCoords, toTeleport);
     }
 
     public BlockPos getTeleporterTargetPos() {
@@ -271,51 +279,47 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     /**
      * @apiNote Only call this from the server
      */
-    private void teleport() {
-        Coord4D closestCoords = getClosest();
-        if (closestCoords == null || level == null) {
+    private void teleport(TeleporterFrequency frequency, TeleportInfo teleportInfo) {
+        if (teleportInfo.closest == null || level == null || teleportInfo.toTeleport.isEmpty()) {
             return;
         }
         MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
-        Level teleWorld = currentServer.getLevel(closestCoords.dimension);
-        BlockPos closestPos = closestCoords.getPos();
+        boolean sameDimension = level.dimension() == teleportInfo.closest.dimension;
+        Level teleWorld = sameDimension ? level : currentServer.getLevel(teleportInfo.closest.dimension);
+        BlockPos closestPos = teleportInfo.closest.getPos();
         TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, closestPos);
         if (teleporter != null) {
-            boolean sameDimension = level.dimension() == closestCoords.dimension;
-            List<Entity> entitiesToTeleport = getToTeleport(sameDimension);
-            if (!entitiesToTeleport.isEmpty()) {
-                Set<Coord4D> activeCoords = getFrequency(FrequencyType.TELEPORTER).getActiveCoords();
-                BlockPos teleporterTargetPos = teleporter.getTeleporterTargetPos();
-                for (Entity entity : entitiesToTeleport) {
-                    markTeleported(teleporter, entity, sameDimension);
-                    teleporter.teleDelay = 5;
-                    //Calculate energy cost before teleporting the entity, as after teleporting it
-                    // the cost will be negligible due to being on top of the destination
-                    FloatingLong energyCost = calculateEnergyCost(entity, teleWorld, closestCoords);
-                    double oldX = entity.getX();
-                    double oldY = entity.getY();
-                    double oldZ = entity.getZ();
-                    Entity teleportedEntity = teleportEntityTo(entity, teleWorld, teleporterTargetPos);
-                    if (teleportedEntity instanceof ServerPlayer player) {
-                        alignPlayer(player, teleporterTargetPos, teleporter);
-                        MekanismCriteriaTriggers.TELEPORT.trigger(player);
+            Set<Coord4D> activeCoords = frequency.getActiveCoords();
+            BlockPos teleporterTargetPos = teleporter.getTeleporterTargetPos();
+            for (Entity entity : teleportInfo.toTeleport) {
+                markTeleported(teleporter, entity, sameDimension);
+                teleporter.teleDelay = 5;
+                //Calculate energy cost before teleporting the entity, as after teleporting it
+                // the cost will be negligible due to being on top of the destination
+                FloatingLong energyCost = calculateEnergyCost(entity, teleWorld, teleportInfo.closest);
+                double oldX = entity.getX();
+                double oldY = entity.getY();
+                double oldZ = entity.getZ();
+                Entity teleportedEntity = teleportEntityTo(entity, teleWorld, teleporterTargetPos);
+                if (teleportedEntity instanceof ServerPlayer player) {
+                    alignPlayer(player, teleporterTargetPos, teleporter);
+                    MekanismCriteriaTriggers.TELEPORT.trigger(player);
+                }
+                for (Coord4D coords : activeCoords) {
+                    Level world = level.dimension() == coords.dimension ? level : currentServer.getLevel(coords.dimension);
+                    TileEntityTeleporter tile = WorldUtils.getTileEntity(TileEntityTeleporter.class, world, coords.getPos());
+                    if (tile != null) {
+                        tile.sendTeleportParticles();
                     }
-                    for (Coord4D coords : activeCoords) {
-                        Level world = level.dimension() == coords.dimension ? level : currentServer.getLevel(coords.dimension);
-                        TileEntityTeleporter tile = WorldUtils.getTileEntity(TileEntityTeleporter.class, world, coords.getPos());
-                        if (tile != null) {
-                            tile.sendTeleportParticles();
-                        }
+                }
+                energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.INTERNAL);
+                if (teleportedEntity != null) {
+                    if (level != teleportedEntity.level || teleportedEntity.distanceToSqr(oldX, oldY, oldZ) >= 25) {
+                        //If the entity teleported over 5 blocks, play the sound at both the destination and the source
+                        level.playSound(null, oldX, oldY, oldZ, SoundEvents.ENDERMAN_TELEPORT, entity.getSoundSource(), 1.0F, 1.0F);
                     }
-                    energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.INTERNAL);
-                    if (teleportedEntity != null) {
-                        if (level != teleportedEntity.level || teleportedEntity.distanceToSqr(oldX, oldY, oldZ) >= 25) {
-                            //If the entity teleported over 5 blocks, play the sound at both the destination and the source
-                            level.playSound(null, oldX, oldY, oldZ, SoundEvents.ENDERMAN_TELEPORT, entity.getSoundSource(), 1.0F, 1.0F);
-                        }
-                        teleportedEntity.level.playSound(null, teleportedEntity.getX(), teleportedEntity.getY(), teleportedEntity.getZ(),
-                              SoundEvents.ENDERMAN_TELEPORT, teleportedEntity.getSoundSource(), 1.0F, 1.0F);
-                    }
+                    teleportedEntity.level.playSound(null, teleportedEntity.getX(), teleportedEntity.getY(), teleportedEntity.getZ(),
+                          SoundEvents.ENDERMAN_TELEPORT, teleportedEntity.getSoundSource(), 1.0F, 1.0F);
                 }
             }
         }
@@ -498,11 +502,17 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
      */
     @Nullable
     private Direction getFrameDirection() {
+        //Cache the chunks we are looking up to check the frames of
+        // Note: We can use an array based map, because we check suck a small area, that if we do go across chunks
+        // we will be in at most two in general due to the size of our teleporter. But given we need to check multiple
+        // directions we might end up checking two different cross chunk directions which would end up at three
+        Long2ObjectMap<ChunkAccess> chunkMap = new Long2ObjectArrayMap<>(3);
+        Object2BooleanMap<BlockPos> cachedIsFrame = new Object2BooleanOpenHashMap<>();
         for (Direction direction : EnumUtils.DIRECTIONS) {
-            if (hasFrame(direction, false)) {
+            if (hasFrame(chunkMap, cachedIsFrame, direction, false)) {
                 frameRotated = false;
                 return direction;
-            } else if (hasFrame(direction, true)) {
+            } else if (hasFrame(chunkMap, cachedIsFrame, direction, true)) {
                 frameRotated = true;
                 return direction;
             }
@@ -518,17 +528,17 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
      *
      * @return whether the frame exists.
      */
-    private boolean hasFrame(Direction direction, boolean rotated) {
+    private boolean hasFrame(Long2ObjectMap<ChunkAccess> chunkMap, Object2BooleanMap<BlockPos> cachedIsFrame, Direction direction, boolean rotated) {
         int alternatingX = 0;
         int alternatingY = 0;
         int alternatingZ = 0;
         if (rotated) {
-            if (direction == Direction.NORTH || direction == Direction.SOUTH) {
+            if (direction.getAxis() == Axis.Z) {
                 alternatingX = 1;
             } else {
                 alternatingZ = 1;
             }
-        } else if (direction == Direction.UP || direction == Direction.DOWN) {
+        } else if (direction.getAxis() == Axis.Y) {
             alternatingX = 1;
         } else {
             alternatingY = 1;
@@ -536,26 +546,26 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         int xComponent = direction.getStepX();
         int yComponent = direction.getStepY();
         int zComponent = direction.getStepZ();
-        //Cache the chunks we are looking up to check the frames of
-        // Note: We can use an array based map, because we check suck a small area, that if we do go across chunks
-        // we will be in at most two in general due to the size of our teleporter. But given we need to check multiple
-        // directions we might end up checking two different cross chunk directions which would end up at three
-        Long2ObjectMap<ChunkAccess> chunkMap = new Long2ObjectArrayMap<>(3);
-        return isFramePair(chunkMap, 0, alternatingX, 0, alternatingY, 0, alternatingZ) &&
-               isFramePair(chunkMap, xComponent, alternatingX, yComponent, alternatingY, zComponent, alternatingZ) &&
-               isFramePair(chunkMap, 2 * xComponent, alternatingX, 2 * yComponent, alternatingY, 2 * zComponent, alternatingZ) &&
-               isFramePair(chunkMap, 3 * xComponent, alternatingX, 3 * yComponent, alternatingY, 3 * zComponent, alternatingZ) &&
-               isFrame(chunkMap, 3 * xComponent, 3 * yComponent, 3 * zComponent);
+
+        //Start by checking the two spots right next to the teleporter, and then checking the opposite corner, as those are the most likely to overlap
+        return isFramePair(chunkMap, cachedIsFrame, 0, alternatingX, 0, alternatingY, 0, alternatingZ) &&
+               isFrame(chunkMap, cachedIsFrame, 3 * xComponent, 3 * yComponent, 3 * zComponent) &&
+               isFramePair(chunkMap, cachedIsFrame, xComponent, alternatingX, yComponent, alternatingY, zComponent, alternatingZ) &&
+               isFramePair(chunkMap, cachedIsFrame, 2 * xComponent, alternatingX, 2 * yComponent, alternatingY, 2 * zComponent, alternatingZ) &&
+               isFramePair(chunkMap, cachedIsFrame, 3 * xComponent, alternatingX, 3 * yComponent, alternatingY, 3 * zComponent, alternatingZ);
     }
 
-    private boolean isFramePair(Long2ObjectMap<ChunkAccess> chunkMap, int xOffset, int alternatingX, int yOffset, int alternatingY, int zOffset, int alternatingZ) {
-        return isFrame(chunkMap, xOffset - alternatingX, yOffset - alternatingY, zOffset - alternatingZ) &&
-               isFrame(chunkMap, xOffset + alternatingX, yOffset + alternatingY, zOffset + alternatingZ);
+    private boolean isFramePair(Long2ObjectMap<ChunkAccess> chunkMap, Object2BooleanMap<BlockPos> cachedIsFrame, int xOffset, int alternatingX, int yOffset,
+          int alternatingY, int zOffset, int alternatingZ) {
+        return isFrame(chunkMap, cachedIsFrame, xOffset - alternatingX, yOffset - alternatingY, zOffset - alternatingZ) &&
+               isFrame(chunkMap, cachedIsFrame, xOffset + alternatingX, yOffset + alternatingY, zOffset + alternatingZ);
     }
 
-    private boolean isFrame(Long2ObjectMap<ChunkAccess> chunkMap, int xOffset, int yOffset, int zOffset) {
-        Optional<BlockState> state = WorldUtils.getBlockState(level, chunkMap, worldPosition.offset(xOffset, yOffset, zOffset));
-        return state.filter(blockState -> blockState.is(MekanismBlocks.TELEPORTER_FRAME.getBlock())).isPresent();
+    private boolean isFrame(Long2ObjectMap<ChunkAccess> chunkMap, Object2BooleanMap<BlockPos> cachedIsFrame, int xOffset, int yOffset, int zOffset) {
+        return cachedIsFrame.computeIfAbsent(worldPosition.offset(xOffset, yOffset, zOffset), (BlockPos pos) -> {
+            Optional<BlockState> state = WorldUtils.getBlockState(level, chunkMap, pos);
+            return state.filter(blockState -> blockState.is(MekanismBlocks.TELEPORTER_FRAME.getBlock())).isPresent();
+        });
     }
 
     /**
@@ -671,13 +681,13 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @ComputerMethod
     private boolean hasFrequency() {
         TeleporterFrequency frequency = getFrequency(FrequencyType.TELEPORTER);
-        return frequency != null && frequency.isValid();
+        return frequency != null && frequency.isValid() && !frequency.isRemoved();
     }
 
     @ComputerMethod
     private TeleporterFrequency getFrequency() throws ComputerException {
         TeleporterFrequency frequency = getFrequency(FrequencyType.TELEPORTER);
-        if (frequency == null || !frequency.isValid()) {
+        if (frequency == null || !frequency.isValid() || frequency.isRemoved()) {
             throw new ComputerException("No frequency is currently selected.");
         }
         return frequency;
@@ -746,4 +756,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return "no frequency";
     }
     //End methods IComputerTile
+
+    private record TeleportInfo(byte status, @Nullable Coord4D closest, List<Entity> toTeleport) {
+    }
 }

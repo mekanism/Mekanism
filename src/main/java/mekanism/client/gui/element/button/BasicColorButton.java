@@ -19,8 +19,9 @@ public class BasicColorButton extends MekanismButton {
         return new BasicColorButton(gui, x, y, size, () -> toggled.getAsBoolean() ? color : null, onLeftClick, onLeftClick, onHover);
     }
 
-    public static BasicColorButton renderActive(IGuiWrapper gui, int x, int y, int size, EnumColor color, @Nullable GuiElement.IHoverable onHover) {
-        return new BasicColorButton(gui, x, y, size, () -> color, null, null, onHover);
+    public static BasicColorButton renderActive(IGuiWrapper gui, int x, int y, int size, EnumColor color, @Nullable Runnable onLeftClick,  @Nullable Runnable onRightClick,
+          @Nullable GuiElement.IHoverable onHover) {
+        return new BasicColorButton(gui, x, y, size, () -> color, onLeftClick, onRightClick, onHover);
     }
 
     private final Supplier<EnumColor> colorSupplier;

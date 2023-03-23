@@ -10,8 +10,8 @@ import mekanism.client.render.HUDRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.curios.CuriosIntegration;
-import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.interfaces.IItemHUDProvider;
+import mekanism.common.tags.MekanismTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
@@ -21,7 +21,7 @@ import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.items.IItemHandler;
 
-public class MekaSuitHUD implements IGuiOverlay {
+public class MekanismHUD implements IGuiOverlay {
 
     private static final EquipmentSlot[] EQUIPMENT_ORDER = {EquipmentSlot.OFFHAND, EquipmentSlot.MAINHAND, EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS,
                                                             EquipmentSlot.FEET};
@@ -29,7 +29,7 @@ public class MekaSuitHUD implements IGuiOverlay {
     private static final HUDRenderer hudRenderer = new HUDRenderer();
 
     @Override
-    public void render(ForgeGui gui, PoseStack poseStack, float partialTicks, int width, int height) {
+    public void render(ForgeGui gui, PoseStack poseStack, float partialTicks, int screenWidth, int screenHeight) {
         Minecraft minecraft = Minecraft.getInstance();
         if (!minecraft.options.hideGui && !minecraft.player.isSpectator() && MekanismConfig.client.enableHUD.get() && MekanismClient.renderHUD) {
             int count = 0;
@@ -52,24 +52,29 @@ public class MekaSuitHUD implements IGuiOverlay {
                     }
                 }
             }
+            boolean reverseHud = MekanismConfig.client.reverseHUD.get();
+            int maxTextHeight = screenHeight;
             if (count > 0) {
-                int start = (renderStrings.size() * 2) + (count * 9);
-                boolean alignLeft = MekanismConfig.client.alignHUDLeft.get();
                 float hudScale = MekanismConfig.client.hudScale.get();
-                int yScale = (int) ((1 / hudScale) * height);
+                int xScale = (int) (screenWidth / hudScale);
+                int yScale = (int) (screenHeight / hudScale);
+                int start = (renderStrings.size() * 2) + (count * 9);
+                int y = yScale - start;
+                maxTextHeight = (int) (y * hudScale);
                 poseStack.pushPose();
                 poseStack.scale(hudScale, hudScale, hudScale);
                 for (List<Component> group : renderStrings) {
                     for (Component text : group) {
-                        drawString(minecraft.font, width, poseStack, text, alignLeft, yScale - start, 0xC8C8C8);
-                        start -= 9;
+                        drawString(minecraft.font, xScale, poseStack, text, reverseHud, y, 0xC8C8C8);
+                        y += 9;
                     }
-                    start -= 2;
+                    y += 2;
                 }
                 poseStack.popPose();
             }
-            if (minecraft.player.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof ItemMekaSuitArmor) {
-                hudRenderer.renderHUD(poseStack, partialTicks);
+
+            if (minecraft.player.getItemBySlot(EquipmentSlot.HEAD).is(MekanismTags.Items.MEKASUIT_HUD_RENDERER)) {
+                hudRenderer.renderHUD(poseStack, partialTicks, screenWidth, screenHeight, maxTextHeight, reverseHud);
             }
         }
     }
@@ -84,13 +89,15 @@ public class MekaSuitHUD implements IGuiOverlay {
         return size;
     }
 
-    private void drawString(Font font, int windowWidth, PoseStack matrix, Component text, boolean leftSide, int y, int color) {
-        // Note that we always offset by 2 pixels when left or right aligned
-        if (leftSide) {
-            font.drawShadow(matrix, text, 2, y, color);
-        } else {
+    private void drawString(Font font, int windowWidth, PoseStack matrix, Component text, boolean reverseHud, int y, int color) {
+        //Note that we always offset by 2 pixels from the edge of the screen regardless of how it is aligned
+        if (reverseHud) {
+            //Align the text to the right
             int width = font.width(text) + 2;
             font.drawShadow(matrix, text, windowWidth - width, y, color);
+        } else {
+            //Align to the left
+            font.drawShadow(matrix, text, 2, y, color);
         }
     }
 }

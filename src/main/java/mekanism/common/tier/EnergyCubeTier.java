@@ -42,11 +42,11 @@ public enum EnergyCubeTier implements ITier, StringRepresentable {
     }
 
     public FloatingLong getMaxEnergy() {
-        return storageReference == null ? getBaseMaxEnergy() : storageReference.get();
+        return storageReference == null ? getBaseMaxEnergy() : storageReference.getOrDefault();
     }
 
     public FloatingLong getOutput() {
-        return outputReference == null ? getBaseOutput() : outputReference.get();
+        return outputReference == null ? getBaseOutput() : outputReference.getOrDefault();
     }
 
     public FloatingLong getBaseMaxEnergy() {

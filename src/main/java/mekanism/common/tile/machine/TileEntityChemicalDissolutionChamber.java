@@ -111,7 +111,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT,
-              TransmissionType.SLURRY)
+                    TransmissionType.SLURRY)
               .setCanTankEject(tank -> tank != injectTank);
 
         itemInputHandler = InputHelper.getInputHandler(inputSlot, RecipeError.NOT_ENOUGH_INPUT);

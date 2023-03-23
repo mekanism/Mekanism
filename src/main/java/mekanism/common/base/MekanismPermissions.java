@@ -45,9 +45,13 @@ public class MekanismPermissions {
 
     public static final CommandPermissionNode COMMAND_RADIATION = nodeOpCommand("radiation");
     public static final CommandPermissionNode COMMAND_RADIATION_ADD = nodeSubCommand(COMMAND_RADIATION, "add");
+    public static final CommandPermissionNode COMMAND_RADIATION_ADD_ENTITY = nodeSubCommand(COMMAND_RADIATION, "add_entity");
+    public static final CommandPermissionNode COMMAND_RADIATION_ADD_ENTITY_OTHERS = nodeSubCommand(COMMAND_RADIATION_ADD_ENTITY, "others");
     public static final CommandPermissionNode COMMAND_RADIATION_GET = nodeSubCommand(COMMAND_RADIATION, "get");
     public static final CommandPermissionNode COMMAND_RADIATION_HEAL = nodeSubCommand(COMMAND_RADIATION, "heal");
-    public static final CommandPermissionNode COMMAND_RADIATION_HEAL_OTHERS = nodeSubCommand(COMMAND_RADIATION, "heal.others");
+    public static final CommandPermissionNode COMMAND_RADIATION_HEAL_OTHERS = nodeSubCommand(COMMAND_RADIATION_HEAL, "others");
+    public static final CommandPermissionNode COMMAND_RADIATION_REDUCE = nodeSubCommand(COMMAND_RADIATION, "reduce");
+    public static final CommandPermissionNode COMMAND_RADIATION_REDUCE_OTHERS = nodeSubCommand(COMMAND_RADIATION_REDUCE, "others");
     public static final CommandPermissionNode COMMAND_RADIATION_REMOVE_ALL = nodeSubCommand(COMMAND_RADIATION, "remove.all");
 
     public static final CommandPermissionNode COMMAND_TEST_RULES = nodeOpCommand("test_rules");
@@ -82,6 +86,7 @@ public class MekanismPermissions {
 
     private static <T> PermissionNode<T> subNode(PermissionNode<T> parent, String nodeName, PermissionResolver<T> defaultResolver) {
         String fullParentName = parent.getNodeName();
+        //Strip the modid from the parent's node name
         String parentName = fullParentName.substring(fullParentName.indexOf('.') + 1);
         return node(parentName + "." + nodeName, parent.getType(), defaultResolver);
     }
@@ -108,7 +113,9 @@ public class MekanismPermissions {
 
         @Override
         public boolean test(CommandSourceStack source) {
-            return source.source instanceof ServerPlayer player ? PermissionAPI.getPermission(player, node) : source.hasPermission(fallbackLevel);
+            //See https://github.com/MinecraftForge/MinecraftForge/commit/f7eea35cb9b043aae0a3866a9578724aa7560585 for details on why
+            // has permission is checked first and the implications
+            return source.hasPermission(fallbackLevel) || source.source instanceof ServerPlayer player && PermissionAPI.getPermission(player, node);
         }
     }
 

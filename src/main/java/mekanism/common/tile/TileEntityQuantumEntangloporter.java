@@ -115,6 +115,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
         frequencyComponent.track(FrequencyType.INVENTORY, true, true, true);
+        cacheCoord();
     }
 
     private <T> void setupConfig(TransmissionType type, ProxySlotInfoCreator<T> proxyCreator, Supplier<List<T>> supplier) {
@@ -180,8 +181,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (hasFrequency()) {
-            getFreq().handleEject(level.getGameTime());
+        InventoryFrequency freq = getFreq();
+        if (freq != null && freq.isValid() && !freq.isRemoved()) {
+            freq.handleEject(level.getGameTime());
             updateHeatCapacitors(null); // manually trigger heat capacitor update
             HeatTransfer loss = simulate();
             lastTransferLoss = loss.adjacentTransfer();
@@ -195,7 +197,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     @ComputerMethod
     public boolean hasFrequency() {
         Frequency freq = getFreq();
-        return freq != null && freq.isValid();
+        return freq != null && freq.isValid() && !freq.isRemoved();
     }
 
     @Override
@@ -268,7 +270,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     @ComputerMethod
     private InventoryFrequency getFrequency() throws ComputerException {
         InventoryFrequency frequency = getFreq();
-        if (frequency == null || !frequency.isValid()) {
+        if (frequency == null || !frequency.isValid() || frequency.isRemoved()) {
             throw new ComputerException("No frequency is currently selected.");
         }
         return frequency;

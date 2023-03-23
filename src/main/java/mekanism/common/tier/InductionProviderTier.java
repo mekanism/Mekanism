@@ -30,7 +30,7 @@ public enum InductionProviderTier implements ITier {
     }
 
     public FloatingLong getOutput() {
-        return outputReference == null ? getBaseOutput() : outputReference.get();
+        return outputReference == null ? getBaseOutput() : outputReference.getOrDefault();
     }
 
     public FloatingLong getBaseOutput() {

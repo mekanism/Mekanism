@@ -2,6 +2,8 @@ package mekanism.generators.common.content.turbine;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import mekanism.common.content.blocktype.BlockType;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
@@ -13,6 +15,7 @@ import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.GeneratorsLang;
+import mekanism.generators.common.content.turbine.TurbineMultiblockData.VentData;
 import mekanism.generators.common.registries.GeneratorsBlockTypes;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
@@ -170,14 +173,16 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MALFORMED_COILS);
         }
 
+        List<VentData> ventData = new ArrayList<>();
         for (BlockPos coord : structure.locations) {
             if (WorldUtils.getTileEntity(TileEntityTurbineVent.class, world, chunkMap, coord) != null) {
                 if (coord.getY() < complex.getY()) {
                     return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_VENT_BELOW_COMPLEX, coord);
                 }
-                structure.vents++;
+                ventData.add(new VentData(coord, getSide(coord)));
             }
         }
+        structure.updateVentData(ventData);
         structure.lowerVolume = structure.length() * structure.width() * turbineHeight;
         structure.complex = complex;
         return FormationResult.SUCCESS;

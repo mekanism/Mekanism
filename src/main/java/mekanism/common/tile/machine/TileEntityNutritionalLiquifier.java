@@ -160,7 +160,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         } else {
             HashedItem item = HashedItem.raw(inputSlot.getStack());
             if (!item.equals(lastPasteItem)) {
-                lastPasteItem = HashedItem.create(item.getStack());
+                lastPasteItem = item.recreate();
                 needsPacket = true;
             }
         }
@@ -216,7 +216,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         if (lastPasteItem == null) {
             return ItemStack.EMPTY;
         }
-        return lastPasteItem.getStack();
+        return lastPasteItem.getInternalStack();
     }
 
     @NotNull
@@ -226,8 +226,8 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         updateTag.put(NBTConstants.FLUID_STORED, fluidTank.serializeNBT());
         CompoundTag item = new CompoundTag();
         if (lastPasteItem != null) {
-            NBTUtils.writeRegistryEntry(item, NBTConstants.ID, ForgeRegistries.ITEMS, lastPasteItem.getStack().getItem());
-            CompoundTag tag = lastPasteItem.getStack().getTag();
+            NBTUtils.writeRegistryEntry(item, NBTConstants.ID, ForgeRegistries.ITEMS, lastPasteItem.getItem());
+            CompoundTag tag = lastPasteItem.getInternalTag();
             if (tag != null) {
                 item.put(NBTConstants.TAG, tag.copy());
             }

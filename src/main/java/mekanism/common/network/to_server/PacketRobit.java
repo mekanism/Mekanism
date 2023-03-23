@@ -23,8 +23,7 @@ import org.jetbrains.annotations.Nullable;
 public class PacketRobit implements IMekanismPacket {
 
     private static final Map<String, List<IRobitSkinProvider>> EASTER_EGGS = Map.of(
-            "sara", getPrideSkins(RobitPrideSkinData.TRANS, RobitPrideSkinData.LESBIAN),
-            "agnor", getPrideSkins(RobitPrideSkinData.GAY)
+          "sara", getPrideSkins(RobitPrideSkinData.TRANS, RobitPrideSkinData.LESBIAN)
     );
 
     private static List<IRobitSkinProvider> getPrideSkins(RobitPrideSkinData... prideSkinData) {

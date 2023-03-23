@@ -3,11 +3,14 @@
   "key": {
     "#": {
       "tag": "forge:raw_materials/osmium"
+    },
+    "P": {
+      "item": "mekanism:raw_osmium"
     }
   },
   "pattern": [
     "###",
-    "###",
+    "#P#",
     "###"
   ],
   "result": {

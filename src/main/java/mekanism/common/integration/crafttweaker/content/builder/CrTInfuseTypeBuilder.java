@@ -15,8 +15,8 @@ public class CrTInfuseTypeBuilder extends CrTChemicalBuilder<InfuseType, InfuseT
     /**
      * Creates a builder for registering a custom {@link InfuseType}.
      *
-     * @param textureLocation If present the {@link ResourceLocation} representing the texture this {@link InfuseType} will use, otherwise defaults to our default {@link
-     *                        InfuseType} texture.
+     * @param textureLocation If present the {@link ResourceLocation} representing the texture this {@link InfuseType} will use, otherwise defaults to our default
+     *                        {@link InfuseType} texture.
      *
      * @return A builder for creating a custom {@link InfuseType}.
      *

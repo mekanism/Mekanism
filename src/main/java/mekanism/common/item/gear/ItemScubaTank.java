@@ -15,6 +15,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registries.MekanismGases;
@@ -47,7 +48,7 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
     }
 
     @Override
-    protected LongSupplier getMaxGas() {
+    protected CachedLongValue getMaxGas() {
         return MekanismConfig.gear.scubaMaxGas;
     }
 

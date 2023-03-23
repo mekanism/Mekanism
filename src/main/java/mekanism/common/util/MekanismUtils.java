@@ -454,20 +454,19 @@ public final class MekanismUtils {
      * @apiNote Only call on the client.
      */
     public static void addFrequencyToTileTooltip(ItemStack stack, FrequencyType<?> frequencyType, List<Component> tooltip) {
-        ItemDataUtils.setCompoundIfPresent(stack, NBTConstants.COMPONENT_FREQUENCY, frequencyComponent -> {
-            NBTUtils.setCompoundIfPresent(frequencyComponent, frequencyType.getName(), frequencyCompound -> {
-                Frequency frequency = frequencyType.create(frequencyCompound);
-                frequency.setValid(false);
-                tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.getName()));
-                if (frequency.getOwner() != null) {
-                    String owner = OwnerDisplay.getOwnerName(MekanismUtils.tryGetClientPlayer(), frequency.getOwner(), frequency.getClientOwner());
-                    if (owner != null) {
-                        tooltip.add(MekanismLang.OWNER.translateColored(EnumColor.INDIGO, EnumColor.GRAY, owner));
-                    }
-                }
-                tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.isPublic() ? APILang.PUBLIC : APILang.PRIVATE));
-            });
-        });
+        ItemDataUtils.setCompoundIfPresent(stack, NBTConstants.COMPONENT_FREQUENCY, frequencyComponent ->
+              NBTUtils.setCompoundIfPresent(frequencyComponent, frequencyType.getName(), frequencyCompound -> {
+                  Frequency frequency = frequencyType.create(frequencyCompound);
+                  frequency.setValid(false);
+                  tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.getName()));
+                  if (frequency.getOwner() != null) {
+                      String owner = OwnerDisplay.getOwnerName(MekanismUtils.tryGetClientPlayer(), frequency.getOwner(), frequency.getClientOwner());
+                      if (owner != null) {
+                          tooltip.add(MekanismLang.OWNER.translateColored(EnumColor.INDIGO, EnumColor.GRAY, owner));
+                      }
+                  }
+                  tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.isPublic() ? APILang.PUBLIC : APILang.PRIVATE));
+              }));
     }
 
     /**

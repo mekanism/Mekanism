@@ -1,5 +1,6 @@
 package mekanism.generators.common.tile.fusion;
 
+import java.util.Collections;
 import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.gas.Gas;
@@ -14,6 +15,7 @@ import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.lib.multiblock.IMultiblockEjector;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
@@ -33,7 +35,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
+public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock implements IMultiblockEjector {
+
+    private Set<Direction> outputDirections = Collections.emptySet();
 
     public TileEntityFusionReactorPort(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.FUSION_REACTOR_PORT, pos, state);
@@ -80,12 +84,16 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
     }
 
     @Override
+    public void setEjectSides(Set<Direction> sides) {
+        outputDirections = sides;
+    }
+
+    @Override
     protected boolean onUpdateServer(FusionReactorMultiblockData multiblock) {
         boolean needsPacket = super.onUpdateServer(multiblock);
         if (getActive() && multiblock.isFormed()) {
-            Set<Direction> directionsToEmit = multiblock.getDirectionsToEmit(getBlockPos());
-            ChemicalUtil.emit(directionsToEmit, multiblock.steamTank, this);
-            CableUtils.emit(directionsToEmit, multiblock.energyContainer, this);
+            ChemicalUtil.emit(outputDirections, multiblock.steamTank, this);
+            CableUtils.emit(outputDirections, multiblock.energyContainer, this);
         }
         return needsPacket;
     }

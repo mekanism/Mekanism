@@ -3,11 +3,14 @@
   "key": {
     "#": {
       "tag": "forge:raw_materials/tin"
+    },
+    "P": {
+      "item": "mekanism:raw_tin"
     }
   },
   "pattern": [
     "###",
-    "###",
+    "#P#",
     "###"
   ],
   "result": {

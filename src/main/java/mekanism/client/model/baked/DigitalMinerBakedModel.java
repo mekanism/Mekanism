@@ -6,6 +6,7 @@ import mekanism.client.render.lib.QuadTransformation.TextureFilteredTransformati
 import mekanism.common.Mekanism;
 import mekanism.common.base.HolidayManager;
 import mekanism.common.config.MekanismConfig;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -25,9 +26,10 @@ public class DigitalMinerBakedModel extends ExtensionBakedModel<Void> {
     }
 
     public static void onStitch(TextureStitchEvent.Post event) {
-        AFD_SAD = event.getAtlas().getSprite(Mekanism.rl("block/models/digital_miner_screen_afd_sad"));
-        AFD_TEXT = event.getAtlas().getSprite(Mekanism.rl("block/models/digital_miner_screen_afd_text"));
-        MAY_4TH = event.getAtlas().getSprite(Mekanism.rl("block/models/digital_miner_screen_may4th"));
+        TextureAtlas atlas = event.getAtlas();
+        AFD_SAD = atlas.getSprite(Mekanism.rl("block/models/digital_miner_screen_afd_sad"));
+        AFD_TEXT = atlas.getSprite(Mekanism.rl("block/models/digital_miner_screen_afd_text"));
+        MAY_4TH = atlas.getSprite(Mekanism.rl("block/models/digital_miner_screen_may4th"));
     }
 
     private final QuadTransformation APRIL_FOOLS_TRANSFORM = QuadTransformation.list(

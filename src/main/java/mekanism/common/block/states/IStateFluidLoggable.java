@@ -28,8 +28,8 @@ public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer 
 
     /**
      * Gets the fluids this fluid loggable block supports. Overriding this is an easy way to change the block from supporting water and lava logging to supporting
-     * specific different types of fluid, but dynamic fluid stuff cannot be done without a sizeable patch to forge/a change in vanilla so that {@link
-     * BlockState#getFluidState()} has position information.
+     * specific different types of fluid, but dynamic fluid stuff cannot be done without a sizeable patch to forge/a change in vanilla so that
+     * {@link BlockState#getFluidState()} has position information.
      *
      * @return BlockState property for representing fluid loggable blocks
      */

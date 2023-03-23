@@ -1,11 +1,11 @@
 package mekanism.common.network.to_server;
 
 import java.util.List;
-import mekanism.common.Mekanism;
+import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.INestedRadialMode;
 import mekanism.api.radial.mode.IRadialMode;
+import mekanism.common.Mekanism;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
-import mekanism.api.radial.RadialData;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

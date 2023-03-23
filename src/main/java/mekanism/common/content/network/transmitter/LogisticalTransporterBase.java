@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler, InventoryNetwork, LogisticalTransporterBase> {
 
@@ -61,6 +62,11 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     @Override
     public boolean handlesRedstone() {
         return false;
+    }
+
+    public boolean exposesInsertCap(@NotNull Direction side) {
+        ConnectionType connectionType = getConnectionTypeRaw(side);
+        return connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PULL;
     }
 
     public EnumColor getColor() {
@@ -372,20 +378,20 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         return true;
     }
 
-    public TransitResponse insert(BlockEntity outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
-        return insert(outputter, request, color, doEmit, stack -> stack.recalculatePath(request, this, min));
+    public TransitResponse insert(BlockEntity outputter, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
+        return insert(outputter, request, color, doEmit, stack -> stack.recalculatePath(request, this, min, doEmit));
     }
 
-    public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
-        return insert(outputter, request, color, doEmit, stack -> stack.recalculateRRPath(request, outputter, this, min));
+    public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
+        return insert(outputter, request, color, doEmit, stack -> stack.recalculateRRPath(request, outputter, this, min, doEmit));
     }
 
-    private TransitResponse insert(BlockEntity outputter, TransitRequest request, EnumColor color, boolean doEmit,
+    private TransitResponse insert(BlockEntity outputter, TransitRequest request, @Nullable EnumColor color, boolean doEmit,
           Function<TransporterStack, TransitResponse> pathCalculator) {
         BlockPos outputterPos = outputter.getBlockPos();
         Direction from = WorldUtils.sideDifference(getTilePos(), outputterPos);
         if (from != null && canReceiveFrom(from.getOpposite())) {
-            TransporterStack stack = insertStack(outputterPos, color);
+            TransporterStack stack = createInsertStack(outputterPos, color);
             if (stack.canInsertToTransporterNN(this, from, outputter)) {
                 return updateTransit(doEmit, stack, pathCalculator.apply(stack));
             }
@@ -393,7 +399,16 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         return request.getEmptyResponse();
     }
 
-    private TransporterStack insertStack(BlockPos outputterCoord, EnumColor color) {
+    public TransitResponse insertUnchecked(BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
+        return insertUnchecked(outputterPos, color, doEmit, stack -> stack.recalculatePath(request, this, min, doEmit));
+    }
+
+    private TransitResponse insertUnchecked(BlockPos outputterPos, @Nullable EnumColor color, boolean doEmit, Function<TransporterStack, TransitResponse> pathCalculator) {
+        TransporterStack stack = createInsertStack(outputterPos, color);
+        return updateTransit(doEmit, stack, pathCalculator.apply(stack));
+    }
+
+    public TransporterStack createInsertStack(BlockPos outputterCoord, @Nullable EnumColor color) {
         TransporterStack stack = new TransporterStack();
         stack.originalLocation = outputterCoord;
         stack.homeLocation = outputterCoord;
