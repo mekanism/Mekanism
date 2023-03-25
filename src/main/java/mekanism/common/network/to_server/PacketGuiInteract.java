@@ -297,6 +297,16 @@ public class PacketGuiInteract implements IMekanismPacket {
                 manager.moveDown(extra);
             }
         }),
+        MOVE_FILTER_TO_TOP((tile, player, extra) -> {
+            if (tile instanceof ITileFilterHolder<?> filterHolder && filterHolder.getFilterManager() instanceof SortableFilterManager<?> manager) {
+                manager.moveToTop(extra);
+            }
+        }),
+        MOVE_FILTER_TO_BOTTOM((tile, player, extra) -> {
+            if (tile instanceof ITileFilterHolder<?> filterHolder && filterHolder.getFilterManager() instanceof SortableFilterManager<?> manager) {
+                manager.moveToBottom(extra);
+            }
+        }),
         TOGGLE_FILTER_STATE((tile, player, extra) -> {
             if (tile instanceof ITileFilterHolder<?> filterHolder) {
                 filterHolder.getFilterManager().toggleState(extra);

@@ -870,6 +870,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DYNAMIC_TANK, "Dynamic Tank");
         add(MekanismLang.MOVE_UP, "Move Up");
         add(MekanismLang.MOVE_DOWN, "Move Down");
+        add(MekanismLang.MOVE_TO_TOP, "Hold shift to move to top");
+        add(MekanismLang.MOVE_TO_BOTTOM, "Hold shift to move to bottom");
         add(MekanismLang.SET, "Set:");
         add(MekanismLang.TRUE, "True");
         add(MekanismLang.FALSE, "False");

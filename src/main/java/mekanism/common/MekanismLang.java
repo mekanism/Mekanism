@@ -232,6 +232,8 @@ public enum MekanismLang implements ILangEntry {
     DYNAMIC_TANK("gui", "dynamic_tank"),
     MOVE_UP("gui", "move_up"),
     MOVE_DOWN("gui", "move_down"),
+    MOVE_TO_TOP("gui", "move_up.shift"),
+    MOVE_TO_BOTTOM("gui", "move_down.shift"),
     SET("gui", "set"),
     TRUE("gui", "true"),
     FALSE("gui", "false"),
