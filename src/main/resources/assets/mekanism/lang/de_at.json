@@ -501,6 +501,7 @@
   "condensentrator.mekanism.condensentrating": "Kondensentrieren",
   "condensentrator.mekanism.decondensentrating": "Dekondensentrieren",
   "condensentrator.mekanism.toggle": "Operation umschalten",
+  "config.jade.plugin_mekanism.data_provider": "Datenanbieter für Jade-Kacheln",
   "config.jade.plugin_mekanism.energy": "Energie",
   "config.jade.plugin_mekanism.entity_data_provider": "Jade Entity Datenanbieter",
   "config.jade.plugin_mekanism.fluid": "Flüssigkeit",
