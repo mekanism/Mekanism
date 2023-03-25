@@ -31,7 +31,9 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
 
     @Override
     public int hashCode() {
-        return Objects.hash(enabled);
+        //Hash the filter type to ensure things like material and item filters don't collide on their hash if everything
+        // else except their type is equal
+        return Objects.hash(getFilterType(), enabled);
     }
 
     @Override
