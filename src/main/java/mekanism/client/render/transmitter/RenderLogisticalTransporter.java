@@ -86,7 +86,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 matrix.pushPose();
                 matrix.translate(stackPos[0], stackPos[1], stackPos[2]);
                 matrix.scale(0.75F, 0.75F, 0.75F);
-                itemRenderer.renderAsStack(matrix, renderer, stack.itemStack);
+                itemRenderer.renderAsStack(matrix, renderer, stack.itemStack, light);
                 matrix.popPose();
                 if (stack.color != null) {
                     modelBox.render(matrix, renderer, LightTexture.FULL_BRIGHT, overlayLight, stackPos[0], stackPos[1], stackPos[2], stack.color);
@@ -198,13 +198,13 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             entityItem.age = 0;
         }
 
-        private void renderAsStack(PoseStack matrix, MultiBufferSource buffer, ItemStack stack) {
+        private void renderAsStack(PoseStack matrix, MultiBufferSource buffer, ItemStack stack, int light) {
             if (entityItem != null) {
                 if (renderer == null) {
                     renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entityItem);
                 }
                 entityItem.setItem(stack);
-                renderer.render(entityItem, 0, 0, matrix, buffer, LightTexture.FULL_BRIGHT);
+                renderer.render(entityItem, 0, 0, matrix, buffer, light);
             }
         }
     }
