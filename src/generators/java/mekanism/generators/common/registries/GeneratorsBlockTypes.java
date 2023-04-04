@@ -59,6 +59,7 @@ public class GeneratorsBlockTypes {
           .withSound(GeneratorsSounds.HEAT_GENERATOR)
           .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
           .withComputerSupport("heatGenerator")
+          .replace(Attributes.ACTIVE_MELT_LIGHT)
           .with(new AttributeParticleFX()
                 .add(ParticleTypes.SMOKE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52))
                 .add(ParticleTypes.FLAME, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)))
@@ -72,6 +73,7 @@ public class GeneratorsBlockTypes {
           .withSound(GeneratorsSounds.BIO_GENERATOR)
           .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
           .withComputerSupport("bioGenerator")
+          .replace(Attributes.ACTIVE_MELT_LIGHT)
           .with(new AttributeParticleFX()
                 .add(ParticleTypes.SMOKE, rand -> new Pos3D(0, 0.3, -0.25)))
           .build();
@@ -112,6 +114,7 @@ public class GeneratorsBlockTypes {
           .withSound(GeneratorsSounds.GAS_BURNING_GENERATOR)
           .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
           .withComputerSupport("gasBurningGenerator")
+          .replace(Attributes.ACTIVE_MELT_LIGHT)
           .build();
     // Advanced Solar Generator
     public static final Generator<TileEntityAdvancedSolarGenerator> ADVANCED_SOLAR_GENERATOR = GeneratorBuilder

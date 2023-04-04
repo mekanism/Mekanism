@@ -23,6 +23,9 @@ public class Attributes {
 
     public static final Attribute ACTIVE = new AttributeStateActive(0);
     public static final Attribute ACTIVE_LIGHT = new AttributeStateActive(8);
+    //12 is the minimum light level required to be able to melt ice that is directly adjacent to the block,
+    // we need to go slightly higher so that we can melt blocks that are also a distance of one away
+    public static final Attribute ACTIVE_MELT_LIGHT = new AttributeStateActive(13);
     public static final Attribute ACTIVE_FULL_LIGHT = new AttributeStateActive(15);
     public static final Attribute COMPARATOR = new AttributeComparator();
     public static final Attribute INVENTORY = new AttributeInventory();
