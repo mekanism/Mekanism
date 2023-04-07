@@ -104,7 +104,7 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
             return super.mouseReleased(mouseX, mouseY, button);
         }
         super.mouseReleased(mouseX, mouseY, button);
-        clickHandler.onClick(() -> getSlot(mouseX, mouseY), button, Screen.hasShiftDown(), minecraft.player.containerMenu.getCarried());
+        clickHandler.onClick(() -> getSlot(mouseX, mouseY), button, Screen.hasShiftDown(), gui().getCarriedItem());
         return true;
     }
 

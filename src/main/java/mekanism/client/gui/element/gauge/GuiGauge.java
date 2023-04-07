@@ -114,7 +114,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
     @Override
     public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        ItemStack stack = minecraft.player.containerMenu.getCarried();
+        ItemStack stack = gui().getCarriedItem();
         EnumColor color = getGaugeColor().getColor();
         if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && color != null) {
             if (gui() instanceof GuiMekanismTile<?, ?> gui && gui.getTileEntity() instanceof ISideConfiguration sideConfig && getTransmission() != null) {

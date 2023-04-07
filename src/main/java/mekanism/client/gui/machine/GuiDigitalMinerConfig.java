@@ -84,7 +84,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
                       updateInverseReplaceTarget(Items.AIR);
                       return true;
                   } else {
-                      ItemStack stack = minecraft.player.containerMenu.getCarried();
+                      ItemStack stack = getCarriedItem();
                       if (!stack.isEmpty() && stack.getItem() instanceof BlockItem) {
                           updateInverseReplaceTarget(stack.getItem());
                           return true;

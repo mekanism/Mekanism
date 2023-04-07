@@ -97,7 +97,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         ItemStack currentStack = slot.getItem();
         boolean shouldDrawOverlay = false;
         boolean skipStackRendering = slot == this.clickedSlot && !this.draggingItem.isEmpty() && !this.isSplittingStack;
-        ItemStack heldStack = minecraft.player.containerMenu.getCarried();
+        ItemStack heldStack = menu.getCarried();
         String s = null;
         if (slot == this.clickedSlot && !this.draggingItem.isEmpty() && this.isSplittingStack && !currentStack.isEmpty()) {
             currentStack = currentStack.copy();
@@ -143,7 +143,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
                     this.clickedSlot = null;
                 }
             } else if (!this.isQuickCrafting) {
-                if (minecraft.player.containerMenu.getCarried().isEmpty()) {
+                if (menu.getCarried().isEmpty()) {
                     if (pickBlockButton) {
                         this.slotClicked(slot, slot.index, button, ClickType.CLONE);
                     } else {

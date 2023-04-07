@@ -24,7 +24,7 @@ public interface GuiMinerFilterHelper extends GuiFilterHelper<TileEntityDigitalM
 
     default void addMinerDefaults(IGuiWrapper gui, MinerFilter<?> filter, int slotOffset, UnaryOperator<GuiElement> childAdder) {
         childAdder.apply(new GuiSlot(SlotType.NORMAL, gui, getRelativeX() + 148, getRelativeY() + slotOffset).setRenderHover(true)
-              .stored(() -> new ItemStack(filter.replaceTarget)).click(GuiFilter.getHandleClickSlot(GuiFilter.NOT_EMPTY_BLOCK, stack -> filter.replaceTarget = stack.getItem()))
+              .stored(() -> new ItemStack(filter.replaceTarget)).click(GuiFilter.getHandleClickSlot(gui, GuiFilter.NOT_EMPTY_BLOCK, stack -> filter.replaceTarget = stack.getItem()))
               .setGhostHandler((IGhostBlockItemConsumer) ingredient -> {
                   filter.replaceTarget = ((ItemStack) ingredient).getItem();
                   Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));

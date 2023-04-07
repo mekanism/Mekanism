@@ -60,7 +60,7 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
     @Nullable
     @Override
     protected IClickable getSlotClickHandler() {
-        return getHandleClickSlot(NOT_EMPTY_BLOCK, this::setFilterStack);
+        return getHandleClickSlot(gui(), NOT_EMPTY_BLOCK, this::setFilterStack);
     }
 
     private void setFilterStack(@NotNull ItemStack stack) {

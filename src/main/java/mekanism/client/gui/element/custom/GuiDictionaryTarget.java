@@ -102,7 +102,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                 setTargetSlot(null);
             }
         } else {
-            ItemStack stack = minecraft.player.containerMenu.getCarried();
+            ItemStack stack = gui().getCarriedItem();
             if (!stack.isEmpty()) {
                 setTargetSlot(stack);
             }

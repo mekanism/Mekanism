@@ -50,7 +50,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEII
 
     @Override
     public void onClick(double mouseX, double mouseY, int button) {
-        ItemStack stack = minecraft.player.containerMenu.getCarried();
+        ItemStack stack = gui().getCarriedItem();
         if (gui() instanceof GuiMekanismTile<?, ?> gui && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
             int index = infoHandler.getTankIndex();
             if (index != -1) {

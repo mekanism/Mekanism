@@ -225,12 +225,12 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
 
     protected abstract FILTER createNewFilter();
 
-    public static IClickable getHandleClickSlot(Predicate<ItemStack> stackValidator, Consumer<ItemStack> itemConsumer) {
+    public static IClickable getHandleClickSlot(IGuiWrapper gui, Predicate<ItemStack> stackValidator, Consumer<ItemStack> itemConsumer) {
         return (element, mouseX, mouseY) -> {
             if (Screen.hasShiftDown()) {
                 itemConsumer.accept(ItemStack.EMPTY);
             } else {
-                ItemStack stack = minecraft.player.containerMenu.getCarried();
+                ItemStack stack = gui.getCarriedItem();
                 if (!stackValidator.test(stack)) {
                     return false;
                 }

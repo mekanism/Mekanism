@@ -44,7 +44,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
         super.addGuiElements();
         addRenderableWidget(new GuiQIOFrequencyTab(this, tile));
         addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, 7, 30).setRenderHover(true)).click((element, mouseX, mouseY) -> {
-            ItemStack stack = minecraft.player.containerMenu.getCarried();
+            ItemStack stack = getCarriedItem();
             if (stack.isEmpty() == hasShiftDown()) {
                 //If the stack is empty and shift is being held, clear it
                 // otherwise if the stack is not empty and shift is not being held set it

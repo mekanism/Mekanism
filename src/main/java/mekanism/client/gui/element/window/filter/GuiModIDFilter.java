@@ -102,7 +102,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     protected IClickable getSlotClickHandler() {
         return (element, mouseX, mouseY) -> {
             if (!Screen.hasShiftDown()) {
-                ItemStack stack = minecraft.player.containerMenu.getCarried();
+                ItemStack stack = gui().getCarriedItem();
                 if (!stack.isEmpty()) {
                     setFilterName(StackUtils.size(stack, 1), false);
                     return true;

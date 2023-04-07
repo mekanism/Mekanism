@@ -71,7 +71,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     protected void renderTooltip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
         super.renderTooltip(matrix, mouseX, mouseY);
         if (tile instanceof ISideConfiguration) {
-            ItemStack stack = getMinecraft().player.containerMenu.getCarried();
+            ItemStack stack = getCarriedItem();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
                 Slot slot = getSlotUnderMouse();
                 if (slot != null) {
