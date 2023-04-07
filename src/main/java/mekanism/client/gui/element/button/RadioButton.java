@@ -4,11 +4,13 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class RadioButton extends MekanismButton {
 
@@ -17,9 +19,10 @@ public class RadioButton extends MekanismButton {
 
     private final BooleanSupplier toggled;
 
-    public RadioButton(IGuiWrapper gui, int x, int y, BooleanSupplier toggled, Runnable onPress, IHoverable onHover) {//TODO: Sound?
+    public RadioButton(IGuiWrapper gui, int x, int y, BooleanSupplier toggled, @NotNull Runnable onPress, @Nullable IHoverable onHover) {
         super(gui, x, y, RADIO_SIZE, RADIO_SIZE, Component.empty(), onPress, onHover);
         this.toggled = toggled;
+        this.clickSound = MekanismSounds.BEEP.get();
     }
 
     @Override

@@ -2,11 +2,11 @@ package mekanism.client.gui.element.custom.module;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.button.RadioButton;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.registries.MekanismSounds;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 
@@ -63,6 +63,6 @@ class BooleanToggle extends MiniElement {
 
     private void setDataFromClick(boolean value) {
         setData(data, value);
-        GuiElement.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
     }
 }

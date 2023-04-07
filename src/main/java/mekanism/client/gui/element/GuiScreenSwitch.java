@@ -7,8 +7,6 @@ import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismSounds;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +19,8 @@ public class GuiScreenSwitch extends GuiInnerScreen {
         super(gui, x, y, width, GuiDigitalSwitch.BUTTON_SIZE_Y * 2 + 5, () -> Collections.singletonList(buttonName));
         this.stateSupplier = stateSupplier;
         this.onToggle = onToggle;
-        active = true;
+        this.active = true;
+        this.clickSound = MekanismSounds.BEEP.get();
     }
 
     @Override
@@ -42,8 +41,7 @@ public class GuiScreenSwitch extends GuiInnerScreen {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
+    public void onClick(double mouseX, double mouseY, int button) {
         onToggle.run();
     }
 }

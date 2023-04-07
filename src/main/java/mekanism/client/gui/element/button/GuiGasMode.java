@@ -30,13 +30,11 @@ public class GuiGasMode extends MekanismImageButton {
 
     @Override
     protected ResourceLocation getResource() {
-        GasMode mode = gasModeSupplier.get();
-        if (mode == GasMode.DUMPING_EXCESS) {
-            return EXCESS;
-        } else if (mode == GasMode.DUMPING) {
-            return DUMP;
-        }
-        return super.getResource();
+        return switch (gasModeSupplier.get()) {
+            case DUMPING_EXCESS -> EXCESS;
+            case DUMPING -> DUMP;
+            default -> super.getResource();
+        };
     }
 
     @Override

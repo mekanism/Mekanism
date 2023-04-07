@@ -49,8 +49,8 @@ public abstract class GuiScrollList extends GuiScrollableElement {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        super.onClick(mouseX, mouseY);
+    public void onClick(double mouseX, double mouseY, int button) {
+        super.onClick(mouseX, mouseY, button);
         if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= y + 1 && mouseY < y + height - 1) {
             int index = getCurrentSelection();
             int focused = getFocusedElements();

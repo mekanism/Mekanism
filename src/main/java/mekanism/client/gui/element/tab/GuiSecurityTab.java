@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable ICapabilityProvider>> {
 
@@ -88,20 +89,27 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable ICapabili
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY, int button) {
         ICapabilityProvider provider = dataSource.get();
         if (provider != null) {
             provider.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> {
                 if (security.ownerMatches(minecraft.player)) {
                     if (currentHand != null) {
-                        Mekanism.packetHandler().sendToServer(new PacketSecurityMode(currentHand));
+                        Mekanism.packetHandler().sendToServer(new PacketSecurityMode(currentHand, button == GLFW.GLFW_MOUSE_BUTTON_1));
                     } else if (provider instanceof BlockEntity tile) {
-                        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_SECURITY_MODE, tile));
+                        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_1 ? GuiInteraction.NEXT_SECURITY_MODE
+                                                                                                                       : GuiInteraction.PREVIOUS_SECURITY_MODE, tile));
                     } else if (provider instanceof Entity entity) {
-                        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteractionEntity.NEXT_SECURITY_MODE, entity));
+                        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_1 ? GuiInteractionEntity.NEXT_SECURITY_MODE
+                                                                                                                       : GuiInteractionEntity.PREVIOUS_SECURITY_MODE, entity));
                     }
                 }
             });
         }
+    }
+
+    @Override
+    public boolean isValidClickButton(int button) {
+        return button == GLFW.GLFW_MOUSE_BUTTON_1 || button == GLFW.GLFW_MOUSE_BUTTON_2;
     }
 }

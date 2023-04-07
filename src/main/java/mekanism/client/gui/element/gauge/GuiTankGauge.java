@@ -14,6 +14,7 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEIIngredientHelper {
 
@@ -48,24 +49,25 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEII
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (isMouseOver(mouseX, mouseY) && tankType != null) {
-            ItemStack stack = minecraft.player.containerMenu.getCarried();
-            if (gui() instanceof GuiMekanismTile<?, ?> gui && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
-                int index = infoHandler.getTankIndex();
-                if (index != -1) {
-                    DropperAction action;
-                    if (button == 0) {
-                        action = Screen.hasShiftDown() ? DropperAction.DUMP_TANK : DropperAction.FILL_DROPPER;
-                    } else {
-                        action = DropperAction.DRAIN_DROPPER;
-                    }
-                    Mekanism.packetHandler().sendToServer(new PacketDropperUse(gui.getTileEntity().getBlockPos(), action, tankType, index));
+    public void onClick(double mouseX, double mouseY, int button) {
+        ItemStack stack = minecraft.player.containerMenu.getCarried();
+        if (gui() instanceof GuiMekanismTile<?, ?> gui && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
+            int index = infoHandler.getTankIndex();
+            if (index != -1) {
+                DropperAction action;
+                if (button == GLFW.GLFW_MOUSE_BUTTON_1) {
+                    action = Screen.hasShiftDown() ? DropperAction.DUMP_TANK : DropperAction.FILL_DROPPER;
+                } else { //GLFW.GLFW_MOUSE_BUTTON_2
+                    action = DropperAction.DRAIN_DROPPER;
                 }
-                return true;
+                Mekanism.packetHandler().sendToServer(new PacketDropperUse(gui.getTileEntity().getBlockPos(), action, tankType, index));
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean isValidClickButton(int button) {
+        return button == GLFW.GLFW_MOUSE_BUTTON_1 || button == GLFW.GLFW_MOUSE_BUTTON_2;
     }
 
     public interface ITankInfoHandler<TANK> {

@@ -120,8 +120,18 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
             close();
         }));
         addChild(new TranslationButton(gui(), getLeftButtonX() + 62, screenBottom + 2, 60, 20, MekanismLang.BUTTON_SAVE, this::validateAndSave));
-        addChild(new GuiSlot(SlotType.NORMAL, gui(), relativeX + 7, relativeY + getSlotOffset()).setRenderHover(true).setGhostHandler(getGhostHandler()));
+        GuiSlot slot = addChild(new GuiSlot(SlotType.NORMAL, gui(), relativeX + 7, relativeY + getSlotOffset()).setRenderHover(true).setGhostHandler(getGhostHandler()));
+        IClickable slotClickHandler = getSlotClickHandler();
+        if (slotClickHandler != null) {
+            //Only set it if it isn't null so that we don't set the sound variable
+            slot.click(slotClickHandler);
+        }
         slotDisplay = addChild(new GuiSequencedSlotDisplay(gui(), relativeX + 8, relativeY + getSlotOffset() + 1, this::getRenderStacks));
+    }
+
+    @Nullable
+    protected IClickable getSlotClickHandler() {
+        return null;
     }
 
     @Nullable
@@ -215,26 +225,18 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
 
     protected abstract FILTER createNewFilter();
 
-    public static boolean mouseClickSlot(IGuiWrapper gui, int button, double mouseX, double mouseY, double xMin, double yMin, Predicate<ItemStack> stackValidator,
-          Consumer<ItemStack> itemConsumer) {
-        if (button == 0) {
-            double xAxis = mouseX - gui.getLeft();
-            double yAxis = mouseY - gui.getTop();
-            if (xAxis >= xMin && xAxis < xMin + 16 && yAxis >= yMin && yAxis < yMin + 16) {
-                ItemStack toSet;
-                if (Screen.hasShiftDown()) {
-                    toSet = ItemStack.EMPTY;
-                } else {
-                    ItemStack stack = minecraft.player.containerMenu.getCarried();
-                    if (!stackValidator.test(stack)) {
-                        return false;
-                    }
-                    toSet = StackUtils.size(stack, 1);
+    public static IClickable getHandleClickSlot(Predicate<ItemStack> stackValidator, Consumer<ItemStack> itemConsumer) {
+        return (element, mouseX, mouseY) -> {
+            if (Screen.hasShiftDown()) {
+                itemConsumer.accept(ItemStack.EMPTY);
+            } else {
+                ItemStack stack = minecraft.player.containerMenu.getCarried();
+                if (!stackValidator.test(stack)) {
+                    return false;
                 }
-                itemConsumer.accept(toSet);
-                return true;
+                itemConsumer.accept(StackUtils.size(stack, 1));
             }
-        }
-        return false;
+            return true;
+        };
     }
 }

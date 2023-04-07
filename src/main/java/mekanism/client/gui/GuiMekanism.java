@@ -50,6 +50,7 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
 
@@ -348,7 +349,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                 // it is being closed, we don't want to update and mark it as focused, as our defocusing code won't
                 // run as we ran it when we pressed the button
                 setFocused(focused);
-                if (button == 0) {
+                if (button == GLFW.GLFW_MOUSE_BUTTON_1) {
                     setDragging(true);
                 }
                 // this check prevents us from moving the window to the top of the stack if the clicked window opened up an additional window
@@ -365,7 +366,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             GuiEventListener listener = children().get(i);
             if (listener.mouseClicked(mouseX, mouseY, button)) {
                 setFocused(listener);
-                if (button == 0) {
+                if (button == GLFW.GLFW_MOUSE_BUTTON_1) {
                     setDragging(true);
                 }
                 return true;
@@ -402,7 +403,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
         super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
-        return getFocused() != null && isDragging() && button == 0 && getFocused().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
+        return getFocused() != null && isDragging() && button == GLFW.GLFW_MOUSE_BUTTON_1 && getFocused().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
     }
 
     @Nullable

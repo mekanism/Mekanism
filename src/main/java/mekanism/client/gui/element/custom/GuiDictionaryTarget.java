@@ -32,6 +32,7 @@ import mekanism.common.tags.TagUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.BlockItem;
@@ -63,7 +64,6 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
     public GuiDictionaryTarget(IGuiWrapper gui, int x, int y, Consumer<Set<DictionaryTagType>> tagSetter) {
         super(gui, x, y, 16, 16);
         this.tagSetter = tagSetter;
-        playClickSound = true;
     }
 
     public boolean hasTarget() {
@@ -96,13 +96,15 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY, int button) {
         if (Screen.hasShiftDown()) {
-            setTargetSlot(null, false);
+            if (target != null) {
+                setTargetSlot(null);
+            }
         } else {
             ItemStack stack = minecraft.player.containerMenu.getCarried();
             if (!stack.isEmpty()) {
-                setTargetSlot(stack, false);
+                setTargetSlot(stack);
             }
         }
     }
@@ -111,7 +113,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
         return tags.getOrDefault(type, Collections.emptyList());
     }
 
-    public void setTargetSlot(Object newTarget, boolean playSound) {
+    public void setTargetSlot(@Nullable Object newTarget) {
         //Clear cached tags
         tags.clear();
         if (newTarget == null) {
@@ -212,9 +214,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
         }
         //Update the list being viewed
         tagSetter.accept(tags.keySet());
-        if (playSound) {
-            playClickSound();
-        }
+        playClickSound(SoundEvents.UI_BUTTON_CLICK);
     }
 
     private <STACK extends ChemicalStack<?>, HANDLER extends IChemicalHandler<?, STACK>> void addChemicalTags(DictionaryTagType tagType, ItemStack stack,
@@ -261,7 +261,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
 
             @Override
             public void accept(Object ingredient) {
-                setTargetSlot(ingredient, true);
+                setTargetSlot(ingredient);
             }
         };
     }

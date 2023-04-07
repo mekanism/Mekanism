@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 
 //TODO: Eventually it would be nice that when a tag is selected in the GUI that it shows everything else that is in that tag
 public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
@@ -66,15 +67,12 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0 && hasShiftDown() && !target.hasTarget()) {
-            for (int i = 0; i < menu.slots.size(); i++) {
-                Slot slot = menu.slots.get(i);
-                if (isMouseOverSlot(slot, mouseX, mouseY)) {
-                    ItemStack stack = slot.getItem();
-                    if (stack.isEmpty()) {
-                        break;
-                    }
-                    target.setTargetSlot(stack, true);
+        if (button == GLFW.GLFW_MOUSE_BUTTON_1 && hasShiftDown() && !target.hasTarget()) {
+            Slot slot = getSlotUnderMouse();
+            if (slot != null) {
+                ItemStack stack = slot.getItem();
+                if (!stack.isEmpty()) {
+                    target.setTargetSlot(stack);
                     return true;
                 }
             }

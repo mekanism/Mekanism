@@ -49,9 +49,4 @@ public class GuiMinerTagFilter extends GuiTagFilter<MinerTagFilter, TileEntityDi
     protected boolean hasMatchingTargets(String name) {
         return TagCache.getBlockTagStacks(name).hasMatch();
     }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return tryClickReplaceStack(gui(), mouseX, mouseY, button, getSlotOffset(), filter) || super.mouseClicked(mouseX, mouseY, button);
-    }
 }

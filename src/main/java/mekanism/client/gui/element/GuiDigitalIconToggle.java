@@ -9,7 +9,6 @@ import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.inventory.GuiComponents.IToggleEnum;
 import mekanism.common.registries.MekanismSounds;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> extends GuiInnerScreen {
@@ -23,6 +22,7 @@ public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> e
         this.typeSupplier = typeSupplier;
         this.typeSetter = typeSetter;
         this.options = enumClass.getEnumConstants();
+        this.clickSound = MekanismSounds.BEEP.get();
         tooltip(() -> Collections.singletonList(this.typeSupplier.get().getTooltip()));
     }
 
@@ -35,8 +35,7 @@ public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> e
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
+    public void onClick(double mouseX, double mouseY, int button) {
         TYPE nextType = MathUtils.getByIndexMod(options, typeSupplier.get().ordinal() + 1);
         typeSetter.accept(nextType);
     }

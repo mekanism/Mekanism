@@ -325,6 +325,7 @@ public class PacketGuiInteract implements IMekanismPacket {
         }),
 
         NEXT_SECURITY_MODE((tile, player, extra) -> SecurityUtils.INSTANCE.incrementSecurityMode(player, tile)),
+        PREVIOUS_SECURITY_MODE((tile, player, extra) -> SecurityUtils.INSTANCE.decrementSecurityMode(player, tile)),
 
         SECURITY_DESK_MODE((tile, player, extra) -> {
             if (tile instanceof TileEntitySecurityDesk desk) {
@@ -337,7 +338,13 @@ public class PacketGuiInteract implements IMekanismPacket {
                 hasMode.nextMode();
             }
         }),
+        PREVIOUS_MODE((tile, player, extra) -> {
+            if (tile instanceof IHasMode hasMode) {
+                hasMode.previousMode();
+            }
+        }),
         NEXT_REDSTONE_CONTROL((tile, player, extra) -> tile.setControlType(tile.getControlType().getNext(mode -> mode != RedstoneControl.PULSE || tile.canPulse()))),
+        PREVIOUS_REDSTONE_CONTROL((tile, player, extra) -> tile.setControlType(tile.getControlType().getPrevious(mode -> mode != RedstoneControl.PULSE || tile.canPulse()))),
         ENCODE_FORMULA((tile, player, extra) -> {
             if (tile instanceof TileEntityFormulaicAssemblicator assemblicator) {
                 assemblicator.encodeFormula();
@@ -426,6 +433,7 @@ public class PacketGuiInteract implements IMekanismPacket {
 
     public enum GuiInteractionEntity {
         NEXT_SECURITY_MODE((entity, player, extra) -> SecurityUtils.INSTANCE.incrementSecurityMode(player, entity)),
+        PREVIOUS_SECURITY_MODE((entity, player, extra) -> SecurityUtils.INSTANCE.decrementSecurityMode(player, entity)),
         CONTAINER_STOP_TRACKING((entity, player, extra) -> {
             if (player.containerMenu instanceof MekanismContainer container) {
                 container.stopTracking(extra);

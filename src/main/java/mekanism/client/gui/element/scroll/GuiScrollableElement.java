@@ -51,8 +51,8 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     protected abstract int getFocusedElements();
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        super.onClick(mouseX, mouseY);
+    public void onClick(double mouseX, double mouseY, int button) {
+        super.onClick(mouseX, mouseY, button);
         int scroll = getScroll();
         if (mouseX >= barX && mouseX <= barX + barWidth && mouseY >= barY + scroll && mouseY <= barY + scroll + barHeight) {
             if (needsScrollBars()) {
@@ -69,7 +69,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     @Override
     public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
         super.onDrag(mouseX, mouseY, deltaX, deltaY);
-        if (needsScrollBars() && isDragging) {
+        if (isDragging && needsScrollBars()) {
             double yAxis = mouseY - getGuiTop();
             this.scroll = Mth.clamp((yAxis - barY - dragOffset) / getMax(), 0, 1);
         }

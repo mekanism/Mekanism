@@ -43,7 +43,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.InputValidator;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
@@ -83,13 +82,19 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
               .stored(() -> new ItemStack(tile.getInverseReplaceTarget())).click((element, mouseX, mouseY) -> {
                   if (Screen.hasShiftDown()) {
                       updateInverseReplaceTarget(Items.AIR);
+                      return true;
                   } else {
                       ItemStack stack = minecraft.player.containerMenu.getCarried();
                       if (!stack.isEmpty() && stack.getItem() instanceof BlockItem) {
                           updateInverseReplaceTarget(stack.getItem());
+                          return true;
                       }
                   }
-              }).setGhostHandler((IGhostBlockItemConsumer) ingredient -> updateInverseReplaceTarget(((ItemStack) ingredient).getItem()));
+                  return false;
+              }).setGhostHandler((IGhostBlockItemConsumer) ingredient -> {
+                  updateInverseReplaceTarget(((ItemStack) ingredient).getItem());
+                  minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+              });
         addRenderableWidget(new MekanismImageButton(this, 35, 137, 14, 16, getButtonLocation("exclamation"),
               () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_REQUIRES_REPLACEMENT_BUTTON, tile)),
               getOnHover(() -> MekanismLang.MINER_REQUIRE_REPLACE_INVERSE.translate(YesNo.of(tile.getInverseRequiresReplacement())))));
@@ -113,7 +118,6 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
 
     private void updateInverseReplaceTarget(Item target) {
         Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteractionItem.DIGITAL_MINER_INVERSE_REPLACE_ITEM, tile, new ItemStack(target)));
-        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 
     @Override

@@ -5,6 +5,8 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ToggleButton extends MekanismImageButton {
 
@@ -13,11 +15,11 @@ public class ToggleButton extends MekanismImageButton {
 
     private final BooleanSupplier toggled;
 
-    public ToggleButton(IGuiWrapper gui, int x, int y, BooleanSupplier toggled, Runnable onPress, IHoverable onHover) {
+    public ToggleButton(IGuiWrapper gui, int x, int y, BooleanSupplier toggled, @NotNull Runnable onPress, @Nullable IHoverable onHover) {
         this(gui, x, y, 18, toggled, onPress, onHover);
     }
 
-    public ToggleButton(IGuiWrapper gui, int x, int y, int size, BooleanSupplier toggled, Runnable onPress, IHoverable onHover) {
+    public ToggleButton(IGuiWrapper gui, int x, int y, int size, BooleanSupplier toggled, @NotNull Runnable onPress, @Nullable IHoverable onHover) {
         super(gui, x, y, size, 18, TOGGLE, onPress, onHover);
         this.toggled = toggled;
     }

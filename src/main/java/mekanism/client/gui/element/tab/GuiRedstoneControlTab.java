@@ -15,6 +15,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 
 public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
 
@@ -33,8 +34,14 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_REDSTONE_CONTROL, dataSource));
+    public void onClick(double mouseX, double mouseY, int button) {
+        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_1 ? GuiInteraction.NEXT_REDSTONE_CONTROL
+                                                                                                       : GuiInteraction.PREVIOUS_REDSTONE_CONTROL, dataSource));
+    }
+
+    @Override
+    public boolean isValidClickButton(int button) {
+        return button == GLFW.GLFW_MOUSE_BUTTON_1 || button == GLFW.GLFW_MOUSE_BUTTON_2;
     }
 
     @Override

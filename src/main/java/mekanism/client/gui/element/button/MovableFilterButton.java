@@ -52,14 +52,19 @@ public class MovableFilterButton extends FilterButton {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        if (upButton.isMouseOver(mouseX, mouseY)) {
-            upButton.onClick(mouseX, mouseY);
-        } else if (downButton.isMouseOver(mouseX, mouseY)) {
-            downButton.onClick(mouseX, mouseY);
-        } else {
-            super.onClick(mouseX, mouseY);
+    public void onClick(double mouseX, double mouseY, int button) {
+        if (upButton.isValidClickButton(button) && upButton.isMouseOver(mouseX, mouseY)) {
+            upButton.onClick(mouseX, mouseY, button);
+        } else if (downButton.isValidClickButton(button) && downButton.isMouseOver(mouseX, mouseY)) {
+            downButton.onClick(mouseX, mouseY, button);
+        } else if (super.isValidClickButton(button)) {
+            super.onClick(mouseX, mouseY, button);
         }
+    }
+
+    @Override
+    public boolean isValidClickButton(int button) {
+        return super.isValidClickButton(button) || upButton.isValidClickButton(button) || downButton.isValidClickButton(button);
     }
 
     @Override

@@ -43,8 +43,17 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiQIOFrequencyTab(this, tile));
-        addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, 7, 30).setRenderHover(true)).setGhostHandler((IGhostItemConsumer) ingredient -> {
-            Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteractionItem.QIO_REDSTONE_ADAPTER_STACK, tile, StackUtils.size((ItemStack) ingredient, 1)));
+        addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, 7, 30).setRenderHover(true)).click((element, mouseX, mouseY) -> {
+            ItemStack stack = minecraft.player.containerMenu.getCarried();
+            if (stack.isEmpty() == hasShiftDown()) {
+                //If the stack is empty and shift is being held, clear it
+                // otherwise if the stack is not empty and shift is not being held set it
+                updateStack(stack);
+                return true;
+            }
+            return false;
+        }, MekanismSounds.BEEP.get()).setGhostHandler((IGhostItemConsumer) ingredient -> {
+            updateStack((ItemStack) ingredient);
             minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
         });
         addRenderableWidget(new MekanismImageButton(this, 9, 80, 14, getButtonLocation("fuzzy"),
@@ -69,6 +78,11 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
         text.configureDigitalInput(this::setCount);
     }
 
+    private void updateStack(ItemStack stack) {
+        //Note: Empty stack will be returned as empty by StackUtils#size, so we do not have to special case it
+        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteractionItem.QIO_REDSTONE_ADAPTER_STACK, tile, StackUtils.size(stack, 1)));
+    }
+
     private void setCount() {
         if (!text.getText().isEmpty()) {
             long count = Long.parseLong(text.getText());
@@ -83,24 +97,5 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
         drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         renderItem(matrix, tile.getItemType(), 8, 31);
         super.drawForegroundText(matrix, mouseX, mouseY);
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
-        if (button == 0) {
-            double xAxis = mouseX - leftPos;
-            double yAxis = mouseY - topPos;
-            if (xAxis >= 8 && xAxis < 24 && yAxis >= 31 && yAxis < 47) {
-                ItemStack stack = getMinecraft().player.containerMenu.getCarried();
-                if (!stack.isEmpty() && !hasShiftDown()) {
-                    Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteractionItem.QIO_REDSTONE_ADAPTER_STACK, tile, StackUtils.size(stack, 1)));
-                } else if (stack.isEmpty() && hasShiftDown()) {
-                    Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteractionItem.QIO_REDSTONE_ADAPTER_STACK, tile, ItemStack.EMPTY));
-                }
-                minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
-            }
-        }
-        return true;
     }
 }

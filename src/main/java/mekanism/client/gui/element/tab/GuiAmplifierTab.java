@@ -10,11 +10,11 @@ import mekanism.common.MekanismLang;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
-import mekanism.common.tile.laser.TileEntityLaserAmplifier.RedstoneOutput;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 
 public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
 
@@ -28,12 +28,11 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
 
     @Override
     protected ResourceLocation getOverlay() {
-        if (dataSource.getOutputMode() == RedstoneOutput.ENTITY_DETECTION) {
-            return ENTITY;
-        } else if (dataSource.getOutputMode() == RedstoneOutput.ENERGY_CONTENTS) {
-            return CONTENTS;
-        }
-        return super.getOverlay();
+        return switch (dataSource.getOutputMode()) {
+            case ENTITY_DETECTION -> ENTITY;
+            case ENERGY_CONTENTS -> CONTENTS;
+            default -> super.getOverlay();
+        };
     }
 
     @Override
@@ -43,8 +42,13 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, dataSource));
+    public void onClick(double mouseX, double mouseY, int button) {
+        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_1 ? GuiInteraction.NEXT_MODE : GuiInteraction.PREVIOUS_MODE, dataSource));
+    }
+
+    @Override
+    public boolean isValidClickButton(int button) {
+        return button == GLFW.GLFW_MOUSE_BUTTON_1 || button == GLFW.GLFW_MOUSE_BUTTON_2;
     }
 
     @Override

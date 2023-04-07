@@ -21,11 +21,15 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 public abstract class GuiElement extends AbstractWidget implements IFancyFontRenderer {
 
@@ -45,7 +49,8 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     private final List<GuiElement> positionOnlyChildren = new ArrayList<>();
 
     private IGuiWrapper guiObj;
-    protected boolean playClickSound;
+    @Nullable
+    protected SoundEvent clickSound;
     protected int relativeX;
     protected int relativeY;
     public boolean isOverlay;
@@ -267,7 +272,27 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return GuiUtils.checkChildren(children, child -> child.mouseClicked(mouseX, mouseY, button)) || super.mouseClicked(mouseX, mouseY, button);
+        if (GuiUtils.checkChildren(children, child -> child.mouseClicked(mouseX, mouseY, button))) {
+            return true;
+        }
+        //Vanilla Copy of super modified to make the click keep track of the button used
+        if (this.active && this.visible && isValidClickButton(button) && clicked(mouseX, mouseY)) {
+            playDownSound(minecraft.getSoundManager());
+            onClick(mouseX, mouseY, button);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public final void onClick(double mouseX, double mouseY) {
+        //Redirect any calls of the vanilla on click methods mods may do for some reason to act as if clicked with the left mouse button
+        onClick(mouseX, mouseY, GLFW.GLFW_MOUSE_BUTTON_1);
+    }
+
+    public void onClick(double mouseX, double mouseY, int button) {
+        //Pass on to basic super click call, which just happens to be a no-op
+        super.onClick(mouseX, mouseY);
     }
 
     @Override
@@ -462,13 +487,17 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     @Override
     public void playDownSound(@NotNull SoundManager soundHandler) {
-        if (playClickSound) {
-            super.playDownSound(soundHandler);
+        if (clickSound != null) {
+            playClickSound(soundHandler, clickSound);
         }
     }
 
-    protected void playClickSound() {
-        super.playDownSound(minecraft.getSoundManager());
+    protected static void playClickSound(SoundEvent sound) {
+        playClickSound(minecraft.getSoundManager(), sound);
+    }
+
+    private static void playClickSound(@NotNull SoundManager soundHandler, @NotNull SoundEvent sound) {
+        soundHandler.play(SimpleSoundInstance.forUI(sound, 1.0F));
     }
 
     protected void drawTiledSprite(PoseStack matrix, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
@@ -506,6 +535,6 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     @FunctionalInterface
     public interface IClickable {
 
-        void onClick(GuiElement element, int mouseX, int mouseY);
+        boolean onClick(GuiElement element, int mouseX, int mouseY);
     }
 }

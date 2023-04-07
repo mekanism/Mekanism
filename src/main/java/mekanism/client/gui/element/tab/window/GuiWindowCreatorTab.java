@@ -20,7 +20,7 @@ public abstract class GuiWindowCreatorTab<DATA_SOURCE, ELEMENT extends GuiWindow
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY, int button) {
         GuiWindow window = createWindow();
         window.setTabListeners(getCloseListener(), getReAttachListener());
         disableTab();

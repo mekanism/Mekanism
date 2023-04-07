@@ -14,19 +14,19 @@ import org.jetbrains.annotations.Nullable;
 
 public class BasicColorButton extends MekanismButton {
 
-    public static BasicColorButton toggle(IGuiWrapper gui, int x, int y, int size, EnumColor color, BooleanSupplier toggled, @Nullable Runnable onLeftClick,
+    public static BasicColorButton toggle(IGuiWrapper gui, int x, int y, int size, EnumColor color, BooleanSupplier toggled, @NotNull Runnable onLeftClick,
           @Nullable GuiElement.IHoverable onHover) {
         return new BasicColorButton(gui, x, y, size, () -> toggled.getAsBoolean() ? color : null, onLeftClick, onLeftClick, onHover);
     }
 
-    public static BasicColorButton renderActive(IGuiWrapper gui, int x, int y, int size, EnumColor color, @Nullable Runnable onLeftClick,  @Nullable Runnable onRightClick,
+    public static BasicColorButton renderActive(IGuiWrapper gui, int x, int y, int size, EnumColor color, @NotNull Runnable onLeftClick, @NotNull Runnable onRightClick,
           @Nullable GuiElement.IHoverable onHover) {
         return new BasicColorButton(gui, x, y, size, () -> color, onLeftClick, onRightClick, onHover);
     }
 
     private final Supplier<EnumColor> colorSupplier;
 
-    public BasicColorButton(IGuiWrapper gui, int x, int y, int size, Supplier<EnumColor> color, @Nullable Runnable onLeftClick, @Nullable Runnable onRightClick,
+    public BasicColorButton(IGuiWrapper gui, int x, int y, int size, Supplier<EnumColor> color, @NotNull Runnable onLeftClick, @Nullable Runnable onRightClick,
           @Nullable GuiElement.IHoverable onHover) {
         super(gui, x, y, size, size, Component.empty(), onLeftClick, onRightClick, onHover);
         this.colorSupplier = color;
@@ -37,7 +37,7 @@ public class BasicColorButton extends MekanismButton {
         EnumColor color = getColor();
         boolean doColor = color != null && color != EnumColor.GRAY;
         if (doColor) {
-            Color c = Color.rgbi(color.getRgbCode()[0], color.getRgbCode()[1], color.getRgbCode()[2]);
+            Color c = Color.rgb(color.getRgbCode());
             double[] hsv = c.hsvArray();
             hsv[1] = Math.max(0, hsv[1] - 0.25F);
             hsv[2] = Math.min(1, hsv[2] + 0.4F);

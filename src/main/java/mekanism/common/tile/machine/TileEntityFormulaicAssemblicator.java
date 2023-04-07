@@ -450,6 +450,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
+    @Override
+    public void previousMode() {
+        //We only have two modes just flip it
+        nextMode();
+    }
+
     @ComputerMethod
     public boolean hasRecipe() {
         return isRecipe;
