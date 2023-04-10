@@ -34,7 +34,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 repositories {
     maven {
         name 'ForgeFS'
-        url 'https://files.minecraftforge.net/maven'
+        url 'https://maven.minecraftforge.net/'
     }
     maven {
         name 'amadornes'
@@ -50,7 +50,7 @@ repositories {
     }
     maven {
         name 'curseforge'
-        url 'https://minecraft.curseforge.com/api/maven/'
+        url 'https://cursemaven.com'
     }
     maven {
         name 'opencomputers'
@@ -113,10 +113,10 @@ dependencies {
     compileOnly "mezz.jei:jei_${minecraft_version}:${jei_version}:api"
     runtime "mezz.jei:jei_${minecraft_version}:${jei_version}"
     compileOnly "net.darkhax.tesla:Tesla-${minecraft_version}:${tesla_version}"
-    compileOnly "inventory-tweaks:InventoryTweaks:${invtweak_version}:api"
+    compileOnly "curse.maven:inventory-tweaks-223094:${invtweak_version}"
     compileOnly "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:api"
     // Not updated yet
-    compileOnly "mcp.mobius.waila:Hwyla:${hwyla_version}:api"
+    compileOnly "curse.maven:hwyla-253449:${hwyla_version}"
     deobfCompile "cofh:RedstoneFlux:1.12-${redstoneflux_version}:universal"
     compileOnly "com.mod-buildcraft:buildcraft-api:${buildcraft_version}"
     compileOnly "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}:api"
