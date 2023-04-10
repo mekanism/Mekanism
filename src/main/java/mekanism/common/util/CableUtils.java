@@ -3,8 +3,8 @@ package mekanism.common.util;
 import cofh.redstoneflux.api.IEnergyConnection;
 import cofh.redstoneflux.api.IEnergyProvider;
 import cofh.redstoneflux.api.IEnergyReceiver;
-import java.util.HashSet;
-import java.util.Set;
+
+import java.util.Collections;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyOutputter;
@@ -147,9 +147,7 @@ public final class CableUtils {
                 }
                 int curHandlers = target.getHandlers().size();
                 if (curHandlers > 0) {
-                    Set<EnergyAcceptorTarget> targets = new HashSet<>();
-                    targets.add(target);
-                    double sent = EmitUtils.sendToAcceptors(targets, curHandlers, energyToSend);
+                    double sent = EmitUtils.sendToAcceptors(Collections.singleton(target), curHandlers, energyToSend);
                     if (emitter instanceof TileEntityInductionPort) {
                         //Streamline sideless removal method for induction port.
                         ((TileEntityInductionPort) emitter).removeEnergy(sent, false);
