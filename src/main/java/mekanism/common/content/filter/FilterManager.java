@@ -78,7 +78,7 @@ public class FilterManager<FILTER extends IFilter<?>> {
         if (save) {
             markForSave.run();
         }
-        if (enabledFilters != null) {
+        if (enabledFilters != null && filter.isEnabled()) {
             //If enabled filters is already initialized then just add it at the end which is where it should go
             enabledFilters.add(filter);
         }
