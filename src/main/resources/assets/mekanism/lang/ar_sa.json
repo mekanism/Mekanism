@@ -1,6 +1,10 @@
 {
   "advancements.mekanism.advanced_control_circuit.description": "صنع دائرة تحكم متقدمة",
   "advancements.mekanism.advanced_control_circuit.title": "تطور التقنية",
+  "advancements.mekanism.advanced_qio_drive.description": "تَنْسِيقُ الْعُنَاصِرِ الْكَمِّيَّةِ",
+  "advancements.mekanism.advanced_qio_drive.title": "التخزين عالي الكثافة",
+  "advancements.mekanism.alarm.description": "الإنذارات بصوتٍ عالٍ، خاصة تلك المستخدمة في الصناعة",
+  "advancements.mekanism.alarm.title": "إصدار الضوضاء",
   "assemblicator.mekanism.auto_mode_toggle": "الوضع التلقائي: %1$s",
   "assemblicator.mekanism.craft_available": "صناعة العناصر المتوفرة",
   "assemblicator.mekanism.craft_single": "تصنيع عنصر واحد",
