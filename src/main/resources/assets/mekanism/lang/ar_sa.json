@@ -1,4 +1,6 @@
 {
+  "advancements.mekanism.advanced_control_circuit.description": "صنع دائرة تحكم متقدمة",
+  "advancements.mekanism.advanced_control_circuit.title": "تطور التقنية",
   "assemblicator.mekanism.auto_mode_toggle": "الوضع التلقائي: %1$s",
   "assemblicator.mekanism.craft_available": "صناعة العناصر المتوفرة",
   "assemblicator.mekanism.craft_single": "تصنيع عنصر واحد",
