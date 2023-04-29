@@ -974,6 +974,7 @@
   "gui.mekanism.issues.no_energy.reduced_rate": " - 最高速度での動作に必要なエネルギーが不足しています",
   "gui.mekanism.issues.no_recipe": " - レシピが一致していないか、十分量の搬入がありません",
   "gui.mekanism.issues.no_space": " - 出力に十分な空間がありません",
+  "gui.mekanism.issues.no_space.overflow": " - 出力に十分な余裕がありません。内部バッファにオーバーフローが格納されています",
   "gui.mekanism.liquid": "液体: %1$s",
   "gui.mekanism.max": "最大: %1$s",
   "gui.mekanism.max_output": "最大出力: %1$s/t",
