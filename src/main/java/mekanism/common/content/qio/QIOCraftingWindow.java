@@ -610,7 +610,7 @@ public class QIOCraftingWindow implements IContentsListener {
             for (int i = ignoreEmpty && wasHotBar == isHotBar ? lastIndex : 0, slotCount = slots.size(); i < slotCount; i++) {
                 SLOT slot = slots.get(i);
                 if (ignoreEmpty != slot.hasItem()) {
-                    //Skip checking empty stacks if we want to ignore them, and skipp non-empty stacks if we don't want ot ignore them
+                    //Skip checking empty stacks if we want to ignore them, and skip non-empty stacks if we don't want ot ignore them
                     continue;
                 } else if (!slot.exists(selectedWindow)) {
                     // or if the slot doesn't "exist" for the current window configuration

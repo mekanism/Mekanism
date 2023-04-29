@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.common.config.MekanismConfig;
@@ -24,6 +25,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -39,6 +41,7 @@ import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.jetbrains.annotations.Nullable;
 
 public class CommonWorldTickHandler {
 
@@ -50,6 +53,8 @@ public class CommonWorldTickHandler {
     private Map<ResourceLocation, Queue<ChunkPos>> chunkRegenMap;
     public static boolean flushTagAndRecipeCaches;
     public static boolean monitoringCardboardBox;
+    @Nullable
+    public static Predicate<ItemStack> fallbackItemCollector;
 
     public void addRegenChunk(ResourceKey<Level> dimension, ChunkPos chunkCoord) {
         if (chunkRegenMap == null) {
@@ -86,6 +91,11 @@ public class CommonWorldTickHandler {
                 entity.discard();
                 event.setCanceled(true);
             }
+        } else if (fallbackItemCollector != null && event.getEntity() instanceof ItemEntity entity && fallbackItemCollector.test(entity.getItem())) {
+            //If we have a fallback item collector active and the entity that is being added is an item,
+            // try to let our fallback collector handle the item and keep track of it instead of actually adding it to the world
+            entity.discard();
+            event.setCanceled(true);
         }
     }
 

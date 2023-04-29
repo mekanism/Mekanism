@@ -974,6 +974,7 @@
   "gui.mekanism.issues.no_energy.reduced_rate": "pǝǝds ɯnɯᴉxɐɯ ʇɐ unɹ oʇ ʎᵷɹǝuǝ ɥᵷnouǝ ʇoN - ",
   "gui.mekanism.issues.no_recipe": "ʇnduᴉ ɥᵷnouǝ ʇou ɹo ǝdᴉɔǝɹ ᵷuᴉɥɔʇɐɯ oN - ",
   "gui.mekanism.issues.no_space": "ʇndʇno uᴉ ɯooɹ ɥᵷnouǝ ʇoN - ",
+  "gui.mekanism.issues.no_space.overflow": "ɹǝɟɟnq ꞁɐuɹǝʇuᴉ uᴉ pǝɹoʇs ʍoꞁɟɹǝʌo 'ʇndʇno uᴉ ɯooɹ ɥᵷnouǝ ʇoN - ",
   "gui.mekanism.liquid": "%s :pᴉnbᴉꞀ",
   "gui.mekanism.max": "%s :xɐW",
   "gui.mekanism.max_output": "ʇ/%s :ʇndʇnO xɐW",

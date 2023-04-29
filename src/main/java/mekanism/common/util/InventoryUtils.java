@@ -9,6 +9,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
+import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.inventory.TileTransitRequest;
 import mekanism.common.recipe.upgrade.ItemRecipeData;
@@ -23,6 +24,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class InventoryUtils {
@@ -125,5 +127,57 @@ public final class InventoryUtils {
             }
         }
         return request;
+    }
+
+    /**
+     * Helper to first try inserting ignoring empty slots, and then insert not ignoring empty slots
+     *
+     * @param slots          Slots to insert into
+     * @param stack          Stack to insert (do not modify).
+     * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
+     * @param automationType The method that this slot is being interacted from.
+     *
+     * @return Remainder
+     *
+     * @see ItemHandlerHelper#insertItemStacked(IItemHandler, ItemStack, boolean)
+     */
+    public static ItemStack insertItem(List<? extends IInventorySlot> slots, @NotNull ItemStack stack, Action action, AutomationType automationType) {
+        stack = insertItem(slots, stack, true, false, action, automationType);
+        return insertItem(slots, stack, false, false, action, automationType);
+    }
+
+    /**
+     * Helper to try inserting a stack into a list of inventory slots only inserting into either empty slots or inserting into non-empty slots.
+     *
+     * @param slots          Slots to insert into
+     * @param stack          Stack to insert (do not modify).
+     * @param ignoreEmpty    {@code true} to ignore/skip empty slots, {@code false} to ignore/skip non-empty slots.
+     * @param checkAll       {@code true} to check all slots regardless of empty state. When this is {@code true}, {@code ignoreEmpty} is ignored.
+     * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
+     * @param automationType The method that this slot is being interacted from.
+     *
+     * @return Remainder
+     *
+     * @see mekanism.common.inventory.container.MekanismContainer#insertItem(List, ItemStack, boolean, boolean, SelectedWindowData, Action)
+     */
+    @NotNull
+    public static ItemStack insertItem(List<? extends IInventorySlot> slots, @NotNull ItemStack stack, boolean ignoreEmpty, boolean checkAll, Action action,
+          AutomationType automationType) {
+        if (stack.isEmpty()) {
+            //Skip doing anything if the stack is already empty.
+            // Makes it easier to chain calls, rather than having to check if the stack is empty after our previous call
+            return stack;
+        }
+        for (IInventorySlot slot : slots) {
+            if (!checkAll && ignoreEmpty == slot.isEmpty()) {
+                //Skip checking empty stacks if we want to ignore them, and skip non-empty stacks if we don't want ot ignore them
+                continue;
+            }
+            stack = slot.insertItem(stack, action, automationType);
+            if (stack.isEmpty()) {
+                break;
+            }
+        }
+        return stack;
     }
 }
