@@ -974,7 +974,7 @@
   "gui.mekanism.issues.no_energy.reduced_rate": " - 沒有足夠的能量維持最高速度運作",
   "gui.mekanism.issues.no_recipe": " - 沒有匹配的配方或輸入不足",
   "gui.mekanism.issues.no_space": " - 輸出空間不足",
-  "gui.mekanism.issues.no_space.overflow": " - 輸出空間不足, 溢出已儲存至內部緩衝",
+  "gui.mekanism.issues.no_space.overflow": " - 輸出空間不足, 內部緩存溢出",
   "gui.mekanism.liquid": "液體: %1$s",
   "gui.mekanism.max": "最大: %1$s",
   "gui.mekanism.max_output": "最大輸出: %1$s/t",
