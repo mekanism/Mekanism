@@ -74,7 +74,7 @@ public class ItemCanteen extends CapabilityItem {
         if (!world.isClientSide && entityLiving instanceof Player player) {
             int needed = Math.min(20 - player.getFoodData().getFoodLevel(), getFluid(stack).getAmount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
             if (needed > 0) {
-                player.getFoodData().eat(needed, needed * MekanismConfig.general.nutritionalPasteSaturation.get());
+                player.getFoodData().eat(needed, MekanismConfig.general.nutritionalPasteSaturation.get());
                 FluidUtil.getFluidHandler(stack).ifPresent(handler -> handler.drain(needed * MekanismConfig.general.nutritionalPasteMBPerFood.get(),
                       FluidAction.EXECUTE));
                 entityLiving.gameEvent(GameEvent.DRINK);

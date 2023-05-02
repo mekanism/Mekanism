@@ -64,7 +64,7 @@ public class ItemNutritionalPasteBucket extends BucketItem {
                     serverPlayer.awardStat(Stats.ITEM_USED.get(this));
                 }
                 if (!level.isClientSide) {
-                    player.getFoodData().eat(needed, needed * MekanismConfig.general.nutritionalPasteSaturation.get());
+                    player.getFoodData().eat(needed, MekanismConfig.general.nutritionalPasteSaturation.get());
                 }
                 stack.shrink(1);
                 return stack.isEmpty() ? new ItemStack(Items.BUCKET) : stack;
