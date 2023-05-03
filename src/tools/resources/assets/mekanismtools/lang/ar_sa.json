@@ -1,4 +1,11 @@
 {
+  "advancements.mekanismtools.alternate_armor.description": "اصنع أي قطعة من دروع Mekanism Tools",
+  "advancements.mekanismtools.alternate_armor.title": "المزيد من أنواع الدروع!",
+  "advancements.mekanismtools.alternate_tools.description": "اصنع أي أداة أو سلاح (باستثناء باكسل) من Mekanism Tools",
+  "advancements.mekanismtools.alternate_tools.title": "المزيد من أنواع الأدوات!",
+  "advancements.mekanismtools.better_than_netherite.description": "احمي نفسك بقطعة من درع السبج المكرر",
+  "advancements.mekanismtools.better_than_netherite.title": "أفضل من النيذيرايت",
+  "advancements.mekanismtools.loved_by_piglins.description": "دروع حجر النور المكرر تنير اسطع حتى من الذهب!",
   "item.mekanismtools.bronze_axe": "فأس برونزي",
   "item.mekanismtools.bronze_boots": "أحذية برونزية",
   "item.mekanismtools.bronze_chestplate": "صندوق برونزي",
