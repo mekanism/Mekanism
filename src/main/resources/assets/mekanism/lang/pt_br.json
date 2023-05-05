@@ -974,6 +974,7 @@
   "gui.mekanism.issues.no_energy.reduced_rate": " - Não há energia suficiente para rodar na velocidade máxima",
   "gui.mekanism.issues.no_recipe": " - Nenhuma receita correspondente ou não há entrada suficiente",
   "gui.mekanism.issues.no_space": " - Não há espaço suficiente na saída",
+  "gui.mekanism.issues.no_space.overflow": " - Não há espaço suficiente na saída, excesso guardado no buffer interno",
   "gui.mekanism.liquid": "Líquido: %1$s",
   "gui.mekanism.max": "Máximo: %1$s",
   "gui.mekanism.max_output": "Saída Máxima: %1$s/t",
