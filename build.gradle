@@ -41,7 +41,7 @@ idea {
 ext {
     versionProperties = ["version"       : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
                          "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range, "jei_version": jei_version_range,
-                         "curios_version": curios_version_range, "recipe_stages_version": recipe_stages_version_range]
+                         "curios_version": curios_version_range, "recipe_stages_version": recipe_stages_version_range, "dme_version": dme_version_range]
     //Fallback pack format is the larger of the resource and data pack formats
     packProperties = ["pack_format"         : Math.max(Integer.parseInt(resource_pack_format), Integer.parseInt(data_pack_format)),
                       "resource_pack_format": resource_pack_format, "data_pack_format": data_pack_format]
@@ -735,6 +735,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     optionalDependency "crafttweaker"
                     optionalDependency "ctm"
                     optionalDependency "curios"
+                    optionalDependency "dark-mode-everywhere"
                     optionalDependency "farmers-delight"
                     optionalDependency "female-gender-forge"
                     optionalDependency "flux-networks"
