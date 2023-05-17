@@ -3,7 +3,7 @@ package mekanism.common.capabilities.resolver.manager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -39,7 +39,7 @@ public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyCo
         if (this.canHandle) {
             handlers = new EnumMap<>(Direction.class);
             cachedCapabilities = new EnumMap<>(Direction.class);
-            cachedReadOnlyCapabilities = new HashMap<>();
+            cachedReadOnlyCapabilities = new IdentityHashMap<>();
         } else {
             handlers = Collections.emptyMap();
             cachedCapabilities = Collections.emptyMap();
@@ -85,7 +85,7 @@ public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyCo
         //Note: Only should enter this if statement if we don't already have a cache,
         // so we just check it beforehand as it is a quick check and simplifies the code
         IStrictEnergyHandler handler = handlers.computeIfAbsent(side, s -> new ProxyStrictEnergyHandler(baseHandler, s, holder));
-        return EnergyCapabilityResolver.getCachedOrResolve(capability, cachedCapabilities.computeIfAbsent(side, key -> new HashMap<>()), handler);
+        return EnergyCapabilityResolver.getCachedOrResolve(capability, cachedCapabilities.computeIfAbsent(side, key -> new IdentityHashMap<>()), handler);
     }
 
     @Override

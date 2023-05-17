@@ -1,8 +1,8 @@
 package mekanism.common.tag;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +43,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class BaseTagProvider implements DataProvider {
 
     private final Map<TagType<?>, Map<TagKey<?>, TagBuilder>> supportedTagTypes = new Object2ObjectLinkedOpenHashMap<>();
-    private final Set<Block> knownHarvestRequirements = new HashSet<>();
+    private final Set<Block> knownHarvestRequirements = new ReferenceOpenHashSet<>();
     private final ExistingFileHelper existingFileHelper;
     private final DataGenerator gen;
     private final String modid;

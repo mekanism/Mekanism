@@ -1,6 +1,7 @@
 package mekanism.common.loot.table;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ReferenceArraySet;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
@@ -60,8 +61,9 @@ public abstract class BaseBlockLootTables extends BlockLoot {
     private static final LootItemCondition.Builder HAS_SILK_TOUCH = MatchTool.toolMatches(ItemPredicate.Builder.item()
           .hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1))));
 
-    private final Set<Block> knownBlocks = new ObjectOpenHashSet<>();
-    private final Set<Block> toSkip = new ObjectOpenHashSet<>();
+    private final Set<Block> knownBlocks = new ReferenceOpenHashSet<>();
+    //Note: We use an array set as we never expect this to have more than a few elements (in reality it only ever has one)
+    private final Set<Block> toSkip = new ReferenceArraySet<>();
 
     @Override
     protected abstract void addTables();

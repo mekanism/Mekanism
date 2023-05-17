@@ -1,10 +1,10 @@
 package mekanism.common.capabilities;
 
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,13 +21,13 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class CapabilityCache {
 
-    private final Map<Capability<?>, ICapabilityResolver> capabilityResolvers = new HashMap<>();
+    private final Map<Capability<?>, ICapabilityResolver> capabilityResolvers = new IdentityHashMap<>();
     /**
      * List of unique resolvers to make invalidating all easier as some resolvers (energy) may support multiple capabilities.
      */
     private final List<ICapabilityResolver> uniqueResolvers = new ArrayList<>();
-    private final Set<Capability<?>> alwaysDisabled = new HashSet<>();
-    private final Map<Capability<?>, List<BooleanSupplier>> semiDisabled = new HashMap<>();
+    private final Set<Capability<?>> alwaysDisabled = new ReferenceOpenHashSet<>();
+    private final Map<Capability<?>, List<BooleanSupplier>> semiDisabled = new IdentityHashMap<>();
     @Nullable
     private TileComponentConfig config;
 
@@ -39,7 +39,7 @@ public class CapabilityCache {
         List<Capability<?>> supportedCapabilities = resolver.getSupportedCapabilities();
         for (Capability<?> supportedCapability : supportedCapabilities) {
             //Note: We add the capability regardless of if it is registered as we will just short circuit and always disable the capability
-            // if it isn't in use by the time the capability is queried. In theory we shouldn't ever be getting created before the capabilities
+            // if it isn't in use by the time the capability is queried. In theory, we shouldn't ever be getting created before the capabilities
             // have been registered, but just in case we ensure it works properly
             if (capabilityResolvers.put(supportedCapability, resolver) != null) {
                 Mekanism.logger.warn("Multiple capability resolvers registered for {}. Overriding", supportedCapability.getName(), new Exception());

@@ -2,8 +2,8 @@ package mekanism.common.content.miner;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
 import java.util.BitSet;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
@@ -51,7 +51,7 @@ public class ThreadMinerSearch extends Thread {
             state = State.FINISHED;
             return;
         }
-        Object2BooleanMap<Block> acceptedItems = new Object2BooleanOpenHashMap<>();
+        Reference2BooleanMap<Block> acceptedItems = new Reference2BooleanOpenHashMap<>();
         BlockPos pos = tile.getStartingPos();
         int diameter = tile.getDiameter();
         int size = tile.getTotalSize();

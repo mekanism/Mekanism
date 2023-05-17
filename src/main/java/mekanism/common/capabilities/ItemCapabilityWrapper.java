@@ -1,6 +1,6 @@
 package mekanism.common.capabilities;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class ItemCapabilityWrapper implements ICapabilityProvider {
 
-    private final Map<Capability<?>, ItemCapability> capabilities = new HashMap<>();
+    private final Map<Capability<?>, ItemCapability> capabilities = new IdentityHashMap<>();
     private final CapabilityCache capabilityCache = new CapabilityCache();
     protected final ItemStack itemStack;
 

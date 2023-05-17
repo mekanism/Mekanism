@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -748,7 +749,7 @@ public final class MekanismUtils {
             //If the position isn't actually loaded, just return there isn't any fluids
             return Collections.emptyMap();
         }
-        Map<FluidType, FluidInDetails> fluidsIn = new HashMap<>();
+        Map<FluidType, FluidInDetails> fluidsIn = new IdentityHashMap<>();
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
         for (int x = xMin; x < xMax; ++x) {
             for (int y = yMin; y < yMax; ++y) {
