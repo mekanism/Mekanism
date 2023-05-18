@@ -43,14 +43,18 @@ public class GasAttributes {
 
         @Override
         public boolean needsValidation() {
-            return true;
+            //This attribute only actually needs validation if radiation is enabled
+            return MekanismAPI.getRadiationManager().isRadiationEnabled();
         }
 
         @Override
         public List<Component> addTooltipText(List<Component> list) {
             super.addTooltipText(list);
-            ITooltipHelper tooltipHelper = MekanismAPI.getTooltipHelper();
-            list.add(APILang.CHEMICAL_ATTRIBUTE_RADIATION.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getRadioactivityDisplayShort(getRadioactivity())));
+            if (needsValidation()) {
+                //Only show the radioactive tooltip information if radiation is actually enabled
+                ITooltipHelper tooltipHelper = MekanismAPI.getTooltipHelper();
+                list.add(APILang.CHEMICAL_ATTRIBUTE_RADIATION.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getRadioactivityDisplayShort(getRadioactivity())));
+            }
             return list;
         }
     }
@@ -99,7 +103,7 @@ public class GasAttributes {
     }
 
     /**
-     * Defines the 'cooled' variant of a coolant- the heated variant must be supplied in this class.
+     * Defines the 'cooled' variant of a coolant - the heated variant must be supplied in this class.
      *
      * @author aidancbrady
      */
@@ -121,7 +125,7 @@ public class GasAttributes {
     }
 
     /**
-     * Defines the 'heated' variant of a coolant- the cooled variant must be supplied in this class.
+     * Defines the 'heated' variant of a coolant - the cooled variant must be supplied in this class.
      *
      * @author aidancbrady
      */

@@ -283,13 +283,15 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     public void meltdownHappened(Level world) {
         if (isFormed()) {
             IRadiationManager radiationManager = MekanismAPI.getRadiationManager();
-            //Calculate radiation level and clear any tanks that had radioactive substances and are contributing to the
-            // amount of radiation released
-            double radiation = getTankRadioactivityAndDump(fuelTank) + getWasteTankRadioactivity(true) +
-                               getTankRadioactivityAndDump(gasCoolantTank) + getTankRadioactivityAndDump(heatedCoolantTank);
-            radiation *= MekanismGeneratorsConfig.generators.fissionMeltdownRadiationMultiplier.get();
-            //When the meltdown actually happens, release radiation into the atmosphere
-            radiationManager.radiate(new Coord4D(getBounds().getCenter(), world), radiation);
+            if (radiationManager.isRadiationEnabled()) {
+                //Calculate radiation level and clear any tanks that had radioactive substances and are contributing to the
+                // amount of radiation released
+                double radiation = getTankRadioactivityAndDump(fuelTank) + getWasteTankRadioactivity(true) +
+                                   getTankRadioactivityAndDump(gasCoolantTank) + getTankRadioactivityAndDump(heatedCoolantTank);
+                radiation *= MekanismGeneratorsConfig.generators.fissionMeltdownRadiationMultiplier.get();
+                //When the meltdown actually happens, release radiation into the atmosphere
+                radiationManager.radiate(new Coord4D(getBounds().getCenter(), world), radiation);
+            }
             //Dump the heated coolant as "loss" that didn't survive the meltdown
             heatedCoolantTank.setEmpty();
             //Disable the reactor so that if the person rebuilds it, it isn't on by default (QoL)
@@ -313,6 +315,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         }
     }
 
+    /**
+     * @apiNote Assumes radiation is enabled instead of checking and returning zero if it is not.
+     */
     private double getWasteTankRadioactivity(boolean dump) {
         if (wasteTank.isEmpty()) {
             return partialWaste * MekanismGases.NUCLEAR_WASTE.get().get(GasAttributes.Radiation.class).getRadioactivity();
@@ -328,6 +333,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         return 0;
     }
 
+    /**
+     * @apiNote Assumes radiation is enabled instead of checking and returning zero if it is not.
+     */
     private double getTankRadioactivityAndDump(IGasTank tank) {
         if (!tank.isEmpty()) {
             GasStack stored = tank.getStack();
@@ -390,7 +398,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             long leftoverWaste = Math.max(0, newWaste - wasteTank.getNeeded());
             GasStack wasteToAdd = MekanismGases.NUCLEAR_WASTE.getStack(newWaste);
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
-            if (leftoverWaste > 0) {
+            if (leftoverWaste > 0 && MekanismAPI.getRadiationManager().isRadiationEnabled()) {
+                //Check if radiation is enabled in order to allow for short-circuiting when it will NO-OP further down the line anyway
                 double radioactivity = wasteToAdd.getType().get(GasAttributes.Radiation.class).getRadioactivity();
                 MekanismAPI.getRadiationManager().radiate(new Coord4D(getBounds().getCenter(), world), leftoverWaste * radioactivity);
             }

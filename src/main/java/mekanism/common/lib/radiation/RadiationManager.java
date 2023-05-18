@@ -130,7 +130,8 @@ public class RadiationManager implements IRadiationManager {
 
     @Override
     public boolean isRadiationEnabled() {
-        return MekanismConfig.general.radiationEnabled.get();
+        //Get the default value for cases when we may call this early such as via chemical attributes
+        return MekanismConfig.general.radiationEnabled.getOrDefault();
     }
 
     private void markDirty() {
@@ -263,7 +264,9 @@ public class RadiationManager implements IRadiationManager {
 
     @Override
     public boolean dumpRadiation(Coord4D coord, GasStack stack) {
-        if (!stack.isEmpty() && stack.has(Radiation.class)) {
+        //Note: We only attempt to dump and mark that we did if radiation is enabled in order to allow persisting radioactive
+        // substances when radiation is disabled
+        if (isRadiationEnabled() && !stack.isEmpty() && stack.has(Radiation.class)) {
             double radioactivity = stack.get(Radiation.class).getRadioactivity();
             radiate(coord, radioactivity * stack.getAmount());
             return true;

@@ -113,8 +113,9 @@ public class FormationProtocol<T extends MultiblockData> {
                         world.addFreshEntity(new ItemEntity(world, dropPosition.x, dropPosition.y, dropPosition.z, rejectedItem));
                     }
                 }
-                if (!rejectContents.rejectedGases.isEmpty()) {
+                if (!rejectContents.rejectedGases.isEmpty() && MekanismAPI.getRadiationManager().isRadiationEnabled()) {
                     //Dump any rejected gases, if they are radioactive vent them into the atmosphere
+                    // we are able to skip this if radiation is disabled as it will just NO-OP further down the line
                     double radiation = 0;
                     for (GasStack rejectedGas : rejectContents.rejectedGases) {
                         if (rejectedGas.has(GasAttributes.Radiation.class)) {

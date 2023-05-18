@@ -21,6 +21,8 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class StackedWasteBarrel extends VariableCapacityChemicalTank<Gas, GasStack> implements IGasHandler, IGasTank {
 
+    private static final ChemicalAttributeValidator ATTRIBUTE_VALIDATOR = ChemicalAttributeValidator.createStrict(GasAttributes.Radiation.class);
+
     public static StackedWasteBarrel create(TileEntityRadioactiveWasteBarrel tile, @Nullable IContentsListener listener) {
         Objects.requireNonNull(tile, "Radioactive Waste Barrel tile entity cannot be null");
         return new StackedWasteBarrel(tile, listener);
@@ -30,7 +32,7 @@ public class StackedWasteBarrel extends VariableCapacityChemicalTank<Gas, GasSta
 
     protected StackedWasteBarrel(TileEntityRadioactiveWasteBarrel tile, @Nullable IContentsListener listener) {
         super(MekanismConfig.general.radioactiveWasteBarrelMaxGas, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi,
-              ChemicalTankBuilder.GAS.alwaysTrue, ChemicalAttributeValidator.createStrict(GasAttributes.Radiation.class), listener);
+              ChemicalTankBuilder.GAS.alwaysTrue, ATTRIBUTE_VALIDATOR, listener);
         this.tile = tile;
     }
 
