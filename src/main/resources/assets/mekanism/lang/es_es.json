@@ -1,5 +1,5 @@
 {
-  "advancements.mekanism.advanced_control_circuit.description": "Fabrica un Circuito de Control Avanzado",
+  "advancements.mekanism.advanced_control_circuit.description": "Fabrica un circuito de control avanzado",
   "advancements.mekanism.advanced_control_circuit.title": "Tecnología Avanzada",
   "advancements.mekanism.advanced_qio_drive.description": "Aumenta el almacenamiento de tu Unidad OEC",
   "advancements.mekanism.advanced_qio_drive.title": "Almacenamiento de Alta Densidad",
@@ -210,7 +210,7 @@
   "block.mekanism.advanced_mechanical_pipe": "Tubería Mecánica Avanzada",
   "block.mekanism.advanced_pressurized_tube": "Tubo Presurizado Avanzado",
   "block.mekanism.advanced_purifying_factory": "Fábrica de Purificación Avanzada",
-  "block.mekanism.advanced_sawing_factory": "Fábrica de Aserrado Avanzada",
+  "block.mekanism.advanced_sawing_factory": "Fábrica de Serrado Avanzada",
   "block.mekanism.advanced_smelting_factory": "Fábrica de Fundición Avanzada",
   "block.mekanism.advanced_thermodynamic_conductor": "Conductor Termodinámico Avanzado",
   "block.mekanism.advanced_universal_cable": "Cable Universal Avanzado",
@@ -974,6 +974,7 @@
   "gui.mekanism.issues.no_energy.reduced_rate": " - No hay suficiente energía para funcionar a máxima velocidad",
   "gui.mekanism.issues.no_recipe": " - La receta no coincide o no hay suficientes materiales",
   "gui.mekanism.issues.no_space": " - No hay suficiente espacio en la salida",
+  "gui.mekanism.issues.no_space.overflow": " - No hay suficiente espacio en la salida, desbordamiento almacenado en el búfer interno",
   "gui.mekanism.liquid": "Líquido: %1$s",
   "gui.mekanism.max": "Máx: %1$s",
   "gui.mekanism.max_output": "Máxima Salida: %1$s/t",
