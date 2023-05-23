@@ -974,6 +974,7 @@
   "gui.mekanism.issues.no_energy.reduced_rate": " - Inte tillräckligt mycket energi för att springa med maximal hastighet",
   "gui.mekanism.issues.no_recipe": " - Inga matchande recept eller inte tillräckligt mycket utmatning",
   "gui.mekanism.issues.no_space": " - Inte tillräckligt mycket rum i utmatningen",
+  "gui.mekanism.issues.no_space.overflow": " - Inte tillräckligt mycket utrymme i utmatningen, överflöd lagras i intern buffert",
   "gui.mekanism.liquid": "Vätska: %1$s",
   "gui.mekanism.max": "Max: %1$s",
   "gui.mekanism.max_output": "Max. utmatning: %1$s/t",
