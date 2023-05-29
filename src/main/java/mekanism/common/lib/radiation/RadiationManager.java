@@ -266,10 +266,12 @@ public class RadiationManager implements IRadiationManager {
     public boolean dumpRadiation(Coord4D coord, GasStack stack) {
         //Note: We only attempt to dump and mark that we did if radiation is enabled in order to allow persisting radioactive
         // substances when radiation is disabled
-        if (isRadiationEnabled() && !stack.isEmpty() && stack.has(Radiation.class)) {
-            double radioactivity = stack.get(Radiation.class).getRadioactivity();
-            radiate(coord, radioactivity * stack.getAmount());
-            return true;
+        if (isRadiationEnabled() && !stack.isEmpty()) {
+            double radioactivity = stack.mapAttributeToDouble(Radiation.class, (stored, attribute) -> stored.getAmount() * attribute.getRadioactivity());
+            if (radioactivity > 0) {
+                radiate(coord, radioactivity);
+                return true;
+            }
         }
         return false;
     }

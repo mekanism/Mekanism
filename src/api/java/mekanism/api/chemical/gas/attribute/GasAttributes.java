@@ -29,6 +29,7 @@ public class GasAttributes {
         private final double radioactivity;
 
         public Radiation(double radioactivity) {
+            //TODO - 1.20: Ensure that radioactivity is > 0, and maybe move some of the CrT validation checks to other attributes as well to sanitize inputs
             this.radioactivity = radioactivity;
         }
 
