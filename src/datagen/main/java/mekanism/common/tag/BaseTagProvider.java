@@ -28,6 +28,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
@@ -60,6 +61,7 @@ public abstract class BaseTagProvider implements DataProvider {
         addTagType(TagType.GAME_EVENT);
         addTagType(TagType.GAS);
         addTagType(TagType.INFUSE_TYPE);
+        addTagType(TagType.MOB_EFFECT);
         addTagType(TagType.PIGMENT);
         addTagType(TagType.SLURRY);
     }
@@ -172,6 +174,10 @@ public abstract class BaseTagProvider implements DataProvider {
 
     protected ForgeRegistryTagBuilder<Slurry> getSlurryBuilder(TagKey<Slurry> tag) {
         return getBuilder(TagType.SLURRY, tag);
+    }
+
+    protected ForgeRegistryTagBuilder<MobEffect> getMobEffectBuilder(TagKey<MobEffect> tag) {
+        return getBuilder(TagType.MOB_EFFECT, tag);
     }
 
     protected void addToTag(TagKey<Item> tag, ItemLike... itemProviders) {

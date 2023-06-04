@@ -1,4 +1,4 @@
-// 1.19.2	2023-01-22T11:34:53.814105	Tags: mekanism
+// 1.19.2	2023-06-04T13:02:15.1857072	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluids/no_infinite_draining.json
 b6ed3f4920042490a8f14b25e1284bb270aafaea data/forge/tags/blocks/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/forge/tags/blocks/barrels/personal.json
@@ -233,6 +233,7 @@ b52afb060e54f9fa521b82346af5cb3cd4378697 data/mekanism/tags/mekanism/infuse_type
 4911fa51ae365a17ba0c00b3bed313f1d43f20a6 data/mekanism/tags/mekanism/infuse_type/tin.json
 3825830b29d051492a06a5aa0de89f95cd6ac79d data/mekanism/tags/mekanism/slurry/clean.json
 61af0ea7c8d297d714e770d36434a317500d15e9 data/mekanism/tags/mekanism/slurry/dirty.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanism/tags/mob_effect/speed_up_blacklist.json
 b79a9a1e0ddcf1344df98002024bc070480b51d7 data/minecraft/tags/blocks/axolotls_spawnable_on.json
 8702bbea19451a114725d603fecfd2359f3fcb5b data/minecraft/tags/blocks/beacon_base_blocks.json
 76c3b1172e0f737e9f67a7801456e83390a59a66 data/minecraft/tags/blocks/guarded_by_piglins.json

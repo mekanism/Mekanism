@@ -7,6 +7,7 @@ import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import net.minecraft.core.Registry;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -27,6 +28,7 @@ public record TagType<TYPE>(String name, NonNullSupplier<Either<IForgeRegistry<T
     public static final TagType<GameEvent> GAME_EVENT = new TagType<>("Game Event", () -> Either.right(Registry.GAME_EVENT));
     public static final TagType<Gas> GAS = new TagType<>("Gas", () -> Either.left(MekanismAPI.gasRegistry()));
     public static final TagType<InfuseType> INFUSE_TYPE = new TagType<>("Infuse Type", () -> Either.left(MekanismAPI.infuseTypeRegistry()));
+    public static final TagType<MobEffect> MOB_EFFECT = new TagType<>("Mob Effect", () -> Either.left(ForgeRegistries.MOB_EFFECTS));
     public static final TagType<Pigment> PIGMENT = new TagType<>("Pigment", () -> Either.left(MekanismAPI.pigmentRegistry()));
     public static final TagType<Slurry> SLURRY = new TagType<>("Slurry", () -> Either.left(MekanismAPI.slurryRegistry()));
 

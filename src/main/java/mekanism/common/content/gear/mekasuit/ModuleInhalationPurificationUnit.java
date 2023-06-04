@@ -13,7 +13,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
@@ -45,7 +44,7 @@ public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInh
             if (free || energy.greaterOrEqual(usage)) {
                 //Gather all the active effects that we can handle, so that we have them in their own list and
                 // don't run into any issues related to CMEs
-                List<MobEffectInstance> effects = player.getActiveEffects().stream().filter(effect -> canHandle(effect.getEffect().getCategory())).toList();
+                List<MobEffectInstance> effects = player.getActiveEffects().stream().filter(this::canHandle).toList();
                 for (MobEffectInstance effect : effects) {
                     if (free) {
                         speedupEffect(player, effect);
@@ -70,8 +69,7 @@ public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInh
         if (free || (energyContainer != null && energyContainer.getEnergy().greaterOrEqual(usage))) {
             //Gather all the active effects that we can handle, so that we have them in their own list and
             // don't run into any issues related to CMEs
-            List<MobEffectInstance> effects = player.getActiveEffects().stream()
-                  .filter(effect -> canHandle(effect.getEffect().getCategory())).toList();
+            List<MobEffectInstance> effects = player.getActiveEffects().stream().filter(this::canHandle).toList();
             for (MobEffectInstance effect : effects) {
                 if (free) {
                     speedupEffect(player, effect);
@@ -101,8 +99,8 @@ public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInh
         }
     }
 
-    private boolean canHandle(MobEffectCategory effectType) {
-        return switch (effectType) {
+    private boolean canHandle(MobEffectInstance effectInstance) {
+        return MekanismUtils.shouldSpeedUpEffect(effectInstance) && switch (effectInstance.getEffect().getCategory()) {
             case BENEFICIAL -> beneficialEffects.get();
             case HARMFUL -> harmfulEffects.get();
             case NEUTRAL -> neutralEffects.get();

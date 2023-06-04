@@ -152,8 +152,10 @@ public class CommonPlayerTickHandler {
             }
             if (player.getAirSupply() == max) {
                 for (MobEffectInstance effect : player.getActiveEffects()) {
-                    for (int i = 0; i < 9; i++) {
-                        MekanismUtils.speedUpEffectSafely(player, effect);
+                    if (MekanismUtils.shouldSpeedUpEffect(effect)) {
+                        for (int i = 0; i < 9; i++) {
+                            MekanismUtils.speedUpEffectSafely(player, effect);
+                        }
                     }
                 }
             }

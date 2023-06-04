@@ -75,6 +75,7 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
@@ -113,6 +114,7 @@ import org.jetbrains.annotations.Nullable;
 public final class MekanismUtils {
 
     public static final float ONE_OVER_ROOT_TWO = (float) (1 / Math.sqrt(2));
+    private static final ItemStack MILK = new ItemStack(Items.MILK_BUCKET);
 
     private static final List<UUID> warnedFails = new ArrayList<>();
 
@@ -591,6 +593,11 @@ public final class MekanismUtils {
                 onChangedPotionEffect(entity, effectInstance, true);
             }
         }
+    }
+
+    public static boolean shouldSpeedUpEffect(MobEffectInstance effectInstance) {
+        //Only allow speeding up effects that can be sped up by milk. Also validate it isn't blacklisted by the modpack
+        return effectInstance.isCurativeItem(MILK) && !MekanismTags.MobEffects.SPEED_UP_BLACKLIST_LOOKUP.contains(effectInstance.getEffect());
     }
 
     /**
