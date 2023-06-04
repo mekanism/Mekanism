@@ -1,8 +1,9 @@
 package mekanism.common.block.attribute;
 
-import com.google.common.collect.Lists;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
@@ -30,32 +31,34 @@ public interface Attribute {
         return block instanceof ITypeBlock typeBlock && typeBlock.getType().has(type);
     }
 
-    static <T extends Attribute> T get(BlockState state, Class<T> type) {
+    @Nullable
+    static <ATTRIBUTE extends Attribute> ATTRIBUTE get(BlockState state, Class<ATTRIBUTE> type) {
         return get(state.getBlock(), type);
     }
 
-    static <T extends Attribute> T get(IBlockProvider blockProvider, Class<T> type) {
+    @Nullable
+    static <ATTRIBUTE extends Attribute> ATTRIBUTE get(IBlockProvider blockProvider, Class<ATTRIBUTE> type) {
         return get(blockProvider.getBlock(), type);
     }
 
-    static <T extends Attribute> T get(Block block, Class<T> type) {
+    @Nullable
+    static <ATTRIBUTE extends Attribute> ATTRIBUTE get(Block block, Class<ATTRIBUTE> type) {
         return block instanceof ITypeBlock typeBlock ? typeBlock.getType().get(type) : null;
     }
 
-    static boolean has(Block block1, Block block2, Class<? extends Attribute> type) {
-        return has(block1, type) && has(block2, type);
-    }
-
     static Collection<Attribute> getAll(Block block) {
-        return block instanceof ITypeBlock typeBlock ? typeBlock.getType().getAll() : Lists.newArrayList();
+        return block instanceof ITypeBlock typeBlock ? typeBlock.getType().getAll() : Collections.emptyList();
     }
 
-    static <T extends Attribute> void ifHas(Block block, Class<T> type, Consumer<T> run) {
-        if (block instanceof ITypeBlock typeBlock) {
-            T attribute = typeBlock.getType().get(type);
-            if (attribute != null) {
-                run.accept(attribute);
-            }
+    static <ATTRIBUTE extends Attribute> boolean matches(Block block, Class<ATTRIBUTE> type, Predicate<? super ATTRIBUTE> checker) {
+        ATTRIBUTE attribute = get(block, type);
+        return attribute != null && checker.test(attribute);
+    }
+
+    static <ATTRIBUTE extends Attribute> void ifPresent(Block block, Class<ATTRIBUTE> type, Consumer<? super ATTRIBUTE> action) {
+        ATTRIBUTE attribute = get(block, type);
+        if (attribute != null) {
+            action.accept(attribute);
         }
     }
 

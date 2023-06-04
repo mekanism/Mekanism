@@ -12,7 +12,6 @@ import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,11 +30,11 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
 
     public static AttributeEnergy validateBlock(TileEntityMekanism tile) {
         Objects.requireNonNull(tile, "Tile cannot be null");
-        Block block = tile.getBlockType();
-        if (!Attribute.has(block, AttributeEnergy.class)) {
+        AttributeEnergy attributeEnergy = Attribute.get(tile.getBlockType(), AttributeEnergy.class);
+        if (attributeEnergy == null) {
             throw new IllegalArgumentException("Block provider must be an electric block");
         }
-        return Attribute.get(block, AttributeEnergy.class);
+        return attributeEnergy;
     }
 
     protected final TILE tile;

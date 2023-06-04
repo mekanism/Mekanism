@@ -18,7 +18,6 @@ import mekanism.api.tier.BaseTier;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.advancements.triggers.UseGaugeDropperTrigger.UseDropperAction;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
@@ -36,7 +35,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -76,8 +74,7 @@ public class PacketDropperUse implements IMekanismPacket {
                         //If the dropper is being used to dump the tank and the player is not in creative
                         // check if the block the tank is in is a tiered block and if it is, and it is creative
                         // don't allow clearing the tank
-                        Block block = tile.getBlockType();
-                        if (Attribute.has(block, AttributeTier.class) && Attribute.get(block, AttributeTier.class).tier().getBaseTier() == BaseTier.CREATIVE) {
+                        if (Attribute.getBaseTier(tile.getBlockType()) == BaseTier.CREATIVE) {
                             return;
                         }
                     }

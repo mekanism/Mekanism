@@ -292,11 +292,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             securityComponent = new TileComponentSecurity(this);
             addCapabilityResolver(BasicCapabilityResolver.security(this));
         }
-        if (hasSound()) {
-            soundEvent = Attribute.get(block, AttributeSound.class).getSoundEvent();
-        } else {
-            soundEvent = null;
-        }
+        soundEvent = hasSound() ? Attribute.get(block, AttributeSound.class).getSoundEvent() : null;
         ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
     }
 
@@ -1214,18 +1210,17 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public void setActive(boolean active) {
         if (isActivatable() && active != currentActive) {
             BlockState state = getBlockState();
-            Block block = state.getBlock();
-            if (Attribute.has(block, AttributeStateActive.class)) {
+            AttributeStateActive activeAttribute = Attribute.get(state, AttributeStateActive.class);
+            if (activeAttribute != null) {
                 currentActive = active;
                 if (getClientActive() != active) {
                     if (active) {
                         //Always turn on instantly
-                        state = Attribute.setActive(state, true);
-                        level.setBlockAndUpdate(worldPosition, state);
+                        level.setBlockAndUpdate(worldPosition, activeAttribute.setActive(state, true));
                     } else {
                         // if the update delay is already zero, we can go ahead and set the state
                         if (updateDelay == 0) {
-                            level.setBlockAndUpdate(worldPosition, Attribute.setActive(getBlockState(), currentActive));
+                            level.setBlockAndUpdate(worldPosition, activeAttribute.setActive(state, currentActive));
                         }
                         // we always reset the update delay when turning off
                         updateDelay = delaySupplier.getAsInt();

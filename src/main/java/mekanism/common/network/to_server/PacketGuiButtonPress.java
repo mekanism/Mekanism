@@ -19,7 +19,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkHooks;
@@ -165,9 +164,9 @@ public class PacketGuiButtonPress implements IMekanismPacket {
     public enum ClickedTileButton {
         BACK_BUTTON((tile, extra) -> {
             //Special handling to basically reset to the tiles default gui container
-            Block block = tile.getBlockType();
-            if (Attribute.has(block, AttributeGui.class)) {
-                return Attribute.get(block, AttributeGui.class).getProvider(tile);
+            AttributeGui attributeGui = Attribute.get(tile.getBlockType(), AttributeGui.class);
+            if (attributeGui != null) {
+                return attributeGui.getProvider(tile);
             }
             return null;
         }),

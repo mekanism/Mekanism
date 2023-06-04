@@ -87,9 +87,10 @@ public class AttributeStateFacing implements AttributeState {
 
     @Override
     public BlockState copyStateData(BlockState oldState, BlockState newState) {
-        if (Attribute.has(newState, AttributeStateFacing.class)) {
+        AttributeStateFacing newStateFacingAttribute = Attribute.get(newState, AttributeStateFacing.class);
+        if (newStateFacingAttribute != null) {
             DirectionProperty oldFacingProperty = Attribute.get(oldState, AttributeStateFacing.class).getFacingProperty();
-            newState = newState.setValue(Attribute.get(newState, AttributeStateFacing.class).getFacingProperty(), oldState.getValue(oldFacingProperty));
+            newState = newState.setValue(newStateFacingAttribute.getFacingProperty(), oldState.getValue(oldFacingProperty));
         }
         return newState;
     }
@@ -140,24 +141,18 @@ public class AttributeStateFacing implements AttributeState {
     }
 
     public static BlockState rotate(BlockState state, Rotation rotation) {
-        Block block = state.getBlock();
-        if (Attribute.has(block, AttributeStateFacing.class)) {
-            AttributeStateFacing blockFacing = Attribute.get(block, AttributeStateFacing.class);
-            if (blockFacing.canRotate()) {
-                return rotate(blockFacing, blockFacing.getFacingProperty(), state, rotation);
-            }
+        AttributeStateFacing blockFacing = Attribute.get(state, AttributeStateFacing.class);
+        if (blockFacing != null && blockFacing.canRotate()) {
+            return rotate(blockFacing, blockFacing.getFacingProperty(), state, rotation);
         }
         return state;
     }
 
     public static BlockState mirror(BlockState state, Mirror mirror) {
-        Block block = state.getBlock();
-        if (Attribute.has(block, AttributeStateFacing.class)) {
-            AttributeStateFacing blockFacing = Attribute.get(block, AttributeStateFacing.class);
-            if (blockFacing.canRotate()) {
-                DirectionProperty property = blockFacing.getFacingProperty();
-                return rotate(blockFacing, property, state, mirror.getRotation(state.getValue(property)));
-            }
+        AttributeStateFacing blockFacing = Attribute.get(state, AttributeStateFacing.class);
+        if (blockFacing != null && blockFacing.canRotate()) {
+            DirectionProperty property = blockFacing.getFacingProperty();
+            return rotate(blockFacing, property, state, mirror.getRotation(state.getValue(property)));
         }
         return state;
     }

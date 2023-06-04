@@ -25,13 +25,13 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
 
     public Factory(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, Supplier<ContainerTypeRegistryObject<? extends MekanismContainer>> containerRegistrar,
           FactoryMachine<?> origMachine, FactoryTier tier) {
-        super(tileEntityRegistrar, MekanismLang.DESCRIPTION_FACTORY, origMachine.get(AttributeFactoryType.class).getFactoryType());
+        super(tileEntityRegistrar, MekanismLang.DESCRIPTION_FACTORY, origMachine.getFactoryType());
         this.origMachine = origMachine;
         setMachineData();
         add(new AttributeGui(containerRegistrar, null), new AttributeTier<>(tier));
 
         if (tier.ordinal() < EnumUtils.FACTORY_TIERS.length - 1) {
-            add(new AttributeUpgradeable(() -> MekanismBlocks.getFactory(EnumUtils.FACTORY_TIERS[tier.ordinal() + 1], origMachine.get(AttributeFactoryType.class).getFactoryType())));
+            add(new AttributeUpgradeable(() -> MekanismBlocks.getFactory(EnumUtils.FACTORY_TIERS[tier.ordinal() + 1], origMachine.getFactoryType())));
         }
     }
 

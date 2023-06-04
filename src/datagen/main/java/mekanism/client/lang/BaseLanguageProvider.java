@@ -41,7 +41,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     protected void add(IHasTranslationKey key, String value) {
         if (key instanceof IBlockProvider blockProvider) {
             Block block = blockProvider.getBlock();
-            if (Attribute.has(block, AttributeGui.class) && !Attribute.get(block, AttributeGui.class).hasCustomName()) {
+            if (Attribute.matches(block, AttributeGui.class, attribute -> !attribute.hasCustomName())) {
                 add(Util.makeDescriptionId("container", RegistryUtils.getName(block)), value);
             }
         }
@@ -50,7 +50,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
 
     protected void add(IBlockProvider blockProvider, String value, String containerName) {
         Block block = blockProvider.getBlock();
-        if (Attribute.has(block, AttributeGui.class) && !Attribute.get(block, AttributeGui.class).hasCustomName()) {
+        if (Attribute.matches(block, AttributeGui.class, attribute -> !attribute.hasCustomName())) {
             add(Util.makeDescriptionId("container", RegistryUtils.getName(block)), containerName);
             add(blockProvider.getTranslationKey(), value);
         } else {

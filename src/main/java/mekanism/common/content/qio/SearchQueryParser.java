@@ -1,6 +1,5 @@
 package mekanism.common.content.qio;
 
-import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.chars.CharSet;
@@ -26,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 public class SearchQueryParser {
 
     private static final ISearchQuery INVALID = stack -> false;
-    private static final Set<Character> TERMINATORS = Sets.newHashSet('|', '(', '\"', '\'');
+    private static final Set<Character> TERMINATORS = Set.of('|', '(', '\"', '\'');
 
     public static ISearchQuery parse(String query) {
         List<SearchQuery> ret = new ArrayList<>();

@@ -3,7 +3,6 @@ package mekanism.additions.common.block;
 import mekanism.additions.common.registries.AdditionsBlockTypes;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.prefab.BlockBase.BlockBaseModel;
 import mekanism.common.content.blocktype.BlockType;
@@ -48,7 +47,7 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
     @Deprecated
     public BlockState updateShape(BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world,
           @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
-        if (facing.getOpposite() == Attribute.get(state, AttributeStateFacing.class).getDirection(state) && !state.canSurvive(world, currentPos)) {
+        if (facing.getOpposite() == Attribute.getFacing(state) && !state.canSurvive(world, currentPos)) {
             return Blocks.AIR.defaultBlockState();
         }
         return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
@@ -57,7 +56,7 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
     @Override
     @Deprecated
     public boolean canSurvive(@NotNull BlockState state, @NotNull LevelReader world, @NotNull BlockPos pos) {
-        Direction side = Attribute.get(state, AttributeStateFacing.class).getDirection(state);
+        Direction side = Attribute.getFacing(state);
         Direction sideOn = side.getOpposite();
         BlockPos offsetPos = pos.relative(sideOn);
         VoxelShape projected = world.getBlockState(offsetPos).getBlockSupportShape(world, offsetPos).getFaceShape(side);

@@ -3,7 +3,6 @@ package mekanism.common.block;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -187,7 +186,7 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
                 //Default to facing north all enabled
                 index = getIndex(1, 1, 1, 1, 1, 1, false, false);
             } else {
-                Direction facing = Attribute.get(this, AttributeStateFacing.class).getDirection(state);
+                Direction facing = Attribute.getFacing(state);
                 index = getIndex(
                       isSideEnabled(energyConfig, facing, Direction.UP),//top
                       isSideEnabled(energyConfig, facing, Direction.DOWN),//bottom

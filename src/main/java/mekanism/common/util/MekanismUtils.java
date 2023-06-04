@@ -610,18 +610,16 @@ public final class MekanismUtils {
     }
 
     public static boolean isSameTypeFactory(Block block, BlockEntityType<?> factoryTileType) {
-        AttributeFactoryType attribute = Attribute.get(block, AttributeFactoryType.class);
-        if (attribute == null) {
-            return false;
-        }
-        FactoryType factoryType = attribute.getFactoryType();
-        //Check all factory types
-        for (FactoryTier factoryTier : EnumUtils.FACTORY_TIERS) {
-            if (MekanismTileEntityTypes.getFactoryTile(factoryTier, factoryType).get() == factoryTileType) {
-                return true;
+        return Attribute.matches(block, AttributeFactoryType.class, attribute -> {
+            FactoryType factoryType = attribute.getFactoryType();
+            //Check all factory types
+            for (FactoryTier factoryTier : EnumUtils.FACTORY_TIERS) {
+                if (MekanismTileEntityTypes.getFactoryTile(factoryTier, factoryType).get() == factoryTileType) {
+                    return true;
+                }
             }
-        }
-        return false;
+            return false;
+        });
     }
 
     /**

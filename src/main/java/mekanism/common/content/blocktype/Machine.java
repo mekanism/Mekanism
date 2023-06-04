@@ -34,7 +34,11 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTypeTile<TILE
 
         public FactoryMachine(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntitySupplier, MekanismLang description, FactoryType factoryType) {
             super(tileEntitySupplier, description);
-            add(new AttributeFactoryType(factoryType), new AttributeUpgradeable(() -> MekanismBlocks.getFactory(FactoryTier.BASIC, get(AttributeFactoryType.class).getFactoryType())));
+            add(new AttributeFactoryType(factoryType), new AttributeUpgradeable(() -> MekanismBlocks.getFactory(FactoryTier.BASIC, getFactoryType())));
+        }
+
+        public FactoryType getFactoryType() {
+            return get(AttributeFactoryType.class).getFactoryType();
         }
     }
 

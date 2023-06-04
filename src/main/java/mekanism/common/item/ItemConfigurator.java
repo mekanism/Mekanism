@@ -167,7 +167,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
                         return InteractionResult.PASS;
                     } else if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
                         return InteractionResult.FAIL;
-                    } else if (Attribute.get(tileMekanism.getBlockType(), AttributeStateFacing.class).canRotate()) {
+                    } else if (Attribute.matches(tileMekanism.getBlockType(), AttributeStateFacing.class, AttributeStateFacing::canRotate)) {
                         if (!player.isShiftKeyDown()) {
                             tileMekanism.setFacing(side);
                         } else if (player.isShiftKeyDown()) {
