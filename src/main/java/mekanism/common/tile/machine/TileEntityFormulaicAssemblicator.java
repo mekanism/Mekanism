@@ -625,7 +625,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     public void encodeFormula() {
         if (!formulaSlot.isEmpty()) {
             ItemStack formulaStack = formulaSlot.getStack();
-            if (formulaStack.getItem() instanceof ItemCraftingFormula item && item.getInventory(formulaStack) == null) {
+            if (formulaStack.getItem() instanceof ItemCraftingFormula item && !item.hasInventory(formulaStack)) {
                 RecipeFormula formula = new RecipeFormula(level, craftingGridSlots);
                 if (formula.isValidFormula()) {
                     item.setInventory(formulaStack, formula.input);
@@ -763,7 +763,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         ItemStack formulaStack = formulaSlot.getStack();
         if (formulaStack.isEmpty() || !(formulaStack.getItem() instanceof ItemCraftingFormula craftingFormula)) {
             throw new ComputerException("No formula found.");
-        } else if (formula != null && formula.isValidFormula() || craftingFormula.getInventory(formulaStack) != null) {
+        } else if (formula != null && formula.isValidFormula() || craftingFormula.hasInventory(formulaStack)) {
             throw new ComputerException("Formula has already been encoded.");
         } else if (!hasRecipe()) {
             throw new ComputerException("Encoding formulas require that there is a valid recipe to actually encode.");

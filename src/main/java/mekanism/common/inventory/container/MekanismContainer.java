@@ -51,6 +51,7 @@ import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_server.PacketWindowSelect;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -264,7 +265,14 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         ItemStack slotStack = currentSlot.getItem();
         ItemStack stackToInsert = slotStack;
         if (currentSlot instanceof InventoryContainerSlot) {
-            //Insert into stacks that already contain an item in the order hot bar -> main inventory
+            //Note: Because our InventoryContainerSlots only allow extracting items at their max stack size we need to sanitize the stack
+            // if it is larger than its max stack size so that we don't cause any dupe bugs
+            if (slotStack.getCount() > slotStack.getMaxStackSize()) {
+                //We do this by pretending we only have a single stack of it stored so that when we transfer it at the end
+                // and remove from the slot (which due to impl details is limited to max stack size)
+                stackToInsert = slotStack = StackUtils.size(slotStack, slotStack.getMaxStackSize());
+            }
+            //Insert into stacks that already contain an item in the order armor, hot bar -> main inventory
             stackToInsert = insertItem(armorSlots, stackToInsert, true, selectedWindow);
             stackToInsert = insertItem(hotBarSlots, stackToInsert, true, selectedWindow);
             stackToInsert = insertItem(mainInventorySlots, stackToInsert, true, selectedWindow);

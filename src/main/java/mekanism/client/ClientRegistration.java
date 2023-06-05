@@ -252,11 +252,11 @@ public class ClientRegistration {
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("invalid"), (stack, world, entity, seed) -> {
                 ItemCraftingFormula formula = (ItemCraftingFormula) stack.getItem();
-                return formula.getInventory(stack) != null && formula.isInvalid(stack) ? 1 : 0;
+                return formula.hasInventory(stack) && formula.isInvalid(stack) ? 1 : 0;
             });
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("encoded"), (stack, world, entity, seed) -> {
                 ItemCraftingFormula formula = (ItemCraftingFormula) stack.getItem();
-                return formula.getInventory(stack) != null && !formula.isInvalid(stack) ? 1 : 0;
+                return formula.hasInventory(stack) && !formula.isInvalid(stack) ? 1 : 0;
             });
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.CONFIGURATION_CARD, Mekanism.rl("encoded"),
                   (stack, world, entity, seed) -> ((ItemConfigurationCard) stack.getItem()).hasData(stack) ? 1 : 0);
