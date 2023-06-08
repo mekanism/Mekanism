@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
@@ -51,28 +52,38 @@ public final class InventoryUtils {
                 ListTag storedContents = sustainedInventory.getInventory(stack);
                 for (IInventorySlot slot : ItemRecipeData.readContents(storedContents)) {
                     if (!slot.isEmpty()) {
-                        ItemStack slotStack = slot.getStack();
-                        int count = slotStack.getCount();
-                        int max = slotStack.getMaxStackSize();
-                        if (count > max) {
-                            //If we have more than a stack of the item (such as we are a bin) or some other thing that allows for compressing
-                            // stack counts, drop as many stacks as we need at their max size
-                            while (count > max) {
-                                entity.level.addFreshEntity(new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), StackUtils.size(slotStack, max)));
-                                count -= max;
-                            }
-                            if (count > 0) {
-                                //If we have anything left to drop afterward, do so
-                                entity.level.addFreshEntity(new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), StackUtils.size(slotStack, count)));
-                            }
-                        } else {
-                            //If we have a valid stack, we can just directly drop that instead without requiring any copies
-                            // as while IInventorySlot#getStack says to not mutate the stack, our slot is a dummy slot
-                            entity.level.addFreshEntity(new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), slotStack));
-                        }
+                        //Pass the stack directly as while IInventorySlot#getStack says to not mutate the stack, our slot is a dummy slot
+                        // so even if we end up adding the entity using the source stack it is fine
+                        dropStack(slot.getStack(), slotStack -> entity.level.addFreshEntity(new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), slotStack)));
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Helper to drop a stack that may potentially be oversized.
+     *
+     * @param stack   Item Stack to drop, may be passed directly to the dropper.
+     * @param dropper Called to drop the item.
+     */
+    public static void dropStack(ItemStack stack, Consumer<ItemStack> dropper) {
+        int count = stack.getCount();
+        int max = stack.getMaxStackSize();
+        if (count > max) {
+            //If we have more than a stack of the item (such as we are a bin) or some other thing that allows for compressing
+            // stack counts, drop as many stacks as we need at their max size
+            while (count > max) {
+                dropper.accept(StackUtils.size(stack, max));
+                count -= max;
+            }
+            if (count > 0) {
+                //If we have anything left to drop afterward, do so
+                dropper.accept(StackUtils.size(stack, count));
+            }
+        } else {
+            //If we have a valid stack, we can just directly drop that instead without requiring any copies
+            dropper.accept(stack);
         }
     }
 
