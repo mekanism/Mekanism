@@ -41,12 +41,12 @@ public class TileEntityLogisticalTransporter extends TileEntityLogisticalTranspo
     @NotNull
     @Override
     protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
-        return switch (tier) {
-            case BASIC -> BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER);
-            case ADVANCED -> BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER);
-            case ELITE -> BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER);
-            case ULTIMATE -> BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
-            default -> current;
-        };
+        return BlockStateHelper.copyStateData(current, switch (tier) {
+            case BASIC -> MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER;
+            case ADVANCED -> MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER;
+            case ELITE -> MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER;
+            case ULTIMATE -> MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER;
+            default -> null;
+        });
     }
 }

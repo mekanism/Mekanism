@@ -70,13 +70,13 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
     @NotNull
     @Override
     protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
-        return switch (tier) {
-            case BASIC -> BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_UNIVERSAL_CABLE);
-            case ADVANCED -> BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_UNIVERSAL_CABLE);
-            case ELITE -> BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_UNIVERSAL_CABLE);
-            case ULTIMATE -> BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE);
-            default -> current;
-        };
+        return BlockStateHelper.copyStateData(current, switch (tier) {
+            case BASIC -> MekanismBlocks.BASIC_UNIVERSAL_CABLE;
+            case ADVANCED -> MekanismBlocks.ADVANCED_UNIVERSAL_CABLE;
+            case ELITE -> MekanismBlocks.ELITE_UNIVERSAL_CABLE;
+            case ULTIMATE -> MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE;
+            default -> null;
+        });
     }
 
     @NotNull

@@ -70,13 +70,13 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
     @NotNull
     @Override
     protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
-        return switch (tier) {
-            case BASIC -> BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_MECHANICAL_PIPE);
-            case ADVANCED -> BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_MECHANICAL_PIPE);
-            case ELITE -> BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_MECHANICAL_PIPE);
-            case ULTIMATE -> BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_MECHANICAL_PIPE);
-            default -> current;
-        };
+        return BlockStateHelper.copyStateData(current, switch (tier) {
+            case BASIC -> MekanismBlocks.BASIC_MECHANICAL_PIPE;
+            case ADVANCED -> MekanismBlocks.ADVANCED_MECHANICAL_PIPE;
+            case ELITE -> MekanismBlocks.ELITE_MECHANICAL_PIPE;
+            case ULTIMATE -> MekanismBlocks.ULTIMATE_MECHANICAL_PIPE;
+            default -> null;
+        });
     }
 
     @NotNull

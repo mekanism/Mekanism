@@ -66,13 +66,13 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
     @NotNull
     @Override
     protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
-        return switch (tier) {
-            case BASIC -> BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR);
-            case ADVANCED -> BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR);
-            case ELITE -> BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR);
-            case ULTIMATE -> BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
-            default -> current;
-        };
+        return BlockStateHelper.copyStateData(current, switch (tier) {
+            case BASIC -> MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR;
+            case ADVANCED -> MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR;
+            case ELITE -> MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR;
+            case ULTIMATE -> MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR;
+            default -> null;
+        });
     }
 
     @Override
