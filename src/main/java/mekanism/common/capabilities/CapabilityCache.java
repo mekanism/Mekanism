@@ -147,6 +147,21 @@ public class CapabilityCache {
     }
 
     /**
+     * Invalidates the given capability on the given sides.
+     *
+     * @param capability Capability
+     * @param sides      Sides
+     */
+    public void invalidateSides(Capability<?> capability, Direction... sides) {
+        ICapabilityResolver capabilityResolver = capabilityResolvers.get(capability);
+        if (capabilityResolver != null) {
+            for (Direction side : sides) {
+                capabilityResolver.invalidate(capability, side);
+            }
+        }
+    }
+
+    /**
      * Invalidates all cached capabilities.
      */
     public void invalidateAll() {

@@ -250,12 +250,22 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return true;
     }
 
+    public final boolean isRedstoneActivated() {
+        if (handlesRedstone() && redstoneReactive) {
+            if (!redstoneSet) {
+                setRedstoneState();
+            }
+            return redstonePowered;
+        }
+        return false;
+    }
+
     /**
      * @apiNote Only call this from the server side
      */
     public byte getPossibleTransmitterConnections() {
         byte connections = 0x00;
-        if (handlesRedstone() && redstoneReactive && redstonePowered) {
+        if (isRedstoneActivated()) {
             return connections;
         }
         for (Direction side : EnumUtils.DIRECTIONS) {
@@ -271,7 +281,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
      * @apiNote Only call this from the server side
      */
     private boolean getPossibleAcceptorConnection(Direction side) {
-        if (handlesRedstone() && redstoneReactive && redstonePowered) {
+        if (isRedstoneActivated()) {
             return false;
         }
         BlockEntity tile = WorldUtils.getTileEntity(getTileWorld(), getTilePos().relative(side));
@@ -286,7 +296,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
      * @apiNote Only call this from the server side
      */
     private boolean getPossibleTransmitterConnection(Direction side) {
-        if (handlesRedstone() && redstoneReactive && redstonePowered) {
+        if (isRedstoneActivated()) {
             return false;
         }
         TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), getTilePos().relative(side));
@@ -298,7 +308,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
      */
     public byte getPossibleAcceptorConnections() {
         byte connections = 0x00;
-        if (handlesRedstone() && redstoneReactive && redstonePowered) {
+        if (isRedstoneActivated()) {
             return connections;
         }
         for (Direction side : EnumUtils.DIRECTIONS) {
@@ -368,16 +378,11 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (getConnectionTypeRaw(side) == ConnectionType.NONE) {
             return false;
         }
-        if (handlesRedstone()) {
+        if (handlesRedstone() && redstoneReactive) {
             if (!redstoneSet) {
-                if (redstoneReactive) {
-                    redstonePowered = WorldUtils.isGettingPowered(getTileWorld(), getTilePos());
-                } else {
-                    redstonePowered = false;
-                }
-                redstoneSet = true;
+                setRedstoneState();
             }
-            return !redstoneReactive || !redstonePowered;
+            return !redstonePowered;
         }
         return true;
     }
@@ -455,20 +460,25 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     private void recheckRedstone() {
         if (handlesRedstone()) {
             boolean previouslyPowered = redstonePowered;
-            if (redstoneReactive) {
-                redstonePowered = WorldUtils.isGettingPowered(getTileWorld(), getTilePos());
-            } else {
-                redstonePowered = false;
-            }
+            setRedstoneState();
             //If the redstone mode changed properly update the connection to other transmitters/networks
             if (previouslyPowered != redstonePowered) {
                 //Has to be markDirtyTransmitters instead of notify tile change,
                 // or it will not properly tell the neighboring connections that
-                // it is no longer valid
+                // it is no longer valid as well as potentially let neighbors
+                // check if there are any cap changes
                 markDirtyTransmitters();
+                getTransmitterTile().redstoneChanged(redstonePowered);
             }
-            redstoneSet = true;
         }
+    }
+
+    /**
+     * Assumes that {@link #handlesRedstone()} is {@code true}.
+     */
+    private void setRedstoneState() {
+        redstonePowered = redstoneReactive && transmitterTile.hasLevel() && WorldUtils.isGettingPowered(getTileWorld(), getTilePos());
+        redstoneSet = true;
     }
 
     public void refreshConnections() {
@@ -623,7 +633,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     public InteractionResult onRightClick(Player player, Direction side) {
         if (handlesRedstone()) {
-            redstoneReactive ^= true;
+            redstoneReactive = !redstoneReactive;
             refreshConnections();
             notifyTileChange();
             player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.REDSTONE_SENSITIVITY.translate(EnumColor.INDIGO, OnOff.of(redstoneReactive))));

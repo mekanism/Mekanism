@@ -98,7 +98,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     @NotNull
     @Override
     public CompoundTag write(@NotNull CompoundTag tag) {
-        tag = super.write(tag);
+        super.write(tag);
         tag.put(NBTConstants.HEAT_CAPACITORS, DataHandlerUtils.writeContainers(getHeatCapacitors(null)));
         return tag;
     }
