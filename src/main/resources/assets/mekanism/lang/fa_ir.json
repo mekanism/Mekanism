@@ -1,8 +1,10 @@
 {
+  "assemblicator.mekanism.auto_mode_toggle": "حالت اوتوماتیک: %1$s",
   "assemblicator.mekanism.craft_available": "ساخت ایتم های قابل ساخت",
   "assemblicator.mekanism.craft_single": "ساخت 1 ایتم",
   "assemblicator.mekanism.encode_formula": "تنظیم فرم",
   "assemblicator.mekanism.fill_empty": "خالی/پر کردن صفحه",
+  "assemblicator.mekanism.stock_control": "تنظیم اوتوماتیک منابع: %1$s",
   "auto.mekanism.eject": "ارسال اتوماتیک",
   "auto.mekanism.pull": "برداشت اتوماتیک",
   "auto.mekanism.sort": "مرتب سازی خودکار",
