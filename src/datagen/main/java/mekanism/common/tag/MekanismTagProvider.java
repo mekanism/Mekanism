@@ -195,7 +195,16 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.BASIC_PRESSURIZED_TUBE,
               MekanismBlocks.ADVANCED_PRESSURIZED_TUBE,
               MekanismBlocks.ELITE_PRESSURIZED_TUBE,
-              MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE
+              MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE,
+              //Don't allow other transmitters that have a buffer either due to dupe bugs
+              MekanismBlocks.BASIC_MECHANICAL_PIPE,
+              MekanismBlocks.ADVANCED_MECHANICAL_PIPE,
+              MekanismBlocks.ELITE_MECHANICAL_PIPE,
+              MekanismBlocks.ULTIMATE_MECHANICAL_PIPE,
+              MekanismBlocks.BASIC_UNIVERSAL_CABLE,
+              MekanismBlocks.ADVANCED_UNIVERSAL_CABLE,
+              MekanismBlocks.ELITE_UNIVERSAL_CABLE,
+              MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE
         );
         getBlockBuilder(MekanismTags.Blocks.CARDBOARD_BLACKLIST)
               .add(MekanismTags.Blocks.RELOCATION_NOT_SUPPORTED, BlockTags.BEDS, BlockTags.DOORS);
@@ -217,7 +226,19 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTileEntityTypes.BASIC_PRESSURIZED_TUBE,
               MekanismTileEntityTypes.ADVANCED_PRESSURIZED_TUBE,
               MekanismTileEntityTypes.ELITE_PRESSURIZED_TUBE,
-              MekanismTileEntityTypes.ULTIMATE_PRESSURIZED_TUBE
+              MekanismTileEntityTypes.ULTIMATE_PRESSURIZED_TUBE,
+              //Don't allow other transmitters that have a buffer either due to dupe bugs
+              //TODO: Maybe some better way of doing this can be thought of? But there isn't a great way to make it so transmitters push their contents
+              // into remaining network when removed except for when they are removed by a mod that saved their contents first
+              // In theory one solution might be to save the contents of the network on the network level but that would introduce other issues
+              MekanismTileEntityTypes.BASIC_MECHANICAL_PIPE,
+              MekanismTileEntityTypes.ADVANCED_MECHANICAL_PIPE,
+              MekanismTileEntityTypes.ELITE_MECHANICAL_PIPE,
+              MekanismTileEntityTypes.ULTIMATE_MECHANICAL_PIPE,
+              MekanismTileEntityTypes.BASIC_UNIVERSAL_CABLE,
+              MekanismTileEntityTypes.ADVANCED_UNIVERSAL_CABLE,
+              MekanismTileEntityTypes.ELITE_UNIVERSAL_CABLE,
+              MekanismTileEntityTypes.ULTIMATE_UNIVERSAL_CABLE
         };
         addToTag(MekanismTags.TileEntityTypes.IMMOVABLE, tilesToBlacklist);
         addToTag(MekanismTags.TileEntityTypes.RELOCATION_NOT_SUPPORTED, tilesToBlacklist);

@@ -14,6 +14,14 @@
     "mekanism:basic_pressurized_tube",
     "mekanism:advanced_pressurized_tube",
     "mekanism:elite_pressurized_tube",
-    "mekanism:ultimate_pressurized_tube"
+    "mekanism:ultimate_pressurized_tube",
+    "mekanism:basic_mechanical_pipe",
+    "mekanism:advanced_mechanical_pipe",
+    "mekanism:elite_mechanical_pipe",
+    "mekanism:ultimate_mechanical_pipe",
+    "mekanism:basic_universal_cable",
+    "mekanism:advanced_universal_cable",
+    "mekanism:elite_universal_cable",
+    "mekanism:ultimate_universal_cable"
   ]
 }
