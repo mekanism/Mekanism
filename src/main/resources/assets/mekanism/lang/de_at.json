@@ -974,6 +974,7 @@
   "gui.mekanism.issues.no_energy.reduced_rate": " - Nicht genügend Energie, um mit maximaler Geschwindigkeit zu laufen",
   "gui.mekanism.issues.no_recipe": " - Kein passendes Rezept oder nicht genügend Eingabe",
   "gui.mekanism.issues.no_space": " Nicht genügend Platz im Output",
+  "gui.mekanism.issues.no_space.overflow": " - Nicht genügend Platz in Ausgabe, Überlauf in internem Puffer gespeichert",
   "gui.mekanism.liquid": "Flüssigkeit: %1$s",
   "gui.mekanism.max": "Max: %1$s",
   "gui.mekanism.max_output": "Max Ausgabe: %1$s/t",
