@@ -1,5 +1,5 @@
 {
-  "advancements.mekanism.advanced_control_circuit.description": "Fabrica un Circuito de Control Avanzado",
+  "advancements.mekanism.advanced_control_circuit.description": "Fabrica un circuito de control avanzado",
   "advancements.mekanism.advanced_control_circuit.title": "Tecnología Avanzada",
   "advancements.mekanism.advanced_qio_drive.description": "Aumenta el almacenamiento de tu Unidad OEC",
   "advancements.mekanism.advanced_qio_drive.title": "Almacenamiento de Alta Densidad",
@@ -974,6 +974,7 @@
   "gui.mekanism.issues.no_energy.reduced_rate": " - No hay suficiente energía para funcionar a máxima velocidad",
   "gui.mekanism.issues.no_recipe": " - La receta no coincide o no hay suficientes materiales",
   "gui.mekanism.issues.no_space": " - No hay suficiente espacio en la salida",
+  "gui.mekanism.issues.no_space.overflow": " - No hay suficiente espacio en la salida, desbordamiento almacenado en el búfer interno",
   "gui.mekanism.liquid": "Líquido: %1$s",
   "gui.mekanism.max": "Máx: %1$s",
   "gui.mekanism.max_output": "Máxima Salida: %1$s/t",
@@ -1278,7 +1279,7 @@
   "miner.mekanism.well": "¡Todo está bien!",
   "module.mekanism.attack_amplification_unit": "Unidad de amplificación de ataque",
   "module.mekanism.blast_area": "%1$sx%1$s",
-  "module.mekanism.blast_radius": "Radio de Explosión",
+  "module.mekanism.blast_radius": "Radio de la Explosión",
   "module.mekanism.blasting_enabled": "Radio de Explosión: %1$s",
   "module.mekanism.blasting_unit": "Unidad de Explosión",
   "module.mekanism.bonus_attack_damage": "Daño de Ataque Extra",
