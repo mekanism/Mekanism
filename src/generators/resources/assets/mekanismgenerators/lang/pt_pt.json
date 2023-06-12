@@ -1,4 +1,12 @@
 {
+  "advancements.mekanismgenerators.burn_the_gas.description": "Fabrique um Gerador Queima-Gás para queimar Etileno",
+  "advancements.mekanismgenerators.burn_the_gas.title": "Queimar o Gás",
+  "advancements.mekanismgenerators.heat_generator.description": "Fabrique um Gerador a Calor para começar a criar energia",
+  "advancements.mekanismgenerators.heat_generator.title": "O Teu Primeiro Gerador",
+  "advancements.mekanismgenerators.solar_generator.description": "Energia renovável durante o dia",
+  "advancements.mekanismgenerators.solar_generator.title": "Poder do Sol",
+  "advancements.mekanismgenerators.wind_generator.description": "Espera-se que haja algum vento por perto",
+  "advancements.mekanismgenerators.wind_generator.title": "Gira Bebé Gira",
   "block.mekanismgenerators.advanced_solar_generator": "Gerador a Energia Solar Avançado",
   "block.mekanismgenerators.bio_generator": "Biogerador",
   "block.mekanismgenerators.control_rod_assembly": "Haste de Controlo para Montagem",

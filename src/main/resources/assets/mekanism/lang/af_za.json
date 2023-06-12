@@ -127,6 +127,14 @@
   "block.mekanism.hydrogen_chloride": "Vloeistof Waterstof Chloried",
   "block.mekanism.induction_casing": "Induksie Omhulsel",
   "block.mekanism.induction_port": "Induksie Poort",
+  "block.mekanism.industrial_alarm": "Industriële Alarm",
+  "block.mekanism.isotopic_centrifuge": "Isotopise Sentrifugeerder",
+  "block.mekanism.laser": "Laser",
+  "block.mekanism.laser_amplifier": "Laser versterker",
+  "block.mekanism.laser_tractor_beam": "Laser trekkerstraal",
+  "block.mekanism.lead_ore": "Lood Erts",
+  "block.mekanism.lithium": "Vloeibare litium",
+  "block.mekanism.logistical_sorter": "Logistieke sorteerder",
   "key.mekanism.description": "Show description",
   "key.mekanism.details": "Show details"
 }
