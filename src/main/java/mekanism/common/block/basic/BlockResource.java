@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.PushReaction;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockResource extends BlockMekanism {
@@ -16,21 +15,13 @@ public class BlockResource extends BlockMekanism {
 
     //TODO: Isn't as "generic"? So make it be from one BlockType thing?
     public BlockResource(@NotNull BlockResourceInfo resource) {
-        super(BlockBehaviour.Properties.of(resource.getMaterial(), resource.getMaterialColor()).strength(resource.getHardness(), resource.getResistance())
-              .lightLevel(state -> resource.getLightValue()).requiresCorrectToolForDrops());
+        super(resource.modifyProperties(BlockBehaviour.Properties.of().requiresCorrectToolForDrops()));
         this.resource = resource;
     }
 
     @NotNull
     public BlockResourceInfo getResourceInfo() {
         return resource;
-    }
-
-    @NotNull
-    @Override
-    @Deprecated
-    public PushReaction getPistonPushReaction(@NotNull BlockState state) {
-        return resource.getPushReaction();
     }
 
     @Override

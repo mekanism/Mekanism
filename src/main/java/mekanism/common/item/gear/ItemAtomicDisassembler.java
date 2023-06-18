@@ -141,12 +141,12 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     @Override
     public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
-        if (player.level.isClientSide || player.isCreative()) {
+        if (player.level().isClientSide || player.isCreative()) {
             return super.onBlockStartBreak(stack, pos, player);
         }
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer != null && getMode(stack) == DisassemblerMode.VEIN) {
-            Level world = player.level;
+            Level world = player.level();
             BlockState state = world.getBlockState(pos);
             FloatingLong baseDestroyEnergy = getDestroyEnergy(stack);
             FloatingLong energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));

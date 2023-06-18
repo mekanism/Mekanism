@@ -1,11 +1,11 @@
 package mekanism.client.gui.element.button;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,14 +25,14 @@ public class TranslationButton extends MekanismButton {
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (colorSupplier == null) {
             MekanismRenderer.resetColor();
-            super.drawBackground(matrix, mouseX, mouseY, partialTicks);
+            super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
             return;
         }
         MekanismRenderer.color(colorSupplier.get());
-        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
+        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         MekanismRenderer.resetColor();
     }
 

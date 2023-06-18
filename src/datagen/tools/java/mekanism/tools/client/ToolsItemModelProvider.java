@@ -7,7 +7,7 @@ import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.item.ItemMekanismPaxel;
 import mekanism.tools.common.item.ItemMekanismShield;
 import mekanism.tools.common.registries.ToolsItems;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
@@ -17,8 +17,8 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class ToolsItemModelProvider extends BaseItemModelProvider {
 
-    public ToolsItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, MekanismTools.MODID, existingFileHelper);
+    public ToolsItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, MekanismTools.MODID, existingFileHelper);
     }
 
     @Override

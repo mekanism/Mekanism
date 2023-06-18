@@ -30,7 +30,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -167,7 +166,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         if (!lastReceivedEnergy.isZero() && couldOperate && world.getRandom().nextInt() % 20 == 0) {
             List<Entity> entitiesToDie = getWorld().getEntitiesOfClass(Entity.class, deathZone);
             for (Entity entity : entitiesToDie) {
-                entity.hurt(DamageSource.MAGIC, lastReceivedEnergy.floatValue() / 1_000F);
+                entity.hurt(entity.damageSources().magic(), lastReceivedEnergy.floatValue() / 1_000F);
             }
         }
     }

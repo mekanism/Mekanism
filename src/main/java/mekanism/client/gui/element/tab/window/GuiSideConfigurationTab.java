@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.tab.window;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
@@ -12,6 +11,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiSideConfigurationTab<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiWindowCreatorTab<TILE, GuiSideConfigurationTab<TILE>> {
@@ -21,9 +21,9 @@ public class GuiSideConfigurationTab<TILE extends TileEntityMekanism & ISideConf
     }
 
     @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.renderToolTip(matrix, mouseX, mouseY);
-        displayTooltips(matrix, mouseX, mouseY, MekanismLang.SIDE_CONFIG.translate());
+    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderToolTip(guiGraphics, mouseX, mouseY);
+        displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.SIDE_CONFIG.translate());
     }
 
     @Override

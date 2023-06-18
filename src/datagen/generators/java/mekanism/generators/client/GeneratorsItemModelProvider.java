@@ -4,13 +4,13 @@ import mekanism.client.model.BaseItemModelProvider;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsItems;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class GeneratorsItemModelProvider extends BaseItemModelProvider {
 
-    public GeneratorsItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, MekanismGenerators.MODID, existingFileHelper);
+    public GeneratorsItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, MekanismGenerators.MODID, existingFileHelper);
     }
 
     @Override

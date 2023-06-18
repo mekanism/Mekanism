@@ -17,6 +17,7 @@ import mekanism.client.jei.interfaces.IJEIGhostTarget;
 import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostIngredientConsumer;
 import mekanism.common.lib.collection.LRU;
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
+import mezz.jei.api.ingredients.ITypedIngredient;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.Rect2i;
@@ -24,7 +25,7 @@ import net.minecraft.client.renderer.Rect2i;
 public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhostIngredientHandler<GUI> {
 
     @Override
-    public <INGREDIENT> List<Target<INGREDIENT>> getTargets(GUI gui, INGREDIENT ingredient, boolean doStart) {
+    public <INGREDIENT> List<Target<INGREDIENT>> getTargetsTyped(GUI gui, ITypedIngredient<INGREDIENT> ingredient, boolean doStart) {
         boolean hasTargets = false;
         int depth = 0;
         Int2ObjectLinkedOpenHashMap<List<TargetInfo<INGREDIENT>>> depthBasedTargets = new Int2ObjectLinkedOpenHashMap<>();
@@ -42,8 +43,8 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
             if (hasTargets) {
                 //If we have at least one layer with targets grab the intersection information for this window's layer
                 List<Rect2i> areas = new ArrayList<>();
-                areas.add(new Rect2i(window.x, window.y, window.getWidth(), window.getHeight()));
-                areas.addAll(GuiElementHandler.getAreasFor(window.x, window.y, window.getWidth(), window.getHeight(), window.children()));
+                areas.add(new Rect2i(window.getX(), window.getY(), window.getWidth(), window.getHeight()));
+                areas.addAll(GuiElementHandler.getAreasFor(window.getX(), window.getY(), window.getWidth(), window.getHeight(), window.children()));
                 layerIntersections.put(depth, areas);
             }
             ghostTargets = getTargets(window.children(), ingredient);
@@ -76,7 +77,7 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
         return targets;
     }
 
-    private <INGREDIENT> List<TargetInfo<INGREDIENT>> getTargets(List<? extends GuiEventListener> children, INGREDIENT ingredient) {
+    private <INGREDIENT> List<TargetInfo<INGREDIENT>> getTargets(List<? extends GuiEventListener> children, ITypedIngredient<INGREDIENT> ingredient) {
         List<TargetInfo<INGREDIENT>> ghostTargets = new ArrayList<>();
         for (GuiEventListener child : children) {
             if (child instanceof AbstractWidget widget) {
@@ -89,8 +90,8 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
                     //Then go ahead and check if our element is a ghost target and if it is, and it supports the ingredient add it
                     if (widget instanceof IJEIGhostTarget ghostTarget) {
                         IGhostIngredientConsumer ghostHandler = ghostTarget.getGhostHandler();
-                        if (ghostHandler != null && ghostHandler.supportsIngredient(ingredient)) {
-                            ghostTargets.add(new TargetInfo<>(ghostTarget, ghostHandler, widget.x, widget.y, widget.getWidth(), widget.getHeight()));
+                        if (ghostHandler != null && ghostHandler.supportsIngredient(ingredient.getIngredient())) {
+                            ghostTargets.add(new TargetInfo<>(ghostTarget, ghostHandler, widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight()));
                         }
                     }
                 }

@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -75,7 +76,7 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implemen
 
     @NotNull
     @Override
-    public ItemStack getResultItem() {
+    public ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
         return output.copy();
     }
 

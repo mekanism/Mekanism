@@ -1,0 +1,9 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": [
+    "mekanism:ore_tin_small",
+    "mekanism:ore_tin_large"
+  ],
+  "step": "underground_ores"
+}

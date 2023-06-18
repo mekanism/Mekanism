@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -9,11 +8,9 @@ import mekanism.client.gui.element.button.FilterButton;
 import mekanism.client.gui.element.button.MovableFilterButton;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.common.Mekanism;
-import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.FilterManager;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
-import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -21,6 +18,7 @@ import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -71,8 +69,6 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
                         list.add(itemFilter.getItemStack());
                     } else if (filter instanceof ITagFilter<?> tagFilter) {
                         list.addAll(getTagStacks(tagFilter.getTagName()));
-                    } else if (filter instanceof IMaterialFilter<?> materialFilter) {
-                        list.addAll(TagCache.getMaterialStacks(materialFilter.getMaterialItem()));
                     } else if (filter instanceof IModIDFilter<?> modIDFilter) {
                         list.addAll(getModIDStacks(modIDFilter.getModID()));
                     }
@@ -102,8 +98,8 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     protected abstract List<ItemStack> getModIDStacks(String tagName);
 
     @Override
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.drawForegroundText(matrix, mouseX, mouseY);
-        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
     }
 }

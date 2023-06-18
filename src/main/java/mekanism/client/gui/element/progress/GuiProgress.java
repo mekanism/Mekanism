@@ -3,10 +3,8 @@ package mekanism.client.gui.element.progress;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
-import com.mojang.math.Matrix4f;
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -16,9 +14,12 @@ import mekanism.client.jei.interfaces.IJEIRecipeArea;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<GuiProgress>, ISupportsWarning<GuiProgress> {
 
@@ -52,11 +53,11 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         if (handler.isActive()) {
-            RenderSystem.setShaderTexture(0, getResource());
-            blit(matrix, x, y, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
+            ResourceLocation resource = getResource();
+            guiGraphics.blit(resource, getX(), getY(), 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
             boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
             double progress = warning ? 1 : getProgress();
             if (type.isVertical()) {
@@ -66,7 +67,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
                     if (type.isReverse()) {
                         innerOffsetY += type.getTextureHeight() - displayInt;
                     }
-                    blit(matrix, x, y + innerOffsetY, type.getOverlayX(warning), type.getOverlayY(warning) + innerOffsetY, width, displayInt,
+                    blit(guiGraphics, resource, getX(), getY() + innerOffsetY, type.getOverlayX(warning), type.getOverlayY(warning) + innerOffsetY, width, displayInt,
                           type.getTextureWidth(), type.getTextureHeight(), progress, warning);
                 }
             } else {
@@ -76,7 +77,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
                     if (type.isReverse()) {
                         innerOffsetX += type.getTextureWidth() - displayInt;
                     }
-                    blit(matrix, x + innerOffsetX, y, type.getOverlayX(warning) + innerOffsetX, type.getOverlayY(warning), displayInt, height,
+                    blit(guiGraphics, resource, getX() + innerOffsetX, getY(), type.getOverlayX(warning) + innerOffsetX, type.getOverlayY(warning), displayInt, height,
                           type.getTextureWidth(), type.getTextureHeight(), progress, warning);
                 }
             }
@@ -110,24 +111,24 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
         return recipeCategories;
     }
 
-    private void blit(PoseStack matrixStack, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight, double progress,
+    private void blit(GuiGraphics guiGraphics, ResourceLocation resource, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight, double progress,
           boolean warning) {
         if (warning || colorDetails == null) {
             //If we are drawing a warning or don't have any color details just draw it normally
-            blit(matrixStack, x, y, uOffset, vOffset, width, height, textureWidth, textureHeight);
+            guiGraphics.blit(resource, x, y, uOffset, vOffset, width, height, textureWidth, textureHeight);
             return;
         }
         int colorFrom = colorDetails.getColorFrom();
         int colorTo = colorDetails.getColorTo();
         if (colorFrom == 0xFFFFFFFF && colorTo == 0xFFFFFFFF) {
             //No coloring needed, just use the normal blit method
-            blit(matrixStack, x, y, uOffset, vOffset, width, height, textureWidth, textureHeight);
+            guiGraphics.blit(resource, x, y, uOffset, vOffset, width, height, textureWidth, textureHeight);
             return;
         }
         //Merge of blit and fillGradient
         int x2 = x + width;
         int y2 = y + height;
-        Matrix4f matrix = matrixStack.last().pose();
+        Matrix4f matrix = guiGraphics.pose().last().pose();
         float minU = uOffset / (float) textureWidth;
         float maxU = (uOffset + width) / (float) textureWidth;
         float minV = vOffset / (float) textureHeight;
@@ -168,6 +169,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
         //Prep fill gradient
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderTexture(0, resource);
         RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
 
         Tesselator tessellator = Tesselator.getInstance();

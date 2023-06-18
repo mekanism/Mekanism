@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.window.filter.transporter;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.text.GuiTextField;
@@ -9,6 +8,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStackFilter, TileEntityLogisticalSorter> implements GuiSorterFilterHelper {
@@ -55,9 +55,9 @@ public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStack
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
-        renderSorterForeground(matrix, filter, tile.getSingleItem());
-        drawString(matrix, OnOff.of(filter.fuzzyMode).getTextComponent(), relativeX + 161, relativeY + 71, titleTextColor());
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
+        renderSorterForeground(guiGraphics, filter, tile.getSingleItem());
+        drawString(guiGraphics, OnOff.of(filter.fuzzyMode).getTextComponent(), relativeX + 161, relativeY + 71, titleTextColor());
     }
 }

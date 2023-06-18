@@ -12,6 +12,7 @@ import mekanism.common.item.block.ItemBlockColoredName;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
@@ -24,8 +25,8 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class AdditionsBlockStateProvider extends BaseBlockStateProvider<AdditionsBlockModelProvider> {
 
-    public AdditionsBlockStateProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, MekanismAdditions.MODID, existingFileHelper, AdditionsBlockModelProvider::new);
+    public AdditionsBlockStateProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, MekanismAdditions.MODID, existingFileHelper, AdditionsBlockModelProvider::new);
     }
 
     @Override

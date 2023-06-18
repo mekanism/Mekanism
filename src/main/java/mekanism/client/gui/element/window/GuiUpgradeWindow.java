@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.EnumMap;
 import java.util.Map;
 import mekanism.api.Upgrade;
@@ -24,6 +23,7 @@ import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.UpgradeUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -71,24 +71,24 @@ public class GuiUpgradeWindow extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
-        drawTitleText(matrix, MekanismLang.UPGRADES.translate(), 5);
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
+        drawTitleText(guiGraphics, MekanismLang.UPGRADES.translate(), 5);
         if (scrollList.hasSelection()) {
             Upgrade selectedType = scrollList.getSelection();
             int amount = tile.getComponent().getUpgrades(selectedType);
             int textY = relativeY + 20;
             WrappedTextRenderer textRenderer = upgradeTypeData.computeIfAbsent(selectedType, type -> new WrappedTextRenderer(this, MekanismLang.UPGRADE_TYPE.translate(type)));
-            int lines = textRenderer.renderWithScale(matrix, relativeX + 74, textY, screenTextColor(), 56, 0.6F);
+            int lines = textRenderer.renderWithScale(guiGraphics, relativeX + 74, textY, screenTextColor(), 56, 0.6F);
             textY += 6 * lines + 2;
-            drawTextWithScale(matrix, MekanismLang.UPGRADE_COUNT.translate(amount, selectedType.getMax()), relativeX + 74, textY, screenTextColor(), 0.6F);
+            drawTextWithScale(guiGraphics, MekanismLang.UPGRADE_COUNT.translate(amount, selectedType.getMax()), relativeX + 74, textY, screenTextColor(), 0.6F);
             for (Component component : UpgradeUtils.getInfo(tile, selectedType)) {
                 //Note: We add the six here instead of after to account for the line above this for loop that draws the upgrade count
                 textY += 6;
-                drawTextWithScale(matrix, component, relativeX + 74, textY, screenTextColor(), 0.6F);
+                drawTextWithScale(guiGraphics, component, relativeX + 74, textY, screenTextColor(), 0.6F);
             }
         } else {
-            noSelection.renderWithScale(matrix, relativeX + 74, relativeY + 20, screenTextColor(), 56, 0.8F);
+            noSelection.renderWithScale(guiGraphics, relativeX + 74, relativeY + 20, screenTextColor(), 56, 0.8F);
         }
     }
 }

@@ -26,5 +26,6 @@
     "title": {
       "translate": "advancements.mekanism.purification_chamber.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

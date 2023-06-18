@@ -14,10 +14,12 @@ import mekanism.common.registries.MekanismRecipeSerializers;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.player.PlayerEvent.ItemCraftedEvent;
@@ -28,8 +30,8 @@ import net.minecraftforge.items.ItemHandlerHelper;
 @NothingNullByDefault
 public class BinInsertRecipe extends BinRecipe {
 
-    public BinInsertRecipe(ResourceLocation id) {
-        super(id);
+    public BinInsertRecipe(ResourceLocation id, CraftingBookCategory category) {
+        super(id, category);
     }
 
     @Override
@@ -65,7 +67,7 @@ public class BinInsertRecipe extends BinRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
+    public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
         ItemStack binStack = ItemStack.EMPTY;
         ItemStack foundType = ItemStack.EMPTY;
         List<ItemStack> foundItems = new ArrayList<>();

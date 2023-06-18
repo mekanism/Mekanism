@@ -24,5 +24,6 @@
     "title": {
       "translate": "advancements.mekanism.basic_qio_drive.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

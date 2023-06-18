@@ -8,16 +8,17 @@ import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.advancements.ToolsAdvancements;
 import mekanism.tools.common.registries.ToolsItems;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 
 public class ToolsLangProvider extends BaseLanguageProvider {
 
-    public ToolsLangProvider(DataGenerator gen) {
-        super(gen, MekanismTools.MODID);
+    public ToolsLangProvider(PackOutput output) {
+        super(output, MekanismTools.MODID);
     }
 
     @Override
     protected void addTranslations() {
+        add(ToolsLang.PACK_DESCRIPTION, "Resources used for Mekanism: Tools");
         addItems();
         addAdvancements();
         addMisc();

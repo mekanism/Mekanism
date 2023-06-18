@@ -3,7 +3,7 @@ package mekanism.common.item.gear;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -11,7 +11,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 public abstract class BaseSpecialArmorMaterial implements ArmorMaterial {
 
     @Override
-    public int getDurabilityForSlot(EquipmentSlot slotType) {
+    public int getDurabilityForType(ArmorItem.Type armorType) {
         return 0;
     }
 
@@ -31,7 +31,7 @@ public abstract class BaseSpecialArmorMaterial implements ArmorMaterial {
     }
 
     @Override
-    public int getDefenseForSlot(EquipmentSlot slotType) {
+    public int getDefenseForType(ArmorItem.Type armorType) {
         return 0;
     }
 

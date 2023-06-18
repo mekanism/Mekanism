@@ -2,13 +2,13 @@ package mekanism.generators.client;
 
 import mekanism.client.model.BaseBlockModelProvider;
 import mekanism.generators.common.MekanismGenerators;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class GeneratorsBlockModelProvider extends BaseBlockModelProvider {
 
-    public GeneratorsBlockModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, MekanismGenerators.MODID, existingFileHelper);
+    public GeneratorsBlockModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, MekanismGenerators.MODID, existingFileHelper);
     }
 
     @Override

@@ -25,6 +25,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStack.TooltipPart;
@@ -43,7 +44,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     }
 
     public ItemJetpack(ArmorMaterial material, Properties properties) {
-        super(material, EquipmentSlot.CHEST, properties.setNoRepair());
+        super(material, ArmorItem.Type.CHESTPLATE, properties.setNoRepair());
     }
 
     @Override
@@ -93,7 +94,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
 
     @Override
     public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
-        if (slotType == getSlot()) {
+        if (slotType == getEquipmentSlot()) {
             ItemJetpack jetpack = (ItemJetpack) stack.getItem();
             list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getJetpackMode(stack)));
             GasStack stored = GasStack.EMPTY;
@@ -122,7 +123,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
 
     @Override
     public boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
-        return slotType == getSlot();
+        return slotType == getEquipmentSlot();
     }
 
     @Override

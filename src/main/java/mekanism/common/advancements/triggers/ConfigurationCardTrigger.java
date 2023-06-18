@@ -4,8 +4,8 @@ import com.google.gson.JsonObject;
 import mekanism.api.JsonConstants;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SerializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.resources.ResourceLocation;
@@ -29,7 +29,7 @@ public class ConfigurationCardTrigger extends SimpleCriterionTrigger<Configurati
 
     @NotNull
     @Override
-    protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull EntityPredicate.Composite playerPredicate, @NotNull DeserializationContext context) {
+    protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull ContextAwarePredicate playerPredicate, @NotNull DeserializationContext context) {
         return new TriggerInstance(playerPredicate, GsonHelper.getAsBoolean(json, JsonConstants.COPY));
     }
 
@@ -41,7 +41,7 @@ public class ConfigurationCardTrigger extends SimpleCriterionTrigger<Configurati
 
         private final boolean copy;
 
-        public TriggerInstance(EntityPredicate.Composite playerPredicate, boolean copy) {
+        public TriggerInstance(ContextAwarePredicate playerPredicate, boolean copy) {
             super(MekanismCriteriaTriggers.CONFIGURATION_CARD.getId(), playerPredicate);
             this.copy = copy;
         }
@@ -55,11 +55,11 @@ public class ConfigurationCardTrigger extends SimpleCriterionTrigger<Configurati
         }
 
         public static ConfigurationCardTrigger.TriggerInstance copy() {
-            return new ConfigurationCardTrigger.TriggerInstance(EntityPredicate.Composite.ANY, true);
+            return new ConfigurationCardTrigger.TriggerInstance(ContextAwarePredicate.ANY, true);
         }
 
         public static ConfigurationCardTrigger.TriggerInstance paste() {
-            return new ConfigurationCardTrigger.TriggerInstance(EntityPredicate.Composite.ANY, false);
+            return new ConfigurationCardTrigger.TriggerInstance(ContextAwarePredicate.ANY, false);
         }
     }
 }

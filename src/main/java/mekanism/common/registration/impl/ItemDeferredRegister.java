@@ -8,7 +8,6 @@ import java.util.function.Supplier;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.common.CreativeTabMekanism;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.WrappedDeferredRegister;
@@ -23,8 +22,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 
-    private static final CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
-
     private final List<IItemProvider> allItems = new ArrayList<>();
 
     public ItemDeferredRegister(String modid) {
@@ -32,7 +29,9 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
     }
 
     public static Item.Properties getMekBaseProperties() {
-        return new Item.Properties().tab(tabMekanism);
+        //TODO - 1.20: Do we want to inline the creation as we now have no other base properties?
+        //TODO - 1.20: Ensure everything actually ends up in a creative tab
+        return new Item.Properties();
     }
 
     public ItemRegistryObject<Item> register(String name) {

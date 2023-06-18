@@ -14,8 +14,8 @@
           "name": "mekanismadditions:red_reinforced_plastic"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/red_reinforced_plastic"
 }

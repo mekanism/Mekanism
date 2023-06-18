@@ -7,17 +7,19 @@ import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
 @NothingNullByDefault
 public class BinExtractRecipe extends BinRecipe {
 
-    public BinExtractRecipe(ResourceLocation id) {
-        super(id);
+    public BinExtractRecipe(ResourceLocation id, CraftingBookCategory category) {
+        super(id, category);
     }
 
     @Override
@@ -47,7 +49,7 @@ public class BinExtractRecipe extends BinRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
+    public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
         ItemStack binStack = ItemStack.EMPTY;
         for (int i = 0; i < inv.getContainerSize(); ++i) {
             ItemStack stackInSlot = inv.getItem(i);

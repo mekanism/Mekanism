@@ -39,7 +39,7 @@ public abstract class RobitAIBase extends Goal {
     }
 
     protected Level getWorld() {
-        return theRobit.getCommandSenderWorld();
+        return theRobit.level();
     }
 
     @Override

@@ -24,5 +24,6 @@
     "title": {
       "translate": "advancements.mekanism.steel_ingot.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

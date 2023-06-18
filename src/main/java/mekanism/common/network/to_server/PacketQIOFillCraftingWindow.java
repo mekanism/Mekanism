@@ -41,7 +41,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
             if (selectedCraftingGrid == -1) {
                 Mekanism.logger.warn("Received transfer request from: {}, but they do not currently have a crafting window open.", player);
             } else {
-                Optional<? extends Recipe<?>> optionalRecipe = MekanismRecipeType.byKey(player.level, recipeID);
+                Optional<? extends Recipe<?>> optionalRecipe = MekanismRecipeType.byKey(player.level(), recipeID);
                 if (optionalRecipe.isPresent()) {
                     Recipe<?> recipe = optionalRecipe.get();
                     if (recipe instanceof CraftingRecipe craftingRecipe) {

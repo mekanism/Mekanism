@@ -7,15 +7,15 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class MekanismItemModelProvider extends BaseItemModelProvider {
 
-    public MekanismItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, Mekanism.MODID, existingFileHelper);
+    public MekanismItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, Mekanism.MODID, existingFileHelper);
     }
 
     @Override

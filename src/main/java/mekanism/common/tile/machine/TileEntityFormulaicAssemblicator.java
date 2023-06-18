@@ -313,14 +313,14 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 if (cachedRecipe == null) {
                     lastOutputStack = ItemStack.EMPTY;
                 } else {
-                    lastOutputStack = cachedRecipe.assemble(dummyInv);
+                    lastOutputStack = cachedRecipe.assemble(dummyInv, level.registryAccess());
                     lastRemainingItems = cachedRecipe.getRemainingItems(dummyInv);
                 }
                 isRecipe = !lastOutputStack.isEmpty();
             } else {
                 isRecipe = formula.matches(level, craftingGridSlots);
                 if (isRecipe) {
-                    lastOutputStack = formula.assemble();
+                    lastOutputStack = formula.assemble(level.registryAccess());
                     lastRemainingItems = formula.getRemainingItems();
                 } else {
                     lastOutputStack = ItemStack.EMPTY;

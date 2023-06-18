@@ -1,7 +1,6 @@
 package mekanism.generators.client.gui.element.button;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
@@ -14,6 +13,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.base.IReactorLogic;
 import mekanism.generators.common.base.IReactorLogicMode;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -43,10 +43,10 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
             if (mode != null) {
                 onPress.accept(mode);
             }
-        }, (onHover, matrix, mouseX, mouseY) -> {
+        }, (onHover, guiGraphics, mouseX, mouseY) -> {
             TYPE mode = modeSupplier.get();
             if (mode != null) {
-                gui.displayTooltips(matrix, mouseX, mouseY, mode.getDescription());
+                gui.displayTooltips(guiGraphics, mouseX, mouseY, mode.getDescription());
             }
         });
         this.typeOffset = 22 * index;
@@ -55,23 +55,22 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         TYPE mode = modeSupplier.get();
         if (mode != null) {
-            RenderSystem.setShaderTexture(0, TEXTURE);
             MekanismRenderer.color(mode.getColor());
-            blit(matrix, x, y, 0, mode == tile.getMode() ? 22 : 0, width, height, 128, 44);
+            guiGraphics.blit(TEXTURE, getX(), getY(), 0, mode == tile.getMode() ? 22 : 0, width, height, 128, 44);
             MekanismRenderer.resetColor();
         }
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         TYPE mode = modeSupplier.get();
         if (mode != null) {
-            gui().renderItem(matrix, mode.getRenderStack(), 20, 35 + typeOffset);
-            drawString(matrix, TextComponentUtil.build(EnumColor.WHITE, mode), 39, 34 + typeOffset, titleTextColor());
-            super.renderForeground(matrix, mouseX, mouseY);
+            gui().renderItem(guiGraphics, mode.getRenderStack(), 20, 35 + typeOffset);
+            drawString(guiGraphics, TextComponentUtil.build(EnumColor.WHITE, mode), 39, 34 + typeOffset, titleTextColor());
+            super.renderForeground(guiGraphics, mouseX, mouseY);
         }
     }
 }

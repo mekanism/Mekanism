@@ -9,6 +9,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -62,24 +63,22 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForSlot(@NotNull EquipmentSlot slotType) {
-        return switch (slotType) {
-            case FEET -> 390;
-            case LEGS -> 450;
-            case CHEST -> 480;
-            case HEAD -> 330;
-            default -> 0;
+    public int getDurabilityForType(@NotNull ArmorItem.Type armorType) {
+        return switch (armorType) {
+            case BOOTS -> 390;
+            case LEGGINGS -> 450;
+            case CHESTPLATE -> 480;
+            case HELMET -> 330;
         };
     }
 
     @Override
-    public int getDefenseForSlot(@NotNull EquipmentSlot slotType) {
-        return switch (slotType) {
-            case FEET -> 3;
-            case LEGS -> 6;
-            case CHEST -> 8;
-            case HEAD -> 4;
-            default -> 0;
+    public int getDefenseForType(@NotNull ArmorItem.Type armorType) {
+        return switch (armorType) {
+            case BOOTS -> 3;
+            case LEGGINGS -> 6;
+            case CHESTPLATE -> 8;
+            case HELMET -> 4;
         };
     }
 

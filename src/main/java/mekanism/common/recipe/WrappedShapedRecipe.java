@@ -2,9 +2,11 @@ package mekanism.common.recipe;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -25,13 +27,18 @@ public abstract class WrappedShapedRecipe implements CraftingRecipe, IShapedReci
     }
 
     @Override
-    public abstract ItemStack assemble(CraftingContainer inv);
+    public CraftingBookCategory category() {
+        return internal.category();
+    }
+
+    @Override
+    public abstract ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess);
 
     @Override
     public boolean matches(CraftingContainer inv, Level world) {
         //Note: We do not override the matches method if it matches ignoring NBT,
         // to ensure that we return the proper value for if there is a match that gives a proper output
-        return internal.matches(inv, world) && !assemble(inv).isEmpty();
+        return internal.matches(inv, world) && !assemble(inv, world.registryAccess()).isEmpty();
     }
 
     @Override
@@ -40,8 +47,8 @@ public abstract class WrappedShapedRecipe implements CraftingRecipe, IShapedReci
     }
 
     @Override
-    public ItemStack getResultItem() {
-        return internal.getResultItem();
+    public ItemStack getResultItem(RegistryAccess registryAccess) {
+        return internal.getResultItem(registryAccess);
     }
 
     @Override

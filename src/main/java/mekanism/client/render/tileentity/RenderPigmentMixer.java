@@ -3,7 +3,7 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -91,7 +91,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
         }
         float shift = 1 / 16F;
         matrix.translate(shift, 0, shift);
-        matrix.mulPose(Vector3f.YN.rotationDegrees((tile.getLevel().getGameTime() + partialTick) * SHAFT_SPEED % 360));
+        matrix.mulPose(Axis.YN.rotationDegrees((tile.getLevel().getGameTime() + partialTick) * SHAFT_SPEED % 360));
         matrix.translate(-shift, 0, -shift);
         renderer.accept(matrix);
         matrix.popPose();

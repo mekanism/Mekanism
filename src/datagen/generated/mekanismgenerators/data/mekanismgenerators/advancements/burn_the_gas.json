@@ -25,5 +25,6 @@
     "title": {
       "translate": "advancements.mekanismgenerators.burn_the_gas.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

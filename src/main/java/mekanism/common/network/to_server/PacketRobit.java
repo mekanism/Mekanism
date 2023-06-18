@@ -62,7 +62,7 @@ public class PacketRobit implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         Player player = context.getSender();
         if (player != null) {
-            EntityRobit robit = (EntityRobit) player.level.getEntity(entityId);
+            EntityRobit robit = (EntityRobit) player.level().getEntity(entityId);
             if (robit != null && MekanismAPI.getSecurityUtils().canAccess(player, robit)) {
                 if (activeType == RobitPacketType.GO_HOME) {
                     robit.goHome();
@@ -82,7 +82,7 @@ public class PacketRobit implements IMekanismPacket {
                             // end up adding any Easter egg skins that aren't unlocked by default, to still
                             // be able to equip them. We already validate the player can access the robit
                             // above before setting the name
-                            robit.setSkin(skins.get(robit.level.random.nextInt(skins.size())), null);
+                            robit.setSkin(skins.get(robit.level().random.nextInt(skins.size())), null);
                         }
                     }
                 } else if (activeType == RobitPacketType.SKIN) {

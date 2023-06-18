@@ -1,6 +1,5 @@
 package mekanism.client.gui.machine;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import mekanism.client.gui.GuiFilterHolder;
 import mekanism.client.gui.element.GuiDigitalSwitch;
@@ -13,7 +12,6 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.filter.miner.GuiMinerFilerSelect;
 import mekanism.client.gui.element.window.filter.miner.GuiMinerItemStackFilter;
-import mekanism.client.gui.element.window.filter.miner.GuiMinerMaterialFilter;
 import mekanism.client.gui.element.window.filter.miner.GuiMinerModIDFilter;
 import mekanism.client.gui.element.window.filter.miner.GuiMinerTagFilter;
 import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostBlockItemConsumer;
@@ -23,12 +21,10 @@ import mekanism.common.base.TagCache;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
-import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.miner.MinerItemStackFilter;
-import mekanism.common.content.miner.MinerMaterialFilter;
 import mekanism.common.content.miner.MinerModIDFilter;
 import mekanism.common.content.miner.MinerTagFilter;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -43,6 +39,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.InputValidator;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
@@ -65,7 +62,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
 
     public GuiDigitalMinerConfig(MekanismTileContainer<TileEntityDigitalMiner> container, Inventory inv, Component title) {
         super(container, inv, title);
-        Level level = inv.player.level;
+        Level level = inv.player.level();
         maxHeightLength = Math.max(Integer.toString(level.getMinBuildHeight()).length(), Integer.toString(level.getMaxBuildHeight() - 1).length());
     }
 
@@ -126,25 +123,25 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     }
 
     @Override
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.drawForegroundText(matrix, mouseX, mouseY);
-        renderTitleText(matrix);
-        drawScaledTextScaledBound(matrix, MekanismLang.FILTERS.translate(), 14, 22, screenTextColor(), 36, 0.8F);
-        drawScaledTextScaledBound(matrix, MekanismLang.FILTER_COUNT.translate(getFilterManager().count()), 14, 31, screenTextColor(), 36, 0.8F);
-        drawScaledTextScaledBound(matrix, MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 14, 40, screenTextColor(), 36, 0.8F);
-        drawScaledTextScaledBound(matrix, MekanismLang.MIN.translate(tile.getMinY()), 14, 65, screenTextColor(), 36, 0.8F);
-        drawScaledTextScaledBound(matrix, MekanismLang.MAX.translate(tile.getMaxY()), 14, 90, screenTextColor(), 36, 0.8F);
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        renderTitleText(guiGraphics);
+        drawScaledTextScaledBound(guiGraphics, MekanismLang.FILTERS.translate(), 14, 22, screenTextColor(), 36, 0.8F);
+        drawScaledTextScaledBound(guiGraphics, MekanismLang.FILTER_COUNT.translate(getFilterManager().count()), 14, 31, screenTextColor(), 36, 0.8F);
+        drawScaledTextScaledBound(guiGraphics, MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 14, 40, screenTextColor(), 36, 0.8F);
+        drawScaledTextScaledBound(guiGraphics, MekanismLang.MIN.translate(tile.getMinY()), 14, 65, screenTextColor(), 36, 0.8F);
+        drawScaledTextScaledBound(guiGraphics, MekanismLang.MAX.translate(tile.getMaxY()), 14, 90, screenTextColor(), 36, 0.8F);
     }
 
     @Override
-    public void drawTitleText(PoseStack matrix, Component text, float y) {
+    public void drawTitleText(GuiGraphics guiGraphics, Component text, float y) {
         //Adjust spacing for back button
         int leftShift = 11;
         int xSize = getXSize() - leftShift;
         int maxLength = xSize - 12;
         float textWidth = getStringWidth(text);
         float scale = Math.min(1, maxLength / textWidth);
-        drawScaledCenteredText(matrix, text, leftShift + xSize / 2F, y, titleTextColor(), scale);
+        drawScaledCenteredText(guiGraphics, text, leftShift + xSize / 2F, y, titleTextColor(), scale);
     }
 
     @Override
@@ -153,8 +150,6 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
             addWindow(GuiMinerItemStackFilter.edit(this, tile, (MinerItemStackFilter) filter));
         } else if (filter instanceof ITagFilter) {
             addWindow(GuiMinerTagFilter.edit(this, tile, (MinerTagFilter) filter));
-        } else if (filter instanceof IMaterialFilter) {
-            addWindow(GuiMinerMaterialFilter.edit(this, tile, (MinerMaterialFilter) filter));
         } else if (filter instanceof IModIDFilter) {
             addWindow(GuiMinerModIDFilter.edit(this, tile, (MinerModIDFilter) filter));
         }

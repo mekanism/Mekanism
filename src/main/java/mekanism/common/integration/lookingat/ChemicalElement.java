@@ -1,6 +1,7 @@
 package mekanism.common.integration.lookingat;
 
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalType;
 import mekanism.api.math.MathUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -27,6 +28,19 @@ public class ChemicalElement extends LookingAtElement {
             return level;
         }
         return MathUtils.clampToInt(level * (double) stored.getAmount() / capacity);
+    }
+
+    public ChemicalType getChemicalType() {
+        return ChemicalType.getTypeFor(stored);
+    }
+
+    @NotNull
+    public ChemicalStack<?> getStored() {
+        return stored;
+    }
+
+    public long getCapacity() {
+        return capacity;
     }
 
     @Override

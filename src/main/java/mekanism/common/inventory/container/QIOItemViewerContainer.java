@@ -179,7 +179,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     @Override
     protected void closeInventory(@NotNull Player player) {
         super.closeInventory(player);
-        if (!player.level.isClientSide()) {
+        if (!player.level().isClientSide()) {
             QIOFrequency freq = getFrequency();
             if (freq != null) {
                 freq.closeItemViewer((ServerPlayer) player);
@@ -261,7 +261,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             return super.quickMoveStack(player, slotID);
         }
         // special handling for shift-clicking into GUI
-        if (!player.level.isClientSide()) {
+        if (!player.level().isClientSide()) {
             //Note: We don't need to sanitize the slot's items as these are just InsertableSlots which have no restrictions on them on how much
             // can be extracted at once so even if they somehow have an oversized stack it will be fine
             ItemStack slotStack = currentSlot.getItem();

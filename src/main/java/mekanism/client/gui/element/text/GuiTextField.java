@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.text;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
@@ -8,13 +7,13 @@ import java.util.function.UnaryOperator;
 import mekanism.api.functions.CharPredicate;
 import mekanism.api.functions.CharUnaryOperator;
 import mekanism.client.SpecialColors;
-import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.Color;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -51,7 +50,7 @@ public class GuiTextField extends GuiElement {
     public GuiTextField(IGuiWrapper gui, int x, int y, int width, int height) {
         super(gui, x, y, width, height);
 
-        textField = new EditBox(getFont(), this.x, this.y, width, height, Component.empty());
+        textField = new EditBox(getFont(), getX(), getY(), width, height, Component.empty());
         textField.setBordered(false);
         textField.setResponder(s -> {
             if (responder != null) {
@@ -69,8 +68,8 @@ public class GuiTextField extends GuiElement {
     public void resize(int prevLeft, int prevTop, int left, int top) {
         super.resize(prevLeft, prevTop, left, top);
         //Ensure we also update the positions of the text field
-        textField.x = textField.x - prevLeft + left;
-        textField.y = textField.y - prevTop + top;
+        textField.setX(textField.getX() - prevLeft + left);
+        textField.setY(textField.getY() - prevTop + top);
     }
 
     public GuiTextField setScale(float textScale) {
@@ -153,8 +152,8 @@ public class GuiTextField extends GuiElement {
         //width is scaled based on text scale
         int iconOffsetX = iconType == null ? 0 : iconType.getOffsetX();
         textField.setWidth(Math.round((width - (checkmarkButton == null ? 0 : textField.getHeight() + 2) - iconOffsetX) * (1 / textScale)));
-        textField.setX(x + textOffsetX + 2 + iconOffsetX);
-        textField.y = y + textOffsetY + 1 + (int) ((height / 2F) - 4);
+        textField.setX(getX() + textOffsetX + 2 + iconOffsetX);
+        textField.setY(getY() + textOffsetY + 1 + (int) ((height / 2F) - 4));
     }
 
     public boolean isTextFieldFocused() {
@@ -184,8 +183,8 @@ public class GuiTextField extends GuiElement {
         boolean prevFocus = isTextFieldFocused();
         double scaledX = mouseX;
         // figure out the proper mouse placement based on text scaling
-        if (textScale != 1.0F && scaledX > textField.x) {
-            scaledX = Math.min(scaledX, textField.x) + (scaledX - textField.x) * (1F / textScale);
+        if (textScale != 1.0F && scaledX > textField.getX()) {
+            scaledX = Math.min(scaledX, textField.getX()) + (scaledX - textField.getX()) * (1F / textScale);
         }
         boolean ret = textField.mouseClicked(scaledX, mouseY, button);
         // detect if we're now focused
@@ -196,31 +195,34 @@ public class GuiTextField extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        backgroundType.render(this, matrix);
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
+        backgroundType.render(this, guiGraphics);
         if (textScale == 1F) {
-            renderTextField(matrix, mouseX, mouseY, partialTicks);
+            renderTextField(guiGraphics, mouseX, mouseY, partialTicks);
         } else {
             // hacky. we should write our own renderer at some point.
             float reverse = (1 / textScale) - 1;
             float yAdd = 4 - (textScale * 8) / 2F;
-            matrix.pushPose();
-            matrix.scale(textScale, textScale, textScale);
-            matrix.translate(textField.x * reverse, (textField.y) * reverse + yAdd * (1 / textScale), 0);
-            renderTextField(matrix, mouseX, mouseY, partialTicks);
-            matrix.popPose();
+            //TODO - 1.20: Re-evaluate if this is needed
+            PoseStack pose = guiGraphics.pose();
+            pose.pushPose();
+            pose.scale(textScale, textScale, textScale);
+            pose.translate(textField.getX() * reverse, (textField.getY()) * reverse + yAdd * (1 / textScale), 0);
+            renderTextField(guiGraphics, mouseX, mouseY, partialTicks);
+            pose.popPose();
         }
         MekanismRenderer.resetColor();
         if (iconType != null) {
-            RenderSystem.setShaderTexture(0, iconType.getIcon());
-            blit(matrix, x + 2, y + (height / 2) - (int) Math.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
+            guiGraphics.blit(iconType.getIcon(), getX() + 2, getY() + (height / 2) - (int) Math.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
         }
     }
 
-    private void renderTextField(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    private void renderTextField(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Apply matrix via render system so that it applies to the highlight
-        GuiUtils.renderWithPose(matrix, () -> textField.render(new PoseStack(), mouseX, mouseY, partialTicks));
+        //GuiUtils.renderWithPose(matrix, () -> textField.render(new PoseStack(), mouseX, mouseY, partialTicks));
+        //TODO - 1.20: Test this and if it works remove this method and just call it directly
+        textField.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -327,25 +329,14 @@ public class GuiTextField extends GuiElement {
         textField.setCanLoseFocus(canLoseFocus);
     }
 
-    @Override
+    @Override//TODO - 1.20: validate the focus changes properly match vanilla in functionality
     public void setFocused(boolean focused) {
-        super.setFocused(focused);
-        textField.setFocus(focused);
-        if (focused) {
-            gui().focusChange(this);
-        }
-    }
-
-    @Override
-    public boolean changeFocus(boolean focused) {
-        return visible && textField.isEditable() && super.changeFocus(focused);
-    }
-
-    @Override
-    protected void onFocusedChanged(boolean focused) {
-        super.onFocusedChanged(focused);
-        if (focused) {
-            textField.frame = 0;
+        if (textField.canLoseFocus || focused) {
+            super.setFocused(focused);
+            textField.setFocused(focused);
+            if (focused) {
+                gui().focusChange(this);
+            }
         }
     }
 

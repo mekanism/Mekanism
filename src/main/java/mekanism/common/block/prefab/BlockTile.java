@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -41,7 +41,8 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     }
 
     public BlockTile(TYPE type, UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
-        this(type, propertiesModifier.apply(BlockBehaviour.Properties.of(Material.METAL).strength(3.5F, 16).requiresCorrectToolForDrops()));
+        this(type, propertiesModifier.apply(BlockBehaviour.Properties.of().strength(3.5F, 16).requiresCorrectToolForDrops()
+              .mapColor(MapColor.METAL)));
         //TODO - 1.18: Figure out what the resistance should be (it used to be different in 1.12)
     }
 

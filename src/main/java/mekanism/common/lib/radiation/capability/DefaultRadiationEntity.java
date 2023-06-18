@@ -10,7 +10,7 @@ import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
-import mekanism.common.registries.MekanismDamageSource;
+import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -49,7 +49,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
             return;
         }
 
-        RandomSource rand = entity.level.getRandom();
+        RandomSource rand = entity.level().getRandom();
         double minSeverity = MekanismConfig.general.radiationNegativeEffectsMinSeverity.get();
         double severityScale = RadiationScale.getScaledDoseSeverity(radiation);
         double chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
@@ -65,13 +65,13 @@ public class DefaultRadiationEntity implements IRadiationEntity {
                     if (server != null && server.isHardcore()) {//Only allow totems to count on hardcore
                         totemTimesUsed = player.getStats().getValue(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
                     }
-                    if (entity.hurt(MekanismDamageSource.RADIATION, strength)) {
+                    if (entity.hurt(MekanismDamageTypes.RADIATION.source(entity.level()), strength)) {
                         //If the damage actually went through fire the trigger
                         boolean hardcoreTotem = totemTimesUsed != -1 && totemTimesUsed < player.getStats().getValue(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
-                        MekanismCriteriaTriggers.DAMAGE.trigger(player, MekanismDamageSource.RADIATION, hardcoreTotem);
+                        MekanismCriteriaTriggers.DAMAGE.trigger(player, MekanismDamageTypes.RADIATION, hardcoreTotem);
                     }
                 } else {
-                    entity.hurt(MekanismDamageSource.RADIATION, strength);
+                    entity.hurt(MekanismDamageTypes.RADIATION.source(entity.level()), strength);
                 }
             }
             if (entity instanceof ServerPlayer player) {

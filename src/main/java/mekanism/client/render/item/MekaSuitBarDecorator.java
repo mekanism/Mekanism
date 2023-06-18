@@ -16,6 +16,7 @@ import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.util.FluidUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.IItemDecorator;
 import net.minecraftforge.common.capabilities.Capability;
@@ -30,15 +31,15 @@ public class MekaSuitBarDecorator implements IItemDecorator {
     private MekaSuitBarDecorator() {
     }
 
-    @Override
-    public boolean render(Font font, ItemStack stack, int xOffset, int yOffset, float blitOffset) {
+    @Override//TODO - 1.20: Test this
+    public boolean render(GuiGraphics guiGraphics, Font font, ItemStack stack, int xOffset, int yOffset) {
         if (stack.isEmpty() || !(stack.getItem() instanceof ItemMekaSuitArmor armor)) {
             return false;
         }
         RenderSystem.disableDepthTest();
         yOffset += 12;
 
-        if (tryRender(stack, Capabilities.GAS_HANDLER, xOffset, yOffset, armor.getGasTankSpecs())) {
+        if (tryRender(guiGraphics, stack, Capabilities.GAS_HANDLER, xOffset, yOffset, armor.getGasTankSpecs())) {
             yOffset--;
         }
         //TODO: Other chemical types as they get added to different meka suit pieces
@@ -51,7 +52,7 @@ public class MekaSuitBarDecorator implements IItemDecorator {
                 int tank = getDisplayTank(fluidTankSpecs, stack, fluidHandler.getTanks());
                 if (tank != -1) {
                     FluidStack fluidInTank = fluidHandler.getFluidInTank(tank);
-                    ChemicalFluidBarDecorator.renderBar(xOffset, yOffset, fluidInTank.getAmount(), fluidHandler.getTankCapacity(tank),
+                    ChemicalFluidBarDecorator.renderBar(guiGraphics, xOffset, yOffset, fluidInTank.getAmount(), fluidHandler.getTankCapacity(tank),
                           FluidUtils.getRGBDurabilityForDisplay(stack).orElse(0xFFFFFFFF));
                 }
             }
@@ -59,7 +60,7 @@ public class MekaSuitBarDecorator implements IItemDecorator {
         return true;
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>> boolean tryRender(ItemStack stack, Capability<? extends IChemicalHandler<CHEMICAL, ?>> capability,
+    private <CHEMICAL extends Chemical<CHEMICAL>> boolean tryRender(GuiGraphics guiGraphics, ItemStack stack, Capability<? extends IChemicalHandler<CHEMICAL, ?>> capability,
           int xOffset, int yOffset, List<ChemicalTankSpec<CHEMICAL>> chemicalTankSpecs) {
         if (!chemicalTankSpecs.isEmpty() && chemicalTankSpecs.stream().anyMatch(spec -> spec.supportsStack(stack))) {
             Optional<? extends IChemicalHandler<CHEMICAL, ?>> capabilityInstance = stack.getCapability(capability).resolve();
@@ -68,7 +69,7 @@ public class MekaSuitBarDecorator implements IItemDecorator {
                 int tank = getDisplayTank(chemicalTankSpecs, stack, chemicalHandler.getTanks());
                 if (tank != -1) {
                     ChemicalStack<CHEMICAL> chemicalInTank = chemicalHandler.getChemicalInTank(tank);
-                    ChemicalFluidBarDecorator.renderBar(xOffset, yOffset, chemicalInTank.getAmount(), chemicalHandler.getTankCapacity(tank),
+                    ChemicalFluidBarDecorator.renderBar(guiGraphics, xOffset, yOffset, chemicalInTank.getAmount(), chemicalHandler.getTankCapacity(tank),
                           chemicalInTank.getChemicalColorRepresentation());
                     return true;
                 }

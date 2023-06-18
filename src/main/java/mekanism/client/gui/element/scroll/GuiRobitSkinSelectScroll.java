@@ -3,7 +3,7 @@ package mekanism.client.gui.element.scroll;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import java.util.List;
 import java.util.function.Supplier;
 import mekanism.api.math.MathUtils;
@@ -21,7 +21,7 @@ import mekanism.client.render.lib.QuadUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -64,8 +64,8 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         List<RobitSkin> skins = getUnlockedSkins();
         if (skins != null) {
             Lighting.setupForFlatItems();
@@ -77,31 +77,31 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
             QuadTransformation rotation = QuadTransformation.rotateY(rot);
             int slotStart = scrollBar.getCurrentSelection() * SLOT_COUNT, max = SLOT_COUNT * SLOT_COUNT;
             for (int i = 0; i < max; i++) {
-                int slotX = x + (i % SLOT_COUNT) * SLOT_DIMENSIONS, slotY = y + (i / SLOT_COUNT) * SLOT_DIMENSIONS;
+                int slotX = getX() + (i % SLOT_COUNT) * SLOT_DIMENSIONS, slotY = getY() + (i / SLOT_COUNT) * SLOT_DIMENSIONS;
                 int slot = slotStart + i;
                 if (slot < skins.size()) {
                     RobitSkin skin = skins.get(slot);
                     if (skin == selectedSkin) {
-                        renderSlotBackground(matrix, slotX, slotY, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE);
+                        renderSlotBackground(guiGraphics, slotX, slotY, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE);
                     } else {
-                        renderSlotBackground(matrix, slotX, slotY, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
+                        renderSlotBackground(guiGraphics, slotX, slotY, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
                     }
-                    renderRobit(matrix, skins.get(slot), slotX, slotY, rotation, index);
+                    renderRobit(guiGraphics, skins.get(slot), slotX, slotY, rotation, index);
                 } else {
-                    renderSlotBackground(matrix, slotX, slotY, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
+                    renderSlotBackground(guiGraphics, slotX, slotY, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
                 }
             }
             Lighting.setupFor3DItems();
         }
     }
 
-    private static void renderSlotBackground(@NotNull PoseStack matrix, int slotX, int slotY, ResourceLocation resource, int size) {
-        GuiUtils.renderBackgroundTexture(matrix, resource, size, size, slotX, slotY, SLOT_DIMENSIONS, SLOT_DIMENSIONS, 256, 256);
+    private static void renderSlotBackground(@NotNull GuiGraphics guiGraphics, int slotX, int slotY, ResourceLocation resource, int size) {
+        GuiUtils.renderBackgroundTexture(guiGraphics, resource, size, size, slotX, slotY, SLOT_DIMENSIONS, SLOT_DIMENSIONS, 256, 256);
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
         List<RobitSkin> skins = getUnlockedSkins();
         if (skins != null) {
             int xAxis = mouseX - getGuiLeft(), yAxis = mouseY - getGuiTop();
@@ -112,7 +112,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
                     //Only draw the selection hover layer if we are actually rendering over a slot
                     int slot = (slotY + scrollBar.getCurrentSelection()) * SLOT_COUNT + slotX;
                     if (slot < skins.size()) {
-                        fill(matrix, slotStartX, slotStartY, slotStartX + SLOT_DIMENSIONS, slotStartY + SLOT_DIMENSIONS, 0x70FFEA00);
+                        guiGraphics.fill(slotStartX, slotStartY, slotStartX + SLOT_DIMENSIONS, slotStartY + SLOT_DIMENSIONS, 0x70FFEA00);
                         MekanismRenderer.resetColor();
                     }
                 }
@@ -127,11 +127,11 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     }
 
     @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.renderToolTip(matrix, mouseX, mouseY);
+    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderToolTip(guiGraphics, mouseX, mouseY);
         RobitSkin skin = getSkin(mouseX, mouseY);
         if (skin != null) {
-            displayTooltips(matrix, mouseX, mouseY, MekanismLang.ROBIT_SKIN.translate(skin));
+            displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.ROBIT_SKIN.translate(skin));
         }
     }
 
@@ -152,7 +152,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     private RobitSkin getSkin(double mouseX, double mouseY) {
         List<RobitSkin> skins = getUnlockedSkins();
         if (skins != null) {
-            int slotX = (int) ((mouseX - x) / SLOT_DIMENSIONS), slotY = (int) ((mouseY - y) / SLOT_DIMENSIONS);
+            int slotX = (int) ((mouseX - getX()) / SLOT_DIMENSIONS), slotY = (int) ((mouseY - getY()) / SLOT_DIMENSIONS);
             if (slotX >= 0 && slotY >= 0 && slotX < SLOT_COUNT && slotY < SLOT_COUNT) {
                 int slot = (slotY + scrollBar.getCurrentSelection()) * SLOT_COUNT + slotX;
                 if (slot < skins.size()) {
@@ -163,7 +163,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         return null;
     }
 
-    private void renderRobit(PoseStack matrix, RobitSkin skin, int x, int y, QuadTransformation rotation, int index) {
+    private void renderRobit(GuiGraphics guiGraphics, RobitSkin skin, int x, int y, QuadTransformation rotation, int index) {
         List<ResourceLocation> textures = skin.getTextures();
         if (textures.isEmpty()) {
             Mekanism.logger.error("Failed to render skin: {}, as it has no textures.", skin.getRegistryName());
@@ -174,16 +174,17 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
             Mekanism.logger.warn("Failed to render skin: {} as it does not have a model.", skin.getRegistryName());
             return;
         }
-        MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
+        MultiBufferSource.BufferSource buffer = guiGraphics.bufferSource();
         VertexConsumer builder = buffer.getBuffer(RobitSpriteUploader.RENDER_TYPE);
-        matrix.pushPose();
+        PoseStack pose = guiGraphics.pose();
+        pose.pushPose();
         //Translate to the proper position and do our best job at centering it
-        matrix.translate(x + SLOT_DIMENSIONS, y + (int) (0.8 * SLOT_DIMENSIONS), 0);
-        matrix.scale(SLOT_DIMENSIONS, SLOT_DIMENSIONS, SLOT_DIMENSIONS);
-        matrix.mulPose(Vector3f.ZP.rotationDegrees(180));
-        PoseStack.Pose matrixEntry = matrix.last();
+        pose.translate(x + SLOT_DIMENSIONS, y + (int) (0.8 * SLOT_DIMENSIONS), 0);
+        pose.scale(SLOT_DIMENSIONS, SLOT_DIMENSIONS, SLOT_DIMENSIONS);
+        pose.mulPose(Axis.ZP.rotationDegrees(180));
+        PoseStack.Pose matrixEntry = pose.last();
         ModelData modelData = ModelData.builder().with(EntityRobit.SKIN_TEXTURE_PROPERTY, MathUtils.getByIndexMod(textures, index)).build();
-        List<BakedQuad> quads = model.getQuads(null, null, robit.level.random, modelData, null);
+        List<BakedQuad> quads = model.getQuads(null, null, robit.level().random, modelData, null);
         //TODO: Ideally at some point we will want to be able to have the rotations happen via the matrix stack
         // so that we aren't having to transform the quads directly
         quads = QuadUtils.transformBakedQuads(quads, rotation);
@@ -192,6 +193,6 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         }
         buffer.endBatch(RobitSpriteUploader.RENDER_TYPE);
 
-        matrix.popPose();
+        pose.popPose();
     }
 }

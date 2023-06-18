@@ -1,8 +1,0 @@
-{
-  "pack": {
-    "description": "Resources used for Mekanism Additions",
-    "pack_format": $pack_format,
-    "forge:resource_pack_format": $resource_pack_format,
-    "forge:data_pack_format": $data_pack_format
-  }
-}

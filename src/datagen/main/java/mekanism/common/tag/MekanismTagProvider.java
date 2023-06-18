@@ -3,6 +3,7 @@ package mekanism.common.tag;
 import com.google.common.collect.Table.Cell;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
@@ -30,7 +31,8 @@ import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tags.TagUtils;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
@@ -56,8 +58,8 @@ public class MekanismTagProvider extends BaseTagProvider {
     public static final TagKey<EntityType<?>> PVI_COMPAT = TagUtils.createKey(ForgeRegistries.ENTITY_TYPES, new ResourceLocation("per-viam-invenire", "replace_vanilla_navigator"));
     public static final TagKey<Fluid> CREATE_NO_INFINITE_FLUID = FluidTags.create(new ResourceLocation("create", "no_infinite_draining"));
 
-    public MekanismTagProvider(DataGenerator gen, @Nullable ExistingFileHelper existingFileHelper) {
-        super(gen, Mekanism.MODID, existingFileHelper);
+    public MekanismTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+        super(output, lookupProvider, Mekanism.MODID, existingFileHelper);
     }
 
     @Override
@@ -66,7 +68,7 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     @Override
-    protected void registerTags() {
+    protected void registerTags(HolderLookup.Provider registries) {
         addProcessedResources();
         addBeaconTags();
         addBoxBlacklist();
@@ -87,6 +89,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addNuggets();
         addDusts();
         addGems();
+        addDamageTypes();
         addFluids();
         addGameEvents();
         addGasTags();
@@ -481,6 +484,20 @@ public class MekanismTagProvider extends BaseTagProvider {
               Blocks.LIGHT_GRAY_CONCRETE_POWDER, Blocks.CYAN_CONCRETE_POWDER, Blocks.PURPLE_CONCRETE_POWDER, Blocks.BLUE_CONCRETE_POWDER, Blocks.BROWN_CONCRETE_POWDER,
               Blocks.GREEN_CONCRETE_POWDER, Blocks.RED_CONCRETE_POWDER, Blocks.BLACK_CONCRETE_POWDER);
         getItemBuilder(MekanismTags.Items.COLORABLE_BANNERS).addTyped(color -> BannerBlock.byColor(color).asItem(), DyeColor.values());
+    }
+
+    private void addDamageTypes() {
+
+
+        //TODO: Add to MEKASUIT_ALWAYS_SUPPORTED
+        /*new LinkedHashSet<>(List.of(
+              DamageSource.ANVIL, DamageSource.CACTUS, DamageSource.CRAMMING, DamageSource.DRAGON_BREATH, DamageSource.DRY_OUT,
+              DamageSource.FALL, DamageSource.FALLING_BLOCK, DamageSource.FLY_INTO_WALL, DamageSource.GENERIC,
+              DamageSource.HOT_FLOOR, DamageSource.IN_FIRE, DamageSource.IN_WALL, DamageSource.LAVA, DamageSource.LIGHTNING_BOLT,
+              DamageSource.ON_FIRE, DamageSource.SWEET_BERRY_BUSH, DamageSource.WITHER, DamageSource.FREEZE, DamageSource.FALLING_STALACTITE,
+              DamageSource.STALAGMITE));*/
+
+        //TODO: Add our radiation damage type to bypass armor
     }
 
     private void addFluids() {

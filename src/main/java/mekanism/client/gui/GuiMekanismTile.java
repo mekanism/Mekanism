@@ -19,6 +19,7 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.ISideConfiguration;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -68,8 +69,8 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     }
 
     @Override
-    protected void renderTooltip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.renderTooltip(matrix, mouseX, mouseY);
+    protected void renderTooltip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderTooltip(guiGraphics, mouseX, mouseY);
         if (tile instanceof ISideConfiguration) {
             ItemStack stack = getCarriedItem();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
@@ -78,7 +79,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
                     DataType data = getFromSlot(slot);
                     if (data != null) {
                         EnumColor color = data.getColor();
-                        displayTooltips(matrix, mouseX, mouseY, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, data, color.getName()));
+                        displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, data, color.getName()));
                     }
                 }
             }

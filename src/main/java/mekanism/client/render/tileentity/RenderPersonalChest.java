@@ -2,7 +2,7 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityPersonalChest;
@@ -38,7 +38,7 @@ public class RenderPersonalChest extends MekanismTileEntityRenderer<TileEntityPe
         matrix.pushPose();
         if (!tile.isRemoved()) {
             matrix.translate(0.5D, 0.5D, 0.5D);
-            matrix.mulPose(Vector3f.YP.rotationDegrees(-tile.getDirection().toYRot()));
+            matrix.mulPose(Axis.YP.rotationDegrees(-tile.getDirection().toYRot()));
             matrix.translate(-0.5D, -0.5D, -0.5D);
         }
         float lidAngle = 1.0F - tile.getOpenNess(partialTick);

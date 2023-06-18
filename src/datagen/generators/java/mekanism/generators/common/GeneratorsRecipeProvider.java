@@ -29,7 +29,7 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.registries.GeneratorsItems;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -50,8 +50,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
     private static final char COPPER_CHAR = 'C';
     private static final char FURNACE_CHAR = 'F';
 
-    public GeneratorsRecipeProvider(DataGenerator gen, ExistingFileHelper existingFileHelper) {
-        super(gen, existingFileHelper, MekanismGenerators.MODID);
+    public GeneratorsRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, existingFileHelper, MekanismGenerators.MODID);
     }
 
     @Override

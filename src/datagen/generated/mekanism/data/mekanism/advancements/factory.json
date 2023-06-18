@@ -60,5 +60,6 @@
     "title": {
       "translate": "advancements.mekanism.factory.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

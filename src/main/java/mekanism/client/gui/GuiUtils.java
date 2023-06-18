@@ -7,22 +7,22 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
-import com.mojang.math.Matrix4f;
 import java.util.List;
 import java.util.function.Predicate;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.common.Mekanism;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 public class GuiUtils {
 
@@ -32,7 +32,9 @@ public class GuiUtils {
     // Note: Does not validate that the passed in dimensions are valid
     // this strategy starts with a small texture and will expand it (by scaling) to meet the size requirements. good for small widgets
     // where the background texture is a single color
-    public static void renderExtendedTexture(PoseStack matrix, ResourceLocation resource, int sideWidth, int sideHeight, int left, int top, int width, int height) {
+    //TODO - 1.20: Compare against GuiGraphics#blitNineSliced
+    // Maybe something along the lines of guiGraphics.blitNineSliced(resource, left, top, width, height, , , , , );
+    public static void renderExtendedTexture(GuiGraphics guiGraphics, ResourceLocation resource, int sideWidth, int sideHeight, int left, int top, int width, int height) {
         int textureWidth = 2 * sideWidth + 1;
         int textureHeight = 2 * sideHeight + 1;
         int centerWidth = width - 2 * sideWidth;
@@ -41,43 +43,42 @@ public class GuiUtils {
         int rightEdgeStart = leftEdgeEnd + centerWidth;
         int topEdgeEnd = top + sideHeight;
         int bottomEdgeStart = topEdgeEnd + centerHeight;
-        RenderSystem.setShaderTexture(0, resource);
         //Left Side
         //Top Left Corner
-        GuiComponent.blit(matrix, left, top, 0, 0, sideWidth, sideHeight, textureWidth, textureHeight);
+        guiGraphics.blit(resource, left, top, 0, 0, sideWidth, sideHeight, textureWidth, textureHeight);
         //Left Middle
         if (centerHeight > 0) {
-            GuiComponent.blit(matrix, left, topEdgeEnd, sideWidth, centerHeight, 0, sideHeight, sideWidth, 1, textureWidth, textureHeight);
+            guiGraphics.blit(resource, left, topEdgeEnd, sideWidth, centerHeight, 0, sideHeight, sideWidth, 1, textureWidth, textureHeight);
         }
         //Bottom Left Corner
-        GuiComponent.blit(matrix, left, bottomEdgeStart, 0, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
+        guiGraphics.blit(resource, left, bottomEdgeStart, 0, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
 
         //Middle
         if (centerWidth > 0) {
             //Top Middle
-            GuiComponent.blit(matrix, leftEdgeEnd, top, centerWidth, sideHeight, sideWidth, 0, 1, sideHeight, textureWidth, textureHeight);
+            guiGraphics.blit(resource, leftEdgeEnd, top, centerWidth, sideHeight, sideWidth, 0, 1, sideHeight, textureWidth, textureHeight);
             if (centerHeight > 0) {
                 //Center
-                GuiComponent.blit(matrix, leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, sideWidth, sideHeight, 1, 1, textureWidth, textureHeight);
+                guiGraphics.blit(resource, leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, sideWidth, sideHeight, 1, 1, textureWidth, textureHeight);
             }
             //Bottom Middle
-            GuiComponent.blit(matrix, leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, sideWidth, sideHeight + 1, 1, sideHeight, textureWidth, textureHeight);
+            guiGraphics.blit(resource, leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, sideWidth, sideHeight + 1, 1, sideHeight, textureWidth, textureHeight);
         }
 
         //Right side
         //Top Right Corner
-        GuiComponent.blit(matrix, rightEdgeStart, top, sideWidth + 1, 0, sideWidth, sideHeight, textureWidth, textureHeight);
+        guiGraphics.blit(resource, rightEdgeStart, top, sideWidth + 1, 0, sideWidth, sideHeight, textureWidth, textureHeight);
         //Right Middle
         if (centerHeight > 0) {
-            GuiComponent.blit(matrix, rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, sideWidth + 1, sideHeight, sideWidth, 1, textureWidth, textureHeight);
+            guiGraphics.blit(resource, rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, sideWidth + 1, sideHeight, sideWidth, 1, textureWidth, textureHeight);
         }
         //Bottom Right Corner
-        GuiComponent.blit(matrix, rightEdgeStart, bottomEdgeStart, sideWidth + 1, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
+        guiGraphics.blit(resource, rightEdgeStart, bottomEdgeStart, sideWidth + 1, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
     }
 
     // this strategy starts with a large texture and will scale it down or tile it if necessary. good for larger widgets, but requires a large texture; small textures will tank FPS due
     // to tiling
-    public static void renderBackgroundTexture(PoseStack matrix, ResourceLocation resource, int texSideWidth, int texSideHeight, int left, int top, int width, int height, int textureWidth, int textureHeight) {
+    public static void renderBackgroundTexture(GuiGraphics guiGraphics, ResourceLocation resource, int texSideWidth, int texSideHeight, int left, int top, int width, int height, int textureWidth, int textureHeight) {
         // render as much side as we can, based on element dimensions
         int sideWidth = Math.min(texSideWidth, width / 2);
         int sideHeight = Math.min(texSideHeight, height / 2);
@@ -93,45 +94,46 @@ public class GuiUtils {
         int rightEdgeStart = leftEdgeEnd + centerWidth;
         int topEdgeEnd = top + topHeight;
         int bottomEdgeStart = topEdgeEnd + centerHeight;
-        RenderSystem.setShaderTexture(0, resource);
 
         //Top Left Corner
-        GuiComponent.blit(matrix, left, top, 0, 0, leftWidth, topHeight, textureWidth, textureHeight);
+        guiGraphics.blit(resource, left, top, 0, 0, leftWidth, topHeight, textureWidth, textureHeight);
         //Bottom Left Corner
-        GuiComponent.blit(matrix, left, bottomEdgeStart, 0, textureHeight - sideHeight, leftWidth, sideHeight, textureWidth, textureHeight);
+        guiGraphics.blit(resource, left, bottomEdgeStart, 0, textureHeight - sideHeight, leftWidth, sideHeight, textureWidth, textureHeight);
 
         //Middle
         if (centerWidth > 0) {
             //Top Middle
-            blitTiled(matrix, leftEdgeEnd, top, centerWidth, topHeight, texSideWidth, 0, texCenterWidth, texSideHeight, textureWidth, textureHeight);
+            blitTiled(guiGraphics, resource, leftEdgeEnd, top, centerWidth, topHeight, texSideWidth, 0, texCenterWidth, texSideHeight, textureWidth, textureHeight);
             if (centerHeight > 0) {
                 //Center
-                blitTiled(matrix, leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, texSideWidth, texSideHeight, texCenterWidth, texCenterHeight, textureWidth, textureHeight);
+                blitTiled(guiGraphics, resource, leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, texSideWidth, texSideHeight, texCenterWidth, texCenterHeight, textureWidth, textureHeight);
             }
             //Bottom Middle
-            blitTiled(matrix, leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, texSideWidth, textureHeight - sideHeight, texCenterWidth, texSideHeight, textureWidth, textureHeight);
+            blitTiled(guiGraphics, resource, leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, texSideWidth, textureHeight - sideHeight, texCenterWidth, texSideHeight, textureWidth, textureHeight);
         }
 
         if (centerHeight > 0) {
             //Left Middle
-            blitTiled(matrix, left, topEdgeEnd, leftWidth, centerHeight, 0, texSideHeight, texSideWidth, texCenterHeight, textureWidth, textureHeight);
+            blitTiled(guiGraphics, resource, left, topEdgeEnd, leftWidth, centerHeight, 0, texSideHeight, texSideWidth, texCenterHeight, textureWidth, textureHeight);
             //Right Middle
-            blitTiled(matrix, rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, textureWidth - sideWidth, texSideHeight, texSideWidth, texCenterHeight, textureWidth, textureHeight);
+            blitTiled(guiGraphics, resource, rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, textureWidth - sideWidth, texSideHeight, texSideWidth, texCenterHeight, textureWidth, textureHeight);
         }
 
         //Top Right Corner
-        GuiComponent.blit(matrix, rightEdgeStart, top, textureWidth - sideWidth, 0, sideWidth, topHeight, textureWidth, textureHeight);
+        guiGraphics.blit(resource, rightEdgeStart, top, textureWidth - sideWidth, 0, sideWidth, topHeight, textureWidth, textureHeight);
         //Bottom Right Corner
-        GuiComponent.blit(matrix, rightEdgeStart, bottomEdgeStart, textureWidth - sideWidth, textureHeight - sideHeight, sideWidth, sideHeight, textureWidth, textureHeight);
+        guiGraphics.blit(resource, rightEdgeStart, bottomEdgeStart, textureWidth - sideWidth, textureHeight - sideHeight, sideWidth, sideHeight, textureWidth, textureHeight);
     }
 
-    public static void blitTiled(PoseStack matrix, int x, int y, int width, int height, int texX, int texY, int texDrawWidth, int texDrawHeight, int textureWidth, int textureHeight) {
+    public static void blitTiled(GuiGraphics guiGraphics, ResourceLocation resource, int x, int y, int width, int height, int texX, int texY, int texDrawWidth,
+          int texDrawHeight, int textureWidth, int textureHeight) {
         int xTiles = (int) Math.ceil((float) width / texDrawWidth), yTiles = (int) Math.ceil((float) height / texDrawHeight);
 
         int drawWidth = width, drawHeight = height;
         for (int tileX = 0; tileX < xTiles; tileX++) {
             for (int tileY = 0; tileY < yTiles; tileY++) {
-                GuiComponent.blit(matrix, x + texDrawWidth * tileX, y + texDrawHeight * tileY, texX, texY, Math.min(drawWidth, texDrawWidth), Math.min(drawHeight, texDrawHeight), textureWidth, textureHeight);
+                guiGraphics.blit(resource, x + texDrawWidth * tileX, y + texDrawHeight * tileY, texX, texY, Math.min(drawWidth, texDrawWidth),
+                      Math.min(drawHeight, texDrawHeight), textureWidth, textureHeight);
                 drawHeight -= texDrawHeight;
             }
             drawWidth -= texDrawWidth;
@@ -139,32 +141,32 @@ public class GuiUtils {
         }
     }
 
-    public static void drawOutline(PoseStack matrix, int x, int y, int width, int height, int color) {
-        fill(matrix, x, y, width, 1, color);
-        fill(matrix, x, y + height - 1, width, 1, color);
+    public static void drawOutline(GuiGraphics guiGraphics, int x, int y, int width, int height, int color) {
+        fill(guiGraphics, x, y, width, 1, color);
+        fill(guiGraphics, x, y + height - 1, width, 1, color);
         if (height > 2) {
-            fill(matrix, x, y + 1, 1, height - 2, color);
-            fill(matrix, x + width - 1, y + 1, 1, height - 2, color);
+            fill(guiGraphics, x, y + 1, 1, height - 2, color);
+            fill(guiGraphics, x + width - 1, y + 1, 1, height - 2, color);
         }
     }
 
-    public static void fill(PoseStack matrix, int x, int y, int width, int height, int color) {
+    public static void fill(GuiGraphics guiGraphics, int x, int y, int width, int height, int color) {
         if (width != 0 && height != 0) {
-            GuiComponent.fill(matrix, x, y, x + width, y + height, color);
+            guiGraphics.fill(x, y, x + width, y + height, color);
         }
     }
 
-    public static void drawSprite(PoseStack matrix, int x, int y, int width, int height, int zLevel, TextureAtlasSprite sprite) {
+    public static void drawSprite(PoseStack matrix, int x, int y, int width, int height, TextureAtlasSprite sprite) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
         RenderSystem.enableBlend();
         BufferBuilder vertexBuffer = Tesselator.getInstance().getBuilder();
         vertexBuffer.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         Matrix4f matrix4f = matrix.last().pose();
-        vertexBuffer.vertex(matrix4f, x, y + height, zLevel).uv(sprite.getU0(), sprite.getV1()).endVertex();
-        vertexBuffer.vertex(matrix4f, x + width, y + height, zLevel).uv(sprite.getU1(), sprite.getV1()).endVertex();
-        vertexBuffer.vertex(matrix4f, x + width, y, zLevel).uv(sprite.getU1(), sprite.getV0()).endVertex();
-        vertexBuffer.vertex(matrix4f, x, y, zLevel).uv(sprite.getU0(), sprite.getV0()).endVertex();
+        vertexBuffer.vertex(matrix4f, x, y + height, 0).uv(sprite.getU0(), sprite.getV1()).endVertex();
+        vertexBuffer.vertex(matrix4f, x + width, y + height, 0).uv(sprite.getU1(), sprite.getV1()).endVertex();
+        vertexBuffer.vertex(matrix4f, x + width, y, 0).uv(sprite.getU1(), sprite.getV0()).endVertex();
+        vertexBuffer.vertex(matrix4f, x, y, 0).uv(sprite.getU0(), sprite.getV0()).endVertex();
         BufferUploader.drawWithShader(vertexBuffer.end());
         RenderSystem.disableBlend();
     }
@@ -258,16 +260,21 @@ public class GuiUtils {
         return false;
     }
 
-    public static void renderItem(PoseStack matrix, ItemRenderer renderer, @NotNull ItemStack stack, int xAxis, int yAxis, float scale, Font font,
-          @Nullable String text, boolean overlay) {
+    public static int drawString(GuiGraphics guiGraphics, Font font, Component component, float x, float y, int color, boolean drawShadow) {
+        return guiGraphics.drawString(font, component.getVisualOrderText(), x, y, color, drawShadow);
+    }
+
+    public static void renderItem(GuiGraphics guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis, float scale, Font font, @Nullable String text, boolean overlay) {
         if (!stack.isEmpty()) {
             try {
-                matrix.pushPose();
+                PoseStack pose = guiGraphics.pose();
+                pose.pushPose();
+                //TODO - 1.20: Is this depth test stuff still needed?
                 RenderSystem.enableDepthTest();
                 if (scale != 1) {
                     //Translate before scaling, and then set xAxis and yAxis to zero so that we don't translate a second time
-                    matrix.translate(xAxis, yAxis, 0);
-                    matrix.scale(scale, scale, scale);
+                    pose.translate(xAxis, yAxis, 0);
+                    pose.scale(scale, scale, scale);
                     xAxis = 0;
                     yAxis = 0;
                 }
@@ -276,36 +283,36 @@ public class GuiUtils {
                 // have things render in the correct order
                 int finalXAxis = xAxis;
                 int finalYAxis = yAxis;
-                renderWithPose(matrix, () -> {
+                /*renderWithPose(pose, () -> {
+                    //TODO - 1.20: Figure out
                     renderer.renderAndDecorateItem(stack, finalXAxis, finalYAxis);
                     if (overlay) {
                         //When we render items ourselves in virtual slots or scroll slots we want to compress the z scale
                         // for rendering the stored count so that it doesn't clip with later windows
                         float previousOffset = renderer.blitOffset;
                         renderer.blitOffset -= 25;
-                        renderer.renderGuiItemDecorations(font, stack, finalXAxis, finalYAxis, text);
+                        guiGraphics.renderItemDecorations(font, stack, finalXAxis, finalYAxis, text);
                         renderer.blitOffset = previousOffset;
                     }
-                });
+                });*/
+                guiGraphics.renderItem(stack, finalXAxis, finalYAxis);
+                if (overlay) {
+                    //TODO - 1.20: Is this translation even still needed
+                    //When we render items ourselves in virtual slots or scroll slots we want to compress the z scale
+                    // for rendering the stored count so that it doesn't clip with later windows
+                    pose.pushPose();
+                    //TODO - 1.20: Is this the correct direction
+                    pose.translate(0, 0, -25);
+                    guiGraphics.renderItemDecorations(font, stack, finalXAxis, finalYAxis, text);
+                    pose.popPose();
+                }
+
                 RenderSystem.disableDepthTest();
-                matrix.popPose();
+                pose.popPose();
             } catch (Exception e) {
                 Mekanism.logger.error("Failed to render stack into gui: {}", stack, e);
             }
         }
-    }
-
-    public static void renderWithPose(PoseStack poseStack, Runnable toRender) {
-        //Apply our pose stack to the render system as the code ran via toRender does not accept a passed in pose stack
-        PoseStack modelViewStack = RenderSystem.getModelViewStack();
-        modelViewStack.pushPose();
-        modelViewStack.mulPoseMatrix(poseStack.last().pose());
-        RenderSystem.applyModelViewMatrix();
-
-        toRender.run();
-
-        modelViewStack.popPose();
-        RenderSystem.applyModelViewMatrix();
     }
 
     /**

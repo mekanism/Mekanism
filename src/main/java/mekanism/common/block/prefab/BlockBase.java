@@ -16,7 +16,7 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -27,7 +27,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     protected final TYPE type;
 
     public BlockBase(TYPE type, UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
-        this(type, propertyModifier.apply(BlockBehaviour.Properties.of(Material.METAL).requiresCorrectToolForDrops()));
+        this(type, propertyModifier.apply(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().mapColor(MapColor.METAL)));
     }
 
     public BlockBase(TYPE type, BlockBehaviour.Properties properties) {

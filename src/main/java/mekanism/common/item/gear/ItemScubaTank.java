@@ -26,6 +26,7 @@ import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.TooltipFlag;
@@ -39,7 +40,7 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
     private static final ScubaTankMaterial SCUBA_TANK_MATERIAL = new ScubaTankMaterial();
 
     public ItemScubaTank(Properties properties) {
-        super(SCUBA_TANK_MATERIAL, EquipmentSlot.CHEST, properties);
+        super(SCUBA_TANK_MATERIAL, ArmorItem.Type.CHESTPLATE, properties);
     }
 
     @Override
@@ -78,7 +79,7 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
 
     @Override
     public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
-        if (slotType == getSlot()) {
+        if (slotType == getEquipmentSlot()) {
             ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
             list.add(MekanismLang.SCUBA_TANK_MODE.translateColored(EnumColor.DARK_GRAY, OnOff.of(scubaTank.getFlowing(stack), true)));
             GasStack stored = GasStack.EMPTY;
@@ -112,7 +113,7 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
 
     @Override
     public boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
-        return slotType == getSlot();
+        return slotType == getEquipmentSlot();
     }
 
     @NothingNullByDefault

@@ -1,21 +1,20 @@
 package mekanism.common.integration.lookingat.wthit;
 
+import mcp.mobius.waila.api.IDataProvider;
+import mcp.mobius.waila.api.IDataWriter;
 import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IServerAccessor;
-import mcp.mobius.waila.api.IServerDataProvider;
-import mekanism.common.integration.lookingat.HwylaLookingAtHelper;
 import mekanism.common.integration.lookingat.LookingAtUtils;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class WTHITDataProvider implements IServerDataProvider<BlockEntity> {
+public class WTHITDataProvider implements IDataProvider<BlockEntity> {
 
     static final WTHITDataProvider INSTANCE = new WTHITDataProvider();
 
     @Override
-    public void appendServerData(CompoundTag data, IServerAccessor<BlockEntity> serverAccessor, IPluginConfig config) {
+    public void appendData(IDataWriter dataWriter, IServerAccessor<BlockEntity> serverAccessor, IPluginConfig config) {
         BlockEntity tile = serverAccessor.getTarget();
         if (tile instanceof TileEntityBoundingBlock boundingBlock) {
             //If we are a bounding block that has a position set, redirect the check to the main location
@@ -29,9 +28,9 @@ public class WTHITDataProvider implements IServerDataProvider<BlockEntity> {
                 return;
             }
         }
-        HwylaLookingAtHelper helper = new HwylaLookingAtHelper();
+        //TODO - 1.20: Test this stuff relating to new data system
+        WTHITLookingAtHelper helper = new WTHITLookingAtHelper();
         LookingAtUtils.addInfo(helper, tile, true, true);
-        //Add our data if we have any
-        helper.finalizeData(data);
+        dataWriter.add(WTHITLookingAtHelper.class, IDataWriter.Result::block);
     }
 }

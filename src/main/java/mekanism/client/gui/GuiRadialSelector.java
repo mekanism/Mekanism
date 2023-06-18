@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
-import com.mojang.math.Matrix4f;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -28,6 +27,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StatUtils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -38,6 +38,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 //TODO: Do we Automatically want to go through nested things if there is only one option and potentially not even allow opening it?
 // For now no as it might be confusing to people what the menu is relating to especially on the Meka-Tool but it is worth thinking more about
@@ -68,17 +69,14 @@ public class GuiRadialSelector extends Screen {
     }
 
     @Override
-    public void render(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTick) {
-        //Ensure it is initialized, it should be but just in case
-        if (minecraft != null) {
-            // center of screen
-            float centerX = minecraft.getWindow().getGuiScaledWidth() / 2F;
-            float centerY = minecraft.getWindow().getGuiScaledHeight() / 2F;
-            render(matrix, mouseX, mouseY, centerX, centerY, radialData);
-        }
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        // center of screen
+        float centerX = guiGraphics.guiWidth() / 2F;
+        float centerY = guiGraphics.guiHeight() / 2F;
+        render(guiGraphics, mouseX, mouseY, centerX, centerY, radialData);
     }
 
-    private <MODE extends IRadialMode> void render(@NotNull PoseStack matrix, int mouseX, int mouseY, float centerX, float centerY, RadialData<MODE> radialData) {
+    private <MODE extends IRadialMode> void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float centerX, float centerY, RadialData<MODE> radialData) {
         // Calculate number of available modes to switch between
         List<MODE> modes = radialData.getModes();
         int activeModes = modes.size();
@@ -94,11 +92,11 @@ public class GuiRadialSelector extends Screen {
         }
         float angleSize = 360F / activeModes;
 
-        matrix.pushPose();
-        matrix.translate(centerX, centerY, 0);
+        PoseStack pose = guiGraphics.pose();
+        pose.pushPose();
+        pose.translate(centerX, centerY, 0);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.disableTexture();
 
         // draw base
         // Note: While there might be slightly better performance only drawing part of the Torus given
@@ -106,7 +104,7 @@ public class GuiRadialSelector extends Screen {
         // to floating point precision causing some values to have gaps in the torus, and also the light
         // colors occasionally being harder to see without the added back layer torus
         RenderSystem.setShaderColor(0.3F, 0.3F, 0.3F, 0.5F);
-        drawTorus(matrix, 0, 360);
+        drawTorus(guiGraphics, 0, 360);
 
         MODE current = getCurrent(radialData);
         if (current == null) {
@@ -126,7 +124,7 @@ public class GuiRadialSelector extends Screen {
                 MekanismRenderer.color(color, 0.3F);
             }
             float startAngle = -90F + 360F * (-0.5F + section) / activeModes;
-            drawTorus(matrix, startAngle, angleSize);
+            drawTorus(guiGraphics, startAngle, angleSize);
         }
 
         // Draw current hovered selection and selection highlighter
@@ -138,7 +136,7 @@ public class GuiRadialSelector extends Screen {
             float angle = (float) (Mth.RAD_TO_DEG * Mth.atan2(yDiff, xDiff));
             float modeSize = 180F / activeModes;
             RenderSystem.setShaderColor(0.8F, 0.8F, 0.8F, 0.3F);
-            drawTorus(matrix, angle - modeSize, angleSize);
+            drawTorus(guiGraphics, angle - modeSize, angleSize);
 
             float selectionAngle = StatUtils.wrapDegrees(angle + modeSize + 90F);
             int selectionDrawnPos = (int) (selectionAngle * (activeModes / 360F));
@@ -146,7 +144,7 @@ public class GuiRadialSelector extends Screen {
 
             // draw hovered selection
             RenderSystem.setShaderColor(0.6F, 0.6F, 0.6F, 0.7F);
-            drawTorus(matrix, -90F + 360F * (-0.5F + selectionDrawnPos) / activeModes, angleSize);
+            drawTorus(guiGraphics, -90F + 360F * (-0.5F + selectionDrawnPos) / activeModes, angleSize);
         } else {
             selection = null;
         }
@@ -161,12 +159,10 @@ public class GuiRadialSelector extends Screen {
             } else {
                 RenderSystem.setShaderColor(0.3F, 0.3F, 0.3F, 0.5F);
             }
-            drawTorus(matrix, 0, 360, 0, SELECT_RADIUS_WITH_PARENT);
+            drawTorus(guiGraphics, 0, 360, 0, SELECT_RADIUS_WITH_PARENT);
             MekanismRenderer.resetColor();
-            RenderSystem.enableTexture();
-            // draw icon, note: shader is set by blit
-            RenderSystem.setShaderTexture(0, MekanismUtils.getResource(ResourceType.GUI_RADIAL, "back.png"));
-            blit(matrix, -12, -18, 24, 24, 0, 0, 18, 18, 18, 18);
+            // draw icon
+            guiGraphics.blit(MekanismUtils.getResource(ResourceType.GUI_RADIAL, "back.png"), -12, -18, 24, 24, 0, 0, 18, 18, 18, 18);
             textToDraw.add(new PositionedText(0, 0, MekanismLang.BACK.translate()));
         } else {
             overBackButton = false;
@@ -175,16 +171,14 @@ public class GuiRadialSelector extends Screen {
         MekanismRenderer.resetColor();
 
         // Icons
-        RenderSystem.enableTexture();
         int position = 0;
         for (MODE mode : modes) {
             float degrees = 270 + 360 * ((float) position++ / activeModes);
             float angle = Mth.DEG_TO_RAD * degrees;
             float x = Mth.cos(angle) * MIDDLE_DISTANCE;
             float y = Mth.sin(angle) * MIDDLE_DISTANCE;
-            // draw icon, note: shader is set by blit
-            RenderSystem.setShaderTexture(0, mode.icon());
-            blit(matrix, Math.round(x - 12), Math.round(y - 20), 24, 24, 0, 0, 18, 18, 18, 18);
+            // draw icon
+            guiGraphics.blit(mode.icon(), Math.round(x - 12), Math.round(y - 20), 24, 24, 0, 0, 18, 18, 18, 18);
             // queue label
             textToDraw.add(new PositionedText(x, y, mode.sliceName()));
         }
@@ -192,19 +186,19 @@ public class GuiRadialSelector extends Screen {
         // Labels (has to be separate from icons or the icons occasionally will get extra artifacts for some reason)
         boolean whiteRadialText = MekanismConfig.client.whiteRadialText.get();
         for (PositionedText toDraw : textToDraw) {
-            matrix.pushPose();
-            matrix.translate(toDraw.x, toDraw.y, 0);
-            matrix.scale(0.6F, 0.6F, 0.6F);
+            pose.pushPose();
+            pose.translate(toDraw.x, toDraw.y, 0);
+            pose.scale(0.6F, 0.6F, 0.6F);
             Component text = toDraw.text;
             if (whiteRadialText) {
                 text = text.copy().withStyle(ChatFormatting.RESET);
             }
-            font.drawShadow(matrix, text, -font.width(text) / 2F, 8, 0xCCFFFFFF);
-            matrix.popPose();
+            GuiUtils.drawString(guiGraphics, font, text, -font.width(text) / 2F, 8, 0xCCFFFFFF, true);
+            pose.popPose();
         }
 
         MekanismRenderer.resetColor();
-        matrix.popPose();
+        pose.popPose();
     }
 
     @Override
@@ -255,16 +249,16 @@ public class GuiRadialSelector extends Screen {
         return false;
     }
 
-    private void drawTorus(PoseStack matrix, float startAngle, float sizeAngle) {
-        drawTorus(matrix, startAngle, sizeAngle, INNER, OUTER);
+    private void drawTorus(GuiGraphics guiGraphics, float startAngle, float sizeAngle) {
+        drawTorus(guiGraphics, startAngle, sizeAngle, INNER, OUTER);
     }
 
-    private void drawTorus(PoseStack matrix, float startAngle, float sizeAngle, float inner, float outer) {
+    private void drawTorus(GuiGraphics guiGraphics, float startAngle, float sizeAngle, float inner, float outer) {
         RenderSystem.setShader(GameRenderer::getPositionShader);
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder vertexBuffer = tesselator.getBuilder();
         vertexBuffer.begin(Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION);
-        Matrix4f matrix4f = matrix.last().pose();
+        Matrix4f matrix4f = guiGraphics.pose().last().pose();
         float draws = DRAWS * (sizeAngle / 360F);
         for (int i = 0; i <= draws; i++) {
             float degrees = startAngle + (i / DRAWS) * 360;

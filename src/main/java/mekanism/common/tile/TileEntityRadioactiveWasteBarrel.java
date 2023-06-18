@@ -97,7 +97,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
             setActive(!getActive());
             Level world = getLevel();
             if (world != null) {
-                world.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 0.3F, 1);
+                world.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK.get(), SoundSource.BLOCKS, 0.3F, 1);
             }
         }
         return InteractionResult.SUCCESS;

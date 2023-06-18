@@ -26,5 +26,6 @@
     "title": {
       "translate": "advancements.mekanism.ultimate_control_circuit.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

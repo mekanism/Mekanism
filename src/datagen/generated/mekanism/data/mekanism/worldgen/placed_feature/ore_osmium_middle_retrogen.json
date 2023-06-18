@@ -1,0 +1,39 @@
+{
+  "feature": "mekanism:ore_osmium_middle_retrogen",
+  "placement": [
+    {
+      "type": "mekanism:disableable",
+      "oreVeinType": {
+        "type": "osmium",
+        "index": 1
+      },
+      "retroGen": true
+    },
+    {
+      "type": "minecraft:count",
+      "count": {
+        "type": "mekanism:configurable_constant",
+        "oreVeinType": {
+          "type": "osmium",
+          "index": 1
+        }
+      }
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "mekanism:configurable",
+        "oreVeinType": {
+          "type": "osmium",
+          "index": 1
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

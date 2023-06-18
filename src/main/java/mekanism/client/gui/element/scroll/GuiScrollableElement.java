@@ -1,11 +1,10 @@
 package mekanism.client.gui.element.scroll;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiTexturedElement;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -25,8 +24,8 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
           int barXShift, int barYShift, int barWidth, int barHeight, int maxBarHeight) {
         super(resource, gui, x, y, width, height);
         this.barXShift = barXShift;
-        this.barX = this.x + barXShift;
-        this.barY = this.y + barYShift;
+        this.barX = getX() + barXShift;
+        this.barY = getY() + barYShift;
         this.barWidth = barWidth;
         this.barHeight = barHeight;
         this.maxBarHeight = maxBarHeight;
@@ -125,16 +124,16 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
         return false;
     }
 
-    protected void drawScrollBar(PoseStack matrix, int textureWidth, int textureHeight) {
-        RenderSystem.setShaderTexture(0, getResource());
+    protected void drawScrollBar(GuiGraphics guiGraphics, int textureWidth, int textureHeight) {
+        ResourceLocation texture = getResource();
         //Top border
-        blit(matrix, barX - 1, barY - 1, 0, 0, textureWidth, 1, textureWidth, textureHeight);
+        guiGraphics.blit(texture, barX - 1, barY - 1, 0, 0, textureWidth, 1, textureWidth, textureHeight);
         //Middle border
-        blit(matrix, barX - 1, barY, 6, maxBarHeight, 0, 1, textureWidth, 1, textureWidth, textureHeight);
+        guiGraphics.blit(texture, barX - 1, barY, 6, maxBarHeight, 0, 1, textureWidth, 1, textureWidth, textureHeight);
         //Bottom border
-        blit(matrix, barX - 1, y + maxBarHeight + 2, 0, 0, textureWidth, 1, textureWidth, textureHeight);
+        guiGraphics.blit(texture, barX - 1, getY() + maxBarHeight + 2, 0, 0, textureWidth, 1, textureWidth, textureHeight);
         //Scroll bar
-        blit(matrix, barX, barY + getScroll(), 0, 2, barWidth, barHeight, textureWidth, textureHeight);
+        guiGraphics.blit(texture, barX, barY + getScroll(), 0, 2, barWidth, barHeight, textureWidth, textureHeight);
     }
 
     @Override

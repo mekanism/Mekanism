@@ -47,7 +47,6 @@ import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorPort;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -260,7 +259,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         List<Entity> entitiesToDie = getWorld().getEntitiesOfClass(Entity.class, deathZone);
 
         for (Entity entity : entitiesToDie) {
-            entity.hurt(DamageSource.MAGIC, 50_000F);
+            entity.hurt(entity.damageSources().magic(), 50_000F);
         }
     }
 

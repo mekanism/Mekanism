@@ -6,6 +6,7 @@ import net.minecraft.Util;
 
 @NothingNullByDefault
 public enum AdditionsLang implements ILangEntry {
+    PACK_DESCRIPTION("constants", "pack_description"),
     CHANNEL("walkie", "channel"),
     CHANNEL_CHANGE("walkie", "channel.change"),
     WALKIE_DISABLED("walkie", "disabled"),

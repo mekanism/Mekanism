@@ -7,8 +7,8 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMaps;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
@@ -325,10 +325,10 @@ public class MekaSuitArmor implements ICustomArmor {
             }
             matrix.translate(x / 16, y / 16, z / 16);
             if (yRot != 0.0F) {
-                matrix.mulPose(Vector3f.YP.rotationDegrees(yRot));
+                matrix.mulPose(Axis.YP.rotationDegrees(yRot));
             }
             if (zRot != 0.0F) {
-                matrix.mulPose(Vector3f.ZP.rotationDegrees(zRot));
+                matrix.mulPose(Axis.ZP.rotationDegrees(zRot));
             }
 
         }

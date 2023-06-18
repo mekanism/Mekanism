@@ -14,8 +14,8 @@
           "name": "mekanismadditions:light_blue_plastic_fence_gate"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/light_blue_plastic_fence_gate"
 }

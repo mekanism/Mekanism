@@ -8,6 +8,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.transmitter.ConnectionType;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -109,9 +110,12 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
         private final float angle;
 
         IconStatus(float angle) {
-            this.angle = angle;
+            this.angle = angle * Mth.DEG_TO_RAD;
         }
 
+        /**
+         * Gets the angle in radians
+         */
         public float getAngle() {
             return angle;
         }

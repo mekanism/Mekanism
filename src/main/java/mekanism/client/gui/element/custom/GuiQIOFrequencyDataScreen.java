@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.custom;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
@@ -10,6 +9,7 @@ import mekanism.client.gui.element.bar.GuiDigitalBar;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
@@ -51,13 +51,13 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
         QIOFrequency freq = frequencySupplier.get();
         if (freq != null) {
-            drawScaledTextScaledBound(matrix, MekanismLang.FREQUENCY.translate(freq.getName()), relativeX + 5, relativeY + 5, screenTextColor(), width - 10, 0.8F);
+            drawScaledTextScaledBound(guiGraphics, MekanismLang.FREQUENCY.translate(freq.getName()), relativeX + 5, relativeY + 5, screenTextColor(), width - 10, 0.8F);
         }
-        drawScaledCenteredText(matrix, MekanismLang.QIO_ITEMS.translate(), relativeX + (width / 4), relativeY + 32, screenTextColor(), 0.8F);
-        drawScaledCenteredText(matrix, MekanismLang.QIO_TYPES.translate(), relativeX + (3 * width / 4), relativeY + 32, screenTextColor(), 0.8F);
+        drawScaledCenteredText(guiGraphics, MekanismLang.QIO_ITEMS.translate(), relativeX + (width / 4), relativeY + 32, screenTextColor(), 0.8F);
+        drawScaledCenteredText(guiGraphics, MekanismLang.QIO_TYPES.translate(), relativeX + (3 * width / 4), relativeY + 32, screenTextColor(), 0.8F);
     }
 }

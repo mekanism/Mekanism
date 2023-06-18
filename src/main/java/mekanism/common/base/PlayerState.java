@@ -298,7 +298,7 @@ public class PlayerState {
                         }
                     }
                     module.useEnergy(player, usage);
-                    if (MekanismConfig.gear.mekaSuitGravitationalVibrations.get() && player.level.getGameTime() % 10 == 0) {
+                    if (MekanismConfig.gear.mekaSuitGravitationalVibrations.get() && player.level().getGameTime() % 10 == 0) {
                         player.gameEvent(gameEvent.get());
                     }
                 }

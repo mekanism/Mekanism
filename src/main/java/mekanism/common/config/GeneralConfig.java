@@ -194,15 +194,13 @@ public class GeneralConfig extends BaseMekanismConfig {
         blacklistIC2 = CachedBooleanValue.wrap(this, builder.comment("Disables IC2 power integration. Requires world restart (server-side option in SMP).")
               .worldRestart()
               .define("blacklistIC2", false));
-        //TODO - 1.20: Rename config entry
-        ic2ConversionRate = CachedFloatingLongValue.define(this, builder, "Conversion multiplier from EU to Joules (EU * JoulePerEU = Joules)",
-              "JoulePerEU", FloatingLong.createConst(10), CachedFloatingLongValue.ENERGY_CONVERSION);
+        ic2ConversionRate = CachedFloatingLongValue.define(this, builder, "Conversion multiplier from EU to Joules (EU * euConversionRate = Joules)",
+              "euConversionRate", FloatingLong.createConst(10), CachedFloatingLongValue.ENERGY_CONVERSION);
         blacklistForge = CachedBooleanValue.wrap(this, builder.comment("Disables Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP).")
               .worldRestart()
               .define("blacklistForge", false));
-        //TODO - 1.20: Rename config entry
-        forgeConversionRate = CachedFloatingLongValue.define(this, builder, "Conversion multiplier from Forge Energy to Joules (FE * JoulePerForgeEnergy = Joules)",
-              "JoulePerForgeEnergy", FloatingLong.createConst(2.5), CachedFloatingLongValue.ENERGY_CONVERSION);
+        forgeConversionRate = CachedFloatingLongValue.define(this, builder, "Conversion multiplier from Forge Energy to Joules (FE * feConversionRate = Joules)",
+              "feConversionRate", FloatingLong.createConst(2.5), CachedFloatingLongValue.ENERGY_CONVERSION);
         blacklistFluxNetworks = CachedBooleanValue.wrap(this, builder.comment("Disables Flux Networks higher throughput Forge Energy (FE,RF,IF,uF,CF) power integration. Requires world restart (server-side option in SMP). Note: Disabling Forge Energy integration also disables this.")
               .worldRestart()
               .define("blacklistFluxNetworks", false));

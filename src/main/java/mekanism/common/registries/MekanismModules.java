@@ -97,7 +97,7 @@ public class MekanismModules {
           ModuleGravitationalModulatingUnit::new, () -> MekanismItems.MODULE_GRAVITATIONAL_MODULATING.asItem(), builder -> builder.rarity(Rarity.EPIC).handlesModeChange()
                 .rendersHUD().exclusive(ExclusiveFlag.OVERRIDE_JUMP));
     public static final ModuleRegistryObject<ModuleElytraUnit> ELYTRA_UNIT = MODULES.register("elytra_unit", ModuleElytraUnit::new,
-          () -> MekanismItems.MODULE_ELYTRA.asItem(), builder -> builder.rarity(Rarity.EPIC).handlesModeChange().isModeChangeDisabledByDefault());
+          () -> MekanismItems.MODULE_ELYTRA.asItem(), builder -> builder.rarity(Rarity.EPIC).handlesModeChange().modeChangeDisabledByDefault());
 
     //Pants
     public static final ModuleRegistryObject<ModuleLocomotiveBoostingUnit> LOCOMOTIVE_BOOSTING_UNIT = MODULES.register("locomotive_boosting_unit",

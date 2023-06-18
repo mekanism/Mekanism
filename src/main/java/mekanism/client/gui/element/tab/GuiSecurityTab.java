@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.tab;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.text.EnumColor;
@@ -20,6 +19,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.OwnerDisplay;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -71,8 +71,8 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable ICapabili
     }
 
     @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.renderToolTip(matrix, mouseX, mouseY);
+    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderToolTip(guiGraphics, mouseX, mouseY);
         ICapabilityProvider provider = dataSource.get();
         if (provider != null) {
             provider.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> {
@@ -80,9 +80,9 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable ICapabili
                 Component securityComponent = MekanismLang.SECURITY.translateColored(EnumColor.GRAY, data.mode());
                 Component ownerComponent = OwnerDisplay.of(minecraft.player, security.getOwnerUUID(), security.getOwnerName()).getTextComponent();
                 if (data.override()) {
-                    displayTooltips(matrix, mouseX, mouseY, securityComponent, ownerComponent, MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
+                    displayTooltips(guiGraphics, mouseX, mouseY, securityComponent, ownerComponent, MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
                 } else {
-                    displayTooltips(matrix, mouseX, mouseY, securityComponent, ownerComponent);
+                    displayTooltips(guiGraphics, mouseX, mouseY, securityComponent, ownerComponent);
                 }
             });
         }

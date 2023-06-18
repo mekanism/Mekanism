@@ -14,8 +14,8 @@
           "name": "mekanismadditions:white_plastic_glow"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/white_plastic_glow"
 }

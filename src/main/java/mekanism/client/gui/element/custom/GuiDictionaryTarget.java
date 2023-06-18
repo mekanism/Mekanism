@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.custom;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -31,6 +30,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tags.TagUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StackUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
@@ -71,27 +71,27 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (target instanceof ItemStack stack) {
-            gui().renderItem(matrix, stack, x, y);
+            gui().renderItem(guiGraphics, stack, getX(), getY());
         } else if (target instanceof FluidStack stack) {
             MekanismRenderer.color(stack);
-            drawTiledSprite(matrix, x, y, height, width, height, MekanismRenderer.getFluidTexture(stack, FluidTextureType.STILL), TilingDirection.DOWN_RIGHT);
+            drawTiledSprite(guiGraphics, getX(), getY(), height, width, height, MekanismRenderer.getFluidTexture(stack, FluidTextureType.STILL), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor();
         } else if (target instanceof ChemicalStack<?> stack) {
             MekanismRenderer.color(stack);
-            drawTiledSprite(matrix, x, y, height, width, height, MekanismRenderer.getChemicalTexture(stack.getType()), TilingDirection.DOWN_RIGHT);
+            drawTiledSprite(guiGraphics, getX(), getY(), height, width, height, MekanismRenderer.getChemicalTexture(stack.getType()), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor();
         }
     }
 
     @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.renderToolTip(matrix, mouseX, mouseY);
+    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderToolTip(guiGraphics, mouseX, mouseY);
         if (target instanceof ItemStack stack) {
-            gui().renderItemTooltip(matrix, stack, mouseX, mouseY);
+            gui().renderItemTooltip(guiGraphics, stack, mouseX, mouseY);
         } else if (target != null) {
-            displayTooltips(matrix, mouseX, mouseY, TextComponentUtil.build(target));
+            displayTooltips(guiGraphics, mouseX, mouseY, TextComponentUtil.build(target));
         }
     }
 

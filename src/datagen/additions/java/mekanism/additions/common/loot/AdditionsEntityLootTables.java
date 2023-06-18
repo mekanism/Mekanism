@@ -25,19 +25,21 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 public class AdditionsEntityLootTables extends BaseEntityLootTables {
 
     @Override
-    protected void addTables() {
+    public void generate() {
         //Copy of vanilla's creeper drops
         add(AdditionsEntityTypes.BABY_CREEPER, LootTable.lootTable()
               .withPool(
                     LootPool.lootPool()
-                          .name("gunpowder")
+                          //TODO - 1.20: Loot pool names??
+                          //.name("gunpowder")
                           .setRolls(ConstantValue.exactly(1))
                           .add(LootItem.lootTableItem(Items.GUNPOWDER)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
                                 .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F)))
                           )
               ).withPool(LootPool.lootPool()
-                    .name("music_discs")
+                    //TODO - 1.20: Loot pool names??
+                    //.name("music_discs")
                     .add(TagEntry.expandTag(ItemTags.MUSIC_DISCS))
                     .when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.KILLER, EntityPredicate.Builder.entity().of(EntityTypeTags.SKELETONS)))
               )
@@ -45,7 +47,8 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
         //Copy of vanilla's enderman drops
         add(AdditionsEntityTypes.BABY_ENDERMAN, LootTable.lootTable()
               .withPool(LootPool.lootPool()
-                    .name("pearls")
+                    //TODO - 1.20: Loot pool names??
+                    //.name("pearls")
                     .setRolls(ConstantValue.exactly(1))
                     .add(LootItem.lootTableItem(Items.ENDER_PEARL)
                           .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
@@ -58,7 +61,8 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
         //Copy of vanilla's stray drops
         add(AdditionsEntityTypes.BABY_STRAY, skeletonDrops()
               .withPool(LootPool.lootPool()
-                    .name("tipped_arrows")
+                    //TODO - 1.20: Loot pool names??
+                    //.name("tipped_arrows")
                     .setRolls(ConstantValue.exactly(1))
                     .add(LootItem.lootTableItem(Items.TIPPED_ARROW)
                           .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
@@ -71,19 +75,22 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
         //Copy of vanilla's wither skeleton drops
         add(AdditionsEntityTypes.BABY_WITHER_SKELETON, LootTable.lootTable()
               .withPool(LootPool.lootPool()
-                    .name("coal")
+                    //TODO - 1.20: Loot pool names??
+                    //.name("coal")
                     .setRolls(ConstantValue.exactly(1))
                     .add(LootItem.lootTableItem(Items.COAL)
                           .apply(SetItemCountFunction.setCount(UniformGenerator.between(-1.0F, 1.0F)))
                           .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F))))
               ).withPool(LootPool.lootPool()
-                    .name("bones")
+                    //TODO - 1.20: Loot pool names??
+                    //.name("bones")
                     .setRolls(ConstantValue.exactly(1))
                     .add(LootItem.lootTableItem(Items.BONE)
                           .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
                           .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F))))
               ).withPool(LootPool.lootPool()
-                    .name("skulls")
+                    //TODO - 1.20: Loot pool names??
+                    //.name("skulls")
                     .setRolls(ConstantValue.exactly(1))
                     .add(LootItem.lootTableItem(Blocks.WITHER_SKELETON_SKULL))
                     .when(LootItemKilledByPlayerCondition.killedByPlayer())
@@ -99,13 +106,15 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
     private LootTable.Builder skeletonDrops() {
         return LootTable.lootTable()
               .withPool(LootPool.lootPool()
-                    .name("arrows")
+                    //TODO - 1.20: Loot pool names??
+                    //.name("arrows")
                     .setRolls(ConstantValue.exactly(1))
                     .add(LootItem.lootTableItem(Items.ARROW)
                           .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))
                           .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F))))
               ).withPool(LootPool.lootPool()
-                    .name("bones")
+                    //TODO - 1.20: Loot pool names??
+                    //.name("bones")
                     .setRolls(ConstantValue.exactly(1))
                     .add(LootItem.lootTableItem(Items.BONE)
                           .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F)))

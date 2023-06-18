@@ -1,7 +1,12 @@
 package mekanism.common.recipe.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
@@ -32,13 +37,14 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.fml.ModList;
 
 @NothingNullByDefault
 public class MekanismRecipeProvider extends BaseRecipeProvider {
@@ -69,8 +75,32 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(Pattern.ALLOY, Pattern.PREVIOUS, Pattern.ALLOY),
           TripleLine.of(Pattern.HDPE_CHAR, Pattern.HDPE_CHAR, Pattern.HDPE_CHAR));
 
-    public MekanismRecipeProvider(DataGenerator gen, ExistingFileHelper existingFileHelper) {
-        super(gen, existingFileHelper, Mekanism.MODID);
+    private final List<ISubRecipeProvider> compatProviders = new ArrayList<>();
+    private final Set<String> disabledCompats = new HashSet<>();
+
+    public MekanismRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, existingFileHelper, Mekanism.MODID);
+
+        //Mod Compat Recipe providers
+        checkCompat("ae2", AE2RecipeProvider::new);
+        checkCompat("biomesoplenty", BiomesOPlentyRecipeProvider::new);
+        checkCompat("byg", BYGRecipeProvider::new);
+        checkCompat("farmersdelight", FarmersDelightRecipeProvider::new);
+        checkCompat("ilikewood", ILikeWoodRecipeProvider::new);
+        checkCompat("ilikewoodxbiomesoplenty", ILikeWoodBOPRecipeProvider::new);
+        checkCompat("ilikewoodxbyg", ILikeWoodBYGRecipeProvider::new);
+    }
+
+    private void checkCompat(String modid, Function<String, ISubRecipeProvider> providerCreator) {
+        if (ModList.get().isLoaded(modid)) {
+            compatProviders.add(providerCreator.apply(modid));
+        } else {
+            disabledCompats.add(modid);
+        }
+    }
+
+    public Set<String> getDisabledCompats() {
+        return Collections.unmodifiableSet(disabledCompats);
     }
 
     @Override
@@ -78,6 +108,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addMiscRecipes(consumer);
         addGearModuleRecipes(consumer);
         addLateGameRecipes(consumer);
+        compatProviders.forEach(compatProvider -> compatProvider.addRecipes(consumer));
     }
 
     @Override
@@ -115,15 +146,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               new ThermalEvaporationRecipeProvider(),
               new TierInstallerRecipeProvider(),
               new TransmitterRecipeProvider(),
-              new UpgradeRecipeProvider(),
-              //Mod Compat Recipe providers
-              new AE2RecipeProvider(),
-              new BiomesOPlentyRecipeProvider(),
-              new BYGRecipeProvider(),
-              new FarmersDelightRecipeProvider(),
-              new ILikeWoodRecipeProvider(),
-              new ILikeWoodBOPRecipeProvider(),
-              new ILikeWoodBYGRecipeProvider()
+              new UpgradeRecipeProvider()
         );
     }
 

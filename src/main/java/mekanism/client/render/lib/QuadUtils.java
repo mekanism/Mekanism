@@ -73,8 +73,8 @@ public class QuadUtils {
     // ultimately this fixes UVs bleeding over the edge slightly when dealing with smaller models or tight UV bounds
     public static void contractUVs(Quad quad) {
         TextureAtlasSprite texture = quad.getTexture();
-        float sizeX = texture.getWidth() / (texture.getU1() - texture.getU0());
-        float sizeY = texture.getHeight() / (texture.getV1() - texture.getV0());
+        float sizeX = texture.contents().width() / (texture.getU1() - texture.getU0());
+        float sizeY = texture.contents().height() / (texture.getV1() - texture.getV0());
         float ep = 1F / (Math.max(sizeX, sizeY) * 0x100);
         float[] newUs = contract(quad, Vertex::getTexU, ep);
         float[] newVs = contract(quad, Vertex::getTexV, ep);

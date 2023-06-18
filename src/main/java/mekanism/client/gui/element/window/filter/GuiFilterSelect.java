@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.window.filter;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -10,6 +9,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
+import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class GuiFilterSelect<TILE extends TileEntityMekanism & ITileFilterHolder<?>> extends GuiWindow {
@@ -24,7 +24,6 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism & ITileFil
         int buttonY = relativeY + 19;
         buttonY = addFilterButton(buttonY, MekanismLang.BUTTON_ITEMSTACK_FILTER, getItemStackFilterCreator());
         buttonY = addFilterButton(buttonY, MekanismLang.BUTTON_TAG_FILTER, getTagFilterCreator());
-        buttonY = addFilterButton(buttonY, MekanismLang.BUTTON_MATERIAL_FILTER, getMaterialFilterCreator());
         addFilterButton(buttonY, MekanismLang.BUTTON_MODID_FILTER, getModIDFilterCreator());
     }
 
@@ -52,19 +51,14 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism & ITileFil
     }
 
     @Nullable
-    protected GuiFilterCreator<TILE> getMaterialFilterCreator() {
-        return null;
-    }
-
-    @Nullable
     protected GuiFilterCreator<TILE> getModIDFilterCreator() {
         return null;
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
-        drawTitleText(matrix, MekanismLang.CREATE_FILTER_TITLE.translate(), 6);
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
+        drawTitleText(guiGraphics, MekanismLang.CREATE_FILTER_TITLE.translate(), 6);
     }
 
     @FunctionalInterface

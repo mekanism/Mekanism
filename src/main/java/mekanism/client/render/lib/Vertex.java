@@ -1,11 +1,11 @@
 package mekanism.client.render.lib;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 public class Vertex {
 
@@ -124,7 +124,7 @@ public class Vertex {
     }
 
     public Vertex normal(Vec3 normal) {
-        return normal(new Vector3f(normal));
+        return normal(normal.toVector3f());
     }
 
     public Vertex texRaw(float u, float v) {

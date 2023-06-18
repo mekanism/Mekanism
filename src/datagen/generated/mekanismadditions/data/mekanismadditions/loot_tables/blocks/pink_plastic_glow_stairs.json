@@ -14,8 +14,8 @@
           "name": "mekanismadditions:pink_plastic_glow_stairs"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/pink_plastic_glow_stairs"
 }

@@ -30,6 +30,7 @@ import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -82,17 +83,18 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
               () -> MekanismGenerators.packetHandler().sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE, tile, 1)), null,
               () -> EnumColor.DARK_GREEN) {
             @Override
-            public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-                super.renderForeground(matrix, mouseX, mouseY);
+            public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+                super.renderForeground(guiGraphics, mouseX, mouseY);
                 if (!active && tile.getMultiblock().isForceDisabled()) {
                     active = true;
                     //Temporarily set active to true, so we can easily check if the mouse is over the button
                     if (isMouseOverCheckWindows(mouseX, mouseY)) {
-                        matrix.pushPose();
+                        PoseStack pose = guiGraphics.pose();
+                        pose.pushPose();
                         //Offset to fix rendering position
-                        matrix.translate(-getGuiLeft(), -getGuiTop(), 0);
-                        displayTooltips(matrix, mouseX, mouseY, GeneratorsLang.FISSION_FORCE_DISABLED.translate());
-                        matrix.popPose();
+                        pose.translate(-getGuiLeft(), -getGuiTop(), 0);
+                        displayTooltips(guiGraphics, mouseX, mouseY, GeneratorsLang.FISSION_FORCE_DISABLED.translate());
+                        pose.popPose();
                     }
                     active = false;
                 }
@@ -126,13 +128,13 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     }
 
     @Override
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         updateButtons();
-        renderTitleText(matrix);
-        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
-        drawString(matrix, MekanismLang.TEMPERATURE_LONG.translate(""), 6, 93, titleTextColor());
-        drawString(matrix, GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 6, 114, titleTextColor());
-        super.drawForegroundText(matrix, mouseX, mouseY);
+        renderTitleText(guiGraphics);
+        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        drawString(guiGraphics, MekanismLang.TEMPERATURE_LONG.translate(""), 6, 93, titleTextColor());
+        drawString(guiGraphics, GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 6, 114, titleTextColor());
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
     @Override

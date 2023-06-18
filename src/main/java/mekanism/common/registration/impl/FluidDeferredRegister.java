@@ -29,7 +29,8 @@ import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -46,7 +47,7 @@ import org.jetbrains.annotations.Nullable;
 public class FluidDeferredRegister {
 
     private static final ResourceLocation OVERLAY = new ResourceLocation("block/water_overlay");
-    private static final ResourceLocation RENDER_OVERLAY = new ResourceLocation("textures/misc/underwater.png");
+    private static final ResourceLocation RENDER_OVERLAY = new ResourceLocation("misc/underwater");
     private static final ResourceLocation LIQUID = Mekanism.rl("liquid/liquid");
     private static final ResourceLocation LIQUID_FLOW = Mekanism.rl("liquid/liquid_flow");
     //Copy of/based off of vanilla's lava/water bucket dispense behavior
@@ -133,8 +134,8 @@ public class FluidDeferredRegister {
         fluidRegistryObject.updateBucket(itemRegister.register(bucketName, () -> bucketCreator.create(fluidRegistryObject::getStillFluid,
               ItemDeferredRegister.getMekBaseProperties().stacksTo(1).craftRemainder(Items.BUCKET))));
         //Note: The block properties used here is a copy of the ones for water
-        fluidRegistryObject.updateBlock(blockRegister.register(name, () -> new LiquidBlock(fluidRegistryObject::getStillFluid,
-              BlockBehaviour.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable())));
+        fluidRegistryObject.updateBlock(blockRegister.register(name, () -> new LiquidBlock(fluidRegistryObject::getStillFluid, BlockBehaviour.Properties.of()
+              .noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid().mapColor(MapColor.WATER))));
         allFluids.add(fluidRegistryObject);
         return fluidRegistryObject;
     }
@@ -204,10 +205,10 @@ public class FluidDeferredRegister {
 
     public static class MekanismFluidType extends FluidType {
 
-        private final ResourceLocation stillTexture;
-        private final ResourceLocation flowingTexture;
-        private final ResourceLocation overlayTexture;
-        private final ResourceLocation renderOverlayTexture;
+        public final ResourceLocation stillTexture;
+        public final ResourceLocation flowingTexture;
+        public final ResourceLocation overlayTexture;
+        public final ResourceLocation renderOverlayTexture;
         private final int color;
 
         public MekanismFluidType(FluidType.Properties properties, FluidTypeRenderProperties renderProperties) {
@@ -217,11 +218,6 @@ public class FluidDeferredRegister {
             this.overlayTexture = renderProperties.overlayTexture;
             this.renderOverlayTexture = renderProperties.renderOverlayTexture;
             this.color = renderProperties.color;
-        }
-
-        //For use in datagen
-        public ResourceLocation getStillTexture() {
-            return stillTexture;
         }
 
         @Override

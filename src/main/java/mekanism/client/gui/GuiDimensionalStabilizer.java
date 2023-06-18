@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.text.EnumColor;
@@ -18,6 +17,7 @@ import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -64,7 +64,7 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
                                 break;
                             }
                         }
-                    }, (onHover, matrix, mouseX, mouseY) -> {
+                    }, (onHover, guiGraphics, mouseX, mouseY) -> {
                         List<Component> tooltips = new ArrayList<>();
                         tooltips.add(MekanismLang.STABILIZER_CENTER.translate(EnumColor.INDIGO, chunkX, EnumColor.INDIGO, chunkZ));
                         //TODO: Can we eventually optimize this further such as if we know that we have 1 enabled as we are enabling either radius 2 or "3" (nothing)
@@ -86,7 +86,7 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
                                 break;
                             }
                         }
-                        displayTooltips(matrix, mouseX, mouseY, tooltips);
+                        displayTooltips(guiGraphics, mouseX, mouseY, tooltips);
                     }));
                 } else {
                     int packetTarget = shiftedX * TileEntityDimensionalStabilizer.MAX_LOAD_DIAMETER + shiftedZ;
@@ -115,10 +115,10 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
     }
 
     @Override
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        renderTitleText(matrix);
-        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
-        drawTextExact(matrix, MekanismLang.NORTH_SHORT.translate(), 53.5F, 41F, titleTextColor());
-        super.drawForegroundText(matrix, mouseX, mouseY);
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        renderTitleText(guiGraphics);
+        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        drawTextExact(guiGraphics, MekanismLang.NORTH_SHORT.translate(), 53.5F, 41F, titleTextColor());
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

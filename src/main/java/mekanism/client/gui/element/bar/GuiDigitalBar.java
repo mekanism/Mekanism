@@ -1,11 +1,10 @@
 package mekanism.client.gui.element.bar;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,15 +18,14 @@ public class GuiDigitalBar extends GuiBar<IBarInfoHandler> {
     }
 
     @Override
-    protected void renderBarOverlay(PoseStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+    protected void renderBarOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Render the bar
-        RenderSystem.setShaderTexture(0, DIGITAL_BAR);
-        blit(matrix, x, y, width, height, 1, 0, 1, 1, texWidth, texHeight);
-        blit(matrix, x + 1, y + 1, width - 2, 6, 1, 1, 1, 1, texWidth, texHeight);
-        blit(matrix, x + 1, y + 1, calculateScaled(getHandler().getLevel(), width - 2), 6, 0, 0, 1, 1, texWidth, texHeight);
+        guiGraphics.blit(DIGITAL_BAR, getX(), getY(), width, height, 1, 0, 1, 1, texWidth, texHeight);
+        guiGraphics.blit(DIGITAL_BAR, getX() + 1, getY() + 1, width - 2, 6, 1, 1, 1, 1, texWidth, texHeight);
+        guiGraphics.blit(DIGITAL_BAR, getX() + 1, getY() + 1, calculateScaled(getHandler().getLevel(), width - 2), 6, 0, 0, 1, 1, texWidth, texHeight);
     }
 }

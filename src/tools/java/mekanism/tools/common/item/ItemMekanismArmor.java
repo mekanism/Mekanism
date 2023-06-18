@@ -34,15 +34,14 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
     private final MaterialCreator material;
     private final AttributeCache attributeCache;
 
-    public ItemMekanismArmor(MaterialCreator material, EquipmentSlot slot, Item.Properties properties) {
-        super(material, slot, properties);
+    public ItemMekanismArmor(MaterialCreator material, ArmorItem.Type armorType, Item.Properties properties) {
+        super(material, armorType, properties);
         this.material = material;
-        CachedIntValue armorConfig = switch (slot) {
-            case FEET -> material.bootArmor;
-            case LEGS -> material.leggingArmor;
-            case CHEST -> material.chestplateArmor;
-            case HEAD -> material.helmetArmor;
-            default -> throw new IllegalArgumentException("Invalid slot type for armor");
+        CachedIntValue armorConfig = switch (armorType) {
+            case BOOTS -> material.bootArmor;
+            case LEGGINGS -> material.leggingArmor;
+            case CHESTPLATE -> material.chestplateArmor;
+            case HELMET -> material.helmetArmor;
         };
         this.attributeCache = new AttributeCache(this, material.toughness, material.knockbackResistance, armorConfig);
     }
@@ -61,7 +60,7 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
 
     @Override
     public int getDefense() {
-        return getMaterial().getDefenseForSlot(getSlot());
+        return getMaterial().getDefenseForType(getType());
     }
 
     @Override
@@ -75,23 +74,23 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return material.getDurabilityForSlot(getSlot());
+        return material.getDurabilityForType(getType());
     }
 
     @Override
     public boolean canBeDepleted() {
-        return material.getDurabilityForSlot(getSlot()) > 0;
+        return material.getDurabilityForType(getType()) > 0;
     }
 
     @NotNull
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, @NotNull ItemStack stack) {
-        return slot == getSlot() ? attributeCache.get() : ImmutableMultimap.of();
+        return slot == getEquipmentSlot() ? attributeCache.get() : ImmutableMultimap.of();
     }
 
     @Override
     public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
-        UUID modifier = ARMOR_MODIFIER_UUID_PER_SLOT[getSlot().getIndex()];
+        UUID modifier = ARMOR_MODIFIER_UUID_PER_TYPE.get(getType());
         builder.put(Attributes.ARMOR, new AttributeModifier(modifier, "Armor modifier", getDefense(), Operation.ADDITION));
         builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADDITION));
         builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(modifier, "Armor knockback resistance", getKnockbackResistance(), Operation.ADDITION));

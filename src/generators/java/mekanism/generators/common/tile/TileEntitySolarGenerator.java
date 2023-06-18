@@ -146,7 +146,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
             this.world = world;
             this.pos = pos;
             Biome b = this.world.getBiomeManager().getBiome(this.pos).value();
-            needsRainCheck = b.getPrecipitation() != Precipitation.NONE;
+            needsRainCheck = b.getPrecipitationAt(this.pos) != Precipitation.NONE;
             // Consider the best temperature to be 0.8; biomes that are higher than that
             // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
             // get a boost. We scale the efficiency to around 30% so that it doesn't totally dominate
@@ -156,7 +156,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
             // As with temperature, we scale it so that it doesn't overwhelm production. Note the signedness
             // on the scaling factor. Also note that we only use rainfall as a proxy if it CAN rain; some dimensions
             // (like the End) have rainfall set, but can't actually support rain.
-            float humidityEff = needsRainCheck ? -0.3F * b.getDownfall() : 0;
+            float humidityEff = needsRainCheck ? -0.3F * b.getModifiedClimateSettings().downfall() : 0;
             peakMultiplier = 1.0F + tempEff + humidityEff;
         }
 

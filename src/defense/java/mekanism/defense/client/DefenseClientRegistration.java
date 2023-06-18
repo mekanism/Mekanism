@@ -2,6 +2,7 @@ package mekanism.defense.client;
 
 import mekanism.defense.common.MekanismDefense;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -18,15 +19,5 @@ public class DefenseClientRegistration {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void registerContainers(RegisterEvent event) {
-        event.register(Registry.MENU_REGISTRY, helper -> {
-        });
-    }
-
-    @SubscribeEvent
-    public static void onStitch(TextureStitchEvent.Pre event) {
     }
 }

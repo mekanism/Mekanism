@@ -52,7 +52,7 @@ public class ItemSeismicReader extends ItemEnergized {
         if (world.isClientSide) {
             return InteractionResultHolder.success(stack);
         }
-        if (!WorldUtils.isChunkVibrated(new ChunkPos(player.blockPosition()), player.level)) {
+        if (!WorldUtils.isChunkVibrated(new ChunkPos(player.blockPosition()), player.level())) {
             player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_VIBRATIONS));
         } else {
             if (!player.isCreative()) {

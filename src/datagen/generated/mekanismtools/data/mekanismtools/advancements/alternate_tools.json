@@ -55,5 +55,6 @@
     "title": {
       "translate": "advancements.mekanismtools.alternate_tools.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

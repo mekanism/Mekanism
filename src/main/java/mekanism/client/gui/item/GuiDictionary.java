@@ -1,6 +1,5 @@
 package mekanism.client.gui.item;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Set;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiMekanism;
@@ -12,6 +11,7 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.inventory.container.item.DictionaryContainer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -58,11 +58,11 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     }
 
     @Override
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        renderTitleText(matrix);
-        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
-        drawTextScaledBound(matrix, MekanismLang.DICTIONARY_TAG_TYPE.translate(), 77, inventoryLabelY, titleTextColor(), 45);
-        super.drawForegroundText(matrix, mouseX, mouseY);
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        renderTitleText(guiGraphics);
+        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        drawTextScaledBound(guiGraphics, MekanismLang.DICTIONARY_TAG_TYPE.translate(), 77, inventoryLabelY, titleTextColor(), 45);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
     @Override

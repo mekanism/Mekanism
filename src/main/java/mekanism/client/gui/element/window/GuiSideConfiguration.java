@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -29,6 +28,7 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiWindow {
 
@@ -97,11 +97,11 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     }
 
     private IHoverable getOnHover(RelativeSide side) {
-        return (onHover, matrix, mouseX, mouseY) -> {
+        return (onHover, guiGraphics, mouseX, mouseY) -> {
             if (onHover instanceof SideDataButton button) {
                 DataType dataType = button.getDataType();
                 if (dataType != null) {
-                    displayTooltips(matrix, mouseX, mouseY, MekanismLang.GENERIC_WITH_TWO_PARENTHESIS.translateColored(dataType.getColor(), dataType,
+                    displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.GENERIC_WITH_TWO_PARENTHESIS.translateColored(dataType.getColor(), dataType,
                           dataType.getColor().getName(), side));
                 }
             }
@@ -137,10 +137,10 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
-        drawTitleText(matrix, MekanismLang.CONFIG_TYPE.translate(currentType), 5);
-        drawCenteredText(matrix, MekanismLang.SLOTS.translate(), relativeX + 80, relativeY + 96, subheadingTextColor());
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
+        drawTitleText(guiGraphics, MekanismLang.CONFIG_TYPE.translate(currentType), 5);
+        drawCenteredText(guiGraphics, MekanismLang.SLOTS.translate(), relativeX + 80, relativeY + 96, subheadingTextColor());
     }
 
     @Override

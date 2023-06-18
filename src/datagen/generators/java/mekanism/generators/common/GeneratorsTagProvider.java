@@ -1,6 +1,7 @@
 package mekanism.generators.common;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
@@ -11,7 +12,8 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -19,8 +21,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class GeneratorsTagProvider extends BaseTagProvider {
 
-    public GeneratorsTagProvider(DataGenerator gen, @Nullable ExistingFileHelper existingFileHelper) {
-        super(gen, MekanismGenerators.MODID, existingFileHelper);
+    public GeneratorsTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+        super(output, lookupProvider, MekanismGenerators.MODID, existingFileHelper);
     }
 
     @Override
@@ -29,7 +31,7 @@ public class GeneratorsTagProvider extends BaseTagProvider {
     }
 
     @Override
-    protected void registerTags() {
+    protected void registerTags(HolderLookup.Provider registries) {
         addBoxBlacklist();
         addEndermanBlacklist();
         addFluids();

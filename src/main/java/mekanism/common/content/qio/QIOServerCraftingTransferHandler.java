@@ -144,7 +144,7 @@ public class QIOServerCraftingTransferHandler {
         for (int slot = 0; slot < 9; slot++) {
             dummy.setItem(slot, StackUtils.size(recipeToTest.get(slot), 1));
         }
-        if (!recipe.matches(dummy, player.level)) {
+        if (!recipe.matches(dummy, player.level())) {
             Mekanism.logger.warn("Received transfer request from: {}, but source items aren't valid for the requested recipe: {}.", player, recipeID);
         } else if (!hasRoomToShuffle()) {
             //Note: Uses debug logging level as there are a couple cases this might not be 100% accurate on the client side

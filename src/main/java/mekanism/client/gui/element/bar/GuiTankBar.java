@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.bar;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.GuiMekanismTile;
@@ -14,7 +13,9 @@ import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.to_server.PacketDropperUse;
 import mekanism.common.network.to_server.PacketDropperUse.DropperAction;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -35,12 +36,12 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
     protected abstract TankType getType(STACK stack);
 
     @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         STACK stored = getHandler().getStack();
         if (isEmpty(stored)) {
-            super.renderToolTip(matrix, mouseX, mouseY);
+            super.renderToolTip(guiGraphics, mouseX, mouseY);
         } else {
-            displayTooltips(matrix, mouseX, mouseY, getTooltip(stored));
+            displayTooltips(guiGraphics, mouseX, mouseY, getTooltip(stored));
         }
     }
 
@@ -58,7 +59,7 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
     protected abstract TextureAtlasSprite getIcon(STACK stack);
 
     @Override
-    protected void renderBarOverlay(PoseStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+    protected void renderBarOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
         STACK stored = getHandler().getStack();
         if (!isEmpty(stored)) {
             int displayInt = (int) (handlerLevel * ((horizontal ? width : height) - 2));
@@ -66,9 +67,9 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
                 applyRenderColor(stored);
                 TextureAtlasSprite icon = getIcon(stored);
                 if (horizontal) {
-                    drawTiledSprite(matrix, x + 1, y + 1, height - 2, displayInt, height - 2, icon, TilingDirection.DOWN_RIGHT);
+                    drawTiledSprite(guiGraphics, getX() + 1, getY() + 1, height - 2, displayInt, height - 2, icon, TilingDirection.DOWN_RIGHT);
                 } else {
-                    drawTiledSprite(matrix, x + 1, y + 1, height - 2, width - 2, displayInt, icon, TilingDirection.DOWN_RIGHT);
+                    drawTiledSprite(guiGraphics, getX() + 1, getY() + 1, height - 2, width - 2, displayInt, icon, TilingDirection.DOWN_RIGHT);
                 }
                 MekanismRenderer.resetColor();
             }
@@ -105,6 +106,11 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
     public Object getIngredient(double mouseX, double mouseY) {
         STACK stack = getHandler().getStack();
         return isEmpty(stack) ? null : stack;
+    }
+
+    @Override
+    public Rect2i getIngredientBounds(double mouseX, double mouseY) {
+        return new Rect2i(getX() + 1, getY() + 1, width - 2, height - 2);
     }
 
     //Note the GuiBar.IBarInfoHandler is needed, as it cannot compile and resolve just IBarInfoHandler

@@ -3,6 +3,8 @@ package mekanism.common.tags;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -26,6 +28,10 @@ public class TagUtils {
 
     public static <TYPE> TagKey<TYPE> createKey(IForgeRegistry<TYPE> registry, ResourceLocation tag) {
         return manager(registry).createTagKey(tag);
+    }
+
+    public static <TYPE> TagKey<TYPE> createKey(ResourceKey<Registry<TYPE>> registryKey, ResourceLocation tag) {
+        return TagKey.create(registryKey, tag);
     }
 
     public static <TYPE> Set<TagKey<TYPE>> tags(IForgeRegistry<TYPE> registry, TYPE element) {

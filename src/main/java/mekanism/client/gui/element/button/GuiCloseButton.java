@@ -10,7 +10,7 @@ public class GuiCloseButton extends MekanismImageButton {
 
     public GuiCloseButton(IGuiWrapper gui, int x, int y, GuiWindow window) {
         super(gui, x, y, 8, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "close.png"), window::close,
-              (onHover, matrix, mouseX, mouseY) -> gui.displayTooltips(matrix, mouseX, mouseY, MekanismLang.CLOSE.translate()));
+              (onHover, guiGraphics, mouseX, mouseY) -> gui.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.CLOSE.translate()));
     }
 
     @Override

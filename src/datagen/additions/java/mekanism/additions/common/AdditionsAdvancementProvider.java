@@ -17,14 +17,15 @@ import net.minecraft.advancements.critereon.EntityHurtPlayerTrigger;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.KilledTrigger;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
 public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
 
-    public AdditionsAdvancementProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, existingFileHelper, MekanismAdditions.MODID);
+    public AdditionsAdvancementProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, existingFileHelper, MekanismAdditions.MODID);
     }
 
     @Override

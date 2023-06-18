@@ -36,7 +36,6 @@ public class CrTCoolantAttribute {
      */
     @ZenCodeType.StaticExpansionMethod
     public static GasAttributes.CooledCoolant cooled(Supplier<Gas> heatedGas, double thermalEnthalpy, double conductivity) {
-        validateEnthalpyAndConductivity(thermalEnthalpy, conductivity);
         return new GasAttributes.CooledCoolant(new CachingCrTGasProvider(heatedGas), thermalEnthalpy, conductivity);
     }
 
@@ -53,17 +52,7 @@ public class CrTCoolantAttribute {
      */
     @ZenCodeType.StaticExpansionMethod
     public static GasAttributes.HeatedCoolant heated(Supplier<Gas> cooledGas, double thermalEnthalpy, double conductivity) {
-        validateEnthalpyAndConductivity(thermalEnthalpy, conductivity);
         return new GasAttributes.HeatedCoolant(new CachingCrTGasProvider(cooledGas), thermalEnthalpy, conductivity);
-    }
-
-    private static void validateEnthalpyAndConductivity(double thermalEnthalpy, double conductivity) {
-        if (thermalEnthalpy <= 0) {
-            throw new IllegalArgumentException("Coolant attributes must have a thermal enthalpy greater than zero! Thermal Enthalpy: " + thermalEnthalpy);
-        }
-        if (conductivity <= 0 || conductivity > 1) {
-            throw new IllegalArgumentException("Coolant attributes must have a conductivity greater than zero and at most one! Conductivity: " + conductivity);
-        }
     }
 
     /**

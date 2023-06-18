@@ -37,13 +37,14 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.network.to_client.PacketRadiationData;
-import mekanism.common.registries.MekanismDamageSource;
+import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -53,6 +54,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -141,8 +143,13 @@ public class RadiationManager implements IRadiationManager {
     }
 
     @Override
-    public DamageSource getRadiationDamageSource() {
-        return MekanismDamageSource.RADIATION;
+    public DamageSource getRadiationDamageSource(RegistryAccess registryAccess) {
+        return MekanismDamageTypes.RADIATION.source(registryAccess);
+    }
+
+    @Override
+    public ResourceKey<DamageType> getRadiationDamageTypeKey() {
+        return MekanismDamageTypes.RADIATION.key();
     }
 
     @Override
@@ -306,7 +313,7 @@ public class RadiationManager implements IRadiationManager {
     }
 
     private void updateClientRadiationForAll(ResourceKey<Level> dimension) {
-        updateClientRadiationForAll(player -> player.getLevel().dimension() == dimension);
+        updateClientRadiationForAll(player -> player.level().dimension() == dimension);
     }
 
     private void updateClientRadiationForAll(Predicate<ServerPlayer> clearForPlayer) {
@@ -355,14 +362,14 @@ public class RadiationManager implements IRadiationManager {
             return;
         }
         // perhaps also play Geiger counter sound effect, even when not using item (similar to fallout)
-        if (clientRadiationScale != RadiationScale.NONE && player.level.getRandom().nextInt(2) == 0) {
-            int count = player.level.getRandom().nextInt(clientRadiationScale.ordinal() * MekanismConfig.client.radiationParticleCount.get());
+        if (clientRadiationScale != RadiationScale.NONE && player.level().getRandom().nextInt(2) == 0) {
+            int count = player.level().getRandom().nextInt(clientRadiationScale.ordinal() * MekanismConfig.client.radiationParticleCount.get());
             int radius = MekanismConfig.client.radiationParticleRadius.get();
             for (int i = 0; i < count; i++) {
-                double x = player.getX() + player.level.getRandom().nextDouble() * radius * 2 - radius;
-                double y = player.getY() + player.level.getRandom().nextDouble() * radius * 2 - radius;
-                double z = player.getZ() + player.level.getRandom().nextDouble() * radius * 2 - radius;
-                player.level.addParticle(MekanismParticleTypes.RADIATION.get(), x, y, z, 0, 0, 0);
+                double x = player.getX() + player.level().getRandom().nextDouble() * radius * 2 - radius;
+                double y = player.getY() + player.level().getRandom().nextDouble() * radius * 2 - radius;
+                double z = player.getZ() + player.level().getRandom().nextDouble() * radius * 2 - radius;
+                player.level().addParticle(MekanismParticleTypes.RADIATION.get(), x, y, z, 0, 0, 0);
             }
         }
     }
@@ -379,7 +386,7 @@ public class RadiationManager implements IRadiationManager {
         LazyOptional<IRadiationEntity> radiationCap = entity.getCapability(Capabilities.RADIATION_ENTITY);
         // each tick, there is a 1/20 chance we will apply radiation to each player
         // this helps distribute the CPU load across ticks, and makes exposure slightly inconsistent
-        if (entity.level.getRandom().nextInt(20) == 0) {
+        if (entity.level().getRandom().nextInt(20) == 0) {
             double magnitude = getRadiationLevel(entity);
             if (magnitude > BASELINE && (!(entity instanceof Player player) || MekanismUtils.isPlayingMode(player))) {
                 // apply radiation to the player
@@ -480,7 +487,7 @@ public class RadiationManager implements IRadiationManager {
 
     @SubscribeEvent
     public void onLivingTick(LivingTickEvent event) {
-        Level world = event.getEntity().getCommandSenderWorld();
+        Level world = event.getEntity().level();
         if (!world.isClientSide() && !(event.getEntity() instanceof Player)) {
             updateEntityRadiation(event.getEntity());
         }

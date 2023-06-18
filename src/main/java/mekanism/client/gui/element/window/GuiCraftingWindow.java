@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
@@ -14,6 +13,7 @@ import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.network.to_server.PacketQIOClearCraftingWindow;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 
 public class GuiCraftingWindow extends GuiWindow {
@@ -55,9 +55,9 @@ public class GuiCraftingWindow extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
         //Increment index by one, so we show: 1, 2, and 3 instead of 0, 1, and 2
-        drawTitleText(matrix, MekanismLang.CRAFTING_WINDOW.translate(index + 1), 6);
+        drawTitleText(guiGraphics, MekanismLang.CRAFTING_WINDOW.translate(index + 1), 6);
     }
 }

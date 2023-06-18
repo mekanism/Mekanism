@@ -75,7 +75,7 @@ public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> i
         SorterItemStackFilter other = (SorterItemStackFilter) o;
         if (fuzzyMode == other.fuzzyMode) {
             if (fuzzyMode) {
-                return itemType.sameItem(other.itemType);
+                return itemType.getItem() == other.itemType.getItem();
             }
             return ItemHandlerHelper.canItemStacksStack(itemType, other.itemType);
         }

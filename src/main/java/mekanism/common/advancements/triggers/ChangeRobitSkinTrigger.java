@@ -8,8 +8,8 @@ import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SerializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.resources.ResourceLocation;
@@ -35,7 +35,7 @@ public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<ChangeRobitSk
 
     @NotNull
     @Override
-    protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull EntityPredicate.Composite playerPredicate, @NotNull DeserializationContext context) {
+    protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull ContextAwarePredicate playerPredicate, @NotNull DeserializationContext context) {
         RobitSkin skin;
         if (json.has(JsonConstants.SKIN)) {
             String name = GsonHelper.getAsString(json, JsonConstants.SKIN);
@@ -63,7 +63,7 @@ public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<ChangeRobitSk
         @Nullable
         private final RobitSkin skin;
 
-        public TriggerInstance(EntityPredicate.Composite playerPredicate, @Nullable RobitSkin skin) {
+        public TriggerInstance(ContextAwarePredicate playerPredicate, @Nullable RobitSkin skin) {
             super(MekanismCriteriaTriggers.CHANGE_ROBIT_SKIN.getId(), playerPredicate);
             this.skin = skin;
         }
@@ -79,11 +79,11 @@ public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<ChangeRobitSk
         }
 
         public static ChangeRobitSkinTrigger.TriggerInstance toAny() {
-            return new ChangeRobitSkinTrigger.TriggerInstance(EntityPredicate.Composite.ANY, null);
+            return new ChangeRobitSkinTrigger.TriggerInstance(ContextAwarePredicate.ANY, null);
         }
 
         public static ChangeRobitSkinTrigger.TriggerInstance toSkin(IRobitSkinProvider skinProvider) {
-            return new ChangeRobitSkinTrigger.TriggerInstance(EntityPredicate.Composite.ANY, skinProvider.getSkin());
+            return new ChangeRobitSkinTrigger.TriggerInstance(ContextAwarePredicate.ANY, skinProvider.getSkin());
         }
     }
 }

@@ -11,7 +11,7 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 public class MekanismBlockLootTables extends BaseBlockLootTables {
 
     @Override
-    protected void addTables() {
+    protected void generate() {
         skip(MekanismBlocks.BOUNDING_BLOCK);
         add(block -> createSingleItemTableWithSilkTouch(block, MekanismItems.SALT, ConstantValue.exactly(4)), MekanismBlocks.SALT_BLOCK);
         add(block -> droppingWithFortuneOrRandomly(block, MekanismItems.FLUORITE_GEM, UniformGenerator.between(2, 4)), MekanismBlocks.ORES.get(OreType.FLUORITE));

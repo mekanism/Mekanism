@@ -276,7 +276,7 @@ public class SoundHandler {
             // Update our soundMap so that we can actually have a shot at stopping this sound; note that we also
             // need to "unoffset" the sound position so that we build the correct key for the sound map
             // Aside: I really, really, wish Forge returned the final result sound as part of playSound :/
-            BlockPos pos = new BlockPos(resultSound.getX() - 0.5, resultSound.getY() - 0.5, resultSound.getZ() - 0.5);
+            BlockPos pos = BlockPos.containing(resultSound.getX() - 0.5, resultSound.getY() - 0.5, resultSound.getZ() - 0.5);
             soundMap.put(pos.asLong(), resultSound);
         }
     }
@@ -339,7 +339,7 @@ public class SoundHandler {
         private float getTileVolumeFactor() {
             // Pull the TE from the sound position and see if supports muffling upgrades. If it does, calculate what
             // percentage of the original volume should be muted
-            BlockEntity tile = WorldUtils.getTileEntity(Minecraft.getInstance().level, new BlockPos(getX(), getY(), getZ()));
+            BlockEntity tile = WorldUtils.getTileEntity(Minecraft.getInstance().level, BlockPos.containing(getX(), getY(), getZ()));
             float retVolume = 1.0F;
 
             if (tile instanceof IUpgradeTile upgradeTile && upgradeTile.supportsUpgrade(Upgrade.MUFFLING)) {

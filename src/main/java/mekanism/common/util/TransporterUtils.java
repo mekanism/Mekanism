@@ -14,6 +14,7 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -65,7 +66,7 @@ public final class TransporterUtils {
         BlockPos blockPos = transporter.getTilePos();
         if (stack.hasPath()) {
             float[] pos = TransporterUtils.getStackPosition(transporter, stack, 0);
-            blockPos = blockPos.offset(pos[0], pos[1], pos[2]);
+            blockPos = blockPos.offset(Mth.floor(pos[0]), Mth.floor(pos[1]), Mth.floor(pos[2]));
         }
         TransporterManager.remove(transporter.getTileWorld(), stack);
         Block.popResource(transporter.getTileWorld(), blockPos, stack.itemStack);

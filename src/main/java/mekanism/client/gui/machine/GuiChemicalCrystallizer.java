@@ -1,6 +1,5 @@
 package mekanism.client.gui.machine;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +28,7 @@ import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tags.TagUtils;
 import mekanism.common.tile.machine.TileEntityChemicalCrystallizer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Inventory;
@@ -71,9 +71,9 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     }
 
     @Override
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        renderTitleText(matrix);
-        super.drawForegroundText(matrix, mouseX, mouseY);
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        renderTitleText(guiGraphics);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
     @Override

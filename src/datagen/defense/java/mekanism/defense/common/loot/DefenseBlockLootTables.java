@@ -6,7 +6,7 @@ import mekanism.defense.common.registries.DefenseBlocks;
 public class DefenseBlockLootTables extends BaseBlockLootTables {
 
     @Override
-    protected void addTables() {
+    protected void generate() {
         //Register all remaining blocks as just dropping themselves
         dropSelf(DefenseBlocks.BLOCKS.getAllBlocks());
     }

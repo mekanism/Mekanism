@@ -191,7 +191,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             if (entityItem == null) {
                 entityItem = new ItemEntity(EntityType.ITEM, world);
             } else {
-                entityItem.level = world;
+                entityItem.setLevel(world);
             }
             entityItem.setPos(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
             //Reset entity age to fix issues with mods like ItemPhysic

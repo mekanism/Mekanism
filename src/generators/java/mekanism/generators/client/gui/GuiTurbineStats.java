@@ -1,6 +1,5 @@
 package mekanism.generators.client.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
@@ -17,6 +16,7 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.content.turbine.TurbineValidator;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -49,30 +49,30 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
     }
 
     @Override
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        renderTitleText(matrix);
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        renderTitleText(guiGraphics);
         TurbineMultiblockData multiblock = tile.getMultiblock();
         if (multiblock.isFormed()) {
             Component limiting = GeneratorsLang.IS_LIMITING.translateColored(EnumColor.DARK_RED);
             int lowerVolume = multiblock.lowerVolume;
             int dispersers = multiblock.getDispersers();
             int vents = multiblock.vents;
-            drawString(matrix, GeneratorsLang.TURBINE_TANK_VOLUME.translate(lowerVolume), 8, 26, titleTextColor());
+            drawString(guiGraphics, GeneratorsLang.TURBINE_TANK_VOLUME.translate(lowerVolume), 8, 26, titleTextColor());
             boolean dispersersLimiting = lowerVolume * dispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get()
                                          < vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get();
             boolean ventsLimiting = lowerVolume * dispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get()
                                     > vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get();
-            drawString(matrix, GeneratorsLang.TURBINE_STEAM_FLOW.translate(), 8, 40, subheadingTextColor());
-            drawString(matrix, GeneratorsLang.TURBINE_DISPERSERS.translate(dispersers, dispersersLimiting ? limiting : ""), 14, 49, titleTextColor());
-            drawString(matrix, GeneratorsLang.TURBINE_VENTS.translate(vents, ventsLimiting ? limiting : ""), 14, 58, titleTextColor());
+            drawString(guiGraphics, GeneratorsLang.TURBINE_STEAM_FLOW.translate(), 8, 40, subheadingTextColor());
+            drawString(guiGraphics, GeneratorsLang.TURBINE_DISPERSERS.translate(dispersers, dispersersLimiting ? limiting : ""), 14, 49, titleTextColor());
+            drawString(guiGraphics, GeneratorsLang.TURBINE_VENTS.translate(vents, ventsLimiting ? limiting : ""), 14, 58, titleTextColor());
             int coils = multiblock.coils;
             int blades = multiblock.blades;
-            drawString(matrix, GeneratorsLang.TURBINE_PRODUCTION.translate(), 8, 72, subheadingTextColor());
-            drawString(matrix, GeneratorsLang.TURBINE_BLADES.translate(blades, coils * 4 > blades ? limiting : ""), 14, 81, titleTextColor());
-            drawString(matrix, GeneratorsLang.TURBINE_COILS.translate(coils, coils * 4 < blades ? limiting : ""), 14, 90, titleTextColor());
-            drawTextScaledBound(matrix, GeneratorsLang.TURBINE_MAX_PRODUCTION.translate(EnergyDisplay.of(multiblock.getMaxProduction())), 8, 104, titleTextColor(), 164);
-            drawTextScaledBound(matrix, GeneratorsLang.TURBINE_MAX_WATER_OUTPUT.translate(TextUtils.format(multiblock.getMaxWaterOutput())), 8, 113, titleTextColor(), 164);
+            drawString(guiGraphics, GeneratorsLang.TURBINE_PRODUCTION.translate(), 8, 72, subheadingTextColor());
+            drawString(guiGraphics, GeneratorsLang.TURBINE_BLADES.translate(blades, coils * 4 > blades ? limiting : ""), 14, 81, titleTextColor());
+            drawString(guiGraphics, GeneratorsLang.TURBINE_COILS.translate(coils, coils * 4 < blades ? limiting : ""), 14, 90, titleTextColor());
+            drawTextScaledBound(guiGraphics, GeneratorsLang.TURBINE_MAX_PRODUCTION.translate(EnergyDisplay.of(multiblock.getMaxProduction())), 8, 104, titleTextColor(), 164);
+            drawTextScaledBound(guiGraphics, GeneratorsLang.TURBINE_MAX_WATER_OUTPUT.translate(TextUtils.format(multiblock.getMaxWaterOutput())), 8, 113, titleTextColor(), 164);
         }
-        super.drawForegroundText(matrix, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

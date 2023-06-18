@@ -23,6 +23,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.NotNull;
 
 public class PaintingRecipeCategory extends BaseRecipeCategory<PaintingRecipe> {
@@ -45,10 +46,10 @@ public class PaintingRecipeCategory extends BaseRecipeCategory<PaintingRecipe> {
     }
 
     @Override
-    public void draw(PaintingRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(PaintingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our color details, before bothering to draw the arrow
         colorDetails.ingredient = getDisplayedStack(recipeSlotsView, PIGMENT_INPUT, MekanismJEI.TYPE_PIGMENT, PigmentStack.EMPTY);
-        super.draw(recipe, recipeSlotsView, matrixStack, mouseX, mouseY);
+        super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
         colorDetails.reset();
     }
 

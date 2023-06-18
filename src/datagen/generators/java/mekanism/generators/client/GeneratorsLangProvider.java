@@ -10,16 +10,17 @@ import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.registries.GeneratorsItems;
 import mekanism.generators.common.registries.GeneratorsModules;
 import mekanism.generators.common.registries.GeneratorsSounds;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 
 public class GeneratorsLangProvider extends BaseLanguageProvider {
 
-    public GeneratorsLangProvider(DataGenerator gen) {
-        super(gen, MekanismGenerators.MODID);
+    public GeneratorsLangProvider(PackOutput output) {
+        super(output, MekanismGenerators.MODID);
     }
 
     @Override
     protected void addTranslations() {
+        add(GeneratorsLang.PACK_DESCRIPTION, "Resources used for Mekanism: Generators");
         addItems();
         addBlocks();
         addFluids();

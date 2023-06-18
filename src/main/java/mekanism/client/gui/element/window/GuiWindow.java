@@ -1,7 +1,6 @@
 package mekanism.client.gui.element.window;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.client.gui.GuiMekanism;
@@ -17,6 +16,7 @@ import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowPosition;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.Color;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -102,7 +102,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         boolean ret = super.mouseClicked(mouseX, mouseY, button);
         // drag 'safe area'
         if (isMouseOver(mouseX, mouseY)) {
-            if (mouseY < y + 18) {
+            if (mouseY < getY() + 18) {
                 dragging = true;
                 dragX = mouseX;
                 dragY = mouseY;
@@ -129,8 +129,8 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         super.onDrag(mouseX, mouseY, deltaX, deltaY);
         if (dragging) {
             int newDX = (int) Math.round(mouseX - dragX), newDY = (int) Math.round(mouseY - dragY);
-            int changeX = Mth.clamp(newDX - prevDX, -x, minecraft.getWindow().getGuiScaledWidth() - (x + width));
-            int changeY = Mth.clamp(newDY - prevDY, -y, minecraft.getWindow().getGuiScaledHeight() - (y + height));
+            int changeX = Mth.clamp(newDX - prevDX, -getX(), minecraft.getWindow().getGuiScaledWidth() - (getX() + width));
+            int changeY = Mth.clamp(newDY - prevDY, -getY(), minecraft.getWindow().getGuiScaledHeight() - (getY() + height));
             prevDX = newDX;
             prevDY = newDY;
             move(changeX, changeY);
@@ -144,17 +144,17 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     @Override
-    public void renderBackgroundOverlay(PoseStack matrix, int mouseX, int mouseY) {
+    public void renderBackgroundOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (isFocusOverlay()) {
-            MekanismRenderer.renderColorOverlay(matrix, 0, 0, minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight(), OVERLAY_COLOR.rgba());
+            MekanismRenderer.renderColorOverlay(guiGraphics.pose(), 0, 0, guiGraphics.guiWidth(), guiGraphics.guiHeight(), OVERLAY_COLOR.rgba());
         } else {
             RenderSystem.setShaderColor(1, 1, 1, 0.75F);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
-            GuiUtils.renderBackgroundTexture(matrix, GuiMekanism.SHADOW, 4, 4, getButtonX() - 3, getButtonY() - 3, getButtonWidth() + 6, getButtonHeight() + 6, 256, 256);
+            GuiUtils.renderBackgroundTexture(guiGraphics, GuiMekanism.SHADOW, 4, 4, getButtonX() - 3, getButtonY() - 3, getButtonWidth() + 6, getButtonHeight() + 6, 256, 256);
             MekanismRenderer.resetColor();
         }
-        renderBackgroundTexture(matrix, getResource(), 4, 4);
+        renderBackgroundTexture(guiGraphics, getResource(), 4, 4);
     }
 
     @Override
@@ -186,11 +186,11 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         }
     }
 
-    public void renderBlur(PoseStack matrix) {
+    public void renderBlur(GuiGraphics guiGraphics) {
         RenderSystem.setShaderColor(1, 1, 1, 0.3F);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        GuiUtils.renderBackgroundTexture(matrix, GuiMekanism.BLUR, 4, 4, relativeX, relativeY, width, height, 256, 256);
+        GuiUtils.renderBackgroundTexture(guiGraphics, GuiMekanism.BLUR, 4, 4, relativeX, relativeY, width, height, 256, 256);
         MekanismRenderer.resetColor();
     }
 
@@ -209,9 +209,9 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     @Override
-    public void drawTitleText(PoseStack matrix, Component text, float y) {
+    public void drawTitleText(GuiGraphics guiGraphics, Component text, float y) {
         if (isFocusOverlay()) {
-            super.drawTitleText(matrix, text, y);
+            super.drawTitleText(guiGraphics, text, y);
         } else {
             //Adjust spacing for close button and any other buttons like side config's auto eject
             int leftShift = getTitlePadStart();
@@ -220,7 +220,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
             float textWidth = getStringWidth(text);
             float scale = Math.min(1, maxLength / textWidth);
             float left = relativeX + xSize / 2F;
-            drawScaledCenteredText(matrix, text, left + leftShift, relativeY + y, titleTextColor(), scale);
+            drawScaledCenteredText(guiGraphics, text, left + leftShift, relativeY + y, titleTextColor(), scale);
         }
     }
 

@@ -18,7 +18,7 @@ import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.item.predicate.FullCanteenItemPredicate;
 import mekanism.common.item.predicate.MaxedModuleContainerItemPredicate;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismDamageSource;
+import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismRobitSkins;
@@ -28,12 +28,13 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.advancements.critereon.SummonedEntityTrigger;
 import net.minecraft.advancements.critereon.UsingItemTrigger;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -41,8 +42,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
-    public MekanismAdvancementProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, existingFileHelper, Mekanism.MODID);
+    public MekanismAdvancementProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, existingFileHelper, Mekanism.MODID);
     }
 
     //TODO - 1.19: xp rewards for any of these?
@@ -50,7 +51,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
     protected void registerAdvancements(@NotNull Consumer<Advancement> consumer) {
         advancement(MekanismAdvancements.ROOT)
               .display(MekanismItems.ATOMIC_DISASSEMBLER, Mekanism.rl("textures/block/block_osmium.png"), FrameType.GOAL, false, false, false)
-              .addCriterion("automatic", new PlayerTrigger.TriggerInstance(MekanismCriteriaTriggers.LOGGED_IN.getId(), EntityPredicate.Composite.ANY))
+              .addCriterion("automatic", new PlayerTrigger.TriggerInstance(MekanismCriteriaTriggers.LOGGED_IN.getId(), ContextAwarePredicate.ANY))
               .save(consumer);
         advancement(MekanismAdvancements.MATERIALS)
               .display(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM), FrameType.TASK, false)
@@ -108,7 +109,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.LASER_DEATH)
               .display(Items.SKELETON_SKULL, null, FrameType.TASK, true, true, true)
-              .addCriterion("death", MekanismDamageTrigger.TriggerInstance.killed(MekanismDamageSource.LASER))
+              .addCriterion("death", MekanismDamageTrigger.TriggerInstance.killed(MekanismDamageTypes.LASER))
               .save(consumer);
         advancement(MekanismAdvancements.STOPPING_LASERS)
               .display(Items.SHIELD, FrameType.TASK, true)
@@ -192,11 +193,11 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.ENVIRONMENTAL_RADIATION)
               .display(MekanismItems.GEIGER_COUNTER, FrameType.TASK, false)
-              .addCriterion("use_geiger_counter", new UsingItemTrigger.TriggerInstance(EntityPredicate.Composite.ANY, predicate(MekanismItems.GEIGER_COUNTER)))
+              .addCriterion("use_geiger_counter", new UsingItemTrigger.TriggerInstance(ContextAwarePredicate.ANY, predicate(MekanismItems.GEIGER_COUNTER)))
               .save(consumer);
         advancement(MekanismAdvancements.PERSONAL_RADIATION)
               .display(MekanismItems.DOSIMETER, FrameType.TASK, false)
-              .addCriterion("use_dosimeter", new UsingItemTrigger.TriggerInstance(EntityPredicate.Composite.ANY, predicate(MekanismItems.DOSIMETER)))
+              .addCriterion("use_dosimeter", new UsingItemTrigger.TriggerInstance(ContextAwarePredicate.ANY, predicate(MekanismItems.DOSIMETER)))
               .save(consumer);
         advancement(MekanismAdvancements.RADIATION_PREVENTION)
               .display(MekanismItems.HAZMAT_GOWN, FrameType.TASK, true)
@@ -208,11 +209,11 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               )).save(consumer);
         advancement(MekanismAdvancements.RADIATION_POISONING)
               .display(MekanismBlocks.RADIOACTIVE_WASTE_BARREL, FrameType.TASK, true)
-              .addCriterion("poisoned", MekanismDamageTrigger.TriggerInstance.damaged(MekanismDamageSource.RADIATION))
+              .addCriterion("poisoned", MekanismDamageTrigger.TriggerInstance.damaged(MekanismDamageTypes.RADIATION))
               .save(consumer);
         advancement(MekanismAdvancements.RADIATION_POISONING_DEATH)
               .display(Items.PLAYER_HEAD, null, FrameType.TASK, true, true, true)
-              .addCriterion("death", MekanismDamageTrigger.TriggerInstance.killed(MekanismDamageSource.RADIATION))
+              .addCriterion("death", MekanismDamageTrigger.TriggerInstance.killed(MekanismDamageTypes.RADIATION))
               .save(consumer);
 
         advancement(MekanismAdvancements.PLUTONIUM)
@@ -274,7 +275,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.TELEPORTER)
               .displayAndCriterion(MekanismBlocks.TELEPORTER, FrameType.TASK, true)
-              .addCriterion("teleport", new PlayerTrigger.TriggerInstance(MekanismCriteriaTriggers.TELEPORT.getId(), EntityPredicate.Composite.ANY))
+              .addCriterion("teleport", new PlayerTrigger.TriggerInstance(MekanismCriteriaTriggers.TELEPORT.getId(), ContextAwarePredicate.ANY))
               .save(consumer);
         advancement(MekanismAdvancements.PORTABLE_TELEPORTER)
               .displayAndCriterion(MekanismItems.PORTABLE_TELEPORTER, FrameType.TASK, true)

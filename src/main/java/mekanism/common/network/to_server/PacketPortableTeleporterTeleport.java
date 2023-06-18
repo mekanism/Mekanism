@@ -68,22 +68,22 @@ public class PacketPortableTeleporterTeleport implements IMekanismPacket {
                         teleporter.teleDelay = 5;
                         player.connection.aboveGroundTickCount = 0;
                         player.closeContainer();
-                        Mekanism.packetHandler().sendToAllTracking(new PacketPortalFX(player.blockPosition()), player.level, coords.getPos());
+                        Mekanism.packetHandler().sendToAllTracking(new PacketPortalFX(player.blockPosition()), player.level(), coords.getPos());
                         if (player.isPassenger()) {
                             player.stopRiding();
                         }
                         double oldX = player.getX();
                         double oldY = player.getY();
                         double oldZ = player.getZ();
-                        Level oldWorld = player.level;
+                        Level oldWorld = player.level();
                         BlockPos teleporterTargetPos = teleporter.getTeleporterTargetPos();
                         TileEntityTeleporter.teleportEntityTo(player, teleWorld, teleporterTargetPos);
                         TileEntityTeleporter.alignPlayer(player, teleporterTargetPos, teleporter);
-                        if (player.level != oldWorld || player.distanceToSqr(oldX, oldY, oldZ) >= 25) {
+                        if (player.level() != oldWorld || player.distanceToSqr(oldX, oldY, oldZ) >= 25) {
                             //If the player teleported over 5 blocks, play the sound at both the destination and the source
                             oldWorld.playSound(null, oldX, oldY, oldZ, SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
                         }
-                        player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
+                        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
                         teleporter.sendTeleportParticles();
                     } catch (Exception ignored) {
                     }

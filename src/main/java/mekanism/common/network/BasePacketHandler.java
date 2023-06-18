@@ -223,7 +223,7 @@ public abstract class BasePacketHandler {
                 //Ignore height for partial Cubic chunks support as range comparison gets used ignoring player height normally anyway
                 int radius = playerList.getViewDistance() * 16;
                 for (ServerPlayer player : playerList.getPlayers()) {
-                    if (range.dimension() == player.getLevel().dimension()) {
+                    if (range.dimension() == player.level().dimension()) {
                         BlockPos playerPosition = player.blockPosition();
                         int playerX = playerPosition.getX();
                         int playerZ = playerPosition.getZ();

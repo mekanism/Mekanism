@@ -51,7 +51,7 @@ public class BuildCommand {
                       .executes(ctx -> {
                           CommandSourceStack source = ctx.getSource();
                           destroy(source.getLevel(), rayTracePos(source));
-                          source.sendSuccess(MekanismLang.COMMAND_BUILD_REMOVED.translateColored(EnumColor.GRAY), true);
+                          source.sendSuccess(() -> MekanismLang.COMMAND_BUILD_REMOVED.translateColored(EnumColor.GRAY), true);
                           return 0;
                       }));
 
@@ -85,8 +85,10 @@ public class BuildCommand {
     private static int build(CommandContext<CommandSourceStack> ctx, ILangEntry localizedName, StructureBuilder builder, BlockPos start, boolean empty) {
         CommandSourceStack source = ctx.getSource();
         builder.build(source.getLevel(), start, empty);
-        ILangEntry builtEntry = empty ? MekanismLang.COMMAND_BUILD_BUILT_EMPTY : MekanismLang.COMMAND_BUILD_BUILT;
-        source.sendSuccess(builtEntry.translateColored(EnumColor.GRAY, EnumColor.INDIGO, localizedName), true);
+        source.sendSuccess(() -> {
+            ILangEntry builtEntry = empty ? MekanismLang.COMMAND_BUILD_BUILT_EMPTY : MekanismLang.COMMAND_BUILD_BUILT;
+            return builtEntry.translateColored(EnumColor.GRAY, EnumColor.INDIGO, localizedName);
+        }, true);
         return 0;
     }
 

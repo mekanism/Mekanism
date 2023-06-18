@@ -2,7 +2,7 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.ModelIndustrialAlarm;
 import mekanism.client.render.RenderTickHandler;
@@ -38,23 +38,23 @@ public class RenderIndustrialAlarm extends ModelTileEntityRenderer<TileEntityInd
                 switch (tile.getDirection()) {
                     case DOWN -> {
                         poseStack.translate(0, 1, 0);
-                        poseStack.mulPose(Vector3f.XP.rotationDegrees(180));
+                        poseStack.mulPose(Axis.XP.rotationDegrees(180));
                     }
                     case NORTH -> {
                         poseStack.translate(0, 0.5, 0.5);
-                        poseStack.mulPose(Vector3f.XN.rotationDegrees(90));
+                        poseStack.mulPose(Axis.XN.rotationDegrees(90));
                     }
                     case SOUTH -> {
                         poseStack.translate(0, 0.5, -0.5);
-                        poseStack.mulPose(Vector3f.XP.rotationDegrees(90));
+                        poseStack.mulPose(Axis.XP.rotationDegrees(90));
                     }
                     case EAST -> {
                         poseStack.translate(-0.5, 0.5, 0);
-                        poseStack.mulPose(Vector3f.ZN.rotationDegrees(90));
+                        poseStack.mulPose(Axis.ZN.rotationDegrees(90));
                     }
                     case WEST -> {
                         poseStack.translate(0.5, 0.5, 0);
-                        poseStack.mulPose(Vector3f.ZP.rotationDegrees(90));
+                        poseStack.mulPose(Axis.ZP.rotationDegrees(90));
                     }
                 }
                 model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, overlayLight, 1, 1, 1, 1, rot);

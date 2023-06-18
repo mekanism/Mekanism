@@ -14,8 +14,8 @@
           "name": "mekanismadditions:aqua_plastic_glow_stairs"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/aqua_plastic_glow_stairs"
 }

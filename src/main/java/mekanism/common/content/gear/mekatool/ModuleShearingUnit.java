@@ -81,7 +81,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
             FloatingLong cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
             IEnergyContainer energyContainer = module.getEnergyContainer();
             if (cost.isZero() || energyContainer != null && energyContainer.getEnergy().greaterOrEqual(cost) &&
-                                 shearEntity(energyContainer, entity, player, module.getContainer(), entity.level, entity.blockPosition())) {
+                                 shearEntity(energyContainer, entity, player, module.getContainer(), entity.level(), entity.blockPosition())) {
                 return InteractionResult.SUCCESS;
             }
         }

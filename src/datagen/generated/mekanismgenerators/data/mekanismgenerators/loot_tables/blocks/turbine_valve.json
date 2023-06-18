@@ -14,8 +14,8 @@
           "name": "mekanismgenerators:turbine_valve"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismgenerators:blocks/turbine_valve"
 }

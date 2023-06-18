@@ -34,6 +34,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -54,7 +55,7 @@ import org.jetbrains.annotations.Nullable;
 public class CommonPlayerTickHandler {
 
     public static boolean isOnGroundOrSleeping(Player player) {
-        return player.isOnGround() || player.isSleeping();
+        return player.onGround() || player.isSleeping();
     }
 
     public static boolean isScubaMaskOn(Player player, ItemStack tank) {
@@ -112,7 +113,7 @@ public class CommonPlayerTickHandler {
             if (flame != null) {
                 if (flame.isAlive()) {
                     //If the flame is alive (and didn't just instantly hit a block while trying to spawn add it to the world)
-                    player.level.addFreshEntity(flame);
+                    player.level().addFreshEntity(flame);
                 }
                 if (MekanismUtils.isPlayingMode(player)) {
                     ((ItemFlamethrower) currentItem.getItem()).useGas(currentItem, 1);
@@ -134,7 +135,7 @@ public class CommonPlayerTickHandler {
                         }
                     }
                     ((IJetpackItem) jetpack.getItem()).useJetpackFuel(jetpack);
-                    if (player.level.getGameTime() % 10 == 0) {
+                    if (player.level().getGameTime() % 10 == 0) {
                         player.gameEvent(MekanismGameEvents.JETPACK_BURN.get());
                     }
                 }
@@ -188,7 +189,7 @@ public class CommonPlayerTickHandler {
             return;
         }
         //Gas Mask checks
-        if (event.getSource().isMagic()) {
+        if (MekanismUtils.isPreventableMagicDamage(event.getSource())) {
             ItemStack headStack = entity.getItemBySlot(EquipmentSlot.HEAD);
             if (!headStack.isEmpty() && headStack.getItem() instanceof ItemScubaMask) {
                 ItemStack chestStack = entity.getItemBySlot(EquipmentSlot.CHEST);
@@ -200,7 +201,7 @@ public class CommonPlayerTickHandler {
         }
         //Note: We have this here in addition to listening to LivingHurt, so as if we can fully block the damage
         // then we don't play the hurt effect/sound, as cancelling LivingHurtEvent still causes that to happen
-        if (event.getSource().isFall()) {
+        if (event.getSource().is(DamageTypeTags.IS_FALL)) {
             //Free runner checks
             FallEnergyInfo info = getFallAbsorptionEnergyInfo(entity);
             if (info != null && tryAbsorbAll(event, info.container, info.damageRatio, info.energyCost)) {
@@ -229,7 +230,7 @@ public class CommonPlayerTickHandler {
             // other mods may not be firing the event manually even when the entity is dead
             return;
         }
-        if (event.getSource().isFall()) {
+        if (event.getSource().is(DamageTypeTags.IS_FALL)) {
             FallEnergyInfo info = getFallAbsorptionEnergyInfo(entity);
             if (info != null && handleDamage(event, info.container, info.damageRatio, info.energyCost)) {
                 return;
@@ -349,13 +350,13 @@ public class CommonPlayerTickHandler {
             // Blasting item speed check
             ItemStack mainHand = player.getMainHandItem();
             if (!mainHand.isEmpty() && mainHand.getItem() instanceof IBlastingItem tool) {
-                Map<BlockPos, BlockState> blocks = tool.getBlastedBlocks(player.level, player, mainHand, pos, event.getState());
+                Map<BlockPos, BlockState> blocks = tool.getBlastedBlocks(player.level(), player, mainHand, pos, event.getState());
                 if (!blocks.isEmpty()) {
                     // Scales mining speed based on hardest block
                     // Does not take into account the tool check for those blocks or other mining speed changes that don't apply to the target block.
-                    float targetHardness = event.getState().getDestroySpeed(player.level, pos);
+                    float targetHardness = event.getState().getDestroySpeed(player.level(), pos);
                     float maxHardness = blocks.entrySet().stream()
-                          .map(entry -> entry.getValue().getDestroySpeed(player.level, entry.getKey()))
+                          .map(entry -> entry.getValue().getDestroySpeed(player.level(), entry.getKey()))
                           .reduce(targetHardness, Float::max);
                     speed *= (targetHardness / maxHardness);
                 }
@@ -369,7 +370,7 @@ public class CommonPlayerTickHandler {
                 speed *= 5.0F;
             }
 
-            if (!player.isOnGround()) {
+            if (!player.onGround()) {
                 speed *= 5.0F;
             }
         }

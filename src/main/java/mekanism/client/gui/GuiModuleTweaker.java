@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.EnumMap;
@@ -26,6 +25,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -81,7 +81,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 select(index);
             }
             addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, slot.x - 1, slot.y - 1)
-                  .click((e, x, y) -> select(index), MekanismSounds.BEEP.get())
+                  .click((e, x, y) -> select(index), MekanismSounds.BEEP)
                   .overlayColor(isValidItem(index) ? null : () -> 0xCC333333)
                   .with(() -> index == selected ? SlotOverlay.SELECT : null));
         }
@@ -139,9 +139,9 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     }
 
     @Override
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        renderTitleText(matrix);
-        super.drawForegroundText(matrix, mouseX, mouseY);
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        renderTitleText(guiGraphics);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
     private boolean select(int index) {
@@ -196,7 +196,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
             if (!stack.isEmpty() && stack.getItem() instanceof ArmorItem armorItem) {
                 //If the selected thing is an armor item update the stack for the slot
                 // this is of use in case the item may be an armor piece but is in the hotbar
-                EquipmentSlot slot = armorItem.getSlot();
+                EquipmentSlot slot = armorItem.getEquipmentSlot();
                 lazyItems.put(slot, () -> stack);
                 updatePreview(slot, stack);
             }

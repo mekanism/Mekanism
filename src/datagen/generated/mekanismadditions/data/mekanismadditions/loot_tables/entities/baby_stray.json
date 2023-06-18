@@ -28,7 +28,6 @@
           "name": "minecraft:arrow"
         }
       ],
-      "name": "arrows",
       "rolls": 1.0
     },
     {
@@ -58,7 +57,6 @@
           "name": "minecraft:bone"
         }
       ],
-      "name": "bones",
       "rolls": 1.0
     },
     {
@@ -98,8 +96,8 @@
           "name": "minecraft:tipped_arrow"
         }
       ],
-      "name": "tipped_arrows",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:entities/baby_stray"
 }

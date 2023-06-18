@@ -6,11 +6,11 @@ import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.BakedModelWrapper;
@@ -47,9 +47,9 @@ public class ModelDataBakedModel extends BakedModelWrapper<BakedModel> {
     }
 
     @Override
-    public BakedModel applyTransform(TransformType cameraTransformType, PoseStack mat, boolean applyLeftHandTransform) {
+    public BakedModel applyTransform(ItemDisplayContext displayContext, PoseStack mat, boolean applyLeftHandTransform) {
         // have the original model apply any perspective transforms onto the MatrixStack
-        super.applyTransform(cameraTransformType, mat, applyLeftHandTransform);
+        super.applyTransform(displayContext, mat, applyLeftHandTransform);
         // return this model, as we want to draw the item variant quads ourselves
         return this;
     }

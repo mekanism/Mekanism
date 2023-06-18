@@ -1,26 +1,23 @@
 package mekanism.common.tag;
 
-import com.mojang.datafixers.util.Either;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
-import net.minecraftforge.registries.IForgeRegistry;
 
 //Based off of TagsProvider.TagAppender but with a few shortcuts for forge registry entries and also a few more helpers and addition of SafeVarargs annotations
-public class ForgeRegistryTagBuilder<TYPE> {
+public class ForgeRegistryTagBuilder<TYPE> {//TODO - 1.20: Look at IntrinsicTagAppender and forge extensions etc etc
 
-    private final Either<IForgeRegistry<TYPE>, Registry<TYPE>> registry;
+    private final Function<TYPE, ResourceKey<TYPE>> keyExtractor;
     private final TagBuilder builder;
     private final String modID;
 
-    public ForgeRegistryTagBuilder(Either<IForgeRegistry<TYPE>, Registry<TYPE>> registry, TagBuilder builder, String modID) {
-        this.registry = registry;
+    public ForgeRegistryTagBuilder(Function<TYPE, ResourceKey<TYPE>> keyExtractor, TagBuilder builder, String modID) {
+        this.keyExtractor = keyExtractor;
         this.builder = builder;
         this.modID = modID;
     }
@@ -31,7 +28,7 @@ public class ForgeRegistryTagBuilder<TYPE> {
     }
 
     private ResourceLocation getKey(TYPE element) {
-        return registry.map(r -> r.getKey(element), r -> r.getKey(element));
+        return keyExtractor.apply(element).location();
     }
 
     @SafeVarargs

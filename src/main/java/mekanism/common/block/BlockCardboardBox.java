@@ -12,6 +12,9 @@ import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,7 +28,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
 public class BlockCardboardBox extends BlockMekanism implements IStateStorage, IHasTileEntity<TileEntityCardboardBox> {
 
     public BlockCardboardBox() {
-        super(BlockBehaviour.Properties.of(Material.WOOL).strength(0.5F, 0.6F));
+        super(BlockBehaviour.Properties.of().strength(0.5F, 0.6F).mapColor(MapColor.WOOD));
     }
 
     @NotNull
@@ -117,8 +120,9 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
             this.blockState = blockState;
         }
 
-        public static BlockData read(CompoundTag nbtTags) {
-            BlockData data = new BlockData(NbtUtils.readBlockState(nbtTags.getCompound(NBTConstants.BLOCK_STATE)));
+        public static BlockData read(@Nullable Level level, CompoundTag nbtTags) {
+            HolderGetter<Block> holderGetter = level == null ? BuiltInRegistries.BLOCK.asLookup() : level.holderLookup(Registries.BLOCK);
+            BlockData data = new BlockData(NbtUtils.readBlockState(holderGetter, nbtTags.getCompound(NBTConstants.BLOCK_STATE)));
             NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.TILE_TAG, nbt -> data.tileTag = nbt);
             return data;
         }

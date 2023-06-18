@@ -1,7 +1,7 @@
 package mekanism.client.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.gui.drawable.IDrawable;
+import net.minecraft.client.gui.GuiGraphics;
 
 public record NOOPDrawable(int width, int height) implements IDrawable {
 
@@ -16,7 +16,7 @@ public record NOOPDrawable(int width, int height) implements IDrawable {
     }
 
     @Override
-    public void draw(PoseStack matrix, int xOffset, int yOffset) {
+    public void draw(GuiGraphics guiGraphics, int xOffset, int yOffset) {
         //NO-OP
     }
 }

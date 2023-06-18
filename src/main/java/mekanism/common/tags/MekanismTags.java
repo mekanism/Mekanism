@@ -16,11 +16,13 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -36,6 +38,7 @@ public class MekanismTags {
     public static void init() {
         Items.init();
         Blocks.init();
+        DamageTypes.init();
         Fluids.init();
         Gases.init();
         InfuseTypes.init();
@@ -245,6 +248,21 @@ public class MekanismTags {
 
         private static TagKey<Block> tag(String name) {
             return BlockTags.create(Mekanism.rl(name));
+        }
+    }
+
+    public static class DamageTypes {
+
+        private static void init() {
+        }
+
+        private DamageTypes() {
+        }
+
+        public static final TagKey<DamageType> MEKASUIT_ALWAYS_SUPPORTED = tag("mekasuit_always_supported");
+
+        private static TagKey<DamageType> tag(String name) {
+            return TagUtils.createKey(Registries.DAMAGE_TYPE, Mekanism.rl(name));
         }
     }
 

@@ -2,9 +2,6 @@ package mekanism.client.render.lib.effect;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import java.util.function.Supplier;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.RenderTickHandler;
@@ -14,6 +11,9 @@ import net.minecraft.client.Camera;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 public class BillboardingEffectRenderer {
 
@@ -49,12 +49,12 @@ public class BillboardingEffectRenderer {
         int tick = renderTick % (gridSize * gridSize);
         int xIndex = tick % gridSize, yIndex = tick / gridSize;
         float spriteSize = 1F / gridSize;
-        Quaternion quaternion = camera.rotation();
+        Quaternionf quaternion = camera.rotation();
         Vector3f[] vertexPos = {new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F),
                                 new Vector3f(1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, -1.0F, 0.0F)};
         Vec3 pos = effect.getPos(partialTick);
         for (Vector3f vector3f : vertexPos) {
-            vector3f.transform(quaternion);
+            quaternion.transform(vector3f);
             vector3f.mul(effect.getScale());
             vector3f.add((float) pos.x(), (float) pos.y(), (float) pos.z());
         }

@@ -225,7 +225,7 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
                 //Ensure the recipes can be modified
                 recipes = new ArrayList<>(recipes);
                 for (SmeltingRecipe smeltingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
-                    ItemStack recipeOutput = smeltingRecipe.getResultItem();
+                    ItemStack recipeOutput = smeltingRecipe.getResultItem(world.registryAccess());
                     if (!smeltingRecipe.isSpecial() && !smeltingRecipe.isIncomplete() && !recipeOutput.isEmpty()) {
                         //TODO: Can Smelting recipes even be "special", if so can we add some sort of checker to make getOutput return the correct result
                         NonNullList<Ingredient> ingredients = smeltingRecipe.getIngredients();

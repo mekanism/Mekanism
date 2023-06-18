@@ -26,6 +26,7 @@ import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 public class CuriosIntegration {
 
     public static void sendIMC() {
+        //TODO - 1.20: Switch to datapack? https://docs.illusivesoulworks.com/curios/slot-register
         InterModComms.sendTo(MekanismHooks.CURIOS_MODID, "register_type", () -> SlotTypePreset.BODY.getMessageBuilder().build());
     }
 
@@ -36,7 +37,7 @@ public class CuriosIntegration {
     private static void registerRenderers(ItemLike... items) {
         for (ItemLike item : items) {
             if (item.asItem() instanceof ArmorItem armor && IClientItemExtensions.of(armor) instanceof ISpecialGear gear) {
-                CuriosRendererRegistry.register(armor, () -> new MekanismCurioRenderer(gear.getGearModel(armor.getSlot())));
+                CuriosRendererRegistry.register(armor, () -> new MekanismCurioRenderer(gear.getGearModel(armor.getType())));
             } else {
                 Mekanism.logger.warn("Attempted to register Curios renderer for non-special gear item: {}.", RegistryUtils.getName(item.asItem()));
             }

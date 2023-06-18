@@ -1,6 +1,5 @@
 package mekanism.client.gui.robit;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.GuiMekanism;
@@ -22,6 +21,7 @@ import mekanism.common.network.to_server.PacketGuiButtonPress.ClickedEntityButto
 import mekanism.common.network.to_server.PacketRobit;
 import mekanism.common.network.to_server.PacketRobit.RobitPacketType;
 import mekanism.common.util.text.EnergyDisplay;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -84,14 +84,14 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     }
 
     @Override
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        drawString(matrix, title, titleLabelX, titleLabelY, titleTextColor());
-        drawTextScaledBound(matrix, MekanismLang.ROBIT_GREETING.translate(robit.getName()), 29, 18, screenTextColor(), 119);
-        drawTextScaledBound(matrix, MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergyContainer())), 29, 36 - 4, screenTextColor(), 119);
-        drawTextScaledBound(matrix, MekanismLang.ROBIT_FOLLOWING.translate(robit.getFollowing()), 29, 45 - 4, screenTextColor(), 119);
-        drawTextScaledBound(matrix, MekanismLang.ROBIT_DROP_PICKUP.translate(robit.getDropPickup()), 29, 54 - 4, screenTextColor(), 119);
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        drawString(guiGraphics, title, titleLabelX, titleLabelY, titleTextColor());
+        drawTextScaledBound(guiGraphics, MekanismLang.ROBIT_GREETING.translate(robit.getName()), 29, 18, screenTextColor(), 119);
+        drawTextScaledBound(guiGraphics, MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergyContainer())), 29, 36 - 4, screenTextColor(), 119);
+        drawTextScaledBound(guiGraphics, MekanismLang.ROBIT_FOLLOWING.translate(robit.getFollowing()), 29, 45 - 4, screenTextColor(), 119);
+        drawTextScaledBound(guiGraphics, MekanismLang.ROBIT_DROP_PICKUP.translate(robit.getDropPickup()), 29, 54 - 4, screenTextColor(), 119);
         CharSequence owner = robit.getOwnerName().length() > 14 ? robit.getOwnerName().subSequence(0, 14) : robit.getOwnerName();
-        drawTextScaledBound(matrix, MekanismLang.ROBIT_OWNER.translate(owner), 29, 63 - 4, screenTextColor(), 119);
-        super.drawForegroundText(matrix, mouseX, mouseY);
+        drawTextScaledBound(guiGraphics, MekanismLang.ROBIT_OWNER.translate(owner), 29, 63 - 4, screenTextColor(), 119);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

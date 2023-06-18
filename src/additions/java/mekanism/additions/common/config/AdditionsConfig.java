@@ -13,7 +13,7 @@ import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedResourceLocationListValue;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -117,7 +117,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
             this.biomeBlackList = CachedResourceLocationListValue.define(config, builder.comment("The list of biome ids that " + name + " will not spawn in even if the normal mob variant can spawn.")
                   .worldRestart(), "biomeBlackList", ForgeRegistries.BIOMES::containsKey);
             this.structureBlackList = CachedResourceLocationListValue.define(config, builder.comment("The list of structure ids that " + name + " will not spawn in even if the normal mob variant can spawn.")
-                  .worldRestart(), "structureBlackList", BuiltinRegistries.STRUCTURES::containsKey);
+                  .worldRestart(), "structureBlackList", BuiltInRegistries.STRUCTURE_TYPE::containsKey);
             builder.pop();
         }
 

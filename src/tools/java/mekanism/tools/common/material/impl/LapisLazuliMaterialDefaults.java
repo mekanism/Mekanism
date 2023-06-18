@@ -5,7 +5,7 @@ import mekanism.tools.common.material.BaseMekanismMaterial;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.Tags;
@@ -60,24 +60,22 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForSlot(@NotNull EquipmentSlot slotType) {
-        return switch (slotType) {
-            case FEET -> 130;
-            case LEGS -> 150;
-            case CHEST -> 160;
-            case HEAD -> 110;
-            default -> 0;
+    public int getDurabilityForType(@NotNull ArmorItem.Type armorType) {
+        return switch (armorType) {
+            case BOOTS -> 130;
+            case LEGGINGS -> 150;
+            case CHESTPLATE -> 160;
+            case HELMET -> 110;
         };
     }
 
     @Override
-    public int getDefenseForSlot(@NotNull EquipmentSlot slotType) {
-        return switch (slotType) {
-            case FEET -> 1;
-            case LEGS -> 3;
-            case CHEST -> 4;
-            case HEAD -> 1;
-            default -> 0;
+    public int getDefenseForType(@NotNull ArmorItem.Type armorType) {
+        return switch (armorType) {
+            case BOOTS -> 1;
+            case LEGGINGS -> 3;
+            case CHESTPLATE -> 4;
+            case HELMET -> 1;
         };
     }
 

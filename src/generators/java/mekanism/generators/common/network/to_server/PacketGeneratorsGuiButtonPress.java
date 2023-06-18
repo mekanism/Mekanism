@@ -39,7 +39,7 @@ public class PacketGeneratorsGuiButtonPress implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         ServerPlayer player = context.getSender();
         if (player != null) {//If we are on the server (the only time we should be receiving this packet), let forge handle switching the Gui
-            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level, tilePosition);
+            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), tilePosition);
             if (tile != null) {
                 MenuProvider provider = tileButton.getProvider(tile, extra);
                 if (provider != null) {

@@ -3,7 +3,7 @@
   "criteria": {
     "death": {
       "conditions": {
-        "damage": "mekanism.laser",
+        "damage": "mekanism:laser",
         "killed": true
       },
       "trigger": "mekanism:damage"
@@ -20,5 +20,6 @@
     "title": {
       "translate": "advancements.mekanism.laser_death.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

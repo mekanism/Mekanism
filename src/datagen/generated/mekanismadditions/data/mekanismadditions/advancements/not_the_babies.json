@@ -93,5 +93,6 @@
       "baby_stray",
       "baby_wither_skeleton"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

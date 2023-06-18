@@ -8,6 +8,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -64,8 +65,8 @@ public class RecipeFormula {
     }
 
     //Must have matches be called before this and be true as it assumes that the dummy inventory was set by it
-    public ItemStack assemble() {
-        return recipe == null ? ItemStack.EMPTY : recipe.assemble(dummy);
+    public ItemStack assemble(RegistryAccess registryAccess) {
+        return recipe == null ? ItemStack.EMPTY : recipe.assemble(dummy, registryAccess);
     }
 
     //Must have matches be called before this and be true as it assumes that the dummy inventory was set by it

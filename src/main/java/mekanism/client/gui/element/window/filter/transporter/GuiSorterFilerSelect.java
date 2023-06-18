@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class GuiSorterFilerSelect extends GuiFilterSelect<TileEntityLogisticalSorter> {
 
     public GuiSorterFilerSelect(IGuiWrapper gui, TileEntityLogisticalSorter tile) {
-        super(gui, tile, 4);
+        super(gui, tile, 3);
     }
 
     @NotNull
@@ -21,12 +21,6 @@ public class GuiSorterFilerSelect extends GuiFilterSelect<TileEntityLogisticalSo
     @Override
     protected GuiFilterCreator<TileEntityLogisticalSorter> getTagFilterCreator() {
         return GuiSorterTagFilter::create;
-    }
-
-    @NotNull
-    @Override
-    protected GuiFilterCreator<TileEntityLogisticalSorter> getMaterialFilterCreator() {
-        return GuiSorterMaterialFilter::create;
     }
 
     @NotNull

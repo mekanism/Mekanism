@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiColorPickerSlot;
 import mekanism.client.gui.element.GuiScreenSwitch;
@@ -9,6 +8,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.HUDElement.HUDColor;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class GuiMekaSuitHelmetOptions extends GuiWindow {
 
@@ -42,16 +42,16 @@ public class GuiMekaSuitHelmetOptions extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
 
-        drawTitleText(matrix, MekanismLang.HELMET_OPTIONS.translate(), 6);
-        drawTextExact(matrix, MekanismLang.HUD_OVERLAY.translate(), relativeX + 7, relativeY + 20, headingTextColor());
+        drawTitleText(guiGraphics, MekanismLang.HELMET_OPTIONS.translate(), 6);
+        drawTextExact(guiGraphics, MekanismLang.HUD_OVERLAY.translate(), relativeX + 7, relativeY + 20, headingTextColor());
 
-        drawScaledCenteredText(matrix, MekanismLang.DEFAULT.translate(), relativeX + 21, relativeY + 52, subheadingTextColor(), 0.8F);
-        drawScaledCenteredText(matrix, MekanismLang.WARNING.translate(), relativeX + 70, relativeY + 52, subheadingTextColor(), 0.8F);
-        drawScaledCenteredText(matrix, MekanismLang.DANGER.translate(), relativeX + 119, relativeY + 52, subheadingTextColor(), 0.8F);
+        drawScaledCenteredText(guiGraphics, MekanismLang.DEFAULT.translate(), relativeX + 21, relativeY + 52, subheadingTextColor(), 0.8F);
+        drawScaledCenteredText(guiGraphics, MekanismLang.WARNING.translate(), relativeX + 70, relativeY + 52, subheadingTextColor(), 0.8F);
+        drawScaledCenteredText(guiGraphics, MekanismLang.DANGER.translate(), relativeX + 119, relativeY + 52, subheadingTextColor(), 0.8F);
 
-        drawScaledCenteredText(matrix, MekanismLang.OPACITY.translate(), relativeX + 70, relativeY + 75, subheadingTextColor(), 0.8F);
+        drawScaledCenteredText(guiGraphics, MekanismLang.OPACITY.translate(), relativeX + 70, relativeY + 75, subheadingTextColor(), 0.8F);
     }
 }

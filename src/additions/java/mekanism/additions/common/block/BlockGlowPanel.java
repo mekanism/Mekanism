@@ -16,7 +16,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -33,7 +32,7 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
     private final EnumColor color;
 
     public BlockGlowPanel(EnumColor color) {
-        super(AdditionsBlockTypes.GLOW_PANEL, BlockBehaviour.Properties.of(Material.PISTON, color.getMapColor()).strength(1, 6));
+        super(AdditionsBlockTypes.GLOW_PANEL, BlockBehaviour.Properties.of().mapColor(color.getMapColor()).strength(1, 6));
         this.color = color;
     }
 

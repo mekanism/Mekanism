@@ -38,7 +38,7 @@ public final class InventoryUtils {
      */
     public static void dropItemContents(ItemEntity entity, DamageSource source) {
         ItemStack stack = entity.getItem();
-        if (!entity.level.isClientSide && !stack.isEmpty() && stack.getItem() instanceof IItemSustainedInventory sustainedInventory &&
+        if (!entity.level().isClientSide && !stack.isEmpty() && stack.getItem() instanceof IItemSustainedInventory sustainedInventory &&
             sustainedInventory.canContentsDrop(stack)) {
             boolean shouldDrop;
             if (source.getEntity() instanceof Player player) {
@@ -46,7 +46,7 @@ public final class InventoryUtils {
                 shouldDrop = MekanismAPI.getSecurityUtils().canAccess(player, stack);
             } else {
                 // otherwise, just check against there being no known player
-                shouldDrop = MekanismAPI.getSecurityUtils().canAccess(null, stack, entity.level.isClientSide);
+                shouldDrop = MekanismAPI.getSecurityUtils().canAccess(null, stack, entity.level().isClientSide);
             }
             if (shouldDrop) {
                 ListTag storedContents = sustainedInventory.getInventory(stack);
@@ -54,7 +54,7 @@ public final class InventoryUtils {
                     if (!slot.isEmpty()) {
                         //Pass the stack directly as while IInventorySlot#getStack says to not mutate the stack, our slot is a dummy slot
                         // so even if we end up adding the entity using the source stack it is fine
-                        dropStack(slot.getStack(), slotStack -> entity.level.addFreshEntity(new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), slotStack)));
+                        dropStack(slot.getStack(), slotStack -> entity.level().addFreshEntity(new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), slotStack)));
                     }
                 }
             }

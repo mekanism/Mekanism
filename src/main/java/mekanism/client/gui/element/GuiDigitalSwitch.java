@@ -1,13 +1,13 @@
 package mekanism.client.gui.element;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -31,32 +31,29 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
         this.stateSupplier = stateSupplier;
         this.tooltip = tooltip;
         this.onToggle = onToggle;
-        this.clickSound = MekanismSounds.BEEP.get();
+        this.clickSound = MekanismSounds.BEEP;
     }
 
     @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.renderToolTip(matrix, mouseX, mouseY);
-        displayTooltips(matrix, mouseX, mouseY, tooltip);
+    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderToolTip(guiGraphics, mouseX, mouseY);
+        displayTooltips(guiGraphics, mouseX, mouseY, tooltip);
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        RenderSystem.setShaderTexture(0, getResource());
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         boolean state = stateSupplier.getAsBoolean();
-        blit(matrix, x + type.switchX, y + type.switchY, 0, state ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
-        blit(matrix, x + type.switchX, y + type.switchY + BUTTON_SIZE_Y + 1, 0, state ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
-
-        RenderSystem.setShaderTexture(0, icon);
-        blit(matrix, x + type.iconX, y + type.iconY, 0, 0, 5, 5, 5, 5);
+        guiGraphics.blit(getResource(), getX() + type.switchX, getY() + type.switchY, 0, state ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
+        guiGraphics.blit(getResource(), getX() + type.switchX, getY() + type.switchY + BUTTON_SIZE_Y + 1, 0, state ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
+        guiGraphics.blit(icon, getX() + type.iconX, getY() + type.iconY, 0, 0, 5, 5, 5, 5);
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
-        drawScaledCenteredText(matrix, MekanismLang.ON.translate(), relativeX + type.switchX + 8, relativeY + type.switchY, 0x101010, 0.5F);
-        drawScaledCenteredText(matrix, MekanismLang.OFF.translate(), relativeX + type.switchX + 8, relativeY + type.switchY + 9, 0x101010, 0.5F);
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
+        drawScaledCenteredText(guiGraphics, MekanismLang.ON.translate(), relativeX + type.switchX + 8, relativeY + type.switchY, 0x101010, 0.5F);
+        drawScaledCenteredText(guiGraphics, MekanismLang.OFF.translate(), relativeX + type.switchX + 8, relativeY + type.switchY + 9, 0x101010, 0.5F);
     }
 
     @Override

@@ -7,6 +7,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.common.lib.transmitter.TransmissionType;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
@@ -59,6 +60,12 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
     public Object getIngredient(double mouseX, double mouseY) {
         Object gasIngredient = gasGauge.getIngredient(mouseX, mouseY);
         return gasIngredient == null ? fluidGauge.getIngredient(mouseX, mouseY) : gasIngredient;
+    }
+
+    @Override
+    public Rect2i getIngredientBounds(double mouseX, double mouseY) {
+        Object gasIngredient = gasGauge.getIngredient(mouseX, mouseY);
+        return gasIngredient == null ? fluidGauge.getIngredientBounds(mouseX, mouseY) : gasGauge.getIngredientBounds(mouseX, mouseY);
     }
 
     @Override

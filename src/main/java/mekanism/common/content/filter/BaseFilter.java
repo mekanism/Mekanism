@@ -3,7 +3,6 @@ package mekanism.common.content.filter;
 import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.miner.MinerItemStackFilter;
-import mekanism.common.content.miner.MinerMaterialFilter;
 import mekanism.common.content.miner.MinerModIDFilter;
 import mekanism.common.content.miner.MinerTagFilter;
 import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
@@ -11,7 +10,6 @@ import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.content.qio.filter.QIOModIDFilter;
 import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
-import mekanism.common.content.transporter.SorterMaterialFilter;
 import mekanism.common.content.transporter.SorterModIDFilter;
 import mekanism.common.content.transporter.SorterTagFilter;
 import mekanism.common.util.NBTUtils;
@@ -101,11 +99,9 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
     public static IFilter<?> fromType(FilterType filterType) {
         return switch (filterType) {
             case MINER_ITEMSTACK_FILTER -> new MinerItemStackFilter();
-            case MINER_MATERIAL_FILTER -> new MinerMaterialFilter();
             case MINER_MODID_FILTER -> new MinerModIDFilter();
             case MINER_TAG_FILTER -> new MinerTagFilter();
             case SORTER_ITEMSTACK_FILTER -> new SorterItemStackFilter();
-            case SORTER_MATERIAL_FILTER -> new SorterMaterialFilter();
             case SORTER_MODID_FILTER -> new SorterModIDFilter();
             case SORTER_TAG_FILTER -> new SorterTagFilter();
             case OREDICTIONIFICATOR_ITEM_FILTER -> new OredictionificatorItemFilter();

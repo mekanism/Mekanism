@@ -2,8 +2,6 @@ package mekanism.client;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
-import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -22,14 +20,8 @@ public class RobitSpriteUploader extends TextureAtlasHolder {
     public static RobitSpriteUploader UPLOADER;
 
     public RobitSpriteUploader(TextureManager textureManager) {
-        super(textureManager, ATLAS_LOCATION, "entity/robit");
+        super(textureManager, ATLAS_LOCATION, Mekanism.rl("entity/robit"));
         UPLOADER = this;
-    }
-
-    @NotNull
-    @Override
-    protected Stream<ResourceLocation> getResourcesToLoad() {
-        return MekanismAPI.robitSkinRegistry().getValues().stream().flatMap(skin -> skin.getTextures().stream());
     }
 
     @NotNull

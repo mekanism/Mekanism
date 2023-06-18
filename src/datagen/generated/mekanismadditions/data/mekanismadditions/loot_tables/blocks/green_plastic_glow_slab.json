@@ -28,8 +28,8 @@
           "name": "mekanismadditions:green_plastic_glow_slab"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/green_plastic_glow_slab"
 }

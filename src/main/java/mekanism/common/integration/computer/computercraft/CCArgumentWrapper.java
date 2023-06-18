@@ -25,7 +25,6 @@ import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
-import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.miner.MinerFilter;
@@ -286,8 +285,6 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                         wrapped.put("itemNBT", wrapNBT(tag));
                     }
                 }
-            } else if (result instanceof IMaterialFilter<?> materialFilter) {
-                wrapped.put("materialItem", wrapReturnType(materialFilter.getMaterialItem().getItem()));
             } else if (result instanceof IModIDFilter<?> modIDFilter) {
                 wrapped.put("modId", modIDFilter.getModID());
             } else if (result instanceof ITagFilter<?> tagFilter) {
@@ -479,12 +476,6 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                             return null;
                         }
                         itemFilter.setItemStack(stack);
-                    } else if (filter instanceof IMaterialFilter<?> materialFilter) {
-                        ItemStack stack = tryCreateFilterItem(map.get("materialItem"), null);
-                        if (stack.isEmpty()) {
-                            return null;
-                        }
-                        materialFilter.setMaterialItem(stack);
                     } else if (filter instanceof IModIDFilter<?> modIDFilter) {
                         String modId = tryGetFilterModId(map.get("modId"));
                         if (modId == null) {

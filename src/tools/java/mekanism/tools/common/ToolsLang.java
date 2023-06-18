@@ -6,6 +6,7 @@ import net.minecraft.Util;
 
 @NothingNullByDefault
 public enum ToolsLang implements ILangEntry {
+    PACK_DESCRIPTION("constants", "pack_description"),
     HP("tooltip", "hp");
 
     private final String key;

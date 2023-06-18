@@ -9,10 +9,9 @@ import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
-import mekanism.common.item.gear.ItemMekaSuitArmor;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
@@ -367,13 +366,13 @@ public class GearConfig extends BaseMekanismConfig {
         mekaSuitJetpackTransferRate = CachedLongValue.wrap(this, builder.comment("Rate at which Hydrogen can be transferred into the jetpack unit.")
               .defineInRange("jetpackTransferRate", 256, 1, Long.MAX_VALUE));
         mekaSuitHelmetArmor = CachedIntValue.wrap(this, builder.comment("Armor value of MekaSuit Helmets.")
-              .defineInRange("helmetArmor", ArmorMaterials.NETHERITE.getDefenseForSlot(EquipmentSlot.HEAD), 0, Integer.MAX_VALUE));
+              .defineInRange("helmetArmor", ArmorMaterials.NETHERITE.getDefenseForType(ArmorItem.Type.HELMET), 0, Integer.MAX_VALUE));
         mekaSuitBodyArmorArmor = CachedIntValue.wrap(this, builder.comment("Armor value of MekaSuit BodyArmor.")
-              .defineInRange("bodyArmorArmor", ArmorMaterials.NETHERITE.getDefenseForSlot(EquipmentSlot.CHEST), 0, Integer.MAX_VALUE));
+              .defineInRange("bodyArmorArmor", ArmorMaterials.NETHERITE.getDefenseForType(ArmorItem.Type.CHESTPLATE), 0, Integer.MAX_VALUE));
         mekaSuitPantsArmor = CachedIntValue.wrap(this, builder.comment("Armor value of MekaSuit Pants.")
-              .defineInRange("pantsArmor", ArmorMaterials.NETHERITE.getDefenseForSlot(EquipmentSlot.LEGS), 0, Integer.MAX_VALUE));
+              .defineInRange("pantsArmor", ArmorMaterials.NETHERITE.getDefenseForType(ArmorItem.Type.LEGGINGS), 0, Integer.MAX_VALUE));
         mekaSuitBootsArmor = CachedIntValue.wrap(this, builder.comment("Armor value of MekaSuit Boots.")
-              .defineInRange("bootsArmor", ArmorMaterials.NETHERITE.getDefenseForSlot(EquipmentSlot.FEET), 0, Integer.MAX_VALUE));
+              .defineInRange("bootsArmor", ArmorMaterials.NETHERITE.getDefenseForType(ArmorItem.Type.BOOTS), 0, Integer.MAX_VALUE));
         mekaSuitToughness = CachedFloatValue.wrap(this, builder.comment("Toughness value of the MekaSuit.")
               .defineInRange("toughness", ArmorMaterials.NETHERITE.getToughness(), 0, Float.MAX_VALUE));
         mekaSuitKnockbackResistance = CachedFloatValue.wrap(this, builder.comment("Knockback resistance value of the MekaSuit.")
@@ -385,11 +384,12 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("magicDamageReductionRatio", 1D, 0, 1));
         mekaSuitUnspecifiedDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from other non explicitly supported damage types that don't bypass armor when the MekaSuit has enough power and a full suit is equipped.")
               .defineInRange("unspecifiedDamageReductionRatio", 1D, 0, 1));
-        for (DamageSource type : ItemMekaSuitArmor.getSupportedSources()) {
+        //TODO - 1.20: Figure out how to reimplement this Do we just need to do it for all damage sources??
+        /*for (DamageSource type : ItemMekaSuitArmor.getSupportedSources()) {
             mekaSuitDamageRatios.put(type, CachedFloatValue.wrap(this, builder
                   .comment("Percent of damage taken from " + type.getMsgId() + " that can be absorbed by the MekaSuit when there is enough power and a full suit is equipped.")
                   .defineInRange(type.getMsgId() + "DamageReductionRatio", 1D, 0, 1)));
-        }
+        }*/
         builder.pop(2);
 
         builder.pop();

@@ -1,9 +1,13 @@
 package mekanism.defense.common;
 
+import java.util.concurrent.CompletableFuture;
+import mekanism.common.BasePackMetadataGenerator;
 import mekanism.common.MekanismDataGenerator;
 import mekanism.defense.client.DefenseLangProvider;
 import mekanism.defense.common.loot.DefenseLootProvider;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -21,11 +25,17 @@ public class DefenseDataGenerator {
         MekanismDataGenerator.bootstrapConfigs(MekanismDefense.MODID);
         DataGenerator gen = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        addProvider(gen, true, output -> new BasePackMetadataGenerator(output, DefenseLang.PACK_DESCRIPTION));
         //Client side data generators
-        gen.addProvider(event.includeClient(), new DefenseLangProvider(gen));
+        addProvider(gen, event.includeClient(), DefenseLangProvider::new);
         //Server side data generators
-        gen.addProvider(event.includeServer(), new DefenseTagProvider(gen, existingFileHelper));
-        gen.addProvider(event.includeServer(), new DefenseLootProvider(gen));
-        gen.addProvider(event.includeServer(), new DefenseRecipeProvider(gen, existingFileHelper));
+        addProvider(gen, event.includeServer(), output -> new DefenseTagProvider(output, lookupProvider, existingFileHelper));
+        addProvider(gen, event.includeServer(), DefenseLootProvider::new);
+        addProvider(gen, event.includeServer(), output -> new DefenseRecipeProvider(output, existingFileHelper));
+    }
+
+    private static <PROVIDER extends DataProvider> void addProvider(DataGenerator gen, boolean run, DataProvider.Factory<PROVIDER> factory) {
+        gen.addProvider(run, factory);
     }
 }

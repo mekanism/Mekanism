@@ -6,7 +6,11 @@ import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +25,7 @@ public class TileEntityCardboardBox extends TileEntityUpdateable {
     @Override
     public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
-        NBTUtils.setCompoundIfPresent(nbt, NBTConstants.DATA, tag -> storedData = BlockData.read(tag));
+        NBTUtils.setCompoundIfPresent(nbt, NBTConstants.DATA, tag -> storedData = BlockData.read(level, tag));
     }
 
     @Override

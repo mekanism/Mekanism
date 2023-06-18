@@ -31,7 +31,7 @@ public class PacketAddTrusted implements IMekanismPacket {
         if (!name.isEmpty() && InputValidator.test(name, InputValidator.USERNAME)) {
             Player player = context.getSender();
             if (player != null) {
-                TileEntitySecurityDesk tile = WorldUtils.getTileEntity(TileEntitySecurityDesk.class, player.level, tilePosition);
+                TileEntitySecurityDesk tile = WorldUtils.getTileEntity(TileEntitySecurityDesk.class, player.level(), tilePosition);
                 if (tile != null) {
                     tile.addTrusted(name);
                 }

@@ -1,8 +1,8 @@
 package mekanism.client.gui.element.bar;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class GuiEmptyBar extends GuiBar<IBarInfoHandler> {
 
@@ -14,6 +14,6 @@ public class GuiEmptyBar extends GuiBar<IBarInfoHandler> {
     }
 
     @Override
-    protected void renderBarOverlay(PoseStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+    protected void renderBarOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
     }
 }

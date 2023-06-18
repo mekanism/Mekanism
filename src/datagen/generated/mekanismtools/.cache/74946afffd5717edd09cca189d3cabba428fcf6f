@@ -1,4 +1,4 @@
-// 1.19.2	2022-08-05T21:57:21.5854106	Tags: mekanismtools
+// 1.20.1	2023-06-15T18:11:13.8711573	Tags: mekanismtools
 13cf1fe06cf159d32d074144254a0d375f6b20e7 data/forge/tags/blocks/mineable/paxel.json
 1ab0df6429d1970340ec4569317573a4a9eba83b data/forge/tags/items/armors/boots.json
 af96c784f584395bc4a681ca629dd189a19e5e70 data/forge/tags/items/armors/boots/bronze.json
@@ -29,14 +29,12 @@ b8d9c5a78696fe13c1b41fda6c1a467cbd21f4b8 data/forge/tags/items/armors/leggings/l
 2f7a0352b849cb3e61189d3e9541ea9449431bbe data/forge/tags/items/armors/leggings/refined_obsidian.json
 aa25fc00b8713fb3018ce24f07a6fd7ad076907d data/forge/tags/items/armors/leggings/steel.json
 64dc89347621097fba7e74cca9e2170ac678724a data/forge/tags/items/tools.json
-27d5e6a21722019f7ef81ffbb47dde5e9a8ad833 data/forge/tags/items/tools/axes.json
 f70ed8a9be735b70455db42a440cebf2a88e493d data/forge/tags/items/tools/axes/bronze.json
 5c93506b56aba95b3ab59aaf408ab09326968363 data/forge/tags/items/tools/axes/lapis_lazuli.json
 73ccd45db063d96f8189d22a946815b0d75979c5 data/forge/tags/items/tools/axes/osmium.json
 0841ac6e2e198d9f6ed578d77f37aa2e04bf0695 data/forge/tags/items/tools/axes/refined_glowstone.json
 748d8d44ffce254040b8b85e72c7e692e8272a85 data/forge/tags/items/tools/axes/refined_obsidian.json
 036347f3aa89bf51b4e3d5425430329ff08acea8 data/forge/tags/items/tools/axes/steel.json
-0de1b66111f4ca6a85c32240cf69fb3af98d06e0 data/forge/tags/items/tools/hoes.json
 31b478d5c5c20e866fa7312128461c7698024b8f data/forge/tags/items/tools/hoes/bronze.json
 5b75b5c05c9c9583c01b608dbd22a6d1f8ccbcaf data/forge/tags/items/tools/hoes/lapis_lazuli.json
 465bf279f15ea1f438d1c0a466f83db129920742 data/forge/tags/items/tools/hoes/osmium.json
@@ -56,7 +54,6 @@ ce707104a7ba4f23c474c52145f386e6acf39286 data/forge/tags/items/tools/paxels/refi
 cf866648c28229a50f274d24cd5e438c4b75daf1 data/forge/tags/items/tools/paxels/steel.json
 fc88f147529403f92fa9b07dd7f3690c4f9a775b data/forge/tags/items/tools/paxels/stone.json
 3eee18c36757195bbddcd627179507f490d9c296 data/forge/tags/items/tools/paxels/wood.json
-d0d1c465cdc61d787cfc2a3550b2815245a41cf5 data/forge/tags/items/tools/pickaxes.json
 d1cd75dbf47000c4e0c334a412734ce3d805238c data/forge/tags/items/tools/pickaxes/bronze.json
 6030faf91a0ee98f7e44076ccb9d1263520a279a data/forge/tags/items/tools/pickaxes/lapis_lazuli.json
 8dc9e118b232ed3f4506b80ad3c4ff7acdb5c4aa data/forge/tags/items/tools/pickaxes/osmium.json
@@ -70,14 +67,12 @@ eff66291c9a7aaa883fa6c4bb58ddf1e6c0667d8 data/forge/tags/items/tools/pickaxes/re
 f128f1e93cdec3859c3d2f23e3e250aebf31e56c data/forge/tags/items/tools/shields/refined_glowstone.json
 5fee242c90b1f55bc1957517cf21f42e1dc52ecc data/forge/tags/items/tools/shields/refined_obsidian.json
 e37408340256217564ce8499e02c5d83c34bcd9c data/forge/tags/items/tools/shields/steel.json
-093fcdff8a397f421836cba0e18eca3a8ecba38d data/forge/tags/items/tools/shovels.json
 b85cb2393573bfac9864b4443f0a63c56129ed3c data/forge/tags/items/tools/shovels/bronze.json
 a8d0b01b3350a642553132df2df03a1ddc78fc72 data/forge/tags/items/tools/shovels/lapis_lazuli.json
 7ab24bcb7dbd46df1c0514fd5c2535bc113de03b data/forge/tags/items/tools/shovels/osmium.json
 362e9c6839cc7b8a8f0cc13786295264808da7b5 data/forge/tags/items/tools/shovels/refined_glowstone.json
 7d97e702ac2465386f9da4d59fcec81e18f6db77 data/forge/tags/items/tools/shovels/refined_obsidian.json
 24e8d636fdde778f14444dfc6158ca90c021ff05 data/forge/tags/items/tools/shovels/steel.json
-380f44893a403d8cdf9e3f090017286b153a7567 data/forge/tags/items/tools/swords.json
 cabd2986aa4c697fc96f987d2d08455761eb40d3 data/forge/tags/items/tools/swords/bronze.json
 0afa19ac9011dcd6f55cc1e05a893aeba3289be8 data/forge/tags/items/tools/swords/lapis_lazuli.json
 8f69e2580729fe8a0a8e711f0cb5fa80648899c6 data/forge/tags/items/tools/swords/osmium.json
@@ -90,5 +85,10 @@ df56ecb68b20fd7b299c4ef61beed200a8234bf4 data/forge/tags/items/tools/swords/refi
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanismtools/tags/blocks/needs_refined_glowstone_tool.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanismtools/tags/blocks/needs_refined_obsidian_tool.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanismtools/tags/blocks/needs_steel_tool.json
+27d5e6a21722019f7ef81ffbb47dde5e9a8ad833 data/minecraft/tags/items/axes.json
 e803e7c6cf8511602cd6292cf9a1d6c3bf0fa63c data/minecraft/tags/items/cluster_max_harvestables.json
+0de1b66111f4ca6a85c32240cf69fb3af98d06e0 data/minecraft/tags/items/hoes.json
+d0d1c465cdc61d787cfc2a3550b2815245a41cf5 data/minecraft/tags/items/pickaxes.json
 963dabde7436e2cfac6afb1312f24e0eea0b43d4 data/minecraft/tags/items/piglin_loved.json
+093fcdff8a397f421836cba0e18eca3a8ecba38d data/minecraft/tags/items/shovels.json
+380f44893a403d8cdf9e3f090017286b153a7567 data/minecraft/tags/items/swords.json

@@ -10,6 +10,7 @@ import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
 import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.lib.transmitter.TransmissionType;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
@@ -83,6 +84,12 @@ public class GuiMergedChemicalTankGauge<HANDLER extends IGasTracker & IInfusionT
     public Object getIngredient(double mouseX, double mouseY) {
         GuiTankGauge<?, ?> currentGauge = getCurrentGaugeNoFallback();
         return currentGauge == null ? null : currentGauge.getIngredient(mouseX, mouseY);
+    }
+
+    @Override
+    public Rect2i getIngredientBounds(double mouseX, double mouseY) {
+        GuiTankGauge<?, ?> currentGauge = getCurrentGaugeNoFallback();
+        return currentGauge == null ? new Rect2i(getX() + 1, getY() + 1, width - 2, height - 2) : currentGauge.getIngredientBounds(mouseX, mouseY);
     }
 
     @Override

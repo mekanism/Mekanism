@@ -135,7 +135,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             side = teleporter.frameDirection;
         } else {
             for (Direction iterSide : EnumUtils.HORIZONTAL_DIRECTIONS) {
-                if (player.level.isEmptyBlock(target.relative(iterSide))) {
+                if (player.level().isEmptyBlock(target.relative(iterSide))) {
                     side = iterSide;
                     break;
                 }
@@ -314,11 +314,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 }
                 energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.INTERNAL);
                 if (teleportedEntity != null) {
-                    if (level != teleportedEntity.level || teleportedEntity.distanceToSqr(oldX, oldY, oldZ) >= 25) {
+                    if (level != teleportedEntity.level() || teleportedEntity.distanceToSqr(oldX, oldY, oldZ) >= 25) {
                         //If the entity teleported over 5 blocks, play the sound at both the destination and the source
                         level.playSound(null, oldX, oldY, oldZ, SoundEvents.ENDERMAN_TELEPORT, entity.getSoundSource(), 1.0F, 1.0F);
                     }
-                    teleportedEntity.level.playSound(null, teleportedEntity.getX(), teleportedEntity.getY(), teleportedEntity.getZ(),
+                    teleportedEntity.level().playSound(null, teleportedEntity.getX(), teleportedEntity.getY(), teleportedEntity.getZ(),
                           SoundEvents.ENDERMAN_TELEPORT, teleportedEntity.getSoundSource(), 1.0F, 1.0F);
                 }
             }
@@ -338,11 +338,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     @Nullable
     public static Entity teleportEntityTo(Entity entity, Level targetWorld, BlockPos target) {
-        if (entity.getCommandSenderWorld().dimension() == targetWorld.dimension()) {
+        if (entity.level().dimension() == targetWorld.dimension()) {
             entity.teleportTo(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
             if (!entity.getPassengers().isEmpty()) {
                 //Force re-apply any passengers so that players don't get "stuck" outside what they may be riding
-                ((ServerChunkCache) entity.getCommandSenderWorld().getChunkSource()).broadcast(entity, new ClientboundSetPassengersPacket(entity));
+                ((ServerChunkCache) entity.level().getChunkSource()).broadcast(entity, new ClientboundSetPassengersPacket(entity));
                 Entity controller = entity.getControllingPassenger();
                 if (controller != entity && controller instanceof ServerPlayer player && !(controller instanceof FakePlayer)) {
                     if (player.connection != null) {
@@ -451,11 +451,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @NotNull
     public static FloatingLong calculateEnergyCost(Entity entity, Level targetWorld, Coord4D coords) {
         FloatingLong energyCost = MekanismConfig.usage.teleporterBase.get();
-        boolean sameDimension = entity.level.dimension() == coords.dimension;
+        boolean sameDimension = entity.level().dimension() == coords.dimension;
         if (sameDimension) {
             energyCost = energyCost.add(MekanismConfig.usage.teleporterDistance.get().multiply(Math.sqrt(entity.distanceToSqr(coords.getX(), coords.getY(), coords.getZ()))));
         } else {
-            double currentScale = entity.level.dimensionType().coordinateScale();
+            double currentScale = entity.level().dimensionType().coordinateScale();
             double targetScale = targetWorld.dimensionType().coordinateScale();
             double yDifference = entity.getY() - coords.getY();
             //Note: coordinate scale only affects x and z, y is 1:1

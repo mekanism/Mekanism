@@ -17,8 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class ItemSpecialArmor extends ArmorItem {
 
-    protected ItemSpecialArmor(ArmorMaterial material, EquipmentSlot slot, Properties properties) {
-        super(material, slot, properties);
+    protected ItemSpecialArmor(ArmorMaterial material, ArmorItem.Type armorType, Properties properties) {
+        super(material, armorType, properties);
     }
 
     @Override

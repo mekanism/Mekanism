@@ -34,6 +34,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.BlockEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> {
 
@@ -43,8 +44,8 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        tooltip.add(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(getBlockData(stack) != null)));
-        BlockData data = getBlockData(stack);
+        tooltip.add(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(getBlockData(world, stack) != null)));
+        BlockData data = getBlockData(world, stack);
         if (data != null) {
             try {
                 tooltip.add(MekanismLang.BLOCK.translate(data.blockState.getBlock()));
@@ -79,7 +80,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         }
         Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        if (getBlockData(stack) == null && !player.isShiftKeyDown()) {
+        if (getBlockData(world, stack) == null && !player.isShiftKeyDown()) {
             BlockState state = world.getBlockState(pos);
             if (!state.isAir() && state.getDestroySpeed(world, pos) != -1) {
                 if (state.is(MekanismTags.Blocks.CARDBOARD_BLACKLIST) ||
@@ -131,7 +132,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         if (super.placeBlock(context, state)) {
             TileEntityCardboardBox tile = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, context.getClickedPos());
             if (tile != null) {
-                tile.storedData = getBlockData(context.getItemInHand());
+                tile.storedData = getBlockData(world, context.getItemInHand());
             }
             return true;
         }
@@ -142,19 +143,16 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         ItemDataUtils.setCompound(stack, NBTConstants.DATA, data.write(new CompoundTag()));
     }
 
-    public BlockData getBlockData(ItemStack stack) {
+    public BlockData getBlockData(@Nullable Level level, ItemStack stack) {
         if (ItemDataUtils.hasData(stack, NBTConstants.DATA, Tag.TAG_COMPOUND)) {
-            return BlockData.read(ItemDataUtils.getCompound(stack, NBTConstants.DATA));
+            return BlockData.read(level, ItemDataUtils.getCompound(stack, NBTConstants.DATA));
         }
         return null;
     }
 
     @Override
     public int getMaxStackSize(ItemStack stack) {
-        BlockData blockData = getBlockData(stack);
-        if (blockData != null) {
-            return 1;
-        }
-        return super.getMaxStackSize(stack);
+        BlockData blockData = getBlockData(null, stack);
+        return blockData == null ? super.getMaxStackSize(stack) : 1;
     }
 }

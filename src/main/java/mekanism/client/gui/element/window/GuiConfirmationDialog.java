@@ -1,12 +1,12 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 public class GuiConfirmationDialog extends GuiWindow {
@@ -32,9 +32,9 @@ public class GuiConfirmationDialog extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
-        wrappedTextRenderer.renderCentered(matrix, relativeX + (width / 2F), relativeY + 6, titleTextColor(), width - 10);
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
+        wrappedTextRenderer.renderCentered(guiGraphics, relativeX + (width / 2F), relativeY + 6, titleTextColor(), width - 10);
     }
 
     @Override

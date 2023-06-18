@@ -14,8 +14,8 @@
           "name": "mekanismgenerators:laser_focus_matrix"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismgenerators:blocks/laser_focus_matrix"
 }

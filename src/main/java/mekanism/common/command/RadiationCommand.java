@@ -39,7 +39,7 @@ public class RadiationCommand {
                     .requires(MekanismPermissions.COMMAND_RADIATION_REMOVE_ALL)
                     .executes(ctx -> {
                         RadiationManager.INSTANCE.clearSources();
-                        ctx.getSource().sendSuccess(MekanismLang.COMMAND_RADIATION_REMOVE_ALL.translateColored(EnumColor.GRAY), true);
+                        ctx.getSource().sendSuccess(() -> MekanismLang.COMMAND_RADIATION_REMOVE_ALL.translateColored(EnumColor.GRAY), true);
                         return 0;
                     })
               );
@@ -80,7 +80,7 @@ public class RadiationCommand {
                         double magnitude = DoubleArgumentType.getDouble(ctx, "magnitude");
                         source.getPlayerOrException().getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
                             c.radiate(magnitude);
-                            source.sendSuccess(MekanismLang.COMMAND_RADIATION_ADD_ENTITY.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(magnitude),
+                            source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_ADD_ENTITY.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(magnitude),
                                   UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)), true);
                         });
                         return 0;
@@ -96,7 +96,7 @@ public class RadiationCommand {
                                   if (entity instanceof LivingEntity) {
                                       entity.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
                                           c.radiate(magnitude);
-                                          source.sendSuccess(MekanismLang.COMMAND_RADIATION_ADD_ENTITY_TARGET.translateColored(EnumColor.GRAY,
+                                          source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_ADD_ENTITY_TARGET.translateColored(EnumColor.GRAY,
                                                 RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3),
                                                 EnumColor.INDIGO, entity.getDisplayName()), true);
                                       });
@@ -138,7 +138,7 @@ public class RadiationCommand {
                   CommandSourceStack source = ctx.getSource();
                   source.getPlayerOrException().getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
                       c.set(RadiationManager.BASELINE);
-                      source.sendSuccess(MekanismLang.COMMAND_RADIATION_CLEAR.translateColored(EnumColor.GRAY), true);
+                      source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_CLEAR.translateColored(EnumColor.GRAY), true);
                   });
                   return 0;
               }).then(Commands.argument("targets", EntityArgument.entities())
@@ -150,7 +150,7 @@ public class RadiationCommand {
                             if (entity instanceof LivingEntity) {
                                 entity.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
                                     c.set(RadiationManager.BASELINE);
-                                    source.sendSuccess(MekanismLang.COMMAND_RADIATION_CLEAR_ENTITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
+                                    source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_CLEAR_ENTITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                                           entity.getDisplayName()), true);
                                 });
                                 healed++;
@@ -172,7 +172,7 @@ public class RadiationCommand {
                             double newValue = Math.max(RadiationManager.BASELINE, c.getRadiation() - magnitude);
                             double reduced = c.getRadiation() - newValue;
                             c.set(newValue);
-                            source.sendSuccess(MekanismLang.COMMAND_RADIATION_REDUCE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(reduced),
+                            source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_REDUCE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(reduced),
                                   UnitDisplayUtils.getDisplayShort(reduced, RadiationUnit.SVH, 3)), true);
                         });
                         return 0;
@@ -190,7 +190,7 @@ public class RadiationCommand {
                                           double newValue = Math.max(RadiationManager.BASELINE, c.getRadiation() - magnitude);
                                           double reduced = c.getRadiation() - newValue;
                                           c.set(newValue);
-                                          source.sendSuccess(MekanismLang.COMMAND_RADIATION_REDUCE_TARGET.translateColored(EnumColor.GRAY,
+                                          source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_REDUCE_TARGET.translateColored(EnumColor.GRAY,
                                                 EnumColor.INDIGO, entity.getDisplayName(), RadiationScale.getSeverityColor(reduced),
                                                 UnitDisplayUtils.getDisplayShort(reduced, RadiationUnit.SVH, 3)), true);
                                       });
@@ -210,7 +210,7 @@ public class RadiationCommand {
     private static int addRadiation(CommandSourceStack source, Vec3 pos, Level world, double magnitude) {
         Coord4D location = new Coord4D(pos.x, pos.y, pos.z, world.dimension());
         MekanismAPI.getRadiationManager().radiate(location, magnitude);
-        source.sendSuccess(MekanismLang.COMMAND_RADIATION_ADD.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(magnitude),
+        source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_ADD.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(magnitude),
               UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3), EnumColor.INDIGO, getPosition(location.getPos()), EnumColor.INDIGO,
               location.dimension.location()), true);
         return 0;
@@ -223,7 +223,7 @@ public class RadiationCommand {
     private static int getRadiationLevel(CommandSourceStack source, Vec3 pos, Level world) {
         Coord4D location = new Coord4D(pos.x, pos.y, pos.z, world.dimension());
         double magnitude = MekanismAPI.getRadiationManager().getRadiationLevel(location);
-        source.sendSuccess(MekanismLang.COMMAND_RADIATION_GET.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(location.getPos()), EnumColor.INDIGO,
+        source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_GET.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(location.getPos()), EnumColor.INDIGO,
                     location.dimension.location(), RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)),
               true);
         return 0;

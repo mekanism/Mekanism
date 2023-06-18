@@ -24,7 +24,7 @@ public class PacketRemoveModule implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         Player player = context.getSender();
         if (player != null) {
-            TileEntityModificationStation tile = WorldUtils.getTileEntity(TileEntityModificationStation.class, player.level, pos);
+            TileEntityModificationStation tile = WorldUtils.getTileEntity(TileEntityModificationStation.class, player.level(), pos);
             if (tile != null) {
                 tile.removeModule(player, moduleType);
             }

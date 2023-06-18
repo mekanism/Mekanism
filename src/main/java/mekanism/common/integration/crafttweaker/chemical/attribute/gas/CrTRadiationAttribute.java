@@ -27,9 +27,6 @@ public class CrTRadiationAttribute {
      */
     @ZenCodeType.StaticExpansionMethod
     public static GasAttributes.Radiation create(double radioactivity) {
-        if (radioactivity <= 0) {
-            throw new IllegalArgumentException("Radiation attribute should only be used when there actually is radiation! Radioactivity: " + radioactivity);
-        }
         return new GasAttributes.Radiation(radioactivity);
     }
 

@@ -1,0 +1,10 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": [
+    "mekanism:ore_osmium_upper",
+    "mekanism:ore_osmium_middle",
+    "mekanism:ore_osmium_small"
+  ],
+  "step": "underground_ores"
+}

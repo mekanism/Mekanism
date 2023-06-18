@@ -13,8 +13,8 @@ import vectorwing.farmersdelight.common.registry.ModItems;
 @NothingNullByDefault
 public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
 
-    public FarmersDelightRecipeProvider() {
-        super("farmersdelight");
+    public FarmersDelightRecipeProvider(String modid) {
+        super(modid);
     }
 
     @Override

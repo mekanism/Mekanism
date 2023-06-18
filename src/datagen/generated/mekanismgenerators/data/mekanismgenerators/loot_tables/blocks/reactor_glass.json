@@ -14,8 +14,8 @@
           "name": "mekanismgenerators:reactor_glass"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismgenerators:blocks/reactor_glass"
 }

@@ -4,6 +4,7 @@ import mekanism.api.robit.RobitSkin;
 import mekanism.common.Mekanism;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -26,9 +27,12 @@ public class AllayRobitSkin extends RobitSkin {
     @Override
     public boolean isUnlocked(@NotNull Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
-            //TODO: Do we eventually want to make a system for announcing unlocks, maybe using toast notifications
-            Advancement advancement = serverPlayer.getServer().getAdvancements().getAdvancement(new ResourceLocation("husbandry/allay_deliver_item_to_player"));
-            return advancement != null && serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone();
+            MinecraftServer server = serverPlayer.getServer();
+            if (server != null) {
+                //TODO: Do we eventually want to make a system for announcing unlocks, maybe using toast notifications
+                Advancement advancement = server.getAdvancements().getAdvancement(new ResourceLocation("husbandry/allay_deliver_item_to_player"));
+                return advancement != null && serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone();
+            }
         }
         //Fallback, as currently the client does not validate if a skin is unlocked
         return true;

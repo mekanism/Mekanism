@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.custom;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +34,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.text.InputValidator;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.MutableComponent;
 import org.jetbrains.annotations.Nullable;
 
@@ -187,23 +187,23 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
         FREQ frequency = frequencySelector.getFrequency();
         if (frequency == null) {
             MutableComponent noneComponent = MekanismLang.NONE.translateColored(EnumColor.DARK_RED);
-            drawString(matrix, MekanismLang.FREQUENCY.translate(noneComponent), 27, yStart + 67, titleTextColor());
-            drawString(matrix, MekanismLang.OWNER.translate(noneComponent), 27, yStart + 77, titleTextColor());
-            drawString(matrix, MekanismLang.SECURITY.translate(noneComponent), 27, yStart + 87, titleTextColor());
+            drawString(guiGraphics, MekanismLang.FREQUENCY.translate(noneComponent), 27, yStart + 67, titleTextColor());
+            drawString(guiGraphics, MekanismLang.OWNER.translate(noneComponent), 27, yStart + 77, titleTextColor());
+            drawString(guiGraphics, MekanismLang.SECURITY.translate(noneComponent), 27, yStart + 87, titleTextColor());
         } else {
             //Color the name the same as the subheading text color should be
             MutableComponent name = TextComponentUtil.color(TextComponentUtil.getString(frequency.getName()), subheadingTextColor());
-            drawTextScaledBound(matrix, MekanismLang.FREQUENCY.translate(name), 27, yStart + 67, titleTextColor(), getGuiWidth() - 36);
-            drawString(matrix, OwnerDisplay.of(Minecraft.getInstance().player, frequency.getOwner(), frequency.getClientOwner(), false).getTextComponent(),
+            drawTextScaledBound(guiGraphics, MekanismLang.FREQUENCY.translate(name), 27, yStart + 67, titleTextColor(), getGuiWidth() - 36);
+            drawString(guiGraphics, OwnerDisplay.of(Minecraft.getInstance().player, frequency.getOwner(), frequency.getClientOwner(), false).getTextComponent(),
                   27, yStart + 77, titleTextColor());
-            drawString(matrix, MekanismLang.SECURITY.translate(frequency.getSecurity()), 27, yStart + 87, titleTextColor());
+            drawString(guiGraphics, MekanismLang.SECURITY.translate(frequency.getSecurity()), 27, yStart + 87, titleTextColor());
         }
-        drawTextScaledBound(matrix, MekanismLang.SET.translate(), 27, yStart + 100, titleTextColor(), 20);
+        drawTextScaledBound(guiGraphics, MekanismLang.SET.translate(), 27, yStart + 100, titleTextColor(), 20);
     }
 
     public interface IGuiFrequencySelector<FREQ extends Frequency> {

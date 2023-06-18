@@ -111,6 +111,7 @@ import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.hud.MekaSuitEnergyLevel;
 import mekanism.client.render.hud.MekanismHUD;
+import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.client.render.item.MekaSuitBarDecorator;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
@@ -177,7 +178,6 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.ElytraLayer;
@@ -185,16 +185,19 @@ import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.Registry;
+import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent.BakingCompleted;
+import net.minecraftforge.client.event.ModelEvent.ModifyBakingResult;
 import net.minecraftforge.client.event.ModelEvent.RegisterAdditional;
 import net.minecraftforge.client.event.ModelEvent.RegisterGeometryLoaders;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
@@ -219,7 +222,7 @@ public class ClientRegistration {
 
     private static final FieldReflectionHelper<SeparateTransformsModel.Baked, BakedModel> SEPARATE_PERSPECTIVE_BASE_MODEL =
           new FieldReflectionHelper<>(SeparateTransformsModel.Baked.class, "baseModel", () -> null);
-    private static final FieldReflectionHelper<SeparateTransformsModel.Baked, ImmutableMap<TransformType, BakedModel>> SEPARATE_PERSPECTIVE_PERSPECTIVES =
+    private static final FieldReflectionHelper<SeparateTransformsModel.Baked, ImmutableMap<ItemDisplayContext, BakedModel>> SEPARATE_PERSPECTIVE_PERSPECTIVES =
           new FieldReflectionHelper<>(SeparateTransformsModel.Baked.class, "perspectives", ImmutableMap::of);
     private static final Map<ResourceLocation, CustomModelRegistryObject> customModels = new ConcurrentHashMap<>();
 
@@ -248,7 +251,7 @@ public class ClientRegistration {
                 ClientRegistrationUtil.setRenderLayer(RenderType.translucent(), fluidRO);
             }
             ClientRegistrationUtil.setPropertyOverride(MekanismBlocks.CARDBOARD_BOX, Mekanism.rl("storage"),
-                  (stack, world, entity, seed) -> ((ItemBlockCardboardBox) stack.getItem()).getBlockData(stack) == null ? 0 : 1);
+                  (stack, world, entity, seed) -> ((ItemBlockCardboardBox) stack.getItem()).getBlockData(world, stack) == null ? 0 : 1);
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("invalid"), (stack, world, entity, seed) -> {
                 ItemCraftingFormula formula = (ItemCraftingFormula) stack.getItem();
@@ -292,8 +295,8 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerOverlays(RegisterGuiOverlaysEvent event) {
         event.registerAbove(VanillaGuiOverlay.ARMOR_LEVEL.id(), "mekasuit_energy_level", new MekaSuitEnergyLevel());
-        //TODO - 1.20: Rename this to just being HUDOverlay or something as it includes the HUD that displays regardless of having a mekasuit
-        event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "mekasuit_hud", new MekanismHUD());
+        event.registerAbove(VanillaGuiOverlay.RECORD_OVERLAY.id(), "mekanism_status_overlay", new MekanismStatusOverlay());
+        event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "mekanism_hud", new MekanismHUD());
     }
 
     @SubscribeEvent
@@ -366,7 +369,7 @@ public class ClientRegistration {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void registerContainers(RegisterEvent event) {
-        event.register(Registry.MENU_REGISTRY, helper -> {
+        event.register(Registries.MENU, helper -> {
             ClientRegistrationUtil.registerScreen(MekanismContainerTypes.MODULE_TWEAKER, GuiModuleTweaker::new);
 
             ClientRegistrationUtil.registerScreen(MekanismContainerTypes.DICTIONARY, GuiDictionary::new);
@@ -461,21 +464,25 @@ public class ClientRegistration {
     }
 
     @SubscribeEvent
-    public static void onModelBake(BakingCompleted event) {
+    public static void onModelBake(ModifyBakingResult event) {
         event.getModels().replaceAll((rl, model) -> {
             CustomModelRegistryObject obj = customModels.get(new ResourceLocation(rl.getNamespace(), rl.getPath()));
             return obj == null ? model : obj.createModel(model, event);
         });
+    }
+
+    @SubscribeEvent
+    public static void onModelBake(BakingCompleted event) {
         MekanismModelCache.INSTANCE.onBake(event);
     }
 
     @SubscribeEvent
     public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
-        event.register(MekanismParticleTypes.LASER.get(), LaserParticle.Factory::new);
-        event.register(MekanismParticleTypes.JETPACK_FLAME.get(), JetpackFlameParticle.Factory::new);
-        event.register(MekanismParticleTypes.JETPACK_SMOKE.get(), JetpackSmokeParticle.Factory::new);
-        event.register(MekanismParticleTypes.SCUBA_BUBBLE.get(), ScubaBubbleParticle.Factory::new);
-        event.register(MekanismParticleTypes.RADIATION.get(), RadiationParticle.Factory::new);
+        event.registerSpriteSet(MekanismParticleTypes.LASER.get(), LaserParticle.Factory::new);
+        event.registerSpriteSet(MekanismParticleTypes.JETPACK_FLAME.get(), JetpackFlameParticle.Factory::new);
+        event.registerSpriteSet(MekanismParticleTypes.JETPACK_SMOKE.get(), JetpackSmokeParticle.Factory::new);
+        event.registerSpriteSet(MekanismParticleTypes.SCUBA_BUBBLE.get(), ScubaBubbleParticle.Factory::new);
+        event.registerSpriteSet(MekanismParticleTypes.RADIATION.get(), RadiationParticle.Factory::new);
     }
 
     private static void registerIColoredBlocks(RegisterColorHandlersEvent event) {
@@ -580,7 +587,8 @@ public class ClientRegistration {
     public static void addLayers(EntityRenderersEvent.AddLayers event) {
         //Add our own custom armor layer to the various player renderers
         for (String skinName : event.getSkins()) {
-            addCustomLayers(EntityType.PLAYER, (PlayerRenderer) event.getSkin(skinName));
+            //TODO - 1.20: Switch to get model manager from event https://github.com/MinecraftForge/MinecraftForge/pull/9562
+            addCustomLayers(EntityType.PLAYER, (PlayerRenderer) event.getSkin(skinName), Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getModelManager());
         }
         //Add our own custom armor layer to everything that has an armor layer
         //Note: This includes any modded mobs that have vanilla's BipedArmorLayer added to them
@@ -588,13 +596,15 @@ public class ClientRegistration {
             EntityRenderer<?> renderer = entry.getValue();
             if (renderer instanceof LivingEntityRenderer) {
                 EntityType<?> entityType = entry.getKey();
+                //TODO - 1.20: Switch to get model manager from event https://github.com/MinecraftForge/MinecraftForge/pull/9562
                 //noinspection unchecked,rawtypes
-                addCustomLayers(entityType, event.getRenderer((EntityType) entityType));
+                addCustomLayers(entityType, event.getRenderer((EntityType) entityType), Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getModelManager());
             }
         }
     }
 
-    private static <T extends LivingEntity, M extends HumanoidModel<T>> void addCustomLayers(EntityType<?> type, @Nullable LivingEntityRenderer<T, M> renderer) {
+    private static <T extends LivingEntity, M extends HumanoidModel<T>> void addCustomLayers(EntityType<?> type, @Nullable LivingEntityRenderer<T, M> renderer,
+          ModelManager modelManager) {
         if (renderer == null) {
             return;
         }
@@ -619,7 +629,7 @@ public class ClientRegistration {
             }
         }
         if (bipedArmorLayer != null) {
-            renderer.addLayer(new MekanismArmorLayer<>(renderer, bipedArmorLayer.innerModel, bipedArmorLayer.outerModel));
+            renderer.addLayer(new MekanismArmorLayer<>(renderer, bipedArmorLayer.innerModel, bipedArmorLayer.outerModel, modelManager));
             Mekanism.logger.debug("Added Mekanism Armor Layer to entity of type: {}", RegistryUtils.getName(type));
         }
         if (hasElytra) {
@@ -652,6 +662,6 @@ public class ClientRegistration {
     @FunctionalInterface
     public interface CustomModelRegistryObject {
 
-        BakedModel createModel(BakedModel original, BakingCompleted event);
+        BakedModel createModel(BakedModel original, ModifyBakingResult event);
     }
 }

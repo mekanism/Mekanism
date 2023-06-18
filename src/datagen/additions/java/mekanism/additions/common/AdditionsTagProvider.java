@@ -2,6 +2,7 @@ package mekanism.additions.common;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
@@ -9,7 +10,8 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.tag.BaseTagProvider;
 import mekanism.common.tag.MekanismTagProvider;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
@@ -23,8 +25,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class AdditionsTagProvider extends BaseTagProvider {
 
-    public AdditionsTagProvider(DataGenerator gen, @Nullable ExistingFileHelper existingFileHelper) {
-        super(gen, MekanismAdditions.MODID, existingFileHelper);
+    public AdditionsTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+        super(output, lookupProvider, MekanismAdditions.MODID, existingFileHelper);
     }
 
     @Override
@@ -33,7 +35,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
     }
 
     @Override
-    protected void registerTags() {
+    protected void registerTags(HolderLookup.Provider registries) {
         addEntities();
         addBalloons();
         addSlabs();

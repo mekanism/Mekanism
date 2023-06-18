@@ -2,9 +2,6 @@ package mekanism.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
 import java.util.Arrays;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.MekanismRenderer.Model3D.SpriteInfo;
@@ -18,6 +15,9 @@ import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 /**
  * Adapted from Mantle's FluidRenderer and Tinker's SmelteryTankRenderer
@@ -141,19 +141,19 @@ public class RenderResizableCuboid {
         for (int y = 0; y <= yDelta; y += yIncrement) {
             SpriteInfo upSprite = y == yDelta ? sprites[Direction.UP.ordinal()] : null;
             SpriteInfo downSprite = y == 0 ? sprites[Direction.DOWN.ordinal()] : null;
-            from.setY(yBounds[y]);
-            to.setY(yBounds[y + 1]);
+            from.y = yBounds[y];
+            to.y = yBounds[y + 1];
             for (int z = 0; z <= zDelta; z += zIncrement) {
                 SpriteInfo northSprite = z == 0 ? sprites[Direction.NORTH.ordinal()] : null;
                 SpriteInfo southSprite = z == zDelta ? sprites[Direction.SOUTH.ordinal()] : null;
-                from.setZ(zBounds[z]);
-                to.setZ(zBounds[z + 1]);
+                from.z = zBounds[z];
+                to.z = zBounds[z + 1];
                 for (int x = 0; x <= xDelta; x += xIncrement) {
                     SpriteInfo westSprite = x == 0 ? sprites[Direction.WEST.ordinal()] : null;
                     SpriteInfo eastSprite = x == xDelta ? sprites[Direction.EAST.ordinal()] : null;
                     //Set bounds
-                    from.setX(xBounds[x]);
-                    to.setX(xBounds[x + 1]);
+                    from.x = xBounds[x];
+                    to.x = xBounds[x + 1];
                     putTexturedQuad(buffer, matrix4f, westSprite, from, to, Direction.WEST, colors, light, overlay, faceDisplay, normal);
                     putTexturedQuad(buffer, matrix4f, eastSprite, from, to, Direction.EAST, colors, light, overlay, faceDisplay, normal);
                     putTexturedQuad(buffer, matrix4f, northSprite, from, to, Direction.NORTH, colors, light, overlay, faceDisplay, normal);
@@ -311,14 +311,13 @@ public class RenderResizableCuboid {
     private record NormalData(Vector3f front, Vector3f back) {
 
         private NormalData(Matrix3f normalMatrix, Vector3f normal, FaceDisplay faceDisplay) {
-            this(faceDisplay.front ? calculate(normalMatrix, normal.x(), normal.y(), normal.z()) : Vector3f.ZERO,
-                  faceDisplay.back ? calculate(normalMatrix, -normal.x(), -normal.y(), -normal.z()) : Vector3f.ZERO);
+            this(faceDisplay.front ? calculate(normalMatrix, normal.x(), normal.y(), normal.z()) : new Vector3f(),
+                  faceDisplay.back ? calculate(normalMatrix, -normal.x(), -normal.y(), -normal.z()) : new Vector3f());
         }
 
         private static Vector3f calculate(Matrix3f normalMatrix, float x, float y, float z) {
             Vector3f matrixAdjustedNormal = new Vector3f(x, y, z);
-            matrixAdjustedNormal.transform(normalMatrix);
-            return matrixAdjustedNormal;
+            return matrixAdjustedNormal.mul(normalMatrix);
         }
     }
 

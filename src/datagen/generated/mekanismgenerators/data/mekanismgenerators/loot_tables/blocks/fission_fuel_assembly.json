@@ -14,8 +14,8 @@
           "name": "mekanismgenerators:fission_fuel_assembly"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismgenerators:blocks/fission_fuel_assembly"
 }

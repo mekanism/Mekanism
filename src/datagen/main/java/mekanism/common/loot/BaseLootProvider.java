@@ -1,97 +1,25 @@
 package mekanism.common.loot;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import mekanism.common.loot.table.BaseBlockLootTables;
-import mekanism.common.loot.table.BaseChestLootTables;
-import mekanism.common.loot.table.BaseEntityLootTables;
-import mekanism.common.loot.table.BaseFishingLootTables;
-import mekanism.common.loot.table.BaseGiftLootTables;
-import net.minecraft.data.DataGenerator;
+import java.util.Set;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.LootTable.Builder;
-import net.minecraft.world.level.storage.loot.ValidationContext;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseLootProvider extends LootTableProvider {
 
-    private final String modid;
-
-    protected BaseLootProvider(DataGenerator gen, String modid) {
-        super(gen);
-        this.modid = modid;
+    protected BaseLootProvider(PackOutput output, List<LootTableProvider.SubProviderEntry> subProviders) {
+        this(output, Collections.emptySet(), subProviders);
     }
 
-    @NotNull
-    @Override
-    public String getName() {
-        return super.getName() + ": " + modid;
+    protected BaseLootProvider(PackOutput output, Set<ResourceLocation> requiredTables, List<LootTableProvider.SubProviderEntry> subProviders) {
+        super(output, requiredTables, subProviders);
     }
 
-    @Nullable
-    protected BaseBlockLootTables getBlockLootTable() {
-        return null;
-    }
-
-    @Nullable
-    protected BaseChestLootTables getChestLootTable() {
-        return null;
-    }
-
-    @Nullable
-    protected BaseEntityLootTables getEntityLootTable() {
-        return null;
-    }
-
-    @Nullable
-    protected BaseFishingLootTables getFishingLootTable() {
-        return null;
-    }
-
-    @Nullable
-    protected BaseGiftLootTables getGiftLootTable() {
-        return null;
-    }
-
-    @NotNull
-    @Override
-    protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, Builder>>>, LootContextParamSet>> getTables() {
-        ImmutableList.Builder<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, Builder>>>, LootContextParamSet>> builder = new ImmutableList.Builder<>();
-        BaseBlockLootTables blockLootTable = getBlockLootTable();
-        if (blockLootTable != null) {
-            builder.add(Pair.of(() -> blockLootTable, LootContextParamSets.BLOCK));
-        }
-        BaseChestLootTables chestLootTable = getChestLootTable();
-        if (chestLootTable != null) {
-            builder.add(Pair.of(() -> chestLootTable, LootContextParamSets.CHEST));
-        }
-        BaseEntityLootTables entityLootTable = getEntityLootTable();
-        if (entityLootTable != null) {
-            builder.add(Pair.of(() -> entityLootTable, LootContextParamSets.ENTITY));
-        }
-        BaseFishingLootTables fishingLootTable = getFishingLootTable();
-        if (fishingLootTable != null) {
-            builder.add(Pair.of(() -> fishingLootTable, LootContextParamSets.FISHING));
-        }
-        BaseGiftLootTables giftLootTable = getGiftLootTable();
-        if (giftLootTable != null) {
-            builder.add(Pair.of(() -> giftLootTable, LootContextParamSets.GIFT));
-        }
-        return builder.build();
-    }
-
-    @Override
+    //TODO - 1.20: Re-evaluate this, I think it may make sense to have now
+    /*@Override
     protected void validate(@NotNull Map<ResourceLocation, LootTable> map, @NotNull ValidationContext validationtracker) {
         //NO-OP, as we don't
-    }
+    }*/
 }

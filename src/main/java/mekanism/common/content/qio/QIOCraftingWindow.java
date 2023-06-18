@@ -31,6 +31,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
@@ -158,7 +159,7 @@ public class QIOCraftingWindow implements IContentsListener {
                 // and otherwise we update so that cases like bin upgrade recipes that the inputs match the recipe but the
                 // output is dependent on the specific inputs gets updated properly
                 //Note: We make sure to only call updateOutputSlot if we believe our inputs have changed type
-                outputSlot.setStack(assembleRecipe(lastRecipe));
+                outputSlot.setStack(assembleRecipe(lastRecipe, world.registryAccess()));
             } else {
                 //If we don't have a cached recipe, or our cached recipe doesn't match our inventory contents, lookup the recipe
                 CraftingRecipe recipe = MekanismRecipeType.getRecipeFor(RecipeType.CRAFTING, craftingInventory, world).orElse(null);
@@ -172,21 +173,21 @@ public class QIOCraftingWindow implements IContentsListener {
                     } else {
                         //If the recipe is different, update the output
                         lastRecipe = recipe;
-                        outputSlot.setStack(assembleRecipe(lastRecipe));
+                        outputSlot.setStack(assembleRecipe(lastRecipe, world.registryAccess()));
                     }
                 }
             }
         }
     }
 
-    private ItemStack assembleRecipe(CraftingRecipe recipe) {
+    private ItemStack assembleRecipe(CraftingRecipe recipe, RegistryAccess registryAccess) {
         if (Mekanism.hooks.RecipeStagesLoaded) {
             if (recipe instanceof IStagedRecipe stagedRecipe) {
                 //Force assemble it as we handle validating if specific players can see/grab the output ourselves
                 return stagedRecipe.forceAssemble(craftingInventory);
             }
         }
-        return recipe.assemble(craftingInventory);
+        return recipe.assemble(craftingInventory, registryAccess);
     }
 
     public boolean canViewRecipe(@NotNull ServerPlayer player) {
@@ -204,7 +205,7 @@ public class QIOCraftingWindow implements IContentsListener {
         }
         //If the recipe is dynamic, doLimitedCrafting is disabled, or the recipe is unlocked
         // allow viewing the recipe
-        return lastRecipe.isSpecial() || !player.level.getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING) || player.getRecipeBook().contains(lastRecipe);
+        return lastRecipe.isSpecial() || !player.level().getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING) || player.getRecipeBook().contains(lastRecipe);
     }
 
     @Contract("null, _ -> false")
@@ -628,14 +629,7 @@ public class QIOCraftingWindow implements IContentsListener {
         }
     }
 
-    private class QIOCraftingInventory extends CraftingContainer {
-
-        //Note: We suppress the warning about this passing null as the container as we override all methods that
-        // that make use of the container to use our handler instead
-        @SuppressWarnings("ConstantConditions")
-        public QIOCraftingInventory() {
-            super(null, 0, 0);
-        }
+    private class QIOCraftingInventory implements CraftingContainer {
 
         @Override
         public int getContainerSize() {
@@ -659,6 +653,18 @@ public class QIOCraftingWindow implements IContentsListener {
                 }
             }
             return ItemStack.EMPTY;
+        }
+
+        @NotNull
+        @Override
+        public List<ItemStack> getItems() {
+            List<ItemStack> items = new ArrayList<>(getWidth() * getHeight());
+            for (CraftingWindowInventorySlot inputSlot : inputSlots) {
+                //Note: We copy this as we don't want to allow someone trying to interact with the stack directly
+                // to change the size of it. We also add it regardless of it is empty as that is what the method expects
+                items.add(inputSlot.getStack().copy());
+            }
+            return List.copyOf(items);
         }
 
         @NotNull
@@ -689,6 +695,17 @@ public class QIOCraftingWindow implements IContentsListener {
             if (index >= 0 && index < getContainerSize()) {
                 getInputSlot(index).setStack(stack);
             }
+        }
+
+        @Override
+        public void setChanged() {
+            //Don't do anything, this mimics vanilla's behavior in TransientCraftingContainer
+        }
+
+        @Override
+        public boolean stillValid(@NotNull Player player) {
+            //Always return true similar to vanilla's implementation in TransientCraftingContainer
+            return true;
         }
 
         @Override

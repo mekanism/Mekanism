@@ -1,6 +1,5 @@
 package mekanism.client.gui.qio;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.custom.GuiFrequencySelector;
@@ -14,6 +13,7 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.network.to_server.PacketGuiButtonPress;
 import mekanism.common.network.to_server.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.qio.TileEntityQIOComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -41,9 +41,9 @@ public class GuiQIOTileFrequencySelect extends GuiMekanismTile<TileEntityQIOComp
     }
 
     @Override
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        renderTitleText(matrix);
-        super.drawForegroundText(matrix, mouseX, mouseY);
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        renderTitleText(guiGraphics);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
     @Override
@@ -57,13 +57,13 @@ public class GuiQIOTileFrequencySelect extends GuiMekanismTile<TileEntityQIOComp
     }
 
     @Override
-    public void drawTitleText(PoseStack matrix, Component text, float y) {
+    public void drawTitleText(GuiGraphics guiGraphics, Component text, float y) {
         //Adjust spacing for back button
         int leftShift = 15;
         int xSize = getXSize() - leftShift;
         int maxLength = xSize - 12;
         float textWidth = getStringWidth(text);
         float scale = Math.min(1, maxLength / textWidth);
-        drawScaledCenteredText(matrix, text, leftShift + xSize / 2F, y, titleTextColor(), scale);
+        drawScaledCenteredText(guiGraphics, text, leftShift + xSize / 2F, y, titleTextColor(), scale);
     }
 }

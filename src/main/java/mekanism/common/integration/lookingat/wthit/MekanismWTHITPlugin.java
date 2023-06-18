@@ -21,6 +21,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import org.jetbrains.annotations.Nullable;
 
+//TODO - 1.20: Fix deprecations: https://docs.bai.lol/wthit/dokka/wthit/mcp.mobius.waila.api/-i-waila-plugin/index.html
 @WailaPlugin(id = Mekanism.MODID)
 public class MekanismWTHITPlugin implements IWailaPlugin {
 
@@ -36,6 +37,8 @@ public class MekanismWTHITPlugin implements IWailaPlugin {
         registration.addConfig(LookingAtUtils.SLURRY, true);
         registration.addComponent((IEntityComponentProvider) WTHITTooltipRenderer.INSTANCE, TooltipPosition.BODY, EntityRobit.class);
         registration.addComponent((IBlockComponentProvider) WTHITTooltipRenderer.INSTANCE, TooltipPosition.BODY, Block.class);
+        //TODO - 1.20: Test this
+        registration.addDataType(Mekanism.rl("wthit_data"), WTHITLookingAtHelper.class, WTHITLookingAtHelper.SERIALIZER);
 
         registration.addOverride(new IBlockComponentProvider() {
             @Override

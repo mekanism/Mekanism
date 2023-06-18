@@ -28,5 +28,6 @@
     "title": {
       "translate": "advancements.mekanism.teleporter.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

@@ -5,13 +5,13 @@ import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.gender.MekanismGenderArmor;
 import mekanism.tools.common.item.ItemMekanismArmor;
 import mekanism.tools.common.registries.ToolsItems;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
 
 public class ToolsGenderCapabilityHelper {
 
     public static void addGenderCapability(ItemMekanismArmor item, ItemCapabilityWrapper wrapper) {
         //Validate the mod is loaded and that this is for the correct slot
-        if (Mekanism.hooks.WildfireGenderModLoaded && item.getSlot() == EquipmentSlot.CHEST) {
+        if (Mekanism.hooks.WildfireGenderModLoaded && item.getType() == ArmorItem.Type.CHESTPLATE) {
             MekanismGenderArmor genderArmor = null;
             if (item == ToolsItems.BRONZE_CHESTPLATE.asItem()) {
                 genderArmor = ArmorSettings.BRONZE;

@@ -16,11 +16,8 @@ import mekanism.common.util.StorageUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
-import mekanism.generators.common.registries.GeneratorsGases;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -71,13 +68,14 @@ public class ItemHohlraum extends CapabilityItem {
         return ChemicalUtil.getRGBDurabilityForDisplay(stack);
     }
 
-    @Override
+    //TODO - 1.20: Add this to a creative tab, we also have to add all other items from mek generators, mek additions, and mek tools
+    /*@Override
     public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
         if (allowedIn(group)) {
             items.add(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismGeneratorsConfig.generators.hohlraumMaxGas, GeneratorsGases.FUSION_FUEL));
         }
-    }
+    }*/
 
     @Override
     protected boolean areCapabilityConfigsLoaded() {

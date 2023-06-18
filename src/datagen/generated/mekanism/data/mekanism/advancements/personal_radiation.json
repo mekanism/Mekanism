@@ -23,5 +23,6 @@
     "title": {
       "translate": "advancements.mekanism.personal_radiation.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

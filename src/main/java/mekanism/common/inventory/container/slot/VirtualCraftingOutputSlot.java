@@ -95,7 +95,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
 
     @Override
     public boolean mayPickup(@NotNull Player player) {
-        if (player.level.isClientSide || !(player instanceof ServerPlayer serverPlayer)) {
+        if (player.level().isClientSide || !(player instanceof ServerPlayer serverPlayer)) {
             return canCraft && super.mayPickup(player);
         }
         return craftingWindow.canViewRecipe(serverPlayer) && super.mayPickup(player);
@@ -135,7 +135,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
 
     @Override
     public void addTrackers(Player player, Consumer<ISyncableData> tracker) {
-        if (player.level.isClientSide || !(player instanceof ServerPlayer serverPlayer)) {
+        if (player.level().isClientSide || !(player instanceof ServerPlayer serverPlayer)) {
             //If we are on the client or not a server player entity for some reason return our cached value
             tracker.accept(SyncableBoolean.create(() -> canCraft, value -> canCraft = value));
         } else {

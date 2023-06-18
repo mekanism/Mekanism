@@ -1,6 +1,5 @@
 package mekanism.client.gui.qio;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.GuiMekanismTile;
@@ -22,6 +21,7 @@ import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.text.InputValidator;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -52,7 +52,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
                 return true;
             }
             return false;
-        }, MekanismSounds.BEEP.get()).setGhostHandler((IGhostItemConsumer) ingredient -> {
+        }, MekanismSounds.BEEP).setGhostHandler((IGhostItemConsumer) ingredient -> {
             updateStack((ItemStack) ingredient);
             minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
         });
@@ -92,10 +92,10 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     }
 
     @Override
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        renderTitleText(matrix);
-        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
-        renderItem(matrix, tile.getItemType(), 8, 31);
-        super.drawForegroundText(matrix, mouseX, mouseY);
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        renderTitleText(guiGraphics);
+        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        renderItem(guiGraphics, tile.getItemType(), 8, 31);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

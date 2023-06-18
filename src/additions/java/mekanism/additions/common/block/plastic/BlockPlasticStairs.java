@@ -28,8 +28,8 @@ public class BlockPlasticStairs extends StairBlock implements IColoredBlock, ISt
     private final EnumColor color;
 
     public BlockPlasticStairs(IBlockProvider blockProvider, EnumColor color, UnaryOperator<Properties> propertyModifier) {
-        super(() -> blockProvider.getBlock().defaultBlockState(), BlockStateHelper.applyLightLevelAdjustments(propertyModifier.apply(BlockBehaviour.Properties
-              .of(BlockPlastic.PLASTIC, color.getMapColor()).strength(5, 6))));
+        super(() -> blockProvider.getBlock().defaultBlockState(), BlockStateHelper.applyLightLevelAdjustments(propertyModifier.apply(BlockBehaviour.Properties.of()
+              .mapColor(color.getMapColor()).strength(5, 6))));
         this.color = color;
         //Uses getDefaultState as starting state to take into account the stuff from super
         registerDefaultState(BlockStateHelper.getDefaultState(defaultBlockState()));

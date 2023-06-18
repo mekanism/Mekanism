@@ -14,13 +14,13 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 public class AdditionsBlockLootTables extends BaseBlockLootTables {
 
     @Override
-    protected void addTables() {
+    protected void generate() {
         //Obsidian TNT
         registerObsidianTNT();
         //Plastic slabs
-        add(BaseBlockLootTables::createSlabItemTable, AdditionsBlocks.PLASTIC_SLABS.values());
-        add(BaseBlockLootTables::createSlabItemTable, AdditionsBlocks.PLASTIC_GLOW_SLABS.values());
-        add(BaseBlockLootTables::createSlabItemTable, AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS.values());
+        add(this::createSlabItemTable, AdditionsBlocks.PLASTIC_SLABS.values());
+        add(this::createSlabItemTable, AdditionsBlocks.PLASTIC_GLOW_SLABS.values());
+        add(this::createSlabItemTable, AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS.values());
         //Register all remaining blocks as just dropping themselves
         dropSelf(AdditionsBlocks.BLOCKS.getAllBlocks());
     }
@@ -28,7 +28,8 @@ public class AdditionsBlockLootTables extends BaseBlockLootTables {
     private void registerObsidianTNT() {
         Block tnt = AdditionsBlocks.OBSIDIAN_TNT.getBlock();
         add(tnt, LootTable.lootTable().withPool(applyExplosionCondition(tnt, LootPool.lootPool()
-                    .name("main")
+                    //TODO - 1.20: Loot pool names??
+                    //.name("main")
                     .setRolls(ConstantValue.exactly(1))
                     .add(LootItem.lootTableItem(tnt)
                           .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(tnt)

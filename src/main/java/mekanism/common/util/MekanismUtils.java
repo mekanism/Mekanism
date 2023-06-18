@@ -63,8 +63,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.HumanoidArm;
@@ -73,6 +75,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -424,7 +427,7 @@ public final class MekanismUtils {
     }
 
     public static BlockHitResult rayTrace(Player player, ClipContext.Fluid fluidMode) {
-        return rayTrace(player, player.getAttributeValue(ForgeMod.REACH_DISTANCE.get()), fluidMode);
+        return rayTrace(player, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()), fluidMode);
     }
 
     public static BlockHitResult rayTrace(Player player, double reach) {
@@ -435,7 +438,7 @@ public final class MekanismUtils {
         Vec3 headVec = getHeadVec(player);
         Vec3 lookVec = player.getViewVector(1);
         Vec3 endVec = headVec.add(lookVec.x * reach, lookVec.y * reach, lookVec.z * reach);
-        return player.getCommandSenderWorld().clip(new ClipContext(headVec, endVec, ClipContext.Block.OUTLINE, fluidMode, player));
+        return player.level().clip(new ClipContext(headVec, endVec, ClipContext.Block.OUTLINE, fluidMode, player));
     }
 
     /**
@@ -547,7 +550,7 @@ public final class MekanismUtils {
                 return false;
             }
         };
-        return new CraftingContainer(tempContainer, 3, 3);
+        return new TransientCraftingContainer(tempContainer, 3, 3);
     }
 
     /**
@@ -595,6 +598,11 @@ public final class MekanismUtils {
         }
     }
 
+    public static boolean isPreventableMagicDamage(DamageSource source) {
+        //TODO - 1.20: Re-evaluate if we should use our own tag? Probably and maybe default it to this?
+        return source.is(DamageTypeTags.WITCH_RESISTANT_TO);
+    }
+
     public static boolean shouldSpeedUpEffect(MobEffectInstance effectInstance) {
         //Only allow speeding up effects that can be sped up by milk. Also validate it isn't blacklisted by the modpack
         return effectInstance.isCurativeItem(MILK) && !MekanismTags.MobEffects.SPEED_UP_BLACKLIST_LOOKUP.contains(effectInstance.getEffect());
@@ -605,7 +613,7 @@ public final class MekanismUtils {
      */
     private static void onChangedPotionEffect(LivingEntity entity, MobEffectInstance effectInstance, boolean reapply) {
         entity.effectsDirty = true;
-        if (reapply && !entity.level.isClientSide) {
+        if (reapply && !entity.level().isClientSide) {
             MobEffect effect = effectInstance.getEffect();
             effect.removeAttributeModifiers(entity, entity.getAttributes(), effectInstance.getAmplifier());
             effect.addAttributeModifiers(entity, entity.getAttributes(), effectInstance.getAmplifier());
@@ -750,7 +758,7 @@ public final class MekanismUtils {
         int yMax = Mth.ceil(bb.maxY);
         int zMin = Mth.floor(bb.minZ);
         int zMax = Mth.ceil(bb.maxZ);
-        if (!player.level.hasChunksAt(xMin, yMin, zMin, xMax, yMax, zMax)) {
+        if (!player.level().hasChunksAt(xMin, yMin, zMin, xMax, yMax, zMax)) {
             //If the position isn't actually loaded, just return there isn't any fluids
             return Collections.emptyMap();
         }
@@ -760,9 +768,9 @@ public final class MekanismUtils {
             for (int y = yMin; y < yMax; ++y) {
                 for (int z = zMin; z < zMax; ++z) {
                     mutablePos.set(x, y, z);
-                    FluidState fluidState = player.level.getFluidState(mutablePos);
+                    FluidState fluidState = player.level().getFluidState(mutablePos);
                     if (!fluidState.isEmpty()) {
-                        double fluidY = y + fluidState.getHeight(player.level, mutablePos);
+                        double fluidY = y + fluidState.getHeight(player.level(), mutablePos);
                         if (bb.minY <= fluidY) {
                             //The fluid intersects the bounding box
                             FluidInDetails details = fluidsIn.computeIfAbsent(fluidState.getFluidType(), f -> new FluidInDetails());

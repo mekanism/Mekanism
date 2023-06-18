@@ -7,8 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
@@ -16,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.EnumColor;
@@ -62,9 +60,9 @@ import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MekanismRenderer {
@@ -288,7 +286,6 @@ public class MekanismRenderer {
         int b = FastColor.ARGB32.blue(color);
         int a = FastColor.ARGB32.alpha(color);
         RenderSystem.disableDepthTest();
-        RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -303,7 +300,6 @@ public class MekanismRenderer {
         bufferbuilder.vertex(matrix4f, width, height, 0).color(r, g, b, a).endVertex();
         tesselator.end();
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
         RenderSystem.enableDepthTest();
     }
 
@@ -313,45 +309,11 @@ public class MekanismRenderer {
 
     public static void rotate(PoseStack matrix, Direction facing, float north, float south, float west, float east) {
         switch (facing) {
-            case NORTH -> matrix.mulPose(Vector3f.YP.rotationDegrees(north));
-            case SOUTH -> matrix.mulPose(Vector3f.YP.rotationDegrees(south));
-            case WEST -> matrix.mulPose(Vector3f.YP.rotationDegrees(west));
-            case EAST -> matrix.mulPose(Vector3f.YP.rotationDegrees(east));
+            case NORTH -> matrix.mulPose(Axis.YP.rotationDegrees(north));
+            case SOUTH -> matrix.mulPose(Axis.YP.rotationDegrees(south));
+            case WEST -> matrix.mulPose(Axis.YP.rotationDegrees(west));
+            case EAST -> matrix.mulPose(Axis.YP.rotationDegrees(east));
         }
-    }
-
-    @SubscribeEvent
-    public static void onStitch(TextureStitchEvent.Pre event) {
-        if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
-            return;
-        }
-        for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
-            event.addSprite(Mekanism.rl("block/overlay/" + type.getTransmission() + "_overlay"));
-        }
-
-        event.addSprite(Mekanism.rl("block/overlay/overlay_white"));
-        event.addSprite(Mekanism.rl("liquid/energy"));
-        event.addSprite(Mekanism.rl("liquid/heat"));
-        event.addSprite(Mekanism.rl("icon/redstone_control_pulse"));
-        event.addSprite(Mekanism.rl("block/teleporter_portal"));
-
-        //MekaSuit
-        event.addSprite(Mekanism.rl("entity/armor/blank"));
-        event.addSprite(Mekanism.rl("entity/armor/mekasuit_player"));
-        event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_body"));
-        event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_helmet"));
-        event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_exoskeleton"));
-        event.addSprite(Mekanism.rl("entity/armor/mekasuit_gravitational_modulator"));
-        event.addSprite(Mekanism.rl("entity/armor/mekasuit_elytra"));
-        event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_modules"));
-        event.addSprite(Mekanism.rl("entity/armor/mekatool"));
-
-        DigitalMinerBakedModel.preStitch(event);
-
-        addChemicalSprites(event, MekanismAPI.gasRegistry());
-        addChemicalSprites(event, MekanismAPI.infuseTypeRegistry());
-        addChemicalSprites(event, MekanismAPI.pigmentRegistry());
-        addChemicalSprites(event, MekanismAPI.slurryRegistry());
     }
 
     private static void parseColorAtlas(ResourceLocation rl) {
@@ -362,12 +324,6 @@ public class MekanismRenderer {
         }
         for (int i = 0; i < EnumUtils.COLORS.length; i++) {
             EnumUtils.COLORS[i].setColorFromAtlas(parsed.get(i).rgbArray());
-        }
-    }
-
-    private static <CHEMICAL extends Chemical<CHEMICAL>> void addChemicalSprites(TextureStitchEvent.Pre event, IForgeRegistry<CHEMICAL> chemicalRegistry) {
-        for (Chemical<?> chemical : chemicalRegistry.getValues()) {
-            event.addSprite(chemical.getIcon());
         }
     }
 

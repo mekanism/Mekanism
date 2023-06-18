@@ -1,6 +1,5 @@
 package mekanism.additions.common.entity;
 
-import com.mojang.math.Vector3f;
 import java.util.Optional;
 import java.util.UUID;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
@@ -18,6 +17,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -41,6 +41,7 @@ import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData {
 
@@ -89,7 +90,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     @Nullable
     public static EntityBalloon create(LivingEntity entity, EnumColor c) {
-        EntityBalloon balloon = AdditionsEntityTypes.BALLOON.get().create(entity.level);
+        EntityBalloon balloon = AdditionsEntityTypes.BALLOON.get().create(entity.level());
         if (balloon == null) {
             return null;
         }
@@ -138,25 +139,25 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         yo = getY();
         zo = getZ();
 
-        if (getY() >= level.getMaxBuildHeight()) {
+        if (getY() >= level().getMaxBuildHeight()) {
             pop();
             return;
         }
 
-        if (level.isClientSide) {
+        if (level().isClientSide) {
             if (entityData.get(IS_LATCHED) == 1) {
                 latched = new BlockPos(entityData.get(LATCHED_X), entityData.get(LATCHED_Y), entityData.get(LATCHED_Z));
             } else {
                 latched = null;
             }
             if (entityData.get(IS_LATCHED) == 2) {
-                latchedEntity = (LivingEntity) level.getEntity(entityData.get(LATCHED_ID));
+                latchedEntity = (LivingEntity) level().getEntity(entityData.get(LATCHED_ID));
             } else {
                 latchedEntity = null;
             }
         } else {
             if (hasCachedEntity) {
-                if (level instanceof ServerLevel serverLevel) {
+                if (level() instanceof ServerLevel serverLevel) {
                     Entity entity = serverLevel.getEntity(cachedEntityUUID);
                     if (entity instanceof LivingEntity) {
                         latchedEntity = (LivingEntity) entity;
@@ -182,9 +183,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
             }
         }
 
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             if (latched != null) {
-                Optional<BlockState> blockState = WorldUtils.getBlockState(level, latched);
+                Optional<BlockState> blockState = WorldUtils.getBlockState(level(), latched);
                 if (blockState.isPresent() && blockState.get().isAir()) {
                     latched = null;
                     entityData.set(IS_LATCHED, (byte) 0);
@@ -205,7 +206,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
             motion = getDeltaMovement();
             motion = motion.multiply(0.98, 0, 0.98);
 
-            if (onGround) {
+            if (onGround()) {
                 motion = motion.multiply(0.7, 0, 0.7);
             }
             if (motion.y() == 0) {
@@ -235,9 +236,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     private int getFloor(LivingEntity entity) {
-        BlockPos pos = new BlockPos(entity.position());
+        BlockPos pos = BlockPos.containing(entity.position());
         for (BlockPos posi = pos; posi.getY() > 0; posi = posi.below()) {
-            if (posi.getY() < level.getMaxBuildHeight() && !level.isEmptyBlock(posi)) {
+            if (posi.getY() < level().getMaxBuildHeight() && !level().isEmptyBlock(posi)) {
                 return posi.getY() + 1 + (entity instanceof Player ? 1 : 0);
             }
         }
@@ -246,12 +247,12 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     private void pop() {
         playSound(AdditionsSounds.POP.get(), 1, 1);
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             Vector3f col = new Vector3f(color.getColor(0), color.getColor(1), color.getColor(2));
             DustParticleOptions redstoneParticleData = new DustParticleOptions(col, 1.0F);
             Vec3 center = getBoundingBox().getCenter();
             for (int i = 0; i < 10; i++) {
-                ((ServerLevel) level).sendParticles(redstoneParticleData, center.x() + 0.6 * random.nextFloat() - 0.3, center.y() + 0.6 * random.nextFloat() - 0.3,
+                ((ServerLevel) level()).sendParticles(redstoneParticleData, center.x() + 0.6 * random.nextFloat() - 0.3, center.y() + 0.6 * random.nextFloat() - 0.3,
                       center.z() + 0.6 * random.nextFloat() - 0.3, 1, 0, 0, 0, 0);
             }
         }
@@ -303,14 +304,14 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     public boolean skipAttackInteraction(@NotNull Entity entity) {
         pop();
         if (entity instanceof ServerPlayer player) {
-            CriteriaTriggers.PLAYER_KILLED_ENTITY.trigger(player, this, DamageSource.playerAttack(player));
+            CriteriaTriggers.PLAYER_KILLED_ENTITY.trigger(player, this, damageSources().playerAttack(player));
         }
         return true;
     }
 
     @NotNull
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
@@ -337,7 +338,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         if (type == 1) {
             latched = data.readBlockPos();
         } else if (type == 2) {
-            latchedEntity = (LivingEntity) level.getEntity(data.readVarInt());
+            latchedEntity = (LivingEntity) level().getEntity(data.readVarInt());
         } else {
             latched = null;
         }
@@ -367,7 +368,8 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
             return false;
         }
         markHurt();
-        if (dmgSource != DamageSource.MAGIC && dmgSource != DamageSource.DROWN && dmgSource != DamageSource.FALL) {
+        //TODO - 1.20: Should this use a tag and potentially include other damage types?
+        if (dmgSource != damageSources().magic() && dmgSource != damageSources().drown() && dmgSource != damageSources().fall()) {
             pop();
             if (dmgSource.getEntity() instanceof ServerPlayer player) {
                 CriteriaTriggers.PLAYER_KILLED_ENTITY.trigger(player, this, dmgSource);
@@ -378,7 +380,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     public boolean isLatched() {
-        if (level.isClientSide) {
+        if (level().isClientSide) {
             return entityData.get(IS_LATCHED) > 0;
         }
         return latched != null || latchedEntity != null;

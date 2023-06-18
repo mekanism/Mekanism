@@ -3,7 +3,7 @@ package mekanism.common.util;
 import java.util.Optional;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -72,8 +72,10 @@ public class RegistryUtils {
 
     @Nullable
     public static ResourceLocation getName(Object element) {
-        ResourceLocation registryName = getName(Registry.REGISTRY, element);
-        return registryName == null ? getName(BuiltinRegistries.REGISTRY, element) : registryName;
+        //TODO - 1.20: Validate
+        //ResourceLocation registryName = getName(Registry.REGISTRY, element);
+        //return registryName == null ? getName(BuiltInRegistries.REGISTRY, element) : registryName;
+        return getName(BuiltInRegistries.REGISTRY, element);
     }
 
     @Nullable

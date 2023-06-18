@@ -1,12 +1,11 @@
 package mekanism.client.gui.robit;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundRenameItemPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -35,7 +34,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
+        //TODO - 1.20: Validate this behaves properly and there is no new version of sendRepeatsToGui
         itemNameField = addRenderableWidget(new GuiTextField(this, 60, 21, 103, 12));
         itemNameField.setCanLoseFocus(false);
         itemNameField.setTextColor(-1);
@@ -64,12 +63,11 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     public void removed() {
         super.removed();
         menu.removeSlotListener(this);
-        getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        drawString(matrix, title, titleLabelX, titleLabelY, titleTextColor());
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        drawString(guiGraphics, title, titleLabelX, titleLabelY, titleTextColor());
         int maximumCost = menu.getCost();
         if (maximumCost > 0) {
             int k = 0x80FF20;
@@ -89,13 +87,13 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
 
             if (flag) {
                 int width = imageWidth - 8 - getStringWidth(component) - 2;
-                fill(matrix, width - 2, 67, imageWidth - 8, 79, 0x4F000000);
-                getFont().drawShadow(matrix, component, width, 69.0F, k);
+                guiGraphics.fill(width - 2, 67, imageWidth - 8, 79, 0x4F000000);
+                guiGraphics.drawString(getFont(), component, width, 69, k);
                 MekanismRenderer.resetColor();
             }
         }
-        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
-        super.drawForegroundText(matrix, mouseX, mouseY);
+        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
     @Override
@@ -104,13 +102,12 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     }
 
     @Override
-    protected void renderBg(@NotNull PoseStack matrix, float partialTick, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         MekanismRenderer.resetColor();
-        RenderSystem.setShaderTexture(0, ANVIL_RESOURCE);
-        blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-        blit(matrix, leftPos + 59, topPos + 20, 0, imageHeight + (menu.getSlot(0).hasItem() ? 0 : 16), 110, 16);
+        guiGraphics.blit(ANVIL_RESOURCE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        guiGraphics.blit(ANVIL_RESOURCE, leftPos + 59, topPos + 20, 0, imageHeight + (menu.getSlot(0).hasItem() ? 0 : 16), 110, 16);
         if ((menu.getSlot(0).hasItem() || menu.getSlot(1).hasItem()) && !menu.getSlot(2).hasItem()) {
-            blit(matrix, leftPos + 99, topPos + 45, imageWidth, 0, 28, 21);
+            guiGraphics.blit(ANVIL_RESOURCE, leftPos + 99, topPos + 45, imageWidth, 0, 28, 21);
         }
     }
 

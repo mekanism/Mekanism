@@ -7,12 +7,13 @@ import mekanism.client.lang.FormatSplitter.FormatComponent;
 import mekanism.client.lang.FormatSplitter.MessageFormatComponent;
 import mekanism.common.Mekanism;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 
 //TODO: If at some point we make unit tests, we should add some tests for this and for FormatSplitter
 public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
 
-    public UpsideDownLanguageProvider(DataGenerator gen, String modid) {
-        super(gen, modid, "en_ud");
+    public UpsideDownLanguageProvider(PackOutput output, String modid) {
+        super(output, modid, "en_ud");
         //Note: This technically is supposed to be upside down british english, but we are doing it as upside down US english
     }
 

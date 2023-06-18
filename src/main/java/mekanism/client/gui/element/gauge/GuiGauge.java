@@ -1,7 +1,5 @@
 package mekanism.client.gui.element.gauge;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +19,7 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -70,50 +69,47 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         GaugeInfo color = getGaugeColor();
-        renderExtendedTexture(matrix, color.getResourceLocation(), color.getSideWidth(), color.getSideHeight());
+        renderExtendedTexture(guiGraphics, color.getResourceLocation(), color.getSideWidth(), color.getSideHeight());
         if (!dummy) {
-            renderContents(matrix);
+            renderContents(guiGraphics);
         }
     }
 
-    public void renderContents(PoseStack matrix) {
+    public void renderContents(GuiGraphics guiGraphics) {
         boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
         if (warning) {
             //Draw background (we do it regardless of if we are full or not as if the thing being drawn has transparency
             // we may as well show the background)
-            RenderSystem.setShaderTexture(0, GuiSlot.WARNING_BACKGROUND_TEXTURE);
-            blit(matrix, x + 1, y + 1, 0, 0, width - 2, height - 2, 256, 256);
+            guiGraphics.blit(GuiSlot.WARNING_BACKGROUND_TEXTURE, getX() + 1, getY() + 1, 0, 0, width - 2, height - 2, 256, 256);
         }
         int scale = getScaledLevel();
         TextureAtlasSprite icon = getIcon();
         if (scale > 0 && icon != null) {
             applyRenderColor();
-            drawTiledSprite(matrix, x + 1, y + 1, height - 2, width - 2, scale, icon, TilingDirection.UP_RIGHT);
+            drawTiledSprite(guiGraphics, getX() + 1, getY() + 1, height - 2, width - 2, scale, icon, TilingDirection.UP_RIGHT);
             MekanismRenderer.resetColor();
             if (warning && (scale / (double) (height - 2)) > 0.98) {
                 //If we have a warning and the gauge is entirely filled (or almost completely filled, > 95%), draw a warning vertically next to it
-                RenderSystem.setShaderTexture(0, WARNING_TEXTURE);
                 int halfWidth = (width - 2) / 2;
                 //Note: We also start the drawing after half the width so that we are sure it will properly line up with the background
-                blit(matrix, x + 1 + halfWidth, y + 1, halfWidth, 0, halfWidth, height - 2, 256, 256);
+                guiGraphics.blit(WARNING_TEXTURE, getX() + 1 + halfWidth, getY() + 1, halfWidth, 0, halfWidth, height - 2, 256, 256);
             }
         }
         //Draw the bar overlay
-        drawBarOverlay(matrix);
+        drawBarOverlay(guiGraphics);
     }
 
-    public void drawBarOverlay(PoseStack matrix) {
-        RenderSystem.setShaderTexture(0, getResource());
+    public void drawBarOverlay(GuiGraphics guiGraphics) {
         GaugeOverlay gaugeOverlay = getGaugeOverlay();
-        blit(matrix, x + 1, y + 1, getWidth() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
+        guiGraphics.blit(getResource(), getX() + 1, getY() + 1, getWidth() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
     }
 
     @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.renderToolTip(matrix, mouseX, mouseY);
+    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderToolTip(guiGraphics, mouseX, mouseY);
         ItemStack stack = gui().getCarriedItem();
         EnumColor color = getGaugeColor().getColor();
         if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && color != null) {
@@ -130,9 +126,9 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
                     }
                 }
                 if (dataType == null) {
-                    displayTooltips(matrix, mouseX, mouseY, MekanismLang.GENERIC_PARENTHESIS.translateColored(color, color.getName()));
+                    displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.GENERIC_PARENTHESIS.translateColored(color, color.getName()));
                 } else {
-                    displayTooltips(matrix, mouseX, mouseY, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, dataType, color.getName()));
+                    displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, dataType, color.getName()));
                 }
             }
         } else {
@@ -141,7 +137,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
                 list.add(getLabel());
             }
             list.addAll(getTooltipText());
-            displayTooltips(matrix, mouseX, mouseY, list);
+            displayTooltips(guiGraphics, mouseX, mouseY, list);
         }
     }
 

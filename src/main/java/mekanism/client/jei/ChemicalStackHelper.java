@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -31,7 +32,6 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.tags.TagUtils;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.util.ChemicalUtil;
 import mezz.jei.api.helpers.IColorHelper;
@@ -40,6 +40,7 @@ import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -89,8 +90,8 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
     }
 
     @Override
-    public Collection<ResourceLocation> getTags(STACK ingredient) {
-        return TagUtils.tagNames(ingredient.getType().getTags());
+    public Stream<ResourceLocation> getTagStream(STACK ingredient) {
+        return ingredient.getType().getTags().map(TagKey::location);
     }
 
     protected abstract IForgeRegistry<CHEMICAL> getRegistry();

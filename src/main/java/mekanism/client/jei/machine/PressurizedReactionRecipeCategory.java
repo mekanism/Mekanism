@@ -25,6 +25,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,11 +54,11 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
     }
 
     @Override
-    public void draw(PressurizedReactionRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrix, double mouseX, double mouseY) {
-        super.draw(recipe, recipeSlotsView, matrix, mouseX, mouseY);
+    public void draw(PressurizedReactionRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
         if (recipeSlotsView.findSlotByName(OUTPUT_GAS).isEmpty()) {
             //If we don't have an output gas at all for this recipe, draw the bar overlay manually
-            outputGas.drawBarOverlay(matrix);
+            outputGas.drawBarOverlay(guiGraphics);
         }
     }
 

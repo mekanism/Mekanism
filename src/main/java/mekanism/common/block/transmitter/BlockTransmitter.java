@@ -30,7 +30,8 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -47,7 +48,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     private static final Short2ObjectMap<VoxelShape> cachedShapes = Short2ObjectMaps.synchronize(new Short2ObjectOpenHashMap<>());
 
     protected BlockTransmitter() {
-        super(BlockBehaviour.Properties.of(Material.PISTON).strength(1, 6));
+        super(BlockBehaviour.Properties.of().strength(1, 6).mapColor(MapColor.STONE).pushReaction(PushReaction.BLOCK));
     }
 
     @NotNull

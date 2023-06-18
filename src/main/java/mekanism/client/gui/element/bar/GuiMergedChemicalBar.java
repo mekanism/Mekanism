@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.bar;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -20,6 +19,8 @@ import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
 import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -72,25 +73,25 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
     }
 
     @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
         if (currentBar == null) {
-            super.renderToolTip(matrix, mouseX, mouseY);
+            super.renderToolTip(guiGraphics, mouseX, mouseY);
         } else {
-            currentBar.renderToolTip(matrix, mouseX, mouseY);
+            currentBar.renderToolTip(guiGraphics, mouseX, mouseY);
         }
     }
 
     @Override
-    void drawContentsChecked(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel, boolean warning) {
+    void drawContentsChecked(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel, boolean warning) {
         GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
         if (currentBar != null) {
-            currentBar.drawContentsChecked(matrix, mouseX, mouseY, partialTicks, handlerLevel, warning);
+            currentBar.drawContentsChecked(guiGraphics, mouseX, mouseY, partialTicks, handlerLevel, warning);
         }
     }
 
     @Override
-    protected void renderBarOverlay(PoseStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+    protected void renderBarOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
         //Rendering is redirected in drawContentsChecked
     }
 
@@ -112,6 +113,12 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
     public Object getIngredient(double mouseX, double mouseY) {
         GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
         return currentBar == null ? null : currentBar.getIngredient(mouseX, mouseY);
+    }
+
+    @Override
+    public Rect2i getIngredientBounds(double mouseX, double mouseY) {
+        GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
+        return currentBar == null ? new Rect2i(getX() + 1, getY() + 1, width - 2, height - 2) : currentBar.getIngredientBounds(mouseX, mouseY);
     }
 
     @Nullable

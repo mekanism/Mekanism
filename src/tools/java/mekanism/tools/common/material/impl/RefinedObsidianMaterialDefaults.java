@@ -7,6 +7,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -65,24 +66,22 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForSlot(@NotNull EquipmentSlot slotType) {
-        return switch (slotType) {
-            case FEET -> 975;
-            case LEGS -> 1_125;
-            case CHEST -> 1_200;
-            case HEAD -> 825;
-            default -> 0;
+    public int getDurabilityForType(@NotNull ArmorItem.Type armorType) {
+        return switch (armorType) {
+            case BOOTS -> 975;
+            case LEGGINGS -> 1_125;
+            case CHESTPLATE -> 1_200;
+            case HELMET -> 825;
         };
     }
 
     @Override
-    public int getDefenseForSlot(@NotNull EquipmentSlot slotType) {
-        return switch (slotType) {
-            case FEET -> 5;
-            case LEGS -> 8;
-            case CHEST -> 12;
-            case HEAD -> 6;
-            default -> 0;
+    public int getDefenseForType(@NotNull ArmorItem.Type armorType) {
+        return switch (armorType) {
+            case BOOTS -> 5;
+            case LEGGINGS -> 8;
+            case CHESTPLATE -> 12;
+            case HELMET -> 6;
         };
     }
 

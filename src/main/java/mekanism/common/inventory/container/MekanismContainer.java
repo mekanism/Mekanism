@@ -104,7 +104,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     }
 
     public boolean isRemote() {
-        return inv.player.level.isClientSide;
+        return inv.player.level().isClientSide;
     }
 
     public UUID getPlayerUUID() {
@@ -182,7 +182,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     }
 
     protected void closeInventory(@NotNull Player player) {
-        if (!player.level.isClientSide()) {
+        if (!player.level().isClientSide()) {
             clearSelectedWindow(player.getUUID());
         }
     }
@@ -258,7 +258,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         if (currentSlot == null || !currentSlot.hasItem()) {
             return ItemStack.EMPTY;
         }
-        SelectedWindowData selectedWindow = player.level.isClientSide ? getSelectedWindow() : getSelectedWindow(player.getUUID());
+        SelectedWindowData selectedWindow = player.level().isClientSide ? getSelectedWindow() : getSelectedWindow(player.getUUID());
         if (currentSlot instanceof IInsertableSlot insertableSlot && !insertableSlot.exists(selectedWindow)) {
             return ItemStack.EMPTY;
         }

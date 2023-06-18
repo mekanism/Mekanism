@@ -1,17 +1,15 @@
 package mekanism.generators.common.loot;
 
+import java.util.List;
 import mekanism.common.loot.BaseLootProvider;
-import mekanism.generators.common.MekanismGenerators;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 public class GeneratorsLootProvider extends BaseLootProvider {
 
-    public GeneratorsLootProvider(DataGenerator gen) {
-        super(gen, MekanismGenerators.MODID);
-    }
-
-    @Override
-    protected GeneratorsBlockLootTables getBlockLootTable() {
-        return new GeneratorsBlockLootTables();
+    public GeneratorsLootProvider(PackOutput output) {
+        super(output, List.of(
+              new SubProviderEntry(GeneratorsBlockLootTables::new, LootContextParamSets.BLOCK)
+        ));
     }
 }

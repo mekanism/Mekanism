@@ -103,14 +103,12 @@ public class ClientConfig extends BaseMekanismConfig {
         builder.comment("GUI Config").push(GUI_CATEGORY);
         hudOpacity = CachedFloatValue.wrap(this, builder.comment("Opacity of HUD used by MekaSuit.")
               .defineInRange("hudOpacity", 0.4F, 0, 1));
-        //TODO - 1.20: Add ranges on these colors to clamp to RGB rather than ARGB as the alpha isn't actually used here,
-        // but there is no reason to potentially cause people's configs to reset partway through an MC version
-        hudColor = CachedIntValue.wrap(this, builder.comment("Color of HUD used by MekaSuit.")
-              .define("hudColor", 0x40F5F0));
-        hudWarningColor = CachedIntValue.wrap(this, builder.comment("Color of warning HUD elements used by MekaSuit.")
-              .define("hudWarningColor", 0xFFDD4F));
-        hudDangerColor = CachedIntValue.wrap(this, builder.comment("Color of danger HUD elements used by MekaSuit.")
-              .define("hudDangerColor", 0xFF383C));
+        hudColor = CachedIntValue.wrap(this, builder.comment("Color (RGB) of HUD used by MekaSuit.")
+              .defineInRange("hudColor", 0x40F5F0, 0, 0xFFFFFF));
+        hudWarningColor = CachedIntValue.wrap(this, builder.comment("Color (RGB) of warning HUD elements used by MekaSuit.")
+              .defineInRange("hudWarningColor", 0xFFDD4F, 0, 0xFFFFFF));
+        hudDangerColor = CachedIntValue.wrap(this, builder.comment("Color (RGB) of danger HUD elements used by MekaSuit.")
+              .defineInRange("hudDangerColor", 0xFF383C, 0, 0xFFFFFF));
         hudJitter = CachedFloatValue.wrap(this, builder.comment("Visual jitter of MekaSuit HUD, seen when moving the player's head. Bigger value = more jitter.")
               .defineInRange("hudJitter", 6F, 1F, 100F));
         hudCompassEnabled = CachedBooleanValue.wrap(this, builder.comment("Display a fancy compass when the MekaSuit is worn.")

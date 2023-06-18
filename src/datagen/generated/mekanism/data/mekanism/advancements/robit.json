@@ -27,5 +27,6 @@
     "title": {
       "translate": "advancements.mekanism.robit.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

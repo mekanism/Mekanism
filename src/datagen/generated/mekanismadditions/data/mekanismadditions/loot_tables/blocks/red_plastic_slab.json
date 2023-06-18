@@ -28,8 +28,8 @@
           "name": "mekanismadditions:red_plastic_slab"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/red_plastic_slab"
 }

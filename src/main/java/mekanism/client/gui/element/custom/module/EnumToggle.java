@@ -1,14 +1,13 @@
 package mekanism.client.gui.element.custom.module;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -41,17 +40,16 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
     }
 
     @Override
-    protected void renderBackground(PoseStack matrix, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, SLIDER);
+    protected void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int center = optionDistance * data.get().ordinal();
-        GuiComponent.blit(matrix, getX() + BAR_START + center - 2, getY() + 11, 0, 0, 5, 6, 8, 8);
-        GuiComponent.blit(matrix, getX() + BAR_START, getY() + 17, 0, 6, BAR_LENGTH, 2, 8, 8);
+        guiGraphics.blit(SLIDER, getX() + BAR_START + center - 2, getY() + 11, 0, 0, 5, 6, 8, 8);
+        guiGraphics.blit(SLIDER, getX() + BAR_START, getY() + 17, 0, 6, BAR_LENGTH, 2, 8, 8);
     }
 
     @Override
-    protected void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
+    protected void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int textColor = parent.screenTextColor();
-        parent.drawTextWithScale(matrix, data.getDescription(), getRelativeX() + 3, getRelativeY(), textColor, 0.8F);
+        parent.drawTextWithScale(guiGraphics, data.getDescription(), getRelativeX() + 3, getRelativeY(), textColor, 0.8F);
         List<TYPE> options = getData().getEnums();
         for (int i = 0, count = options.size(); i < count; i++) {
             int center = optionDistance * i;
@@ -69,7 +67,7 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
                     left -= end - max;
                 }
             }
-            parent.drawTextWithScale(matrix, text, getRelativeX() + left, getRelativeY() + 20, textColor, TEXT_SCALE);
+            parent.drawTextWithScale(guiGraphics, text, getRelativeX() + left, getRelativeY() + 20, textColor, TEXT_SCALE);
         }
     }
 

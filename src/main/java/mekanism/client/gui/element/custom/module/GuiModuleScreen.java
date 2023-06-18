@@ -20,6 +20,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.DisableableModuleConfigItem;
+import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -172,29 +173,29 @@ public class GuiModuleScreen extends GuiScrollableElement {
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack poseStack, int mx, int my, float partialTicks) {
-        super.drawBackground(poseStack, mx, my, partialTicks);
-        renderBackgroundTexture(poseStack, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
-        drawScrollBar(poseStack, GuiScrollList.TEXTURE_WIDTH, GuiScrollList.TEXTURE_HEIGHT);
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mx, int my, float partialTicks) {
+        super.drawBackground(guiGraphics, mx, my, partialTicks);
+        renderBackgroundTexture(guiGraphics, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
+        drawScrollBar(guiGraphics, GuiScrollList.TEXTURE_WIDTH, GuiScrollList.TEXTURE_HEIGHT);
         //Draw contents
-        scissorScreen(poseStack, mx, my, (matrix, mouseX, mouseY, module, shift) -> getStartY(module), MiniElement::renderBackground);
+        scissorScreen(guiGraphics, mx, my, (g, mouseX, mouseY, module, shift) -> getStartY(module), MiniElement::renderBackground);
     }
 
     @Override
-    public void renderForeground(PoseStack poseStack, int mx, int my) {
-        super.renderForeground(poseStack, mx, my);
-        scissorScreen(poseStack, mx, my, (matrix, mouseX, mouseY, module, shift) -> {
+    public void renderForeground(GuiGraphics guiGraphics, int mx, int my) {
+        super.renderForeground(guiGraphics, mx, my);
+        scissorScreen(guiGraphics, mx, my, (g, mouseX, mouseY, module, shift) -> {
             int startY = 5;
             if (module != null) {
                 if (module.getData().isExclusive(ExclusiveFlag.ANY)) {
                     if (startY + 13 > shift) {
-                        drawTextWithScale(matrix, MekanismLang.MODULE_EXCLUSIVE.translate(), relativeX + 5, relativeY + startY, 0x635BD4, 0.8F);
+                        drawTextWithScale(g, MekanismLang.MODULE_EXCLUSIVE.translate(), relativeX + 5, relativeY + startY, 0x635BD4, 0.8F);
                     }
                     startY += 13;
                 }
                 if (module.getData().getMaxStackSize() > 1) {
                     if (startY + 13 > shift) {
-                        drawTextWithScale(matrix, MekanismLang.MODULE_INSTALLED.translate(module.getInstalledCount()), relativeX + 5, relativeY + startY,
+                        drawTextWithScale(g, MekanismLang.MODULE_INSTALLED.translate(module.getInstalledCount()), relativeX + 5, relativeY + startY,
                               screenTextColor(), 0.8F);
                     }
                     startY += 13;
@@ -204,17 +205,18 @@ public class GuiModuleScreen extends GuiScrollableElement {
         }, MiniElement::renderForeground);
     }
 
-    private void scissorScreen(PoseStack matrix, int mouseX, int mouseY, ScissorRender renderer, ScissorMiniElementRender miniElementRender) {
+    private void scissorScreen(GuiGraphics guiGraphics, int mouseX, int mouseY, ScissorRender renderer, ScissorMiniElementRender miniElementRender) {
         //Note: Scissor width at edge of monitor to make it, so we effectively only are scissoring height
-        enableScissor(0, this.y + 1, minecraft.getWindow().getGuiScaledWidth(), this.y + this.height - 1);
-        matrix.pushPose();
+        guiGraphics.enableScissor(0, getY() + 1, guiGraphics.guiWidth(), getY() + this.height - 1);
+        PoseStack pose = guiGraphics.pose();
+        pose.pushPose();
         int shift = getCurrentSelection();
-        matrix.translate(0, -shift, 0);
+        pose.translate(0, -shift, 0);
         //Shift the mouse y by the proper amount
         mouseY += shift;
 
         //Draw any needed text and calculate where our elements will start rendering
-        int startY = renderer.render(matrix, mouseX, mouseY, currentModule, shift);
+        int startY = renderer.render(guiGraphics, mouseX, mouseY, currentModule, shift);
         //Draw elements
         for (MiniElement element : miniElements) {
             if (startY >= shift + height) {
@@ -222,24 +224,24 @@ public class GuiModuleScreen extends GuiScrollableElement {
                 break;
             } else if (startY + element.getNeededHeight() > shift) {
                 //Only draw it if it would be in our view
-                miniElementRender.render(element, matrix, mouseX, mouseY);
+                miniElementRender.render(element, guiGraphics, mouseX, mouseY);
             }
             startY += element.getNeededHeight() + ELEMENT_SPACER;
         }
 
-        matrix.popPose();
-        disableScissor();
+        pose.popPose();
+        guiGraphics.disableScissor();
     }
 
     @FunctionalInterface
     private interface ScissorRender {
 
-        int render(PoseStack matrix, int mouseX, int mouseY, @Nullable IModule<?> module, int shift);
+        int render(GuiGraphics guiGraphics, int mouseX, int mouseY, @Nullable IModule<?> module, int shift);
     }
 
     @FunctionalInterface
     private interface ScissorMiniElementRender {
 
-        void render(MiniElement element, PoseStack matrix, int mouseX, int mouseY);
+        void render(MiniElement element, GuiGraphics guiGraphics, int mouseX, int mouseY);
     }
 }

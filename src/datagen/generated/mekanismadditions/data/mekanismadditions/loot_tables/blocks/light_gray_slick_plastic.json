@@ -14,8 +14,8 @@
           "name": "mekanismadditions:light_gray_slick_plastic"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/light_gray_slick_plastic"
 }

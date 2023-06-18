@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class GuiMinerFilerSelect extends GuiFilterSelect<TileEntityDigitalMiner> {
 
     public GuiMinerFilerSelect(IGuiWrapper gui, TileEntityDigitalMiner tile) {
-        super(gui, tile, 4);
+        super(gui, tile, 3);
     }
 
     @NotNull
@@ -21,12 +21,6 @@ public class GuiMinerFilerSelect extends GuiFilterSelect<TileEntityDigitalMiner>
     @Override
     protected GuiFilterCreator<TileEntityDigitalMiner> getTagFilterCreator() {
         return GuiMinerTagFilter::create;
-    }
-
-    @NotNull
-    @Override
-    protected GuiFilterCreator<TileEntityDigitalMiner> getMaterialFilterCreator() {
-        return GuiMinerMaterialFilter::create;
     }
 
     @NotNull

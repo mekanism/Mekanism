@@ -14,8 +14,8 @@
           "name": "mekanismadditions:brown_plastic_stairs"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/brown_plastic_stairs"
 }

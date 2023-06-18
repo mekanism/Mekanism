@@ -9,7 +9,10 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -48,9 +51,20 @@ public interface IRadiationManager {
     /**
      * Helper to access Mekanism's internal radiation damage source.
      *
+     * @param registryAccess Registry access to create the damage source with.
+     *
      * @return Damage source used for radiation.
      */
-    DamageSource getRadiationDamageSource();
+    DamageSource getRadiationDamageSource(RegistryAccess registryAccess);
+
+    /**
+     * Helper to access Mekanism's internal radiation damage type's resource key.
+     *
+     * @return Resource key of the damage type used for radiation.
+     *
+     * @since 10.4.0
+     */
+    ResourceKey<DamageType> getRadiationDamageTypeKey();
 
     /**
      * Get the radiation level (in Sv/h) at a certain location.

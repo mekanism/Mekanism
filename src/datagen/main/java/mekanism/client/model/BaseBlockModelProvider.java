@@ -1,6 +1,7 @@
 package mekanism.client.model;
 
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
@@ -10,8 +11,8 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseBlockModelProvider extends BlockModelProvider {
 
-    public BaseBlockModelProvider(DataGenerator generator, String modid, ExistingFileHelper existingFileHelper) {
-        super(generator, modid, existingFileHelper);
+    public BaseBlockModelProvider(PackOutput output, String modid, ExistingFileHelper existingFileHelper) {
+        super(output, modid, existingFileHelper);
     }
 
     @NotNull

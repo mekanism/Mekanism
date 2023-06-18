@@ -4,20 +4,16 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.mojang.datafixers.util.Pair;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import net.minecraft.client.renderer.block.model.BlockElement;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraftforge.client.model.ElementsModel;
@@ -32,19 +28,9 @@ public class RobitModel extends ElementsModel {
     }
 
     @Override
-    public BakedModel bake(IGeometryBakingContext owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
+    public BakedModel bake(IGeometryBakingContext owner, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
           ItemOverrides overrides, ResourceLocation modelLocation) {
-        return new RobitBakedModel(super.bake(owner, bakery, spriteGetter, modelTransform, overrides, modelLocation));
-    }
-
-    @NotNull
-    @Override
-    public Collection<Material> getMaterials(@NotNull IGeometryBakingContext owner, @NotNull Function<ResourceLocation, UnbakedModel> modelGetter,
-          @NotNull Set<Pair<String, String>> missingTextureErrors) {
-        Collection<Material> textures = super.getMaterials(owner, modelGetter, missingTextureErrors);
-        //Remove any missing errors where the texture in the file was #robit
-        missingTextureErrors.removeIf(p -> p.getFirst().equals("#robit"));
-        return textures;
+        return new RobitBakedModel(super.bake(owner, baker, spriteGetter, modelTransform, overrides, modelLocation));
     }
 
     /**

@@ -1,12 +1,11 @@
 package mekanism.generators.client.gui.element;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.MekanismGenerators;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,10 +25,9 @@ public class GuiStateTexture extends GuiTexturedElement {
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShaderTexture(0, getResource());
-        blit(matrix, x, y, 0, 0, width, height, width, height);
-        RenderSystem.setShaderTexture(0, onSupplier.getAsBoolean() ? onTexture : offTexture);
-        blit(matrix, x + 2, y + 2, 0, 0, width - 4, height - 4, width - 4, height - 4);
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        guiGraphics.blit(getResource(), getX(), getY(), 0, 0, width, height, width, height);
+        ResourceLocation resource = onSupplier.getAsBoolean() ? onTexture : offTexture;
+        guiGraphics.blit(resource, getX() + 2, getY() + 2, 0, 0, width - 4, height - 4, width - 4, height - 4);
     }
 }

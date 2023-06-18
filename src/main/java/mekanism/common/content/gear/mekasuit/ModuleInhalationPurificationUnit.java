@@ -90,7 +90,7 @@ public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInh
     @Nullable
     @Override
     public ModuleDamageAbsorbInfo getDamageAbsorbInfo(IModule<ModuleInhalationPurificationUnit> module, DamageSource damageSource) {
-        return damageSource.isMagic() ? INHALATION_ABSORB_INFO : null;
+        return MekanismUtils.isPreventableMagicDamage(damageSource) ? INHALATION_ABSORB_INFO : null;
     }
 
     private void speedupEffect(Player player, MobEffectInstance effect) {

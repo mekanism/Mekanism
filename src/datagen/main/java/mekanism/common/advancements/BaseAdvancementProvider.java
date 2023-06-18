@@ -2,22 +2,22 @@ package mekanism.common.advancements;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.DataGenJsonConstants;
-import mekanism.common.Mekanism;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.tags.TagKey;
@@ -29,14 +29,14 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseAdvancementProvider implements DataProvider {
 
-    private final DataGenerator.PathProvider pathProvider;
+    private final PackOutput.PathProvider pathProvider;
     private final ExistingFileHelper existingFileHelper;
     private final String modid;
 
-    public BaseAdvancementProvider(DataGenerator generator, ExistingFileHelper existingFileHelper, String modid) {
+    public BaseAdvancementProvider(PackOutput output, ExistingFileHelper existingFileHelper, String modid) {
         this.modid = modid;
         this.existingFileHelper = existingFileHelper;
-        this.pathProvider = generator.createPathProvider(DataGenerator.Target.DATA_PACK, "advancements");
+        this.pathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "advancements");
     }
 
     @NotNull
@@ -45,8 +45,10 @@ public abstract class BaseAdvancementProvider implements DataProvider {
         return "Advancements: " + modid;
     }
 
+    @NotNull
     @Override
-    public void run(@NotNull CachedOutput cache) {
+    public CompletableFuture<?> run(@NotNull CachedOutput cache) {
+        List<CompletableFuture<?>> futures = new ArrayList<>();
         registerAdvancements(advancement -> {
             ResourceLocation id = advancement.getId();
             if (existingFileHelper.exists(id, PackType.SERVER_DATA, ".json", "advancements")) {
@@ -55,13 +57,10 @@ public abstract class BaseAdvancementProvider implements DataProvider {
             Path path = this.pathProvider.json(id);
             JsonObject json = advancement.deconstruct().serializeToJson();
             cleanAdvancementJson(json);
-            try {
-                existingFileHelper.trackGenerated(id, PackType.SERVER_DATA, ".json", "advancements");
-                DataProvider.saveStable(cache, json, path);
-            } catch (IOException ioexception) {
-                Mekanism.logger.error("Couldn't save advancement {}", path, ioexception);
-            }
+            existingFileHelper.trackGenerated(id, PackType.SERVER_DATA, ".json", "advancements");
+            futures.add(DataProvider.saveStable(cache, json, path));
         });
+        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
     private void cleanAdvancementJson(JsonObject json) {

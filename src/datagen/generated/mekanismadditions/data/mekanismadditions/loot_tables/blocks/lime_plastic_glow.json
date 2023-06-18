@@ -14,8 +14,8 @@
           "name": "mekanismadditions:lime_plastic_glow"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/lime_plastic_glow"
 }

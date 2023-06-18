@@ -37,5 +37,6 @@
     "title": {
       "translate": "advancements.mekanism.stabilizing_chunks.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

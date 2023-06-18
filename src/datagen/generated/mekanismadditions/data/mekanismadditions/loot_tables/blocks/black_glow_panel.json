@@ -14,8 +14,8 @@
           "name": "mekanismadditions:black_glow_panel"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/black_glow_panel"
 }

@@ -14,8 +14,8 @@
           "name": "mekanismgenerators:control_rod_assembly"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismgenerators:blocks/control_rod_assembly"
 }

@@ -1,17 +1,15 @@
 package mekanism.defense.common.loot;
 
+import java.util.List;
 import mekanism.common.loot.BaseLootProvider;
-import mekanism.defense.common.MekanismDefense;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 public class DefenseLootProvider extends BaseLootProvider {
 
-    public DefenseLootProvider(DataGenerator gen) {
-        super(gen, MekanismDefense.MODID);
-    }
-
-    @Override
-    protected DefenseBlockLootTables getBlockLootTable() {
-        return new DefenseBlockLootTables();
+    public DefenseLootProvider(PackOutput output) {
+        super(output, List.of(
+              new SubProviderEntry(DefenseBlockLootTables::new, LootContextParamSets.BLOCK)
+        ));
     }
 }

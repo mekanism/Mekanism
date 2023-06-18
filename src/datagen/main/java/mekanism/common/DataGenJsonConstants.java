@@ -16,6 +16,7 @@ public class DataGenJsonConstants {
     public static final String KEY = "key";
     public static final String PATTERN = "pattern";
     public static final String RESULT = "result";
+    public static final String TEMPLATE = "template";
 
     //Advancements
     public static final String ANNOUNCE_TO_CHAT = "announce_to_chat";

@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
@@ -27,7 +28,7 @@ public class UnboxCardboardBoxTrigger extends SimpleCriterionTrigger<UnboxCardbo
 
     @NotNull
     @Override
-    protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull EntityPredicate.Composite playerPredicate, @NotNull DeserializationContext context) {
+    protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull ContextAwarePredicate playerPredicate, @NotNull DeserializationContext context) {
         return new TriggerInstance(playerPredicate);
     }
 
@@ -37,12 +38,12 @@ public class UnboxCardboardBoxTrigger extends SimpleCriterionTrigger<UnboxCardbo
 
     public static class TriggerInstance extends AbstractCriterionTriggerInstance {
 
-        public TriggerInstance(EntityPredicate.Composite playerPredicate) {
+        public TriggerInstance(ContextAwarePredicate playerPredicate) {
             super(MekanismCriteriaTriggers.UNBOX_CARDBOARD_BOX.getId(), playerPredicate);
         }
 
         public static UnboxCardboardBoxTrigger.TriggerInstance unbox() {
-            return new UnboxCardboardBoxTrigger.TriggerInstance(EntityPredicate.Composite.ANY);
+            return new UnboxCardboardBoxTrigger.TriggerInstance(ContextAwarePredicate.ANY);
         }
     }
 }

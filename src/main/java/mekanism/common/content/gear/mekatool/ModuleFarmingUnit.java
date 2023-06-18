@@ -39,7 +39,6 @@ import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -286,10 +285,12 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
                 return true;
             }
             //Or it is a replaceable plant that is also not solid (such as tall grass)
-            Material material = aboveState.getMaterial();
+            //TODO - 1.20: Figure out if we want to just allow it if the above state is replaceable in general or do we want to maybe add a tag for this
+            // or do some form of instance checking?
+            /*Material material = aboveState.getMaterial();
             if (material == Material.REPLACEABLE_PLANT || material == Material.REPLACEABLE_FIREPROOF_PLANT) {
                 return !aboveState.isSolidRender(level, abovePos);
-            }
+            }*/
             return false;
         }
     }
@@ -321,7 +322,7 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
                 case SOUTH, NORTH -> new Vec3i(radius, radius, 0);
             };
             AABB box = new AABB(pos.subtract(adjustment), pos.offset(adjustment));
-            return BlockPos.betweenClosed(new BlockPos(box.minX, box.minY, box.minZ), new BlockPos(box.maxX, box.maxY, box.maxZ));
+            return BlockPos.betweenClosed(BlockPos.containing(box.minX, box.minY, box.minZ), BlockPos.containing(box.maxX, box.maxY, box.maxZ));
         }
 
         @Nullable

@@ -14,8 +14,8 @@
           "name": "mekanismgenerators:fusion_reactor_frame"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismgenerators:blocks/fusion_reactor_frame"
 }

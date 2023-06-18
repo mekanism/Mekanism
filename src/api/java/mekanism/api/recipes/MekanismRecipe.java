@@ -2,6 +2,7 @@ package mekanism.api.recipes;
 
 import java.util.Objects;
 import mekanism.api.inventory.IgnoredIInventory;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -56,7 +57,7 @@ public abstract class MekanismRecipe implements Recipe<IgnoredIInventory> {//TOD
 
     @NotNull
     @Override
-    public ItemStack assemble(@NotNull IgnoredIInventory inv) {
+    public ItemStack assemble(@NotNull IgnoredIInventory inv, @NotNull RegistryAccess registryAccess) {
         return ItemStack.EMPTY;
     }
 
@@ -67,7 +68,7 @@ public abstract class MekanismRecipe implements Recipe<IgnoredIInventory> {//TOD
 
     @NotNull
     @Override
-    public ItemStack getResultItem() {
+    public ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
         return ItemStack.EMPTY;
     }
 }

@@ -257,12 +257,12 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
 
     @Override
     public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
-        if (player.level.isClientSide || player.isCreative()) {
+        if (player.level().isClientSide || player.isCreative()) {
             return super.onBlockStartBreak(stack, pos, player);
         }
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer != null) {
-            Level world = player.level;
+            Level world = player.level();
             BlockState state = world.getBlockState(pos);
             boolean silk = isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT);
             FloatingLong modDestroyEnergy = getDestroyEnergy(stack, silk);

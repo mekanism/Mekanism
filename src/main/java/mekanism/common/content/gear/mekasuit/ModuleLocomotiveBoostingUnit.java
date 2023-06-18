@@ -57,7 +57,7 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
     private boolean tick(IModule<ModuleLocomotiveBoostingUnit> module, Player player) {
         if (canFunction(module, player)) {
             float boost = getBoost();
-            if (!player.isOnGround()) {
+            if (!player.onGround()) {
                 boost /= 5F; // throttle if we're in the air
             }
             if (player.isInWater()) {

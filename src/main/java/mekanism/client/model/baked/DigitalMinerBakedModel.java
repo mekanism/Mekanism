@@ -19,12 +19,6 @@ public class DigitalMinerBakedModel extends ExtensionBakedModel<Void> {
     @Nullable
     private static TextureAtlasSprite AFD_SAD, AFD_TEXT, MAY_4TH;
 
-    public static void preStitch(TextureStitchEvent.Pre event) {
-        event.addSprite(Mekanism.rl("block/models/digital_miner_screen_afd_sad"));
-        event.addSprite(Mekanism.rl("block/models/digital_miner_screen_afd_text"));
-        event.addSprite(Mekanism.rl("block/models/digital_miner_screen_may4th"));
-    }
-
     public static void onStitch(TextureStitchEvent.Post event) {
         TextureAtlas atlas = event.getAtlas();
         AFD_SAD = atlas.getSprite(Mekanism.rl("block/models/digital_miner_screen_afd_sad"));

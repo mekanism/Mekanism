@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.window.filter.qio;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.window.filter.GuiItemStackFilter;
@@ -8,6 +7,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiQIOItemStackFilter extends GuiItemStackFilter<QIOItemStackFilter, TileEntityQIOFilterHandler> implements GuiQIOFilterHelper {
@@ -42,8 +42,8 @@ public class GuiQIOItemStackFilter extends GuiItemStackFilter<QIOItemStackFilter
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
-        drawString(matrix, OnOff.of(filter.fuzzyMode).getTextComponent(), relativeX + 161, relativeY + 20, titleTextColor());
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
+        drawString(guiGraphics, OnOff.of(filter.fuzzyMode).getTextComponent(), relativeX + 161, relativeY + 20, titleTextColor());
     }
 }

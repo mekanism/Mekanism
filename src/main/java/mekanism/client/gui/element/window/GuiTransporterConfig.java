@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
@@ -25,6 +24,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -72,24 +72,24 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     }
 
     private IHoverable getOnHover(RelativeSide side) {
-        return (onHover, matrix, mouseX, mouseY) -> {
+        return (onHover, guiGraphics, mouseX, mouseY) -> {
             if (onHover instanceof SideDataButton button) {
                 DataType dataType = button.getDataType();
                 if (dataType != null) {
                     EnumColor color = button.getColor();
                     Component colorComponent = color == null ? MekanismLang.NONE.translate() : color.getColoredName();
-                    displayTooltips(matrix, mouseX, mouseY, MekanismLang.GENERIC_WITH_PARENTHESIS.translate(colorComponent, side));
+                    displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.GENERIC_WITH_PARENTHESIS.translate(colorComponent, side));
                 }
             }
         };
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
-        drawTitleText(matrix, MekanismLang.TRANSPORTER_CONFIG.translate(), 5);
-        drawCenteredText(matrix, MekanismLang.INPUT.translate(), relativeX + 51, relativeY + 81, subheadingTextColor());
-        drawCenteredText(matrix, MekanismLang.OUTPUT.translate(), relativeX + 121, relativeY + 68, subheadingTextColor());
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
+        drawTitleText(guiGraphics, MekanismLang.TRANSPORTER_CONFIG.translate(), 5);
+        drawCenteredText(guiGraphics, MekanismLang.INPUT.translate(), relativeX + 51, relativeY + 81, subheadingTextColor());
+        drawCenteredText(guiGraphics, MekanismLang.OUTPUT.translate(), relativeX + 121, relativeY + 68, subheadingTextColor());
     }
 
     @Override

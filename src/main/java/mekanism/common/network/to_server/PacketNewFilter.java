@@ -25,7 +25,7 @@ public class PacketNewFilter implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         Player player = context.getSender();
         if (player != null) {
-            BlockEntity blockEntity = WorldUtils.getTileEntity(player.level, pos);
+            BlockEntity blockEntity = WorldUtils.getTileEntity(player.level(), pos);
             if (blockEntity instanceof ITileFilterHolder<?> filterHolder) {
                 filterHolder.getFilterManager().tryAddFilter(filter, true);
             }

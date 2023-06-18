@@ -82,7 +82,7 @@ public class ItemBalloon extends Item {
         if (player.isShiftKeyDown()) {
             BlockPos pos = context.getClickedPos();
             AABB bound = new AABB(pos, pos.offset(1, 3, 1));
-            List<EntityBalloon> balloonsNear = player.level.getEntitiesOfClass(EntityBalloon.class, bound);
+            List<EntityBalloon> balloonsNear = player.level().getEntitiesOfClass(EntityBalloon.class, bound);
             if (!balloonsNear.isEmpty()) {
                 return InteractionResult.FAIL;
             }
@@ -115,10 +115,10 @@ public class ItemBalloon extends Item {
     @Override
     public InteractionResult interactLivingEntity(@NotNull ItemStack stack, Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
         if (player.isShiftKeyDown()) {
-            if (!player.level.isClientSide) {
+            if (!player.level().isClientSide) {
                 AABB bound = new AABB(entity.getX() - 0.2, entity.getY() - 0.5, entity.getZ() - 0.2,
                       entity.getX() + 0.2, entity.getY() + entity.getDimensions(entity.getPose()).height + 4, entity.getZ() + 0.2);
-                List<EntityBalloon> balloonsNear = player.level.getEntitiesOfClass(EntityBalloon.class, bound);
+                List<EntityBalloon> balloonsNear = player.level().getEntitiesOfClass(EntityBalloon.class, bound);
                 for (EntityBalloon balloon : balloonsNear) {
                     if (balloon.latchedEntity == entity) {
                         return InteractionResult.SUCCESS;
@@ -128,7 +128,7 @@ public class ItemBalloon extends Item {
                 if (balloon == null) {
                     return InteractionResult.FAIL;
                 }
-                player.level.addFreshEntity(balloon);
+                player.level().addFreshEntity(balloon);
                 stack.shrink(1);
             }
             return InteractionResult.SUCCESS;

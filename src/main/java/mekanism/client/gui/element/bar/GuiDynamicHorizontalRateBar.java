@@ -1,12 +1,12 @@
 package mekanism.client.gui.element.bar;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
 public class GuiDynamicHorizontalRateBar extends GuiBar<IBarInfoHandler> {
@@ -27,18 +27,18 @@ public class GuiDynamicHorizontalRateBar extends GuiBar<IBarInfoHandler> {
     }
 
     @Override
-    protected void renderBarOverlay(PoseStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+    protected void renderBarOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
         int displayInt = (int) (handlerLevel * (width - 2));
         if (displayInt > 0) {
             for (int i = 0; i < displayInt; i++) {
                 float level = i / (float) (width - 2);
                 MekanismRenderer.color(colorFunction.getColor(level));
                 if (i == 0) {
-                    blit(matrix, x + 1, y + 1, 0, 0, 1, texHeight, texWidth, texHeight);
+                    guiGraphics.blit(getResource(), getX() + 1, getY() + 1, 0, 0, 1, texHeight, texWidth, texHeight);
                 } else if (i == displayInt - 1) {
-                    blit(matrix, x + 1 + i, y + 1, texWidth - 1, 0, 1, texHeight, texWidth, texHeight);
+                    guiGraphics.blit(getResource(), getX() + 1 + i, getY() + 1, texWidth - 1, 0, 1, texHeight, texWidth, texHeight);
                 } else {
-                    blit(matrix, x + 1 + i, y + 1, 1, 0, 1, texHeight, texWidth, texHeight);
+                    guiGraphics.blit(getResource(), getX() + 1 + i, getY() + 1, 1, 0, 1, texHeight, texWidth, texHeight);
                 }
             }
             MekanismRenderer.resetColor();

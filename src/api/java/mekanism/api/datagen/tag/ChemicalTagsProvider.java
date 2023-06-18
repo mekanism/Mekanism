@@ -1,61 +1,61 @@
 package mekanism.api.datagen.tag;
 
+import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
+import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.common.data.ForgeRegistryTagsProvider;
-import net.minecraftforge.registries.IForgeRegistry;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper classes for implementing tag providers for various chemical types.
  */
-public abstract class ChemicalTagsProvider<CHEMICAL extends Chemical<CHEMICAL>> extends ForgeRegistryTagsProvider<CHEMICAL> {
+public abstract class ChemicalTagsProvider<CHEMICAL extends Chemical<CHEMICAL>> extends IntrinsicHolderTagsProvider<CHEMICAL> {
 
-    private final String baseName;
-
-    protected ChemicalTagsProvider(DataGenerator gen, IForgeRegistry<CHEMICAL> registry, String modid, @Nullable ExistingFileHelper existingFileHelper, String baseName) {
-        super(gen, registry, modid, existingFileHelper);
-        this.baseName = baseName;
-    }
-
-    @NotNull
-    @Override
-    public String getName() {
-        return baseName + " Tags: " + modId;
+    protected ChemicalTagsProvider(PackOutput packOutput, ResourceKey<? extends Registry<CHEMICAL>> registryKey, CompletableFuture<HolderLookup.Provider> lookupProvider,
+          String modid, @Nullable ExistingFileHelper existingFileHelper) {
+        super(packOutput, registryKey, lookupProvider, CompletableFuture.completedFuture(TagsProvider.TagLookup.empty()),
+              chemical -> ResourceKey.create(registryKey, chemical.getRegistryName()), modid, existingFileHelper);
     }
 
     public abstract static class GasTagsProvider extends ChemicalTagsProvider<Gas> {
 
-        protected GasTagsProvider(DataGenerator gen, String modid, @Nullable ExistingFileHelper existingFileHelper) {
-            super(gen, MekanismAPI.gasRegistry(), modid, existingFileHelper, "Gas");
+        protected GasTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, String modid,
+              @Nullable ExistingFileHelper existingFileHelper) {
+            super(packOutput, MekanismAPI.gasRegistryName(), lookupProvider, modid, existingFileHelper);
         }
     }
 
     public abstract static class InfuseTypeTagsProvider extends ChemicalTagsProvider<InfuseType> {
 
-        protected InfuseTypeTagsProvider(DataGenerator gen, String modid, @Nullable ExistingFileHelper existingFileHelper) {
-            super(gen, MekanismAPI.infuseTypeRegistry(), modid, existingFileHelper, "Infuse Type");
+        protected InfuseTypeTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, String modid,
+              @Nullable ExistingFileHelper existingFileHelper) {
+            super(packOutput, MekanismAPI.infuseTypeRegistryName(), lookupProvider, modid, existingFileHelper);
         }
     }
 
     public abstract static class PigmentTagsProvider extends ChemicalTagsProvider<Pigment> {
 
-        protected PigmentTagsProvider(DataGenerator gen, String modid, @Nullable ExistingFileHelper existingFileHelper) {
-            super(gen, MekanismAPI.pigmentRegistry(), modid, existingFileHelper, "Pigment");
+        protected PigmentTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, String modid,
+              @Nullable ExistingFileHelper existingFileHelper) {
+            super(packOutput, MekanismAPI.pigmentRegistryName(), lookupProvider, modid, existingFileHelper);
         }
     }
 
     public abstract static class SlurryTagsProvider extends ChemicalTagsProvider<Slurry> {
 
-        protected SlurryTagsProvider(DataGenerator gen, String modid, @Nullable ExistingFileHelper existingFileHelper) {
-            super(gen, MekanismAPI.slurryRegistry(), modid, existingFileHelper, "Slurry");
+        protected SlurryTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, String modid,
+              @Nullable ExistingFileHelper existingFileHelper) {
+            super(packOutput, MekanismAPI.slurryRegistryName(), lookupProvider, modid, existingFileHelper);
         }
     }
 }

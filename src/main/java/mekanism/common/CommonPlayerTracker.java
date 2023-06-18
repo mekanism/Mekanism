@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import mekanism.api.text.EnumColor;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.capabilities.Capabilities;
@@ -9,6 +10,10 @@ import mekanism.common.network.to_client.PacketPlayerData;
 import mekanism.common.network.to_client.PacketRadiationData;
 import mekanism.common.network.to_client.PacketResetPlayerClient;
 import mekanism.common.network.to_client.PacketSecurityUpdate;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.ClickEvent.Action;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,9 +30,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CommonPlayerTracker {
 
-    /*private static final Component ALPHA_WARNING = MekanismLang.LOG_FORMAT.translateColored(EnumColor.RED, MekanismLang.MEKANISM, EnumColor.GRAY,
+    private static final Component ALPHA_WARNING = MekanismLang.LOG_FORMAT.translateColored(EnumColor.RED, MekanismLang.MEKANISM, EnumColor.GRAY,
           MekanismLang.ALPHA_WARNING.translate(EnumColor.INDIGO, ChatFormatting.UNDERLINE, new ClickEvent(Action.OPEN_URL,
-                "https://github.com/mekanism/Mekanism#alpha-status"), MekanismLang.ALPHA_WARNING_HERE));*/
+                "https://github.com/mekanism/Mekanism#alpha-status"), MekanismLang.ALPHA_WARNING_HERE));
 
     public CommonPlayerTracker() {
         MinecraftForge.EVENT_BUS.register(this);
@@ -36,10 +41,10 @@ public class CommonPlayerTracker {
     @SubscribeEvent
     public void onPlayerLoginEvent(PlayerLoggedInEvent event) {
         Player player = event.getEntity();
-        if (!player.level.isClientSide) {
+        if (!player.level().isClientSide) {
             ServerPlayer serverPlayer = (ServerPlayer) player;
             Mekanism.packetHandler().sendTo(new PacketSecurityUpdate(), serverPlayer);
-            //player.sendMessage(ALPHA_WARNING, Util.NIL_UUID);
+            serverPlayer.sendSystemMessage(ALPHA_WARNING, true);
             MekanismCriteriaTriggers.LOGGED_IN.trigger(serverPlayer);
         }
     }

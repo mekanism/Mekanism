@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.custom.module;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.common.content.gear.ModuleConfigItem;
+import net.minecraft.client.gui.GuiGraphics;
 
 abstract class MiniElement {
 
@@ -15,9 +15,9 @@ abstract class MiniElement {
         this.dataIndex = dataIndex;
     }
 
-    protected abstract void renderBackground(PoseStack matrix, int mouseX, int mouseY);
+    protected abstract void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY);
 
-    protected abstract void renderForeground(PoseStack matrix, int mouseX, int mouseY);
+    protected abstract void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY);
 
     protected abstract void click(double mouseX, double mouseY);
 
@@ -38,11 +38,11 @@ abstract class MiniElement {
     }
 
     protected int getX() {
-        return parent.x + xPos;
+        return parent.getX() + xPos;
     }
 
     protected int getY() {
-        return parent.y + yPos;
+        return parent.getY() + yPos;
     }
 
     protected boolean mouseOver(double mouseX, double mouseY, int relativeX, int relativeY, int width, int height) {

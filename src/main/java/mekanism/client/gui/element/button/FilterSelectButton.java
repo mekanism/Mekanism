@@ -1,11 +1,11 @@
 package mekanism.client.gui.element.button;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ public class FilterSelectButton extends MekanismButton {
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (resetColorBeforeRender()) {
             MekanismRenderer.resetColor();
         }
@@ -36,8 +36,7 @@ public class FilterSelectButton extends MekanismButton {
         int height = getButtonHeight();
         int x = getButtonX();
         int y = getButtonY();
-        RenderSystem.setShaderTexture(0, ARROWS);
-        blit(matrix, x, y, isMouseOverCheckWindows(mouseX, mouseY) ? width : 0, down ? 7 : 0, width, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        guiGraphics.blit(ARROWS, x, y, isMouseOverCheckWindows(mouseX, mouseY) ? width : 0, down ? 7 : 0, width, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         RenderSystem.disableBlend();
         RenderSystem.disableDepthTest();
     }
@@ -46,8 +45,8 @@ public class FilterSelectButton extends MekanismButton {
     public boolean isMouseOver(double xAxis, double yAxis) {
         if (super.isMouseOver(xAxis, yAxis)) {
             //First we do a basic check to see if we are over the button if it was a rectangle rather than a triangle.
-            double xShifted = xAxis - x;
-            double yShifted = yAxis - y;
+            double xShifted = xAxis - getX();
+            double yShifted = yAxis - getY();
             //Next we check it against the shapes of the different buttons
             if (down) {
                 if (yShifted < 2) {

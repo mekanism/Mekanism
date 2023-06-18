@@ -14,8 +14,8 @@
           "name": "mekanismgenerators:turbine_vent"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismgenerators:blocks/turbine_vent"
 }

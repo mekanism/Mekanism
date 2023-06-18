@@ -1,6 +1,5 @@
 package mekanism.generators.client.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -12,6 +11,7 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -34,14 +34,14 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Mek
     }
 
     @Override
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        renderTitleText(matrix);
-        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        renderTitleText(guiGraphics);
+        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         Component component = GeneratorsLang.GAS_BURN_RATE.translate(tile.getUsed());
         int left = inventoryLabelX + getStringWidth(playerInventoryTitle) + 4;
         int end = imageWidth - 8;
         left = Math.max(left, end - getStringWidth(component));
-        drawTextScaledBound(matrix, component, left, inventoryLabelY, titleTextColor(), end - left);
-        super.drawForegroundText(matrix, mouseX, mouseY);
+        drawTextScaledBound(guiGraphics, component, left, inventoryLabelY, titleTextColor(), end - left);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

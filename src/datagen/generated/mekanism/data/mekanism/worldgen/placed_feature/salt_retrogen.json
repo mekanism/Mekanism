@@ -1,0 +1,25 @@
+{
+  "feature": "mekanism:salt",
+  "placement": [
+    {
+      "type": "mekanism:disableable",
+      "retroGen": true
+    },
+    {
+      "type": "minecraft:count",
+      "count": {
+        "type": "mekanism:configurable_constant"
+      }
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "OCEAN_FLOOR"
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

@@ -30,10 +30,10 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -62,8 +62,9 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         // Torches cannot be placed on the sides due to vanilla checking the incorrect shape
         //Note: We mark it as not having occlusion as our occlusion shape is not quite right in that it goes past a single block size which confuses MC
         // Eventually we may want to try cropping it but for now this works better
-        super(BlockStateHelper.applyLightLevelAdjustments(BlockBehaviour.Properties.of(Material.METAL).strength(3.5F, 4.8F)
-              .requiresCorrectToolForDrops().dynamicShape().noOcclusion().isViewBlocking(BlockStateHelper.NEVER_PREDICATE)));
+        //Note: We explicitly set the push reaction to protect against mods like Quark that allow blocks with TEs to be moved
+        super(BlockStateHelper.applyLightLevelAdjustments(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.5F, 4.8F)
+              .requiresCorrectToolForDrops().dynamicShape().noOcclusion().isViewBlocking(BlockStateHelper.NEVER_PREDICATE).pushReaction(PushReaction.BLOCK)));
         registerDefaultState(BlockStateHelper.getDefaultState(stateDefinition.any()));
     }
 
@@ -76,14 +77,6 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     protected void createBlockStateDefinition(@NotNull StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         BlockStateHelper.fillBlockStateContainer(this, builder);
-    }
-
-    @NotNull
-    @Override
-    @Deprecated
-    public PushReaction getPistonPushReaction(@NotNull BlockState state) {
-        //Protect against mods like Quark that allow blocks with TEs to be moved
-        return PushReaction.BLOCK;
     }
 
     @Nullable
@@ -162,8 +155,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
             BlockState mainState = world.getBlockState(mainPos);
             if (!mainState.isAir()) {
                 //Proxy the explosion to the main block which, will set it to air causing it to invalidate the rest of the bounding blocks
-                LootContext.Builder lootContextBuilder = new LootContext.Builder((ServerLevel) world)
-                      .withRandom(world.random)
+                LootParams.Builder lootContextBuilder = new LootParams.Builder((ServerLevel) world)
                       .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(mainPos))
                       .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
                       .withOptionalParameter(LootContextParams.BLOCK_ENTITY, mainState.hasBlockEntity() ? WorldUtils.getTileEntity(world, mainPos) : null)

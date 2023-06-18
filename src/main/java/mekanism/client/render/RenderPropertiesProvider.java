@@ -23,7 +23,7 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -84,11 +84,11 @@ public class RenderPropertiesProvider {
         return MEKA_SUIT;
     }
 
-    private static final ISpecialGear MEKA_SUIT = slot -> switch (slot) {
-        case HEAD -> MekaSuitArmor.HELMET;
-        case CHEST -> MekaSuitArmor.BODYARMOR;
-        case LEGS -> MekaSuitArmor.PANTS;
-        default -> MekaSuitArmor.BOOTS;
+    private static final ISpecialGear MEKA_SUIT = type -> switch (type) {
+        case HELMET -> MekaSuitArmor.HELMET;
+        case CHESTPLATE -> MekaSuitArmor.BODYARMOR;
+        case LEGGINGS -> MekaSuitArmor.PANTS;
+        case BOOTS -> MekaSuitArmor.BOOTS;
     };
 
     public static IClientBlockExtensions particles() {
@@ -147,7 +147,7 @@ public class RenderPropertiesProvider {
 
         @NotNull
         @Override
-        public ICustomArmor getGearModel(EquipmentSlot slot) {
+        public ICustomArmor getGearModel(ArmorItem.Type type) {
             return gearModel;
         }
     }

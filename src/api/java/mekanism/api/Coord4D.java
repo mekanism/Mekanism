@@ -3,8 +3,8 @@ package mekanism.api;
 import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -34,7 +34,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      * @param entity Entity to create the Coord4D from
      */
     public Coord4D(Entity entity) {
-        this(entity.blockPosition(), entity.level);
+        this(entity.blockPosition(), entity.level());
     }
 
     /**
@@ -91,7 +91,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      */
     public static Coord4D read(CompoundTag tag) {
         return new Coord4D(tag.getInt(NBTConstants.X), tag.getInt(NBTConstants.Y), tag.getInt(NBTConstants.Z),
-              ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(tag.getString(NBTConstants.DIMENSION))));
+              ResourceKey.create(Registries.DIMENSION, new ResourceLocation(tag.getString(NBTConstants.DIMENSION))));
     }
 
     /**
@@ -102,7 +102,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      * @return the Coord4D from the data input
      */
     public static Coord4D read(FriendlyByteBuf dataStream) {
-        return new Coord4D(dataStream.readBlockPos(), ResourceKey.create(Registry.DIMENSION_REGISTRY, dataStream.readResourceLocation()));
+        return new Coord4D(dataStream.readBlockPos(), ResourceKey.create(Registries.DIMENSION, dataStream.readResourceLocation()));
     }
 
     /**

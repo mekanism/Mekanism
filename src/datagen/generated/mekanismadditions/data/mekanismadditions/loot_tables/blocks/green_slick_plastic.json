@@ -14,8 +14,8 @@
           "name": "mekanismadditions:green_slick_plastic"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/green_slick_plastic"
 }

@@ -1,7 +1,7 @@
 package mekanism.additions.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import mekanism.additions.common.entity.EntityObsidianTNT;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -37,9 +37,9 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
             matrix.scale(f1, f1, f1);
         }
 
-        matrix.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
+        matrix.mulPose(Axis.YP.rotationDegrees(-90.0F));
         matrix.translate(-0.5, -0.5, 0.5);
-        matrix.mulPose(Vector3f.YP.rotationDegrees(90.0F));
+        matrix.mulPose(Axis.YP.rotationDegrees(90.0F));
         TntMinecartRenderer.renderWhiteSolidBlock(blockRenderer, AdditionsBlocks.OBSIDIAN_TNT.getBlock().defaultBlockState(), matrix, renderer, light,
               tnt.getFuse() / 5 % 2 == 0);
         matrix.popPose();

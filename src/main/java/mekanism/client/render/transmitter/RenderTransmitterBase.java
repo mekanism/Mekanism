@@ -3,13 +3,13 @@ package mekanism.client.render.transmitter;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.client.model.MekanismModelBaker;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.Quad;
@@ -23,7 +23,6 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -35,6 +34,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.geometry.StandaloneGeometryBakingContext;
+import org.joml.Vector3f;
 
 @NothingNullByDefault
 public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransmitter> extends MekanismTileEntityRenderer<TRANSMITTER> {
@@ -56,8 +56,8 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
         return contentModelCache.computeIfAbsent(new ContentsModelData(visible, icon), modelData -> {
             //Note: We get model and then bake as we use different parameters and are caching after modifying
             List<BakedQuad> bakedQuads = MekanismModelCache.INSTANCE.TRANSMITTER_CONTENTS.getModel()
-                  .bake(new VisibleModelConfiguration(contentsConfiguration, modelData.visible), Minecraft.getInstance().getModelManager().getModelBakery(),
-                        material -> modelData.icon, BlockModelRotation.X0_Y0, ItemOverrides.EMPTY, MODEL_LOCATION)
+                  .bake(new VisibleModelConfiguration(contentsConfiguration, modelData.visible), new MekanismModelBaker(), material -> modelData.icon,
+                        BlockModelRotation.X0_Y0, ItemOverrides.EMPTY, MODEL_LOCATION)
                   .getQuads(null, null, world.getRandom(), ModelData.EMPTY, null);
             List<Quad> unpackedQuads = QuadUtils.unpack(bakedQuads);
             for (Quad unpackedQuad : unpackedQuads) {

@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.button;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
@@ -8,6 +7,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.Color;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +33,7 @@ public class BasicColorButton extends MekanismButton {
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         EnumColor color = getColor();
         boolean doColor = color != null && color != EnumColor.GRAY;
         if (doColor) {
@@ -45,7 +45,7 @@ public class BasicColorButton extends MekanismButton {
         } else {
             MekanismRenderer.resetColor();
         }
-        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
+        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         if (doColor) {
             MekanismRenderer.resetColor();
         }

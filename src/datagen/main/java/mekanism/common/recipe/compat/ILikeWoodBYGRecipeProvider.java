@@ -10,8 +10,8 @@ import yamahari.ilikewood.registry.woodtype.IWoodType;
 @ParametersAreNotNullByDefault
 public class ILikeWoodBYGRecipeProvider extends CompatRecipeProvider {
 
-    public ILikeWoodBYGRecipeProvider() {
-        super(yamahari.ilikewood.plugin.byg.util.Constants.MOD_ID, "byg");
+    public ILikeWoodBYGRecipeProvider(String modid) {
+        super(modid, "byg");
     }
 
     @Override

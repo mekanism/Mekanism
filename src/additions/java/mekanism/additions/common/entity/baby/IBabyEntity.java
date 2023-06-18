@@ -17,7 +17,7 @@ public interface IBabyEntity {
     default void setChild(EntityDataAccessor<Boolean> childParameter, boolean child) {
         LivingEntity entity = (LivingEntity) this;
         entity.getEntityData().set(childParameter, child);
-        if (entity.level != null && !entity.level.isClientSide) {
+        if (entity.level() != null && !entity.level().isClientSide) {
             AttributeInstance attributeInstance = entity.getAttribute(Attributes.MOVEMENT_SPEED);
             if (attributeInstance != null) {
                 attributeInstance.removeModifier(babySpeedBoostModifier);

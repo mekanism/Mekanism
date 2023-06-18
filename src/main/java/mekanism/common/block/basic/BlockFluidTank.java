@@ -5,27 +5,21 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.Machine;
-import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<TileEntityFluidTank>> implements IColoredBlock {
@@ -81,19 +75,5 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
     @Override
     public EnumColor getColor() {
         return Attribute.getBaseTier(this).getColor();
-    }
-
-    @Override
-    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
-        super.fillItemCategory(group, items);
-        FluidTankTier tier = Attribute.getTier(this, FluidTankTier.class);
-        if (tier == FluidTankTier.CREATIVE && MekanismConfig.general.isLoaded() && MekanismConfig.general.prefilledFluidTanks.get()) {
-            int capacity = tier.getStorage();
-            for (Fluid fluid : ForgeRegistries.FLUIDS.getValues()) {
-                if (fluid.isSource(fluid.defaultFluidState())) {//Only add sources
-                    items.add(FluidUtils.getFilledVariant(new ItemStack(this), capacity, () -> fluid));
-                }
-            }
-        }
     }
 }

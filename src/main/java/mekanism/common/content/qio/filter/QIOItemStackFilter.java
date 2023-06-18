@@ -73,7 +73,7 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
         QIOItemStackFilter other = (QIOItemStackFilter) o;
         if (fuzzyMode == other.fuzzyMode) {
             if (fuzzyMode) {
-                return itemType.sameItem(other.itemType);
+                return itemType.getItem() == other.itemType.getItem();
             }
             return ItemHandlerHelper.canItemStacksStack(itemType, other.itemType);
         }

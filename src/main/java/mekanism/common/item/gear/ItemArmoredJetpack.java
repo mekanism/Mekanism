@@ -15,6 +15,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +39,7 @@ public class ItemArmoredJetpack extends ItemJetpack implements IAttributeRefresh
 
     @Override
     public int getDefense() {
-        return getMaterial().getDefenseForSlot(getSlot());
+        return getMaterial().getDefenseForType(getType());
     }
 
     @Override
@@ -49,12 +50,12 @@ public class ItemArmoredJetpack extends ItemJetpack implements IAttributeRefresh
     @NotNull
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@NotNull EquipmentSlot slot, @NotNull ItemStack stack) {
-        return slot == getSlot() ? attributeCache.get() : ImmutableMultimap.of();
+        return slot == getEquipmentSlot() ? attributeCache.get() : ImmutableMultimap.of();
     }
 
     @Override
     public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
-        UUID modifier = ARMOR_MODIFIER_UUID_PER_SLOT[getSlot().getIndex()];
+        UUID modifier = ARMOR_MODIFIER_UUID_PER_TYPE.get(getType());
         builder.put(Attributes.ARMOR, new AttributeModifier(modifier, "Armor modifier", getDefense(), Operation.ADDITION));
         builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADDITION));
         builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(modifier, "Armor knockback resistance", getMaterial().getKnockbackResistance(),
@@ -65,8 +66,8 @@ public class ItemArmoredJetpack extends ItemJetpack implements IAttributeRefresh
     private static class ArmoredJetpackMaterial extends JetpackMaterial {
 
         @Override
-        public int getDefenseForSlot(EquipmentSlot slotType) {
-            return slotType == EquipmentSlot.CHEST ? MekanismConfig.gear.armoredJetpackArmor.getOrDefault() : 0;
+        public int getDefenseForType(ArmorItem.Type armorType) {
+            return armorType == ArmorItem.Type.CHESTPLATE ? MekanismConfig.gear.armoredJetpackArmor.getOrDefault() : 0;
         }
 
         @Override

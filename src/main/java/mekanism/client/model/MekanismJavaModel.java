@@ -2,9 +2,6 @@ package mekanism.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -18,6 +15,9 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 public abstract class MekanismJavaModel extends Model {
 
@@ -70,8 +70,8 @@ public abstract class MekanismJavaModel extends Model {
             part.visit(matrix, (pose, name, cubeIndex, cube) -> {
                 Matrix4f matrix4f = pose.pose();
                 for (ModelPart.Polygon quad : cube.polygons) {
-                    Vector3f normal = quad.normal.copy();
-                    normal.transform(pose.normal());
+                    Vector3f normal = new Vector3f(quad.normal);
+                    normal.mul(pose.normal());
                     float normalX = normal.x();
                     float normalY = normal.y();
                     float normalZ = normal.z();
@@ -97,7 +97,6 @@ public abstract class MekanismJavaModel extends Model {
 
     private static Vector4f getVertex(Matrix4f matrix4f, ModelPart.Vertex vertex) {
         Vector4f vector4f = new Vector4f(vertex.pos.x() / 16F, vertex.pos.y() / 16F, vertex.pos.z() / 16F, 1);
-        vector4f.transform(matrix4f);
-        return vector4f;
+        return vector4f.mul(matrix4f);
     }
 }

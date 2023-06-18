@@ -23,7 +23,7 @@ import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.network.to_client.PacketLaserHitBlock;
 import mekanism.common.particle.LaserParticleData;
-import mekanism.common.registries.MekanismDamageSource;
+import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
@@ -47,6 +47,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.TntBlock;
@@ -98,9 +99,10 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             }
 
             Direction direction = getDirection();
+            Level level = getWorldNN();
             Pos3D from = Pos3D.create(this).centre().translate(direction, 0.501);
             Pos3D to = from.translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
-            BlockHitResult result = getWorldNN().clip(new ClipContext(from, to, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, null));
+            BlockHitResult result = level.clip(new ClipContext(from, to, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, null));
             if (result.getType() != Type.MISS) {
                 to = new Pos3D(result.getLocation());
             }
@@ -109,7 +111,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             FloatingLong remainingEnergy = firing.copy();
             //TODO: Make the dimensions scale with laser size
             // (so that the tractor beam can actually pickup items that are on the ground underneath it)
-            List<Entity> hitEntities = getWorldNN().getEntitiesOfClass(Entity.class, Pos3D.getAABB(from, to));
+            List<Entity> hitEntities = level.getEntitiesOfClass(Entity.class, Pos3D.getAABB(from, to));
             if (hitEntities.isEmpty()) {
                 setEmittingRedstone(false);
             } else {
@@ -119,7 +121,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 hitEntities.sort(Comparator.comparing(entity -> entity.distanceToSqr(finalFrom)));
                 FloatingLong energyPerDamage = MekanismConfig.general.laserEnergyPerDamage.get();
                 for (Entity entity : hitEntities) {
-                    if (entity.isInvulnerableTo(MekanismDamageSource.LASER)) {
+                    if (entity.isInvulnerableTo(MekanismDamageTypes.LASER.source(level))) {
                         //The entity can absorb all the energy because they are immune to the damage
                         remainingEnergy = FloatingLong.ZERO;
                         //Update the position that the laser is going to
@@ -146,7 +148,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                             if (vectorTo.dot(viewVector) < 0) {
                                 //TODO - V11: Add a laser reflector capability that shields can implement to cause the laser beam to be reflected
                                 // maybe even implement this ability but don't add it to any of our things yet?
-                                float damageBlocked = damageShield(livingEntity, livingEntity.getUseItem(), damage, 2);
+                                float damageBlocked = damageShield(level, livingEntity, livingEntity.getUseItem(), damage, 2);
                                 if (damageBlocked > 0) {
                                     if (livingEntity instanceof ServerPlayer player) {
                                         //If the entity is a player trigger the advancement criteria for blocking a laser with a shield
@@ -234,7 +236,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         int lastHurtResistTime = entity.invulnerableTime;
                         //Set the hurt resistance time to zero to ensure we get a chance to do damage
                         entity.invulnerableTime = 0;
-                        boolean damaged = entity.hurt(MekanismDamageSource.LASER, damage);
+                        boolean damaged = entity.hurt(MekanismDamageTypes.LASER.source(level), damage);
                         //Set the hurt resistance time to whatever it was before the laser hit as lasers should not have a downtime in damage frequency
                         entity.invulnerableTime = lastHurtResistTime;
                         if (damaged) {
@@ -245,7 +247,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                                 if (entity instanceof ServerPlayer player) {
                                     //If the damage actually went through fire the trigger
                                     boolean hardcoreTotem = totemTimesUsed != -1 && totemTimesUsed < player.getStats().getValue(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
-                                    MekanismCriteriaTriggers.DAMAGE.trigger(player, MekanismDamageSource.LASER, hardcoreTotem);
+                                    MekanismCriteriaTriggers.DAMAGE.trigger(player, MekanismDamageTypes.LASER, hardcoreTotem);
                                 }
                             }
                             remainingEnergy = remainingEnergy.minusEqual(energyPerDamage.multiply(damage));
@@ -341,13 +343,13 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     /**
      * Based off of Player#hurtCurrentlyUsedShield
      */
-    private float damageShield(LivingEntity livingEntity, ItemStack activeStack, float damage, int absorptionRatio) {
+    private float damageShield(Level level, LivingEntity livingEntity, ItemStack activeStack, float damage, int absorptionRatio) {
         //Absorb part of the damage based on the given absorption ratio
         float damageBlocked = damage;
         float effectiveDamage = damage / absorptionRatio;
         if (effectiveDamage >= 1) {
             //Allow the shield to absorb sub single unit damage values for free
-            ShieldBlockEvent event = ForgeHooks.onShieldBlock(livingEntity, MekanismDamageSource.LASER, effectiveDamage);
+            ShieldBlockEvent event = ForgeHooks.onShieldBlock(livingEntity, MekanismDamageTypes.LASER.source(level), effectiveDamage);
             if (event.isCanceled()) {
                 //Blocking was not allowed, return we didn't block any damage
                 return 0;

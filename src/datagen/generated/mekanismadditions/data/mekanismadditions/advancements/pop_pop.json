@@ -29,5 +29,6 @@
     "title": {
       "translate": "advancements.mekanismadditions.pop_pop.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

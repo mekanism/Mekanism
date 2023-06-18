@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
@@ -19,8 +20,8 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 @ParametersAreNotNullByDefault
 public class MekanismArmorLayer<T extends LivingEntity, M extends HumanoidModel<T>, A extends HumanoidModel<T>> extends HumanoidArmorLayer<T, M, A> {
 
-    public MekanismArmorLayer(RenderLayerParent<T, M> entityRenderer, A modelLeggings, A modelArmor) {
-        super(entityRenderer, modelLeggings, modelArmor);
+    public MekanismArmorLayer(RenderLayerParent<T, M> entityRenderer, A modelLeggings, A modelArmor, ModelManager manager) {
+        super(entityRenderer, modelLeggings, modelArmor, manager);
     }
 
     @Override
@@ -35,8 +36,8 @@ public class MekanismArmorLayer<T extends LivingEntity, M extends HumanoidModel<
     private void renderArmorPart(PoseStack matrix, MultiBufferSource renderer, T entity, EquipmentSlot slot, int light, float partialTicks) {
         ItemStack stack = entity.getItemBySlot(slot);
         Item item = stack.getItem();
-        if (item instanceof ArmorItem armorItem && armorItem.getSlot() == slot && IClientItemExtensions.of(item) instanceof ISpecialGear specialGear) {
-            ICustomArmor model = specialGear.getGearModel(slot);
+        if (item instanceof ArmorItem armorItem && armorItem.getEquipmentSlot() == slot && IClientItemExtensions.of(item) instanceof ISpecialGear specialGear) {
+            ICustomArmor model = specialGear.getGearModel(armorItem.getType());
             A coreModel = slot == EquipmentSlot.LEGS ? innerModel : outerModel;
             getParentModel().copyPropertiesTo(coreModel);
             setPartVisibility(coreModel, slot);

@@ -19,6 +19,7 @@ import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidType;
@@ -50,7 +51,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
     }
 
     @Override
-    public void render(@NotNull PoseStack matrix, @NotNull STACK stack) {
+    public void render(@NotNull GuiGraphics guiGraphics, @NotNull STACK stack) {
         if (!stack.isEmpty()) {
             RenderSystem.enableBlend();
             int desiredHeight = MathUtils.clampToInt(height * (double) stack.getAmount() / capacityMb);
@@ -63,7 +64,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
             Chemical<?> chemical = stack.getType();
             MekanismRenderer.color(chemical);
             //Tile upwards and to the right as the majority of things we render are gauges which look better when tiling upwards
-            GuiUtils.drawTiledSprite(matrix, 0, 0, height, width, desiredHeight, MekanismRenderer.getSprite(chemical.getIcon()),
+            GuiUtils.drawTiledSprite(guiGraphics.pose(), 0, 0, height, width, desiredHeight, MekanismRenderer.getSprite(chemical.getIcon()),
                   TEXTURE_SIZE, TEXTURE_SIZE, 100, TilingDirection.UP_RIGHT, false);
             MekanismRenderer.resetColor();
             RenderSystem.disableBlend();

@@ -1,9 +1,9 @@
 package mekanism.client.gui.element.scroll;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,28 +35,28 @@ public abstract class GuiScrollList extends GuiScrollableElement {
 
     public abstract void clearSelection();
 
-    protected abstract void renderElements(PoseStack matrix, int mouseX, int mouseY, float partialTicks);
+    protected abstract void renderElements(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks);
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         //Draw the background
-        renderBackgroundTexture(matrix, background, backgroundSideSize, backgroundSideSize);
+        renderBackgroundTexture(guiGraphics, background, backgroundSideSize, backgroundSideSize);
         //Draw Scroll
-        drawScrollBar(matrix, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        drawScrollBar(guiGraphics, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         //Draw the elements
-        renderElements(matrix, mouseX, mouseY, partialTicks);
+        renderElements(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override
     public void onClick(double mouseX, double mouseY, int button) {
         super.onClick(mouseX, mouseY, button);
-        if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= y + 1 && mouseY < y + height - 1) {
+        if (mouseX >= getX() + 1 && mouseX < barX - 1 && mouseY >= getY() + 1 && mouseY < getY() + height - 1) {
             int index = getCurrentSelection();
             int focused = getFocusedElements();
             int maxElements = getMaxElements();
             for (int i = 0; i < focused && index + i < maxElements; i++) {
-                int shiftedY = y + 1 + elementHeight * i;
+                int shiftedY = getY() + 1 + elementHeight * i;
                 if (mouseY >= shiftedY && mouseY <= shiftedY + elementHeight) {
                     setSelected(index + i);
                     return;

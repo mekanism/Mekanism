@@ -13,7 +13,7 @@ public interface IItemHUDProvider {
 
     default void addCurioHUDStrings(List<Component> list, Player player, ItemStack stack) {
         if (this instanceof ArmorItem armor) {
-            addHUDStrings(list, player, stack, armor.getSlot());
+            addHUDStrings(list, player, stack, armor.getEquipmentSlot());
         }
     }
 }

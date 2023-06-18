@@ -14,8 +14,8 @@
           "name": "mekanismgenerators:rotational_complex"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismgenerators:blocks/rotational_complex"
 }

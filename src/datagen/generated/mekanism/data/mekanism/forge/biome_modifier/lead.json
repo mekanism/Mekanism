@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "mekanism:ore_lead_normal",
+  "step": "underground_ores"
+}

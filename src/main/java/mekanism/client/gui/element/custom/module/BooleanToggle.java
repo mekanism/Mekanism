@@ -7,7 +7,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.registries.MekanismSounds;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 
 class BooleanToggle extends MiniElement {
@@ -27,27 +27,26 @@ class BooleanToggle extends MiniElement {
     }
 
     @Override
-    protected void renderBackground(PoseStack matrix, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, RadioButton.RADIO);
-        drawRadio(matrix, mouseX, mouseY, data.get(), 4, 11, 0);
-        drawRadio(matrix, mouseX, mouseY, !data.get(), 50, 11, RADIO_SIZE);
+    protected void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        drawRadio(guiGraphics, mouseX, mouseY, data.get(), 4, 11, 0);
+        drawRadio(guiGraphics, mouseX, mouseY, !data.get(), 50, 11, RADIO_SIZE);
     }
 
-    private void drawRadio(PoseStack matrix, int mouseX, int mouseY, boolean selected, int relativeX, int relativeY, int selectedU) {
+    private void drawRadio(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean selected, int relativeX, int relativeY, int selectedU) {
         if (selected) {
-            GuiComponent.blit(matrix, getX() + relativeX, getY() + relativeY, selectedU, RADIO_SIZE, RADIO_SIZE, RADIO_SIZE, 2 * RADIO_SIZE, 2 * RADIO_SIZE);
+            guiGraphics.blit(RadioButton.RADIO, getX() + relativeX, getY() + relativeY, selectedU, RADIO_SIZE, RADIO_SIZE, RADIO_SIZE, 2 * RADIO_SIZE, 2 * RADIO_SIZE);
         } else {
             boolean hovered = mouseOver(mouseX, mouseY, relativeX, relativeY, RADIO_SIZE, RADIO_SIZE);
-            GuiComponent.blit(matrix, getX() + relativeX, getY() + relativeY, hovered ? RADIO_SIZE : 0, 0, RADIO_SIZE, RADIO_SIZE, 2 * RADIO_SIZE, 2 * RADIO_SIZE);
+            guiGraphics.blit(RadioButton.RADIO, getX() + relativeX, getY() + relativeY, hovered ? RADIO_SIZE : 0, 0, RADIO_SIZE, RADIO_SIZE, 2 * RADIO_SIZE, 2 * RADIO_SIZE);
         }
     }
 
     @Override
-    protected void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
+    protected void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int textColor = parent.screenTextColor();
-        parent.drawTextWithScale(matrix, data.getDescription(), getRelativeX() + 3, getRelativeY(), textColor, 0.8F);
-        parent.drawTextWithScale(matrix, MekanismLang.TRUE.translate(), getRelativeX() + 16, getRelativeY() + 11, textColor, 0.8F);
-        parent.drawTextWithScale(matrix, MekanismLang.FALSE.translate(), getRelativeX() + 62, getRelativeY() + 11, textColor, 0.8F);
+        parent.drawTextWithScale(guiGraphics, data.getDescription(), getRelativeX() + 3, getRelativeY(), textColor, 0.8F);
+        parent.drawTextWithScale(guiGraphics, MekanismLang.TRUE.translate(), getRelativeX() + 16, getRelativeY() + 11, textColor, 0.8F);
+        parent.drawTextWithScale(guiGraphics, MekanismLang.FALSE.translate(), getRelativeX() + 62, getRelativeY() + 11, textColor, 0.8F);
     }
 
     @Override

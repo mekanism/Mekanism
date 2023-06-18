@@ -14,8 +14,8 @@
           "name": "mekanismadditions:purple_slick_plastic"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/purple_slick_plastic"
 }

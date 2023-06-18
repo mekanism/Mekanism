@@ -1,6 +1,7 @@
 package mekanism.additions.common.entity.baby;
 
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -8,9 +9,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
@@ -74,11 +73,10 @@ public class EntityBabyCreeper extends Creeper implements IBabyEntity {
      */
     @Override
     protected void explodeCreeper() {
-        if (!level.isClientSide) {
-            Explosion.BlockInteraction mode = ForgeEventFactory.getMobGriefingEvent(level, this) ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE;
+        if (!level().isClientSide) {
             float f = isPowered() ? 1 : 0.5F;
             dead = true;
-            level.explode(this, getX(), getY(), getZ(), explosionRadius * f, mode);
+            level().explode(this, getX(), getY(), getZ(), explosionRadius * f, Level.ExplosionInteraction.MOB);
             discard();
             spawnLingeringCloud();
         }
@@ -86,7 +84,7 @@ public class EntityBabyCreeper extends Creeper implements IBabyEntity {
 
     @NotNull
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

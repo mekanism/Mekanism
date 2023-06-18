@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.custom;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
@@ -12,6 +11,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,24 +43,24 @@ public class GuiResizeControls extends GuiSideHolder {
     }
 
     @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.renderToolTip(matrix, mouseX, mouseY);
+    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderToolTip(guiGraphics, mouseX, mouseY);
         if (tooltipTicks > 0 && !expandButton.active) {
-            displayTooltips(matrix, mouseX, mouseY, MekanismLang.QIO_COMPENSATE_TOOLTIP.translate());
+            displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.QIO_COMPENSATE_TOOLTIP.translate());
         }
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
-        drawScaledCenteredTextScaledBound(matrix, MekanismLang.HEIGHT.translate(), relativeX + 13.5F, relativeY + 15.5F, titleTextColor(), width - 4, 0.7F);
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
+        drawScaledCenteredTextScaledBound(guiGraphics, MekanismLang.HEIGHT.translate(), relativeX + 13.5F, relativeY + 15.5F, titleTextColor(), width - 4, 0.7F);
     }
 
     @Override
     public void onClick(double mouseX, double mouseY, int button) {
         super.onClick(mouseX, mouseY, button);
-        if (!expandButton.active && mouseX >= expandButton.x && mouseX < expandButton.x + expandButton.getWidth() &&
-            mouseY >= expandButton.y && mouseY < expandButton.y + expandButton.getHeight()) {
+        if (!expandButton.active && mouseX >= expandButton.getX() && mouseX < expandButton.getX() + expandButton.getWidth() &&
+            mouseY >= expandButton.getY() && mouseY < expandButton.getY() + expandButton.getHeight()) {
             tooltipTicks = 100;
         }
     }

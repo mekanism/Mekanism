@@ -28,8 +28,8 @@
           "name": "minecraft:ender_pearl"
         }
       ],
-      "name": "pearls",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:entities/baby_enderman"
 }

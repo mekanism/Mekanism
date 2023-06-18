@@ -1,16 +1,16 @@
 package mekanism.generators.client.render.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import java.util.List;
 import mekanism.client.render.item.MekanismISTER;
 import mekanism.generators.client.model.ModelWindGenerator;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +27,8 @@ public class RenderWindGeneratorItem extends MekanismISTER {
     }
 
     @Override
-    public void renderByItem(@NotNull ItemStack stack, @NotNull TransformType transformType, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight) {
+    public void renderByItem(@NotNull ItemStack stack, @NotNull ItemDisplayContext displayContext, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer,
+          int light, int overlayLight) {
         float renderPartialTicks = Minecraft.getInstance().getFrameTime();
         if (lastTicksUpdated != renderPartialTicks) {
             //Only update the angle if we are in a world and that world is not blacklisted
@@ -41,7 +42,7 @@ public class RenderWindGeneratorItem extends MekanismISTER {
         }
         matrix.pushPose();
         matrix.translate(0.5, 0.5, 0.5);
-        matrix.mulPose(Vector3f.ZP.rotationDegrees(180));
+        matrix.mulPose(Axis.ZP.rotationDegrees(180));
         windGenerator.render(matrix, renderer, angle, light, overlayLight, stack.hasFoil());
         matrix.popPose();
     }

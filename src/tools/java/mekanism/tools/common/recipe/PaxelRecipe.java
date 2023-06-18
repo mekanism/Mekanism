@@ -4,6 +4,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -22,11 +23,12 @@ public class PaxelRecipe extends WrappedShapedRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
-        if (getResultItem().isEmpty()) {
+    public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
+        ItemStack resultItem = getResultItem(registryAccess);
+        if (resultItem.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        ItemStack toReturn = getResultItem().copy();
+        ItemStack toReturn = resultItem.copy();
         if (!toReturn.isDamageableItem() || toReturn.isDamaged()) {
             //If the output can't be damaged or is already damaged because someone is using this recipe in a weird way, just return the output
             return toReturn;

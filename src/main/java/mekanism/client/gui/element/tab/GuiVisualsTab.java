@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.tab;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
@@ -11,6 +10,7 @@ import mekanism.common.tile.interfaces.IHasVisualization;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,13 +21,13 @@ public class GuiVisualsTab extends GuiInsetElement<IHasVisualization> {
     }
 
     @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.renderToolTip(matrix, mouseX, mouseY);
+    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderToolTip(guiGraphics, mouseX, mouseY);
         Component visualsComponent = MekanismLang.VISUALS.translate(OnOff.of(dataSource.isClientRendering()));
         if (dataSource.canDisplayVisuals()) {
-            displayTooltips(matrix, mouseX, mouseY, visualsComponent);
+            displayTooltips(guiGraphics, mouseX, mouseY, visualsComponent);
         } else {
-            displayTooltips(matrix, mouseX, mouseY, visualsComponent, MekanismLang.VISUALS_TOO_BIG.translateColored(EnumColor.RED));
+            displayTooltips(guiGraphics, mouseX, mouseY, visualsComponent, MekanismLang.VISUALS_TOO_BIG.translateColored(EnumColor.RED));
         }
     }
 

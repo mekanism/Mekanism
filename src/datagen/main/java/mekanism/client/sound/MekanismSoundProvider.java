@@ -3,13 +3,13 @@ package mekanism.client.sound;
 import java.util.function.UnaryOperator;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismSounds;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class MekanismSoundProvider extends BaseSoundProvider {
 
-    public MekanismSoundProvider(DataGenerator gen, ExistingFileHelper existingFileHelper) {
-        super(gen, existingFileHelper, Mekanism.MODID);
+    public MekanismSoundProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, existingFileHelper, Mekanism.MODID);
     }
 
     @Override

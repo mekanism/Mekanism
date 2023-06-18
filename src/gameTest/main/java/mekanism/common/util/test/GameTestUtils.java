@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.GameTestSequence;
 import net.minecraft.server.level.ChunkHolder;
+import net.minecraft.server.level.ChunkLevel;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.DistanceManager;
 import net.minecraft.world.level.ChunkPos;
@@ -27,8 +28,9 @@ public class GameTestUtils {
     private static final Method PROCESS_UNLOADS = ObfuscationReflectionHelper.findMethod(ChunkMap.class, "m_140353_", BooleanSupplier.class);
     private static final Method ENSURE_SINGLE_FINAL_CHECK = ObfuscationReflectionHelper.findMethod(GameTestHelper.class, "m_177442_");
 
+    //TODO - 1.20: Should this be switched to a ChunkLevel constant?
     public static final int INACCESSIBLE_LEVEL = ChunkMap.MAX_VIEW_DISTANCE + 1;
-    private static final int UNLOAD_LEVEL = ChunkMap.MAX_CHUNK_DISTANCE + 1;
+    private static final int UNLOAD_LEVEL = ChunkLevel.MAX_LEVEL + 1;
     private static final BooleanSupplier ALWAYS_TRUE = () -> true;
     private static final Runnable NO_OP_RUNNABLE = () -> {
     };
@@ -154,7 +156,8 @@ public class GameTestUtils {
                         fail(helper, "Error loading chunk", absolutePos, relativePos);
                     } else {
                         //And ensure we schedule it based on the status (in general this should be ChunkStatus.FULL)
-                        chunkMap.schedule(holder, ChunkHolder.getStatus(holder.getTicketLevel()));
+                        //TODO - 1.20: Validate this
+                        chunkMap.schedule(holder, ChunkLevel.generationStatus(holder.getTicketLevel()));
                     }
                     fail(helper, "Chunk queued for loading", absolutePos, relativePos);
                 } else if (DEBUG_CHUNK_LOADING) {

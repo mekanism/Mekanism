@@ -22,5 +22,6 @@
     "title": {
       "translate": "advancements.mekanism.infusing_efficiency.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

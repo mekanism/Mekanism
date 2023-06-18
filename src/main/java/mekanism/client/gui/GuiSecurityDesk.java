@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
@@ -28,6 +27,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.InputValidator;
 import mekanism.common.util.text.OwnerDisplay;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -105,10 +105,10 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
               () -> {
                   Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.OVERRIDE_BUTTON, tile));
                   updateButtons();
-              }, (onHover, matrix, mouseX, mouseY) -> {
+              }, (onHover, guiGraphics, mouseX, mouseY) -> {
             SecurityFrequency frequency = tile.getFreq();
             if (frequency != null) {
-                displayTooltips(matrix, mouseX, mouseY, MekanismLang.SECURITY_OVERRIDE.translate(OnOff.of(frequency.isOverridden())));
+                displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.SECURITY_OVERRIDE.translate(OnOff.of(frequency.isOverridden())));
             }
         }));
         updateButtons();
@@ -165,19 +165,19 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     }
 
     @Override
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        renderTitleText(matrix);
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        renderTitleText(guiGraphics);
         Component ownerComponent = OwnerDisplay.of(tile.getOwnerUUID(), tile.getOwnerName()).getTextComponent();
-        drawString(matrix, ownerComponent, imageWidth - 7 - getStringWidth(ownerComponent), inventoryLabelY, titleTextColor());
-        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
-        drawCenteredText(matrix, MekanismLang.TRUSTED_PLAYERS.translate(), 74, 57, subheadingTextColor());
+        drawString(guiGraphics, ownerComponent, imageWidth - 7 - getStringWidth(ownerComponent), inventoryLabelY, titleTextColor());
+        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        drawCenteredText(guiGraphics, MekanismLang.TRUSTED_PLAYERS.translate(), 74, 57, subheadingTextColor());
         SecurityFrequency frequency = tile.getFreq();
         if (frequency != null) {
-            drawString(matrix, MekanismLang.SECURITY.translate(frequency.getSecurityMode()), 13, 103, titleTextColor());
+            drawString(guiGraphics, MekanismLang.SECURITY.translate(frequency.getSecurityMode()), 13, 103, titleTextColor());
         } else {
-            drawString(matrix, MekanismLang.SECURITY_OFFLINE.translateColored(EnumColor.RED), 13, 103, titleTextColor());
+            drawString(guiGraphics, MekanismLang.SECURITY_OFFLINE.translateColored(EnumColor.RED), 13, 103, titleTextColor());
         }
-        drawTextScaledBound(matrix, MekanismLang.SECURITY_ADD.translate(), 13, 70, titleTextColor(), 20);
-        super.drawForegroundText(matrix, mouseX, mouseY);
+        drawTextScaledBound(guiGraphics, MekanismLang.SECURITY_ADD.translate(), 13, 70, titleTextColor(), 20);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

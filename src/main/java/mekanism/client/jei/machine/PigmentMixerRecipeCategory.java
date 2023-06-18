@@ -13,6 +13,7 @@ import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class PigmentMixerRecipeCategory extends ChemicalChemicalToChemicalRecipeCategory<Pigment, PigmentStack, PigmentMixingRecipe> {
 
@@ -31,13 +32,13 @@ public class PigmentMixerRecipeCategory extends ChemicalChemicalToChemicalRecipe
     }
 
     @Override
-    public void draw(PigmentMixingRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(PigmentMixingRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our color details, before bothering to draw the arrow
         leftColorDetails.ingredient = getDisplayedStack(recipeSlotsView, LEFT_INPUT, MekanismJEI.TYPE_PIGMENT, PigmentStack.EMPTY);
         rightColorDetails.ingredient = getDisplayedStack(recipeSlotsView, RIGHT_INPUT, MekanismJEI.TYPE_PIGMENT, PigmentStack.EMPTY);
         leftColorDetails.outputIngredient = getDisplayedStack(recipeSlotsView, OUTPUT, MekanismJEI.TYPE_PIGMENT, PigmentStack.EMPTY);
         rightColorDetails.outputIngredient = leftColorDetails.outputIngredient;
-        super.draw(recipe, recipeSlotsView, matrixStack, mouseX, mouseY);
+        super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
         leftColorDetails.reset();
         rightColorDetails.reset();
     }

@@ -2,7 +2,6 @@ package mekanism.client.render.lib.effect;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Iterator;
@@ -16,6 +15,7 @@ import mekanism.common.lib.effect.BoltEffect.BoltQuads;
 import mekanism.common.lib.effect.BoltEffect.FadeFunction.RenderBounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import org.joml.Matrix4f;
 
 public class BoltRenderer {
 

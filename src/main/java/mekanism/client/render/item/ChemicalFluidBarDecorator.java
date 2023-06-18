@@ -1,17 +1,16 @@
 package mekanism.client.render.item;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Optional;
 import java.util.function.Predicate;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.math.MathUtils;
-import mekanism.client.gui.GuiUtils;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.IItemDecorator;
 import net.minecraftforge.common.capabilities.Capability;
@@ -37,8 +36,8 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
         this.visibleFor = visibleFor;
     }
 
-    @Override
-    public boolean render(Font font, ItemStack stack, int xOffset, int yOffset, float blitOffset) {
+    @Override//TODO - 1.20: Test this
+    public boolean render(GuiGraphics guiGraphics, Font font, ItemStack stack, int xOffset, int yOffset) {
         if (!visibleFor.test(stack)) {
             return false;
         }
@@ -51,7 +50,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
                 int tank = getDisplayTank(chemicalHandler.getTanks());
                 if (tank != -1) {
                     ChemicalStack<?> chemicalInTank = chemicalHandler.getChemicalInTank(tank);
-                    renderBar(xOffset, yOffset, chemicalInTank.getAmount(), chemicalHandler.getTankCapacity(tank), chemicalInTank.getChemicalColorRepresentation());
+                    renderBar(guiGraphics, xOffset, yOffset, chemicalInTank.getAmount(), chemicalHandler.getTankCapacity(tank), chemicalInTank.getChemicalColorRepresentation());
                     yOffset--;
                 }
             }
@@ -64,17 +63,17 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
                 int tank = getDisplayTank(fluidHandler.getTanks());
                 if (tank != -1) {
                     FluidStack fluidInTank = fluidHandler.getFluidInTank(tank);
-                    renderBar(xOffset, yOffset, fluidInTank.getAmount(), fluidHandler.getTankCapacity(tank), FluidUtils.getRGBDurabilityForDisplay(stack).orElse(0xFFFFFFFF));
+                    renderBar(guiGraphics, xOffset, yOffset, fluidInTank.getAmount(), fluidHandler.getTankCapacity(tank), FluidUtils.getRGBDurabilityForDisplay(stack).orElse(0xFFFFFFFF));
                 }
             }
         }
         return true;
     }
 
-    protected static void renderBar(int stackXPos, int yPos, long amount, long capacity, int color) {
+    protected static void renderBar(GuiGraphics guiGraphics, int stackXPos, int yPos, long amount, long capacity, int color) {
         int pixelWidth = convertWidth(StorageUtils.getRatio(amount, capacity));
-        GuiUtils.fill(new PoseStack(), stackXPos + 2 + pixelWidth, yPos, 13 - pixelWidth, 1, 0xFF000000);
-        GuiUtils.fill(new PoseStack(), stackXPos + 2, yPos, pixelWidth, 1, color);
+        guiGraphics.fill(stackXPos + 2 + pixelWidth, yPos, 13 - pixelWidth, 1, 0xFF000000);
+        guiGraphics.fill(stackXPos + 2, yPos, pixelWidth, 1, color);
     }
 
     private static int convertWidth(double width) {

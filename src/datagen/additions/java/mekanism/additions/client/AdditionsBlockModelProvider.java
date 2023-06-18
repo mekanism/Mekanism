@@ -2,14 +2,14 @@ package mekanism.additions.client;
 
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.client.model.BaseBlockModelProvider;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class AdditionsBlockModelProvider extends BaseBlockModelProvider {
 
     //TODO: Add helpers for the color block stuff
-    public AdditionsBlockModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, MekanismAdditions.MODID, existingFileHelper);
+    public AdditionsBlockModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, MekanismAdditions.MODID, existingFileHelper);
     }
 
     @Override

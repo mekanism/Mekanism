@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.element.GuiElement;
@@ -10,9 +10,9 @@ import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -21,22 +21,12 @@ import org.jetbrains.annotations.Nullable;
 
 public interface IGuiWrapper {
 
-    default void displayTooltips(PoseStack matrix, int mouseX, int mouseY, Component... components) {
-        this.displayTooltips(matrix, mouseX, mouseY, List.of(components));
+    default void displayTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, Component... components) {
+        this.displayTooltips(guiGraphics, mouseX, mouseY, List.of(components));
     }
 
-    default void displayTooltips(PoseStack matrix, int mouseX, int mouseY, List<Component> components) {
-        Screen screen;
-        if (this instanceof Screen) {
-            screen = (Screen) this;
-        } else {
-            //Otherwise, try falling back to the current screen
-            screen = Minecraft.getInstance().screen;
-            if (screen == null) {
-                return;
-            }
-        }
-        screen.renderComponentTooltip(matrix, components, mouseX, mouseY);
+    default void displayTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, List<Component> components) {
+        guiGraphics.renderComponentTooltip(getFont(), components, mouseX, mouseY);
     }
 
     @NotNull
@@ -101,33 +91,38 @@ public interface IGuiWrapper {
         return warningSupplier;
     }
 
-    @Nullable
     Font getFont();
 
-    default void renderItem(PoseStack matrix, @NotNull ItemStack stack, int xAxis, int yAxis) {
-        renderItem(matrix, stack, xAxis, yAxis, 1);
+    default void renderItem(GuiGraphics guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis) {
+        renderItem(guiGraphics, stack, xAxis, yAxis, 1);
     }
 
-    default void renderItem(PoseStack matrix, @NotNull ItemStack stack, int xAxis, int yAxis, float scale) {
-        GuiUtils.renderItem(matrix, getItemRenderer(), stack, xAxis, yAxis, scale, getFont(), null, false);
+    default void renderItem(GuiGraphics guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis, float scale) {
+        GuiUtils.renderItem(guiGraphics, stack, xAxis, yAxis, scale, getFont(), null, false);
     }
 
-    ItemRenderer getItemRenderer();
-
-    default void renderItemTooltip(PoseStack matrix, @NotNull ItemStack stack, int xAxis, int yAxis) {
-        Mekanism.logger.error("Tried to call 'renderItemTooltip' but unsupported in {}", getClass().getName());
+    default void renderItemTooltip(GuiGraphics guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis) {
+        //Mekanism.logger.error("Tried to call 'renderItemTooltip' but unsupported in {}", getClass().getName());
+        //renderTooltip(guiGraphics, stack, xAxis, yAxis);
+        //TODO - 1.20: Re-evaluate that this doesn't need any form of repositioning y value wise
+        guiGraphics.renderTooltip(getFont(), stack, xAxis, yAxis);
     }
 
-    default void renderItemTooltipWithExtra(PoseStack matrix, @NotNull ItemStack stack, int xAxis, int yAxis, List<Component> toAppend) {
+    default void renderItemTooltipWithExtra(GuiGraphics guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis, List<Component> toAppend) {
         if (toAppend.isEmpty()) {
-            renderItemTooltip(matrix, stack, xAxis, yAxis);
+            renderItemTooltip(guiGraphics, stack, xAxis, yAxis);
         } else {
-            Mekanism.logger.error("Tried to call 'renderItemTooltipWithExtra' but unsupported in {}", getClass().getName());
+            //Mekanism.logger.error("Tried to call 'renderItemTooltipWithExtra' but unsupported in {}", getClass().getName());
+            List<Component> tooltip = new ArrayList<>(Screen.getTooltipFromItem(Minecraft.getInstance(), stack));
+            tooltip.addAll(toAppend);
+            //renderTooltip(guiGraphics, tooltip, stack.getTooltipImage(), xAxis, yAxis, stack);
+            //TODO - 1.20: Re-evaluate that this doesn't need any form of repositioning y value wise
+            guiGraphics.renderTooltip(getFont(), tooltip, stack.getTooltipImage(), stack, xAxis, yAxis);
         }
     }
 
-    default void renderItemWithOverlay(PoseStack matrix, @NotNull ItemStack stack, int xAxis, int yAxis, float scale, @Nullable String text) {
-        GuiUtils.renderItem(matrix, getItemRenderer(), stack, xAxis, yAxis, scale, getFont(), text, true);
+    default void renderItemWithOverlay(GuiGraphics guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis, float scale, @Nullable String text) {
+        GuiUtils.renderItem(guiGraphics, stack, xAxis, yAxis, scale, getFont(), text, true);
     }
 
     default void setSelectedWindow(SelectedWindowData selectedWindow) {

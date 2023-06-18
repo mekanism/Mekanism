@@ -63,6 +63,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ChemicalUtil;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
@@ -78,8 +79,8 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
 
     private static final String EXPANSION_TARGET_JEITWEAKER = "mods.jeitweaker.Jei";
 
-    public MekanismCrTExampleProvider(DataGenerator gen, ExistingFileHelper existingFileHelper) {
-        super(gen, existingFileHelper, Mekanism.MODID);
+    public MekanismCrTExampleProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, existingFileHelper, Mekanism.MODID);
     }
 
     @Override

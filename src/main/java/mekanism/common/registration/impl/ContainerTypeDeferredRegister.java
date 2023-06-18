@@ -15,6 +15,7 @@ import mekanism.common.registration.WrappedDeferredRegister;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
@@ -83,7 +84,7 @@ public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<MenuT
     }
 
     public <CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(String name, IContainerFactory<CONTAINER> factory) {
-        return register(name, () -> new MenuType<>(factory));
+        return register(name, () -> new MenuType<>(factory, FeatureFlags.VANILLA_SET));
     }
 
     public <CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider, Supplier<MenuType<CONTAINER>> supplier) {

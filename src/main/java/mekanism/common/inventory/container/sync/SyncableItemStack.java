@@ -52,9 +52,7 @@ public class SyncableItemStack implements ISyncableData {
             // Note: isItemEqual returns false if one is empty, even if the other may also be empty
             return DirtyType.CLEAN;
         }
-        //TODO: Should same item be replaced with ItemHandlerHelper#canItemStacksStack so that we take cap NBT into account?
-        // Cap NBT isn't synced so in a sense it doesn't matter, though maybe it will at some point?
-        boolean sameItem = value.sameItem(this.lastKnownValue) && ItemStack.tagMatches(value, this.lastKnownValue);
+        boolean sameItem = ItemStack.isSameItemSameTags(value, this.lastKnownValue);
         if (!sameItem || value.getCount() != this.lastKnownValue.getCount()) {
             //Make sure to copy it in case our item stack object is the same object so would be getting modified
             // only do so though if it is dirty, as we don't need to spam object creation

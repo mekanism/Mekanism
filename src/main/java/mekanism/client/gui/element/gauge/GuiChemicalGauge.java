@@ -16,6 +16,7 @@ import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
@@ -114,5 +115,10 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
     @Override
     public Object getIngredient(double mouseX, double mouseY) {
         return getTank().isEmpty() ? null : getTank().getStack();
+    }
+
+    @Override
+    public Rect2i getIngredientBounds(double mouseX, double mouseY) {
+        return new Rect2i(getX() + 1, getY() + 1, width - 2, height - 2);
     }
 }

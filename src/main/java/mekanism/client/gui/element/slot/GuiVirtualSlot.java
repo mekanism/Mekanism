@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.slot;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.VirtualSlotContainerScreen;
 import mekanism.client.jei.interfaces.IJEIIngredientHelper;
@@ -8,6 +7,8 @@ import mekanism.common.inventory.container.IGUIWindow;
 import mekanism.common.inventory.container.slot.IVirtualSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,23 +44,23 @@ public class GuiVirtualSlot extends GuiSlot implements IJEIIngredientHelper {
     }
 
     @Override
-    protected void drawContents(@NotNull PoseStack matrix) {
+    protected void drawContents(@NotNull GuiGraphics guiGraphics) {
         if (virtualSlot != null) {
             ItemStack stack = virtualSlot.getStackToRender();
             if (!stack.isEmpty()) {
-                int xPos = x + 1;
-                int yPos = y + 1;
+                int xPos = getX() + 1;
+                int yPos = getY() + 1;
                 if (virtualSlot.shouldDrawOverlay()) {
-                    fill(matrix, xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
+                    guiGraphics.fill(xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
                 }
-                gui().renderItemWithOverlay(matrix, stack, xPos, yPos, 1, virtualSlot.getTooltipOverride());
+                gui().renderItemWithOverlay(guiGraphics, stack, xPos, yPos, 1, virtualSlot.getTooltipOverride());
             }
         }
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height) {
+        if (mouseX >= getX() && mouseY >= getY() && mouseX < getX() + width && mouseY < getY() + height) {
             IGuiWrapper gui = gui();
             if (gui instanceof VirtualSlotContainerScreen<?> screen && virtualSlot != null) {
                 //Redirect to a copy of vanilla logic
@@ -74,5 +75,10 @@ public class GuiVirtualSlot extends GuiSlot implements IJEIIngredientHelper {
     public Object getIngredient(double mouseX, double mouseY) {
         //Note: We can get away with just using the stack to render
         return virtualSlot == null ? null : virtualSlot.getStackToRender();
+    }
+
+    @Override
+    public Rect2i getIngredientBounds(double mouseX, double mouseY) {
+        return new Rect2i(getX() + 1, getY() + 1, 16, 16);
     }
 }

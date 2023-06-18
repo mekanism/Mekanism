@@ -2,7 +2,7 @@ package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.tileentity.ModelTileEntityRenderer;
@@ -59,14 +59,14 @@ public class RenderTurbineRotor extends ModelTileEntityRenderer<TileEntityTurbin
         //Bottom blade
         matrix.pushPose();
         matrix.translate(0.5, -1, 0.5);
-        matrix.mulPose(Vector3f.YP.rotationDegrees(tile.rotationLower));
+        matrix.mulPose(Axis.YP.rotationDegrees(tile.rotationLower));
         model.render(matrix, buffer, light, overlayLight, baseIndex);
         matrix.popPose();
         //Top blade
         if (housedBlades == 2) {
             matrix.pushPose();
             matrix.translate(0.5, -0.5, 0.5);
-            matrix.mulPose(Vector3f.YP.rotationDegrees(tile.rotationUpper));
+            matrix.mulPose(Axis.YP.rotationDegrees(tile.rotationUpper));
             model.render(matrix, buffer, light, overlayLight, baseIndex + 1);
             matrix.popPose();
         }

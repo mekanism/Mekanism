@@ -3,6 +3,7 @@ package mekanism.client.gui.element;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.IGuiWrapper;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.NotNull;
@@ -30,17 +31,17 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder {
     @Override
     public boolean isMouseOver(double xAxis, double yAxis) {
         //TODO: override isHovered
-        return this.active && this.visible && xAxis >= x + border && xAxis < x + width - border && yAxis >= y + border && yAxis < y + height - border;
+        return this.active && this.visible && xAxis >= getX() + border && xAxis < getX() + width - border && yAxis >= getY() + border && yAxis < getY() + height - border;
     }
 
     @Override
     protected int getButtonX() {
-        return x + border + (left ? 1 : -1);
+        return getX() + border + (left ? 1 : -1);
     }
 
     @Override
     protected int getButtonY() {
-        return y + border;
+        return getY() + border;
     }
 
     @Override
@@ -58,15 +59,14 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder {
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         //Draw the button background
-        drawButton(matrix, mouseX, mouseY);
-        drawBackgroundOverlay(matrix);
+        drawButton(guiGraphics, mouseX, mouseY);
+        drawBackgroundOverlay(guiGraphics);
     }
 
-    protected void drawBackgroundOverlay(@NotNull PoseStack matrix) {
-        RenderSystem.setShaderTexture(0, getOverlay());
-        blit(matrix, getButtonX(), getButtonY(), 0, 0, innerWidth, innerHeight, innerWidth, innerHeight);
+    protected void drawBackgroundOverlay(@NotNull GuiGraphics guiGraphics) {
+        guiGraphics.blit(getOverlay(), getButtonX(), getButtonY(), 0, 0, innerWidth, innerHeight, innerWidth, innerHeight);
     }
 }

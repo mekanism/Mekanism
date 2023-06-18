@@ -25,5 +25,6 @@
     "title": {
       "translate": "advancements.mekanism.auto_collection.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

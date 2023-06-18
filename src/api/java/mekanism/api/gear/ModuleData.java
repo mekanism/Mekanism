@@ -295,7 +295,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
          *
          * @since 10.3.6
          */
-        public ModuleDataBuilder<MODULE> isModeChangeDisabledByDefault() {//TODO - 1.20: Rename this method to `modeChangeDisabledByDefault`
+        public ModuleDataBuilder<MODULE> modeChangeDisabledByDefault() {
             if (!handlesModeChange) {
                 throw new IllegalStateException("Cannot have a module type that has mode change disabled by default but doesn't support changing modes.");
             }

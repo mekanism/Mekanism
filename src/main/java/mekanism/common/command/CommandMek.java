@@ -53,7 +53,7 @@ public class CommandMek {
                   .requires(MekanismPermissions.COMMAND_DEBUG)
                   .executes(ctx -> {
                       MekanismAPI.debug = !MekanismAPI.debug;
-                      ctx.getSource().sendSuccess(MekanismLang.COMMAND_DEBUG.translateColored(EnumColor.GRAY, OnOff.of(MekanismAPI.debug, true)), true);
+                      ctx.getSource().sendSuccess(() -> MekanismLang.COMMAND_DEBUG.translateColored(EnumColor.GRAY, OnOff.of(MekanismAPI.debug, true)), true);
                       return 0;
                   });
         }
@@ -74,7 +74,7 @@ public class CommandMek {
                       rules.getRule(GameRules.RULE_WEATHER_CYCLE).set(false, server);
                       rules.getRule(GameRules.RULE_MOBGRIEFING).set(false, server);
                       source.getLevel().setDayTime(2_000);
-                      source.sendSuccess(MekanismLang.COMMAND_TEST_RULES.translateColored(EnumColor.GRAY), true);
+                      source.sendSuccess(() -> MekanismLang.COMMAND_TEST_RULES.translateColored(EnumColor.GRAY), true);
                       return 0;
                   });
         }
@@ -98,7 +98,7 @@ public class CommandMek {
                             Vec3 position = location.getPosition(source);
                             // Teleport user to new location
                             player.connection.teleport(position.x(), position.y(), position.z(), player.getYRot(), player.getXRot());
-                            source.sendSuccess(MekanismLang.COMMAND_TP.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(position)), true);
+                            source.sendSuccess(() -> MekanismLang.COMMAND_TP.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(position)), true);
                             return 0;
                         })
                   );
@@ -129,7 +129,7 @@ public class CommandMek {
                       }
                       BlockPos lastPos = playerLocations.pop();
                       player.connection.teleport(lastPos.getX(), lastPos.getY(), lastPos.getZ(), player.getYRot(), player.getXRot());
-                      source.sendSuccess(MekanismLang.COMMAND_TPOP.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(lastPos), EnumColor.INDIGO, playerLocations.size()), true);
+                      source.sendSuccess(() -> MekanismLang.COMMAND_TPOP.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(lastPos), EnumColor.INDIGO, playerLocations.size()), true);
                       return 0;
                   });
         }

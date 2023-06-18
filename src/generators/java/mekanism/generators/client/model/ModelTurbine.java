@@ -2,7 +2,7 @@ package mekanism.generators.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import java.util.List;
 import mekanism.client.model.MekanismJavaModel;
 import mekanism.client.model.ModelPartData;
@@ -83,7 +83,7 @@ public class ModelTurbine extends MekanismJavaModel {
 
     public void render(@NotNull PoseStack matrix, VertexConsumer buffer, int light, int overlayLight, int index) {
         matrix.pushPose();
-        matrix.mulPose(Vector3f.YP.rotationDegrees(index * 5));
+        matrix.mulPose(Axis.YP.rotationDegrees(index * 5));
         renderToBuffer(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
         float scale = index * 0.5F;
         float adjustedScale = scale / 16;

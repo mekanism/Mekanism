@@ -10,6 +10,7 @@ import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.math.MathUtils;
+import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
@@ -23,12 +24,12 @@ import mekanism.common.item.CapabilityItem;
 import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.registries.MekanismCreativeTabs.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -43,7 +44,7 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemFlamethrower extends CapabilityItem implements IItemHUDProvider, IModeItem, IGasItem {
+public class ItemFlamethrower extends CapabilityItem implements IItemHUDProvider, IModeItem, IGasItem, ICustomCreativeTabContents {
 
     public ItemFlamethrower(Properties properties) {
         super(properties.stacksTo(1).rarity(Rarity.RARE).setNoRepair());
@@ -62,7 +63,7 @@ public class ItemFlamethrower extends CapabilityItem implements IItemHUDProvider
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return slotChanged || !ItemStack.isSame(oldStack, newStack);
+        return slotChanged || oldStack.getItem() != newStack.getItem();
     }
 
     @Override
@@ -81,11 +82,9 @@ public class ItemFlamethrower extends CapabilityItem implements IItemHUDProvider
     }
 
     @Override
-    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
-        super.fillItemCategory(group, items);
-        if (allowedIn(group)) {
-            items.add(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismConfig.gear.flamethrowerMaxGas, MekanismGases.HYDROGEN));
-        }
+    public void addItems(CreativeModeTab.Output tabOutput, IItemProvider self) {
+        ICustomCreativeTabContents.super.addItems(tabOutput, self);
+        tabOutput.accept(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismConfig.gear.flamethrowerMaxGas, MekanismGases.HYDROGEN));
     }
 
     public FlamethrowerMode getMode(ItemStack stack) {

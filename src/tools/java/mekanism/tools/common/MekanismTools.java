@@ -26,7 +26,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.TierSortingRegistry;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.living.MobSpawnEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -128,7 +128,8 @@ public class MekanismTools implements IModModule {
         }
     }
 
-    private void onLivingSpecialSpawn(LivingSpawnEvent.SpecialSpawn event) {
+    //TODO - 1.20: Test this
+    private void onLivingSpecialSpawn(MobSpawnEvent.FinalizeSpawn event) {
         LivingEntity entity = event.getEntity();
         if (entity instanceof Zombie || entity instanceof Skeleton || entity instanceof Piglin) {
             //Don't bother calculating random numbers unless the instanceof checks pass

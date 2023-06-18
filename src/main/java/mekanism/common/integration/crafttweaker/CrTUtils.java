@@ -37,6 +37,7 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTI
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -274,14 +275,14 @@ public class CrTUtils {
      * Helper to get CraftTweaker's item tag manager.
      */
     public static KnownTagManager<Item> itemTags() {
-        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(Registry.ITEM_REGISTRY);
+        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(Registries.ITEM);
     }
 
     /**
      * Helper to get CraftTweaker's fluid tag manager.
      */
     public static KnownTagManager<Fluid> fluidTags() {
-        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(Registry.FLUID_REGISTRY);
+        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(Registries.FLUID);
     }
 
     /**

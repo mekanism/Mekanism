@@ -1,7 +1,5 @@
 package mekanism.client.gui.element.scroll;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -22,6 +20,7 @@ import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -114,50 +113,49 @@ public class GuiModuleScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
         recheckItem();
         forEachModule((module, multipliedElement) -> {
             IModule<?> instance = MekanismAPI.getModuleHelper().load(currentItem, module);
             if (instance != null) {
                 int color = module.isExclusive(ExclusiveFlag.ANY) ? (instance.isEnabled() ? 0x635BD4 : 0x2E2A69) : (instance.isEnabled() ? titleTextColor() : 0x5E1D1D);
-                drawScaledTextScaledBound(matrix, TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, color, 86, 0.7F);
+                drawScaledTextScaledBound(guiGraphics, TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, color, 86, 0.7F);
             }
         });
     }
 
     @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.renderToolTip(matrix, mouseX, mouseY);
-        if (mouseX >= x + 1 && mouseX < x + barXShift - 1) {
+    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderToolTip(guiGraphics, mouseX, mouseY);
+        if (mouseX >= getX() + 1 && mouseX < getX() + barXShift - 1) {
             forEachModule((module, multipliedElement) -> {
                 IModule<?> instance = MekanismAPI.getModuleHelper().load(currentItem, module);
-                if (instance != null && mouseY >= y + 1 + multipliedElement && mouseY < y + 1 + multipliedElement + elementHeight) {
+                if (instance != null && mouseY >= getY() + 1 + multipliedElement && mouseY < getY() + 1 + multipliedElement + elementHeight) {
                     Component t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, instance.getInstalledCount(), module.getMaxStackSize());
-                    displayTooltips(matrix, mouseX, mouseY, MekanismLang.MODULE_INSTALLED.translate(t));
+                    displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.MODULE_INSTALLED.translate(t));
                 }
             });
         }
     }
 
     @Override
-    public void renderElements(PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderElements(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Draw elements
-        RenderSystem.setShaderTexture(0, MODULE_SELECTION);
         forEachModule((module, multipliedElement) -> {
-            int shiftedY = y + 1 + multipliedElement;
+            int shiftedY = getY() + 1 + multipliedElement;
             int j = 1;
             if (module == getSelection()) {
                 j = 2;
-            } else if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= shiftedY && mouseY < shiftedY + elementHeight) {
+            } else if (mouseX >= getX() + 1 && mouseX < barX - 1 && mouseY >= shiftedY && mouseY < shiftedY + elementHeight) {
                 j = 0;
             }
-            blit(matrix, x + 1, shiftedY, 0, elementHeight * j, TEXTURE_WIDTH, elementHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            guiGraphics.blit(MODULE_SELECTION, getX() + 1, shiftedY, 0, elementHeight * j, TEXTURE_WIDTH, elementHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
             MekanismRenderer.resetColor();
         });
         //Note: This needs to be in its own loop as rendering the items is likely to cause the texture manager to be bound to a different texture
         // and thus would make the selection area background get all screwed up
-        forEachModule((module, multipliedElement) -> gui().renderItem(matrix, module.getItemProvider().getItemStack(), x + 3, y + 3 + multipliedElement, 0.5F));
+        forEachModule((module, multipliedElement) -> gui().renderItem(guiGraphics, module.getItemProvider().getItemStack(), getX() + 3, getY() + 3 + multipliedElement, 0.5F));
     }
 
     private void forEachModule(ObjIntConsumer<ModuleData<?>> consumer) {

@@ -1,7 +1,5 @@
 package mekanism.client.gui.element.custom.module;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.api.gear.IModule;
@@ -18,6 +16,7 @@ import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.lib.Color;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
@@ -52,28 +51,27 @@ class ColorSelection extends MiniElement {
     }
 
     @Override
-    protected void renderBackground(PoseStack matrix, int mouseX, int mouseY) {
+    protected void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int xTarget = getX() + OFFSET_X;
         int yTarget = getY() + OFFSET_Y;
-        GuiUtils.drawOutline(matrix, xTarget, yTarget, 18, 18, GuiTextField.SCREEN_COLOR.getAsInt());
+        GuiUtils.drawOutline(guiGraphics, xTarget, yTarget, 18, 18, GuiTextField.SCREEN_COLOR.getAsInt());
         //Render the transparency grid inside it
-        RenderSystem.setShaderTexture(0, GuiColorWindow.TRANSPARENCY_GRID);
-        parent.blit(matrix, xTarget + 1, yTarget + 1, 0, 0, 16, 16);
+        guiGraphics.blit(GuiColorWindow.TRANSPARENCY_GRID, xTarget + 1, yTarget + 1, 0, 0, 16, 16);
         //Draw color
-        GuiUtils.fill(matrix, xTarget + 1, yTarget + 1, 16, 16, data.get());
+        GuiUtils.fill(guiGraphics, xTarget + 1, yTarget + 1, 16, 16, data.get());
     }
 
     @Override
-    protected void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
+    protected void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int textColor = parent.screenTextColor();
-        parent.drawTextWithScale(matrix, data.getDescription(), getRelativeX() + 3, getRelativeY(), textColor, 0.8F);
+        parent.drawTextWithScale(guiGraphics, data.getDescription(), getRelativeX() + 3, getRelativeY(), textColor, 0.8F);
         String hex;
         if (handlesAlpha) {
             hex = TextUtils.hex(false, 4, data.get());
         } else {
             hex = TextUtils.hex(false, 3, getColor().rgb());
         }
-        parent.drawTextExact(matrix, MekanismLang.GENERIC_HEX.translate(hex), getRelativeX() + 3, getRelativeY() + 11, textColor);
+        parent.drawTextExact(guiGraphics, MekanismLang.GENERIC_HEX.translate(hex), getRelativeX() + 3, getRelativeY() + 11, textColor);
     }
 
     @Override
@@ -94,7 +92,7 @@ class ColorSelection extends MiniElement {
                         if (matchedData.isPresent()) {
                             //Ensure the preview has been initialized
                             armorPreview.get();
-                            EquipmentSlot slot = armorItem.getSlot();
+                            EquipmentSlot slot = armorItem.getEquipmentSlot();
                             //Replace the current preview with our copy
                             armorPreview.updatePreview(slot, stack);
                             updatePreviewColor = c -> matchedData.get().set(c.argb());

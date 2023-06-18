@@ -14,8 +14,8 @@
           "name": "mekanismadditions:magenta_slick_plastic"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/magenta_slick_plastic"
 }

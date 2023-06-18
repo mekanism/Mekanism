@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.robit.RobitSkin;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.button.TranslationButton;
@@ -14,6 +13,7 @@ import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteractionEntity;
 import mekanism.common.network.to_server.PacketRobit;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class GuiRobitSkinSelect extends GuiWindow {
 
@@ -44,9 +44,9 @@ public class GuiRobitSkinSelect extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
-        drawTitleText(matrix, MekanismLang.ROBIT_SKIN_SELECT.translate(), 7);
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
+        drawTitleText(guiGraphics, MekanismLang.ROBIT_SKIN_SELECT.translate(), 7);
     }
 
     @Override

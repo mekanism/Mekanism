@@ -24,5 +24,6 @@
     "title": {
       "translate": "advancements.mekanism.disassembler.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

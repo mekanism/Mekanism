@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.SpecialColors;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,54 +33,55 @@ public interface IFancyFontRenderer {
         return SpecialColors.TEXT_SCREEN.argb();
     }
 
-    default int drawString(PoseStack matrix, Component component, int x, int y, int color) {
-        return getFont().draw(matrix, component, x, y, color);
+    default int drawString(GuiGraphics guiGraphics, Component component, int x, int y, int color) {
+        return guiGraphics.drawString(getFont(), component, x, y, color, false);
     }
 
     default int getStringWidth(Component component) {
         return getFont().width(component);
     }
 
-    default void drawCenteredText(PoseStack matrix, Component component, float x, float y, int color) {
-        drawCenteredText(matrix, component, x, 0, y, color);
+    default void drawCenteredText(GuiGraphics guiGraphics, Component component, float x, float y, int color) {
+        drawCenteredText(guiGraphics, component, x, 0, y, color);
     }
 
-    default void drawCenteredText(PoseStack matrix, Component component, float xStart, float areaWidth, float y, int color) {
+    default void drawCenteredText(GuiGraphics guiGraphics, Component component, float xStart, float areaWidth, float y, int color) {
         int textWidth = getStringWidth(component);
         float centerX = xStart + (areaWidth / 2F) - (textWidth / 2F);
-        drawTextExact(matrix, component, centerX, y, color);
+        drawTextExact(guiGraphics, component, centerX, y, color);
     }
 
-    default void drawTitleText(PoseStack matrix, Component text, float y) {
-        drawCenteredTextScaledBound(matrix, text, getXSize() - 8, y, titleTextColor());
+    default void drawTitleText(GuiGraphics guiGraphics, Component text, float y) {
+        drawCenteredTextScaledBound(guiGraphics, text, getXSize() - 8, y, titleTextColor());
     }
 
-    default void drawScaledCenteredTextScaledBound(PoseStack matrix, Component text, float left, float y, int color, float maxX, float textScale) {
+    default void drawScaledCenteredTextScaledBound(GuiGraphics guiGraphics, Component text, float left, float y, int color, float maxX, float textScale) {
         float width = getStringWidth(text) * textScale;
         float scale = Math.min(1, maxX / width) * textScale;
-        drawScaledCenteredText(matrix, text, left, y, color, scale);
+        drawScaledCenteredText(guiGraphics, text, left, y, color, scale);
     }
 
-    default void drawScaledCenteredText(PoseStack matrix, Component text, float left, float y, int color, float scale) {
+    default void drawScaledCenteredText(GuiGraphics guiGraphics, Component text, float left, float y, int color, float scale) {
         int textWidth = getStringWidth(text);
         float centerX = left - (textWidth / 2F) * scale;
-        drawTextWithScale(matrix, text, centerX, y, color, scale);
+        drawTextWithScale(guiGraphics, text, centerX, y, color, scale);
     }
 
-    default void drawCenteredTextScaledBound(PoseStack matrix, Component text, float maxLength, float y, int color) {
-        drawCenteredTextScaledBound(matrix, text, maxLength, 0, y, color);
+    default void drawCenteredTextScaledBound(GuiGraphics guiGraphics, Component text, float maxLength, float y, int color) {
+        drawCenteredTextScaledBound(guiGraphics, text, maxLength, 0, y, color);
     }
 
-    default void drawCenteredTextScaledBound(PoseStack matrix, Component text, float maxLength, float x, float y, int color) {
+    default void drawCenteredTextScaledBound(GuiGraphics guiGraphics, Component text, float maxLength, float x, float y, int color) {
         float scale = Math.min(1, maxLength / getStringWidth(text));
-        drawScaledCenteredText(matrix, text, x + getXSize() / 2F, y, color, scale);
+        drawScaledCenteredText(guiGraphics, text, x + getXSize() / 2F, y, color, scale);
     }
 
-    default void drawTextExact(PoseStack matrix, Component text, float x, float y, int color) {
-        matrix.pushPose();
-        matrix.translate(x, y, 0);
-        drawString(matrix, text, 0, 0, color);
-        matrix.popPose();
+    default void drawTextExact(GuiGraphics guiGraphics, Component text, float x, float y, int color) {
+        PoseStack pose = guiGraphics.pose();
+        pose.pushPose();
+        pose.translate(x, y, 0);
+        drawString(guiGraphics, text, 0, 0, color);
+        pose.popPose();
     }
 
     default float getNeededScale(Component text, float maxLength) {
@@ -87,54 +89,55 @@ public interface IFancyFontRenderer {
         return length <= maxLength ? 1 : maxLength / length;
     }
 
-    default void drawTextScaledBound(PoseStack matrix, String text, float x, float y, int color, float maxLength) {
-        drawTextScaledBound(matrix, TextComponentUtil.getString(text), x, y, color, maxLength);
+    default void drawTextScaledBound(GuiGraphics guiGraphics, String text, float x, float y, int color, float maxLength) {
+        drawTextScaledBound(guiGraphics, TextComponentUtil.getString(text), x, y, color, maxLength);
     }
 
-    default void drawTextScaledBound(PoseStack matrix, Component component, float x, float y, int color, float maxLength) {
+    default void drawTextScaledBound(GuiGraphics guiGraphics, Component component, float x, float y, int color, float maxLength) {
         int length = getStringWidth(component);
 
         if (length <= maxLength) {
-            drawTextExact(matrix, component, x, y, color);
+            drawTextExact(guiGraphics, component, x, y, color);
         } else {
-            drawTextWithScale(matrix, component, x, y, color, maxLength / length);
+            drawTextWithScale(guiGraphics, component, x, y, color, maxLength / length);
         }
         //Make sure the color does not leak from having drawn the string
         MekanismRenderer.resetColor();
     }
 
-    default void drawScaledTextScaledBound(PoseStack matrix, Component text, float x, float y, int color, float maxX, float textScale) {
+    default void drawScaledTextScaledBound(GuiGraphics guiGraphics, Component text, float x, float y, int color, float maxX, float textScale) {
         float width = getStringWidth(text) * textScale;
         float scale = Math.min(1, maxX / width) * textScale;
-        drawTextWithScale(matrix, text, x, y, color, scale);
+        drawTextWithScale(guiGraphics, text, x, y, color, scale);
     }
 
-    default void drawTextWithScale(PoseStack matrix, Component text, float x, float y, int color, float scale) {
-        prepTextScale(matrix, m -> drawString(m, text, 0, 0, color), x, y, scale);
+    default void drawTextWithScale(GuiGraphics guiGraphics, Component text, float x, float y, int color, float scale) {
+        prepTextScale(guiGraphics, g -> drawString(g, text, 0, 0, color), x, y, scale);
     }
 
-    default void prepTextScale(PoseStack matrix, Consumer<PoseStack> runnable, float x, float y, float scale) {
+    default void prepTextScale(GuiGraphics guiGraphics, Consumer<GuiGraphics> runnable, float x, float y, float scale) {
         float yAdd = 4 - (scale * 8) / 2F;
-        matrix.pushPose();
-        matrix.translate(x, y + yAdd, 0);
-        matrix.scale(scale, scale, scale);
-        runnable.accept(matrix);
-        matrix.popPose();
+        PoseStack pose = guiGraphics.pose();
+        pose.pushPose();
+        pose.translate(x, y + yAdd, 0);
+        pose.scale(scale, scale, scale);
+        runnable.accept(guiGraphics);
+        pose.popPose();
         MekanismRenderer.resetColor();
     }
 
     /**
      * @apiNote Consider caching the {@link WrappedTextRenderer} instead of using this method.
      */
-    default int drawWrappedTextWithScale(PoseStack matrix, Component text, float x, float y, int color, float maxLength, float scale) {
-        return new WrappedTextRenderer(this, text).renderWithScale(matrix, x, y, color, maxLength, scale);
+    default int drawWrappedTextWithScale(GuiGraphics guiGraphics, Component text, float x, float y, int color, float maxLength, float scale) {
+        return new WrappedTextRenderer(this, text).renderWithScale(guiGraphics, x, y, color, maxLength, scale);
     }
 
     /**
      * @apiNote Consider caching the {@link WrappedTextRenderer} instead of using this method.
      */
-    default void drawWrappedCenteredText(PoseStack matrix, Component text, float x, float y, int color, float maxLength) {
-        new WrappedTextRenderer(this, text).renderCentered(matrix, x, y, color, maxLength);
+    default void drawWrappedCenteredText(GuiGraphics guiGraphics, Component text, float x, float y, int color, float maxLength) {
+        new WrappedTextRenderer(this, text).renderCentered(guiGraphics, x, y, color, maxLength);
     }
 
     // efficient tool to draw word-by-word wrapped text based on a horizontal bound. looks intimidating but runs in O(n)
@@ -157,22 +160,22 @@ public interface IFancyFontRenderer {
             this.text = text;
         }
 
-        public void renderCentered(PoseStack matrix, float x, float y, int color, float maxLength) {
+        public void renderCentered(GuiGraphics guiGraphics, float x, float y, int color, float maxLength) {
             calculateLines(maxLength);
             float startY = y;
             for (LineData line : linesToDraw) {
-                font.drawTextExact(matrix, line.component(), x - line.length() / 2, startY, color);
+                font.drawTextExact(guiGraphics, line.component(), x - line.length() / 2, startY, color);
                 startY += 9;
             }
         }
 
-        public int renderWithScale(PoseStack matrix, float x, float y, int color, float maxLength, float scale) {
+        public int renderWithScale(GuiGraphics guiGraphics, float x, float y, int color, float maxLength, float scale) {
             //Divide by scale for calculating actual max length so that when the text is scaled it has the proper total space available
             calculateLines(maxLength / scale);
-            font.prepTextScale(matrix, m -> {
+            font.prepTextScale(guiGraphics, g -> {
                 int startY = 0;
                 for (LineData line : linesToDraw) {
-                    font.drawString(m, line.component(), 0, startY, color);
+                    font.drawString(g, line.component(), 0, startY, color);
                     startY += 9;
                 }
             }, x, y, scale);

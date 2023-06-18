@@ -15,8 +15,8 @@ import net.minecraft.world.item.ItemStack;
 @ParametersAreNotNullByDefault
 public class AE2RecipeProvider extends CompatRecipeProvider {
 
-    public AE2RecipeProvider() {
-        super("ae2");
+    public AE2RecipeProvider(String modid) {
+        super(modid);
     }
 
     @Override

@@ -26,6 +26,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -54,11 +55,11 @@ public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStac
     }
 
     @Override
-    public void draw(ItemStackToEnergyRecipe recipe, IRecipeSlotsView recipeSlotView, PoseStack matrix, double mouseX, double mouseY) {
-        super.draw(recipe, recipeSlotView, matrix, mouseX, mouseY);
+    public void draw(ItemStackToEnergyRecipe recipe, IRecipeSlotsView recipeSlotView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        super.draw(recipe, recipeSlotView, guiGraphics, mouseX, mouseY);
         if (!getOutputEnergy(recipe, recipeSlotView).isZero()) {
             //Manually draw the contents of the recipe
-            gauge.renderContents(matrix);
+            gauge.renderContents(guiGraphics);
         }
     }
 

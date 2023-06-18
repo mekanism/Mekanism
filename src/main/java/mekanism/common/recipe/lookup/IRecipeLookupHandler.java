@@ -21,7 +21,7 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends ICo
         if (this instanceof BlockEntity tile) {
             return tile.getLevel();
         } else if (this instanceof Entity entity) {
-            return entity.level;
+            return entity.level();
         }
         return null;
     }

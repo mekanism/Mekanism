@@ -23,5 +23,6 @@
     "title": {
       "translate": "advancements.mekanismadditions.balloon.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

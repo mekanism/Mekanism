@@ -43,7 +43,7 @@ public class ChunkCommand {
                   .requires(MekanismPermissions.COMMAND_CHUNK_WATCH)
                   .executes(ctx -> {
                       CommandSourceStack source = ctx.getSource();
-                      return watch(source, new ChunkPos(new BlockPos(source.getPosition())));
+                      return watch(source, new ChunkPos(BlockPos.containing(source.getPosition())));
                   }).then(Commands.argument("pos", ColumnPosArgument.columnPos())
                         .executes(ctx -> {
                             ColumnPos column = ColumnPosArgument.getColumnPos(ctx, "pos");
@@ -53,7 +53,7 @@ public class ChunkCommand {
 
         private static int watch(CommandSourceStack source, ChunkPos chunkPos) {
             chunkWatchers.add(ChunkPos.asLong(chunkPos.x, chunkPos.z));
-            source.sendSuccess(MekanismLang.COMMAND_CHUNK_WATCH.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(chunkPos)), true);
+            source.sendSuccess(() -> MekanismLang.COMMAND_CHUNK_WATCH.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(chunkPos)), true);
             return 0;
         }
     }
@@ -65,7 +65,7 @@ public class ChunkCommand {
                   .requires(MekanismPermissions.COMMAND_CHUNK_UNWATCH)
                   .executes(ctx -> {
                       CommandSourceStack source = ctx.getSource();
-                      return unwatch(source, new ChunkPos(new BlockPos(source.getPosition())));
+                      return unwatch(source, new ChunkPos(BlockPos.containing(source.getPosition())));
                   }).then(Commands.argument("pos", ColumnPosArgument.columnPos())
                         .executes(ctx -> {
                             ColumnPos column = ColumnPosArgument.getColumnPos(ctx, "pos");
@@ -75,7 +75,7 @@ public class ChunkCommand {
 
         private static int unwatch(CommandSourceStack source, ChunkPos chunkPos) {
             chunkWatchers.remove(ChunkPos.asLong(chunkPos.x, chunkPos.z));
-            source.sendSuccess(MekanismLang.COMMAND_CHUNK_UNWATCH.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(chunkPos)), true);
+            source.sendSuccess(() -> MekanismLang.COMMAND_CHUNK_UNWATCH.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(chunkPos)), true);
             return 0;
         }
     }
@@ -88,7 +88,7 @@ public class ChunkCommand {
                   .executes(ctx -> {
                       int count = chunkWatchers.size();
                       chunkWatchers.clear();
-                      ctx.getSource().sendSuccess(MekanismLang.COMMAND_CHUNK_CLEAR.translateColored(EnumColor.GRAY, EnumColor.INDIGO, count), true);
+                      ctx.getSource().sendSuccess(() -> MekanismLang.COMMAND_CHUNK_CLEAR.translateColored(EnumColor.GRAY, EnumColor.INDIGO, count), true);
                       return 0;
                   });
         }
@@ -106,7 +106,7 @@ public class ChunkCommand {
                       //TODO: Check this
                       //sp.queueUnloadAll();
                       sp.tick(() -> false, false);
-                      source.sendSuccess(MekanismLang.COMMAND_CHUNK_FLUSH.translateColored(EnumColor.GRAY, EnumColor.INDIGO, startCount - sp.getLoadedChunksCount()), true);
+                      source.sendSuccess(() -> MekanismLang.COMMAND_CHUNK_FLUSH.translateColored(EnumColor.GRAY, EnumColor.INDIGO, startCount - sp.getLoadedChunksCount()), true);
                       return 0;
                   });
         }

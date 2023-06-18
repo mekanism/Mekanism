@@ -3,9 +3,7 @@ package mekanism.client.render.obj;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,7 +23,7 @@ import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -41,6 +39,8 @@ import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 import net.minecraftforge.client.model.obj.ObjModel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 @NothingNullByDefault
 public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
@@ -49,7 +49,7 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
     private static final ChunkRenderTypeSet FULL = ChunkRenderTypeSet.of(RenderType.cutout(), RenderType.translucent());
 
     private final IGeometryBakingContext owner;
-    private final ModelBakery bakery;
+    private final ModelBaker baker;
     private final Function<Material, TextureAtlasSprite> spriteGetter;
     private final ModelState modelTransform;
     private final ItemOverrides overrides;
@@ -76,14 +76,14 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
         }
     });
 
-    public TransmitterBakedModel(ObjModel internal, @Nullable ObjModel glass, IGeometryBakingContext owner, ModelBakery bakery,
+    public TransmitterBakedModel(ObjModel internal, @Nullable ObjModel glass, IGeometryBakingContext owner, ModelBaker baker,
           Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
         //We define our baked variant to be how the item is. As we should always have model data when we have a state
         super(internal.bake(new VisibleModelConfiguration(owner, Arrays.stream(EnumUtils.DIRECTIONS).map(side ->
-                    getPartName(side, side.getAxis().isVertical() ? ConnectionType.NORMAL : ConnectionType.NONE)).toList()), bakery, spriteGetter,
+                    getPartName(side, side.getAxis().isVertical() ? ConnectionType.NORMAL : ConnectionType.NONE)).toList()), baker, spriteGetter,
               modelTransform, overrides, modelLocation));
         this.owner = owner;
-        this.bakery = bakery;
+        this.baker = baker;
         this.spriteGetter = spriteGetter;
         this.modelTransform = modelTransform;
         this.overrides = overrides;
@@ -155,12 +155,14 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
                 ModelState transform = modelTransform;
                 if (connectionType == ConnectionType.NONE && iconStatus.getAngle() > 0) {
                     //If the part should be rotated, then we need to use a custom IModelTransform
-                    Vector3f vecForDirection = new Vector3f(Vec3.atLowerCornerOf(side.getNormal()));
+                    Vector3f vecForDirection = Vec3.atLowerCornerOf(side.getNormal()).toVector3f();
                     vecForDirection.mul(-1);
-                    Transformation matrix = new Transformation(null, new Quaternion(vecForDirection, iconStatus.getAngle(), true), null, null);
+                    //TODO - 1.20: Test this
+                    Quaternionf quaternion = new Quaternionf().setAngleAxis(iconStatus.getAngle(), vecForDirection.x, vecForDirection.y, vecForDirection.z);
+                    Transformation matrix = new Transformation(null, quaternion, null, null);
                     transform = new SimpleModelState(transform.getRotation().compose(matrix), transform.isUvLocked());
                 }
-                BakedModel bakedModel = model.bake(new TransmitterModelConfiguration(owner, part, iconStatus), bakery, spriteGetter, transform, overrides, modelLocation);
+                BakedModel bakedModel = model.bake(new TransmitterModelConfiguration(owner, part, iconStatus), baker, spriteGetter, transform, overrides, modelLocation);
                 //Note: We don't actually care about the state, or the side anywhere and the model returns the proper values even if we don't provide a render type
                 // We also just use a new random source as we don't have one in our current context
                 return bakedModel.getQuads(null, null, RandomSource.create(), ModelData.EMPTY, null);

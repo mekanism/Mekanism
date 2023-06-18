@@ -25,5 +25,6 @@
     "title": {
       "translate": "advancements.mekanism.energy_cube.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

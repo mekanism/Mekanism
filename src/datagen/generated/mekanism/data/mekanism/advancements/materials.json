@@ -29,5 +29,6 @@
     "title": {
       "translate": "advancements.mekanism.materials.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

@@ -25,5 +25,6 @@
     "title": {
       "translate": "advancements.mekanism.playing_with_fire.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

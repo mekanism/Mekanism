@@ -9,8 +9,10 @@ import java.util.Set;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.common.registries.MekanismRecipeSerializers;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
@@ -27,11 +29,12 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
-        if (getResultItem().isEmpty()) {
+    public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
+        ItemStack resultItem = getResultItem(registryAccess);
+        if (resultItem.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        ItemStack toReturn = getResultItem().copy();
+        ItemStack toReturn = resultItem.copy();
         List<ItemStack> nbtInputs = new ArrayList<>();
         for (int i = 0; i < inv.getContainerSize(); i++) {
             ItemStack stack = inv.getItem(i);

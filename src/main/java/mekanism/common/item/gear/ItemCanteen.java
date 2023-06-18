@@ -4,16 +4,17 @@ import java.util.List;
 import java.util.Optional;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.providers.IItemProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.CapabilityItem;
+import mekanism.common.registries.MekanismCreativeTabs.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -34,7 +35,7 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemCanteen extends CapabilityItem {
+public class ItemCanteen extends CapabilityItem implements ICustomCreativeTabContents {
 
     public ItemCanteen(Properties properties) {
         super(properties.rarity(Rarity.UNCOMMON).stacksTo(1).setNoRepair());
@@ -61,11 +62,9 @@ public class ItemCanteen extends CapabilityItem {
     }
 
     @Override
-    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
-        super.fillItemCategory(group, items);
-        if (allowedIn(group)) {
-            items.add(FluidUtils.getFilledVariant(new ItemStack(this), MekanismConfig.gear.canteenMaxStorage, MekanismFluids.NUTRITIONAL_PASTE));
-        }
+    public void addItems(CreativeModeTab.Output tabOutput, IItemProvider self) {
+        ICustomCreativeTabContents.super.addItems(tabOutput, self);
+        tabOutput.accept(FluidUtils.getFilledVariant(new ItemStack(this), MekanismConfig.gear.canteenMaxStorage, MekanismFluids.NUTRITIONAL_PASTE));
     }
 
     @NotNull

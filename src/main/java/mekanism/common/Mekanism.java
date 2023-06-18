@@ -70,9 +70,9 @@ import mekanism.common.network.to_client.PacketTransmitterUpdate;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.recipe.condition.ModVersionLoadedCondition;
-import mekanism.common.registries.MekanismBiomeModifierSerializers;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.registries.MekanismCreativeTabs;
 import mekanism.common.registries.MekanismDataSerializers;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFeatures;
@@ -206,6 +206,7 @@ public class Mekanism {
         MekanismBlocks.BLOCKS.register(modEventBus);
         MekanismFluids.FLUIDS.register(modEventBus);
         MekanismContainerTypes.CONTAINER_TYPES.register(modEventBus);
+        MekanismCreativeTabs.CREATIVE_TABS.register(modEventBus);
         MekanismEntityTypes.ENTITY_TYPES.register(modEventBus);
         MekanismTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         MekanismGameEvents.GAME_EVENTS.register(modEventBus);
@@ -215,8 +216,6 @@ public class Mekanism {
         MekanismIntProviderTypes.INT_PROVIDER_TYPES.register(modEventBus);
         MekanismPlacementModifiers.PLACEMENT_MODIFIERS.register(modEventBus);
         MekanismFeatures.FEATURES.register(modEventBus);
-        MekanismFeatures.SETUP_FEATURES.register(modEventBus);
-        MekanismBiomeModifierSerializers.BIOME_MODIFIER_SERIALIZERS.register(modEventBus);
         MekanismRecipeType.RECIPE_TYPES.register(modEventBus);
         MekanismRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
         MekanismDataSerializers.DATA_SERIALIZERS.register(modEventBus);

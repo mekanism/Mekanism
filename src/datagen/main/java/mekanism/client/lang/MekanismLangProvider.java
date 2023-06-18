@@ -22,7 +22,8 @@ import mekanism.common.registration.impl.PigmentRegistryObject;
 import mekanism.common.registration.impl.RobitSkinRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismDamageSource;
+import mekanism.common.registries.MekanismDamageTypes;
+import mekanism.common.registries.MekanismDamageTypes.MekanismDamageType;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
@@ -40,14 +41,14 @@ import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
 public class MekanismLangProvider extends BaseLanguageProvider {
 
-    public MekanismLangProvider(DataGenerator gen) {
-        super(gen, Mekanism.MODID);
+    public MekanismLangProvider(PackOutput output) {
+        super(output, Mekanism.MODID);
     }
 
     @Override
@@ -408,13 +409,13 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addDamageSources() {
-        add(MekanismDamageSource.LASER, "%1$s was incinerated.", "%1$s was incinerated whilst trying to escape %2$s.");
-        add(MekanismDamageSource.RADIATION, "%1$s was killed by radiation poisoning.", "%1$s was killed by radiation poisoning whilst trying to escape %2$s.");
+        add(MekanismDamageTypes.LASER, "%1$s was incinerated.", "%1$s was incinerated whilst trying to escape %2$s.");
+        add(MekanismDamageTypes.RADIATION, "%1$s was killed by radiation poisoning.", "%1$s was killed by radiation poisoning whilst trying to escape %2$s.");
     }
 
-    private void add(MekanismDamageSource damageSource, String value, String valueEscaping) {
-        add(damageSource, value);
-        add(damageSource.getTranslationKey() + ".player", valueEscaping);
+    private void add(MekanismDamageType damageType, String value, String valueEscaping) {
+        add(damageType, value);
+        add(damageType.getTranslationKey() + ".player", valueEscaping);
     }
 
     private void addRobitSkins() {
@@ -651,6 +652,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MEKANISM, Mekanism.MOD_NAME);
         add(MekanismLang.DEBUG_TITLE, Mekanism.MOD_NAME + " Debug");
         add(MekanismLang.LOG_FORMAT, "[%1$s] %2$s");
+        add(MekanismLang.PACK_DESCRIPTION, "Resources used for Mekanism");
         add(MekanismLang.FORGE, "MinecraftForge");
         add(MekanismLang.IC2, "IndustrialCraft");
         add(MekanismLang.ERROR, "Error");
@@ -1065,8 +1067,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.SORTER_SIZE_MODE_CONFLICT, "Size Mode - has no effect currently, because single item mode is turned on.");
         add(MekanismLang.FUZZY_MODE, "Fuzzy Mode");
         add(MekanismLang.TEXT_FILTER_NO_MATCHES, "No matching targets");
-        add(MekanismLang.MATERIAL_FILTER, "Material Filter");
-        add(MekanismLang.MATERIAL_FILTER_DETAILS, "Using material of:");
         add(MekanismLang.TAG_FILTER, "Tag Filter");
         add(MekanismLang.TAG_FILTER_NO_TAG, "No tag");
         add(MekanismLang.TAG_FILTER_SAME_TAG, "Same tag");
@@ -1161,7 +1161,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.BUTTON_NEW_FILTER, "New Filter");
         add(MekanismLang.BUTTON_ITEMSTACK_FILTER, "ItemStack");
         add(MekanismLang.BUTTON_TAG_FILTER, "Tag");
-        add(MekanismLang.BUTTON_MATERIAL_FILTER, "Material");
         add(MekanismLang.BUTTON_MODID_FILTER, "Mod ID");
         //Configuration Card
         add(MekanismLang.CONFIG_CARD_GOT, "Retrieved configuration data from %1$s");

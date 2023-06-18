@@ -6,9 +6,9 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCookingSerializer;
 import net.minecraft.world.level.ItemLike;
 
 @NothingNullByDefault
@@ -18,7 +18,7 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
     private final int cookingTime;
     private float experience;
 
-    private ExtendedCookingRecipeBuilder(SimpleCookingSerializer<?> serializer, ItemLike result, int count, Ingredient ingredient, int cookingTime) {
+    private ExtendedCookingRecipeBuilder(RecipeSerializer<? extends AbstractCookingRecipe> serializer, ItemLike result, int count, Ingredient ingredient, int cookingTime) {
         super(serializer, result, count);
         this.ingredient = ingredient;
         this.cookingTime = cookingTime;

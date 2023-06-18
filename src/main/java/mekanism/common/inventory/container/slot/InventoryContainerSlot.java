@@ -98,20 +98,6 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
     }
 
     @Override
-    public void initialize(@NotNull ItemStack stack) {
-        //Note: We don't just call set as if we override set anywhere, which we don't currently, then we would not necessarily want it
-        // firing for this if we were say firing equip sounds
-        //Note: We have to set the stack in an unchecked manner here, so that if we sync a stack from the server to the client that
-        // the client does not think is valid for the stack, it doesn't cause major issues. Additionally, we do this directly in
-        // our putStack method rather than having a separate unchecked method, as if some modder is modifying inventories directly
-        // for some reason, and the machine has invalid items in it, it could cause various issues/crashes which are not entirely
-        // worth dealing with, as it is relatively reasonable to assume if an item is stored in a slot, more items of that type
-        // are valid in the same slot without having to check isItemValid.
-        uncheckedSetter.accept(stack);
-        setChanged();
-    }
-
-    @Override
     public void setChanged() {
         super.setChanged();
         slot.onContentsChanged();

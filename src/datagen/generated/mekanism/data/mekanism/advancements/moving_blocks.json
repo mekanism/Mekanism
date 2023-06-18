@@ -28,5 +28,6 @@
     "title": {
       "translate": "advancements.mekanism.moving_blocks.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

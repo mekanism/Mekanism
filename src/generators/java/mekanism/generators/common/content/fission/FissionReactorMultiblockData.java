@@ -376,7 +376,13 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     private long clampCoolantHeated(double heated, long stored) {
-        return Mth.clamp(MathUtils.clampToLong(heated), 0, stored);
+        long heatedLong = MathUtils.clampToLong(heated);
+        if (heatedLong < 0) {
+            return 0;
+        } else if (heatedLong > stored) {
+            return stored;
+        }
+        return heatedLong;
     }
 
     private void burnFuel(Level world) {

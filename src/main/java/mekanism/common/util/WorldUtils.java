@@ -430,7 +430,7 @@ public class WorldUtils {
                 }
                 playEmptySound(player, world, pos, fluidType, fluidStack);
             } else {
-                if (!world.isClientSide() && isReplaceable && !state.getMaterial().isLiquid()) {
+                if (!world.isClientSide() && isReplaceable && !state.liquid()) {
                     world.destroyBlock(pos, true);
                 }
                 playEmptySound(player, world, pos, fluidType, fluidStack);
@@ -537,7 +537,8 @@ public class WorldUtils {
      * @return True if the block can be replaced and is within the world's bounds.
      */
     public static boolean isValidReplaceableBlock(@NotNull BlockGetter world, @NotNull BlockPos pos) {
-        return isBlockInBounds(world, pos) && world.getBlockState(pos).getMaterial().isReplaceable();
+        //TODO - 1.20: Should this use one of the overloads of canBeReplaced
+        return isBlockInBounds(world, pos) && world.getBlockState(pos).canBeReplaced();
     }
 
     /**

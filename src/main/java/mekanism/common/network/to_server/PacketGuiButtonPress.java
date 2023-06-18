@@ -79,7 +79,7 @@ public class PacketGuiButtonPress implements IMekanismPacket {
             return;
         }
         if (type == Type.ENTITY) {
-            Entity entity = player.level.getEntity(entityID);
+            Entity entity = player.level().getEntity(entityID);
             if (entity != null) {
                 MenuProvider provider = entityButton.getProvider(entity);
                 if (provider != null) {
@@ -88,7 +88,7 @@ public class PacketGuiButtonPress implements IMekanismPacket {
                 }
             }
         } else if (type == Type.TILE) {
-            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level, tilePosition);
+            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), tilePosition);
             if (tile != null) {
                 MenuProvider provider = tileButton.getProvider(tile, extra);
                 if (provider != null) {

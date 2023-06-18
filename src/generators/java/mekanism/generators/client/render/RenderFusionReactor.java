@@ -2,7 +2,7 @@ package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.model.ModelEnergyCore;
@@ -65,7 +65,7 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
           int shift1, int shift2) {
         matrix.pushPose();
         matrix.scale(scale, scale, scale);
-        matrix.mulPose(Vector3f.YP.rotationDegrees(ticksScaledTemp * mult1 + shift1));
+        matrix.mulPose(Axis.YP.rotationDegrees(ticksScaledTemp * mult1 + shift1));
         matrix.mulPose(RenderEnergyCube.coreVec.rotationDegrees(ticksScaledTemp * mult2 + shift2));
         core.render(matrix, buffer, LightTexture.FULL_BRIGHT, overlayLight, color, 1);
         matrix.popPose();

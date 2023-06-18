@@ -1,7 +1,6 @@
 package mekanism.client.gui.qio;
 
 import com.google.common.collect.Sets;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +26,7 @@ import mekanism.common.inventory.container.QIOItemViewerContainer.SortDirection;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -58,7 +58,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     protected void addGuiElements() {
         super.addGuiElements();
         int slotsY = MekanismConfig.client.qioItemViewerSlotsY.get();
-        getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
+        //TODO - 1.20: Validate this behaves properly and there is no new version of sendRepeatsToGui
         addRenderableWidget(new GuiInnerScreen(this, 7, 15, imageWidth - 16, 12, () -> {
             FrequencyIdentity freq = getFrequency();
             if (freq == null) {
@@ -95,13 +95,13 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        renderTitleText(matrix);
-        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
-        drawTextScaledBound(matrix, MekanismLang.LIST_SEARCH.translate(), 7, 31, titleTextColor(), 41);
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        renderTitleText(guiGraphics);
+        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        drawTextScaledBound(guiGraphics, MekanismLang.LIST_SEARCH.translate(), 7, 31, titleTextColor(), 41);
         Component text = MekanismLang.LIST_SORT.translate();
-        drawString(matrix, text, imageWidth - 66 - getStringWidth(text), imageHeight - 92, titleTextColor());
-        super.drawForegroundText(matrix, mouseX, mouseY);
+        drawString(guiGraphics, text, imageWidth - 66 - getStringWidth(text), imageHeight - 92, titleTextColor());
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
     @Override
@@ -117,12 +117,6 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             MekanismConfig.client.save();
             recreateViewer();
         }
-    }
-
-    @Override
-    public void removed() {
-        super.removed();
-        getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
     }
 
     private boolean isValidSearchChar(char c) {

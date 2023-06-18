@@ -29,7 +29,7 @@ public final class MultipartUtils {
         float lookZ = f1 * f3;
         double reach = 5.0D;
         if (entity instanceof Player player) {
-            reach = player.getAttributeValue(ForgeMod.REACH_DISTANCE.get());
+            reach = player.getAttributeValue(ForgeMod.BLOCK_REACH.get());
         }
         Vec3 end = start.add(lookX * reach, lookY * reach, lookZ * reach);
         return new RayTraceVectors(start, end);

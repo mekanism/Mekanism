@@ -41,5 +41,6 @@
     "title": {
       "translate": "advancements.mekanism.seismic_vibrations.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

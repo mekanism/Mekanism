@@ -6,14 +6,14 @@ import mekanism.generators.common.advancements.GeneratorsAdvancements;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
 public class GeneratorsAdvancementProvider extends BaseAdvancementProvider {
 
-    public GeneratorsAdvancementProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, existingFileHelper, MekanismGenerators.MODID);
+    public GeneratorsAdvancementProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, existingFileHelper, MekanismGenerators.MODID);
     }
 
     @Override

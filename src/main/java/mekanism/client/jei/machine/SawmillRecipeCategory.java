@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiUpArrow;
@@ -18,6 +17,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.NotNull;
 
 public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
@@ -43,11 +43,11 @@ public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
     }
 
     @Override
-    public void draw(SawmillRecipe recipe, IRecipeSlotsView recipeSlotView, PoseStack matrix, double mouseX, double mouseY) {
-        super.draw(recipe, recipeSlotView, matrix, mouseX, mouseY);
+    public void draw(SawmillRecipe recipe, IRecipeSlotsView recipeSlotView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        super.draw(recipe, recipeSlotView, guiGraphics, mouseX, mouseY);
         double secondaryChance = recipe.getSecondaryChance();
         if (secondaryChance > 0) {
-            getFont().draw(matrix, TextUtils.getPercent(secondaryChance), 104, 41, SpecialColors.TEXT_TITLE.argb());
+            guiGraphics.drawString(getFont(), TextUtils.getPercent(secondaryChance), 104, 41, SpecialColors.TEXT_TITLE.argb(), false);
         }
     }
 }

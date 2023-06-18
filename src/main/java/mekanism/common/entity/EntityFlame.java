@@ -16,10 +16,10 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
@@ -67,7 +67,7 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
 
     @Nullable
     public static EntityFlame create(Player player) {
-        EntityFlame flame = MekanismEntityTypes.FLAME.get().create(player.level);
+        EntityFlame flame = MekanismEntityTypes.FLAME.get().create(player.level());
         if (flame == null) {
             return null;
         }
@@ -86,7 +86,7 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
         //Attempt to ray trace the area between the player and where the flame would actually start
         // if it hits a block instead just have the flame hit the block directly to avoid being able
         // to shoot a flamethrower through one thick walls.
-        BlockHitResult blockRayTrace = player.level.clip(new ClipContext(playerPos, mergedVec, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, flame));
+        BlockHitResult blockRayTrace = player.level().clip(new ClipContext(playerPos, mergedVec, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, flame));
         if (blockRayTrace.getType() != Type.MISS) {
             flame.onHit(blockRayTrace);
         }
@@ -122,13 +122,13 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
         Vec3 localVec = new Vec3(getX(), getY(), getZ());
         Vec3 motion = getDeltaMovement();
         Vec3 motionVec = new Vec3(getX() + motion.x() * 2, getY() + motion.y() * 2, getZ() + motion.z() * 2);
-        BlockHitResult blockRayTrace = level.clip(new ClipContext(localVec, motionVec, ClipContext.Block.OUTLINE, ClipContext.Fluid.ANY, this));
+        BlockHitResult blockRayTrace = level().clip(new ClipContext(localVec, motionVec, ClipContext.Block.OUTLINE, ClipContext.Fluid.ANY, this));
         localVec = new Vec3(getX(), getY(), getZ());
         motionVec = new Vec3(getX() + motion.x(), getY() + motion.y(), getZ() + motion.z());
         if (blockRayTrace.getType() != Type.MISS) {
             motionVec = blockRayTrace.getLocation();
         }
-        EntityHitResult entityResult = ProjectileUtil.getEntityHitResult(level, this, localVec, motionVec,
+        EntityHitResult entityResult = ProjectileUtil.getEntityHitResult(level(), this, localVec, motionVec,
               getBoundingBox().expandTowards(getDeltaMovement()).inflate(1.0D, 1.0D, 1.0D), EntitySelector.NO_SPECTATORS);
         onHit(entityResult == null ? blockRayTrace : entityResult);
     }
@@ -159,9 +159,9 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
         super.onHitBlock(blockRayTrace);
         BlockPos hitPos = blockRayTrace.getBlockPos();
         Direction hitSide = blockRayTrace.getDirection();
-        BlockState hitState = level.getBlockState(hitPos);
+        BlockState hitState = level().getBlockState(hitPos);
         boolean hitFluid = !hitState.getFluidState().isEmpty();
-        if (!level.isClientSide && MekanismConfig.general.aestheticWorldDamage.get() && !hitFluid) {
+        if (!level().isClientSide && MekanismConfig.general.aestheticWorldDamage.get() && !hitFluid) {
             if (mode == FlamethrowerMode.HEAT) {
                 Entity owner = getOwner();
                 if (owner instanceof Player player) {
@@ -172,13 +172,13 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
                 BlockPos sidePos = hitPos.relative(hitSide);
                 if (CampfireBlock.canLight(hitState)) {
                     tryPlace(owner, hitPos, hitSide, hitState.setValue(BlockStateProperties.LIT, true));
-                } else if (BaseFireBlock.canBePlacedAt(level, sidePos, hitSide)) {
-                    tryPlace(owner, sidePos, hitSide, BaseFireBlock.getState(level, sidePos));
-                } else if (hitState.isFlammable(level, hitPos, hitSide)) {
+                } else if (BaseFireBlock.canBePlacedAt(level(), sidePos, hitSide)) {
+                    tryPlace(owner, sidePos, hitSide, BaseFireBlock.getState(level(), sidePos));
+                } else if (hitState.isFlammable(level(), hitPos, hitSide)) {
                     //TODO: Is there some event we should/can be firing here?
-                    hitState.onCaughtFire(level, hitPos, hitSide, owner instanceof LivingEntity livingEntity ? livingEntity : null);
+                    hitState.onCaughtFire(level(), hitPos, hitSide, owner instanceof LivingEntity livingEntity ? livingEntity : null);
                     if (hitState.getBlock() instanceof TntBlock) {
-                        level.removeBlock(hitPos, false);
+                        level().removeBlock(hitPos, false);
                     }
                 }
             }
@@ -191,21 +191,21 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
     }
 
     private boolean tryPlace(@Nullable Entity shooter, BlockPos pos, Direction hitSide, BlockState newState) {
-        BlockSnapshot blockSnapshot = BlockSnapshot.create(level.dimension(), level, pos);
-        level.setBlockAndUpdate(pos, newState);
+        BlockSnapshot blockSnapshot = BlockSnapshot.create(level().dimension(), level(), pos);
+        level().setBlockAndUpdate(pos, newState);
         if (ForgeEventFactory.onBlockPlace(shooter, blockSnapshot, hitSide)) {
-            level.restoringBlockSnapshots = true;
+            level().restoringBlockSnapshots = true;
             blockSnapshot.restore(true, false);
-            level.restoringBlockSnapshots = false;
+            level().restoringBlockSnapshots = false;
             return false;
         }
         return true;
     }
 
     private boolean smeltItem(ItemEntity item) {
-        Optional<SmeltingRecipe> recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, new SimpleContainer(item.getItem()), level);
+        Optional<SmeltingRecipe> recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, new SimpleContainer(item.getItem()), level());
         if (recipe.isPresent()) {
-            ItemStack result = recipe.get().getResultItem();
+            ItemStack result = recipe.get().getResultItem(level().registryAccess());
             item.setItem(StackUtils.size(result, item.getItem().getCount()));
             item.tickCount = 0;
             spawnParticlesAt(item.blockPosition());
@@ -225,25 +225,25 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
         }
         Optional<SmeltingRecipe> recipe;
         try {
-            recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level);
+            recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level());
         } catch (Exception e) {
             return;
         }
         if (recipe.isPresent()) {
-            if (!level.isClientSide) {
-                if (MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, blockPos, hitState, shooter))) {
+            if (!level().isClientSide) {
+                if (MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level(), blockPos, hitState, shooter))) {
                     //We can't break the block exit
                     return;
                 }
-                ItemStack result = recipe.get().getResultItem();
+                ItemStack result = recipe.get().getResultItem(level().registryAccess());
                 if (!(result.getItem() instanceof BlockItem) || !tryPlace(shooter, blockPos, hitSide, Block.byItem(result.getItem()).defaultBlockState())) {
-                    level.removeBlock(blockPos, false);
-                    ItemEntity item = new ItemEntity(level, blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, result.copy());
+                    level().removeBlock(blockPos, false);
+                    ItemEntity item = new ItemEntity(level(), blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, result.copy());
                     item.setDeltaMovement(0, 0, 0);
-                    level.addFreshEntity(item);
+                    level().addFreshEntity(item);
                 }
-                level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, blockPos, Block.getId(hitState));
-                spawnParticlesAt((ServerLevel) level, blockPos);
+                level().levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, blockPos, Block.getId(hitState));
+                spawnParticlesAt((ServerLevel) level(), blockPos);
             }
         }
     }
@@ -252,13 +252,13 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
         if (!(entity instanceof ItemEntity) || MekanismConfig.gear.flamethrowerDestroyItems.get()) {
             //Only actually burn the entity if it is not an item, or we allow destroying items
             entity.setSecondsOnFire(20);
-            entity.hurt(DamageSource.thrown(this, getOwner()), DAMAGE);
+            entity.hurt(damageSources().thrown(this, getOwner()), DAMAGE);
         }
     }
 
     private void spawnParticlesAt(BlockPos pos) {
         for (int i = 0; i < 10; i++) {
-            level.addParticle(ParticleTypes.SMOKE, pos.getX() + (random.nextFloat() - 0.5), pos.getY() + (random.nextFloat() - 0.5),
+            level().addParticle(ParticleTypes.SMOKE, pos.getX() + (random.nextFloat() - 0.5), pos.getY() + (random.nextFloat() - 0.5),
                   pos.getZ() + (random.nextFloat() - 0.5), 0, 0, 0);
         }
     }
@@ -288,7 +288,7 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
 
     @NotNull
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

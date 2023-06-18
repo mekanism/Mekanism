@@ -8,6 +8,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,34 +48,33 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
     protected abstract void colorTab();
 
     @Override
-    public void renderButton(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.renderButton(matrix, mouseX, mouseY, partialTicks);
+    public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
         if (this.slotHolder) {
             //Slot holders need to draw here to render behind the slots instead of in front of them
-            draw(matrix, mouseX, mouseY, partialTicks);
+            draw(guiGraphics, mouseX, mouseY, partialTicks);
         }
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         if (!this.slotHolder) {
-            draw(matrix, mouseX, mouseY, partialTicks);
+            draw(guiGraphics, mouseX, mouseY, partialTicks);
         }
     }
 
-    private void draw(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShaderTexture(0, getResource());
+    private void draw(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         colorTab();
         //Top
-        blit(matrix, x, y, 0, 0, width, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        guiGraphics.blit(getResource(), getX(), getY(), 0, 0, width, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         //Middle
         int middleHeight = height - 8;
         if (middleHeight > 0) {
-            blit(matrix, x, y + 4, width, middleHeight, 0, 4, width, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            guiGraphics.blit(getResource(), getX(), getY() + 4, width, middleHeight, 0, 4, width, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
         //Bottom
-        blit(matrix, x, y + 4 + middleHeight, 0, 5, width, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        guiGraphics.blit(getResource(), getX(), getY() + 4 + middleHeight, 0, 5, width, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         MekanismRenderer.resetColor();
     }
 }

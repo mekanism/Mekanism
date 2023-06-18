@@ -13,6 +13,7 @@ import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -28,8 +29,8 @@ public class MekanismHUD implements IGuiOverlay {
     private static final HUDRenderer hudRenderer = new HUDRenderer();
 
     @Override
-    public void render(ForgeGui gui, PoseStack poseStack, float partialTicks, int screenWidth, int screenHeight) {
-        Minecraft minecraft = Minecraft.getInstance();
+    public void render(ForgeGui gui, GuiGraphics guiGraphics, float partialTicks, int screenWidth, int screenHeight) {
+        Minecraft minecraft = gui.getMinecraft();
         if (!minecraft.options.hideGui && !minecraft.player.isSpectator() && MekanismConfig.client.enableHUD.get()) {
             int count = 0;
             List<List<Component>> renderStrings = new ArrayList<>();
@@ -60,20 +61,21 @@ public class MekanismHUD implements IGuiOverlay {
                 int start = (renderStrings.size() * 2) + (count * 9);
                 int y = yScale - start;
                 maxTextHeight = (int) (y * hudScale);
-                poseStack.pushPose();
-                poseStack.scale(hudScale, hudScale, hudScale);
+                PoseStack pose = guiGraphics.pose();
+                pose.pushPose();
+                pose.scale(hudScale, hudScale, hudScale);
                 for (List<Component> group : renderStrings) {
                     for (Component text : group) {
-                        drawString(minecraft.font, xScale, poseStack, text, reverseHud, y, 0xC8C8C8);
+                        drawString(minecraft.font, xScale, guiGraphics, text, reverseHud, y, 0xC8C8C8);
                         y += 9;
                     }
                     y += 2;
                 }
-                poseStack.popPose();
+                pose.popPose();
             }
 
             if (minecraft.player.getItemBySlot(EquipmentSlot.HEAD).is(MekanismTags.Items.MEKASUIT_HUD_RENDERER)) {
-                hudRenderer.renderHUD(poseStack, partialTicks, screenWidth, screenHeight, maxTextHeight, reverseHud);
+                hudRenderer.renderHUD(guiGraphics, partialTicks, screenWidth, screenHeight, maxTextHeight, reverseHud);
             }
         }
     }
@@ -88,15 +90,15 @@ public class MekanismHUD implements IGuiOverlay {
         return size;
     }
 
-    private void drawString(Font font, int windowWidth, PoseStack matrix, Component text, boolean reverseHud, int y, int color) {
+    private void drawString(Font font, int windowWidth, GuiGraphics guiGraphics, Component text, boolean reverseHud, int y, int color) {
         //Note that we always offset by 2 pixels from the edge of the screen regardless of how it is aligned
         if (reverseHud) {
             //Align the text to the right
             int width = font.width(text) + 2;
-            font.drawShadow(matrix, text, windowWidth - width, y, color);
+            guiGraphics.drawString(font, text, windowWidth - width, y, color);
         } else {
             //Align to the left
-            font.drawShadow(matrix, text, 2, y, color);
+            guiGraphics.drawString(font, text, 2, y, color);
         }
     }
 }

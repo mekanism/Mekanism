@@ -26,6 +26,7 @@ import mekanism.common.lib.effect.BoltEffect.FadeFunction;
 import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -78,17 +79,19 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
     }
 
     @Override
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        drawString(matrix, title, (imageWidth - getStringWidth(title)) / 2, titleLabelY, titleTextColor());
-        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
-        drawTextScaledBound(matrix, MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate())), 48, 76, screenTextColor(), 100);
-        super.drawForegroundText(matrix, mouseX, mouseY);
-        matrix.pushPose();
-        matrix.translate(0, 0, 100);
-        MultiBufferSource.BufferSource renderer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        drawString(guiGraphics, title, (imageWidth - getStringWidth(title)) / 2, titleLabelY, titleTextColor());
+        drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
+        drawTextScaledBound(guiGraphics, MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate())), 48, 76, screenTextColor(), 100);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
+        PoseStack pose = guiGraphics.pose();
+        pose.pushPose();
+        pose.translate(0, 0, 100);
+        //TODO - 1.20: Evaluate this
+        MultiBufferSource.BufferSource renderer = guiGraphics.bufferSource();//MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
         bolt.update(this, boltSupplier.get(), MekanismRenderer.getPartialTick());
-        bolt.render(MekanismRenderer.getPartialTick(), matrix, renderer);
+        bolt.render(MekanismRenderer.getPartialTick(), pose, renderer);
         renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
-        matrix.popPose();
+        pose.popPose();
     }
 }

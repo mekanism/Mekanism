@@ -1,0 +1,8 @@
+{
+  "pack": {
+    "description": {
+      "translate": "constants.mekanismgenerators.pack_description"
+    },
+    "pack_format": 15
+  }
+}

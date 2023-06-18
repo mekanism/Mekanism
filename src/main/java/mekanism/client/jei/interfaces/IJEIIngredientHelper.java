@@ -1,5 +1,6 @@
 package mekanism.client.jei.interfaces;
 
+import net.minecraft.client.renderer.Rect2i;
 import org.jetbrains.annotations.Nullable;
 
 public interface IJEIIngredientHelper {
@@ -17,4 +18,9 @@ public interface IJEIIngredientHelper {
      */
     @Nullable
     Object getIngredient(double mouseX, double mouseY);
+
+    /**
+     * Gets the bounds of the ingredient for where it can be clicked.
+     */
+    Rect2i getIngredientBounds(double mouseX, double mouseY);
 }

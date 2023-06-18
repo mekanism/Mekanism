@@ -14,8 +14,8 @@
           "name": "mekanismadditions:pink_plastic_road"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/pink_plastic_road"
 }

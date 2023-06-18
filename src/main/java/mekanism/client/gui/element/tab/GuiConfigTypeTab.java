@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.tab;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
@@ -10,6 +9,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,9 +47,9 @@ public class GuiConfigTypeTab extends GuiInsetElement<Void> {
     }
 
     @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.renderToolTip(matrix, mouseX, mouseY);
-        displayTooltips(matrix, mouseX, mouseY, TextComponentUtil.build(transmission));
+    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderToolTip(guiGraphics, mouseX, mouseY);
+        displayTooltips(guiGraphics, mouseX, mouseY, TextComponentUtil.build(transmission));
     }
 
     @Override

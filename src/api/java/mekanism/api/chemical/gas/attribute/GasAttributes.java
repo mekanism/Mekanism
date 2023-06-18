@@ -29,7 +29,9 @@ public class GasAttributes {
         private final double radioactivity;
 
         public Radiation(double radioactivity) {
-            //TODO - 1.20: Ensure that radioactivity is > 0, and maybe move some of the CrT validation checks to other attributes as well to sanitize inputs
+            if (radioactivity <= 0) {
+                throw new IllegalArgumentException("Radiation attribute should only be used when there actually is radiation! Radioactivity: " + radioactivity);
+            }
             this.radioactivity = radioactivity;
         }
 
@@ -73,6 +75,12 @@ public class GasAttributes {
         private final double conductivity;
 
         private Coolant(double thermalEnthalpy, double conductivity) {
+            if (thermalEnthalpy <= 0) {
+                throw new IllegalArgumentException("Coolant attributes must have a thermal enthalpy greater than zero! Thermal Enthalpy: " + thermalEnthalpy);
+            }
+            if (conductivity <= 0 || conductivity > 1) {
+                throw new IllegalArgumentException("Coolant attributes must have a conductivity greater than zero and at most one! Conductivity: " + conductivity);
+            }
             this.thermalEnthalpy = thermalEnthalpy;
             this.conductivity = conductivity;
         }

@@ -1,13 +1,11 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiElement;
@@ -37,16 +35,13 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -149,8 +144,8 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         windows.forEach(GuiWindow::tick);
     }
 
-    protected void renderTitleText(PoseStack poseStack) {
-        drawTitleText(poseStack, title, titleLabelY);
+    protected void renderTitleText(GuiGraphics guiGraphics) {
+        drawTitleText(guiGraphics, title, titleLabelY);
     }
 
     protected IHoverable getOnHover(ILangEntry translationHelper) {
@@ -158,7 +153,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     protected IHoverable getOnHover(Supplier<Component> componentSupplier) {
-        return (onHover, matrix, mouseX, mouseY) -> displayTooltips(matrix, mouseX, mouseY, componentSupplier.get());
+        return (onHover, guiGraphics, mouseX, mouseY) -> displayTooltips(guiGraphics, mouseX, mouseY, componentSupplier.get());
     }
 
     protected ResourceLocation getButtonLocation(String name) {
@@ -236,24 +231,31 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    protected void renderLabels(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        PoseStack modelViewStack = RenderSystem.getModelViewStack();
+    protected void renderLabels(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        //PoseStack modelViewStack = RenderSystem.getModelViewStack();
         //Note: We intentionally don't push the modelViewStack, see notes further down in this method for more details
-        matrix.translate(0, 0, 300);
-        modelViewStack.translate(-leftPos, -topPos, 0);
-        RenderSystem.applyModelViewMatrix();
-        children().stream().filter(c -> c instanceof GuiElement).forEach(c -> ((GuiElement) c).onDrawBackground(matrix, mouseX, mouseY, MekanismRenderer.getPartialTick()));
-        modelViewStack.translate(leftPos, topPos, 0);
-        RenderSystem.applyModelViewMatrix();
-        drawForegroundText(matrix, mouseX, mouseY);
+        //TODO - 1.20: Figure this out as some transforms and hacks may be unnecessary now
+        PoseStack pose = guiGraphics.pose();
+        //TODO - 1.20: Re-evaluate?? if we keep this merge it with the next translate call
+        // we previously had this applied to the pose and the next translate applied to the model view
+        pose.translate(0, 0, 300);
+        //TODO - 1.20: Do we want to try and remove this translation and make everything for drawing the background use relative positions?
+        pose.translate(-leftPos, -topPos, 0);
+        //modelViewStack.translate(-leftPos, -topPos, 0);
+        //RenderSystem.applyModelViewMatrix();
+        children().stream().filter(c -> c instanceof GuiElement).forEach(c -> ((GuiElement) c).onDrawBackground(guiGraphics, mouseX, mouseY, MekanismRenderer.getPartialTick()));
+        pose.translate(leftPos, topPos, 0);
+        //modelViewStack.translate(leftPos, topPos, 0);
+        //RenderSystem.applyModelViewMatrix();
+        drawForegroundText(guiGraphics, mouseX, mouseY);
         // first render general foregrounds
         int zOffset = 200;
         maxZOffsetNoWindows = maxZOffset = zOffset;
         for (GuiEventListener widget : children()) {
             if (widget instanceof GuiElement element) {
-                matrix.pushPose();
-                element.onRenderForeground(matrix, mouseX, mouseY, zOffset, zOffset);
-                matrix.popPose();
+                pose.pushPose();
+                element.onRenderForeground(guiGraphics, mouseX, mouseY, zOffset, zOffset);
+                pose.popPose();
             }
         }
         maxZOffsetNoWindows = maxZOffset;
@@ -268,13 +270,13 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             // window as while the windows don't necessarily overlap, if they do we want to
             // ensure that there is no clipping
             zOffset = maxZOffset + windowSeparation;
-            matrix.pushPose();
-            overlay.onRenderForeground(matrix, mouseX, mouseY, zOffset, zOffset);
+            pose.pushPose();
+            overlay.onRenderForeground(guiGraphics, mouseX, mouseY, zOffset, zOffset);
             if (iter.hasNext()) {
                 // if this isn't the focused window, render a 'blur' effect over it
-                overlay.renderBlur(matrix);
+                overlay.renderBlur(guiGraphics);
             }
-            matrix.popPose();
+            pose.popPose();
         }
         // then render tooltips, translating above max z offset to prevent clashing
         GuiElement tooltipElement = getWindowHovering(mouseX, mouseY);
@@ -291,28 +293,34 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         // translate forwards using RenderSystem. this should never have to happen as we do all the necessary translations with MatrixStacks,
         // but Minecraft has decided to not fully adopt MatrixStacks for many crucial ContainerScreen render operations. should be re-evaluated
         // when mc updates related logic on their end (IMPORTANT)
-        modelViewStack.translate(0, 0, maxZOffset);
+        //modelViewStack.translate(0, 0, maxZOffset);
+        //TODO - 1.20: Is this necessary
+        pose.translate(0, 0, maxZOffset);
 
         // render tooltips
-        modelViewStack.translate(-leftPos, -topPos, 0);
-        RenderSystem.applyModelViewMatrix();
+        pose.translate(-leftPos, -topPos, 0);
+        //modelViewStack.translate(-leftPos, -topPos, 0);
+        //RenderSystem.applyModelViewMatrix();
         if (tooltipElement != null) {
-            tooltipElement.renderToolTip(matrix, mouseX, mouseY);
+            tooltipElement.renderToolTip(guiGraphics, mouseX, mouseY);
         }
-        renderTooltip(matrix, mouseX, mouseY);
-        modelViewStack.translate(leftPos, topPos, 0);
+        renderTooltip(guiGraphics, mouseX, mouseY);
+        pose.translate(leftPos, topPos, 0);
+        //modelViewStack.translate(leftPos, topPos, 0);
 
         // IMPORTANT: additional hacky translation so held items render okay. re-evaluate as discussed above
         // Note: It is important that we don't wrap our adjustments to the modelViewStack in so that we can
         // have the adjustments to the z-value persist into the vanilla methods
-        modelViewStack.translate(0, 0, 200);
-        RenderSystem.applyModelViewMatrix();
+        //TODO - 1.20: Is this necessary
+        pose.translate(0, 0, 200);
+        //modelViewStack.translate(0, 0, 200);
+        //RenderSystem.applyModelViewMatrix();
 
         //Adjust the amount we offset tooltips to put tooltips made by JEI above the windows
         maxZOffsetNoWindows = -(maxZOffset - windowSeparation * windows.size());
     }
 
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
     }
 
     @NotNull
@@ -365,6 +373,8 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         for (int i = children().size() - 1; i >= 0; i--) {
             GuiEventListener listener = children().get(i);
             if (listener.mouseClicked(mouseX, mouseY, button)) {
+                //TODO - 1.20: Is this meant to go to the child element actually interacted with?
+                // I think it needs to and is likely why things like the QIO Frequency Select don't allow typing
                 setFocused(listener);
                 if (button == GLFW.GLFW_MOUSE_BUTTON_1) {
                     setDragging(true);
@@ -541,7 +551,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    protected void renderBg(@NotNull PoseStack matrix, float partialTick, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         MekanismRenderer.resetColor();
@@ -549,57 +559,37 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             Mekanism.logger.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
             return;
         }
-        GuiUtils.renderBackgroundTexture(matrix, BASE_BACKGROUND, 4, 4, leftPos, topPos, imageWidth, imageHeight, 256, 256);
+        GuiUtils.renderBackgroundTexture(guiGraphics, BASE_BACKGROUND, 4, 4, leftPos, topPos, imageWidth, imageHeight, 256, 256);
     }
 
     @Override
+    @SuppressWarnings("ConstantValue")
     public Font getFont() {
-        return font;
+        //In theory font is never null here, but we validate it in case we are called before init finishes happening
+        return font == null ? minecraft.font : font;
     }
 
+    //TODO - 1.20: Test this and everything else relating to the switch to guigraphics
+    // My guess is we may be able to remove the model view stack hacks??
     @Override
-    public void render(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        PoseStack modelViewStack = RenderSystem.getModelViewStack();
-        modelViewStack.pushPose();
-
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        PoseStack pose = guiGraphics.pose();
+        pose.pushPose();
         // shift back a whole lot so we can stack more windows
-        modelViewStack.translate(0, 0, -500);
-        RenderSystem.applyModelViewMatrix();
-        matrix.pushPose();
-        renderBackground(matrix);
+        //TODO - 1.20: Validate this, used to translate the model view stack
+        pose.translate(0, 0, -500);
+        renderBackground(guiGraphics);
+        //TODO - 1.20: Fix comment
         //Apply our matrix stack to the render system and pass an unmodified one to the super method
         // Vanilla still renders the items into the GUI using render system transformations so this
         // is required to not have tooltips of GuiElements rendering behind the items
-        super.render(matrix, mouseX, mouseY, partialTicks);
-        matrix.popPose();
-        modelViewStack.popPose();
-        RenderSystem.applyModelViewMatrix();
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        pose.popPose();
     }
 
-    @Override
-    public void renderTooltip(@NotNull PoseStack poseStack, @NotNull List<Component> tooltips, @NotNull Optional<TooltipComponent> visualTooltipComponent, int mouseX,
-          int mouseY) {
-        adjustTooltipZ(poseStack, pose -> super.renderTooltip(pose, tooltips, visualTooltipComponent, mouseX, mouseY));
-    }
-
-    @Override
-    public void renderComponentTooltip(@NotNull PoseStack poseStack, @NotNull List<Component> tooltips, int mouseX, int mouseY) {
-        adjustTooltipZ(poseStack, pose -> super.renderComponentTooltip(pose, tooltips, mouseX, mouseY));
-    }
-
-    @Override
-    public void renderComponentTooltip(@NotNull PoseStack poseStack, @NotNull List<? extends FormattedText> tooltips, int mouseX, int mouseY, @Nullable Font font,
-          @NotNull ItemStack stack) {
-        adjustTooltipZ(poseStack, pose -> super.renderComponentTooltip(pose, tooltips, mouseX, mouseY, font, stack));
-    }
-
-    @Override
-    public void renderTooltip(@NotNull PoseStack poseStack, @NotNull List<? extends FormattedCharSequence> tooltips, int mouseX, int mouseY) {
-        adjustTooltipZ(poseStack, pose -> super.renderTooltip(pose, tooltips, mouseX, mouseY));
-    }
-
+    //TODO - 1.20: Re-evaluate all these render tooltips?? Maybe it just works now
     //Used as a helper to wrap and fix the various calls to renderTooltipInternal so that tooltips for bundles appear in the proper location
-    private void adjustTooltipZ(@NotNull PoseStack poseStack, @NotNull Consumer<PoseStack> tooltipRender) {
+    /*private void adjustTooltipZ(@NotNull PoseStack poseStack, @NotNull Consumer<PoseStack> tooltipRender) {
         PoseStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
         //Apply the current matrix to the view so that we render items and tooltips at the proper level
@@ -611,28 +601,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         tooltipRender.accept(new PoseStack());
         modelViewStack.popPose();
         RenderSystem.applyModelViewMatrix();
-    }
-
-    @Override
-    public void renderItemTooltip(PoseStack matrix, @NotNull ItemStack stack, int xAxis, int yAxis) {
-        renderTooltip(matrix, stack, xAxis, yAxis);
-    }
-
-    @Override
-    public void renderItemTooltipWithExtra(PoseStack matrix, @NotNull ItemStack stack, int xAxis, int yAxis, List<Component> toAppend) {
-        if (toAppend.isEmpty()) {
-            renderItemTooltip(matrix, stack, xAxis, yAxis);
-        } else {
-            List<Component> tooltip = new ArrayList<>(getTooltipFromItem(stack));
-            tooltip.addAll(toAppend);
-            renderTooltip(matrix, tooltip, stack.getTooltipImage(), xAxis, yAxis, stack);
-        }
-    }
-
-    @Override
-    public ItemRenderer getItemRenderer() {
-        return itemRenderer;
-    }
+    }*/
 
     @Override
     public boolean currentlyQuickCrafting() {

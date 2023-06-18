@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:torchflower"
+    }
+  },
+  "output": {
+    "count": 7,
+    "item": "mekanism:bio_fuel"
+  }
+}

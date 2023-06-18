@@ -1,0 +1,12 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "mekanismadditions:entity/balloon"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanismadditions:entity/balloon_string"
+    }
+  ]
+}

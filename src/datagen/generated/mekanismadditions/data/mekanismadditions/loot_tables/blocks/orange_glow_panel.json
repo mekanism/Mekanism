@@ -14,8 +14,8 @@
           "name": "mekanismadditions:orange_glow_panel"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/orange_glow_panel"
 }

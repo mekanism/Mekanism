@@ -30,6 +30,15 @@ public class FluidElement extends LookingAtElement {
         return MathUtils.clampToInt(level * (double) stored.getAmount() / capacity);
     }
 
+    @NotNull
+    public FluidStack getStored() {
+        return stored;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
     @Override
     public TextureAtlasSprite getIcon() {
         return stored.isEmpty() ? null : MekanismRenderer.getFluidTexture(stored, FluidTextureType.STILL);

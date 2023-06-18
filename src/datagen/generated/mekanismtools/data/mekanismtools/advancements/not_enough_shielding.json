@@ -31,5 +31,6 @@
     "title": {
       "translate": "advancements.mekanismtools.not_enough_shielding.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

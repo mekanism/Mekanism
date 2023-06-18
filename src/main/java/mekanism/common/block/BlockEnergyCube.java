@@ -1,33 +1,22 @@
 package mekanism.common.block;
 
-import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.component.config.ConfigInfo;
-import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
-import mekanism.common.util.EnumUtils;
-import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.NBTUtils;
-import mekanism.common.util.StorageUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -140,35 +129,7 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
     public BlockEnergyCube(Machine<TileEntityEnergyCube> type) {
         //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the energy cube
         // this may change based on what sides are enabled. Torches cannot be placed on the sides due to vanilla checking the incorrect shape
-        super(type, BlockBehaviour.Properties.of(Material.METAL).strength(2, 2.4F).requiresCorrectToolForDrops().dynamicShape());
-    }
-
-    private ItemStack withSideConfig(DataType dataType) {
-        CompoundTag sideConfig = new CompoundTag();
-        for (RelativeSide side : EnumUtils.SIDES) {
-            NBTUtils.writeEnum(sideConfig, NBTConstants.SIDE + side.ordinal(), dataType);
-        }
-        CompoundTag configNBT = new CompoundTag();
-        configNBT.put(NBTConstants.CONFIG + TransmissionType.ENERGY.ordinal(), sideConfig);
-        ItemStack stack = new ItemStack(this);
-        ItemDataUtils.setCompound(stack, NBTConstants.COMPONENT_CONFIG, configNBT);
-        return stack;
-    }
-
-    @Override
-    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
-        EnergyCubeTier tier = Attribute.getTier(this, EnergyCubeTier.class);
-        if (tier == EnergyCubeTier.CREATIVE) {
-            //Add the empty and charged variants
-            items.add(withSideConfig(DataType.INPUT));
-            items.add(StorageUtils.getFilledEnergyVariant(withSideConfig(DataType.OUTPUT), tier.getMaxEnergy()));
-        } else {
-            super.fillItemCategory(group, items);
-            if (tier != null) {
-                //This should never be null, but validate it just in case, and then add the charged variant
-                items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), tier.getMaxEnergy()));
-            }
-        }
+        super(type, BlockBehaviour.Properties.of().strength(2, 2.4F).requiresCorrectToolForDrops().dynamicShape().mapColor(MapColor.METAL));
     }
 
     @NotNull

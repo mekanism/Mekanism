@@ -1,0 +1,9 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": [
+    "mekanism:ore_fluorite_normal",
+    "mekanism:ore_fluorite_buried"
+  ],
+  "step": "underground_ores"
+}

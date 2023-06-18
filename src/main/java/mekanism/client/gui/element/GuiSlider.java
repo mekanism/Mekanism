@@ -1,12 +1,11 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.DoubleConsumer;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -33,12 +32,11 @@ public class GuiSlider extends GuiElement {
     }
 
     @Override
-    public void renderBackgroundOverlay(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderBackgroundOverlay(matrix, mouseX, mouseY);
-        GuiUtils.fill(matrix, getButtonX() + 2, getButtonY() + 3, getButtonWidth() - 4, 6, 0xFF555555);
-        RenderSystem.setShaderTexture(0, SLIDER);
+    public void renderBackgroundOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderBackgroundOverlay(guiGraphics, mouseX, mouseY);
+        GuiUtils.fill(guiGraphics, getButtonX() + 2, getButtonY() + 3, getButtonWidth() - 4, 6, 0xFF555555);
         int posX = (int) (value * (getButtonWidth() - 6));
-        blit(matrix, getButtonX() + posX, getButtonY(), 0, 0, 7, 12, 12, 12);
+        guiGraphics.blit(SLIDER, getButtonX() + posX, getButtonY(), 0, 0, 7, 12, 12, 12);
     }
 
     @Override

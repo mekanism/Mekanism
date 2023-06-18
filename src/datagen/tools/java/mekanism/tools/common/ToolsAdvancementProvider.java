@@ -16,6 +16,7 @@ import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -23,8 +24,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ToolsAdvancementProvider extends BaseAdvancementProvider {
 
-    public ToolsAdvancementProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, existingFileHelper, MekanismTools.MODID);
+    public ToolsAdvancementProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, existingFileHelper, MekanismTools.MODID);
     }
 
     @Override

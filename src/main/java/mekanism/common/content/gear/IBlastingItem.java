@@ -86,6 +86,6 @@ public interface IBlastingItem {
     }
 
     static boolean canBlastBlock(Level world, BlockPos pos, BlockState state) {
-        return !state.isAir() && !state.getMaterial().isLiquid() && ModuleVeinMiningUnit.canVeinBlock(state) && state.getDestroySpeed(world, pos) > 0;
+        return !state.isAir() && !state.liquid() && ModuleVeinMiningUnit.canVeinBlock(state) && state.getDestroySpeed(world, pos) > 0;
     }
 }

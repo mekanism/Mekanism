@@ -2,7 +2,7 @@ package mekanism.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import mekanism.api.robit.RobitSkin;
 import mekanism.client.RobitSpriteUploader;
 import mekanism.client.model.MekanismModelCache;
@@ -57,10 +57,10 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitModelWrapper> {
                 Mekanism.logger.warn("Robit with skin: {} does not have a model. If this happened during a resource reload this can be ignored.", skin.getRegistryName());
             } else {
                 matrix.pushPose();
-                matrix.mulPose(Vector3f.XP.rotationDegrees(180));
+                matrix.mulPose(Axis.XP.rotationDegrees(180));
                 matrix.translate(-0.5, -1.5, -0.5);
                 PoseStack.Pose last = matrix.last();
-                for (BakedQuad quad : model.getQuads(null, null, robit.level.random, robit.getModelData(), null)) {
+                for (BakedQuad quad : model.getQuads(null, null, robit.level().random, robit.getModelData(), null)) {
                     builder.putBulkData(last, quad, red, green, blue, alpha, light, overlayLight, false);
                 }
                 matrix.popPose();

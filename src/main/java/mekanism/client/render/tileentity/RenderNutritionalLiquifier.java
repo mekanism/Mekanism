@@ -3,9 +3,7 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.ArrayList;
@@ -28,17 +26,20 @@ import net.minecraft.client.ParticleStatus;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.fluids.FluidStack;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 @NothingNullByDefault
 public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileEntityNutritionalLiquifier> {
@@ -71,7 +72,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             //Render the blade at the correct rotation if we are active
             matrix.pushPose();
             matrix.translate(0.5, 0.5, 0.5);
-            matrix.mulPose(Vector3f.YP.rotationDegrees((tile.getLevel().getGameTime() + partialTick) * BLADE_SPEED % 360));
+            matrix.mulPose(Axis.YP.rotationDegrees((tile.getLevel().getGameTime() + partialTick) * BLADE_SPEED % 360));
             matrix.translate(-0.5, -0.5, -0.5);
             Pose entry = matrix.last();
             VertexConsumer bladeBuffer = renderer.getBuffer(Sheets.solidBlockSheet());
@@ -87,9 +88,9 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             matrix.translate(0.5, 0.6, 0.5);
             if (active) {
                 //Make the item rotate if the liquifier is active
-                matrix.mulPose(Vector3f.YP.rotationDegrees((tile.getLevel().getGameTime() + partialTick) * ROTATE_SPEED % 360));
+                matrix.mulPose(Axis.YP.rotationDegrees((tile.getLevel().getGameTime() + partialTick) * ROTATE_SPEED % 360));
             }
-            Minecraft.getInstance().getItemRenderer().renderStatic(stack, TransformType.GROUND, light, overlayLight, matrix, renderer,
+            Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GROUND, light, overlayLight, matrix, renderer, tile.getLevel(),
                   MathUtils.clampToInt(tile.getBlockPos().asLong()));
             matrix.popPose();
             if (active && Minecraft.getInstance().options.particles().get() != ParticleStatus.MINIMAL) {
@@ -225,15 +226,15 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             float f = (float) Mth.lerp(partialTicks, this.xo, this.x);
             float f1 = (float) Mth.lerp(partialTicks, this.yo, this.y);
             float f2 = (float) Mth.lerp(partialTicks, this.zo, this.z);
-            Quaternion quaternion = Minecraft.getInstance().getEntityRenderDispatcher().camera.rotation();
+            Quaternionf quaternion = Minecraft.getInstance().getEntityRenderDispatcher().camera.rotation();
 
             //Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);
-            //vector3f1.transform(quaternion);
+            //quaternion.transform(vector3f1);
             Vector3f[] vectors = {new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F),
                                   new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
             for (int i = 0; i < 4; ++i) {
                 Vector3f vector3f = vectors[i];
-                vector3f.transform(quaternion);
+                quaternion.transform(vector3f);
                 vector3f.mul(quadSize);
                 vector3f.add(f, f1, f2);
             }

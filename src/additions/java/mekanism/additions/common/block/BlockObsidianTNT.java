@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -55,7 +55,7 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
     );
 
     public BlockObsidianTNT() {
-        super(BlockStateHelper.applyLightLevelAdjustments(BlockBehaviour.Properties.of(Material.EXPLOSIVE)));
+        super(BlockStateHelper.applyLightLevelAdjustments(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).ignitedByLava()));
         //Uses getDefaultState as starting state to take into account the stuff from super
         registerDefaultState(BlockStateHelper.getDefaultState(defaultBlockState()));
     }
@@ -89,7 +89,7 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
     @Override
     public void wasExploded(Level world, @NotNull BlockPos pos, @NotNull Explosion explosion) {
         if (!world.isClientSide) {
-            PrimedTnt tnt = EntityObsidianTNT.create(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, explosion.getSourceMob());
+            PrimedTnt tnt = EntityObsidianTNT.create(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, explosion.getIndirectSourceEntity());
             if (tnt != null) {
                 tnt.setFuse((short) (world.random.nextInt(tnt.getFuse() / 4) + tnt.getFuse() / 8));
                 world.addFreshEntity(tnt);

@@ -14,8 +14,8 @@
           "name": "mekanismadditions:black_plastic_transparent_stairs"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/black_plastic_transparent_stairs"
 }

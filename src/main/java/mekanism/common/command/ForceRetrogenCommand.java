@@ -29,7 +29,7 @@ public class ForceRetrogenCommand {
         return Commands.literal("retrogen")
               .requires(MekanismPermissions.COMMAND_FORCE_RETROGEN)
               .executes(ctx -> {
-                  BlockPos blockPos = new BlockPos(ctx.getSource().getPosition());
+                  BlockPos blockPos = BlockPos.containing(ctx.getSource().getPosition());
                   ColumnPos pos = new ColumnPos(blockPos.getX(), blockPos.getZ());
                   return addChunksToRegen(ctx.getSource(), pos, pos);
               }).then(Commands.argument("from", ColumnPosArgument.columnPos())
@@ -64,8 +64,9 @@ public class ForceRetrogenCommand {
             for (int chunkZ = chunkZStart; chunkZ <= chunkZEnd; chunkZ++) {
                 if (world.hasChunk(chunkX, chunkZ)) {
                     Mekanism.worldTickHandler.addRegenChunk(registryKey, new ChunkPos(chunkX, chunkZ));
-                    source.sendSuccess(MekanismLang.COMMAND_RETROGEN_CHUNK_QUEUED.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                          MekanismLang.GENERIC_WITH_COMMA.translate(chunkX, chunkZ), EnumColor.INDIGO, registryKey.location()), true);
+                    int finalChunkX = chunkX, finalChunkZ = chunkZ;
+                    source.sendSuccess(() -> MekanismLang.COMMAND_RETROGEN_CHUNK_QUEUED.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
+                          MekanismLang.GENERIC_WITH_COMMA.translate(finalChunkX, finalChunkZ), EnumColor.INDIGO, registryKey.location()), true);
                     hasChunks = true;
                 }
             }

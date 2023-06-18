@@ -2,8 +2,7 @@ package mekanism.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.util.MekanismUtils;
@@ -14,6 +13,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
 
 public class RenderFlame extends EntityRenderer<EntityFlame> {
 
@@ -38,14 +38,14 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
         float scale = 0.05625F * (0.8F + size);
         int alphaColor = (int) (actualAlpha * 255);
         matrix.pushPose();
-        matrix.mulPose(Vector3f.YP.rotationDegrees((flame.yRotO + (flame.getYRot() - flame.yRotO) * partialTick) - 90F));
-        matrix.mulPose(Vector3f.ZP.rotationDegrees(flame.xRotO + (flame.getXRot() - flame.xRotO) * partialTick));
-        matrix.mulPose(Vector3f.XP.rotationDegrees(45));
+        matrix.mulPose(Axis.YP.rotationDegrees((flame.yRotO + (flame.getYRot() - flame.yRotO) * partialTick) - 90F));
+        matrix.mulPose(Axis.ZP.rotationDegrees(flame.xRotO + (flame.getXRot() - flame.xRotO) * partialTick));
+        matrix.mulPose(Axis.XP.rotationDegrees(45));
         matrix.scale(scale, scale, scale);
         matrix.translate(-4, 0, 0);
         VertexConsumer builder = renderer.getBuffer(MekanismRenderType.FLAME.apply(getTextureLocation(flame)));
         for (int j = 0; j < 4; j++) {
-            matrix.mulPose(Vector3f.XP.rotationDegrees(90));
+            matrix.mulPose(Axis.XP.rotationDegrees(90));
             builder.normal(matrix.last().normal(), 0, 0, scale);
             Matrix4f matrix4f = matrix.last().pose();
             builder.vertex(matrix4f, -8, -2, 0).color(0xFF, 0xFF, 0xFF, alphaColor).uv(0, 0).endVertex();

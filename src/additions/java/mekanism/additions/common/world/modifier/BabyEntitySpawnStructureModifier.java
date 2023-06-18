@@ -9,7 +9,7 @@ import mekanism.additions.common.registries.AdditionsStructureModifierSerializer
 import mekanism.common.Mekanism;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
-import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -33,7 +33,7 @@ public record BabyEntitySpawnStructureModifier(BabyType babyType, AdditionsConfi
             StructureSettingsBuilder structureSettings = builder.getStructureSettings();
             StructureSpawnOverrideBuilder spawnOverrides = structureSettings.getSpawnOverrides(MobCategory.MONSTER);
             //Fail quick if there are no overrides for this structure, or it is blacklisted
-            ResourceLocation structureName = BuiltinRegistries.STRUCTURES.getKey(structure.get());
+            ResourceLocation structureName = BuiltInRegistries.STRUCTURE_TYPE.getKey(structure.get().type());
             if (spawnOverrides != null && !spawnConfig.structureBlackList.get().contains(structureName)) {
                 for (MobSpawnSettings.SpawnerData spawner : spawnConfig.getSpawnersToAdd(spawnOverrides.getSpawns())) {
                     spawnOverrides.addSpawn(spawner);

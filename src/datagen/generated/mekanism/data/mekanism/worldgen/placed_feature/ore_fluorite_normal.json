@@ -1,0 +1,39 @@
+{
+  "feature": "mekanism:ore_fluorite_normal",
+  "placement": [
+    {
+      "type": "mekanism:disableable",
+      "oreVeinType": {
+        "type": "fluorite",
+        "index": 0
+      },
+      "retroGen": false
+    },
+    {
+      "type": "minecraft:count",
+      "count": {
+        "type": "mekanism:configurable_constant",
+        "oreVeinType": {
+          "type": "fluorite",
+          "index": 0
+        }
+      }
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "mekanism:configurable",
+        "oreVeinType": {
+          "type": "fluorite",
+          "index": 0
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

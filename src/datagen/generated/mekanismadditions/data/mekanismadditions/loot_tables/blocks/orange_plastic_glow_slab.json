@@ -28,8 +28,8 @@
           "name": "mekanismadditions:orange_plastic_glow_slab"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/orange_plastic_glow_slab"
 }

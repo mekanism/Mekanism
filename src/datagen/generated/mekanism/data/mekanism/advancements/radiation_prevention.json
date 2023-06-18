@@ -39,5 +39,6 @@
     "title": {
       "translate": "advancements.mekanism.radiation_prevention.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

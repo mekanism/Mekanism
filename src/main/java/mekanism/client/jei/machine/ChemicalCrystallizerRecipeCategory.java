@@ -39,6 +39,7 @@ import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -68,7 +69,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
     }
 
     @Override
-    public void draw(ChemicalCrystallizerRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(ChemicalCrystallizerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our ore info
         oreInfo.currentRecipe = recipe;
         oreInfo.ingredient = (ChemicalStack<?>) recipeSlotsView.findSlotByName(CHEMICAL_INPUT)
@@ -77,7 +78,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
               .filter(ingredient -> ingredient instanceof ChemicalStack)
               .orElse(null);
         oreInfo.itemIngredient = getDisplayedStack(recipeSlotsView, DISPLAYED_ITEM, VanillaTypes.ITEM_STACK, ItemStack.EMPTY);
-        super.draw(recipe, recipeSlotsView, matrixStack, mouseX, mouseY);
+        super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
         oreInfo.currentRecipe = null;
         oreInfo.ingredient = null;
         oreInfo.itemIngredient = ItemStack.EMPTY;

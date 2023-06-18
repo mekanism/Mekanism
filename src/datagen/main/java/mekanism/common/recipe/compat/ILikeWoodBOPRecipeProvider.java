@@ -12,13 +12,12 @@ import yamahari.ilikewood.registry.woodtype.IWoodType;
 @ParametersAreNotNullByDefault
 public class ILikeWoodBOPRecipeProvider extends CompatRecipeProvider {
 
-    public ILikeWoodBOPRecipeProvider() {
-        super(yamahari.ilikewood.plugin.biomesoplenty.util.Constants.MOD_ID, "biomesoplenty");
+    public ILikeWoodBOPRecipeProvider(String modid) {
+        super(modid, "biomesoplenty");
     }
 
     @Override
     protected void registerRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
-        addWoodType(consumer, basePath, BOPBlocks.CHERRY_PLANKS, BOPBlocks.CHERRY_LOG, BOPBlocks.CHERRY_FENCE, BiomesOPlentyWoodTypes.CHERRY);
         addWoodType(consumer, basePath, BOPBlocks.DEAD_PLANKS, BOPBlocks.DEAD_LOG, BOPBlocks.DEAD_FENCE, BiomesOPlentyWoodTypes.DEAD);
         addWoodType(consumer, basePath, BOPBlocks.FIR_PLANKS, BOPBlocks.FIR_LOG, BOPBlocks.FIR_FENCE, BiomesOPlentyWoodTypes.FIR);
         addWoodType(consumer, basePath, BOPBlocks.HELLBARK_PLANKS, BOPBlocks.HELLBARK_LOG, BOPBlocks.HELLBARK_FENCE, BiomesOPlentyWoodTypes.HELLBARK);

@@ -346,7 +346,7 @@ public interface QuadTransformation {
 
         @Override
         public boolean transform(Quad quad) {
-            return verifier.test(quad.getTexture().getName()) && original.transform(quad);
+            return verifier.test(quad.getTexture().contents().name()) && original.transform(quad);
         }
 
         @Override

@@ -6,11 +6,9 @@ import mekanism.tools.client.render.item.RenderMekanismShieldItem;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -40,12 +38,13 @@ public class ToolsClientRegistration {
         event.registerReloadListener(RenderMekanismShieldItem.RENDERER);
     }
 
-    @SubscribeEvent
+    //TODO - 1.20: Add these via an atlas file that is datagenned
+    /*@SubscribeEvent
     public static void onStitch(TextureStitchEvent.Pre event) {
         if (event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
             for (ShieldTextures textures : ShieldTextures.values()) {
                 event.addSprite(textures.getBase().texture());
             }
         }
-    }
+    }*/
 }

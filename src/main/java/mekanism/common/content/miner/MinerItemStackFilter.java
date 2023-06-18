@@ -33,7 +33,7 @@ public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> impl
         if (itemStack.isEmpty()) {
             return false;
         }
-        return itemType.sameItem(itemStack);
+        return itemType.getItem() == itemStack.getItem();
     }
 
     @Override
@@ -78,8 +78,7 @@ public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> impl
         } else if (o == null || getClass() != o.getClass() || !super.equals(o)) {
             return false;
         }
-        MinerItemStackFilter other = (MinerItemStackFilter) o;
-        return itemType.sameItem(other.itemType);
+        return itemType.getItem() == ((MinerItemStackFilter) o).itemType.getItem();
     }
 
     @Override

@@ -1,10 +1,10 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.common.inventory.container.slot.IVirtualSlot;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-//TODO - 1.20: Heavily re-evaluate this class/make sure nothing has gotten broken
+//TODO - 1.21: Heavily re-evaluate this class/make sure nothing has gotten broken
 public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
 
     public VirtualSlotContainerScreen(T container, Inventory inv, Component titleIn) {
@@ -58,7 +58,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
 
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
-    protected final void renderFloatingItem(@NotNull ItemStack stack, int x, int y, @Nullable String altText) {
+    protected final void renderFloatingItem(GuiGraphics guiGraphics, @NotNull ItemStack stack, int x, int y, @Nullable String altText) {
         if (!stack.isEmpty()) {
             //Note: We ignore if the virtual slot is not actually available as we still want to transition back to the spot
             // it was in visually
@@ -80,16 +80,16 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
                 y = this.snapbackStartY + (int) (yOffset * f);
             }
             //noinspection ConstantConditions, altText can be null, just is marked as caught as nonnull by mojang's class level stuff
-            super.renderFloatingItem(stack, x, y, altText);
+            super.renderFloatingItem(guiGraphics, stack, x, y, altText);
         }
     }
 
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
-    protected final void renderSlot(@NotNull PoseStack matrixStack, @NotNull Slot slot) {
+    protected final void renderSlot(@NotNull GuiGraphics graphics, @NotNull Slot slot) {
         if (!(slot instanceof IVirtualSlot virtualSlot)) {
             //If we are not a virtual slot, the super method is good enough
-            super.renderSlot(matrixStack, slot);
+            super.renderSlot(graphics, slot);
             return;
         }
         //Basically a copy of super.moveItems, except with the rendering at the bottom adjusted
@@ -100,26 +100,25 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         ItemStack heldStack = menu.getCarried();
         String s = null;
         if (slot == this.clickedSlot && !this.draggingItem.isEmpty() && this.isSplittingStack && !currentStack.isEmpty()) {
-            currentStack = currentStack.copy();
-            currentStack.setCount(currentStack.getCount() / 2);
+            currentStack = currentStack.copyWithCount(currentStack.getCount() / 2);
         } else if (isQuickCrafting && quickCraftSlots.contains(slot) && !heldStack.isEmpty()) {
             if (quickCraftSlots.size() == 1) {
                 return;
             }
             if (AbstractContainerMenu.canItemQuickReplace(slot, heldStack, true) && this.menu.canDragTo(slot)) {
-                currentStack = heldStack.copy();
-                shouldDrawOverlay = true;
-                AbstractContainerMenu.getQuickCraftSlotCount(quickCraftSlots, this.quickCraftingType, currentStack, slot.getItem().isEmpty() ? 0 : slot.getItem().getCount());
-                int k = Math.min(currentStack.getMaxStackSize(), slot.getMaxStackSize(currentStack));
-                if (currentStack.getCount() > k) {
-                    s = ChatFormatting.YELLOW.toString() + k;
-                    currentStack.setCount(k);
+                int max = Math.min(heldStack.getMaxStackSize(), slot.getMaxStackSize(heldStack));
+                int placed = AbstractContainerMenu.getQuickCraftPlaceCount(this.quickCraftSlots, this.quickCraftingType, heldStack) + currentStack.getCount();
+                if (placed > max) {
+                    placed = max;
+                    s = ChatFormatting.YELLOW.toString() + max;
                 }
+                currentStack = heldStack.copyWithCount(placed);
             } else {
                 quickCraftSlots.remove(slot);
                 recalculateQuickCraftRemaining();
             }
         }
+        //Note: We don't include vanilla's no item icon rendering here as virtual slots can just have that set directly, and it simplifies our copy
         //If the slot is a virtual slot, have the GuiSlot that corresponds to it handle the rendering
         virtualSlot.updateRenderInfo(skipStackRendering ? ItemStack.EMPTY : currentStack, shouldDrawOverlay, s);
     }

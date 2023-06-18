@@ -6,14 +6,14 @@ import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.model.BaseItemModelProvider;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class AdditionsItemModelProvider extends BaseItemModelProvider {
 
-    public AdditionsItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, MekanismAdditions.MODID, existingFileHelper);
+    public AdditionsItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, MekanismAdditions.MODID, existingFileHelper);
     }
 
     @Override

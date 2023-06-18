@@ -13,16 +13,17 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.lang.BaseLanguageProvider;
 import mekanism.common.registration.impl.ItemRegistryObject;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 
 public class AdditionsLangProvider extends BaseLanguageProvider {
 
-    public AdditionsLangProvider(DataGenerator gen) {
-        super(gen, MekanismAdditions.MODID);
+    public AdditionsLangProvider(PackOutput output) {
+        super(output, MekanismAdditions.MODID);
     }
 
     @Override
     protected void addTranslations() {
+        add(AdditionsLang.PACK_DESCRIPTION, "Resources used for Mekanism: Additions");
         addItems();
         addBlocks();
         addEntities();

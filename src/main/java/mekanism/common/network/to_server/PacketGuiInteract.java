@@ -101,12 +101,12 @@ public class PacketGuiInteract implements IMekanismPacket {
         Player player = context.getSender();
         if (player != null) {
             if (interactionType == Type.ENTITY) {
-                Entity entity = player.level.getEntity(entityID);
+                Entity entity = player.level().getEntity(entityID);
                 if (entity != null) {
                     entityInteraction.consume(entity, player, extra);
                 }
             } else {
-                TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level, tilePosition);
+                TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level(), tilePosition);
                 if (tile != null) {
                     if (interactionType == Type.INT) {
                         interaction.consume(tile, player, extra);

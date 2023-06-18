@@ -143,7 +143,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
 
     public void tick(Player player) {
         if (isEnabled()) {
-            if (player.level.isClientSide()) {
+            if (player.level().isClientSide()) {
                 customModule.tickClient(this, player);
             } else {
                 customModule.tickServer(this, player);

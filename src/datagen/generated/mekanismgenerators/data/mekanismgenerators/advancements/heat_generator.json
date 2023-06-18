@@ -24,5 +24,6 @@
     "title": {
       "translate": "advancements.mekanismgenerators.heat_generator.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

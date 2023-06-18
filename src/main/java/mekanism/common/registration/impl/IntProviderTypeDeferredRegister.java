@@ -4,13 +4,14 @@ import com.mojang.serialization.Codec;
 import java.util.function.Supplier;
 import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.IntProviderType;
 
 public class IntProviderTypeDeferredRegister extends WrappedDeferredRegister<IntProviderType<?>> {
 
     public IntProviderTypeDeferredRegister(String modid) {
-        super(modid, Registry.INT_PROVIDER_TYPE_REGISTRY);
+        super(modid, Registries.INT_PROVIDER_TYPE);
     }
 
     public <PROVIDER extends IntProvider> IntProviderTypeRegistryObject<PROVIDER> register(String name, Codec<PROVIDER> codec) {

@@ -22,6 +22,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.InputValidator;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 
 public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisticalSorter>, IFancyFontRenderer {
@@ -36,7 +37,7 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
         childAdder.apply(new ColorButton(gui, slotX + 1, colorSlotY + 1, 16, 16, () -> filter.color,
               () -> filter.color = Screen.hasShiftDown() ? null : TransporterUtils.increment(filter.color), () -> filter.color = TransporterUtils.decrement(filter.color)));
         childAdder.apply(new MekanismImageButton(gui, relativeX + 148, relativeY + 18, 11, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "default.png"),
-              () -> filter.allowDefault = !filter.allowDefault, (onHover, matrix, mouseX, mouseY) -> gui.displayTooltips(matrix, mouseX, mouseY, MekanismLang.FILTER_ALLOW_DEFAULT.translate()
+              () -> filter.allowDefault = !filter.allowDefault, (onHover, guiGraphics, mouseX, mouseY) -> gui.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.FILTER_ALLOW_DEFAULT.translate()
         )));
         GuiTextField minField = new GuiTextField(gui, relativeX + 169, relativeY + 31, 20, 11);
         minField.setMaxLength(2);
@@ -50,11 +51,11 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
         childAdder.apply(maxField);
         rangeSetter.accept(minField, maxField);
         childAdder.apply(new MekanismImageButton(gui, relativeX + 148, relativeY + 56, 11, 14, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "silk_touch.png"),
-              () -> filter.sizeMode = !filter.sizeMode, (onHover, matrix, mouseX, mouseY) -> {
+              () -> filter.sizeMode = !filter.sizeMode, (onHover, guiGraphics, mouseX, mouseY) -> {
             if (singleItem.getAsBoolean() && filter.sizeMode) {
-                gui.displayTooltips(matrix, mouseX, mouseY, MekanismLang.SORTER_SIZE_MODE_CONFLICT.translate());
+                gui.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.SORTER_SIZE_MODE_CONFLICT.translate());
             } else {
-                gui.displayTooltips(matrix, mouseX, mouseY, MekanismLang.SORTER_SIZE_MODE.translate());
+                gui.displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.SORTER_SIZE_MODE.translate());
             }
         }));
     }
@@ -64,16 +65,16 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
         return new GuiSorterFilerSelect(gui, tile);
     }
 
-    default void renderSorterForeground(PoseStack matrix, SorterFilter<?> filter, boolean singleItem) {
+    default void renderSorterForeground(GuiGraphics guiGraphics, SorterFilter<?> filter, boolean singleItem) {
         int relativeX = getRelativeX();
         int relativeY = getRelativeY();
-        drawString(matrix, OnOff.of(filter.allowDefault).getTextComponent(), relativeX + 161, relativeY + 20, titleTextColor());
-        drawString(matrix, MekanismLang.MIN.translate(""), relativeX + 148, relativeY + 32, titleTextColor());
-        drawString(matrix, MekanismLang.MAX.translate(""), relativeX + 148, relativeY + 44, titleTextColor());
+        drawString(guiGraphics, OnOff.of(filter.allowDefault).getTextComponent(), relativeX + 161, relativeY + 20, titleTextColor());
+        drawString(guiGraphics, MekanismLang.MIN.translate(""), relativeX + 148, relativeY + 32, titleTextColor());
+        drawString(guiGraphics, MekanismLang.MAX.translate(""), relativeX + 148, relativeY + 44, titleTextColor());
         if (singleItem && filter.sizeMode) {
-            drawString(matrix, MekanismLang.SORTER_FILTER_SIZE_MODE.translateColored(EnumColor.RED, OnOff.of(true)), relativeX + 161, relativeY + 58, titleTextColor());
+            drawString(guiGraphics, MekanismLang.SORTER_FILTER_SIZE_MODE.translateColored(EnumColor.RED, OnOff.of(true)), relativeX + 161, relativeY + 58, titleTextColor());
         } else {
-            drawString(matrix, OnOff.of(filter.sizeMode).getTextComponent(), relativeX + 161, relativeY + 58, titleTextColor());
+            drawString(guiGraphics, OnOff.of(filter.sizeMode).getTextComponent(), relativeX + 161, relativeY + 58, titleTextColor());
         }
     }
 }

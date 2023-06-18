@@ -3,7 +3,7 @@
   "criteria": {
     "poisoned": {
       "conditions": {
-        "damage": "mekanism.radiation",
+        "damage": "mekanism:radiation",
         "killed": false
       },
       "trigger": "mekanism:damage"
@@ -19,5 +19,6 @@
     "title": {
       "translate": "advancements.mekanism.radiation_poisoning.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

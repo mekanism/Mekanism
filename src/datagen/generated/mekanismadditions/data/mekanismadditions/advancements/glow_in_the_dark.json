@@ -23,5 +23,6 @@
     "title": {
       "translate": "advancements.mekanismadditions.glow_in_the_dark.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

@@ -4,14 +4,13 @@ import java.util.function.Consumer;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.registries.MekanismItems;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 
 public class GenderCapabilityHelper {
 
     public static void addGenderCapability(ArmorItem item, Consumer<ItemCapability> addCapability) {
         //Validate the mod is loaded and that this is for the correct slot
-        if (Mekanism.hooks.WildfireGenderModLoaded && item.getSlot() == EquipmentSlot.CHEST) {
+        if (Mekanism.hooks.WildfireGenderModLoaded && item.getType() == ArmorItem.Type.CHESTPLATE) {
             MekanismGenderArmor genderArmor = null;
             if (item == MekanismItems.HAZMAT_GOWN.asItem()) {
                 genderArmor = MekanismGenderArmor.HAZMAT;

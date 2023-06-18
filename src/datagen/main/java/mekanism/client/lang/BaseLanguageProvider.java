@@ -1,7 +1,7 @@
 package mekanism.client.lang;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IModuleDataProvider;
@@ -14,7 +14,7 @@ import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.Util;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.data.LanguageProvider;
 import org.jetbrains.annotations.NotNull;
@@ -24,11 +24,11 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     private final ConvertibleLanguageProvider[] altProviders;
     private final String modid;
 
-    public BaseLanguageProvider(DataGenerator gen, String modid) {
-        super(gen, modid, "en_us");
+    public BaseLanguageProvider(PackOutput output, String modid) {
+        super(output, modid, "en_us");
         this.modid = modid;
         altProviders = new ConvertibleLanguageProvider[]{
-              new UpsideDownLanguageProvider(gen, modid)
+              new UpsideDownLanguageProvider(output, modid)
         };
     }
 
@@ -88,13 +88,18 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         }
     }
 
+    @NotNull
     @Override
-    public void run(@NotNull CachedOutput cache) throws IOException {
-        super.run(cache);
+    public CompletableFuture<?> run(@NotNull CachedOutput cache) {
+        CompletableFuture<?> future = super.run(cache);
         if (altProviders.length > 0) {
-            for (ConvertibleLanguageProvider provider : altProviders) {
-                provider.run(cache);
+            CompletableFuture<?>[] futures = new CompletableFuture[altProviders.length + 1];
+            futures[0] = future;
+            for (int i = 0; i < altProviders.length; i++) {
+                futures[i + 1] = altProviders[i].run(cache);
             }
+            return CompletableFuture.allOf(futures);
         }
+        return future;
     }
 }

@@ -3,7 +3,7 @@ package mekanism.common.loot.table;
 public class MekanismEntityLootTables extends BaseEntityLootTables {
 
     @Override
-    protected void addTables() {
+    public void generate() {
         //TODO: Add loot table for the robit
     }
 }

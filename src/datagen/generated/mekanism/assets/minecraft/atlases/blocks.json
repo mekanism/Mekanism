@@ -1,0 +1,160 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:block/overlay/energy_overlay"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:block/overlay/fluids_overlay"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:block/overlay/gases_overlay"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:block/overlay/infuse_types_overlay"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:block/overlay/pigments_overlay"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:block/overlay/slurries_overlay"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:block/overlay/items_overlay"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:block/overlay/heat_overlay"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:block/overlay/overlay_white"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:liquid/energy"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:liquid/heat"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:icon/redstone_control_pulse"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:block/teleporter_portal"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:entity/armor/blank"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:entity/armor/mekasuit_player"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:entity/armor/mekasuit_armor_body"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:entity/armor/mekasuit_armor_helmet"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:entity/armor/mekasuit_armor_exoskeleton"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:entity/armor/mekasuit_gravitational_modulator"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:entity/armor/mekasuit_elytra"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:entity/armor/mekasuit_armor_modules"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:entity/armor/mekatool"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:block/models/digital_miner_screen_afd_sad"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:block/models/digital_miner_screen_afd_text"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:block/models/digital_miner_screen_may4th"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:liquid/liquid"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:liquid/steam"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:infuse_type/base"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:infuse_type/fungi"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:infuse_type/bio"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:pigment/base"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:slurry/dirty"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:slurry/clean"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:liquid/liquid_flow"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "minecraft:block/water_overlay"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "minecraft:misc/underwater"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:liquid/steam_flow"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "minecraft:block/water_still"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "minecraft:block/water_flow"
+    }
+  ]
+}

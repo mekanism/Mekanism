@@ -13,6 +13,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.FluidInDetails;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.material.FluidState;
@@ -41,7 +42,7 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
                 double temperature = 0;
                 Map<BlockPos, FluidState> positions = details.getPositions();
                 for (Map.Entry<BlockPos, FluidState> positionEntry : positions.entrySet()) {
-                    temperature += entry.getKey().getTemperature(positionEntry.getValue(), player.level, positionEntry.getKey());
+                    temperature += entry.getKey().getTemperature(positionEntry.getValue(), player.level(), positionEntry.getKey());
                 }
                 //Divide the temperature by how many positions there are in case there is a difference due to the position in the world
                 // Strictly speaking we should take the height of the position into account for calculating the average as a "weighted"
@@ -74,7 +75,7 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
     @Nullable
     @Override
     public ModuleDamageAbsorbInfo getDamageAbsorbInfo(IModule<ModuleGeothermalGeneratorUnit> module, DamageSource damageSource) {
-        if (damageSource.isFire()) {
+        if (damageSource.is(DamageTypeTags.IS_FIRE)) {
             //Scale the amount absorbed by how many modules are installed out of the possible number installed
             float ratio = MekanismGeneratorsConfig.gear.mekaSuitHeatDamageReductionRatio.get() * (module.getInstalledCount() / (float) module.getData().getMaxStackSize());
             return new ModuleDamageAbsorbInfo(() -> ratio, () -> FloatingLong.ZERO);

@@ -2,18 +2,21 @@ package mekanism.common.loot.table;
 
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 import mekanism.api.providers.IEntityTypeProvider;
-import net.minecraft.data.loot.EntityLoot;
+import net.minecraft.data.loot.EntityLootSubProvider;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class BaseEntityLootTables extends EntityLoot {
+public abstract class BaseEntityLootTables extends EntityLootSubProvider {
 
     private final Set<EntityType<?>> knownEntityTypes = new ReferenceOpenHashSet<>();
 
-    @Override
-    protected abstract void addTables();
+    protected BaseEntityLootTables() {
+        super(FeatureFlags.VANILLA_SET);
+    }
 
     @Override
     protected void add(@NotNull EntityType<?> type, @NotNull LootTable.Builder table) {
@@ -25,8 +28,8 @@ public abstract class BaseEntityLootTables extends EntityLoot {
 
     @NotNull
     @Override
-    protected Iterable<EntityType<?>> getKnownEntities() {
-        return knownEntityTypes;
+    protected Stream<EntityType<?>> getKnownEntityTypes() {
+        return knownEntityTypes.stream();
     }
 
     protected void add(@NotNull IEntityTypeProvider typeProvider, @NotNull LootTable.Builder table) {

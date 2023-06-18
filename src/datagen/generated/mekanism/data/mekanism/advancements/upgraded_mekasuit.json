@@ -41,5 +41,6 @@
     "title": {
       "translate": "advancements.mekanism.upgraded_mekasuit.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

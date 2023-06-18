@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.server.packs.PackType;
@@ -18,28 +18,19 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.DifferenceIngredient;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
 public abstract class BaseRecipeProvider extends RecipeProvider {
 
     private final ExistingFileHelper existingFileHelper;
-    private final String modid;
 
-    protected BaseRecipeProvider(DataGenerator gen, ExistingFileHelper existingFileHelper, String modid) {
-        super(gen);
+    protected BaseRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper, String modid) {
+        super(output);
         this.existingFileHelper = existingFileHelper;
-        this.modid = modid;
-    }
-
-    @NotNull
-    @Override
-    public String getName() {
-        return super.getName() + ": " + modid;
     }
 
     @Override
-    protected final void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+    protected final void buildRecipes(Consumer<FinishedRecipe> consumer) {
         Consumer<FinishedRecipe> trackingConsumer = consumer.andThen(recipe ->
               existingFileHelper.trackGenerated(recipe.getId(), PackType.SERVER_DATA, ".json", "recipes"));
         addRecipes(trackingConsumer);

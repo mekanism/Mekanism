@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.window.GuiWindow;
@@ -11,6 +12,10 @@ import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.client.jei.interfaces.IJEIRecipeArea;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
+import mezz.jei.api.ingredients.IIngredientType;
+import mezz.jei.api.ingredients.ITypedIngredient;
+import mezz.jei.api.runtime.IClickableIngredient;
+import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.Rect2i;
@@ -26,14 +31,14 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
         List<Rect2i> areas = new ArrayList<>();
         for (GuiEventListener child : children) {
             if (child instanceof AbstractWidget widget && widget.visible) {
-                if (areaSticksOut(widget.x, widget.y, widget.getWidth(), widget.getHeight(), parentX, parentY, parentWidth, parentHeight)) {
+                if (areaSticksOut(widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight(), parentX, parentY, parentWidth, parentHeight)) {
                     //If the element sticks out at all add it
-                    areas.add(new Rect2i(widget.x, widget.y, widget.getWidth(), widget.getHeight()));
+                    areas.add(new Rect2i(widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight()));
                 }
                 if (widget instanceof GuiElement element) {
                     //Start by getting all the areas in the grandchild that stick outside the child in theory this should cut down
                     // on our checks a fair bit as most children will fully contain all their grandchildren
-                    for (Rect2i grandChildArea : getAreasFor(widget.x, widget.y, widget.getWidth(), widget.getHeight(), element.children())) {
+                    for (Rect2i grandChildArea : getAreasFor(widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight(), element.children())) {
                         //Then check if that area that is sticking outside the child sticks outside the parent as well
                         if (areaSticksOut(grandChildArea.getX(), grandChildArea.getY(), grandChildArea.getWidth(), grandChildArea.getHeight(),
                               parentX, parentY, parentWidth, parentHeight)) {
@@ -45,6 +50,12 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
             }
         }
         return areas;
+    }
+
+    private final IIngredientManager ingredientManager;
+
+    public GuiElementHandler(IIngredientManager ingredientManager) {
+        this.ingredientManager = ingredientManager;
     }
 
     @Override
@@ -61,14 +72,13 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
 
     @Nullable
     @Override
-    public Object getIngredientUnderMouse(GuiMekanism<?> gui, double mouseX, double mouseY) {
+    public Optional<IClickableIngredient<?>> getClickableIngredientUnderMouse(GuiMekanism<?> gui, double mouseX, double mouseY) {
         GuiWindow guiWindow = gui.getWindowHovering(mouseX, mouseY);
         //If no window is being hovered, then check the elements in general; otherwise, check the elements of the window
         return getIngredientUnderMouse(guiWindow == null ? gui.children() : guiWindow.children(), mouseX, mouseY);
     }
 
-    @Nullable
-    private Object getIngredientUnderMouse(List<? extends GuiEventListener> children, double mouseX, double mouseY) {
+    private Optional<IClickableIngredient<?>> getIngredientUnderMouse(List<? extends GuiEventListener> children, double mouseX, double mouseY) {
         for (GuiEventListener child : children) {
             if (child instanceof AbstractWidget widget) {
                 if (!widget.visible) {
@@ -78,18 +88,42 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
                 if (widget instanceof GuiElement element) {
                     //Start by checking if we have any grandchildren that have an element being hovered as if we do it is the one
                     // we want to take as the grandchildren in general should be a more "forward" facing layer
-                    Object underGrandChild = getIngredientUnderMouse(element.children(), mouseX, mouseY);
-                    if (underGrandChild != null) {
+                    Optional<IClickableIngredient<?>> underGrandChild = getIngredientUnderMouse(element.children(), mouseX, mouseY);
+                    if (underGrandChild.isPresent()) {
                         //If we have a grandchild that was an ingredient helper, return its ingredient
                         return underGrandChild;
                     }
                 }
             }
             if (child instanceof IJEIIngredientHelper helper && child.isMouseOver(mouseX, mouseY)) {
-                return helper.getIngredient(mouseX, mouseY);
+                Object ingredient = helper.getIngredient(mouseX, mouseY);
+                if (ingredient != null) {
+                    //TODO - 1.20: Test this works properly
+                    return getTypedIngredient(ingredient).map(typedIngredient -> {
+                        record ClickableIngredient<T>(ITypedIngredient<T> getTypedIngredient, Rect2i getArea) implements IClickableIngredient<T> {
+                        }
+                        Rect2i bounds = helper.getIngredientBounds(mouseX, mouseY);
+                        return new ClickableIngredient<>(typedIngredient, bounds);
+                    });
+                }
             }
         }
-        return null;
+        return Optional.empty();
+    }
+
+    private <T> Optional<ITypedIngredient<T>> getTypedIngredient(T ingredient) {
+        return ingredientManager.getIngredientTypeChecked(ingredient)
+              .map(type -> new ITypedIngredient<T>() {
+                  @Override
+                  public IIngredientType<T> getType() {
+                      return type;
+                  }
+
+                  @Override
+                  public T getIngredient() {
+                      return ingredient;
+                  }
+              });
     }
 
     @Override

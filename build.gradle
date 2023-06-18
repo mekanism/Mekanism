@@ -43,10 +43,7 @@ idea {
 ext {
     versionProperties = ["version"       : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
                          "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range, "jei_version": jei_version_range,
-                         "curios_version": curios_version_range, "recipe_stages_version": recipe_stages_version_range, "dme_version": dme_version_range]
-    //Fallback pack format is the larger of the resource and data pack formats
-    packProperties = ["pack_format"         : Math.max(Integer.parseInt(resource_pack_format), Integer.parseInt(data_pack_format)),
-                      "resource_pack_format": resource_pack_format, "data_pack_format": data_pack_format]
+                         "curios_version": curios_version_range]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
     secondaryModules = ['additions', 'defense', 'generators', 'tools']
     extraTypes = ['datagen', 'gameTest']
@@ -186,27 +183,21 @@ def setupTasks(SourceSet sourceSet) {
                 expand versionProperties
             }
         }
-        def packMcMeta = copySpec {
-            from(sourceSet.resources) {
-                include "pack.mcmeta"
-                expand packProperties
-            }
-        }
         //Copy it into the build dir
-        with(modsToml, packMcMeta)
+        with(modsToml)
         into "$buildDir/resources/${output}/"
         //If IntelliJ's output dir exists, copy it there as well
         def intellijPath = sourceSet == project.sourceSets.main ? "production" : output
         if (new File("$rootDir/out/${intellijPath}/resources/").exists()) {
             copy {
-                with(modsToml, packMcMeta)
+                with(modsToml)
                 into "$rootDir/out/${intellijPath}/resources/"
             }
         }
         //If Eclipse's output dir exists, copy it there as well
         if (new File("$rootDir/bin/${output}/").exists()) {
             copy {
-                with(modsToml, packMcMeta)
+                with(modsToml)
                 into "$rootDir/bin/${output}/"
             }
         }
@@ -215,7 +206,7 @@ def setupTasks(SourceSet sourceSet) {
     tasks.named(sourceSet.getProcessResourcesTaskName(), ProcessResources).configure {
         setGroup("process resources")
         duplicatesStrategy(DuplicatesStrategy.FAIL)
-        exclude('META-INF/mods.toml', 'pack.mcmeta')
+        exclude('META-INF/mods.toml')
         from("${projectDir}") { include 'logo.png' }
         //Depend on the compile task so that we can map the computer methods as needed
         dependsOn(compileTask)
@@ -371,6 +362,7 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://squiddev.cc/maven/', 'org.squiddev')
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
     exclusiveRepo(handler, 'https://modmaven.dev/', 'appeng', 'mcjty.theoneprobe')
+    mavenLocal()
 }
 
 test {
@@ -405,16 +397,17 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
     compileOnly fg.deobf("curse.maven:wthit-455982:${wthit_id}")
 
-    implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
-    implementation fg.deobf("com.blamejared.jeitweaker:JeiTweaker-forge-${minecraft_version}:${jeitweaker_version}")
+    //TODO - 1.20: Switch these two back to implementation when they update
+    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${previous_minecraft_version}:${crafttweaker_version}")
+    compileOnly fg.deobf("com.blamejared.jeitweaker:JeiTweaker-forge-${previous_minecraft_version}:${jeitweaker_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
     compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}:api")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${previous_minecraft_version}-${curios_version}:api")
     compileOnly fg.deobf("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     compileOnly fg.deobf("curse.maven:opencomputers2-437654:${oc2_id}")
-    def cc = fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${cc_tweaked_version}:api")
+    def cc = fg.deobf("org.squiddev:cc-tweaked-${previous_minecraft_version}:${cc_tweaked_version}:api")
     compileOnly cc
     //We require cc tweaked so that our CCArgumentWrapper tests can load, so expose it to the test runtime
     testRuntimeOnly cc
@@ -425,12 +418,18 @@ dependencies {
     datagenMainCompileOnly fg.deobf("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
     datagenMainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
     datagenMainRuntimeOnly fg.deobf("curse.maven:terrablender-563928:${terrablender_id}")
-    datagenMainImplementation fg.deobf("curse.maven:biomes-youll-go-247560:${byg_id}")
-    datagenMainImplementation fg.deobf("curse.maven:farmers-delight-398521:${farmers_delight_id}")
-    datagenMainImplementation fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
-    datagenMainImplementation fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
-    datagenMainImplementation fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
-    datagenMainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
+    //TODO - 1.20: Switch back to datagenMainImplementation
+    datagenMainCompileOnly fg.deobf("curse.maven:biomes-youll-go-247560:${byg_id}")
+    //TODO - 1.20: Switch back to datagenMainImplementation
+    datagenMainCompileOnly fg.deobf("curse.maven:farmers-delight-398521:${farmers_delight_id}")
+    //TODO - 1.20: Switch back to datagenMainImplementation
+    datagenMainCompileOnly fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
+    //TODO - 1.20: Switch back to datagenMainImplementation
+    datagenMainCompileOnly fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
+    //TODO - 1.20: Switch back to datagenMainImplementation
+    datagenMainCompileOnly fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
+    //TODO - 1.20: Re-enable after projecte is updated
+    //datagenMainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
 }
 
 def getManifestAttributes(String title) {

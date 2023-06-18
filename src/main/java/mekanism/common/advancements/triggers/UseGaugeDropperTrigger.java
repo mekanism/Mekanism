@@ -7,6 +7,7 @@ import java.util.Locale;
 import mekanism.api.JsonConstants;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SerializationContext;
@@ -33,7 +34,7 @@ public class UseGaugeDropperTrigger extends SimpleCriterionTrigger<UseGaugeDropp
 
     @NotNull
     @Override
-    protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull EntityPredicate.Composite playerPredicate, @NotNull DeserializationContext context) {
+    protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull ContextAwarePredicate playerPredicate, @NotNull DeserializationContext context) {
         String actionName = GsonHelper.getAsString(json, JsonConstants.ACTION);
         UseDropperAction action = Arrays.stream(UseDropperAction.ACTIONS)
               .filter(a -> a.getSerializedName().equals(actionName))
@@ -66,7 +67,7 @@ public class UseGaugeDropperTrigger extends SimpleCriterionTrigger<UseGaugeDropp
 
         private final UseDropperAction action;
 
-        public TriggerInstance(EntityPredicate.Composite playerPredicate, UseDropperAction action) {
+        public TriggerInstance(ContextAwarePredicate playerPredicate, UseDropperAction action) {
             super(MekanismCriteriaTriggers.USE_GAUGE_DROPPER.getId(), playerPredicate);
             this.action = action;
         }
@@ -80,7 +81,7 @@ public class UseGaugeDropperTrigger extends SimpleCriterionTrigger<UseGaugeDropp
         }
 
         public static UseGaugeDropperTrigger.TriggerInstance any() {
-            return new UseGaugeDropperTrigger.TriggerInstance(EntityPredicate.Composite.ANY, UseDropperAction.ANY);
+            return new UseGaugeDropperTrigger.TriggerInstance(ContextAwarePredicate.ANY, UseDropperAction.ANY);
         }
     }
 }

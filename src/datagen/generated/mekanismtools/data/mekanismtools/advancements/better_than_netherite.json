@@ -30,5 +30,6 @@
     "title": {
       "translate": "advancements.mekanismtools.better_than_netherite.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

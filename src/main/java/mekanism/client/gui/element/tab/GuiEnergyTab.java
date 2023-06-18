@@ -1,7 +1,5 @@
 package mekanism.client.gui.element.tab;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -20,6 +18,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import mekanism.common.util.text.EnergyDisplay;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -53,18 +52,17 @@ public class GuiEnergyTab extends GuiTexturedElement {
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        RenderSystem.setShaderTexture(0, getResource());
-        blit(matrix, x, y, 0, 0, width, height, width, height);
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
+        guiGraphics.blit(getResource(), getX(), getY(), 0, 0, width, height, width, height);
     }
 
     @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.renderToolTip(matrix, mouseX, mouseY);
+    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderToolTip(guiGraphics, mouseX, mouseY);
         List<Component> info = new ArrayList<>(infoHandler.getInfo());
         info.add(MekanismLang.UNIT.translate(EnergyUnit.getConfigured()));
-        displayTooltips(matrix, mouseX, mouseY, info);
+        displayTooltips(guiGraphics, mouseX, mouseY, info);
     }
 
     @Override

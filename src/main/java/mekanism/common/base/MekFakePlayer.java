@@ -75,10 +75,11 @@ public class MekFakePlayer extends FakePlayer {
             INSTANCE = new WeakReference<>(actual);
         }
         MekFakePlayer player = actual;
-        player.level = world;
+        player.setServerLevel(world);
         R result = fakePlayerConsumer.apply(player);
         player.emulatingUUID = null;
-        player.level = null;//don't keep reference to the World
+        //TODO - 1.20: Re-evaluate if this should be set to null or changed to say the overworld as I think level may be nonnull
+        player.setServerLevel(null);//don't keep reference to the World
         return result;
     }
 
@@ -106,8 +107,9 @@ public class MekFakePlayer extends FakePlayer {
         // If the fake player has a reference to the world getting unloaded,
         // null out the fake player so that the world can unload
         MekFakePlayer actual = INSTANCE == null ? null : INSTANCE.get();
-        if (actual != null && actual.level == world) {
-            actual.level = null;
+        if (actual != null && actual.level() == world) {
+            //TODO - 1.20: Re-evaluate if this should be set to null or changed to say the overworld as I think level may be nonnull
+            actual.setServerLevel(null);
         }
     }
 

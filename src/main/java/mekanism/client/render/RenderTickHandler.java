@@ -2,9 +2,6 @@ package mekanism.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.EnumMap;
@@ -39,8 +36,6 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
-import mekanism.common.item.interfaces.IModeItem;
-import mekanism.common.lib.Color;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -72,7 +67,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -80,6 +74,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -100,8 +95,10 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 public class RenderTickHandler {
 
@@ -238,7 +235,7 @@ public class RenderTickHandler {
         AbstractClientPlayer player = event.getPlayer();
         ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
         if (chestStack.getItem() instanceof ItemMekaSuitArmor armorItem) {
-            MekaSuitArmor armor = (MekaSuitArmor) ((ISpecialGear) IClientItemExtensions.of(armorItem)).getGearModel(EquipmentSlot.CHEST);
+            MekaSuitArmor armor = (MekaSuitArmor) ((ISpecialGear) IClientItemExtensions.of(armorItem)).getGearModel(ArmorItem.Type.CHESTPLATE);
             PlayerRenderer renderer = (PlayerRenderer) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player);
             PlayerModel<AbstractClientPlayer> model = renderer.getModel();
             model.setAllVisible(true);
@@ -263,12 +260,9 @@ public class RenderTickHandler {
         if (event.phase == Phase.END) {
             //Note: We check that the game mode is not null as if it is that means the world is unloading, and we don't actually want to be rendering
             // as our data may be out of date or invalid. For example configs could unload while it is still unloading
-            if (minecraft.player != null && minecraft.player.level != null && !minecraft.isPaused() && minecraft.gameMode != null) {
+            if (minecraft.player != null && minecraft.player.level() != null && !minecraft.isPaused() && minecraft.gameMode != null) {
                 Player player = minecraft.player;
-                Level world = minecraft.player.level;
-                //TODO: Check if we have another matrix stack we should use
-                PoseStack matrix = new PoseStack();
-                renderStatusBar(matrix, player);
+                Level world = minecraft.player.level();
                 //Traverse active jetpacks and do animations
                 for (UUID uuid : Mekanism.playerState.getActiveJetpacks()) {
                     Player p = world.getPlayerByUUID(uuid);
@@ -345,7 +339,7 @@ public class RenderTickHandler {
                                     flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).yRot(p.yBodyRot);
                                 }
                                 Vec3 motion = p.getDeltaMovement();
-                                Vec3 flameMotion = new Vec3(motion.x(), p.isOnGround() ? 0 : motion.y(), motion.z());
+                                Vec3 flameMotion = new Vec3(motion.x(), p.onGround() ? 0 : motion.y(), motion.z());
                                 Vec3 mergedVec = p.position().add(flameVec);
                                 world.addParticle(MekanismParticleTypes.JETPACK_FLAME.get(), mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x,
                                       flameMotion.y, flameMotion.z);
@@ -367,6 +361,9 @@ public class RenderTickHandler {
                         if (severity > RadiationManager.BASELINE) {
                             int effect = (int) (prevRadiation * 255);
                             int color = (0x701E1E << 8) + effect;
+                            //TODO: Check if we have another matrix stack we should use
+                            PoseStack matrix = new PoseStack();
+                            //TODO - 1.20: Should this/can this just be a gui overlay similar to how vignette and other vanilla ones are done
                             MekanismRenderer.renderColorOverlay(matrix, 0, 0, minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight(), color);
                         }
                     });
@@ -384,7 +381,7 @@ public class RenderTickHandler {
         }
         BlockHitResult rayTraceResult = event.getTarget();
         if (rayTraceResult.getType() != Type.MISS) {
-            Level world = player.getCommandSenderWorld();
+            Level world = player.level();
             BlockPos pos = rayTraceResult.getBlockPos();
             MultiBufferSource renderer = event.getMultiBufferSource();
             Camera info = event.getCamera();
@@ -543,29 +540,7 @@ public class RenderTickHandler {
 
     private static Vector4f getVertex(Matrix4f matrix4f, Vertex vertex) {
         Vector4f vector4f = new Vector4f((float) vertex.getPos().x(), (float) vertex.getPos().y(), (float) vertex.getPos().z(), 1);
-        vector4f.transform(matrix4f);
-        return vector4f;
-    }
-
-    private void renderStatusBar(PoseStack matrix, @NotNull Player player) {
-        //TODO: use vanilla status bar text? Note, the vanilla status bar text stays a lot longer than we have our message
-        // display for, so we would need to somehow modify it. This can be done via ATs but does cause it to always appear
-        // to be more faded in color, and blinks to full color just before disappearing
-        if (modeSwitchTimer > 1) {
-            if (minecraft.screen == null && minecraft.font != null) {
-                ItemStack stack = player.getMainHandItem();
-                if (IModeItem.isModeItem(stack, EquipmentSlot.MAINHAND)) {
-                    Component scrollTextComponent = ((IModeItem) stack.getItem()).getScrollTextComponent(stack);
-                    if (scrollTextComponent != null) {
-                        int x = minecraft.getWindow().getGuiScaledWidth();
-                        int y = minecraft.getWindow().getGuiScaledHeight();
-                        int color = Color.rgbad(1, 1, 1, modeSwitchTimer / 100F).argb();
-                        minecraft.font.draw(matrix, scrollTextComponent, (x - minecraft.font.width(scrollTextComponent)) / 2, y - 60, color);
-                    }
-                }
-            }
-            modeSwitchTimer--;
-        }
+        return vector4f.mul(matrix4f);
     }
 
     private void renderJetpackSmoke(Level world, Vec3 pos, Vec3 motion) {

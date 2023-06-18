@@ -1,4 +1,4 @@
-package mekanism.common.integration.projecte;
+/*package mekanism.common.integration.projecte;
 
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismItems;
@@ -28,4 +28,4 @@ public class MekanismCustomConversions extends CustomConversionProvider {
     public String getName() {
         return super.getName() + ": " + Mekanism.MODID;
     }
-}
+}*/

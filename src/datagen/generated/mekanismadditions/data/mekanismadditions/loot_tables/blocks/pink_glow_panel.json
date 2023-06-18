@@ -14,8 +14,8 @@
           "name": "mekanismadditions:pink_glow_panel"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/pink_glow_panel"
 }

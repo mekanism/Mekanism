@@ -26,8 +26,8 @@ import net.minecraftforge.registries.RegistryObject;
 @NothingNullByDefault
 public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
 
-    public BiomesOPlentyRecipeProvider() {
-        super("biomesoplenty");
+    public BiomesOPlentyRecipeProvider(String modid) {
+        super(modid);
     }
 
     @Override
@@ -39,8 +39,6 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     }
 
     private void addPrecisionSawmillRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.CHERRY_PLANKS, BOPItems.CHERRY_BOAT, BOPItems.CHERRY_CHEST_BOAT, BOPBlocks.CHERRY_DOOR,
-              BOPBlocks.CHERRY_FENCE_GATE, BOPBlocks.CHERRY_PRESSURE_PLATE, BOPBlocks.CHERRY_TRAPDOOR, "cherry");
         addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.DEAD_PLANKS, BOPItems.DEAD_BOAT, BOPItems.DEAD_CHEST_BOAT, BOPBlocks.DEAD_DOOR,
               BOPBlocks.DEAD_FENCE_GATE, BOPBlocks.DEAD_PRESSURE_PLATE, BOPBlocks.DEAD_TRAPDOOR, "dead");
         addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.FIR_PLANKS, BOPItems.FIR_BOAT, BOPItems.FIR_CHEST_BOAT, BOPBlocks.FIR_DOOR,

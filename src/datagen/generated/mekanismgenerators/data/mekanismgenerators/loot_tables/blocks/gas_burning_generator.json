@@ -56,8 +56,8 @@
           "name": "mekanismgenerators:gas_burning_generator"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismgenerators:blocks/gas_burning_generator"
 }

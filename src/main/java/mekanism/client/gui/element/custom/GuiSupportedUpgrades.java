@@ -1,7 +1,6 @@
 package mekanism.client.gui.element.custom;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Set;
 import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
@@ -12,7 +11,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.lib.Color;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.UpgradeUtils;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
@@ -40,45 +39,45 @@ public class GuiSupportedUpgrades extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         //Draw the background
-        renderBackgroundTexture(matrix, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE, GuiElementHolder.HOLDER_SIZE);
+        renderBackgroundTexture(guiGraphics, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE, GuiElementHolder.HOLDER_SIZE);
         int backgroundColor = Color.argb(GuiElementHolder.getBackgroundColor()).alpha(0.5).argb();
         for (int i = 0; i < EnumUtils.UPGRADES.length; i++) {
             Upgrade upgrade = EnumUtils.UPGRADES[i];
             UpgradePos pos = getUpgradePos(i);
-            int xPos = x + 1 + pos.x;
-            int yPos = y + 1 + pos.y;
-            gui().renderItem(matrix, UpgradeUtils.getStack(upgrade), xPos, yPos, 0.75F);
+            int xPos = getX() + 1 + pos.x;
+            int yPos = getY() + 1 + pos.y;
+            gui().renderItem(guiGraphics, UpgradeUtils.getStack(upgrade), xPos, yPos, 0.75F);
             if (!supportedUpgrades.contains(upgrade)) {
                 //Make the upgrade appear faded if it is not supported
                 RenderSystem.depthFunc(GL11.GL_GREATER);
-                GuiComponent.fill(matrix, xPos, yPos, xPos + ELEMENT_SIZE, yPos + ELEMENT_SIZE, backgroundColor);
+                guiGraphics.fill(xPos, yPos, xPos + ELEMENT_SIZE, yPos + ELEMENT_SIZE, backgroundColor);
                 RenderSystem.depthFunc(GL11.GL_LEQUAL);
             }
         }
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
-        drawTextScaledBound(matrix, MekanismLang.UPGRADES_SUPPORTED.translate(), relativeX + 2, relativeY + 3, titleTextColor(), 54);
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
+        drawTextScaledBound(guiGraphics, MekanismLang.UPGRADES_SUPPORTED.translate(), relativeX + 2, relativeY + 3, titleTextColor(), 54);
     }
 
     @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.renderToolTip(matrix, mouseX, mouseY);
+    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderToolTip(guiGraphics, mouseX, mouseY);
         for (int i = 0; i < EnumUtils.UPGRADES.length; i++) {
             UpgradePos pos = getUpgradePos(i);
-            if (mouseX >= x + 1 + pos.x && mouseX < x + 1 + pos.x + ELEMENT_SIZE &&
-                mouseY >= y + 1 + pos.y && mouseY < y + 1 + pos.y + ELEMENT_SIZE) {
+            if (mouseX >= getX() + 1 + pos.x && mouseX < getX() + 1 + pos.x + ELEMENT_SIZE &&
+                mouseY >= getY() + 1 + pos.y && mouseY < getY() + 1 + pos.y + ELEMENT_SIZE) {
                 Upgrade upgrade = EnumUtils.UPGRADES[i];
                 Component upgradeName = MekanismLang.UPGRADE_TYPE.translateColored(EnumColor.YELLOW, upgrade);
                 if (supportedUpgrades.contains(upgrade)) {
-                    displayTooltips(matrix, mouseX, mouseY, upgradeName, upgrade.getDescription());
+                    displayTooltips(guiGraphics, mouseX, mouseY, upgradeName, upgrade.getDescription());
                 } else {
-                    displayTooltips(matrix, mouseX, mouseY, MekanismLang.UPGRADE_NOT_SUPPORTED.translateColored(EnumColor.RED, upgradeName), upgrade.getDescription());
+                    displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.UPGRADE_NOT_SUPPORTED.translateColored(EnumColor.RED, upgradeName), upgrade.getDescription());
                 }
                 //We can break once we managed to find a tooltip to render
                 break;

@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import mekanism.api.JsonConstants;
@@ -68,11 +69,12 @@ import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.Sin
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.TaggedFluidStackIngredient;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.MultiItemStackIngredient;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.SingleItemStackIngredient;
+import net.minecraft.Util;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DataGenerator.PathProvider;
-import net.minecraft.data.DataGenerator.Target;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.PackOutput.PathProvider;
+import net.minecraft.data.PackOutput.Target;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.util.GsonHelper;
@@ -93,11 +95,11 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     private final Map<String, CrTExampleBuilder<?>> examples = new LinkedHashMap<>();
     private final Map<Class<?>, String> nameLookupOverrides = new HashMap<>();
     private final ExistingFileHelper existingFileHelper;
-    private final DataGenerator gen;
+    private final PackOutput output;
     private final String modid;
 
-    protected BaseCrTExampleProvider(DataGenerator gen, ExistingFileHelper existingFileHelper, String modid) {
-        this.gen = gen;
+    protected BaseCrTExampleProvider(PackOutput output, ExistingFileHelper existingFileHelper, String modid) {
+        this.output = output;
         this.existingFileHelper = existingFileHelper;
         this.modid = modid;
         addNameLookupOverride(String.class, "string");
@@ -271,20 +273,19 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         return exampleBuilder;
     }
 
+    @NotNull
     @Override
-    public void run(@NotNull CachedOutput cache) {
+    public CompletableFuture<?> run(@NotNull CachedOutput cache) {
         examples.clear();
         addExamples();
-        PathProvider pathProvider = gen.createPathProvider(Target.DATA_PACK, "scripts");
+        PathProvider pathProvider = output.createPathProvider(Target.DATA_PACK, "scripts");
+        List<CompletableFuture<?>> futures = new ArrayList<>();
         for (Map.Entry<String, CrTExampleBuilder<?>> entry : examples.entrySet()) {
             String examplePath = entry.getKey();
             Path path = pathProvider.file(new ResourceLocation(modid, examplePath), "zs");
-            try {
-                save(cache, entry.getValue().build(), path);
-            } catch (IOException e) {
-                throw new RuntimeException("Couldn't save example script: " + examplePath, e);
-            }
+            futures.add(save(cache, entry.getValue().build(), path));
         }
+        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
     @NotNull
@@ -436,12 +437,18 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
      * Basically a copy of {@link DataProvider#saveStable(CachedOutput, JsonElement, Path)} but it takes the contents as a string instead of serializes json using GSON.
      */
     @SuppressWarnings("UnstableApiUsage")
-    private static void save(CachedOutput cache, String contents, Path path) throws IOException {
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-             HashingOutputStream hashingOutputStream = new HashingOutputStream(Hashing.sha1(), outputStream)) {
-            hashingOutputStream.write(contents.getBytes(StandardCharsets.UTF_8));
-            cache.writeIfNeeded(path, outputStream.toByteArray(), hashingOutputStream.hash());
-        }
+    private static CompletableFuture<?> save(CachedOutput cache, String contents, Path path) {
+        return CompletableFuture.runAsync(() -> {
+            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                 HashingOutputStream hashingOutputStream = new HashingOutputStream(Hashing.sha1(), outputStream)) {
+                hashingOutputStream.write(contents.getBytes(StandardCharsets.UTF_8));
+                cache.writeIfNeeded(path, outputStream.toByteArray(), hashingOutputStream.hash());
+            } catch (IOException ioexception) {
+                //TODO - 1.20: Should this throw the exception on somehow instead
+                LOGGER.error("Failed to save file to {}", path, ioexception);
+                //throw new RuntimeException("Couldn't save example script: " + examplePath, e);
+            }
+        }, Util.backgroundExecutor());
     }
 
     protected static class WeightedItemStack {

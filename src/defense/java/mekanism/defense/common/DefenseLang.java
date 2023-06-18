@@ -6,7 +6,7 @@ import net.minecraft.Util;
 
 @NothingNullByDefault
 public enum DefenseLang implements ILangEntry {
-    PLACEHOLDER("null", "null");
+    PACK_DESCRIPTION("constants", "pack_description");
 
     private final String key;
 

@@ -67,13 +67,13 @@ public final class SecurityUtils implements ISecurityUtils {
     @Override
     public boolean canAccess(Player player, @Nullable ICapabilityProvider provider) {
         //If the player is an op allow bypassing any restrictions
-        return isOp(player) || canAccess(player.getUUID(), provider, player.level.isClientSide);
+        return isOp(player) || canAccess(player.getUUID(), provider, player.level().isClientSide);
     }
 
     @Override
     public boolean canAccessObject(Player player, ISecurityObject security) {
         //If the player is an op allow bypassing any restrictions
-        return isOp(player) || canAccessObject(player.getUUID(), security, player.level.isClientSide);
+        return isOp(player) || canAccessObject(player.getUUID(), security, player.level().isClientSide);
     }
 
     @Override

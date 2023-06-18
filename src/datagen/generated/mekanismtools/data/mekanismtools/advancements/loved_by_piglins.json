@@ -30,5 +30,6 @@
     "title": {
       "translate": "advancements.mekanismtools.loved_by_piglins.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.tab;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
@@ -13,6 +12,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
@@ -28,9 +28,9 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.renderToolTip(matrix, mouseX, mouseY);
-        displayTooltips(matrix, mouseX, mouseY, dataSource.getControlType().getTextComponent());
+    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderToolTip(guiGraphics, mouseX, mouseY);
+        displayTooltips(guiGraphics, mouseX, mouseY, dataSource.getControlType().getTextComponent());
     }
 
     @Override
@@ -59,11 +59,11 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    protected void drawBackgroundOverlay(@NotNull PoseStack matrix) {
+    protected void drawBackgroundOverlay(@NotNull GuiGraphics guiGraphics) {
         if (dataSource.getControlType() == RedstoneControl.PULSE) {
-            GuiUtils.drawSprite(matrix, getButtonX() + 1, getButtonY() + 1, innerWidth - 2, innerHeight - 2, 0, MekanismRenderer.redstonePulse);
+            GuiUtils.drawSprite(guiGraphics.pose(), getButtonX() + 1, getButtonY() + 1, innerWidth - 2, innerHeight - 2, MekanismRenderer.redstonePulse);
         } else {
-            super.drawBackgroundOverlay(matrix);
+            super.drawBackgroundOverlay(guiGraphics);
         }
     }
 }

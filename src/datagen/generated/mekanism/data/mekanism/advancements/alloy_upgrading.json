@@ -18,5 +18,6 @@
     "title": {
       "translate": "advancements.mekanism.alloy_upgrading.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

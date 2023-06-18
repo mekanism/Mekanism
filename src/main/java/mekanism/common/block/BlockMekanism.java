@@ -67,8 +67,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.PushReaction;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.extensions.common.IClientBlockExtensions;
 import net.minecraftforge.common.util.Lazy;
@@ -87,7 +86,8 @@ public abstract class BlockMekanism extends Block {
         consumer.accept(RenderPropertiesProvider.particles());
     }
 
-    @NotNull
+    //TODO - 1.20: Re-implement
+    /*@NotNull
     @Override
     @Deprecated
     public PushReaction getPistonPushReaction(@NotNull BlockState state) {
@@ -98,7 +98,7 @@ public abstract class BlockMekanism extends Block {
             return PushReaction.BLOCK;
         }
         return super.getPistonPushReaction(state);
-    }
+    }*/
 
     @NotNull
     @Override
@@ -149,7 +149,7 @@ public abstract class BlockMekanism extends Block {
     @NotNull
     @Override
     @Deprecated
-    public List<ItemStack> getDrops(@NotNull BlockState state, @NotNull LootContext.Builder builder) {
+    public List<ItemStack> getDrops(@NotNull BlockState state, @NotNull LootParams.Builder builder) {
         List<ItemStack> drops = super.getDrops(state, builder);
         //If radiation is enabled, check if we need to clear any radioactive materials from the stored tanks as those will be dumped via the tile being removed
         if (MekanismAPI.getRadiationManager().isRadiationEnabled() && state.getBlock() instanceof IHasTileEntity<?> hasTileEntity) {

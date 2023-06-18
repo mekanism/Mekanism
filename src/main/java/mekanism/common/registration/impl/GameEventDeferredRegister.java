@@ -2,7 +2,7 @@ package mekanism.common.registration.impl;
 
 import java.util.function.Supplier;
 import mekanism.common.registration.WrappedDeferredRegister;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.gameevent.GameEvent;
 
 public class GameEventDeferredRegister extends WrappedDeferredRegister<GameEvent> {
@@ -10,7 +10,7 @@ public class GameEventDeferredRegister extends WrappedDeferredRegister<GameEvent
     private final String modid;
 
     public GameEventDeferredRegister(String modid) {
-        super(modid, Registry.GAME_EVENT_REGISTRY);
+        super(modid, Registries.GAME_EVENT);
         this.modid = modid;
     }
 

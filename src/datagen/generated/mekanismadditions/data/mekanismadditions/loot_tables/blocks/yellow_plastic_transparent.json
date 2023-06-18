@@ -14,8 +14,8 @@
           "name": "mekanismadditions:yellow_plastic_transparent"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/yellow_plastic_transparent"
 }

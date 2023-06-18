@@ -34,7 +34,7 @@ public class RobitAIPickup extends RobitAIBase {
         //Cached for slight performance
         double closestDistance = -1;
         //TODO: Look at and potentially mimic the way piglins search for items to pickup once their AI has mappings
-        List<ItemEntity> items = theRobit.level.getEntitiesOfClass(ItemEntity.class,
+        List<ItemEntity> items = theRobit.level().getEntitiesOfClass(ItemEntity.class,
               new AABB(theRobit.getX() - SEARCH_RADIUS, theRobit.getY() - SEARCH_RADIUS, theRobit.getZ() - SEARCH_RADIUS,
                     theRobit.getX() + SEARCH_RADIUS, theRobit.getY() + SEARCH_RADIUS, theRobit.getZ() + SEARCH_RADIUS), itemPredicate);
         for (ItemEntity entity : items) {
@@ -53,7 +53,7 @@ public class RobitAIPickup extends RobitAIBase {
     }
 
     private boolean validateClosest() {
-        return closest != null && theRobit.isItemValid(closest) && closest.level.dimension() == theRobit.level.dimension() &&
+        return closest != null && theRobit.isItemValid(closest) && closest.level().dimension() == theRobit.level().dimension() &&
                theRobit.distanceToSqr(closest) <= SEARCH_RADIUS_SQ;
     }
 

@@ -3,16 +3,21 @@ package mekanism.common.integration.lookingat.wthit;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IBlockComponentProvider;
+import mcp.mobius.waila.api.IDataReader;
 import mcp.mobius.waila.api.IEntityAccessor;
 import mcp.mobius.waila.api.IEntityComponentProvider;
 import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.ITooltip;
 import mcp.mobius.waila.api.ITooltipComponent;
+import mekanism.common.integration.lookingat.ChemicalElement;
+import mekanism.common.integration.lookingat.EnergyElement;
+import mekanism.common.integration.lookingat.FluidElement;
 import mekanism.common.integration.lookingat.LookingAtElement;
 import mekanism.common.integration.lookingat.LookingAtUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 public class WTHITTooltipRenderer implements IBlockComponentProvider, IEntityComponentProvider {
@@ -21,20 +26,52 @@ public class WTHITTooltipRenderer implements IBlockComponentProvider, IEntityCom
 
     @Override
     public void appendBody(ITooltip tooltip, IEntityAccessor accessor, IPluginConfig config) {
-        append(tooltip, accessor.getServerData(), config);
+        append(tooltip, accessor.getData(), config);
     }
 
     @Override
     public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
-        append(tooltip, accessor.getServerData(), config);
+        append(tooltip, accessor.getData(), config);
     }
 
-    private void append(ITooltip tooltip, CompoundTag data, IPluginConfig config) {
-        LookingAtUtils.appendHwylaTooltip(data, tooltip::addLine, (lastText, element, name) -> {
-            if (config.getBoolean(name)) {
-                tooltip.addLine(new MekElement(lastText, element));
+    private void append(ITooltip tooltip, IDataReader dataReader, IPluginConfig config) {
+        //TODO - 1.20: Convert
+        WTHITLookingAtHelper helper = dataReader.get(WTHITLookingAtHelper.class);
+        if (helper != null) {
+            Component lastText = null;
+            //Copy the data we need and have from the server and pass it on to the tooltip rendering
+            for (Object element : helper.elements) {
+                ResourceLocation name;
+                if (element instanceof Component component) {
+                    if (lastText != null) {
+                        //Fallback to printing the last text
+                        tooltip.addLine(lastText);
+                    }
+                    lastText = component;
+                    continue;
+                } else if (element instanceof EnergyElement) {
+                    name = LookingAtUtils.ENERGY;
+                } else if (element instanceof FluidElement) {
+                    name = LookingAtUtils.FLUID;
+                } else if (element instanceof ChemicalElement chemicalElement) {
+                    name = switch (chemicalElement.getChemicalType()) {
+                        case GAS -> LookingAtUtils.GAS;
+                        case INFUSION -> LookingAtUtils.INFUSE_TYPE;
+                        case PIGMENT -> LookingAtUtils.PIGMENT;
+                        case SLURRY -> LookingAtUtils.SLURRY;
+                    };
+                } else {
+                    continue;
+                }
+                if (config.getBoolean(name)) {
+                    tooltip.addLine(new MekElement(lastText, (LookingAtElement) element));
+                }
+                lastText = null;
             }
-        });
+            if (lastText != null) {
+                tooltip.addLine(lastText);
+            }
+        }
     }
 
     private record MekElement(@Nullable Component text, LookingAtElement element) implements ITooltipComponent {
@@ -56,15 +93,17 @@ public class WTHITTooltipRenderer implements IBlockComponentProvider, IEntityCom
         }
 
         @Override
-        public void render(PoseStack poseStack, int x, int y, float delta) {
+        public void render(GuiGraphics guiGraphics, int x, int y, float delta) {
             if (text != null) {
-                LookingAtElement.renderScaledText(Minecraft.getInstance(), poseStack, x + 4, y + 3, 0xFFFFFF, 92, text);
+                LookingAtElement.renderScaledText(Minecraft.getInstance(), guiGraphics, x + 4, y + 3, 0xFFFFFF, 92, text);
                 y += 13;
             }
-            poseStack.pushPose();
-            poseStack.translate(x, y, 0);
-            element.render(poseStack, 0, 1);
-            poseStack.popPose();
+            //TODO - 1.20: Validate this
+            PoseStack pose = guiGraphics.pose();
+            pose.pushPose();
+            pose.translate(x, y, 0);
+            element.render(guiGraphics, 0, 1);
+            pose.popPose();
         }
     }
 }

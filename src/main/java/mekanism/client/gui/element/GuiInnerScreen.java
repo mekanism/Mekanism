@@ -8,6 +8,7 @@ import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.client.jei.interfaces.IJEIRecipeArea;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -73,8 +74,8 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
         if (renderStrings != null) {
             List<Component> list = renderStrings.get();
             float startY = relativeY + padding;
@@ -84,25 +85,25 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
                 startY = relativeY + (getHeight() - totalHeight) / 2F;
             }
             for (Component text : renderStrings.get()) {
-                drawText(matrix, text, relativeX + padding, startY);
+                drawText(guiGraphics, text, relativeX + padding, startY);
                 startY += 8 + spacing;
             }
         }
     }
 
     @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.renderToolTip(matrix, mouseX, mouseY);
+    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderToolTip(guiGraphics, mouseX, mouseY);
         if (tooltipStrings != null) {
             List<Component> list = tooltipStrings.get();
             if (list != null && !list.isEmpty()) {
-                displayTooltips(matrix, mouseX, mouseY, list);
+                displayTooltips(guiGraphics, mouseX, mouseY, list);
             }
         }
     }
 
-    private void drawText(PoseStack matrix, Component text, float x, float y) {
-        drawScaledTextScaledBound(matrix, text, x, y, screenTextColor(), getWidth() - padding * 2, textScale);
+    private void drawText(GuiGraphics guiGraphics, Component text, float x, float y) {
+        drawScaledTextScaledBound(guiGraphics, text, x, y, screenTextColor(), getWidth() - padding * 2, textScale);
     }
 
     @NotNull
@@ -120,6 +121,6 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
 
     @Override
     public boolean isMouseOverJEIArea(double mouseX, double mouseY) {
-        return visible && mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
+        return visible && mouseX >= getX() && mouseY >= getY() && mouseX < getX() + width && mouseY < getY() + height;
     }
 }

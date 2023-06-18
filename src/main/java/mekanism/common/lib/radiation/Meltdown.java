@@ -11,7 +11,6 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -22,7 +21,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -58,8 +57,7 @@ public class Meltdown {
               NbtUtils.readBlockPos(tag.getCompound(NBTConstants.MAX)),
               tag.getDouble(NBTConstants.MAGNITUDE),
               tag.getDouble(NBTConstants.CHANCE),
-              //TODO - 1.20: Just get the radius directly rather than the get or default
-              tag.contains(NBTConstants.RADIUS, Tag.TAG_FLOAT) ? tag.getFloat(NBTConstants.RADIUS) : 8,
+              tag.getFloat(NBTConstants.RADIUS),
               tag.getUUID(NBTConstants.INVENTORY_ID),
               tag.getInt(NBTConstants.AGE)
         );
@@ -116,7 +114,7 @@ public class Meltdown {
                         double d8 = z;
 
                         for (; f > 0.0F; f -= 0.22500001F) {
-                            BlockPos pos = new BlockPos(d4, d6, d8);
+                            BlockPos pos = BlockPos.containing(d4, d6, d8);
                             BlockState blockstate = world.getBlockState(pos);
                             FluidState fluidstate = blockstate.getFluidState();
                             if (!blockstate.isAir() || !fluidstate.isEmpty()) {
@@ -152,8 +150,7 @@ public class Meltdown {
             if (!state.isAir()) {
                 if (state.canDropFromExplosion(world, toExplode, explosion) && world instanceof ServerLevel level) {
                     BlockEntity tileentity = state.hasBlockEntity() ? world.getBlockEntity(toExplode) : null;
-                    LootContext.Builder lootContextBuilder = new LootContext.Builder(level)
-                          .withRandom(world.random)
+                    LootParams.Builder lootContextBuilder = new LootParams.Builder(level)
                           .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(toExplode))
                           .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
                           .withOptionalParameter(LootContextParams.BLOCK_ENTITY, tileentity)

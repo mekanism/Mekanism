@@ -1,5 +1,6 @@
 package mekanism.tools.common;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.tag.BaseTagProvider;
@@ -7,7 +8,8 @@ import mekanism.common.tag.ForgeRegistryTagBuilder;
 import mekanism.tools.common.item.ItemMekanismPaxel;
 import mekanism.tools.common.item.ItemMekanismPickaxe;
 import mekanism.tools.common.registries.ToolsItems;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
@@ -17,12 +19,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class ToolsTagProvider extends BaseTagProvider {
 
-    public ToolsTagProvider(DataGenerator gen, @Nullable ExistingFileHelper existingFileHelper) {
-        super(gen, MekanismTools.MODID, existingFileHelper);
+    public ToolsTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+        super(output, lookupProvider, MekanismTools.MODID, existingFileHelper);
     }
 
     @Override
-    protected void registerTags() {
+    protected void registerTags(HolderLookup.Provider registries) {
         addToolTags();
         addToTag(ItemTags.PIGLIN_LOVED,
               ToolsItems.GOLD_PAXEL,
@@ -100,7 +102,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addSwords() {
-        getItemBuilder(Tags.Items.TOOLS_SWORDS).add(
+        getItemBuilder(ItemTags.SWORDS).add(
               ToolsTags.Items.TOOLS_SWORDS_BRONZE,
               ToolsTags.Items.TOOLS_SWORDS_LAPIS_LAZULI,
               ToolsTags.Items.TOOLS_SWORDS_OSMIUM,
@@ -117,7 +119,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addAxes() {
-        getItemBuilder(Tags.Items.TOOLS_AXES).add(
+        getItemBuilder(ItemTags.AXES).add(
               ToolsTags.Items.TOOLS_AXES_BRONZE,
               ToolsTags.Items.TOOLS_AXES_LAPIS_LAZULI,
               ToolsTags.Items.TOOLS_AXES_OSMIUM,
@@ -134,7 +136,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addPickaxes() {
-        getItemBuilder(Tags.Items.TOOLS_PICKAXES).add(
+        getItemBuilder(ItemTags.PICKAXES).add(
               ToolsTags.Items.TOOLS_PICKAXES_BRONZE,
               ToolsTags.Items.TOOLS_PICKAXES_LAPIS_LAZULI,
               ToolsTags.Items.TOOLS_PICKAXES_OSMIUM,
@@ -151,7 +153,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addShovels() {
-        getItemBuilder(Tags.Items.TOOLS_SHOVELS).add(
+        getItemBuilder(ItemTags.SHOVELS).add(
               ToolsTags.Items.TOOLS_SHOVELS_BRONZE,
               ToolsTags.Items.TOOLS_SHOVELS_LAPIS_LAZULI,
               ToolsTags.Items.TOOLS_SHOVELS_OSMIUM,
@@ -168,7 +170,7 @@ public class ToolsTagProvider extends BaseTagProvider {
     }
 
     private void addHoes() {
-        getItemBuilder(Tags.Items.TOOLS_HOES).add(
+        getItemBuilder(ItemTags.HOES).add(
               ToolsTags.Items.TOOLS_HOES_BRONZE,
               ToolsTags.Items.TOOLS_HOES_LAPIS_LAZULI,
               ToolsTags.Items.TOOLS_HOES_OSMIUM,

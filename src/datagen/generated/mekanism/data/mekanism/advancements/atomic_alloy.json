@@ -26,5 +26,6 @@
     "title": {
       "translate": "advancements.mekanism.atomic_alloy.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

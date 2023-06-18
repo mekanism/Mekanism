@@ -296,7 +296,7 @@ public class MekanismJEI implements IModPlugin {
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registry) {
         registry.addRecipeClickArea(GuiRobitRepair.class, 102, 48, 22, 15, RecipeTypes.ANVIL);
-        registry.addGenericGuiContainerHandler(GuiMekanism.class, new GuiElementHandler());
+        registry.addGenericGuiContainerHandler(GuiMekanism.class, new GuiElementHandler(registry.getJeiHelpers().getIngredientManager()));
         registry.addGhostIngredientHandler(GuiMekanism.class, new GhostIngredientHandler<>());
     }
 

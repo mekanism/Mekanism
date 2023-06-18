@@ -1,6 +1,5 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -8,6 +7,7 @@ import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.registries.MekanismSounds;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -27,14 +27,14 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
         this.handler = handler;
         this.options = enumClass.getEnumConstants();
         this.active = true;
-        this.clickSound = MekanismSounds.BEEP.get();
+        this.clickSound = MekanismSounds.BEEP;
     }
 
     @Override
     public void onClick(double mouseX, double mouseY, int button) {
         super.onClick(mouseX, mouseY, button);
         isHolding = true;
-        setOpen(!isOpen || mouseY > y + 11);
+        setOpen(!isOpen || mouseY > getY() + 11);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
         super.onRelease(mouseX, mouseY);
         if (isHolding) {
             isHolding = false;
-            if (isOpen && mouseY > y + 11) {
+            if (isOpen && mouseY > getY() + 11) {
                 handler.accept(options[getHoveredIndex(mouseX, mouseY)]);
                 setOpen(false);
             }
@@ -50,65 +50,65 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
         int maxWidth = width - 11;
         TYPE current = curType.get();
-        drawScaledTextScaledBound(matrix, current.getShortName(), relativeX + 4, relativeY + 2, screenTextColor(), maxWidth, 0.8F);
+        drawScaledTextScaledBound(guiGraphics, current.getShortName(), relativeX + 4, relativeY + 2, screenTextColor(), maxWidth, 0.8F);
         if (isOpen) {
             for (int i = 0; i < options.length; i++) {
-                drawScaledTextScaledBound(matrix, options[i].getShortName(), relativeX + 4, relativeY + 11 + 2 + 10 * i, screenTextColor(), maxWidth, 0.8F);
+                drawScaledTextScaledBound(guiGraphics, options[i].getShortName(), relativeX + 4, relativeY + 11 + 2 + 10 * i, screenTextColor(), maxWidth, 0.8F);
             }
         }
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        matrix.pushPose();
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
+        //TODO - 1.20: Evaluate if we still need the translations here
+        PoseStack pose = guiGraphics.pose();
+        pose.pushPose();
         //TODO: Figure out why we need a translation of 1 to fix the text intersecting for the dictionary but it works just fine
         // for the QIO item viewer
-        matrix.translate(0, 0, 1);
-        renderBackgroundTexture(matrix, getResource(), GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
+        pose.translate(0, 0, 1);
+        renderBackgroundTexture(guiGraphics, getResource(), GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
 
         int index = getHoveredIndex(mouseX, mouseY);
         if (index != -1) {
-            GuiUtils.drawOutline(matrix, x + 1, y + 12 + index * 10, width - 2, 10, screenTextColor());
+            GuiUtils.drawOutline(guiGraphics, getX() + 1, getY() + 12 + index * 10, width - 2, 10, screenTextColor());
         }
 
         TYPE current = curType.get();
         if (current.getIcon() != null) {
-            RenderSystem.setShaderTexture(0, current.getIcon());
-            blit(matrix, x + width - 9, y + 3, 0, 0, 6, 6, 6, 6);
+            guiGraphics.blit(current.getIcon(), getX() + width - 9, getY() + 3, 0, 0, 6, 6, 6, 6);
         }
 
         if (isOpen) {
             for (int i = 0; i < options.length; i++) {
                 ResourceLocation icon = options[i].getIcon();
                 if (icon != null) {
-                    RenderSystem.setShaderTexture(0, icon);
-                    blit(matrix, x + width - 9, y + 12 + 2 + 10 * i, 0, 0, 6, 6, 6, 6);
+                    guiGraphics.blit(icon, getX() + width - 9, getY() + 12 + 2 + 10 * i, 0, 0, 6, 6, 6, 6);
                 }
             }
         }
-        matrix.popPose();
+        pose.popPose();
     }
 
     @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.renderToolTip(matrix, mouseX, mouseY);
+    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderToolTip(guiGraphics, mouseX, mouseY);
         int index = getHoveredIndex(mouseX, mouseY);
         if (index != -1) {
             Component text = options[index].getTooltip();
             if (text != null) {
-                displayTooltips(matrix, mouseX, mouseY, options[index].getTooltip());
+                displayTooltips(guiGraphics, mouseX, mouseY, options[index].getTooltip());
             }
         }
     }
 
     private int getHoveredIndex(double mouseX, double mouseY) {
-        if (isOpen && mouseX >= x && mouseX < x + width && mouseY >= y + 11 && mouseY < y + height) {
-            return Math.max(0, Math.min(options.length - 1, (int) ((mouseY - y - 11) / 10)));
+        if (isOpen && mouseX >= getX() && mouseX < getX() + width && mouseY >= getY() + 11 && mouseY < getY() + height) {
+            return Math.max(0, Math.min(options.length - 1, (int) ((mouseY - getY() - 11) / 10)));
         }
         return -1;
     }

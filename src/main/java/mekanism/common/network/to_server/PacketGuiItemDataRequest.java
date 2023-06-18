@@ -26,7 +26,7 @@ public class PacketGuiItemDataRequest implements IMekanismPacket {
             if (type == Type.QIO_ITEM_VIEWER) {
                 if (player.containerMenu instanceof QIOItemViewerContainer container) {
                     QIOFrequency freq = container.getFrequency();
-                    if (!player.level.isClientSide() && freq != null) {
+                    if (!player.level().isClientSide() && freq != null) {
                         freq.openItemViewer(player);
                     }
                 }

@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.text.GuiTextField;
@@ -9,6 +8,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.network.to_server.PacketRobit;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class GuiRobitRename extends GuiWindow {
 
@@ -35,9 +35,9 @@ public class GuiRobitRename extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
-        drawTitleText(matrix, MekanismLang.ROBIT_RENAME.translate(), 7);
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
+        drawTitleText(guiGraphics, MekanismLang.ROBIT_RENAME.translate(), 7);
     }
 
     @Override

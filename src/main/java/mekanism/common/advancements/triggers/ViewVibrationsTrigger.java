@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
@@ -27,7 +28,7 @@ public class ViewVibrationsTrigger extends SimpleCriterionTrigger<ViewVibrations
 
     @NotNull
     @Override
-    protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull EntityPredicate.Composite playerPredicate, @NotNull DeserializationContext context) {
+    protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull ContextAwarePredicate playerPredicate, @NotNull DeserializationContext context) {
         return new TriggerInstance(playerPredicate);
     }
 
@@ -37,12 +38,12 @@ public class ViewVibrationsTrigger extends SimpleCriterionTrigger<ViewVibrations
 
     public static class TriggerInstance extends AbstractCriterionTriggerInstance {
 
-        public TriggerInstance(EntityPredicate.Composite playerPredicate) {
+        public TriggerInstance(ContextAwarePredicate playerPredicate) {
             super(MekanismCriteriaTriggers.VIEW_VIBRATIONS.getId(), playerPredicate);
         }
 
         public static ViewVibrationsTrigger.TriggerInstance view() {
-            return new ViewVibrationsTrigger.TriggerInstance(EntityPredicate.Composite.ANY);
+            return new ViewVibrationsTrigger.TriggerInstance(ContextAwarePredicate.ANY);
         }
     }
 }

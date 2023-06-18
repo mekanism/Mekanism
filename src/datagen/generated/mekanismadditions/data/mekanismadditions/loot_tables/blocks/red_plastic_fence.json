@@ -14,8 +14,8 @@
           "name": "mekanismadditions:red_plastic_fence"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/red_plastic_fence"
 }

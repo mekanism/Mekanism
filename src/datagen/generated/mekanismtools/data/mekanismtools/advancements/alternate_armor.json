@@ -49,5 +49,6 @@
     "title": {
       "translate": "advancements.mekanismtools.alternate_armor.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

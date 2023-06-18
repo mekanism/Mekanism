@@ -64,7 +64,7 @@ import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookup
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.registries.MekanismDamageSource;
+import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismDataSerializers;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismItems;
@@ -90,6 +90,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -200,8 +201,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         recipeCacheLookupMonitor = new RecipeCacheLookupMonitor<>(this);
         // Choose a random offset to check for all errors. We do this to ensure that not every tile tries to recheck errors for every
         // recipe the same tick and thus create uneven spikes of CPU usage
-        int checkOffset = level.random.nextInt(TileEntityRecipeMachine.RECIPE_CHECK_FREQUENCY);
-        recheckAllRecipeErrors = () -> !playersUsing.isEmpty() && level.getGameTime() % TileEntityRecipeMachine.RECIPE_CHECK_FREQUENCY == checkOffset;
+        int checkOffset = level().random.nextInt(TileEntityRecipeMachine.RECIPE_CHECK_FREQUENCY);
+        recheckAllRecipeErrors = () -> !playersUsing.isEmpty() && level().getGameTime() % TileEntityRecipeMachine.RECIPE_CHECK_FREQUENCY == checkOffset;
         energyContainers = Collections.singletonList(energyContainer = BasicEnergyContainer.input(MAX_ENERGY, this));
 
         inventorySlots = new ArrayList<>();
@@ -213,7 +214,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
                 inventoryContainerSlots.add(slot);
             }
         }
-        inventorySlots.add(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getCommandSenderWorld, this, 153, 17));
+        inventorySlots.add(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::level, this, 153, 17));
         inventorySlots.add(smeltingInputSlot = InputInventorySlot.at(this::containsRecipe, recipeCacheLookupMonitor, 51, 35));
         //TODO: Previously used FurnaceResultSlot, check if we need to replicate any special logic it had (like if it had xp logic or something)
         // Yes we probably do want this to allow for experience. Though maybe we should allow for experience for all our recipes/smelting recipes? V10
@@ -274,18 +275,18 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     @Override
     public void onRemovedFromWorld() {
-        if (level != null && !level.isClientSide && getFollowing() && getOwner() != null) {
+        if (level() != null && !level().isClientSide && getFollowing() && getOwner() != null) {
             //If this robit is currently following its owner and is being removed from the world (due to chunk unloading)
             // register a ticket that loads the chunk for a second, so that it has time to have its following check run again
             // (as it runs every 10 ticks, half a second), and then teleport to the owner.
-            ((ServerLevel) level).getChunkSource().addRegionTicket(ROBIT_CHUNK_UNLOAD, new ChunkPos(blockPosition()), 2, getId());
+            ((ServerLevel) level()).getChunkSource().addRegionTicket(ROBIT_CHUNK_UNLOAD, new ChunkPos(blockPosition()), 2, getId());
         }
         super.onRemovedFromWorld();
     }
 
     @Override
     public void baseTick() {
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             if (getFollowing()) {
                 Player owner = getOwner();
                 if (owner != null && distanceToSqr(owner) > 4 && !getNavigation().isDone() && !energyContainer.isEmpty()) {
@@ -296,7 +297,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
         super.baseTick();
 
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             if (getDropPickup()) {
                 collectItems();
             }
@@ -328,7 +329,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     private void collectItems() {
-        List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(1.5, 1.5, 1.5));
+        List<ItemEntity> items = level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(1.5, 1.5, 1.5));
         if (!items.isEmpty()) {
             for (ItemEntity item : items) {
                 if (isItemValid(item)) {
@@ -361,15 +362,15 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     public void goHome() {
-        if (level.isClientSide()) {
+        if (level().isClientSide()) {
             return;
         }
         setFollowing(false);
-        if (level.dimension() == homeLocation.dimension) {
+        if (level().dimension() == homeLocation.dimension) {
             setDeltaMovement(0, 0, 0);
             teleportTo(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
         } else {
-            ServerLevel newWorld = ((ServerLevel) this.level).getServer().getLevel(homeLocation.dimension);
+            ServerLevel newWorld = ((ServerLevel) this.level()).getServer().getLevel(homeLocation.dimension);
             if (newWorld != null) {
                 Vec3 destination = new Vec3(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
                 changeDimension(newWorld, new ITeleporter() {
@@ -393,7 +394,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     private boolean isOnChargepad() {
-        return WorldUtils.getTileEntity(TileEntityChargepad.class, level, blockPosition()) != null;
+        return WorldUtils.getTileEntity(TileEntityChargepad.class, level(), blockPosition()) != null;
     }
 
     @NotNull
@@ -404,7 +405,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         } else if (player.isShiftKeyDown()) {
             ItemStack stack = player.getItemInHand(hand);
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
-                if (!level.isClientSide) {
+                if (!level().isClientSide) {
                     drop();
                 }
                 discard();
@@ -412,14 +413,14 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
                 return InteractionResult.SUCCESS;
             }
             return InteractionResult.PASS;
-        } else if (!level.isClientSide) {
+        } else if (!level().isClientSide) {
             MenuProvider provider = MekanismContainerTypes.MAIN_ROBIT.getProvider(MekanismLang.ROBIT, this);
             if (provider != null) {
                 //Validate the provider isn't null, it shouldn't be but just in case
                 NetworkHooks.openScreen((ServerPlayer) player, provider, buf -> buf.writeVarInt(getId()));
             }
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.sidedSuccess(level().isClientSide);
     }
 
     private ItemStack getItemVariant() {
@@ -444,9 +445,9 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     public void drop() {
         //TODO: Move this to loot table?
-        ItemEntity entityItem = new ItemEntity(level, getX(), getY() + 0.3, getZ(), getItemVariant());
+        ItemEntity entityItem = new ItemEntity(level(), getX(), getY() + 0.3, getZ(), getItemVariant());
         entityItem.setDeltaMovement(0, random.nextGaussian() * 0.05F + 0.2F, 0);
-        level.addFreshEntity(entityItem);
+        level().addFreshEntity(entityItem);
     }
 
     public double getScaledProgress() {
@@ -495,7 +496,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     @Override
     public boolean isInvulnerableTo(@NotNull DamageSource source) {
-        return source == MekanismDamageSource.RADIATION || super.isInvulnerableTo(source);
+        return source.is(MekanismDamageTypes.RADIATION.key()) || super.isInvulnerableTo(source);
     }
 
     @Override
@@ -506,12 +507,12 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         }
         amount = getDamageAfterArmorAbsorb(damageSource, amount);
         amount = getDamageAfterMagicAbsorb(damageSource, amount);
-        if (damageSource.isFall()) {
+        if (damageSource.is(DamageTypeTags.IS_FALL)) {
             //Half the "potential" damage the Robit can take from falling
             amount /= 2;
         }
         energyContainer.extract(FloatingLong.create(1_000 * amount), Action.EXECUTE, AutomationType.INTERNAL);
-        getCombatTracker().recordDamage(damageSource, getHealth(), amount);
+        getCombatTracker().recordDamage(damageSource, amount);
     }
 
     @Override
@@ -528,7 +529,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     public Player getOwner() {
-        return level.getPlayerByUUID(getOwnerUUID());
+        return level().getPlayerByUUID(getOwnerUUID());
     }
 
     @NotNull
@@ -560,7 +561,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     @Override
     public void onSecurityChanged(@NotNull SecurityMode old, @NotNull SecurityMode mode) {
-        if (!level.isClientSide) {
+        if (!level().isClientSide) {
             SecurityUtils.INSTANCE.securityChanged(playersUsing, this, old, mode);
         }
     }
@@ -706,7 +707,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             public <T> Optional<T> evaluate(@NotNull BiFunction<Level, BlockPos, T> worldBlockPosTBiFunction) {
                 //Note: We use an anonymous class implementation rather than using IWorldPosCallable.of, so that if the robit moves
                 // this uses the proper updated position
-                return Optional.ofNullable(worldBlockPosTBiFunction.apply(getCommandSenderWorld(), blockPosition()));
+                return Optional.ofNullable(worldBlockPosTBiFunction.apply(level(), blockPosition()));
             }
         };
     }

@@ -1,11 +1,11 @@
 package mekanism.client.gui.element.window.filter.transporter;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.filter.GuiModIDFilter;
 import mekanism.common.content.transporter.SorterModIDFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiSorterModIDFilter extends GuiModIDFilter<SorterModIDFilter, TileEntityLogisticalSorter> implements GuiSorterFilterHelper {
@@ -52,8 +52,8 @@ public class GuiSorterModIDFilter extends GuiModIDFilter<SorterModIDFilter, Tile
     }
 
     @Override
-    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
-        renderSorterForeground(matrix, filter, tile.getSingleItem());
+    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderForeground(guiGraphics, mouseX, mouseY);
+        renderSorterForeground(guiGraphics, filter, tile.getSingleItem());
     }
 }

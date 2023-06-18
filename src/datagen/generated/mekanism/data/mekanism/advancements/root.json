@@ -19,5 +19,6 @@
     "title": {
       "translate": "advancements.mekanism.root.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

@@ -25,6 +25,14 @@ public class EnergyElement extends LookingAtElement {
         return (int) (level * energy.divideToLevel(maxEnergy));
     }
 
+    public FloatingLong getEnergy() {
+        return energy;
+    }
+
+    public FloatingLong getMaxEnergy() {
+        return maxEnergy;
+    }
+
     @Override
     public TextureAtlasSprite getIcon() {
         return MekanismRenderer.energyIcon;

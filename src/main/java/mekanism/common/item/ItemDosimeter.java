@@ -51,10 +51,10 @@ public class ItemDosimeter extends Item {
     @Override
     public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
         if (!player.isShiftKeyDown()) {
-            if (!player.level.isClientSide) {
+            if (!player.level().isClientSide) {
                 entity.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(cap -> sendDosimeterLevel(cap, player, MekanismLang.RADIATION_EXPOSURE_ENTITY));
             }
-            return InteractionResult.sidedSuccess(player.level.isClientSide);
+            return InteractionResult.sidedSuccess(player.level().isClientSide);
         }
         return InteractionResult.PASS;
     }

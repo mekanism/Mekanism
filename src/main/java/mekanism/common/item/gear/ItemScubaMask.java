@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.Rarity;
@@ -16,7 +16,7 @@ public class ItemScubaMask extends ItemSpecialArmor {
     private static final ScubaMaskMaterial SCUBA_MASK_MATERIAL = new ScubaMaskMaterial();
 
     public ItemScubaMask(Properties properties) {
-        super(SCUBA_MASK_MATERIAL, EquipmentSlot.HEAD, properties.rarity(Rarity.RARE).setNoRepair());
+        super(SCUBA_MASK_MATERIAL, ArmorItem.Type.HELMET, properties.rarity(Rarity.RARE).setNoRepair());
     }
 
     @Override

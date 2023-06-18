@@ -2,7 +2,6 @@ package mekanism.client.render.lib;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 import java.util.function.Consumer;
 import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.LightTexture;
@@ -15,6 +14,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 public class Quad {
 
@@ -301,7 +301,7 @@ public class Quad {
 
         public Quad build() {
             Vertex[] vertices = new Vertex[4];
-            Vector3f normal = new Vector3f(vec3.subtract(vec2).cross(vec1.subtract(vec2)).normalize());
+            Vector3f normal = vec3.subtract(vec2).cross(vec1.subtract(vec2)).normalize().toVector3f();
             vertices[0] = Vertex.create(vec1, normal, color, texture, minU, minV).light(lightU, lightV);
             vertices[1] = Vertex.create(vec2, normal, color, texture, minU, maxV).light(lightU, lightV);
             vertices[2] = Vertex.create(vec3, normal, color, texture, maxU, maxV).light(lightU, lightV);

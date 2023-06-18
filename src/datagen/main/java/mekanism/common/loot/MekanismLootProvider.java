@@ -1,25 +1,17 @@
 package mekanism.common.loot;
 
-import mekanism.common.Mekanism;
-import mekanism.common.loot.table.BaseBlockLootTables;
-import mekanism.common.loot.table.BaseEntityLootTables;
+import java.util.List;
 import mekanism.common.loot.table.MekanismBlockLootTables;
 import mekanism.common.loot.table.MekanismEntityLootTables;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 public class MekanismLootProvider extends BaseLootProvider {
 
-    public MekanismLootProvider(DataGenerator gen) {
-        super(gen, Mekanism.MODID);
-    }
-
-    @Override
-    protected BaseBlockLootTables getBlockLootTable() {
-        return new MekanismBlockLootTables();
-    }
-
-    @Override
-    protected BaseEntityLootTables getEntityLootTable() {
-        return new MekanismEntityLootTables();
+    public MekanismLootProvider(PackOutput output) {
+        super(output, List.of(
+              new SubProviderEntry(MekanismBlockLootTables::new, LootContextParamSets.BLOCK),
+              new SubProviderEntry(MekanismEntityLootTables::new, LootContextParamSets.ENTITY)
+        ));
     }
 }

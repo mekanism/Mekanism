@@ -1,6 +1,6 @@
 # Development
 
-Mekanism is developed for Minecraft 1.19.2 using Minecraft Forge.
+Mekanism is developed for Minecraft 1.20.1 using Minecraft Forge.
 
 ## Prerequisites
 

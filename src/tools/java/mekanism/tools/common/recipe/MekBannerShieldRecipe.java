@@ -3,11 +3,13 @@ package mekanism.tools.common.recipe;
 import mekanism.api.NBTConstants;
 import mekanism.tools.common.item.ItemMekanismShield;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.BannerItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -15,8 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class MekBannerShieldRecipe extends CustomRecipe {
 
-    public MekBannerShieldRecipe(ResourceLocation id) {
-        super(id);
+    public MekBannerShieldRecipe(ResourceLocation id, CraftingBookCategory category) {
+        super(id, category);
     }
 
     @Override
@@ -44,7 +46,7 @@ public class MekBannerShieldRecipe extends CustomRecipe {
 
     @NotNull
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
+    public ItemStack assemble(CraftingContainer inv, @NotNull RegistryAccess registryAccess) {
         ItemStack bannerStack = ItemStack.EMPTY;
         ItemStack shieldStack = ItemStack.EMPTY;
         for (int i = 0; i < inv.getContainerSize(); ++i) {

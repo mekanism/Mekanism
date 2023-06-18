@@ -111,7 +111,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                     nonEmptyCraftingSlots++;
                 }
             }
-            if (recipe.matches(dummy, player.level)) {
+            if (recipe.matches(dummy, player.level())) {
                 //If we are not transferring things, and the crafting window's contents already matches the given recipe,
                 // then we can just early exit knowing that we have something that will work. If we are transferring items
                 // then we need to actually do all the checks as we may be transferring more items if maxTransfer is true,

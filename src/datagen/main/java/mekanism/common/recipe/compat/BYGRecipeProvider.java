@@ -29,8 +29,8 @@ import potionstudios.byg.reg.RegistryObject;
 @ParametersAreNotNullByDefault
 public class BYGRecipeProvider extends CompatRecipeProvider {
 
-    public BYGRecipeProvider() {
-        super("byg");
+    public BYGRecipeProvider(String modid) {
+        super(modid);
     }
 
     @Override

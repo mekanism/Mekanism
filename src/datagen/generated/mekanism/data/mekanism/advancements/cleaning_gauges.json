@@ -19,5 +19,6 @@
     "title": {
       "translate": "advancements.mekanism.cleaning_gauges.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

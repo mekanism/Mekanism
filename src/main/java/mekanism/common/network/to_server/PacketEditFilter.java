@@ -33,7 +33,7 @@ public class PacketEditFilter<FILTER extends IFilter<FILTER>> implements IMekani
         if (player == null || filter == null) {
             return;
         }
-        BlockEntity tile = WorldUtils.getTileEntity(player.level, pos);
+        BlockEntity tile = WorldUtils.getTileEntity(player.level(), pos);
         if (tile instanceof ITileFilterHolder<?> filterHolder) {
             filterHolder.getFilterManager().tryEditFilter(filter, edited);
         }

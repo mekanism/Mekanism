@@ -25,7 +25,7 @@ public class PortableQIODashboardInventory extends ItemStackMekanismInventory im
 
     public PortableQIODashboardInventory(ItemStack stack, @NotNull Inventory inv) {
         super(stack);
-        this.world = inv.player.getCommandSenderWorld();
+        this.world = inv.player.level();
         for (QIOCraftingWindow craftingWindow : craftingWindows) {
             //Force refresh the recipe now that we have a world set and can actually calculate it
             craftingWindow.invalidateRecipe();

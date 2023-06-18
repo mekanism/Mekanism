@@ -18,6 +18,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -46,11 +47,11 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         super(container, inv, title);
         imageWidth = 147;
         imageHeight = 182;
-        this.minHeight = inv.player.level.getMinBuildHeight();
+        this.minHeight = inv.player.level().getMinBuildHeight();
         BlockPos pos = inv.player.blockPosition();
         //Calculate all the blocks in the column
         for (BlockPos p : BlockPos.betweenClosed(new BlockPos(pos.getX(), minHeight, pos.getZ()), pos)) {
-            blockList.add(inv.player.level.getBlockState(p));
+            blockList.add(inv.player.level().getBlockState(p));
         }
     }
 
@@ -87,10 +88,10 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     }
 
     @Override
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int currentLayer = blockList.size() - scrollBar.getCurrentSelection() - 1;
         //Render the layer text scaled, so that it does not start overlapping past 100
-        drawTextScaledBound(matrix, TextComponentUtil.build(minHeight + currentLayer), 111, 87, screenTextColor(), 13);
+        drawTextScaledBound(guiGraphics, TextComponentUtil.build(minHeight + currentLayer), 111, 87, screenTextColor(), 13);
 
         //TODO - V11: Eventually instead of just rendering the item stacks, it would be nice to be able to render the actual vertical column of blocks
         //Render the item stacks or fluids
@@ -113,30 +114,32 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                         continue;
                     }
                     IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(fluid);
-                    renderTarget = (poseStack, x, y) -> {
+                    renderTarget = (graphics, x, y) -> {
                         MekanismRenderer.color(properties.getTintColor());
                         TextureAtlasSprite texture = MekanismRenderer.getSprite(properties.getStillTexture());
-                        GuiUtils.drawSprite(poseStack, x, y, 16, 16, getBlitOffset(), texture);
+                        //TODO - 1.20: Test this works as is for the z level as we used to use the blitOffset
+                        GuiUtils.drawSprite(graphics.pose(), x, y, 16, 16, texture);
                         MekanismRenderer.resetColor();
                     };
                 } else {
-                    renderTarget = (poseStack, x, y) -> renderItem(poseStack, stack, x, y);
+                    renderTarget = (graphics, x, y) -> renderItem(graphics, stack, x, y);
                 }
                 int renderX = 92;
                 int renderY = 146 - 16 * i;
                 if (i == 4) {
-                    renderTarget.render(matrix, renderX, renderY);
+                    renderTarget.render(guiGraphics, renderX, renderY);
                 } else {
-                    matrix.pushPose();
-                    matrix.translate(renderX, renderY, 0);
+                    PoseStack pose = guiGraphics.pose();
+                    pose.pushPose();
+                    pose.translate(renderX, renderY, 0);
                     if (i < 4) {
-                        matrix.translate(1.7F, 2.5F, 0);
+                        pose.translate(1.7F, 2.5F, 0);
                     } else {
-                        matrix.translate(1.5F, 0, 0);
+                        pose.translate(1.5F, 0, 0);
                     }
-                    matrix.scale(0.8F, 0.8F, 0.8F);
-                    renderTarget.render(matrix, 0, 0);
-                    matrix.popPose();
+                    pose.scale(0.8F, 0.8F, 0.8F);
+                    renderTarget.render(guiGraphics, 0, 0);
+                    pose.popPose();
                 }
             }
         }
@@ -145,12 +148,12 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         if (currentLayer >= 0) {
             Block block = blockList.get(currentLayer).getBlock();
             Component displayName = block.getName();
-            drawTextScaledBound(matrix, displayName, 10, 16, screenTextColor(), 57);
+            drawTextScaledBound(guiGraphics, displayName, 10, 16, screenTextColor(), 57);
             frequency = frequencies.computeIfAbsent(block, b -> (int) blockList.stream().filter(blockState -> b == blockState.getBlock()).count());
         }
-        drawTextScaledBound(matrix, MekanismLang.ABUNDANCY.translate(frequency), 10, 26, screenTextColor(), 57);
+        drawTextScaledBound(guiGraphics, MekanismLang.ABUNDANCY.translate(frequency), 10, 26, screenTextColor(), 57);
         MekanismRenderer.resetColor();
-        super.drawForegroundText(matrix, mouseX, mouseY);
+        super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 
     @Override
@@ -161,6 +164,6 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     @FunctionalInterface
     private interface RenderTarget {
 
-        void render(PoseStack poseStack, int x, int y);
+        void render(GuiGraphics guiGraphics, int x, int y);
     }
 }

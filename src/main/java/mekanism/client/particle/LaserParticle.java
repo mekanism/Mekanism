@@ -1,8 +1,7 @@
 package mekanism.client.particle;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.particle.LaserParticleData;
 import net.minecraft.client.Camera;
@@ -16,6 +15,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 public class LaserParticle extends TextureSheetParticle {
 
@@ -50,15 +51,15 @@ public class LaserParticle extends TextureSheetParticle {
         float uMax = getU1();
         float vMin = getV0();
         float vMax = getV1();
-        Quaternion quaternion = direction.getRotation();
-        quaternion.mul(Vector3f.YP.rotation(RADIAN_45));
+        Quaternionf quaternion = direction.getRotation();
+        quaternion.mul(Axis.YP.rotation(RADIAN_45));
         drawComponent(vertexBuilder, getResultVector(quaternion, newX, newY, newZ), uMin, uMax, vMin, vMax);
-        Quaternion quaternion2 = new Quaternion(quaternion);
-        quaternion2.mul(Vector3f.YP.rotation(RADIAN_90));
+        Quaternionf quaternion2 = new Quaternionf(quaternion);
+        quaternion2.mul(Axis.YP.rotation(RADIAN_90));
         drawComponent(vertexBuilder, getResultVector(quaternion2, newX, newY, newZ), uMin, uMax, vMin, vMax);
     }
 
-    private Vector3f[] getResultVector(Quaternion quaternion, float newX, float newY, float newZ) {
+    private Vector3f[] getResultVector(Quaternionf quaternion, float newX, float newY, float newZ) {
         Vector3f[] resultVector = {
               new Vector3f(-quadSize, -halfLength, 0),
               new Vector3f(-quadSize, halfLength, 0),
@@ -66,7 +67,8 @@ public class LaserParticle extends TextureSheetParticle {
               new Vector3f(quadSize, -halfLength, 0)
         };
         for (Vector3f vec : resultVector) {
-            vec.transform(quaternion);
+            //TODO - 1.20: Test this
+            quaternion.transform(vec);
             vec.add(newX, newY, newZ);
         }
         return resultVector;

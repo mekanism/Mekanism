@@ -23,8 +23,8 @@
           "name": "mekanismadditions:obsidian_tnt"
         }
       ],
-      "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanismadditions:blocks/obsidian_tnt"
 }

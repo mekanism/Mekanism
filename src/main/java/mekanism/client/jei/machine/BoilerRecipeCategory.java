@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +34,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import org.jetbrains.annotations.NotNull;
@@ -75,13 +75,13 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
     }
 
     @Override
-    public void draw(BoilerJEIRecipe recipe, IRecipeSlotsView recipeSlotView, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(BoilerJEIRecipe recipe, IRecipeSlotsView recipeSlotView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
         //Update what the current recipe is so that we have the proper values for temperature and the like
         this.recipe = recipe;
-        super.draw(recipe, recipeSlotView, matrixStack, mouseX, mouseY);
+        super.draw(recipe, recipeSlotView, guiGraphics, mouseX, mouseY);
         if (recipe.superHeatedCoolant() == null) {
-            superHeatedCoolantTank.drawBarOverlay(matrixStack);
-            cooledCoolantTank.drawBarOverlay(matrixStack);
+            superHeatedCoolantTank.drawBarOverlay(guiGraphics);
+            cooledCoolantTank.drawBarOverlay(guiGraphics);
         }
         this.recipe = null;
     }

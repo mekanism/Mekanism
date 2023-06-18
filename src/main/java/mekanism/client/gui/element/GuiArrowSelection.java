@@ -1,12 +1,12 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -25,29 +25,30 @@ public class GuiArrowSelection extends GuiTexturedElement {
     @Override
     public boolean isMouseOver(double xAxis, double yAxis) {
         //TODO: override isHovered
-        return this.active && this.visible && xAxis >= x + 16 && xAxis < x + width - 1 && yAxis >= y + 1 && yAxis < y + height - 1;
+        return this.active && this.visible && xAxis >= getX() + 16 && xAxis < getX() + width - 1 && yAxis >= getY() + 1 && yAxis < getY() + height - 1;
     }
 
     @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.renderToolTip(matrix, mouseX, mouseY);
+    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderToolTip(guiGraphics, mouseX, mouseY);
         Component component = textComponentSupplier.get();
         if (component != null) {
             int tooltipX = mouseX + 5;
             int tooltipY = mouseY - 5;
-            GuiUtils.renderBackgroundTexture(matrix, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE, tooltipX - 3, tooltipY - 4, getStringWidth(component) + 6, 16, 256, 256);
-            matrix.pushPose();
+            GuiUtils.renderBackgroundTexture(guiGraphics, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE, tooltipX - 3, tooltipY - 4, getStringWidth(component) + 6, 16, 256, 256);
+            //TODO - 1.20: Validate if this is still necessary
+            PoseStack pose = guiGraphics.pose();
+            pose.pushPose();
             //Make sure the text is above other renders like JEI
-            matrix.translate(0, 0, 300);
-            drawString(matrix, component, tooltipX, tooltipY, screenTextColor());
-            matrix.popPose();
+            pose.translate(0, 0, 300);
+            drawString(guiGraphics, component, tooltipX, tooltipY, screenTextColor());
+            pose.popPose();
         }
     }
 
     @Override
-    public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        RenderSystem.setShaderTexture(0, getResource());
-        blit(matrix, x, y, 0, 0, width, height, width, height);
+    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
+        guiGraphics.blit(getResource(), getX(), getY(), 0, 0, width, height, width, height);
     }
 }

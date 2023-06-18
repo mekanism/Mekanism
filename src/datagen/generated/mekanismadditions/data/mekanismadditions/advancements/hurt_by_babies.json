@@ -69,5 +69,6 @@
     "title": {
       "translate": "advancements.mekanismadditions.hurt_by_babies.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

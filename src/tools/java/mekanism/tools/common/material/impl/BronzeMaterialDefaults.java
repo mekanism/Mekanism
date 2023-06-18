@@ -6,7 +6,7 @@ import mekanism.tools.common.material.BaseMekanismMaterial;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -60,24 +60,22 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForSlot(@NotNull EquipmentSlot slotType) {
-        return switch (slotType) {
-            case FEET -> 234;
-            case LEGS -> 270;
-            case CHEST -> 288;
-            case HEAD -> 198;
-            default -> 0;
+    public int getDurabilityForType(@NotNull ArmorItem.Type armorType) {
+        return switch (armorType) {
+            case BOOTS -> 234;
+            case LEGGINGS -> 270;
+            case CHESTPLATE -> 288;
+            case HELMET -> 198;
         };
     }
 
     @Override
-    public int getDefenseForSlot(@NotNull EquipmentSlot slotType) {
-        return switch (slotType) {
-            case FEET -> 2;
-            case LEGS -> 6;
-            case CHEST -> 7;
-            case HEAD -> 3;
-            default -> 0;
+    public int getDefenseForType(@NotNull ArmorItem.Type armorType) {
+        return switch (armorType) {
+            case BOOTS -> 2;
+            case LEGGINGS -> 6;
+            case CHESTPLATE -> 7;
+            case HELMET -> 3;
         };
     }
 

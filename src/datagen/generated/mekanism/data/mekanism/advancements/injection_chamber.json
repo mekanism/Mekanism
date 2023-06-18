@@ -26,5 +26,6 @@
     "title": {
       "translate": "advancements.mekanism.injection_chamber.title"
     }
-  }
+  },
+  "sends_telemetry_event": true
 }

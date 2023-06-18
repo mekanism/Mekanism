@@ -12,6 +12,7 @@ import mekanism.common.resource.IResource;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
@@ -21,8 +22,8 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismBlockModelProvider> {
 
-    public MekanismBlockStateProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, Mekanism.MODID, existingFileHelper, MekanismBlockModelProvider::new);
+    public MekanismBlockStateProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, Mekanism.MODID, existingFileHelper, MekanismBlockModelProvider::new);
     }
 
     @Override

@@ -1,0 +1,29 @@
+{
+  "type": "mekanism:ore",
+  "config": {
+    "oreVeinType": {
+      "type": "tin",
+      "index": 1
+    },
+    "targets": [
+      {
+        "state": {
+          "Name": "mekanism:tin_ore"
+        },
+        "target": {
+          "predicate_type": "minecraft:tag_match",
+          "tag": "minecraft:stone_ore_replaceables"
+        }
+      },
+      {
+        "state": {
+          "Name": "mekanism:deepslate_tin_ore"
+        },
+        "target": {
+          "predicate_type": "minecraft:tag_match",
+          "tag": "minecraft:deepslate_ore_replaceables"
+        }
+      }
+    ]
+  }
+}

@@ -280,6 +280,7 @@
   "block.mekanismadditions.yellow_plastic_transparent_stairs": "Yellow Transparent Plastic Stairs",
   "block.mekanismadditions.yellow_reinforced_plastic": "Yellow Reinforced Plastic Block",
   "block.mekanismadditions.yellow_slick_plastic": "Yellow Slick Plastic Block",
+  "constants.mekanismadditions.pack_description": "Resources used for Mekanism: Additions",
   "description.mekanismadditions.glow_panel": "A modern, ever-lasting light source. Now in many colors!",
   "description.mekanismadditions.obsidian_tnt": "An extremely powerful, obsidian-infused block of TNT. Use at your own peril.",
   "entity.mekanismadditions.baby_creeper": "Baby Creeper",
