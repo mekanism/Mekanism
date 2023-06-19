@@ -18,6 +18,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -178,8 +179,9 @@ public class GuiTextField extends GuiElement {
         textField.tick();
     }
 
+    @Nullable
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public GuiElement mouseClickedNested(double mouseX, double mouseY, int button) {
         boolean prevFocus = isTextFieldFocused();
         double scaledX = mouseX;
         // figure out the proper mouse placement based on text scaling
@@ -191,7 +193,7 @@ public class GuiTextField extends GuiElement {
         if (!prevFocus && isTextFieldFocused()) {
             gui().focusChange(this);
         }
-        return ret || super.mouseClicked(mouseX, mouseY, button);
+        return ret ? this : super.mouseClickedNested(mouseX, mouseY, button);
     }
 
     @Override

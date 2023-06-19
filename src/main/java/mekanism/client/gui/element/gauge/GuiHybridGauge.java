@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.common.lib.transmitter.TransmissionType;
 import net.minecraft.client.renderer.Rect2i;
@@ -42,11 +43,13 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
         return this;
     }
 
+    @Nullable
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public GuiElement mouseClickedNested(double mouseX, double mouseY, int button) {
         // pass the click event to both gauges; if both a fluid and gas are stored in the dropper, insertion checks should prevent both from being
         // inserted at the same time
-        return gasGauge.mouseClicked(mouseX, mouseY, button) | fluidGauge.mouseClicked(mouseX, mouseY, button);
+        boolean clicked = gasGauge.mouseClicked(mouseX, mouseY, button) | fluidGauge.mouseClicked(mouseX, mouseY, button);
+        return clicked ? this : null;
     }
 
     @Override

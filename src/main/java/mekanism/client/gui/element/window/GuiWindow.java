@@ -20,6 +20,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
@@ -97,9 +98,10 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         return interactionStrategy;
     }
 
+    @Nullable
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        boolean ret = super.mouseClicked(mouseX, mouseY, button);
+    public GuiElement mouseClickedNested(double mouseX, double mouseY, int button) {
+        GuiElement ret = super.mouseClickedNested(mouseX, mouseY, button);
         // drag 'safe area'
         if (isMouseOver(mouseX, mouseY)) {
             if (mouseY < getY() + 18) {
@@ -109,19 +111,22 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
                 prevDX = 0;
                 prevDY = 0;
             }
-        } else if (!ret && interactionStrategy.allowContainer()) {
+        } else if (ret == null && interactionStrategy.allowContainer()) {
             if (gui() instanceof GuiMekanism<?> gui) {
                 AbstractContainerMenu c = gui.getMenu();
                 if (!(c instanceof IEmptyContainer)) {
                     // allow interaction with slots
                     if (mouseX >= getGuiLeft() && mouseX < getGuiLeft() + getGuiWidth() && mouseY >= getGuiTop() + getGuiHeight() - 90) {
-                        return false;
+                        return null;
                     }
                 }
             }
         }
-        // always return true to prevent background clicking
-        return ret || !interactionStrategy.allowAll();
+        if (ret == null) {
+            // always return true to prevent background clicking
+            return interactionStrategy.allowAll() ? null : this;
+        }
+        return ret;
     }
 
     @Override

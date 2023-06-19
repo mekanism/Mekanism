@@ -254,18 +254,29 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         guiObj.displayTooltips(guiGraphics, mouseX, mouseY, components);
     }
 
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (GuiUtils.checkChildren(children, child -> child.mouseClicked(mouseX, mouseY, button))) {
-            return true;
+    //TODO - 1.20: Do more testing to make sure all implementations of this behave appropriately
+    // Also do we want things like the merged bars/gauges to have setFocused also mark the "children" as focused?
+    @Nullable
+    public GuiElement mouseClickedNested(double mouseX, double mouseY, int button) {
+        for (int i = children.size() - 1; i >= 0; i--) {
+            GuiElement child = children.get(i);
+            GuiElement childResult = child.mouseClickedNested(mouseX, mouseY, button);
+            if (childResult != null) {
+                return childResult;
+            }
         }
-        //Vanilla Copy of super modified to make the click keep track of the button used
+        //Vanilla Copy of super.mouseClicked modified to make the click keep track of the button used and return a GuiElement instead of a boolean
         if (this.active && this.visible && isValidClickButton(button) && clicked(mouseX, mouseY)) {
             playDownSound(minecraft.getSoundManager());
             onClick(mouseX, mouseY, button);
-            return true;
+            return this;
         }
-        return false;
+        return null;
+    }
+
+    @Override
+    public final boolean mouseClicked(double mouseX, double mouseY, int button) {
+        return mouseClickedNested(mouseX, mouseY, button) != null;
     }
 
     @Override

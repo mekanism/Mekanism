@@ -372,10 +372,14 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         // otherwise, we send it to the current element (this is the same as super.super, but in reverse order)
         for (int i = children().size() - 1; i >= 0; i--) {
             GuiEventListener listener = children().get(i);
-            if (listener.mouseClicked(mouseX, mouseY, button)) {
-                //TODO - 1.20: Is this meant to go to the child element actually interacted with?
-                // I think it needs to and is likely why things like the QIO Frequency Select don't allow typing
-                setFocused(listener);
+            GuiEventListener focusedChild = null;
+            if (listener instanceof GuiElement element) {
+                focusedChild = element.mouseClickedNested(mouseX, mouseY, button);
+            } else if (listener.mouseClicked(mouseX, mouseY, button)) {
+                focusedChild = listener;
+            }
+            if (focusedChild != null) {
+                setFocused(focusedChild);
                 if (button == GLFW.GLFW_MOUSE_BUTTON_1) {
                     setDragging(true);
                 }
