@@ -113,6 +113,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
                     s = ChatFormatting.YELLOW.toString() + max;
                 }
                 currentStack = heldStack.copyWithCount(placed);
+                shouldDrawOverlay = true;
             } else {
                 quickCraftSlots.remove(slot);
                 recalculateQuickCraftRemaining();

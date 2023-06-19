@@ -77,7 +77,7 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
         int slotX = (xAxis - relativeX) / 18, slotY = (yAxis - relativeY) / 18;
         if (slotX >= 0 && slotY >= 0 && slotX < xSlots && slotY < ySlots) {
             int slotStartX = relativeX + slotX * 18 + 1, slotStartY = relativeY + slotY * 18 + 1;
-            if (xAxis >= slotStartX && xAxis < slotStartX + 16 && yAxis >= slotStartY && yAxis < slotStartY + 16) {
+            if (xAxis >= slotStartX && xAxis < slotStartX + 16 && yAxis >= slotStartY && yAxis < slotStartY + 16 && checkWindows(mouseX, mouseY)) {
                 guiGraphics.fill(slotStartX, slotStartY, slotStartX + 16, slotStartY + 16, GuiSlot.DEFAULT_HOVER_COLOR);
                 MekanismRenderer.resetColor();
             }

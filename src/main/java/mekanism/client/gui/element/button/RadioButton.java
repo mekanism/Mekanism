@@ -30,7 +30,7 @@ public class RadioButton extends MekanismButton {
         if (toggled.getAsBoolean()) {
             guiGraphics.blit(RADIO, getButtonX(), getButtonY(), 0, RADIO_SIZE, getButtonWidth(), getButtonHeight(), 2 * RADIO_SIZE, 2 * RADIO_SIZE);
         } else {
-            int uOffset = isHoveredOrFocused() ? RADIO_SIZE : 0;
+            int uOffset = checkWindows(mouseX, mouseY, isHoveredOrFocused()) ? RADIO_SIZE : 0;
             guiGraphics.blit(RADIO, getButtonX(), getButtonY(), uOffset, 0, getButtonWidth(), getButtonHeight(), 2 * RADIO_SIZE, 2 * RADIO_SIZE);
         }
     }

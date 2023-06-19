@@ -168,7 +168,8 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISup
 
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if (renderHover && isHoveredOrFocused()) {
+        boolean hovered = checkWindows(mouseX, mouseY, isHoveredOrFocused());
+        if (renderHover && hovered) {
             int xPos = relativeX + 1;
             int yPos = relativeY + 1;
             guiGraphics.fill(xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
@@ -185,7 +186,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISup
             pose.popPose();
             MekanismRenderer.resetColor();
         }
-        if (isHoveredOrFocused()) {
+        if (hovered) {
             //TODO: Should it pass it the proper mouseX and mouseY. Probably, though buttons may have to be redone slightly then
             renderToolTip(guiGraphics, mouseX - getGuiLeft(), mouseY - getGuiTop());
         }

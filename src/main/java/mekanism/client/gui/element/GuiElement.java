@@ -241,6 +241,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     public void renderBackgroundOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY) {
     }
 
+    //TODO - 1.20: Evaluate new tooltip system and maybe make use of it??
     public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         children.stream().filter(child -> child.isMouseOver(mouseX, mouseY))
               .forEach(child -> child.renderToolTip(guiGraphics, mouseX, mouseY));
@@ -384,6 +385,20 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     public final boolean isMouseOverCheckWindows(double mouseX, double mouseY) {
         //TODO: Ideally we would have the various places that call this instead check isHovered if we can properly override setting that
         boolean isHovering = isMouseOver(mouseX, mouseY);
+        return checkWindows(mouseX, mouseY, isHovering);
+    }
+
+    /**
+     * Helper to correct potentially inaccurate hovering or in bounds checks.
+     */
+    protected final boolean checkWindows(double mouseX, double mouseY) {
+        return checkWindows(mouseX, mouseY, true);
+    }
+
+    /**
+     * Helper to correct potentially inaccurate hovering or in bounds checks.
+     */
+    protected final boolean checkWindows(double mouseX, double mouseY, boolean isHovering) {
         if (isHovering) {
             //If the mouse is over this element, check if there is a window that would intercept the mouse
             GuiWindow window = guiObj.getWindowHovering(mouseX, mouseY);

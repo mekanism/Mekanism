@@ -109,9 +109,10 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
             if (slotX >= 0 && slotY >= 0 && slotX < SLOT_COUNT && slotY < SLOT_COUNT) {
                 int slotStartX = relativeX + slotX * SLOT_DIMENSIONS, slotStartY = relativeY + slotY * SLOT_DIMENSIONS;
                 if (xAxis >= slotStartX && xAxis < slotStartX + SLOT_DIMENSIONS && yAxis >= slotStartY && yAxis < slotStartY + SLOT_DIMENSIONS) {
-                    //Only draw the selection hover layer if we are actually rendering over a slot
+                    //Only draw the selection hover layer if we are actually rendering over a slot, and another window isn't blocking our mouse
+                    // Note: Currently we have no other windows that could be in front of it
                     int slot = (slotY + scrollBar.getCurrentSelection()) * SLOT_COUNT + slotX;
-                    if (slot < skins.size()) {
+                    if (checkWindows(mouseX, mouseY, slot < skins.size())) {
                         guiGraphics.fill(slotStartX, slotStartY, slotStartX + SLOT_DIMENSIONS, slotStartY + SLOT_DIMENSIONS, 0x70FFEA00);
                         MekanismRenderer.resetColor();
                     }
