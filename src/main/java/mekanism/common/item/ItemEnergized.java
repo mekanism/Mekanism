@@ -5,13 +5,12 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedFloatingLongValue;
-import mekanism.common.registries.MekanismCreativeTabs.ICustomCreativeTabContents;
+import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -62,8 +61,7 @@ public class ItemEnergized extends CapabilityItem implements ICustomCreativeTabC
     }
 
     @Override
-    public void addItems(CreativeModeTab.Output tabOutput, IItemProvider self) {
-        ICustomCreativeTabContents.super.addItems(tabOutput, self);
+    public void addItems(CreativeModeTab.Output tabOutput) {
         if (maxEnergySupplier instanceof CachedFloatingLongValue configValue) {
             tabOutput.accept(StorageUtils.getFilledEnergyVariant(new ItemStack(this), configValue));
         } else {

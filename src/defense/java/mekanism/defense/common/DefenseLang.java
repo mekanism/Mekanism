@@ -6,6 +6,7 @@ import net.minecraft.Util;
 
 @NothingNullByDefault
 public enum DefenseLang implements ILangEntry {
+    MEKANISM_DEFENSE("constants", "mod_name"),
     PACK_DESCRIPTION("constants", "pack_description");
 
     private final String key;

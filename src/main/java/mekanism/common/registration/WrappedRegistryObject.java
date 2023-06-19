@@ -1,7 +1,9 @@
 package mekanism.common.registration;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.registries.RegistryObject;
 
 @NothingNullByDefault
@@ -21,5 +23,9 @@ public class WrappedRegistryObject<T> implements Supplier<T>, INamedEntry {
     @Override
     public String getInternalRegistryName() {
         return registryObject.getId().getPath();
+    }
+
+    public ResourceKey<T> key() {
+        return Objects.requireNonNull(registryObject.getKey(), "Resource key should not be null");
     }
 }

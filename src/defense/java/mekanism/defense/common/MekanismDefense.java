@@ -8,6 +8,7 @@ import mekanism.defense.common.config.MekanismDefenseConfig;
 import mekanism.defense.common.network.DefensePacketHandler;
 import mekanism.defense.common.registries.DefenseBlocks;
 import mekanism.defense.common.registries.DefenseContainerTypes;
+import mekanism.defense.common.registries.DefenseCreativeTabs;
 import mekanism.defense.common.registries.DefenseItems;
 import mekanism.defense.common.registries.DefenseTileEntityTypes;
 import net.minecraft.resources.ResourceLocation;
@@ -47,6 +48,7 @@ public class MekanismDefense implements IModModule {
         modEventBus.addListener(this::onConfigLoad);
         DefenseItems.ITEMS.register(modEventBus);
         DefenseBlocks.BLOCKS.register(modEventBus);
+        DefenseCreativeTabs.CREATIVE_TABS.register(modEventBus);
         DefenseContainerTypes.CONTAINER_TYPES.register(modEventBus);
         DefenseTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
 

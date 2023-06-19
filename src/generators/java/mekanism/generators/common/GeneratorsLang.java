@@ -6,6 +6,7 @@ import net.minecraft.Util;
 
 @NothingNullByDefault
 public enum GeneratorsLang implements ILangEntry {
+    MEKANISM_GENERATORS("constants", "mod_name"),
     PACK_DESCRIPTION("constants", "pack_description"),
     PRODUCING_AMOUNT("gui", "producing.amount"),
     STORED_BIO_FUEL("gui", "bio_generator.bio_fuel"),

@@ -3,6 +3,7 @@ package mekanism.tools.client;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.lang.BaseLanguageProvider;
+import mekanism.common.Mekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsLang;
@@ -18,7 +19,6 @@ public class ToolsLangProvider extends BaseLanguageProvider {
 
     @Override
     protected void addTranslations() {
-        add(ToolsLang.PACK_DESCRIPTION, "Resources used for Mekanism: Tools");
         addItems();
         addAdvancements();
         addMisc();
@@ -60,6 +60,9 @@ public class ToolsLangProvider extends BaseLanguageProvider {
     }
 
     private void addMisc() {
+        String name = Mekanism.MOD_NAME + ": Tools";
+        add(ToolsLang.MEKANISM_TOOLS, name);
+        add(ToolsLang.PACK_DESCRIPTION, "Resources used for " + name);
         add(ToolsLang.HP, "HP: %1$s");
     }
 

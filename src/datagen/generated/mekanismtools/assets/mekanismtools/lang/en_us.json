@@ -11,6 +11,7 @@
   "advancements.mekanismtools.not_enough_shielding.title": "Not Enough Shielding",
   "advancements.mekanismtools.paxel.description": "Craft any Paxel (Pickaxe, Axe, Shovel)",
   "advancements.mekanismtools.paxel.title": "Multi-Tool",
+  "constants.mekanismtools.mod_name": "Mekanism: Tools",
   "constants.mekanismtools.pack_description": "Resources used for Mekanism: Tools",
   "item.mekanismtools.bronze_axe": "Bronze Axe",
   "item.mekanismtools.bronze_boots": "Bronze Boots",

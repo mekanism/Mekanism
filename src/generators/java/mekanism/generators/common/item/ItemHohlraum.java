@@ -11,20 +11,23 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
 import mekanism.common.item.CapabilityItem;
+import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.StorageUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
+import mekanism.generators.common.registries.GeneratorsGases;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemHohlraum extends CapabilityItem {
+public class ItemHohlraum extends CapabilityItem implements ICustomCreativeTabContents {
 
     public ItemHohlraum(Properties properties) {
         super(properties.stacksTo(1));
@@ -68,14 +71,10 @@ public class ItemHohlraum extends CapabilityItem {
         return ChemicalUtil.getRGBDurabilityForDisplay(stack);
     }
 
-    //TODO - 1.20: Add this to a creative tab, we also have to add all other items from mek generators, mek additions, and mek tools
-    /*@Override
-    public void fillItemCategory(@NotNull CreativeModeTab group, @NotNull NonNullList<ItemStack> items) {
-        super.fillItemCategory(group, items);
-        if (allowedIn(group)) {
-            items.add(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismGeneratorsConfig.generators.hohlraumMaxGas, GeneratorsGases.FUSION_FUEL));
-        }
-    }*/
+    @Override
+    public void addItems(CreativeModeTab.Output tabOutput) {
+        tabOutput.accept(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismGeneratorsConfig.generators.hohlraumMaxGas, GeneratorsGases.FUSION_FUEL));
+    }
 
     @Override
     protected boolean areCapabilityConfigsLoaded() {

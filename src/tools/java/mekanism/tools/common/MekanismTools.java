@@ -12,6 +12,7 @@ import mekanism.common.lib.Version;
 import mekanism.tools.common.config.MekanismToolsConfig;
 import mekanism.tools.common.config.ToolsConfig.ArmorSpawnChanceConfig;
 import mekanism.tools.common.material.BaseMekanismMaterial;
+import mekanism.tools.common.registries.ToolsCreativeTabs;
 import mekanism.tools.common.registries.ToolsItems;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
 import net.minecraft.resources.ResourceLocation;
@@ -57,6 +58,7 @@ public class MekanismTools implements IModModule {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);
         ToolsItems.ITEMS.register(modEventBus);
+        ToolsCreativeTabs.CREATIVE_TABS.register(modEventBus);
         ToolsRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer());

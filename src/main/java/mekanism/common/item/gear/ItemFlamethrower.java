@@ -10,7 +10,6 @@ import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.math.MathUtils;
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
@@ -24,7 +23,7 @@ import mekanism.common.item.CapabilityItem;
 import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
-import mekanism.common.registries.MekanismCreativeTabs.ICustomCreativeTabContents;
+import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.ItemDataUtils;
@@ -82,8 +81,7 @@ public class ItemFlamethrower extends CapabilityItem implements IItemHUDProvider
     }
 
     @Override
-    public void addItems(CreativeModeTab.Output tabOutput, IItemProvider self) {
-        ICustomCreativeTabContents.super.addItems(tabOutput, self);
+    public void addItems(CreativeModeTab.Output tabOutput) {
         tabOutput.accept(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismConfig.gear.flamethrowerMaxGas, MekanismGases.HYDROGEN));
     }
 

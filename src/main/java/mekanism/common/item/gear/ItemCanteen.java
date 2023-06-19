@@ -4,14 +4,13 @@ import java.util.List;
 import java.util.Optional;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
-import mekanism.api.providers.IItemProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.CapabilityItem;
-import mekanism.common.registries.MekanismCreativeTabs.ICustomCreativeTabContents;
+import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.StorageUtils;
@@ -62,8 +61,7 @@ public class ItemCanteen extends CapabilityItem implements ICustomCreativeTabCon
     }
 
     @Override
-    public void addItems(CreativeModeTab.Output tabOutput, IItemProvider self) {
-        ICustomCreativeTabContents.super.addItems(tabOutput, self);
+    public void addItems(CreativeModeTab.Output tabOutput) {
         tabOutput.accept(FluidUtils.getFilledVariant(new ItemStack(this), MekanismConfig.gear.canteenMaxStorage, MekanismFluids.NUTRITIONAL_PASTE));
     }
 

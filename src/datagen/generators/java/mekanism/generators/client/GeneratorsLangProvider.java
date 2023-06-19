@@ -1,6 +1,7 @@
 package mekanism.generators.client;
 
 import mekanism.client.lang.BaseLanguageProvider;
+import mekanism.common.Mekanism;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.advancements.GeneratorsAdvancements;
@@ -20,7 +21,6 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
 
     @Override
     protected void addTranslations() {
-        add(GeneratorsLang.PACK_DESCRIPTION, "Resources used for Mekanism: Generators");
         addItems();
         addBlocks();
         addFluids();
@@ -94,6 +94,9 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
     }
 
     private void addMisc() {
+        String name = Mekanism.MOD_NAME + ": Generators";
+        add(GeneratorsLang.MEKANISM_GENERATORS, name);
+        add(GeneratorsLang.PACK_DESCRIPTION, "Resources used for " + name);
         add(GeneratorsLang.REACTOR_LOGIC_ACTIVE_COOLING, "Active cooling: %1$s");
         add(GeneratorsLang.GAS_BURN_RATE, "Burn Rate: %1$s mB/t");
         add(GeneratorsLang.STATS_TAB, "Stats");
