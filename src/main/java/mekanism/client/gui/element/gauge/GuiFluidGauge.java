@@ -80,13 +80,14 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
         return Math.round(scale * (height - 2));
     }
 
+    @Nullable
     @Override
     public TextureAtlasSprite getIcon() {
-        if (dummy || getTank() == null) {
+        if (dummy) {
             return MekanismRenderer.getFluidTexture(dummyType, FluidTextureType.STILL);
         }
-        FluidStack fluid = getTank().getFluid();
-        return MekanismRenderer.getFluidTexture(fluid.isEmpty() ? dummyType : fluid, FluidTextureType.STILL);
+        IExtendedFluidTank tank = getTank();
+        return tank == null || tank.isEmpty() ? null : MekanismRenderer.getFluidTexture(tank.getFluid(), FluidTextureType.STILL);
     }
 
     @Override

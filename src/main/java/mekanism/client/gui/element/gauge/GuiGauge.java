@@ -51,6 +51,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
 
     public abstract int getScaledLevel();
 
+    @Nullable
     public abstract TextureAtlasSprite getIcon();
 
     public abstract Component getLabel();

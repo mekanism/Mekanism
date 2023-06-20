@@ -69,12 +69,14 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
         return MathUtils.clampToInt(Math.round(scale * (height - 2)));
     }
 
+    @Nullable
     @Override
     public TextureAtlasSprite getIcon() {
         if (dummy) {
             return MekanismRenderer.getChemicalTexture(dummyType);
         }
-        return getTank() == null || getTank().isEmpty() ? null : MekanismRenderer.getChemicalTexture(getTank().getType());
+        TANK tank = getTank();
+        return tank == null || tank.isEmpty() ? null : MekanismRenderer.getChemicalTexture(tank.getType());
     }
 
     @Override

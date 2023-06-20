@@ -101,6 +101,7 @@ public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IGasTrac
         return currentGauge == null ? 0 : currentGauge.getScaledLevel();
     }
 
+    @Nullable
     @Override
     public TextureAtlasSprite getIcon() {
         return getCurrentGauge().getIcon();

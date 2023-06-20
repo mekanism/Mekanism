@@ -76,6 +76,7 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
         return Math.max(gasGauge.getScaledLevel(), fluidGauge.getScaledLevel());
     }
 
+    @Nullable
     @Override
     public TextureAtlasSprite getIcon() {
         return gasTankSupplier.get() == null || gasTankSupplier.get().isEmpty() ? fluidGauge.getIcon() : gasGauge.getIcon();

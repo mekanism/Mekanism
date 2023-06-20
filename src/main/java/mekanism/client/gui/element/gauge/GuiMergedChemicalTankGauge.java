@@ -101,6 +101,7 @@ public class GuiMergedChemicalTankGauge<HANDLER extends IGasTracker & IInfusionT
         return currentGauge == null ? 0 : currentGauge.getScaledLevel();
     }
 
+    @Nullable
     @Override
     public TextureAtlasSprite getIcon() {
         return getCurrentGauge().getIcon();
