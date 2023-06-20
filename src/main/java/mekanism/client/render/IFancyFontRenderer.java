@@ -33,6 +33,14 @@ public interface IFancyFontRenderer {
         return SpecialColors.TEXT_SCREEN.argb();
     }
 
+    default int activeButtonTextColor() {
+        return SpecialColors.TEXT_ACTIVE_BUTTON.argb();
+    }
+
+    default int inactiveButtonTextColor() {
+        return SpecialColors.TEXT_INACTIVE_BUTTON.argb();
+    }
+
     default int drawString(GuiGraphics guiGraphics, Component component, int x, int y, int color) {
         return guiGraphics.drawString(getFont(), component, x, y, color, false);
     }
