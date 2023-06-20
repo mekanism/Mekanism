@@ -6,11 +6,13 @@ import java.util.function.Predicate;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.math.MathUtils;
+import mekanism.client.gui.GuiUtils;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.IItemDecorator;
 import net.minecraftforge.common.capabilities.Capability;
@@ -36,7 +38,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
         this.visibleFor = visibleFor;
     }
 
-    @Override//TODO - 1.20: Test this
+    @Override
     public boolean render(GuiGraphics guiGraphics, Font font, ItemStack stack, int xOffset, int yOffset) {
         if (!visibleFor.test(stack)) {
             return false;
@@ -72,8 +74,8 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
 
     protected static void renderBar(GuiGraphics guiGraphics, int stackXPos, int yPos, long amount, long capacity, int color) {
         int pixelWidth = convertWidth(StorageUtils.getRatio(amount, capacity));
-        guiGraphics.fill(stackXPos + 2 + pixelWidth, yPos, 13 - pixelWidth, 1, 0xFF000000);
-        guiGraphics.fill(stackXPos + 2, yPos, pixelWidth, 1, color);
+        GuiUtils.fill(guiGraphics, RenderType.guiOverlay(), stackXPos + 2 + pixelWidth, yPos, 13 - pixelWidth, 1, 0xFF000000);
+        GuiUtils.fill(guiGraphics, RenderType.guiOverlay(), stackXPos + 2, yPos, pixelWidth, 1, color);
     }
 
     private static int convertWidth(double width) {

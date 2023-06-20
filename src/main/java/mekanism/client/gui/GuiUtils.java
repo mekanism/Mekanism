@@ -16,6 +16,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -149,6 +150,12 @@ public class GuiUtils {
         if (height > 2) {
             fill(guiGraphics, x, y + 1, 1, height - 2, color);
             fill(guiGraphics, x + width - 1, y + 1, 1, height - 2, color);
+        }
+    }
+
+    public static void fill(GuiGraphics guiGraphics, RenderType renderType, int x, int y, int width, int height, int color) {
+        if (width != 0 && height != 0) {
+            guiGraphics.fill(renderType, x, y, x + width, y + height, color);
         }
     }
 

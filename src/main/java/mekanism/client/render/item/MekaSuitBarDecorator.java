@@ -31,7 +31,7 @@ public class MekaSuitBarDecorator implements IItemDecorator {
     private MekaSuitBarDecorator() {
     }
 
-    @Override//TODO - 1.20: Test this
+    @Override
     public boolean render(GuiGraphics guiGraphics, Font font, ItemStack stack, int xOffset, int yOffset) {
         if (stack.isEmpty() || !(stack.getItem() instanceof ItemMekaSuitArmor armor)) {
             return false;
