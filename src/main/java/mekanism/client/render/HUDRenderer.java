@@ -29,6 +29,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+//TODO - 1.20: Decide if we want font rendering in this to support GuiUtils#drawBackdrop and if so how to best go about it
 public class HUDRenderer {
 
     private static final EquipmentSlot[] EQUIPMENT_ORDER = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.MAINHAND,
@@ -45,14 +46,13 @@ public class HUDRenderer {
     private float prevRotationYaw;
     private float prevRotationPitch;
 
-    public void renderHUD(GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight, int maxTextHeight, boolean reverseHud) {
-        Minecraft minecraft = Minecraft.getInstance();
+    public void renderHUD(Minecraft minecraft, GuiGraphics guiGraphics, Font font, float partialTick, int screenWidth, int screenHeight, int maxTextHeight,
+          boolean reverseHud) {
         Player player = minecraft.player;
         update(minecraft.level, player);
         if (MekanismConfig.client.hudOpacity.get() < 0.05F) {
             return;
         }
-        Font font = minecraft.font;
         int color = HUDColor.REGULAR.getColorARGB();
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();

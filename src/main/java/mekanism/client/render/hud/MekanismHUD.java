@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import mekanism.client.gui.GuiUtils;
 import mekanism.client.render.HUDRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -58,6 +59,7 @@ public class MekanismHUD implements IGuiOverlay {
                     }
                 }
             }
+            Font font = gui.getFont();
             boolean reverseHud = MekanismConfig.client.reverseHUD.get();
             int maxTextHeight = screenHeight;
             if (count > 0) {
@@ -70,9 +72,31 @@ public class MekanismHUD implements IGuiOverlay {
                 PoseStack pose = guiGraphics.pose();
                 pose.pushPose();
                 pose.scale(hudScale, hudScale, hudScale);
+
+                int backgroundColor = minecraft.options.getBackgroundColor(0.0F);
+                if (backgroundColor != 0) {
+                    //If we need to render the background behind it based on accessibility options
+                    // calculate how big an area we need and draw it
+                    int maxTextWidth = 0;
+                    for (List<Component> group : renderStrings) {
+                        for (Component text : group) {
+                            int textWidth = font.width(text);
+                            if (textWidth > maxTextWidth) {
+                                maxTextWidth = textWidth;
+                            }
+                        }
+                    }
+                    int x = reverseHud ? xScale - maxTextWidth - 2 : 2;
+                    GuiUtils.drawBackdrop(guiGraphics, Minecraft.getInstance(), x, y, maxTextWidth, maxTextHeight, 0xFFFFFFFF);
+                }
+
                 for (List<Component> group : renderStrings) {
                     for (Component text : group) {
-                        drawString(minecraft.font, xScale, guiGraphics, text, reverseHud, y, 0xC8C8C8);
+                        int textWidth = font.width(text);
+                        //Align text to right if hud is reversed, otherwise align to the left
+                        //Note: that we always offset by 2 pixels from the edge of the screen regardless of how it is aligned
+                        int x = reverseHud ? xScale - textWidth - 2 : 2;
+                        guiGraphics.drawString(font, text, x, y, 0xFFC8C8C8);
                         y += 9;
                     }
                     y += 2;
@@ -81,7 +105,7 @@ public class MekanismHUD implements IGuiOverlay {
             }
 
             if (player.getItemBySlot(EquipmentSlot.HEAD).is(MekanismTags.Items.MEKASUIT_HUD_RENDERER)) {
-                hudRenderer.renderHUD(guiGraphics, partialTicks, screenWidth, screenHeight, maxTextHeight, reverseHud);
+                hudRenderer.renderHUD(minecraft, guiGraphics, font, partialTicks, screenWidth, screenHeight, maxTextHeight, reverseHud);
             }
         }
     }
@@ -96,15 +120,4 @@ public class MekanismHUD implements IGuiOverlay {
         return size;
     }
 
-    private void drawString(Font font, int windowWidth, GuiGraphics guiGraphics, Component text, boolean reverseHud, int y, int color) {
-        //Note that we always offset by 2 pixels from the edge of the screen regardless of how it is aligned
-        if (reverseHud) {
-            //Align the text to the right
-            int width = font.width(text) + 2;
-            guiGraphics.drawString(font, text, windowWidth - width, y, color);
-        } else {
-            //Align to the left
-            guiGraphics.drawString(font, text, 2, y, color);
-        }
-    }
 }

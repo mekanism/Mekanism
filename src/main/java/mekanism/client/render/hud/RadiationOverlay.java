@@ -16,6 +16,7 @@ public class RadiationOverlay implements IGuiOverlay {
     public static final RadiationOverlay INSTANCE = new RadiationOverlay();
 
     private double prevRadiation = 0;
+    private long lastTick;
 
     private RadiationOverlay() {
     }
@@ -31,11 +32,15 @@ public class RadiationOverlay implements IGuiOverlay {
             player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
                 double radiation = c.getRadiation();
                 double severity = RadiationScale.getScaledDoseSeverity(radiation) * 0.8;
-                if (prevRadiation < severity) {
-                    prevRadiation = Math.min(severity, prevRadiation + 0.01);
-                }
-                if (prevRadiation > severity) {
-                    prevRadiation = Math.max(severity, prevRadiation - 0.01);
+                //Only update the previous radiation level at most once a tick
+                if (lastTick != player.level().getGameTime()) {
+                    lastTick = player.level().getGameTime();
+                    if (prevRadiation < severity) {
+                        prevRadiation = Math.min(severity, prevRadiation + 0.01);
+                    }
+                    if (prevRadiation > severity) {
+                        prevRadiation = Math.max(severity, prevRadiation - 0.01);
+                    }
                 }
                 if (severity > RadiationManager.BASELINE) {
                     int effect = (int) (prevRadiation * 255);

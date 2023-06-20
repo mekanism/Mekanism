@@ -1,5 +1,7 @@
 package mekanism.client.render.hud;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import mekanism.client.gui.GuiUtils;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.lib.Color;
 import net.minecraft.client.Minecraft;
@@ -16,6 +18,7 @@ public class MekanismStatusOverlay implements IGuiOverlay {
     public static final MekanismStatusOverlay INSTANCE = new MekanismStatusOverlay();
 
     private int modeSwitchTimer = 0;
+    private long lastTick;
 
     private MekanismStatusOverlay() {
     }
@@ -32,14 +35,22 @@ public class MekanismStatusOverlay implements IGuiOverlay {
             if (IModeItem.isModeItem(stack, EquipmentSlot.MAINHAND)) {
                 Component scrollTextComponent = ((IModeItem) stack.getItem()).getScrollTextComponent(stack);
                 if (scrollTextComponent != null) {
-                    int x = guiGraphics.guiWidth();
-                    int y = guiGraphics.guiHeight();
-                    int color = Color.rgbad(1, 1, 1, modeSwitchTimer / 100F).argb();
+                    Color color = Color.rgbad(1, 1, 1, modeSwitchTimer / 100F);
                     Font font = gui.getFont();
-                    guiGraphics.drawString(font, scrollTextComponent, (x - font.width(scrollTextComponent)) / 2, y - 60, color, false);
+                    int componentWidth = font.width(scrollTextComponent);
+                    PoseStack pose = guiGraphics.pose();
+                    pose.pushPose();
+                    pose.translate((screenWidth - componentWidth) / 2F, screenHeight - 60, 0);
+                    GuiUtils.drawBackdrop(guiGraphics, minecraft, 0, 0, componentWidth, color.a());
+                    guiGraphics.drawString(font, scrollTextComponent, 0, 0, color.argb());
+                    pose.popPose();
                 }
             }
-            modeSwitchTimer--;
+            //Only decrement the switch timer once a tick
+            if (lastTick != minecraft.player.level().getGameTime()) {
+                lastTick = minecraft.player.level().getGameTime();
+                modeSwitchTimer--;
+            }
         }
     }
 }

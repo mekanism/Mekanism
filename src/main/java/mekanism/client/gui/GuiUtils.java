@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.common.Mekanism;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -19,6 +20,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -153,6 +155,19 @@ public class GuiUtils {
     public static void fill(GuiGraphics guiGraphics, int x, int y, int width, int height, int color) {
         if (width != 0 && height != 0) {
             guiGraphics.fill(x, y, x + width, y + height, color);
+        }
+    }
+
+    public static void drawBackdrop(GuiGraphics guiGraphics, Minecraft minecraft, int x, int y, int width, int alpha) {
+        drawBackdrop(guiGraphics, minecraft, x, y, width, 9, alpha);
+    }
+
+    public static void drawBackdrop(GuiGraphics guiGraphics, Minecraft minecraft, int x, int y, int width, int height, int alpha) {
+        //Slightly modified copy of Gui#drawBackdrop so that we can support it in places that can't directly call it
+        int backgroundColor = minecraft.options.getBackgroundColor(0.0F);
+        if (backgroundColor != 0) {
+            int argb = 0xFFFFFF | alpha << 24;
+            guiGraphics.fill(x - 2, y - 2, x + width + 2, y + height + 2, FastColor.ARGB32.multiply(backgroundColor, argb));
         }
     }
 
