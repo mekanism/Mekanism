@@ -29,7 +29,6 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tags.TagUtils;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.sounds.SoundEvents;
@@ -122,7 +121,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
             if (itemStack.isEmpty()) {
                 target = null;
             } else {
-                ItemStack stack = StackUtils.size(itemStack, 1);
+                ItemStack stack = itemStack.copyWithCount(1);
                 target = stack;
                 Item item = stack.getItem();
                 tags.put(DictionaryTagType.ITEM, TagCache.getItemTags(stack));

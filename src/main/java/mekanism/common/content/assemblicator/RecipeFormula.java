@@ -6,7 +6,6 @@ import java.util.List;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -25,7 +24,7 @@ public class RecipeFormula {
 
     public RecipeFormula(Level world, NonNullList<ItemStack> inv) {
         for (int i = 0; i < 9; i++) {
-            input.set(i, StackUtils.size(inv.get(i), 1));
+            input.set(i, inv.get(i).copyWithCount(1));
         }
         resetToRecipe();
         recipe = getRecipeFromGrid(dummy, world);
@@ -36,7 +35,7 @@ public class RecipeFormula {
         for (int i = 0; i < craftingGridSlots.size(); i++) {
             IInventorySlot craftingSlot = craftingGridSlots.get(i);
             if (!craftingSlot.isEmpty()) {
-                input.set(i, StackUtils.size(craftingSlot.getStack(), 1));
+                input.set(i, craftingSlot.getStack().copyWithCount(1));
             }
         }
         resetToRecipe();
@@ -59,7 +58,7 @@ public class RecipeFormula {
         }
         //Should always be 9 for the size
         for (int i = 0; i < craftingGridSlots.size(); i++) {
-            dummy.setItem(i, StackUtils.size(craftingGridSlots.get(i).getStack(), 1));
+            dummy.setItem(i, craftingGridSlots.get(i).getStack().copyWithCount(1));
         }
         return recipe.matches(dummy, world);
     }

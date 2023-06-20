@@ -116,7 +116,7 @@ public final class FluidUtils {
     }
 
     public static boolean handleTankInteraction(Player player, InteractionHand hand, ItemStack itemStack, IExtendedFluidTank fluidTank) {
-        ItemStack copyStack = StackUtils.size(itemStack, 1);
+        ItemStack copyStack = itemStack.copyWithCount(1);
         Optional<IFluidHandlerItem> fluidHandlerItem = FluidUtil.getFluidHandler(copyStack).resolve();
         if (fluidHandlerItem.isPresent()) {
             IFluidHandlerItem handler = fluidHandlerItem.get();

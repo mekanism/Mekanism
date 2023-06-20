@@ -10,7 +10,6 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.lib.HashedFluid;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -42,7 +41,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                 //If we have more than one item in the input, check against a single item of it
                 // The fluid handler for buckets returns false about being able to accept fluids if they are stacked
                 // though we have special handling to only move one item at a time anyway
-                Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack.getCount() > 1 ? StackUtils.size(stack, 1) : stack).resolve();
+                Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack.getCount() > 1 ? stack.copyWithCount(1) : stack).resolve();
                 if (cap.isPresent()) {
                     IFluidHandlerItem fluidHandlerItem = cap.get();
                     boolean hasEmpty = false;
@@ -130,7 +129,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                     //If we cannot actually drain from our fluid handler then just exit early
                     return;
                 }
-                ItemStack inputCopy = StackUtils.size(getStack(), 1);
+                ItemStack inputCopy = getStack().copyWithCount(1);
                 Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(inputCopy).resolve();
                 if (cap.isPresent()) {
                     //The capability should be present based on checks that happen before this method, but verify to make sure it is present
@@ -182,7 +181,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             return false;
         }
 
-        ItemStack input = StackUtils.size(getStack(), 1);
+        ItemStack input = getStack().copyWithCount(1);
         Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(input).resolve();
         if (cap.isEmpty()) {
             //The capability should be present based on checks that happen before this method, but if for some reason it isn't just exit

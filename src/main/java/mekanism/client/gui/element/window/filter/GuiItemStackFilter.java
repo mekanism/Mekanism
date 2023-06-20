@@ -9,7 +9,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import mekanism.common.util.StackUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
@@ -47,7 +46,7 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>
     @Nullable
     @Override
     protected IGhostItemConsumer getGhostHandler() {
-        return ingredient -> setFilterStackWithSound(StackUtils.size((ItemStack) ingredient, 1));
+        return ingredient -> setFilterStackWithSound(((ItemStack) ingredient).copyWithCount(1));
     }
 
     @Nullable

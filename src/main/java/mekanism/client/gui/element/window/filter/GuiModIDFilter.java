@@ -14,7 +14,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
-import mekanism.common.util.StackUtils;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -104,7 +103,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
             if (!Screen.hasShiftDown()) {
                 ItemStack stack = gui().getCarriedItem();
                 if (!stack.isEmpty()) {
-                    setFilterName(StackUtils.size(stack, 1), false);
+                    setFilterName(stack.copyWithCount(1), false);
                     return true;
                 }
             }

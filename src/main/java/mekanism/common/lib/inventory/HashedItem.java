@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 public class HashedItem implements IHashedItem {
 
     public static HashedItem create(ItemStack stack) {
-        return new HashedItem(StackUtils.size(stack, 1));
+        return new HashedItem(stack.copyWithCount(1));
     }
 
     /**
@@ -119,7 +119,7 @@ public class HashedItem implements IHashedItem {
          * @apiNote For use on the client side, hash is taken into account for equals and hashCode
          */
         public UUIDAwareHashedItem(ItemStack stack, @Nullable UUID uuid) {
-            super(StackUtils.size(stack, 1));
+            super(stack.copyWithCount(1));
             this.uuid = uuid;
             if (this.uuid == null) {
                 this.overrideHash = false;

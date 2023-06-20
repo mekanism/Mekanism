@@ -6,7 +6,6 @@ import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostItemConsumer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.miner.MinerItemStackFilter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import mekanism.common.util.StackUtils;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,7 +46,7 @@ public class GuiMinerItemStackFilter extends GuiItemStackFilter<MinerItemStackFi
 
             @Override
             public void accept(Object ingredient) {
-                setFilterStackWithSound(StackUtils.size((ItemStack) ingredient, 1));
+                setFilterStackWithSound(((ItemStack) ingredient).copyWithCount(1));
             }
         };
     }

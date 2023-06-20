@@ -8,7 +8,6 @@ import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StackUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -47,7 +46,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                         if (bin.removeTicks == 0) {
                             bin.removeTicks = 3;
                             if (player.isShiftKeyDown()) {
-                                stack = StackUtils.size(binSlot.getStack(), 1);
+                                stack = binSlot.getStack().copyWithCount(1);
                                 MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(1, Action.EXECUTE), 1);
                             } else {
                                 stack = binSlot.getBottomStack();

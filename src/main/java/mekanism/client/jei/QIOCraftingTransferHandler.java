@@ -38,7 +38,6 @@ import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.network.to_server.PacketQIOFillCraftingWindow;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StackUtils;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
@@ -106,7 +105,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                 CraftingWindowInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
                 if (!inputSlot.isEmpty()) {
                     //Copy it in case any recipe does weird things and tries to mutate the stack
-                    dummy.setItem(slot, StackUtils.size(inputSlot.getStack(), 1));
+                    dummy.setItem(slot, inputSlot.getStack().copyWithCount(1));
                     //Count how many crafting slots are not empty
                     nonEmptyCraftingSlots++;
                 }

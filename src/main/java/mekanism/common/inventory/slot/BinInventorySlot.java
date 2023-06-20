@@ -11,7 +11,6 @@ import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -49,7 +48,7 @@ public class BinInventorySlot extends BasicInventorySlot {
                 ItemStack simulatedRemainder = super.insertItem(stack, Action.SIMULATE, automationType);
                 if (simulatedRemainder.isEmpty()) {
                     //If we are able to insert it then set perform the action of setting it to full
-                    setStackUnchecked(StackUtils.size(stack, getLimit(stack)));
+                    setStackUnchecked(stack.copyWithCount(getLimit(stack)));
                 }
                 return simulatedRemainder;
             }
@@ -90,7 +89,7 @@ public class BinInventorySlot extends BasicInventorySlot {
         if (isEmpty()) {
             return ItemStack.EMPTY;
         }
-        return StackUtils.size(current, Math.min(getCount(), current.getMaxStackSize()));
+        return current.copyWithCount(Math.min(getCount(), current.getMaxStackSize()));
     }
 
     /**
@@ -108,7 +107,7 @@ public class BinInventorySlot extends BasicInventorySlot {
         if (isCreative || isLocked() == lock || (lock && isEmpty())) {
             return false;
         }
-        lockStack = lock ? StackUtils.size(current, 1) : ItemStack.EMPTY;
+        lockStack = lock ? current.copyWithCount(1) : ItemStack.EMPTY;
         return true;
     }
 
@@ -116,7 +115,7 @@ public class BinInventorySlot extends BasicInventorySlot {
      * For use by upgrade recipes, do not use this in place of {@link #setLocked(boolean)}
      */
     public void setLockStack(@NotNull ItemStack stack) {
-        lockStack = StackUtils.size(stack, 1);
+        lockStack = stack.copyWithCount(1);
     }
 
     public boolean isLocked() {

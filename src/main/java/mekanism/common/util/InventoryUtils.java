@@ -74,12 +74,12 @@ public final class InventoryUtils {
             //If we have more than a stack of the item (such as we are a bin) or some other thing that allows for compressing
             // stack counts, drop as many stacks as we need at their max size
             while (count > max) {
-                dropper.accept(StackUtils.size(stack, max));
+                dropper.accept(stack.copyWithCount(max));
                 count -= max;
             }
             if (count > 0) {
                 //If we have anything left to drop afterward, do so
-                dropper.accept(StackUtils.size(stack, count));
+                dropper.accept(stack.copyWithCount(count));
             }
         } else {
             //If we have a valid stack, we can just directly drop that instead without requiring any copies

@@ -11,7 +11,6 @@ import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
-import mekanism.common.util.StackUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
@@ -41,7 +40,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
             //If we have more than one item in the input, check if we can fill a single item of it
             // The fluid handler for buckets returns false about being able to accept fluids if they are stacked
             // though we have special handling to only move one item at a time anyway
-            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack.getCount() > 1 ? StackUtils.size(stack, 1) : stack).resolve();
+            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack.getCount() > 1 ? stack.copyWithCount(1) : stack).resolve();
             if (cap.isPresent()) {
                 IFluidHandlerItem fluidHandlerItem = cap.get();
                 boolean hasEmpty = false;
@@ -153,7 +152,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
             //If we have more than one item in the input, check if we can fill a single item of it
             // The fluid handler for buckets returns false about being able to accept fluids if they are stacked
             // though we have special handling to only move one item at a time anyway
-            LazyOptional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack.getCount() > 1 ? StackUtils.size(stack, 1) : stack);
+            LazyOptional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack.getCount() > 1 ? stack.copyWithCount(1) : stack);
             if (cap.isPresent()) {
                 FluidStack fluidInTank = fluidTank.getFluid();
                 if (fluidInTank.isEmpty()) {

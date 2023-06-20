@@ -111,7 +111,7 @@ public class TransporterManager {
                     // the toAccept value again if it is needed.
                     if (count <= maxStackSize) {
                         if (stack.getCount() <= maxStackSize) {
-                            stack = StackUtils.size(stack, maxStackSize + 1);
+                            stack = stack.copyWithCount(maxStackSize + 1);
                         }
                         //Update our amount that we expect to accept from simulation to represent the amount we actually
                         // are trying to insert this way if we can't accept it all then we know that the slot actually
@@ -120,7 +120,7 @@ public class TransporterManager {
                     } else if (stack.getCount() <= maxStackSize) {
                         //Note: If we have more we are trying to insert than the max stack size, just take the number we are trying to insert
                         // so that we have an accurate amount for checking the real slot stack size
-                        stack = StackUtils.size(stack, count);
+                        stack = stack.copyWithCount(count);
                     }
                 } else if (!inFlight) {
                     //Otherwise, if we are not in flight yet, we should simulate before we actually start sending the item

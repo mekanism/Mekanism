@@ -29,7 +29,6 @@ import mekanism.common.inventory.slot.CraftingWindowOutputInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerPlayer;
@@ -757,7 +756,7 @@ public class QIOCraftingWindow implements IContentsListener {
             if (!updated && !remainder.isEmpty()) {
                 //Update inputs and mark that we have updated them
                 for (int index = 0; index < inputSlots.length; index++) {
-                    dummy.setItem(index, StackUtils.size(inputSlots[index].getStack(), 1));
+                    dummy.setItem(index, inputSlots[index].getStack().copyWithCount(1));
                 }
                 updated = true;
             }
@@ -771,7 +770,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     //If our index matches the one we are replacing the value of instead of getting from the slot
                     // use the stack we are replacing it with instead
                     ItemStack stack = i == index ? old : inputSlots[i].getStack();
-                    dummy.setItem(i, StackUtils.size(stack, 1));
+                    dummy.setItem(i, stack.copyWithCount(1));
                 }
                 updated = true;
             }
@@ -780,7 +779,7 @@ public class QIOCraftingWindow implements IContentsListener {
         public boolean isStackStillValid(Level world, ItemStack stack, int index) {
             updateInputs(stack);
             ItemStack old = dummy.getItem(index);
-            dummy.setItem(index, StackUtils.size(stack, 1));
+            dummy.setItem(index, stack.copyWithCount(1));
             if (lastRecipe != null && lastRecipe.matches(dummy, world)) {
                 //If the remaining item is still valid in the recipe in that position return that it is still valid.
                 // Note: The recipe should never actually be null here

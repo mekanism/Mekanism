@@ -1,7 +1,6 @@
 package mekanism.common.util;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import mekanism.api.Action;
 import mekanism.api.inventory.IInventorySlot;
@@ -25,11 +24,9 @@ public final class StackUtils {
     private StackUtils() {
     }
 
+    //TODO: Evaluate moving remainder of uses to copyWithCount. This method mainly is just useful for better handling when size is <= 0
     public static ItemStack size(ItemStack stack, int size) {
-        if (size <= 0 || stack.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-        return ItemHandlerHelper.copyStackWithSize(stack, size);
+        return size <= 0 ? ItemStack.EMPTY : stack.copyWithCount(size);
     }
 
     public static List<ItemStack> merge(@NotNull List<IInventorySlot> orig, @NotNull List<IInventorySlot> toAdd) {
@@ -52,14 +49,14 @@ public final class StackUtils {
                     if (toAddStack.getCount() <= max) {
                         origSlot.setStack(toAddStack);
                     } else {
-                        origSlot.setStack(size(toAddStack, max));
+                        origSlot.setStack(toAddStack.copyWithCount(max));
                         //Add any remainder to the rejects (if this is zero this will no-op
-                        addStack(rejects, size(toAddStack, toAddStack.getCount() - max));
+                        addStack(rejects, toAddStack.copyWithCount(toAddStack.getCount() - max));
                     }
                 } else if (ItemHandlerHelper.canItemStacksStack(origSlot.getStack(), toAddStack)) {
                     int added = origSlot.growStack(toAddStack.getCount(), Action.EXECUTE);
                     //Add any remainder to the rejects (if this is zero this will no-op
-                    addStack(rejects, size(toAddStack, toAddStack.getCount() - added));
+                    addStack(rejects, toAddStack.copyWithCount(toAddStack.getCount() - added));
                 } else {
                     addStack(rejects, toAddStack.copy());
                 }
@@ -97,10 +94,10 @@ public final class StackUtils {
                     if (excess > 0) {
                         // start by adding any excess that won't go into full stack sizes (so that we have a lower index
                         // and have less to iterate when adding more of the same type)
-                        stacks.add(size(stack, excess));
+                        stacks.add(stack.copyWithCount(excess));
                     }
                     // and then add as many max size stacks as needed
-                    ItemStack maxSize = size(stack, max);
+                    ItemStack maxSize = stack.copyWithCount(max);
                     stacks.add(maxSize);
                     for (int i = 1; i < stacksToAdd; i++) {
                         stacks.add(maxSize.copy());
@@ -111,52 +108,6 @@ public final class StackUtils {
                 }
             }
         }
-    }
-
-    //Assumes that the stacks are already
-    private static List<ItemStack> flatten(List<ItemStack> stacks) {
-        if (stacks.isEmpty()) {
-            return Collections.emptyList();
-        }
-        List<ItemStack> compacted = new ArrayList<>();
-        for (ItemStack stack : stacks) {
-            if (!stack.isEmpty()) {
-                int count = stack.getCount();
-                int max = stack.getMaxStackSize();
-                //TODO: Fix comments
-                if (count > max) {
-                    //If we have more than a stack of the item (such as we are a bin) or some other thing that allows for compressing
-                    // stack counts, drop as many stacks as we need at their max size
-                    while (count > max) {
-                        compacted.add(size(stack, max));
-                        count -= max;
-                    }
-                    if (count > 0) {
-                        //If we have anything left to drop afterward, do so
-                        compacted.add(size(stack, count));
-                    }
-                } else {
-                    //If we have a valid stack, we can just directly drop that instead without requiring any copies
-                    // as while IInventorySlot#getStack says to not mutate the stack, our slot is a dummy slot
-                    compacted.add(stack);
-                }
-            }
-        }
-
-        for (int i = 0; i < stacks.size(); i++) {
-            ItemStack s = stacks.get(i);
-            if (!s.isEmpty()) {
-                for (int j = i + 1; j < stacks.size(); j++) {
-                    ItemStack s1 = stacks.get(j);
-                    if (ItemHandlerHelper.canItemStacksStack(s, s1)) {
-                        s.grow(s1.getCount());
-                        stacks.set(j, ItemStack.EMPTY);
-                    }
-                }
-            }
-        }
-
-        return compacted;
     }
 
     /**

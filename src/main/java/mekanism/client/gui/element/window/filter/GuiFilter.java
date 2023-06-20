@@ -25,7 +25,6 @@ import mekanism.common.network.to_server.PacketEditFilter;
 import mekanism.common.network.to_server.PacketNewFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import mekanism.common.util.StackUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -234,7 +233,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
                 if (!stackValidator.test(stack)) {
                     return false;
                 }
-                itemConsumer.accept(StackUtils.size(stack, 1));
+                itemConsumer.accept(stack.copyWithCount(1));
             }
             return true;
         };

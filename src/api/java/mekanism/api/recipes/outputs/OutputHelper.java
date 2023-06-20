@@ -288,9 +288,8 @@ public class OutputHelper {
     private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IInventorySlot slot, ItemStack toOutput) {
         //If our output is empty, we have nothing to add, so we treat it as being able to fit all
         if (!toOutput.isEmpty()) {
-            ItemStack output = toOutput.copy();
-            //Make a cope of the stack we are outputting with its maximum size
-            output.setCount(output.getMaxStackSize());
+            //Make a copy of the stack we are outputting with its maximum size
+            ItemStack output = toOutput.copyWithCount(toOutput.getMaxStackSize());
             ItemStack remainder = slot.insertItem(output, Action.SIMULATE, AutomationType.INTERNAL);
             int amountUsed = output.getCount() - remainder.getCount();
             //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about

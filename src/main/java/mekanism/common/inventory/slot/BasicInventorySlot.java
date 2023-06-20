@@ -17,7 +17,6 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.RegistryUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
@@ -156,10 +155,10 @@ public class BasicInventorySlot implements IInventorySlot {
                     //If we are not the same type then we have to copy the stack and set it
                     // Just set it unchecked as we have already validated it
                     // Note: this also will mark that the contents changed
-                    setStackUnchecked(StackUtils.size(stack, toAdd));
+                    setStackUnchecked(stack.copyWithCount(toAdd));
                 }
             }
-            return StackUtils.size(stack, stack.getCount() - toAdd);
+            return stack.copyWithCount(stack.getCount() - toAdd);
         }
         //If we didn't accept this item, then just return the given stack
         return stack;
@@ -180,7 +179,7 @@ public class BasicInventorySlot implements IInventorySlot {
         }
         //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
         // especially for supporting the fact of limiting by the max stack size.
-        ItemStack toReturn = StackUtils.size(current, amount);
+        ItemStack toReturn = current.copyWithCount(amount);
         if (action.execute()) {
             //If shrink gets the size to zero it will update the empty state so that isEmpty() returns true.
             current.shrink(amount);

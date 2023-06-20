@@ -87,14 +87,10 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
                 } else {
                     //If we are not the same type then we have to copy the stack and set it
                     // Note: this also will mark that the contents changed
-                    ItemStack toSet = stack.copy();
-                    toSet.setCount(toAdd);
-                    setStack(toSet);
+                    setStack(stack.copyWithCount(toAdd));
                 }
             }
-            ItemStack remainder = stack.copy();
-            remainder.setCount(stack.getCount() - toAdd);
-            return remainder;
+            return stack.copyWithCount(stack.getCount() - toAdd);
         }
         //If we didn't accept this item, then just return the given stack
         return stack;
@@ -133,8 +129,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
         }
         //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
         // especially for supporting the fact of limiting by the max stack size.
-        ItemStack toReturn = current.copy();
-        toReturn.setCount(amount);
+        ItemStack toReturn = current.copyWithCount(amount);
         if (action.execute()) {
             //If shrink gets the size to zero it will update the empty state so that isEmpty() returns true.
             // Note: this also will mark that the contents changed
@@ -215,9 +210,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
             //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
-        ItemStack newStack = stack.copy();
-        newStack.setCount(amount);
-        setStack(newStack);
+        setStack(stack.copyWithCount(amount));
         return amount;
     }
 

@@ -54,7 +54,6 @@ import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StackUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -304,7 +303,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             if (formula == null || !formula.isValidFormula()) {
                 //Should always be 9 for the size
                 for (int i = 0; i < craftingGridSlots.size(); i++) {
-                    dummyInv.setItem(i, StackUtils.size(craftingGridSlots.get(i).getStack(), 1));
+                    dummyInv.setItem(i, craftingGridSlots.get(i).getStack().copyWithCount(1));
                 }
                 lastRemainingItems = EMPTY_LIST;
                 if (cachedRecipe == null || !cachedRecipe.matches(dummyInv, level)) {
@@ -392,7 +391,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     if (!stockSlot.isEmpty()) {
                         ItemStack stockStack = stockSlot.getStack();
                         if (formula.isIngredientInPos(level, stockStack, i)) {
-                            recipeSlot.setStack(StackUtils.size(stockStack, 1));
+                            recipeSlot.setStack(stockStack.copyWithCount(1));
                             MekanismUtils.logMismatchedStackSize(stockSlot.shrinkStack(1, Action.EXECUTE), 1);
                             markForSave();
                             found = true;

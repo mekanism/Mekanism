@@ -9,7 +9,6 @@ import mekanism.common.lib.math.Pos3D;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -203,14 +202,18 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
     }
 
     private boolean smeltItem(ItemEntity item) {
-        Optional<SmeltingRecipe> recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, new SimpleContainer(item.getItem()), level());
-        if (recipe.isPresent()) {
-            ItemStack result = recipe.get().getResultItem(level().registryAccess());
-            item.setItem(StackUtils.size(result, item.getItem().getCount()));
-            item.tickCount = 0;
-            spawnParticlesAt(item.blockPosition());
-            playSound(SoundEvents.FIRE_EXTINGUISH, 1.0F, 1.0F);
-            return true;
+        ItemStack stack = item.getItem();
+        if (!stack.isEmpty()) {//This probably should never be empty but validate it in case
+            Level level = level();
+            Optional<SmeltingRecipe> recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level);
+            if (recipe.isPresent()) {
+                ItemStack result = recipe.get().getResultItem(level.registryAccess());
+                item.setItem(result.copyWithCount(result.getCount() * stack.getCount()));
+                item.tickCount = 0;
+                spawnParticlesAt(item.blockPosition());
+                playSound(SoundEvents.FIRE_EXTINGUISH, 1.0F, 1.0F);
+                return true;
+            }
         }
         return false;
     }

@@ -13,7 +13,6 @@ import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
-import mekanism.common.util.StackUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -58,7 +57,7 @@ public class CursedTransporterItemHandler implements IItemHandler {
         if (stack.getCount() <= limit) {
             return TransitRequest.simple(stack);
         }
-        return TransitRequest.simple(StackUtils.size(stack, limit));
+        return TransitRequest.simple(stack.copyWithCount(limit));
     }
 
     @NotNull
@@ -125,7 +124,7 @@ public class CursedTransporterItemHandler implements IItemHandler {
             int extra = itemStack.getCount() - limit;
             if (remainder.isEmpty()) {
                 //Everything we tried to fit was accepted. Create a remainder out of the part we skipped
-                remainder = StackUtils.size(itemStack, extra);
+                remainder = itemStack.copyWithCount(extra);
             } else {
                 //Note: It is a new stack, so we can safely modify it, so add back the extra that we skipped attempting to insert
                 remainder.grow(extra);

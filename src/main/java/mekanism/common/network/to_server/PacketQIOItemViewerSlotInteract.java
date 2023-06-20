@@ -8,7 +8,6 @@ import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -51,7 +50,7 @@ public class PacketQIOItemViewerSlotInteract implements IMekanismPacket {
                     if (!curStack.isEmpty() && count > 0) {
                         ItemStack toAdd;
                         if (count < curStack.getCount()) {//Only adding part of the stack
-                            toAdd = StackUtils.size(curStack, count);
+                            toAdd = curStack.copyWithCount(count);
                         } else {//Try to add the full held stack
                             toAdd = curStack;
                         }

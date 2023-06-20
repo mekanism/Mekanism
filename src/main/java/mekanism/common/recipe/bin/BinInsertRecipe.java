@@ -88,7 +88,7 @@ public class BinInsertRecipe extends BinRecipe {
                     // then we cannot combine them both into the bin
                     return ItemStack.EMPTY;
                 }
-                foundItems.add(StackUtils.size(stackInSlot, 1));
+                foundItems.add(stackInSlot.copyWithCount(1));
             }
         }
         if (binStack.isEmpty() || foundType.isEmpty()) {
@@ -150,7 +150,7 @@ public class BinInsertRecipe extends BinRecipe {
         BinInventorySlot slot = convertToSlot(binStack);
         for (int i = 0; i < foundSlots.size(); i++) {
             int index = foundSlots.getInt(i);
-            ItemStack stack = StackUtils.size(inv.getItem(index), 1);
+            ItemStack stack = inv.getItem(index).copyWithCount(1);
             ItemStack remaining = slot.insertItem(stack, Action.EXECUTE, AutomationType.MANUAL);
             remainingItems.set(index, remaining);
         }

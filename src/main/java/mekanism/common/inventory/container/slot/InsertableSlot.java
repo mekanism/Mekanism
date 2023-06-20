@@ -1,7 +1,6 @@
 package mekanism.common.inventory.container.slot;
 
 import mekanism.api.Action;
-import mekanism.common.util.StackUtils;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -38,9 +37,9 @@ public class InsertableSlot extends Slot implements IInsertableSlot {
             if (action.execute()) {
                 //If we want to actually insert the item, then update the current item
                 //Set the stack to our new stack (we have no simple way to increment the stack size) so we have to set it instead of being able to just grow it
-                set(StackUtils.size(stack, current.getCount() + toAdd));
+                set(stack.copyWithCount(current.getCount() + toAdd));
             }
-            return StackUtils.size(stack, stack.getCount() - toAdd);
+            return stack.copyWithCount(stack.getCount() - toAdd);
         }
         //If we didn't accept this item, then just return the given stack
         return stack;

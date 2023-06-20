@@ -588,7 +588,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             ItemStack slotStack = slot.getStack();
             if (replaceStackMatches.test(slotStack.getItem())) {
                 MekanismUtils.logMismatchedStackSize(slot.shrinkStack(1, Action.EXECUTE), 1);
-                return StackUtils.size(slotStack, 1);
+                return slotStack.copyWithCount(1);
             }
         }
         //Then source from the upgrade if it is installed
@@ -606,7 +606,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                     TransitResponse response = request.createSimpleResponse();
                     if (response.useAll().isEmpty()) {
                         //If the request isn't empty, and we were able to successfully use it all
-                        return StackUtils.size(response.getStack(), 1);
+                        return response.getStack().copyWithCount(1);
                     }
                 }
             }
@@ -663,7 +663,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                         return ItemStack.EMPTY;
                     }
                     //Otherwise, we tried to store more than can fit, update stack to represent the remainder that didn't fit
-                    stack = StackUtils.size(stack, cachedItem.count - limit);
+                    stack = stack.copyWithCount(cachedItem.count - limit);
                     // and update the actual amount stored to the limit of the slot
                     cachedItem.count = limit;
                 }

@@ -18,7 +18,6 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
-import mekanism.common.util.StackUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.util.GsonHelper;
@@ -154,7 +153,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
 
         @Override
         public ItemStack getMatchingInstance(ItemStack stack) {
-            return test(stack) ? StackUtils.size(stack, amount) : ItemStack.EMPTY;
+            return test(stack) ? stack.copyWithCount(amount) : ItemStack.EMPTY;
         }
 
         @Override
@@ -184,9 +183,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
                 if (stack.getCount() == amount) {
                     representations.add(stack);
                 } else {
-                    ItemStack copy = stack.copy();
-                    copy.setCount(amount);
-                    representations.add(copy);
+                    representations.add(stack.copyWithCount(amount));
                 }
             }
             return representations;
