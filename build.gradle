@@ -509,7 +509,7 @@ clean {
         for (def f : file(toDelete).listFiles()) {
             if (f.getName() == "generated") {
                 for (def generated : file(f).listFiles()) {
-                    if (generated.getName() != "data" && generated.getName() != "META-INF") {
+                    if (generated.getName() != "assets" && generated.getName() != "data" && generated.getName() != "META-INF") {
                         filteredDelete.add(generated)
                     }
                 }

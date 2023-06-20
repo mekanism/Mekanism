@@ -7,6 +7,8 @@ import org.gradle.api.file.CopySpec
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.util.PatternFilterable
 
+import java.util.function.BinaryOperator
+
 class MergeJars {
 
     static List<String> getGeneralPathsToExclude(Project project) {
@@ -14,6 +16,9 @@ class MergeJars {
         toExclude.add('META-INF/mods.toml')
         toExclude.add('META-INF/accesstransformer.cfg')
         int baseLength = "$project.buildDir/generated/".length()
+        project.fileTree(dir: "$project.buildDir/generated/assets/").each {
+            File file -> toExclude.add(file.getPath().substring(baseLength))
+        }
         project.fileTree(dir: "$project.buildDir/generated/data/").each {
             File file -> toExclude.add(file.getPath().substring(baseLength))
         }
@@ -36,9 +41,12 @@ class MergeJars {
         (new File("$project.buildDir/generated/META-INF/accesstransformer.cfg")).text = mergeATs(sourceSets)
         (new File("$project.buildDir/generated/META-INF/mods.toml")).text = mergeModsTOML(sourceSets)
         //Delete the data directory so that we don't accidentally leak bad old data into it
+        project.file("$project.buildDir/generated/assets").deleteDir()
         project.file("$project.buildDir/generated/data").deleteDir()
         //And then recreate the directory so we can put stuff in it
+        project.mkdir("$project.buildDir/generated/assets")
         project.mkdir("$project.buildDir/generated/data")
+        mergeAtlases(project, sourceSets)
         mergeTags(project, sourceSets)
     }
 
@@ -49,7 +57,7 @@ class MergeJars {
             c.expand(versionProperties)
         })
         generated.add({ CopySpec c ->
-            c.include('META-INF/accesstransformer.cfg', 'data/**')
+            c.include('META-INF/accesstransformer.cfg', 'assets/**', 'data/**')
         })
         return generated
     }
@@ -87,48 +95,71 @@ class MergeJars {
         return text
     }
 
-    private static void mergeTags(Project project, SourceSet... sourceSets) {
-        Closure tagFilter = { PatternFilterable pf -> pf.include('**/data/*/tags/**/*.json') }
-        Map<String, List<String>> reverseTags = new HashMap<>()
+    private static Map<String, List<String>> getReverseLookup(Project project, Closure filter, SourceSet... sourceSets) {
+        Map<String, List<String>> reverseLookup = new HashMap<>()
         for (SourceSet sourceSet : sourceSets) {
             sourceSet.resources.srcDirs.each { srcDir ->
                 int srcDirPathLength = srcDir.getPath().length()
-                project.fileTree(srcDir).matching(tagFilter).each { file ->
+                project.fileTree(srcDir).matching(filter).each { file ->
                     //Add the sourceSet to the reverse lookup
                     String path = file.getPath()
-                    String tag = path.substring(srcDirPathLength)
-                    if (!reverseTags.containsKey(tag)) {
-                        reverseTags.put(tag, new ArrayList<>())
+                    String trimmedPath = path.substring(srcDirPathLength)
+                    if (!reverseLookup.containsKey(trimmedPath)) {
+                        reverseLookup.put(trimmedPath, new ArrayList<>())
                     }
-                    reverseTags.get(tag).add(path)
+                    reverseLookup.get(trimmedPath).add(path)
                 }
             }
         }
-        //Go through the reverse tag index and if there are multiple sourceSets that contain the same tag
-        // properly merge that tag
-        reverseTags.each { tag, tagPaths ->
-            if (tagPaths.size() > 1) {
-                mergeTag(project, tag, tagPaths)
+        return reverseLookup
+    }
+
+    private static void mergeAtlases(Project project, SourceSet... sourceSets) {
+        Closure atlasFilter = { PatternFilterable pf -> pf.include('**/assets/*/atlases/**/*.json') }
+        Map<String, List<String>> reverseAtlasLookup = getReverseLookup(project, atlasFilter, sourceSets)
+        //Go through the reverse atlas lookup and if there are multiple sourceSets that contain the same atlas
+        // properly merge that atlas
+        reverseAtlasLookup.each { atlas, atlasPaths ->
+            if (atlasPaths.size() > 1) {
+                mergeSimpleJson(project, atlas, atlasPaths, (a, b) -> {
+                    a.sources += b.sources
+                    return a
+                })
             }
         }
     }
 
-    private static void mergeTag(Project project, String tag, List<String> tagPaths) {
-        //println(tag + " appeared " + tagPaths.size() + " times")
-        Object outputTagAsJson = null
-        tagPaths.each { path ->
-            Object tagAsJson = new JsonSlurper().parse(project.file(path))
-            if (outputTagAsJson == null) {
-                outputTagAsJson = tagAsJson
-            } else {
-                outputTagAsJson.values += tagAsJson.values
+    private static void mergeTags(Project project, SourceSet... sourceSets) {
+        Closure tagFilter = { PatternFilterable pf -> pf.include('**/data/*/tags/**/*.json') }
+        Map<String, List<String>> reverseTags = getReverseLookup(project, tagFilter, sourceSets)
+        //Go through the reverse tag index and if there are multiple sourceSets that contain the same tag
+        // properly merge that tag
+        reverseTags.each { tag, tagPaths ->
+            if (tagPaths.size() > 1) {
+                mergeSimpleJson(project, tag, tagPaths, (a, b) -> {
+                    a.values += b.values
+                    return a
+                })
             }
         }
-        if (outputTagAsJson != null) {
-            File outputFile = new File("$project.buildDir/generated" + tag)
+    }
+
+    private static void mergeSimpleJson(Project project, String jsonPath, List<String> paths, BinaryOperator<Object> appender) {
+        //println(jsonPath + " appeared " + paths.size() + " times")
+        Object outputAsJson = null
+        paths.each { path ->
+            Object json = new JsonSlurper().parse(project.file(path))
+            if (outputAsJson == null) {
+                outputAsJson = json
+            } else {
+                outputAsJson = appender.apply(outputAsJson, json)
+            }
+        }
+        if (outputAsJson != null) {
+            File outputFile = new File("$project.buildDir/generated" + jsonPath)
             //Make all parent directories needed
             outputFile.getParentFile().mkdirs()
-            outputFile.text = JsonOutput.toJson(outputTagAsJson)
+            outputFile.text = JsonOutput.toJson(outputAsJson)
         }
     }
 }
