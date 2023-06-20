@@ -360,9 +360,9 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
     exclusiveRepo(handler, 'https://maven.tterrag.com/', 'team.chisel.ctm')
     exclusiveRepo(handler, 'https://squiddev.cc/maven/', 'org.squiddev')
+    exclusiveRepo(handler, 'https://maven2.bai.lol', 'mcp.mobius.waila')//WTHIT
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
     exclusiveRepo(handler, 'https://modmaven.dev/', 'appeng', 'mcjty.theoneprobe')
-    mavenLocal()
 }
 
 test {
@@ -395,7 +395,7 @@ dependencies {
     }
     compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
-    compileOnly fg.deobf("curse.maven:wthit-455982:${wthit_id}")
+    compileOnly fg.deobf("mcp.mobius.waila:wthit-api:forge-${wthit_version}")
 
     //TODO - 1.20: Switch these two back to implementation when they update
     compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${previous_minecraft_version}:${crafttweaker_version}")

@@ -67,6 +67,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.extensions.common.IClientBlockExtensions;
@@ -86,10 +87,8 @@ public abstract class BlockMekanism extends Block {
         consumer.accept(RenderPropertiesProvider.particles());
     }
 
-    //TODO - 1.20: Re-implement
-    /*@NotNull
+    @Nullable
     @Override
-    @Deprecated
     public PushReaction getPistonPushReaction(@NotNull BlockState state) {
         if (state.hasBlockEntity()) {
             //Protect against mods like Quark that allow blocks with TEs to be moved
@@ -98,7 +97,7 @@ public abstract class BlockMekanism extends Block {
             return PushReaction.BLOCK;
         }
         return super.getPistonPushReaction(state);
-    }*/
+    }
 
     @NotNull
     @Override
