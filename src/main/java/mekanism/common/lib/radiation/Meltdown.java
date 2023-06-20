@@ -80,7 +80,7 @@ public class Meltdown {
             int x = Mth.nextInt(world.random, minPos.getX(), maxPos.getX());
             int y = Mth.nextInt(world.random, minPos.getY(), maxPos.getY());
             int z = Mth.nextInt(world.random, minPos.getZ(), maxPos.getZ());
-            createExplosion(world, x, y, z, radius, true, Explosion.BlockInteraction.DESTROY);
+            createExplosion(world, x, y, z, radius, true, Explosion.BlockInteraction.DESTROY_WITH_DECAY);
         }
 
         if (!WorldUtils.isBlockLoaded(world, minPos) || !WorldUtils.isBlockLoaded(world, maxPos)) {
@@ -155,7 +155,7 @@ public class Meltdown {
                           .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
                           .withOptionalParameter(LootContextParams.BLOCK_ENTITY, tileentity)
                           .withOptionalParameter(LootContextParams.THIS_ENTITY, null);
-                    if (mode == Explosion.BlockInteraction.DESTROY) {
+                    if (mode == Explosion.BlockInteraction.DESTROY_WITH_DECAY) {
                         lootContextBuilder.withParameter(LootContextParams.EXPLOSION_RADIUS, radius);
                     }
                     state.getDrops(lootContextBuilder).forEach(stack -> addBlockDrops(drops, stack, toExplode));

@@ -160,7 +160,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
                       .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
                       .withOptionalParameter(LootContextParams.BLOCK_ENTITY, mainState.hasBlockEntity() ? WorldUtils.getTileEntity(world, mainPos) : null)
                       .withOptionalParameter(LootContextParams.THIS_ENTITY, explosion.getExploder());
-                if (explosion.blockInteraction == Explosion.BlockInteraction.DESTROY) {
+                if (explosion.blockInteraction == Explosion.BlockInteraction.DESTROY_WITH_DECAY) {
                     lootContextBuilder.withParameter(LootContextParams.EXPLOSION_RADIUS, explosion.radius);
                 }
                 mainState.getDrops(lootContextBuilder).forEach(stack -> Block.popResource(world, mainPos, stack));
