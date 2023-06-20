@@ -1,9 +1,7 @@
 package mekanism.common.integration.crafttweaker;
 
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.api.fluid.MCFluidStack;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.item.MCItemStack;
 import com.blamejared.crafttweaker.api.recipe.component.IDecomposedRecipe;
 import com.blamejared.crafttweaker.api.recipe.component.IRecipeComponent;
 import com.blamejared.crafttweaker.api.tag.CraftTweakerTagRegistry;
@@ -36,7 +34,6 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTG
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -261,14 +258,14 @@ public class CrTUtils {
      * Helper to convert a list of items to a list of crafttweaker items.
      */
     public static List<IItemStack> convertItems(List<ItemStack> elements) {
-        return convert(elements, MCItemStack::new);
+        return convert(elements, IItemStack::of);
     }
 
     /**
      * Helper to convert a list of items to a list of crafttweaker items.
      */
     public static List<IFluidStack> convertFluids(List<FluidStack> elements) {
-        return convert(elements, MCFluidStack::new);
+        return convert(elements, IFluidStack::of);
     }
 
     /**

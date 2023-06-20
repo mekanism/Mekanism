@@ -2,7 +2,6 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.api.fluid.MCFluidStack;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -54,7 +53,7 @@ public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<Fl
         return new ActionAddMekanismRecipe(recipe) {
             @Override
             protected String describeOutputs() {
-                return CrTUtils.describeOutputs(recipe.getOutputDefinition(), MCFluidStack::new);
+                return CrTUtils.describeOutputs(recipe.getOutputDefinition(), IFluidStack::of);
             }
         };
     }

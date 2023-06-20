@@ -1,10 +1,8 @@
 package mekanism.common.integration.crafttweaker.recipe.handler;
 
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.api.fluid.MCFluidStack;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.item.MCItemStack;
 import com.blamejared.crafttweaker.api.recipe.component.BuiltinRecipeComponents;
 import com.blamejared.crafttweaker.api.recipe.component.DecomposedRecipeBuilder;
 import com.blamejared.crafttweaker.api.recipe.component.IDecomposedRecipe;
@@ -123,7 +121,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
         if (param instanceof ItemStack stack) {
             return ItemStackUtil.getCommandString(stack);
         } else if (param instanceof FluidStack stack) {
-            return new MCFluidStack(stack).getCommandString();
+            return IFluidStack.of(stack).getCommandString();
         } else if (param instanceof GasStack stack) {
             return new CrTGasStack(stack).getCommandString();
         } else if (param instanceof InfusionStack stack) {
@@ -222,7 +220,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
         if (ingredient instanceof SingleFluidStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             //Note: Handled via implicit casts
-            return new MCFluidStack(SerializerHelper.deserializeFluid(serialized)).getCommandString();
+            return IFluidStack.of(SerializerHelper.deserializeFluid(serialized)).getCommandString();
         } else if (ingredient instanceof TaggedFluidStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             //Note: Handled via implicit casts
@@ -296,16 +294,16 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
             } else if (data instanceof ChemicalStackIngredient<?, ?> ingredient) {
                 inputs.addChemical(ingredient);
             } else if (data instanceof ItemStack stack) {
-                outputs.addItem(new MCItemStack(stack));
+                outputs.addItem(IItemStack.of(stack));
             } else if (data instanceof FluidStack stack) {
-                outputs.addFluid(new MCFluidStack(stack));
+                outputs.addFluid(IFluidStack.of(stack));
             } else if (data instanceof ChemicalStack<?> stack) {
                 outputs.addChemical(stack);
             } else if (data instanceof BoxedChemicalStack stack) {
                 outputs.addChemical(stack.getChemicalStack());
             } else if (data instanceof PressurizedReactionRecipeOutput output) {
                 if (!output.item().isEmpty()) {
-                    outputs.addItem(new MCItemStack(output.item()));
+                    outputs.addItem(IItemStack.of(output.item()));
                 }
                 if (!output.gas().isEmpty()) {
                     outputs.addChemical(output.gas());

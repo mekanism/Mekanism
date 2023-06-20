@@ -2,10 +2,8 @@ package mekanism.common.integration.crafttweaker.example;
 
 import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.api.fluid.MCFluidStack;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.item.MCItemStack;
 import com.blamejared.crafttweaker.api.tag.manager.type.KnownTagManager;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import com.blamejared.crafttweaker.api.util.random.Percentaged;
@@ -114,9 +112,9 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         addNameLookupOverride(Character.class, "char");
         addSupportedConversion(Character.TYPE, Character.class, (imports, c) -> "'" + c + "'");
         addSupportedConversion(IItemStack.class, ItemStack.class, (imports, stack) -> ItemStackUtil.getCommandString(stack));
-        addSupportedConversion(IFluidStack.class, FluidStack.class, (imports, stack) -> new MCFluidStack(stack).getCommandString());
+        addSupportedConversion(IFluidStack.class, FluidStack.class, (imports, stack) -> IFluidStack.of(stack).getCommandString());
         addSupportedConversion(Percentaged.class, IItemStack.class, WeightedItemStack.class,
-              (imports, stack) -> new MCItemStack(stack.stack).percent(stack.chance).getCommandString(),
+              (imports, stack) -> IItemStack.of(stack.stack).percent(stack.chance).getCommandString(),
               (imports, stack) -> {
                   if (stack.chance == 1) {
                       return ItemStackUtil.getCommandString(stack.stack);
@@ -340,7 +338,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
               (imports, ingredient) -> {
                   if (ingredient instanceof SingleFluidStackIngredient) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
-                      return new MCFluidStack(SerializerHelper.deserializeFluid(serialized)).getCommandString();
+                      return IFluidStack.of(SerializerHelper.deserializeFluid(serialized)).getCommandString();
                   } else if (ingredient instanceof TaggedFluidStackIngredient) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
                       return CrTUtils.fluidTags().tag(serialized.get(JsonConstants.TAG).getAsString())
@@ -354,7 +352,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     private String getIngredientRepresentation(CrTImportsComponent imports, FluidStackIngredient ingredient) {
         if (ingredient instanceof SingleFluidStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
-            String stackRepresentation = new MCFluidStack(SerializerHelper.deserializeFluid(serialized)).getCommandString();
+            String stackRepresentation = IFluidStack.of(SerializerHelper.deserializeFluid(serialized)).getCommandString();
             return imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".from(" + stackRepresentation + ")";
         } else if (ingredient instanceof TaggedFluidStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();

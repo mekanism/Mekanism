@@ -2,7 +2,6 @@ package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.item.MCItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.math.FloatingLong;
@@ -74,7 +73,7 @@ public class CrTPressurizedReactionRecipe {
     @ZenCodeType.Method
     @ZenCodeType.Getter("outputs")
     public static List<CrTPressurizedReactionRecipeOutput> getOutputs(PressurizedReactionRecipe _this) {
-        return CrTUtils.convert(_this.getOutputDefinition(), output -> new CrTPressurizedReactionRecipeOutput(new MCItemStack(output.item()), new CrTGasStack(output.gas())));
+        return CrTUtils.convert(_this.getOutputDefinition(), output -> new CrTPressurizedReactionRecipeOutput(IItemStack.of(output.item()), new CrTGasStack(output.gas())));
     }
 
     /**

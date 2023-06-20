@@ -2,7 +2,6 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.api.fluid.MCFluidStack;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
@@ -121,7 +120,7 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipe> {
                     if (recipe.hasFluidToGas()) {
                         builder.append(" and ");
                     }
-                    builder.append(CrTUtils.describeOutputs(recipe.getFluidOutputDefinition(), MCFluidStack::new))
+                    builder.append(CrTUtils.describeOutputs(recipe.getFluidOutputDefinition(), IFluidStack::of))
                           .append(" for gas to fluid");
                 }
                 return builder.toString();
