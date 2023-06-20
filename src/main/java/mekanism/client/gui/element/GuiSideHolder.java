@@ -1,7 +1,5 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
@@ -52,7 +50,7 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
         if (this.slotHolder) {
             //Slot holders need to draw here to render behind the slots instead of in front of them
-            draw(guiGraphics, mouseX, mouseY, partialTicks);
+            draw(guiGraphics);
         }
     }
 
@@ -60,21 +58,21 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         if (!this.slotHolder) {
-            draw(guiGraphics, mouseX, mouseY, partialTicks);
+            draw(guiGraphics);
         }
     }
 
-    private void draw(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    private void draw(@NotNull GuiGraphics guiGraphics) {
         colorTab();
         //Top
-        guiGraphics.blit(getResource(), getX(), getY(), 0, 0, width, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        guiGraphics.blit(getResource(), relativeX, relativeY, 0, 0, width, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         //Middle
         int middleHeight = height - 8;
         if (middleHeight > 0) {
-            guiGraphics.blit(getResource(), getX(), getY() + 4, width, middleHeight, 0, 4, width, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            guiGraphics.blit(getResource(), relativeX, relativeY + 4, width, middleHeight, 0, 4, width, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
         //Bottom
-        guiGraphics.blit(getResource(), getX(), getY() + 4 + middleHeight, 0, 5, width, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        guiGraphics.blit(getResource(), relativeX, relativeY + 4 + middleHeight, 0, 5, width, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         MekanismRenderer.resetColor();
     }
 }

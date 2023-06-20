@@ -1,6 +1,5 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.MekanismLang;
@@ -44,9 +43,9 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         boolean state = stateSupplier.getAsBoolean();
-        guiGraphics.blit(getResource(), getX() + type.switchX, getY() + type.switchY, 0, state ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
-        guiGraphics.blit(getResource(), getX() + type.switchX, getY() + type.switchY + BUTTON_SIZE_Y + 1, 0, state ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
-        guiGraphics.blit(icon, getX() + type.iconX, getY() + type.iconY, 0, 0, 5, 5, 5, 5);
+        guiGraphics.blit(getResource(), relativeX + type.switchX, relativeY + type.switchY, 0, state ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
+        guiGraphics.blit(getResource(), relativeX + type.switchX, relativeY + type.switchY + BUTTON_SIZE_Y + 1, 0, state ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
+        guiGraphics.blit(icon, relativeX + type.iconX, relativeY + type.iconY, 0, 0, 5, 5, 5, 5);
     }
 
     @Override

@@ -111,7 +111,7 @@ public class MovableFilterButton extends FilterButton {
             color = null;
         }
         if (color != null) {
-            GuiUtils.fill(guiGraphics, getX(), getY(), width, height, MekanismRenderer.getColorARGB(color, 0.5F));
+            GuiUtils.fill(guiGraphics, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), MekanismRenderer.getColorARGB(color, 0.5F));
             MekanismRenderer.resetColor();
         }
         updateButtonVisibility();

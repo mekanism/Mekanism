@@ -22,7 +22,7 @@ public class GuiVerticalRateBar extends GuiBar<IBarInfoHandler> {
         int displayInt = (int) (handlerLevel * texHeight);
         if (displayInt > 0) {
             //TODO: Should textureX be texWidth + 2
-            guiGraphics.blit(getResource(), getX() + 1, getY() + height - 1 - displayInt, 8, height - 2 - displayInt, width - 2, displayInt, texWidth, texHeight);
+            guiGraphics.blit(getResource(), relativeX + 1, relativeY + height - 1 - displayInt, 8, height - 2 - displayInt, width - 2, displayInt, texWidth, texHeight);
         }
     }
 }

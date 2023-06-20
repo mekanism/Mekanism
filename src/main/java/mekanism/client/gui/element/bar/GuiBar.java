@@ -48,7 +48,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
         if (warning) {
             //Draw background (we do it regardless of if we are full or not as if the thing being drawn has transparency
             // we may as well show the background)
-            guiGraphics.blit(GuiSlot.WARNING_BACKGROUND_TEXTURE, getX() + 1, getY() + 1, 0, 0, width - 2, height - 2, 256, 256);
+            guiGraphics.blit(GuiSlot.WARNING_BACKGROUND_TEXTURE, relativeX + 1, relativeY + 1, 0, 0, width - 2, height - 2, 256, 256);
         }
         //Render Contents
         drawContentsChecked(guiGraphics, mouseX, mouseY, partialTicks, handler.getLevel(), warning);
@@ -64,10 +64,10 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
                 // the one drawn to the background if the contents of things are translucent
                 if (horizontal) {
                     int halfHeight = (height - 2) / 2;
-                    guiGraphics.blit(WARNING_TEXTURE, getX() + 1, getY() + 1 + halfHeight, 0, halfHeight, width - 2, halfHeight, 256, 256);
+                    guiGraphics.blit(WARNING_TEXTURE, relativeX + 1, relativeY + 1 + halfHeight, 0, halfHeight, width - 2, halfHeight, 256, 256);
                 } else {//vertical
                     int halfWidth = (width - 2) / 2;
-                    guiGraphics.blit(WARNING_TEXTURE, getX() + 1 + halfWidth, getY() + 1, halfWidth, 0, halfWidth, height - 2, 256, 256);
+                    guiGraphics.blit(WARNING_TEXTURE, relativeX + 1 + halfWidth, relativeY + 1, halfWidth, 0, halfWidth, height - 2, 256, 256);
                 }
             }
         }

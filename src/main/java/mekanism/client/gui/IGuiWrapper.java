@@ -81,7 +81,6 @@ public interface IGuiWrapper {
 
     @Nullable
     default GuiWindow getWindowHovering(double mouseX, double mouseY) {
-        Mekanism.logger.error("Tried to call 'getWindowHovering' but unsupported in {}", getClass().getName());
         return null;
     }
 

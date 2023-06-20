@@ -68,7 +68,7 @@ public class GuiTextScrollList extends GuiScrollList {
                 int index = scrollIndex + i;
                 if (index < maxElements) {
                     drawScaledTextScaledBound(guiGraphics, TextComponentUtil.getString(textEntries.get(index)), relativeX + 2, relativeY + 2 + elementHeight * i,
-                          screenTextColor(), barX - getX() - 2, 0.8F);
+                          screenTextColor(), barXShift - 2, 0.8F);
                 }
             }
         }
@@ -79,8 +79,7 @@ public class GuiTextScrollList extends GuiScrollList {
         //Draw Selected
         int scrollIndex = getCurrentSelection();
         if (selected != -1 && selected >= scrollIndex && selected <= scrollIndex + getFocusedElements() - 1) {
-            //TODO - 1.20: Validate this is the correct resource
-            guiGraphics.blit(getResource(), getX() + 1, getY() + 1 + (selected - scrollIndex) * elementHeight, barX - getX() - 2, elementHeight,
+            guiGraphics.blit(getResource(), relativeX + 1, relativeY + 1 + (selected - scrollIndex) * elementHeight, barXShift - 2, elementHeight,
                   4, 2, 2, 2, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
     }

@@ -24,8 +24,8 @@ public class GuiDigitalBar extends GuiBar<IBarInfoHandler> {
     @Override
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Render the bar
-        guiGraphics.blit(DIGITAL_BAR, getX(), getY(), width, height, 1, 0, 1, 1, texWidth, texHeight);
-        guiGraphics.blit(DIGITAL_BAR, getX() + 1, getY() + 1, width - 2, 6, 1, 1, 1, 1, texWidth, texHeight);
-        guiGraphics.blit(DIGITAL_BAR, getX() + 1, getY() + 1, calculateScaled(getHandler().getLevel(), width - 2), 6, 0, 0, 1, 1, texWidth, texHeight);
+        guiGraphics.blit(DIGITAL_BAR, relativeX, relativeY, width, height, 1, 0, 1, 1, texWidth, texHeight);
+        guiGraphics.blit(DIGITAL_BAR, relativeX + 1, relativeY + 1, width - 2, 6, 1, 1, 1, 1, texWidth, texHeight);
+        guiGraphics.blit(DIGITAL_BAR, relativeX + 1, relativeY + 1, calculateScaled(getHandler().getLevel(), width - 2), 6, 0, 0, 1, 1, texWidth, texHeight);
     }
 }

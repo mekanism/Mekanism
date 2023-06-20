@@ -134,18 +134,17 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     @Override
     public void draw(RECIPE recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        int x = (int) mouseX;
-        int y = (int) mouseY;
-        guiElements.forEach(e -> e.render(guiGraphics, x, y, 0));
-        guiElements.forEach(e -> e.onDrawBackground(guiGraphics, x, y, 0));
-        int zOffset = 200;
         //Translate back by our offset so that we are effectively rendering the foreground starting at 0, 0
         // This is needed to make sure that we render things like crystallizer text in the correct spot
         // If this ends up causing issues elsewhere we will need to look into it further
-        //TODO - 1.20: Evaluate if this is still necessary
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         pose.translate(-xOffset, -yOffset, 0);
+        int x = (int) mouseX;
+        int y = (int) mouseY;
+        guiElements.forEach(e -> e.renderShifted(guiGraphics, x, y, 0));
+        guiElements.forEach(e -> e.onDrawBackground(guiGraphics, x, y, 0));
+        int zOffset = 200;//TODO - 1.20: Re-evaluate this offset being used/needed
         for (GuiTexturedElement element : guiElements) {
             pose.pushPose();
             element.onRenderForeground(guiGraphics, x, y, zOffset, zOffset);

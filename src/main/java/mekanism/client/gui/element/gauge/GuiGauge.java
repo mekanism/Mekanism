@@ -83,19 +83,19 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
         if (warning) {
             //Draw background (we do it regardless of if we are full or not as if the thing being drawn has transparency
             // we may as well show the background)
-            guiGraphics.blit(GuiSlot.WARNING_BACKGROUND_TEXTURE, getX() + 1, getY() + 1, 0, 0, width - 2, height - 2, 256, 256);
+            guiGraphics.blit(GuiSlot.WARNING_BACKGROUND_TEXTURE, relativeX + 1, relativeY + 1, 0, 0, width - 2, height - 2, 256, 256);
         }
         int scale = getScaledLevel();
         TextureAtlasSprite icon = getIcon();
         if (scale > 0 && icon != null) {
             applyRenderColor();
-            drawTiledSprite(guiGraphics, getX() + 1, getY() + 1, height - 2, width - 2, scale, icon, TilingDirection.UP_RIGHT);
+            drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, height - 2, width - 2, scale, icon, TilingDirection.UP_RIGHT);
             MekanismRenderer.resetColor();
             if (warning && (scale / (double) (height - 2)) > 0.98) {
                 //If we have a warning and the gauge is entirely filled (or almost completely filled, > 95%), draw a warning vertically next to it
                 int halfWidth = (width - 2) / 2;
                 //Note: We also start the drawing after half the width so that we are sure it will properly line up with the background
-                guiGraphics.blit(WARNING_TEXTURE, getX() + 1 + halfWidth, getY() + 1, halfWidth, 0, halfWidth, height - 2, 256, 256);
+                guiGraphics.blit(WARNING_TEXTURE, relativeX + 1 + halfWidth, relativeY + 1, halfWidth, 0, halfWidth, height - 2, 256, 256);
             }
         }
         //Draw the bar overlay
@@ -104,7 +104,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
 
     public void drawBarOverlay(GuiGraphics guiGraphics) {
         GaugeOverlay gaugeOverlay = getGaugeOverlay();
-        guiGraphics.blit(getResource(), getX() + 1, getY() + 1, getWidth() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
+        guiGraphics.blit(getResource(), relativeX + 1, relativeY + 1, getWidth() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
     }
 
     @Override

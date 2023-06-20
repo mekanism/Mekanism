@@ -57,7 +57,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         if (handler.isActive()) {
             ResourceLocation resource = getResource();
-            guiGraphics.blit(resource, getX(), getY(), 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
+            guiGraphics.blit(resource, relativeX, relativeY, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
             boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
             double progress = warning ? 1 : getProgress();
             if (type.isVertical()) {
@@ -67,7 +67,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
                     if (type.isReverse()) {
                         innerOffsetY += type.getTextureHeight() - displayInt;
                     }
-                    blit(guiGraphics, resource, getX(), getY() + innerOffsetY, type.getOverlayX(warning), type.getOverlayY(warning) + innerOffsetY, width, displayInt,
+                    blit(guiGraphics, resource, relativeX, relativeY + innerOffsetY, type.getOverlayX(warning), type.getOverlayY(warning) + innerOffsetY, width, displayInt,
                           type.getTextureWidth(), type.getTextureHeight(), progress, warning);
                 }
             } else {
@@ -77,7 +77,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
                     if (type.isReverse()) {
                         innerOffsetX += type.getTextureWidth() - displayInt;
                     }
-                    blit(guiGraphics, resource, getX() + innerOffsetX, getY(), type.getOverlayX(warning) + innerOffsetX, type.getOverlayY(warning), displayInt, height,
+                    blit(guiGraphics, resource, relativeX + innerOffsetX, relativeY, type.getOverlayX(warning) + innerOffsetX, type.getOverlayY(warning), displayInt, height,
                           type.getTextureWidth(), type.getTextureHeight(), progress, warning);
                 }
             }

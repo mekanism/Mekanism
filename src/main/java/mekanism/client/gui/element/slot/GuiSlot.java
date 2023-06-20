@@ -138,12 +138,12 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISup
         } else {
             texture = getResource();
         }
-        guiGraphics.blit(texture, getX(), getY(), 0, 0, width, height, width, height);
+        guiGraphics.blit(texture, relativeX, relativeY, 0, 0, width, height, width, height);
         if (overlaySupplier != null) {
             overlay = overlaySupplier.get();
         }
         if (overlay != null) {
-            guiGraphics.blit(overlay.getTexture(), getX(), getY(), 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
+            guiGraphics.blit(overlay.getTexture(), relativeX, relativeY, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
         }
         drawContents(guiGraphics);
     }
@@ -152,8 +152,8 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISup
         if (validityCheck != null) {
             ItemStack invalid = validityCheck.get();
             if (!invalid.isEmpty()) {
-                int xPos = getX() + 1;
-                int yPos = getY() + 1;
+                int xPos = relativeX + 1;
+                int yPos = relativeY + 1;
                 guiGraphics.fill(xPos, yPos, xPos + 16, yPos + 16, INVALID_SLOT_COLOR);
                 MekanismRenderer.resetColor();
                 gui().renderItem(guiGraphics, invalid, xPos, yPos);
@@ -161,7 +161,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISup
         } else if (storedStackSupplier != null) {
             ItemStack stored = storedStackSupplier.get();
             if (!stored.isEmpty()) {
-                gui().renderItem(guiGraphics, stored, getX() + 1, getY() + 1);
+                gui().renderItem(guiGraphics, stored, relativeX + 1, relativeY + 1);
             }
         }
     }

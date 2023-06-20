@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.tab;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.text.EnumColor;
@@ -38,7 +37,7 @@ public class GuiWarningTab extends GuiTexturedElement {
     @Override
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blit(getResource(), getX(), getY(), 0, 0, width, height, width, height);
+        guiGraphics.blit(getResource(), relativeX, relativeY, 0, 0, width, height, width, height);
     }
 
     @Override

@@ -55,7 +55,7 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         List<IScrollableSlot> list = getSlotList();
         ResourceLocation resource = list == null ? SLOTS_DARK : SLOTS;
-        guiGraphics.blit(resource, getX(), getY(), 0, 0, xSlots * 18, ySlots * 18, 288, 288);
+        guiGraphics.blit(resource, relativeX, relativeY, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
         if (list != null) {
             int slotStart = scrollBar.getCurrentSelection() * xSlots, max = xSlots * ySlots;
             for (int i = 0; i < max; i++) {
@@ -64,7 +64,7 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
                 if (slot >= list.size()) {
                     break;
                 }
-                int slotX = getX() + (i % xSlots) * 18, slotY = getY() + (i / xSlots) * 18;
+                int slotX = relativeX + (i % xSlots) * 18, slotY = relativeY + (i / xSlots) * 18;
                 renderSlot(guiGraphics, list.get(slot), slotX, slotY);
             }
         }

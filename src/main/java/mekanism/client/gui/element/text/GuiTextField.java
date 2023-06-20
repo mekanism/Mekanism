@@ -200,31 +200,25 @@ public class GuiTextField extends GuiElement {
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         backgroundType.render(this, guiGraphics);
+        PoseStack pose = guiGraphics.pose();
+        pose.pushPose();
+        //Translate to the top left before attempting to render the text field as vanilla render's widgets from the top left
+        pose.translate(-getGuiLeft(), -getGuiTop(), 0);
         if (textScale == 1F) {
-            renderTextField(guiGraphics, mouseX, mouseY, partialTicks);
+            textField.render(guiGraphics, mouseX, mouseY, partialTicks);
         } else {
             // hacky. we should write our own renderer at some point.
             float reverse = (1 / textScale) - 1;
             float yAdd = 4 - (textScale * 8) / 2F;
-            //TODO - 1.20: Re-evaluate if this is needed
-            PoseStack pose = guiGraphics.pose();
-            pose.pushPose();
             pose.scale(textScale, textScale, textScale);
-            pose.translate(textField.getX() * reverse, (textField.getY()) * reverse + yAdd * (1 / textScale), 0);
-            renderTextField(guiGraphics, mouseX, mouseY, partialTicks);
-            pose.popPose();
+            pose.translate(textField.getX() * reverse, textField.getY() * reverse + yAdd * (1 / textScale), 0);
+            textField.render(guiGraphics, mouseX, mouseY, partialTicks);
         }
+        pose.popPose();
         MekanismRenderer.resetColor();
         if (iconType != null) {
-            guiGraphics.blit(iconType.getIcon(), getX() + 2, getY() + (height / 2) - (int) Math.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
+            guiGraphics.blit(iconType.getIcon(), relativeX + 2, relativeY + (height / 2) - (int) Math.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
         }
-    }
-
-    private void renderTextField(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        //Apply matrix via render system so that it applies to the highlight
-        //GuiUtils.renderWithPose(matrix, () -> textField.render(new PoseStack(), mouseX, mouseY, partialTicks));
-        //TODO - 1.20: Test this and if it works remove this method and just call it directly
-        textField.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

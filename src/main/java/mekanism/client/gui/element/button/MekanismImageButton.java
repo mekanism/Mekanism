@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.button;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -46,7 +45,7 @@ public class MekanismImageButton extends MekanismButton {
     @Override
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blit(getResource(), getX(), getY(), width, height, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
+        guiGraphics.blit(getResource(), getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
     }
 
     protected ResourceLocation getResource() {

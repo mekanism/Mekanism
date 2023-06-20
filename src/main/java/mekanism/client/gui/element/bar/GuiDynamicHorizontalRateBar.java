@@ -34,11 +34,11 @@ public class GuiDynamicHorizontalRateBar extends GuiBar<IBarInfoHandler> {
                 float level = i / (float) (width - 2);
                 MekanismRenderer.color(colorFunction.getColor(level));
                 if (i == 0) {
-                    guiGraphics.blit(getResource(), getX() + 1, getY() + 1, 0, 0, 1, texHeight, texWidth, texHeight);
+                    guiGraphics.blit(getResource(), relativeX + 1, relativeY + 1, 0, 0, 1, texHeight, texWidth, texHeight);
                 } else if (i == displayInt - 1) {
-                    guiGraphics.blit(getResource(), getX() + 1 + i, getY() + 1, texWidth - 1, 0, 1, texHeight, texWidth, texHeight);
+                    guiGraphics.blit(getResource(), relativeX + 1 + i, relativeY + 1, texWidth - 1, 0, 1, texHeight, texWidth, texHeight);
                 } else {
-                    guiGraphics.blit(getResource(), getX() + 1 + i, getY() + 1, 1, 0, 1, texHeight, texWidth, texHeight);
+                    guiGraphics.blit(getResource(), relativeX + 1 + i, relativeY + 1, 1, 0, 1, texHeight, texWidth, texHeight);
                 }
             }
             MekanismRenderer.resetColor();

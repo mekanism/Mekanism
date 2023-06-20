@@ -147,15 +147,15 @@ public class GuiModuleScrollList extends GuiScrollList {
             int j = 1;
             if (module == getSelection()) {
                 j = 2;
-            } else if (mouseX >= getX() + 1 && mouseX < barX - 1 && mouseY >= shiftedY && mouseY < shiftedY + elementHeight) {
+            } else if (mouseX >= getX() + 1 && mouseX < getX() + barXShift - 1 && mouseY >= shiftedY && mouseY < shiftedY + elementHeight) {
                 j = 0;
             }
-            guiGraphics.blit(MODULE_SELECTION, getX() + 1, shiftedY, 0, elementHeight * j, TEXTURE_WIDTH, elementHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            guiGraphics.blit(MODULE_SELECTION, relativeX + 1, relativeY + 1 + multipliedElement, 0, elementHeight * j, TEXTURE_WIDTH, elementHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
             MekanismRenderer.resetColor();
         });
         //Note: This needs to be in its own loop as rendering the items is likely to cause the texture manager to be bound to a different texture
         // and thus would make the selection area background get all screwed up
-        forEachModule((module, multipliedElement) -> gui().renderItem(guiGraphics, module.getItemProvider().getItemStack(), getX() + 3, getY() + 3 + multipliedElement, 0.5F));
+        forEachModule((module, multipliedElement) -> gui().renderItem(guiGraphics, module.getItemProvider().getItemStack(), relativeX + 3, relativeY + 3 + multipliedElement, 0.5F));
     }
 
     private void forEachModule(ObjIntConsumer<ModuleData<?>> consumer) {

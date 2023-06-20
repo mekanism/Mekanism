@@ -213,15 +213,11 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
             pose.translate(0, 0, zOffset);
             // update the max total offset to prevent clashing of future overlays
             GuiMekanism.maxZOffset = Math.max(totalOffset, GuiMekanism.maxZOffset);
-            // fix render offset for background drawing
-            pose.translate(-getGuiLeft(), -getGuiTop(), 0);
             // render background overlay and children above everything else
             renderBackgroundOverlay(guiGraphics, mouseX, mouseY);
             // render children just above background overlay
-            children.forEach(child -> child.render(guiGraphics, mouseX, mouseY, 0));
+            children.forEach(child -> child.renderShifted(guiGraphics, mouseX, mouseY, 0));
             children.forEach(child -> child.onDrawBackground(guiGraphics, mouseX, mouseY, 0));
-            // translate back to top right corner and forward to render foregrounds
-            pose.translate(getGuiLeft(), getGuiTop(), 0);
             renderForeground(guiGraphics, mouseX, mouseY);
             // translate forward to render child foreground
             children.forEach(child -> {
@@ -343,14 +339,16 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
      * Override this to render the button with a different x position than this GuiElement
      */
     protected int getButtonX() {
-        return getX();
+        //TODO - 1.20: Re-evaluate usages of this to see which are actually meant to be this/getButtonY/Width/Height and which are meant to be direct
+        // Also maybe we should be overriding this in more places?
+        return relativeX;
     }
 
     /**
      * Override this to render the button with a different y position than this GuiElement
      */
     protected int getButtonY() {
-        return getY();
+        return relativeY;
     }
 
     /**
@@ -424,6 +422,23 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     public final void onDrawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (visible) {
             drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
+        }
+    }
+
+    public final void renderShifted(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        //Note: We copy super's visible check here so that if it is not visible we can skip the pose stack transforms
+        if (visible) {
+            PoseStack pose = guiGraphics.pose();
+            pose.pushPose();
+            // fix render offset to be as we expect things to be for how we implement our render methods (based on relatives)
+            pose.translate(getGuiLeft(), getGuiTop(), 0);
+            renderShifted(guiGraphics, mouseX, mouseY, partialTicks);
+            pose.popPose();
         }
     }
 

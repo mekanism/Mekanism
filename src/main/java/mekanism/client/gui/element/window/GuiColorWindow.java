@@ -78,19 +78,19 @@ public class GuiColorWindow extends GuiWindow {
         }
 
         int textOffset = this.handlesAlpha ? 6 : 0;
-        textField = addChild(new GuiTextField(gui, relativeX + 30 + textOffset, relativeY + getButtonHeight() - 20, 63 + extraWidth - textOffset, 12));
+        textField = addChild(new GuiTextField(gui, relativeX + 30 + textOffset, relativeY + height - 20, 63 + extraWidth - textOffset, 12));
         textField.setInputValidator(InputValidator.DIGIT.or(c -> c == ','))
               //Transform paste to remove any spaces to allow pasting from sources that have a space after the comma
               .setPasteTransformer(text -> text.replace(" ", ""))
               .setBackground(BackgroundType.ELEMENT_HOLDER)
               .setMaxLength(this.handlesAlpha ? 15 : 11);
-        addChild(new TranslationButton(gui, relativeX + 98 + extraWidth, relativeY + getButtonHeight() - 21, 54, 14, MekanismLang.BUTTON_CONFIRM, () -> {
+        addChild(new TranslationButton(gui, relativeX + 98 + extraWidth, relativeY + height - 21, 54, 14, MekanismLang.BUTTON_CONFIRM, () -> {
             callback.accept(getColor());
             close();
         }));
 
         if (armorPreview != null) {
-            addChild(new GuiEntityPreview(gui, relativeX + 155 + extraWidth, relativeY + 17, 80, getButtonHeight() - 24, 5, armorPreview));
+            addChild(new GuiEntityPreview(gui, relativeX + 155 + extraWidth, relativeY + 17, 80, height - 24, 5, armorPreview));
         }
 
         setColor(Color.rgbi(128, 70, 70));
@@ -123,7 +123,7 @@ public class GuiColorWindow extends GuiWindow {
         drawTitleText(guiGraphics, MekanismLang.COLOR_PICKER.translate(), 6);
         ILangEntry entry = handlesAlpha ? MekanismLang.RGBA : MekanismLang.RGB;
         int textOffset = handlesAlpha ? 6 : 0;
-        drawTextScaledBound(guiGraphics, entry.translate(), relativeX + 7, relativeY + getButtonHeight() - 18F, titleTextColor(), 20 + textOffset);
+        drawTextScaledBound(guiGraphics, entry.translate(), relativeX + 7, relativeY + height - 18F, titleTextColor(), 20 + textOffset);
     }
 
     private void drawTiledGradient(GuiGraphics guiGraphics, int x, int y, int width, int height) {
@@ -268,9 +268,9 @@ public class GuiColorWindow extends GuiWindow {
         @Override
         public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
             super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-            drawTransparencyGrid(guiGraphics, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
+            drawTransparencyGrid(guiGraphics, relativeX, relativeY, width, height);
             Color c = getColor();
-            GuiUtils.fill(guiGraphics, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), c.argb());
+            GuiUtils.fill(guiGraphics, relativeX, relativeY, width, height, c.argb());
         }
     }
 
@@ -314,9 +314,9 @@ public class GuiColorWindow extends GuiWindow {
         @Override
         public void renderBackgroundOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY) {
             super.renderBackgroundOverlay(guiGraphics, mouseX, mouseY);
-            drawTiledGradient(guiGraphics, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
-            int posX = getButtonX() + Math.round(GuiColorWindow.this.saturation * getButtonWidth()) - 2;
-            int posY = getButtonY() + Math.round((1 - GuiColorWindow.this.value) * getButtonHeight()) - 2;
+            drawTiledGradient(guiGraphics, relativeX, relativeY, width, height);
+            int posX = relativeX + Math.round(GuiColorWindow.this.saturation * width) - 2;
+            int posY = relativeY + Math.round((1 - GuiColorWindow.this.value) * height) - 2;
             GuiUtils.drawOutline(guiGraphics, posX, posY, 5, 5, 0xFFFFFFFF);
             //Fill the selection in without taking alpha into account
             GuiUtils.fill(guiGraphics, posX + 1, posY + 1, 3, 3, getColor().alpha(1.0).argb());
@@ -324,9 +324,9 @@ public class GuiColorWindow extends GuiWindow {
 
         @Override
         protected void set(double mouseX, double mouseY) {
-            float newS = (float) (mouseX - getButtonX()) / getButtonWidth();
+            float newS = (float) (mouseX - getX()) / width;
             GuiColorWindow.this.saturation = Mth.clamp(newS, 0, 1);
-            float newV = (float) (mouseY - getButtonY()) / getButtonHeight();
+            float newV = (float) (mouseY - getY()) / height;
             GuiColorWindow.this.value = 1 - Mth.clamp(newV, 0, 1);
             updateTextFromColor();
             updateArmorPreview();
@@ -342,17 +342,17 @@ public class GuiColorWindow extends GuiWindow {
         @Override
         public void renderBackgroundOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY) {
             super.renderBackgroundOverlay(guiGraphics, mouseX, mouseY);
-            drawColorBar(guiGraphics, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
+            drawColorBar(guiGraphics, relativeX, relativeY, width, height);
             //Draw selector
-            int posX = Math.round((GuiColorWindow.this.hue / 360F) * (getButtonWidth() - 3));
-            guiGraphics.blit(HUE_PICKER, getButtonX() - 2 + posX, getButtonY() - 2, 0, 0, 7, 12, 12, 12);
+            int posX = Math.round((GuiColorWindow.this.hue / 360F) * (width - 3));
+            guiGraphics.blit(HUE_PICKER, relativeX - 2 + posX, relativeY - 2, 0, 0, 7, 12, 12, 12);
             //Note: This is needed as we want to draw same color in all three pixels instead of each having their own
-            GuiUtils.fill(guiGraphics, getButtonX() + posX, getButtonY(), 3, 8, Color.hsv(GuiColorWindow.this.hue, 1, 1).argb());
+            GuiUtils.fill(guiGraphics, relativeX + posX, relativeY, 3, 8, Color.hsv(GuiColorWindow.this.hue, 1, 1).argb());
         }
 
         @Override
         protected void set(double mouseX, double mouseY) {
-            float val = (float) (mouseX - getButtonX()) / getButtonWidth();
+            float val = (float) (mouseX - getX()) / width;
             GuiColorWindow.this.hue = Mth.clamp(val, 0, 1) * 360F;
             updateTextFromColor();
             updateArmorPreview();
@@ -369,26 +369,26 @@ public class GuiColorWindow extends GuiWindow {
         public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
             super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
             //Draw transparency checkerboard
-            drawTransparencyGrid(guiGraphics, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
+            drawTransparencyGrid(guiGraphics, relativeX, relativeY, width, height);
         }
 
         @Override
         public void renderBackgroundOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY) {
             super.renderBackgroundOverlay(guiGraphics, mouseX, mouseY);
             //Draw alpha bar
-            drawAlphaBar(guiGraphics, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
+            drawAlphaBar(guiGraphics, relativeX, relativeY, width, height);
             //Draw selector
-            int posX = Math.round(GuiColorWindow.this.alpha * (getButtonWidth() - 3));
-            guiGraphics.blit(HUE_PICKER, getButtonX() - 2 + posX, getButtonY() - 2, 0, 0, 7, 12, 12, 12);
+            int posX = Math.round(GuiColorWindow.this.alpha * (width - 3));
+            guiGraphics.blit(HUE_PICKER, relativeX - 2 + posX, relativeY - 2, 0, 0, 7, 12, 12, 12);
             //Note: This is needed as we want to draw same color in all three pixels instead of each having their own
             //Draw transparency checkerboard on the selector
-            drawTransparencyGrid(guiGraphics, getButtonX() + posX, getButtonY(), 3, 8);
-            GuiUtils.fill(guiGraphics, getButtonX() + posX, getButtonY(), 3, 8, getColor().argb());
+            drawTransparencyGrid(guiGraphics, relativeX + posX, relativeY, 3, 8);
+            GuiUtils.fill(guiGraphics, relativeX + posX, relativeY, 3, 8, getColor().argb());
         }
 
         @Override
         protected void set(double mouseX, double mouseY) {
-            float val = (float) (mouseX - getButtonX()) / getButtonWidth();
+            float val = (float) (mouseX - getX()) / width;
             GuiColorWindow.this.alpha = Mth.clamp(val, 0, 1);
             updateTextFromColor();
             updateArmorPreview();

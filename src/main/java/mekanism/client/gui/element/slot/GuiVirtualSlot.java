@@ -49,8 +49,8 @@ public class GuiVirtualSlot extends GuiSlot implements IJEIIngredientHelper {
         if (virtualSlot != null) {
             ItemStack stack = virtualSlot.getStackToRender();
             if (!stack.isEmpty()) {
-                int xPos = getX() + 1;
-                int yPos = getY() + 1;
+                int xPos = relativeX + 1;
+                int yPos = relativeY + 1;
                 if (virtualSlot.shouldDrawOverlay()) {
                     guiGraphics.fill(xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
                 }

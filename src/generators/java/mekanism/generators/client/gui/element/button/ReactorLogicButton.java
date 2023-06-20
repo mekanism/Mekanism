@@ -1,6 +1,5 @@
 package mekanism.generators.client.gui.element.button;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
@@ -59,7 +58,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
         TYPE mode = modeSupplier.get();
         if (mode != null) {
             MekanismRenderer.color(mode.getColor());
-            guiGraphics.blit(TEXTURE, getX(), getY(), 0, mode == tile.getMode() ? 22 : 0, width, height, 128, 44);
+            guiGraphics.blit(TEXTURE, getButtonX(), getButtonY(), 0, mode == tile.getMode() ? 22 : 0, getButtonWidth(), getButtonHeight(), 128, 44);
             MekanismRenderer.resetColor();
         }
     }

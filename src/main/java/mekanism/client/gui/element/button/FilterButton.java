@@ -119,7 +119,7 @@ public class FilterButton extends MekanismButton {
     @Override
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        guiGraphics.blit(TEXTURE, getX(), getY(), width, height, 0, isMouseOverCheckWindows(mouseX, mouseY) ? 0 : 29, TEXTURE_WIDTH, 29, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        guiGraphics.blit(TEXTURE, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), 0, isMouseOverCheckWindows(mouseX, mouseY) ? 0 : 29, TEXTURE_WIDTH, 29, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 
     @Override
@@ -130,20 +130,18 @@ public class FilterButton extends MekanismButton {
             slotDisplay.updateStackList();
             prevFilter = filter;
         }
-        int x = getX() - getGuiLeft();
-        int y = getY() - getGuiTop();
         if (filter instanceof IItemStackFilter) {
-            drawFilterType(guiGraphics, x, y, MekanismLang.ITEM_FILTER);
+            drawFilterType(guiGraphics, relativeX, relativeY, MekanismLang.ITEM_FILTER);
         } else if (filter instanceof ITagFilter) {
-            drawFilterType(guiGraphics, x, y, MekanismLang.TAG_FILTER);
+            drawFilterType(guiGraphics, relativeX, relativeY, MekanismLang.TAG_FILTER);
         } else if (filter instanceof IModIDFilter) {
-            drawFilterType(guiGraphics, x, y, MekanismLang.MODID_FILTER);
+            drawFilterType(guiGraphics, relativeX, relativeY, MekanismLang.MODID_FILTER);
         } else if (filter instanceof OredictionificatorFilter<?, ?, ?> oredictionificatorFilter) {
-            drawFilterType(guiGraphics, x, y, MekanismLang.FILTER);
-            drawTextScaledBound(guiGraphics, oredictionificatorFilter.getFilterText(), x + 22, y + 11, titleTextColor(), getMaxLength());
+            drawFilterType(guiGraphics, relativeX, relativeY, MekanismLang.FILTER);
+            drawTextScaledBound(guiGraphics, oredictionificatorFilter.getFilterText(), relativeX + 22, relativeY + 11, titleTextColor(), getMaxLength());
         }
         if (filter instanceof SorterFilter<?> sorterFilter) {
-            drawTextScaledBound(guiGraphics, sorterFilter.color == null ? MekanismLang.NONE.translate() : sorterFilter.color.getColoredName(), x + 22, y + 11,
+            drawTextScaledBound(guiGraphics, sorterFilter.color == null ? MekanismLang.NONE.translate() : sorterFilter.color.getColoredName(), relativeX + 22, relativeY + 11,
                   titleTextColor(), getMaxLength());
         }
     }

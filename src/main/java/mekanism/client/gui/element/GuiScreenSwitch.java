@@ -27,8 +27,8 @@ public class GuiScreenSwitch extends GuiInnerScreen {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         int buttonSizeX = GuiDigitalSwitch.BUTTON_SIZE_X;
         int buttonSizeY = GuiDigitalSwitch.BUTTON_SIZE_Y;
-        guiGraphics.blit(GuiDigitalSwitch.SWITCH, getX() + width - 2 - buttonSizeX, getY() + 2, 0, stateSupplier.getAsBoolean() ? 0 : buttonSizeY, buttonSizeX, buttonSizeY, buttonSizeX, buttonSizeY * 2);
-        guiGraphics.blit(GuiDigitalSwitch.SWITCH, getX() + width - 2 - buttonSizeX, getY() + 2 + buttonSizeY + 1, 0, stateSupplier.getAsBoolean() ? buttonSizeY : 0, buttonSizeX, buttonSizeY, buttonSizeX, buttonSizeY * 2);
+        guiGraphics.blit(GuiDigitalSwitch.SWITCH, relativeX + width - 2 - buttonSizeX, relativeY + 2, 0, stateSupplier.getAsBoolean() ? 0 : buttonSizeY, buttonSizeX, buttonSizeY, buttonSizeX, buttonSizeY * 2);
+        guiGraphics.blit(GuiDigitalSwitch.SWITCH, relativeX + width - 2 - buttonSizeX, relativeY + 2 + buttonSizeY + 1, 0, stateSupplier.getAsBoolean() ? buttonSizeY : 0, buttonSizeX, buttonSizeY, buttonSizeX, buttonSizeY * 2);
     }
 
     @Override

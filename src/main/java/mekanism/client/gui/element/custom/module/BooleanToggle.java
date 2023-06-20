@@ -1,7 +1,5 @@
 package mekanism.client.gui.element.custom.module;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.element.button.RadioButton;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.ModuleConfigItem;
@@ -34,10 +32,10 @@ class BooleanToggle extends MiniElement {
 
     private void drawRadio(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean selected, int relativeX, int relativeY, int selectedU) {
         if (selected) {
-            guiGraphics.blit(RadioButton.RADIO, getX() + relativeX, getY() + relativeY, selectedU, RADIO_SIZE, RADIO_SIZE, RADIO_SIZE, 2 * RADIO_SIZE, 2 * RADIO_SIZE);
+            guiGraphics.blit(RadioButton.RADIO, getRelativeX() + relativeX, getRelativeY() + relativeY, selectedU, RADIO_SIZE, RADIO_SIZE, RADIO_SIZE, 2 * RADIO_SIZE, 2 * RADIO_SIZE);
         } else {
             boolean hovered = mouseOver(mouseX, mouseY, relativeX, relativeY, RADIO_SIZE, RADIO_SIZE);
-            guiGraphics.blit(RadioButton.RADIO, getX() + relativeX, getY() + relativeY, hovered ? RADIO_SIZE : 0, 0, RADIO_SIZE, RADIO_SIZE, 2 * RADIO_SIZE, 2 * RADIO_SIZE);
+            guiGraphics.blit(RadioButton.RADIO, getRelativeX() + relativeX, getRelativeY() + relativeY, hovered ? RADIO_SIZE : 0, 0, RADIO_SIZE, RADIO_SIZE, 2 * RADIO_SIZE, 2 * RADIO_SIZE);
         }
     }
 

@@ -1,7 +1,5 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -36,12 +34,12 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder {
 
     @Override
     protected int getButtonX() {
-        return getX() + border + (left ? 1 : -1);
+        return super.getButtonX() + border + (left ? 1 : -1);
     }
 
     @Override
     protected int getButtonY() {
-        return getY() + border;
+        return super.getButtonY() + border;
     }
 
     @Override

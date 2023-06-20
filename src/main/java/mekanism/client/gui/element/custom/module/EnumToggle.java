@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.custom.module;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.List;
 import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.text.IHasTextComponent;
@@ -42,8 +41,8 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
     @Override
     protected void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int center = optionDistance * data.get().ordinal();
-        guiGraphics.blit(SLIDER, getX() + BAR_START + center - 2, getY() + 11, 0, 0, 5, 6, 8, 8);
-        guiGraphics.blit(SLIDER, getX() + BAR_START, getY() + 17, 0, 6, BAR_LENGTH, 2, 8, 8);
+        guiGraphics.blit(SLIDER, getRelativeX() + BAR_START + center - 2, getRelativeY() + 11, 0, 0, 5, 6, 8, 8);
+        guiGraphics.blit(SLIDER, getRelativeX() + BAR_START, getRelativeY() + 17, 0, 6, BAR_LENGTH, 2, 8, 8);
     }
 
     @Override

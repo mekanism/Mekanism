@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.text;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.BiConsumer;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -8,15 +7,15 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import net.minecraft.client.gui.GuiGraphics;
 
 public enum BackgroundType {
-    INNER_SCREEN((field, guiGraphics) -> GuiUtils.renderBackgroundTexture(guiGraphics, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE, field.getX() - 1, field.getY() - 1, field.getWidth() + 2, field.getHeight() + 2, 256, 256)),
-    ELEMENT_HOLDER((field, guiGraphics) -> GuiUtils.renderBackgroundTexture(guiGraphics, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE, GuiElementHolder.HOLDER_SIZE, field.getX() - 1, field.getY() - 1, field.getWidth() + 2, field.getHeight() + 2, 256, 256)),
+    INNER_SCREEN((field, guiGraphics) -> GuiUtils.renderBackgroundTexture(guiGraphics, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE, field.getRelativeX() - 1, field.getRelativeY() - 1, field.getWidth() + 2, field.getHeight() + 2, 256, 256)),
+    ELEMENT_HOLDER((field, guiGraphics) -> GuiUtils.renderBackgroundTexture(guiGraphics, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE, GuiElementHolder.HOLDER_SIZE, field.getRelativeX() - 1, field.getRelativeY() - 1, field.getWidth() + 2, field.getHeight() + 2, 256, 256)),
     DEFAULT((field, guiGraphics) -> {
-        GuiUtils.fill(guiGraphics, field.getX() - 1, field.getY() - 1, field.getWidth() + 2, field.getHeight() + 2, GuiTextField.DEFAULT_BORDER_COLOR);
-        GuiUtils.fill(guiGraphics, field.getX(), field.getY(), field.getWidth(), field.getHeight(), GuiTextField.DEFAULT_BACKGROUND_COLOR);
+        GuiUtils.fill(guiGraphics, field.getRelativeX() - 1, field.getRelativeY() - 1, field.getWidth() + 2, field.getHeight() + 2, GuiTextField.DEFAULT_BORDER_COLOR);
+        GuiUtils.fill(guiGraphics, field.getRelativeX(), field.getRelativeY(), field.getWidth(), field.getHeight(), GuiTextField.DEFAULT_BACKGROUND_COLOR);
     }),
     DIGITAL((field, guiGraphics) -> {
-        GuiUtils.fill(guiGraphics, field.getX() - 1, field.getY() - 1, field.getWidth() + 2, field.getHeight() + 2, field.isTextFieldFocused() ? GuiTextField.SCREEN_COLOR.getAsInt() : GuiTextField.DARK_SCREEN_COLOR.getAsInt());
-        GuiUtils.fill(guiGraphics, field.getX(), field.getY(), field.getWidth(), field.getHeight(), GuiTextField.DEFAULT_BACKGROUND_COLOR);
+        GuiUtils.fill(guiGraphics, field.getRelativeX() - 1, field.getRelativeY() - 1, field.getWidth() + 2, field.getHeight() + 2, field.isTextFieldFocused() ? GuiTextField.SCREEN_COLOR.getAsInt() : GuiTextField.DARK_SCREEN_COLOR.getAsInt());
+        GuiUtils.fill(guiGraphics, field.getRelativeX(), field.getRelativeY(), field.getWidth(), field.getHeight(), GuiTextField.DEFAULT_BACKGROUND_COLOR);
     }),
     NONE((field, guiGraphics) -> {
     });

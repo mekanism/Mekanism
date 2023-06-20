@@ -151,12 +151,12 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     @Override
     public void renderBackgroundOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (isFocusOverlay()) {
-            MekanismRenderer.renderColorOverlay(guiGraphics.pose(), 0, 0, guiGraphics.guiWidth(), guiGraphics.guiHeight(), OVERLAY_COLOR.rgba());
+            MekanismRenderer.renderColorOverlay(guiGraphics.pose(), -getX(), -getY(), guiGraphics.guiWidth(), guiGraphics.guiHeight(), OVERLAY_COLOR.rgba());
         } else {
             RenderSystem.setShaderColor(1, 1, 1, 0.75F);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
-            GuiUtils.renderBackgroundTexture(guiGraphics, GuiMekanism.SHADOW, 4, 4, getButtonX() - 3, getButtonY() - 3, getButtonWidth() + 6, getButtonHeight() + 6, 256, 256);
+            GuiUtils.renderBackgroundTexture(guiGraphics, GuiMekanism.SHADOW, 4, 4, relativeX - 3, relativeY - 3, width + 6, height + 6, 256, 256);
             MekanismRenderer.resetColor();
         }
         renderBackgroundTexture(guiGraphics, getResource(), 4, 4);

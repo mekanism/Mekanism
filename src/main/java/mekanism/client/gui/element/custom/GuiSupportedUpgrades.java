@@ -47,8 +47,8 @@ public class GuiSupportedUpgrades extends GuiElement {
         for (int i = 0; i < EnumUtils.UPGRADES.length; i++) {
             Upgrade upgrade = EnumUtils.UPGRADES[i];
             UpgradePos pos = getUpgradePos(i);
-            int xPos = getX() + 1 + pos.x;
-            int yPos = getY() + 1 + pos.y;
+            int xPos = relativeX + 1 + pos.x;
+            int yPos = relativeY + 1 + pos.y;
             gui().renderItem(guiGraphics, UpgradeUtils.getStack(upgrade), xPos, yPos, 0.75F);
             if (!supportedUpgrades.contains(upgrade)) {
                 //Make the upgrade appear faded if it is not supported

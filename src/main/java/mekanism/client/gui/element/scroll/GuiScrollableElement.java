@@ -24,8 +24,8 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
           int barXShift, int barYShift, int barWidth, int barHeight, int maxBarHeight) {
         super(resource, gui, x, y, width, height);
         this.barXShift = barXShift;
-        this.barX = getX() + barXShift;
-        this.barY = getY() + barYShift;
+        this.barX = relativeX + barXShift;
+        this.barY = relativeY + barYShift;
         this.barWidth = barWidth;
         this.barHeight = barHeight;
         this.maxBarHeight = maxBarHeight;
@@ -53,7 +53,9 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     public void onClick(double mouseX, double mouseY, int button) {
         super.onClick(mouseX, mouseY, button);
         int scroll = getScroll();
-        if (mouseX >= barX && mouseX <= barX + barWidth && mouseY >= barY + scroll && mouseY <= barY + scroll + barHeight) {
+        int x = getGuiLeft() + barX;
+        int y = getGuiTop() + barY;
+        if (mouseX >= x && mouseX <= x + barWidth && mouseY >= y + scroll && mouseY <= y + scroll + barHeight) {
             if (needsScrollBars()) {
                 double yAxis = mouseY - getGuiTop();
                 dragOffset = (int) (yAxis - (scroll + barY));
@@ -131,7 +133,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
         //Middle border
         guiGraphics.blit(texture, barX - 1, barY, 6, maxBarHeight, 0, 1, textureWidth, 1, textureWidth, textureHeight);
         //Bottom border
-        guiGraphics.blit(texture, barX - 1, getY() + maxBarHeight + 2, 0, 0, textureWidth, 1, textureWidth, textureHeight);
+        guiGraphics.blit(texture, barX - 1, relativeY + maxBarHeight + 2, 0, 0, textureWidth, 1, textureWidth, textureHeight);
         //Scroll bar
         guiGraphics.blit(texture, barX, barY + getScroll(), 0, 2, barWidth, barHeight, textureWidth, textureHeight);
     }

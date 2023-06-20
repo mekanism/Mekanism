@@ -29,6 +29,7 @@ public interface IJEIRecipeArea<ELEMENT extends GuiElement> extends GuiEventList
         return jeiCategories(MekanismJEIRecipeType.VANILLA_CRAFTING);
     }
 
+    //TODO - 1.20: Should this be checking for windows as well?
     default boolean isMouseOverJEIArea(double mouseX, double mouseY) {
         return isMouseOver(mouseX, mouseY);
     }

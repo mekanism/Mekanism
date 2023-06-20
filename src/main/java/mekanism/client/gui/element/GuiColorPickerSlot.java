@@ -37,7 +37,7 @@ public class GuiColorPickerSlot extends GuiElement {
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
-        GuiUtils.fill(guiGraphics, relativeX + 1, relativeY + 1, getButtonWidth() - 2, getButtonHeight() - 2, supplier.get().argb());
+        GuiUtils.fill(guiGraphics, relativeX + 1, relativeY + 1, width - 2, height - 2, supplier.get().argb());
     }
 
     @Override

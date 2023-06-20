@@ -50,7 +50,7 @@ public class GuiVerticalPowerBar extends GuiBar<IBarInfoHandler> {
         int displayInt = (int) (handlerLevel * texHeight);
         if (displayInt > 0) {
             int scaled = calculateScaled(heightScale, displayInt);
-            guiGraphics.blit(getResource(), getX() + 1, getY() + height - 1 - scaled, texWidth, scaled, 0, 0, texWidth, displayInt, texWidth, texHeight);
+            guiGraphics.blit(getResource(), relativeX + 1, relativeY + height - 1 - scaled, texWidth, scaled, 0, 0, texWidth, displayInt, texWidth, texHeight);
         }
     }
 }

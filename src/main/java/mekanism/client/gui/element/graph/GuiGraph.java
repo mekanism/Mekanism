@@ -40,8 +40,8 @@ public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends
         ResourceLocation texture = getResource();
         //Draw the graph
         int size = graphData.size();
-        int x = getX() + 1;
-        int y = getY() + 1;
+        int x = relativeX + 1;
+        int y = relativeY + 1;
         int height = this.height - 2;
         for (int i = 0; i < size; i++) {
             int relativeHeight = getRelativeHeight(i, height);

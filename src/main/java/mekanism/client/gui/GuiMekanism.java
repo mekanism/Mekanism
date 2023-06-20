@@ -63,7 +63,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     private boolean hasClicked = false;
 
     public static int maxZOffset;
-    private int maxZOffsetNoWindows;
 
     protected GuiMekanism(CONTAINER container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -236,21 +235,13 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         //Note: We intentionally don't push the modelViewStack, see notes further down in this method for more details
         //TODO - 1.20: Figure this out as some transforms and hacks may be unnecessary now
         PoseStack pose = guiGraphics.pose();
-        //TODO - 1.20: Re-evaluate?? if we keep this merge it with the next translate call
-        // we previously had this applied to the pose and the next translate applied to the model view
+        //TODO - 1.20: Re-evaluate?? this always was against the pose but what is it for
         pose.translate(0, 0, 300);
-        //TODO - 1.20: Do we want to try and remove this translation and make everything for drawing the background use relative positions?
-        pose.translate(-leftPos, -topPos, 0);
-        //modelViewStack.translate(-leftPos, -topPos, 0);
-        //RenderSystem.applyModelViewMatrix();
         children().stream().filter(c -> c instanceof GuiElement).forEach(c -> ((GuiElement) c).onDrawBackground(guiGraphics, mouseX, mouseY, MekanismRenderer.getPartialTick()));
-        pose.translate(leftPos, topPos, 0);
-        //modelViewStack.translate(leftPos, topPos, 0);
-        //RenderSystem.applyModelViewMatrix();
         drawForegroundText(guiGraphics, mouseX, mouseY);
         // first render general foregrounds
         int zOffset = 200;
-        maxZOffsetNoWindows = maxZOffset = zOffset;
+        maxZOffset = zOffset;
         for (GuiEventListener widget : children()) {
             if (widget instanceof GuiElement element) {
                 pose.pushPose();
@@ -258,8 +249,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                 pose.popPose();
             }
         }
-        maxZOffsetNoWindows = maxZOffset;
-        int windowSeparation = 150;
 
         // now render overlays in reverse-order (i.e. back to front)
         for (LRU<GuiWindow>.LRUIterator iter = getWindowsDescendingIterator(); iter.hasNext(); ) {
@@ -269,7 +258,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             // we need to do this based on what the max is after having rendered the previous
             // window as while the windows don't necessarily overlap, if they do we want to
             // ensure that there is no clipping
-            zOffset = maxZOffset + windowSeparation;
+            zOffset = maxZOffset + 150;
             pose.pushPose();
             overlay.onRenderForeground(guiGraphics, mouseX, mouseY, zOffset, zOffset);
             if (iter.hasNext()) {
@@ -293,11 +282,12 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         // translate forwards using RenderSystem. this should never have to happen as we do all the necessary translations with MatrixStacks,
         // but Minecraft has decided to not fully adopt MatrixStacks for many crucial ContainerScreen render operations. should be re-evaluated
         // when mc updates related logic on their end (IMPORTANT)
-        //modelViewStack.translate(0, 0, maxZOffset);
-        //TODO - 1.20: Is this necessary
+        //TODO - 1.20: Is this necessary used to occur on the model view stack
         pose.translate(0, 0, maxZOffset);
 
         // render tooltips
+        //TODO - 1.20: Can we remove these transforms that are around the tooltip rendering
+        // No, we maybe could remove from the tooltip element portion but definitely not from the stack rendering/parent renderTooltip method
         pose.translate(-leftPos, -topPos, 0);
         //modelViewStack.translate(-leftPos, -topPos, 0);
         //RenderSystem.applyModelViewMatrix();
@@ -311,13 +301,8 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         // IMPORTANT: additional hacky translation so held items render okay. re-evaluate as discussed above
         // Note: It is important that we don't wrap our adjustments to the modelViewStack in so that we can
         // have the adjustments to the z-value persist into the vanilla methods
-        //TODO - 1.20: Is this necessary
+        //TODO - 1.20: Is this necessary (used to happen to the model view stack)
         pose.translate(0, 0, 200);
-        //modelViewStack.translate(0, 0, 200);
-        //RenderSystem.applyModelViewMatrix();
-
-        //Adjust the amount we offset tooltips to put tooltips made by JEI above the windows
-        maxZOffsetNoWindows = -(maxZOffset - windowSeparation * windows.size());
     }
 
     protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
@@ -580,32 +565,12 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         // shift back a whole lot so we can stack more windows
-        //TODO - 1.20: Validate this, used to translate the model view stack
+        //TODO - 1.20: Validate this, used to translate the modelViewStack
         pose.translate(0, 0, -500);
         renderBackground(guiGraphics);
-        //TODO - 1.20: Fix comment
-        //Apply our matrix stack to the render system and pass an unmodified one to the super method
-        // Vanilla still renders the items into the GUI using render system transformations so this
-        // is required to not have tooltips of GuiElements rendering behind the items
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         pose.popPose();
     }
-
-    //TODO - 1.20: Re-evaluate all these render tooltips?? Maybe it just works now
-    //Used as a helper to wrap and fix the various calls to renderTooltipInternal so that tooltips for bundles appear in the proper location
-    /*private void adjustTooltipZ(@NotNull PoseStack poseStack, @NotNull Consumer<PoseStack> tooltipRender) {
-        PoseStack modelViewStack = RenderSystem.getModelViewStack();
-        modelViewStack.pushPose();
-        //Apply the current matrix to the view so that we render items and tooltips at the proper level
-        // (especially for bundles that render items as part of the tooltip). We also translate to make things
-        // fit better in the z direction
-        modelViewStack.translate(0, 0, -maxZOffsetNoWindows - 1);
-        modelViewStack.mulPoseMatrix(poseStack.last().pose());
-        RenderSystem.applyModelViewMatrix();
-        tooltipRender.accept(new PoseStack());
-        modelViewStack.popPose();
-        RenderSystem.applyModelViewMatrix();
-    }*/
 
     @Override
     public boolean currentlyQuickCrafting() {

@@ -73,14 +73,14 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
     @Override
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (target instanceof ItemStack stack) {
-            gui().renderItem(guiGraphics, stack, getX(), getY());
+            gui().renderItem(guiGraphics, stack, relativeX, relativeY);
         } else if (target instanceof FluidStack stack) {
             MekanismRenderer.color(stack);
-            drawTiledSprite(guiGraphics, getX(), getY(), height, width, height, MekanismRenderer.getFluidTexture(stack, FluidTextureType.STILL), TilingDirection.DOWN_RIGHT);
+            drawTiledSprite(guiGraphics, relativeX, relativeY, height, width, height, MekanismRenderer.getFluidTexture(stack, FluidTextureType.STILL), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor();
         } else if (target instanceof ChemicalStack<?> stack) {
             MekanismRenderer.color(stack);
-            drawTiledSprite(guiGraphics, getX(), getY(), height, width, height, MekanismRenderer.getChemicalTexture(stack.getType()), TilingDirection.DOWN_RIGHT);
+            drawTiledSprite(guiGraphics, relativeX, relativeY, height, width, height, MekanismRenderer.getChemicalTexture(stack.getType()), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor();
         }
     }

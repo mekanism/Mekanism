@@ -75,19 +75,19 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
 
         int index = getHoveredIndex(mouseX, mouseY);
         if (index != -1) {
-            GuiUtils.drawOutline(guiGraphics, getX() + 1, getY() + 12 + index * 10, width - 2, 10, screenTextColor());
+            GuiUtils.drawOutline(guiGraphics, relativeX + 1, relativeY + 12 + index * 10, width - 2, 10, screenTextColor());
         }
 
         TYPE current = curType.get();
         if (current.getIcon() != null) {
-            guiGraphics.blit(current.getIcon(), getX() + width - 9, getY() + 3, 0, 0, 6, 6, 6, 6);
+            guiGraphics.blit(current.getIcon(), relativeX + width - 9, relativeY + 3, 0, 0, 6, 6, 6, 6);
         }
 
         if (isOpen) {
             for (int i = 0; i < options.length; i++) {
                 ResourceLocation icon = options[i].getIcon();
                 if (icon != null) {
-                    guiGraphics.blit(icon, getX() + width - 9, getY() + 12 + 2 + 10 * i, 0, 0, 6, 6, 6, 6);
+                    guiGraphics.blit(icon, relativeX + width - 9, relativeY + 12 + 2 + 10 * i, 0, 0, 6, 6, 6, 6);
                 }
             }
         }

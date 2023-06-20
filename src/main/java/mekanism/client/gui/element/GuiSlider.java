@@ -34,9 +34,9 @@ public class GuiSlider extends GuiElement {
     @Override
     public void renderBackgroundOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderBackgroundOverlay(guiGraphics, mouseX, mouseY);
-        GuiUtils.fill(guiGraphics, getButtonX() + 2, getButtonY() + 3, getButtonWidth() - 4, 6, 0xFF555555);
-        int posX = (int) (value * (getButtonWidth() - 6));
-        guiGraphics.blit(SLIDER, getButtonX() + posX, getButtonY(), 0, 0, 7, 12, 12, 12);
+        GuiUtils.fill(guiGraphics, relativeX + 2, relativeY + 3, width - 4, 6, 0xFF555555);
+        int posX = (int) (value * (width - 6));
+        guiGraphics.blit(SLIDER, relativeX + posX, relativeY, 0, 0, 7, 12, 12, 12);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class GuiSlider extends GuiElement {
     }
 
     private void set(double mouseX, double mouseY) {
-        value = Mth.clamp(((mouseX - getButtonX() - 2) / (getButtonWidth() - 6)), 0, 1);
+        value = Mth.clamp(((mouseX - getX() - 2) / (width - 6)), 0, 1);
         callback.accept(value);
     }
 }

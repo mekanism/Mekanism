@@ -77,7 +77,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
             QuadTransformation rotation = QuadTransformation.rotateY(rot);
             int slotStart = scrollBar.getCurrentSelection() * SLOT_COUNT, max = SLOT_COUNT * SLOT_COUNT;
             for (int i = 0; i < max; i++) {
-                int slotX = getX() + (i % SLOT_COUNT) * SLOT_DIMENSIONS, slotY = getY() + (i / SLOT_COUNT) * SLOT_DIMENSIONS;
+                int slotX = relativeX + (i % SLOT_COUNT) * SLOT_DIMENSIONS, slotY = relativeY + (i / SLOT_COUNT) * SLOT_DIMENSIONS;
                 int slot = slotStart + i;
                 if (slot < skins.size()) {
                     RobitSkin skin = skins.get(slot);
