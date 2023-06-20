@@ -25,7 +25,6 @@ import mekanism.common.inventory.container.QIOItemViewerContainer.ListSortType;
 import mekanism.common.inventory.container.QIOItemViewerContainer.SortDirection;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -76,11 +75,12 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             );
         }));
         searchField = addRenderableWidget(new GuiTextField(this, 50, 15 + 12 + 3, imageWidth - 50 - 10, 10));
-        searchField.setOffset(0, -1);
-        searchField.setInputValidator(this::isValidSearchChar);
-        searchField.setResponder(menu::updateSearch);
+        searchField.setOffset(0, -1)
+              .setInputValidator(this::isValidSearchChar)
+              .setBackground(BackgroundType.ELEMENT_HOLDER)
+              //Note: This responder will also be called when the menu is resized/repositioned and the text gets copied
+              .setResponder(menu::updateSearch);
         searchField.setMaxLength(50);
-        searchField.setBackground(BackgroundType.ELEMENT_HOLDER);
         searchField.setVisible(true);
         searchField.setTextColor(0xFFFFFF);
         searchField.setFocused(true);
@@ -105,9 +105,8 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    public void init(@NotNull Minecraft minecraft, int sizeX, int sizeY) {
-        super.init(minecraft, sizeX, sizeY);
-        menu.updateSearch(searchField.getText());
+    protected void repositionElements() {
+        super.repositionElements();
         //Validate the height is still valid, and if it isn't recreate it
         int maxY = QIOItemViewerContainer.getSlotsYMax();
         if (MekanismConfig.client.qioItemViewerSlotsY.get() > maxY) {

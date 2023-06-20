@@ -67,7 +67,6 @@ public class LaserParticle extends TextureSheetParticle {
               new Vector3f(quadSize, -halfLength, 0)
         };
         for (Vector3f vec : resultVector) {
-            //TODO - 1.20: Test this
             quaternion.transform(vec);
             vec.add(newX, newY, newZ);
         }

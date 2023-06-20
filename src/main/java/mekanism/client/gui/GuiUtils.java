@@ -278,33 +278,12 @@ public class GuiUtils {
                     xAxis = 0;
                     yAxis = 0;
                 }
-                //Apply our matrix stack to the render system and pass an unmodified one to the render methods
-                // Vanilla still renders the items using render system transformations so this is required to
-                // have things render in the correct order
-                int finalXAxis = xAxis;
-                int finalYAxis = yAxis;
-                /*renderWithPose(pose, () -> {
-                    //TODO - 1.20: Figure out
-                    renderer.renderAndDecorateItem(stack, finalXAxis, finalYAxis);
-                    if (overlay) {
-                        //When we render items ourselves in virtual slots or scroll slots we want to compress the z scale
-                        // for rendering the stored count so that it doesn't clip with later windows
-                        float previousOffset = renderer.blitOffset;
-                        renderer.blitOffset -= 25;
-                        guiGraphics.renderItemDecorations(font, stack, finalXAxis, finalYAxis, text);
-                        renderer.blitOffset = previousOffset;
-                    }
-                });*/
-                guiGraphics.renderItem(stack, finalXAxis, finalYAxis);
+                guiGraphics.renderItem(stack, xAxis, yAxis);
                 if (overlay) {
-                    //TODO - 1.20: Is this translation even still needed
                     //When we render items ourselves in virtual slots or scroll slots we want to compress the z scale
                     // for rendering the stored count so that it doesn't clip with later windows
-                    pose.pushPose();
-                    //TODO - 1.20: Is this the correct direction
                     pose.translate(0, 0, -25);
-                    guiGraphics.renderItemDecorations(font, stack, finalXAxis, finalYAxis, text);
-                    pose.popPose();
+                    guiGraphics.renderItemDecorations(font, stack, xAxis, yAxis, text);
                 }
 
                 RenderSystem.disableDepthTest();

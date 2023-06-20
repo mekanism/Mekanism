@@ -38,11 +38,10 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
         addRenderableWidget(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));
         addRenderableWidget(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
         injectionRateField = addRenderableWidget(new GuiTextField(this, 98, 115, 26, 11));
-        //TODO - 1.20: Test this
         injectionRateField.setFocused(true);
-        injectionRateField.setInputValidator(InputValidator.DIGIT);
-        injectionRateField.setEnterHandler(this::setInjection);
-        injectionRateField.setMaxLength(2);
+        injectionRateField.setInputValidator(InputValidator.DIGIT)
+              .setEnterHandler(this::setInjection)
+              .setMaxLength(2);
     }
 
     @Override

@@ -28,7 +28,6 @@ public class GameTestUtils {
     private static final Method PROCESS_UNLOADS = ObfuscationReflectionHelper.findMethod(ChunkMap.class, "m_140353_", BooleanSupplier.class);
     private static final Method ENSURE_SINGLE_FINAL_CHECK = ObfuscationReflectionHelper.findMethod(GameTestHelper.class, "m_177442_");
 
-    //TODO - 1.20: Should this be switched to a ChunkLevel constant?
     public static final int INACCESSIBLE_LEVEL = ChunkMap.MAX_VIEW_DISTANCE + 1;
     private static final int UNLOAD_LEVEL = ChunkLevel.MAX_LEVEL + 1;
     private static final BooleanSupplier ALWAYS_TRUE = () -> true;
@@ -156,7 +155,6 @@ public class GameTestUtils {
                         fail(helper, "Error loading chunk", absolutePos, relativePos);
                     } else {
                         //And ensure we schedule it based on the status (in general this should be ChunkStatus.FULL)
-                        //TODO - 1.20: Validate this
                         chunkMap.schedule(holder, ChunkLevel.generationStatus(holder.getTicketLevel()));
                     }
                     fail(helper, "Chunk queued for loading", absolutePos, relativePos);

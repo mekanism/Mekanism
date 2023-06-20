@@ -1,7 +1,6 @@
 package mekanism.client.gui.machine;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import java.util.function.Supplier;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
@@ -87,8 +86,7 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         pose.translate(0, 0, 100);
-        //TODO - 1.20: Evaluate this
-        MultiBufferSource.BufferSource renderer = guiGraphics.bufferSource();//MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        MultiBufferSource.BufferSource renderer = guiGraphics.bufferSource();
         bolt.update(this, boltSupplier.get(), MekanismRenderer.getPartialTick());
         bolt.render(MekanismRenderer.getPartialTick(), pose, renderer);
         renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);

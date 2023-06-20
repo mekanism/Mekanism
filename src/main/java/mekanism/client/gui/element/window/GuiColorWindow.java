@@ -139,23 +139,15 @@ public class GuiColorWindow extends GuiWindow {
         }
     }
 
+    //Based on GuiGraphics#fillGradient
     private void drawGradient(GuiGraphics guiGraphics, int x, int y, int width, int height, Color tl, Color tr, Color bl, Color br) {
-        //TODO - 1.20: Test this as it is based on gui graphic's new fillGradient impl
-
         VertexConsumer buffer = guiGraphics.bufferSource().getBuffer(RenderType.gui());
-        //RenderSystem.enableBlend();
-        //RenderSystem.defaultBlendFunc();
-        //RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        //BufferBuilder buffer = Tesselator.getInstance().getBuilder();
         Matrix4f matrix4f = guiGraphics.pose().last().pose();
-        //buffer.begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix4f, x, y + height, 0).color(bl.r(), bl.g(), bl.b(), bl.a()).endVertex();
         buffer.vertex(matrix4f, x + width, y + height, 0).color(br.r(), br.g(), br.b(), br.a()).endVertex();
         buffer.vertex(matrix4f, x + width, y, 0).color(tr.r(), tr.g(), tr.b(), tr.a()).endVertex();
         buffer.vertex(matrix4f, x, y, 0).color(tl.r(), tl.g(), tl.b(), tl.a()).endVertex();
-        //BufferUploader.drawWithShader(buffer.end());
-        //RenderSystem.disableBlend();
-        //TODO - 1.20: Should technically be flushIfUnmanaged?? but I think this is always unmanaged when we are here?
+        //Note: This technically should probably be flushIfUnmanaged, but I believe we are always unmanaged here, so it is not worth ATing the method to call it
         guiGraphics.flush();
     }
 

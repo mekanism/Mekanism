@@ -41,7 +41,6 @@ public class GuiEntityPreview extends GuiElement {
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
-        //TODO - 1.20: Test this
         InventoryScreen.renderEntityInInventoryFollowsAngle(guiGraphics, relativeX + width / 2, relativeY + height - 2 - border - (height - size) / 2,
               scale, rotation, 0, preview.get());
     }

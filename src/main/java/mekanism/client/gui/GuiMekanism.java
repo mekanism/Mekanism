@@ -33,7 +33,6 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -190,15 +189,19 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    public void init(@NotNull Minecraft minecraft, int width, int height) {
+    protected void repositionElements() {
         //Mark that we are not switching to JEI if we start being initialized again
+        // Note: We can do this here as the screen will always have initialized as true, so we don't need to definalize init(mc, width, height)
+        // as it will never potentially have init() with no params be the call path
+        // Additionally, as the screen is not actively being used we shouldn't have cases this is called from resize while we are not present
+        // and setting this to false when it is already false does nothing
         switchingToJEI = false;
-        //Note: We are forced to do the logic that normally would be inside the "resize" method
-        // here in init, as when mods like JEI take over the screen to show recipes, and then
-        // return the screen to the "state" it was beforehand it does not actually properly
-        // transfer the state from the previous instance to the new instance. If we run the
-        // code we normally would run for when things get resized, we then are able to
-        // properly reinstate/transfer the states of the various elements
+        super.repositionElements();
+    }
+
+    @Override
+    protected void rebuildWidgets() {
+        //Gather any persistent data from existing elements
         record PreviousElement(int index, GuiElement element) {
         }
         List<PreviousElement> prevElements = new ArrayList<>();
@@ -211,10 +214,13 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         // flush the focus listeners list unless it's an overlay
         focusListeners.removeIf(element -> !element.isOverlay);
         int prevLeft = leftPos, prevTop = topPos;
-        super.init(minecraft, width, height);
+        //Allow the elements to be cleared and reinitialized
+        super.rebuildWidgets();
 
+        //Resize any windows as we can't easily just rebuild them
         windows.forEach(window -> window.resize(prevLeft, prevTop, leftPos, topPos));
 
+        //And set any persistent data that we stored
         prevElements.forEach(e -> {
             if (e.index() < children().size()) {
                 GuiEventListener widget = children().get(e.index());

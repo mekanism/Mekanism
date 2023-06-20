@@ -65,7 +65,6 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     @Override
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        //TODO - 1.20: Evaluate if we still need the translations here
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         //TODO: Figure out why we need a translation of 1 to fix the text intersecting for the dictionary but it works just fine

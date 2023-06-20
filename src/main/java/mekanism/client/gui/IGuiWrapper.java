@@ -101,9 +101,6 @@ public interface IGuiWrapper {
     }
 
     default void renderItemTooltip(GuiGraphics guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis) {
-        //Mekanism.logger.error("Tried to call 'renderItemTooltip' but unsupported in {}", getClass().getName());
-        //renderTooltip(guiGraphics, stack, xAxis, yAxis);
-        //TODO - 1.20: Re-evaluate that this doesn't need any form of repositioning y value wise
         guiGraphics.renderTooltip(getFont(), stack, xAxis, yAxis);
     }
 
@@ -111,11 +108,8 @@ public interface IGuiWrapper {
         if (toAppend.isEmpty()) {
             renderItemTooltip(guiGraphics, stack, xAxis, yAxis);
         } else {
-            //Mekanism.logger.error("Tried to call 'renderItemTooltipWithExtra' but unsupported in {}", getClass().getName());
             List<Component> tooltip = new ArrayList<>(Screen.getTooltipFromItem(Minecraft.getInstance(), stack));
             tooltip.addAll(toAppend);
-            //renderTooltip(guiGraphics, tooltip, stack.getTooltipImage(), xAxis, yAxis, stack);
-            //TODO - 1.20: Re-evaluate that this doesn't need any form of repositioning y value wise
             guiGraphics.renderTooltip(getFont(), tooltip, stack.getTooltipImage(), stack, xAxis, yAxis);
         }
     }

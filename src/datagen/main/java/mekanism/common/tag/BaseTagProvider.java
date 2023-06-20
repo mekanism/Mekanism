@@ -152,7 +152,6 @@ public abstract class BaseTagProvider implements DataProvider {
         return getBuilder(Registries.GAME_EVENT, gameEvent -> gameEvent.builtInRegistryHolder().key(), tag);
     }
 
-    //TODO - 1.20: See if we can use the registries here or is it too early
     protected ForgeRegistryTagBuilder<Gas> getGasBuilder(TagKey<Gas> tag) {
         return getBuilder(MekanismAPI.gasRegistry(), tag);
     }

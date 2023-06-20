@@ -10,7 +10,7 @@ import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 
 //Based off of TagsProvider.TagAppender but with a few shortcuts for forge registry entries and also a few more helpers and addition of SafeVarargs annotations
-public class ForgeRegistryTagBuilder<TYPE> {//TODO - 1.20: Look at IntrinsicTagAppender and forge extensions etc etc
+public class ForgeRegistryTagBuilder<TYPE> {
 
     private final Function<TYPE, ResourceKey<TYPE>> keyExtractor;
     private final TagBuilder builder;

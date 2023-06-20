@@ -325,7 +325,7 @@ public class GuiTextField extends GuiElement {
         textField.setCanLoseFocus(canLoseFocus);
     }
 
-    @Override//TODO - 1.20: validate the focus changes properly match vanilla in functionality
+    @Override
     public void setFocused(boolean focused) {
         if (textField.canLoseFocus || focused) {
             super.setFocused(focused);

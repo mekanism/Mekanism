@@ -117,7 +117,6 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                     renderTarget = (graphics, x, y) -> {
                         MekanismRenderer.color(properties.getTintColor());
                         TextureAtlasSprite texture = MekanismRenderer.getSprite(properties.getStillTexture());
-                        //TODO - 1.20: Test this works as is for the z level as we used to use the blitOffset
                         GuiUtils.drawSprite(graphics.pose(), x, y, 16, 16, texture);
                         MekanismRenderer.resetColor();
                     };

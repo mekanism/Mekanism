@@ -72,10 +72,10 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
             return list;
         }).clearFormat());
         text = addRenderableWidget(new GuiTextField(this, 29, 80, imageWidth - 39, 12));
-        text.setMaxLength(10);
-        text.setInputValidator(InputValidator.DIGIT);
+        text.setInputValidator(InputValidator.DIGIT)
+              .configureDigitalInput(this::setCount)
+              .setMaxLength(10);
         text.setFocused(true);
-        text.configureDigitalInput(this::setCount);
     }
 
     private void updateStack(ItemStack stack) {
