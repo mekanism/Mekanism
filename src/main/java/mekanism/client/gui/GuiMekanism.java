@@ -335,24 +335,26 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         hasClicked = true;
         // first try to send the mouse event to our overlays
         GuiWindow top = windows.isEmpty() ? null : windows.iterator().next();
-        GuiWindow focused = windows.stream().filter(overlay -> overlay.mouseClicked(mouseX, mouseY, button)).findFirst().orElse(null);
-        if (focused != null) {
-            if (windows.contains(focused)) {
-                //Validate that the focused window is still one of our windows, as if it wasn't focused/on top, and
-                // it is being closed, we don't want to update and mark it as focused, as our defocusing code won't
-                // run as we ran it when we pressed the button
-                setFocused(focused);
-                if (button == GLFW.GLFW_MOUSE_BUTTON_1) {
-                    setDragging(true);
+        for (GuiWindow overlay : windows) {
+            GuiElement focusedElement = overlay.mouseClickedNested(mouseX, mouseY, button);
+            if (focusedElement != null) {
+                if (windows.contains(overlay)) {
+                    //Validate that the focused window is still one of our windows, as if it wasn't focused/on top, and
+                    // it is being closed, we don't want to update and mark it as focused, as our defocusing code won't
+                    // run as we ran it when we pressed the button
+                    setFocused(focusedElement);
+                    if (button == GLFW.GLFW_MOUSE_BUTTON_1) {
+                        setDragging(true);
+                    }
+                    // this check prevents us from moving the window to the top of the stack if the clicked window opened up an additional window
+                    if (top != overlay) {
+                        top.onFocusLost();
+                        windows.moveUp(overlay);
+                        overlay.onFocused();
+                    }
                 }
-                // this check prevents us from moving the window to the top of the stack if the clicked window opened up an additional window
-                if (top != focused) {
-                    top.onFocusLost();
-                    windows.moveUp(focused);
-                    focused.onFocused();
-                }
+                return true;
             }
-            return true;
         }
         // otherwise, we send it to the current element (this is the same as super.super, but in reverse order)
         for (int i = children().size() - 1; i >= 0; i--) {
