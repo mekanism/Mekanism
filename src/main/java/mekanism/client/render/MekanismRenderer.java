@@ -45,6 +45,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -278,6 +279,10 @@ public class MekanismRenderer {
     public static int calculateGlowLight(int combinedLight, int glow) {
         //Only factor the glow into the block light portion
         return (combinedLight & 0xFFFF0000) | Math.max(Math.min(glow, 15) << 4, combinedLight & 0xFFFF);
+    }
+
+    public static void renderColorOverlay(GuiGraphics guiGraphics, int x, int y, int color) {
+        renderColorOverlay(guiGraphics.pose(), x, y, guiGraphics.guiWidth(), guiGraphics.guiHeight(), color);
     }
 
     public static void renderColorOverlay(PoseStack matrix, int x, int y, int width, int height, int color) {

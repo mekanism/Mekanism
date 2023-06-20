@@ -11,7 +11,7 @@ import mekanism.api.gear.IModule;
 import mekanism.api.radial.RadialData;
 import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.key.MekKeyHandler;
-import mekanism.client.render.RenderTickHandler;
+import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.client.render.lib.ScrollIncrementer;
 import mekanism.client.sound.GeigerSound;
 import mekanism.client.sound.SoundHandler;
@@ -281,7 +281,7 @@ public class ClientTickHandler {
         if (delta != 0 && IModeItem.isModeItem(minecraft.player, slot)) {
             int shift = scrollIncrementer.scroll(delta);
             if (shift != 0) {
-                RenderTickHandler.modeSwitchTimer = 100;
+                MekanismStatusOverlay.INSTANCE.setTimer();
                 Mekanism.packetHandler().sendToServer(new PacketModeChange(slot, shift));
             }
             event.setCanceled(true);

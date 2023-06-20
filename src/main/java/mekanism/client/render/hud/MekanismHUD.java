@@ -16,6 +16,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
@@ -23,31 +24,36 @@ import net.minecraftforge.items.IItemHandler;
 
 public class MekanismHUD implements IGuiOverlay {
 
+    public static final MekanismHUD INSTANCE = new MekanismHUD();
     private static final EquipmentSlot[] EQUIPMENT_ORDER = {EquipmentSlot.OFFHAND, EquipmentSlot.MAINHAND, EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS,
                                                             EquipmentSlot.FEET};
 
-    private static final HUDRenderer hudRenderer = new HUDRenderer();
+    private final HUDRenderer hudRenderer = new HUDRenderer();
+
+    private MekanismHUD() {
+    }
 
     @Override
     public void render(ForgeGui gui, GuiGraphics guiGraphics, float partialTicks, int screenWidth, int screenHeight) {
         Minecraft minecraft = gui.getMinecraft();
-        if (!minecraft.options.hideGui && !minecraft.player.isSpectator() && MekanismConfig.client.enableHUD.get()) {
+        Player player = minecraft.player;
+        if (!minecraft.options.hideGui && player != null && !player.isSpectator() && MekanismConfig.client.enableHUD.get()) {
             int count = 0;
             List<List<Component>> renderStrings = new ArrayList<>();
             for (EquipmentSlot slotType : EQUIPMENT_ORDER) {
-                ItemStack stack = minecraft.player.getItemBySlot(slotType);
+                ItemStack stack = player.getItemBySlot(slotType);
                 if (stack.getItem() instanceof IItemHUDProvider hudProvider) {
-                    count += makeComponent(list -> hudProvider.addHUDStrings(list, minecraft.player, stack, slotType), renderStrings);
+                    count += makeComponent(list -> hudProvider.addHUDStrings(list, player, stack, slotType), renderStrings);
                 }
             }
             if (Mekanism.hooks.CuriosLoaded) {
-                Optional<? extends IItemHandler> invOptional = CuriosIntegration.getCuriosInventory(minecraft.player);
+                Optional<? extends IItemHandler> invOptional = CuriosIntegration.getCuriosInventory(player);
                 if (invOptional.isPresent()) {
                     IItemHandler inv = invOptional.get();
                     for (int i = 0, slots = inv.getSlots(); i < slots; i++) {
                         ItemStack stack = inv.getStackInSlot(i);
                         if (stack.getItem() instanceof IItemHUDProvider hudProvider) {
-                            count += makeComponent(list -> hudProvider.addCurioHUDStrings(list, minecraft.player, stack), renderStrings);
+                            count += makeComponent(list -> hudProvider.addCurioHUDStrings(list, player, stack), renderStrings);
                         }
                     }
                 }
@@ -74,7 +80,7 @@ public class MekanismHUD implements IGuiOverlay {
                 pose.popPose();
             }
 
-            if (minecraft.player.getItemBySlot(EquipmentSlot.HEAD).is(MekanismTags.Items.MEKASUIT_HUD_RENDERER)) {
+            if (player.getItemBySlot(EquipmentSlot.HEAD).is(MekanismTags.Items.MEKASUIT_HUD_RENDERER)) {
                 hudRenderer.renderHUD(guiGraphics, partialTicks, screenWidth, screenHeight, maxTextHeight, reverseHud);
             }
         }

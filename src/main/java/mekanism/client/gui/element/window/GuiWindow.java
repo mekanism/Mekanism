@@ -151,7 +151,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     @Override
     public void renderBackgroundOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (isFocusOverlay()) {
-            MekanismRenderer.renderColorOverlay(guiGraphics.pose(), -getX(), -getY(), guiGraphics.guiWidth(), guiGraphics.guiHeight(), OVERLAY_COLOR.rgba());
+            MekanismRenderer.renderColorOverlay(guiGraphics, -getX(), -getY(), OVERLAY_COLOR.rgba());
         } else {
             RenderSystem.setShaderColor(1, 1, 1, 0.75F);
             RenderSystem.enableBlend();

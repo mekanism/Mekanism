@@ -112,6 +112,7 @@ import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.hud.MekaSuitEnergyLevel;
 import mekanism.client.render.hud.MekanismHUD;
 import mekanism.client.render.hud.MekanismStatusOverlay;
+import mekanism.client.render.hud.RadiationOverlay;
 import mekanism.client.render.item.MekaSuitBarDecorator;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
@@ -294,9 +295,11 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerOverlays(RegisterGuiOverlaysEvent event) {
-        event.registerAbove(VanillaGuiOverlay.ARMOR_LEVEL.id(), "mekasuit_energy_level", new MekaSuitEnergyLevel());
-        event.registerAbove(VanillaGuiOverlay.RECORD_OVERLAY.id(), "mekanism_status_overlay", new MekanismStatusOverlay());
-        event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "mekanism_hud", new MekanismHUD());
+        //Note: We don't need to include our modid in the id as the active context is grabbed for making an RL inside the event
+        event.registerBelowAll("radiation_overlay", RadiationOverlay.INSTANCE);
+        event.registerAbove(VanillaGuiOverlay.ARMOR_LEVEL.id(), "energy_level", MekaSuitEnergyLevel.INSTANCE);
+        event.registerAbove(VanillaGuiOverlay.RECORD_OVERLAY.id(), "status_overlay", MekanismStatusOverlay.INSTANCE);
+        event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "hud", MekanismHUD.INSTANCE);
     }
 
     @SubscribeEvent

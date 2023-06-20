@@ -12,7 +12,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Consumer;
-import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiRadialSelector;
@@ -20,6 +19,7 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.armor.ISpecialGear;
 import mekanism.client.render.armor.MekaSuitArmor;
+import mekanism.client.render.hud.RadiationOverlay;
 import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.lib.Vertex;
@@ -30,7 +30,6 @@ import mekanism.common.base.ProfilerConstants;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomSelectionBox;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
@@ -38,8 +37,6 @@ import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.math.Pos3D;
-import mekanism.common.lib.radiation.RadiationManager;
-import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tile.TileEntityBoundingBlock;
@@ -48,7 +45,6 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.Camera;
@@ -107,16 +103,12 @@ public class RenderTickHandler {
     private static final Map<BlockState, List<Vertex[]>> cachedWireFrames = new HashMap<>();
     private static final Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
     private static final Map<RenderType, List<LazyRender>> transparentRenderers = new HashMap<>();
-
-    public static int modeSwitchTimer = 0;
-    private static double prevRadiation = 0;
-
     private static final BoltRenderer boltRenderer = new BoltRenderer();
 
     private boolean outliningArea = false;
 
     public static void clearQueued() {
-        prevRadiation = 0;
+        RadiationOverlay.INSTANCE.resetRadiation();
         transparentRenderers.clear();
     }
 
@@ -346,27 +338,6 @@ public class RenderTickHandler {
                             }
                         }
                     }
-                }
-
-                if (MekanismAPI.getRadiationManager().isRadiationEnabled() && MekanismUtils.isPlayingMode(player)) {
-                    player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
-                        double radiation = c.getRadiation();
-                        double severity = RadiationScale.getScaledDoseSeverity(radiation) * 0.8;
-                        if (prevRadiation < severity) {
-                            prevRadiation = Math.min(severity, prevRadiation + 0.01);
-                        }
-                        if (prevRadiation > severity) {
-                            prevRadiation = Math.max(severity, prevRadiation - 0.01);
-                        }
-                        if (severity > RadiationManager.BASELINE) {
-                            int effect = (int) (prevRadiation * 255);
-                            int color = (0x701E1E << 8) + effect;
-                            //TODO: Check if we have another matrix stack we should use
-                            PoseStack matrix = new PoseStack();
-                            //TODO - 1.20: Should this/can this just be a gui overlay similar to how vignette and other vanilla ones are done
-                            MekanismRenderer.renderColorOverlay(matrix, 0, 0, minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight(), color);
-                        }
-                    });
                 }
             }
         }
