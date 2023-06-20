@@ -14,6 +14,7 @@ import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGameEvents;
@@ -35,6 +36,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.GameEventTags;
@@ -487,7 +489,7 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addDamageTypes() {
-
+        addToTag(DamageTypeTags.BYPASSES_ARMOR, MekanismDamageTypes.RADIATION);
 
         //TODO: Add to MEKASUIT_ALWAYS_SUPPORTED
         /*new LinkedHashSet<>(List.of(
@@ -538,8 +540,8 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addSlurryTags(SlurryRegistryObject<?, ?>... slurryRegistryObjects) {
-        ForgeRegistryTagBuilder<Slurry> dirtyTagBuilder = getSlurryBuilder(MekanismTags.Slurries.DIRTY);
-        ForgeRegistryTagBuilder<Slurry> cleanTagBuilder = getSlurryBuilder(MekanismTags.Slurries.CLEAN);
+        IntrinsicMekanismTagBuilder<Slurry> dirtyTagBuilder = getSlurryBuilder(MekanismTags.Slurries.DIRTY);
+        IntrinsicMekanismTagBuilder<Slurry> cleanTagBuilder = getSlurryBuilder(MekanismTags.Slurries.CLEAN);
         for (SlurryRegistryObject<?, ?> slurryRO : slurryRegistryObjects) {
             dirtyTagBuilder.add(slurryRO.getDirtySlurry());
             cleanTagBuilder.add(slurryRO.getCleanSlurry());
@@ -629,8 +631,8 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE,
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS
         );
-        ForgeRegistryTagBuilder<Block> needsStoneToolBuilder = getBlockBuilder(BlockTags.NEEDS_STONE_TOOL);
-        ForgeRegistryTagBuilder<Block> tagBuilder = getBlockBuilder(BlockTags.MINEABLE_WITH_PICKAXE);
+        IntrinsicMekanismTagBuilder<Block> needsStoneToolBuilder = getBlockBuilder(BlockTags.NEEDS_STONE_TOOL);
+        IntrinsicMekanismTagBuilder<Block> tagBuilder = getBlockBuilder(BlockTags.MINEABLE_WITH_PICKAXE);
         for (OreBlockType ore : MekanismBlocks.ORES.values()) {
             Block stone = ore.stoneBlock();
             tagBuilder.add(stone);

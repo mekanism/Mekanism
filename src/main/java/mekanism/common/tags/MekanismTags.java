@@ -184,7 +184,7 @@ public class MekanismTags {
         public static final TagKey<Item> COLORABLE_CONCRETE_POWDER = tag("colorable/concrete_powder");
         public static final TagKey<Item> COLORABLE_BANNERS = tag("colorable/banners");
 
-        public static final TagKey<Item> ARMORS_HELMETS_HAZMAT = forgeTag("armors/armors/hazmat");
+        public static final TagKey<Item> ARMORS_HELMETS_HAZMAT = forgeTag("armors/hazmat");
         public static final TagKey<Item> ARMORS_CHESTPLATES_HAZMAT = forgeTag("armors/chestplates/hazmat");
         public static final TagKey<Item> ARMORS_LEGGINGS_HAZMAT = forgeTag("armors/leggings/hazmat");
         public static final TagKey<Item> ARMORS_BOOTS_HAZMAT = forgeTag("armors/boots/hazmat");

@@ -4,7 +4,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.tag.BaseTagProvider;
-import mekanism.common.tag.ForgeRegistryTagBuilder;
+import mekanism.common.tag.IntrinsicMekanismTagBuilder;
 import mekanism.tools.common.item.ItemMekanismPaxel;
 import mekanism.tools.common.item.ItemMekanismPickaxe;
 import mekanism.tools.common.registries.ToolsItems;
@@ -271,7 +271,7 @@ public class ToolsTagProvider extends BaseTagProvider {
         addToTag(ToolsTags.Items.ARMORS_BOOTS_STEEL, ToolsItems.STEEL_BOOTS);
     }
 
-    private void createTag(ForgeRegistryTagBuilder<Item> tag, Predicate<Item> matcher) {
+    private void createTag(IntrinsicMekanismTagBuilder<Item> tag, Predicate<Item> matcher) {
         for (IItemProvider itemProvider : ToolsItems.ITEMS.getAllItems()) {
             Item item = itemProvider.asItem();
             if (matcher.test(item)) {

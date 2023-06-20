@@ -30,7 +30,8 @@ public class AdditionsDataGenerator {
         MekanismDataGenerator.bootstrapConfigs(MekanismAdditions.MODID);
         DataGenerator gen = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        AdditionsDatapackRegistryProvider drProvider = new AdditionsDatapackRegistryProvider(gen.getPackOutput(), event.getLookupProvider());
+        CompletableFuture<HolderLookup.Provider> lookupProvider = drProvider.getRegistryProvider();
         addProvider(gen, true, output -> new BasePackMetadataGenerator(output, AdditionsLang.PACK_DESCRIPTION));
         //Client side data generators
         addProvider(gen, event.includeClient(), AdditionsLangProvider::new);
@@ -43,7 +44,7 @@ public class AdditionsDataGenerator {
         //Server side data generators
         addProvider(gen, event.includeServer(), output -> new AdditionsTagProvider(output, lookupProvider, existingFileHelper));
         addProvider(gen, event.includeServer(), AdditionsLootProvider::new);
-        addProvider(gen, event.includeServer(), output -> new AdditionsDatapackRegistryProvider(output, lookupProvider));
+        gen.addProvider(event.includeServer(), drProvider);
         addProvider(gen, event.includeServer(), output -> new AdditionsRecipeProvider(output, existingFileHelper));
         addProvider(gen, event.includeServer(), output -> new AdditionsAdvancementProvider(output, existingFileHelper));
     }

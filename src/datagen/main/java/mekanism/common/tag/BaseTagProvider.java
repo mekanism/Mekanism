@@ -25,6 +25,7 @@ import mekanism.api.providers.ISlurryProvider;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.GameEventRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
+import mekanism.common.registries.MekanismDamageTypes.MekanismDamageType;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -36,6 +37,7 @@ import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -117,58 +119,67 @@ public abstract class BaseTagProvider implements DataProvider {
         return supportedTagTypes.computeIfAbsent(registry, type -> new Object2ObjectLinkedOpenHashMap<>());
     }
 
-    //Protected to allow for extensions to add retrieve their own supported types if they have any
-    protected <TYPE> ForgeRegistryTagBuilder<TYPE> getBuilder(ResourceKey<? extends Registry<TYPE>> registry, Function<TYPE, ResourceKey<TYPE>> keyExtractor, TagKey<TYPE> tag) {
-        //TODO - 1.20: Figure this out
-        return new ForgeRegistryTagBuilder<>(keyExtractor, getTagTypeMap(registry).computeIfAbsent(tag, ignored -> TagBuilder.create()), modid);
+    private <TYPE> TagBuilder getTagBuilder(ResourceKey<? extends Registry<TYPE>> registry, TagKey<TYPE> tag) {
+        return getTagTypeMap(registry).computeIfAbsent(tag, ignored -> TagBuilder.create());
     }
 
-    protected <TYPE> ForgeRegistryTagBuilder<TYPE> getBuilder(IForgeRegistry<TYPE> registry, TagKey<TYPE> tag) {
-        Map<TagKey<?>, TagBuilder> tagTypeMap = getTagTypeMap(registry.getRegistryKey());
-        return new ForgeRegistryTagBuilder<>(element -> registry.getResourceKey(element).orElseThrow(), tagTypeMap.computeIfAbsent(tag, ignored -> TagBuilder.create()), modid);
+    protected <TYPE> MekanismTagBuilder<TYPE, ?> getBuilder(ResourceKey<? extends Registry<TYPE>> registry, TagKey<TYPE> tag) {
+        return new MekanismTagBuilder<>(getTagBuilder(registry, tag), modid);
     }
 
-    protected ForgeRegistryTagBuilder<Item> getItemBuilder(TagKey<Item> tag) {
+    protected <TYPE> IntrinsicMekanismTagBuilder<TYPE> getBuilder(ResourceKey<? extends Registry<TYPE>> registry, Function<TYPE, ResourceKey<TYPE>> keyExtractor, TagKey<TYPE> tag) {
+        return new IntrinsicMekanismTagBuilder<>(keyExtractor, getTagBuilder(registry, tag), modid);
+    }
+
+    protected <TYPE> IntrinsicMekanismTagBuilder<TYPE> getBuilder(IForgeRegistry<TYPE> registry, TagKey<TYPE> tag) {
+        return new IntrinsicMekanismTagBuilder<>(element -> registry.getResourceKey(element).orElseThrow(), getTagBuilder(registry.getRegistryKey(), tag), modid);
+    }
+
+    protected IntrinsicMekanismTagBuilder<Item> getItemBuilder(TagKey<Item> tag) {
         return getBuilder(ForgeRegistries.ITEMS, tag);
     }
 
-    protected ForgeRegistryTagBuilder<Block> getBlockBuilder(TagKey<Block> tag) {
+    protected IntrinsicMekanismTagBuilder<Block> getBlockBuilder(TagKey<Block> tag) {
         return getBuilder(ForgeRegistries.BLOCKS, tag);
     }
 
-    protected ForgeRegistryTagBuilder<EntityType<?>> getEntityTypeBuilder(TagKey<EntityType<?>> tag) {
+    protected IntrinsicMekanismTagBuilder<EntityType<?>> getEntityTypeBuilder(TagKey<EntityType<?>> tag) {
         return getBuilder(ForgeRegistries.ENTITY_TYPES, tag);
     }
 
-    protected ForgeRegistryTagBuilder<Fluid> getFluidBuilder(TagKey<Fluid> tag) {
+    protected IntrinsicMekanismTagBuilder<Fluid> getFluidBuilder(TagKey<Fluid> tag) {
         return getBuilder(ForgeRegistries.FLUIDS, tag);
     }
 
-    protected ForgeRegistryTagBuilder<BlockEntityType<?>> getTileEntityTypeBuilder(TagKey<BlockEntityType<?>> tag) {
+    protected IntrinsicMekanismTagBuilder<BlockEntityType<?>> getTileEntityTypeBuilder(TagKey<BlockEntityType<?>> tag) {
         return getBuilder(ForgeRegistries.BLOCK_ENTITY_TYPES, tag);
     }
 
-    protected ForgeRegistryTagBuilder<GameEvent> getGameEventBuilder(TagKey<GameEvent> tag) {
+    protected IntrinsicMekanismTagBuilder<GameEvent> getGameEventBuilder(TagKey<GameEvent> tag) {
         return getBuilder(Registries.GAME_EVENT, gameEvent -> gameEvent.builtInRegistryHolder().key(), tag);
     }
 
-    protected ForgeRegistryTagBuilder<Gas> getGasBuilder(TagKey<Gas> tag) {
+    protected MekanismTagBuilder<DamageType, ?> getDamageTypeBuilder(TagKey<DamageType> tag) {
+        return getBuilder(Registries.DAMAGE_TYPE, tag);
+    }
+
+    protected IntrinsicMekanismTagBuilder<Gas> getGasBuilder(TagKey<Gas> tag) {
         return getBuilder(MekanismAPI.gasRegistry(), tag);
     }
 
-    protected ForgeRegistryTagBuilder<InfuseType> getInfuseTypeBuilder(TagKey<InfuseType> tag) {
+    protected IntrinsicMekanismTagBuilder<InfuseType> getInfuseTypeBuilder(TagKey<InfuseType> tag) {
         return getBuilder(MekanismAPI.infuseTypeRegistry(), tag);
     }
 
-    protected ForgeRegistryTagBuilder<Pigment> getPigmentBuilder(TagKey<Pigment> tag) {
+    protected IntrinsicMekanismTagBuilder<Pigment> getPigmentBuilder(TagKey<Pigment> tag) {
         return getBuilder(MekanismAPI.pigmentRegistry(), tag);
     }
 
-    protected ForgeRegistryTagBuilder<Slurry> getSlurryBuilder(TagKey<Slurry> tag) {
+    protected IntrinsicMekanismTagBuilder<Slurry> getSlurryBuilder(TagKey<Slurry> tag) {
         return getBuilder(MekanismAPI.slurryRegistry(), tag);
     }
 
-    protected ForgeRegistryTagBuilder<MobEffect> getMobEffectBuilder(TagKey<MobEffect> tag) {
+    protected IntrinsicMekanismTagBuilder<MobEffect> getMobEffectBuilder(TagKey<MobEffect> tag) {
         return getBuilder(ForgeRegistries.MOB_EFFECTS, tag);
     }
 
@@ -182,7 +193,7 @@ public abstract class BaseTagProvider implements DataProvider {
 
     @SafeVarargs
     protected final void addToTag(TagKey<Block> blockTag, Map<?, ? extends IBlockProvider>... blockProviders) {
-        ForgeRegistryTagBuilder<Block> tagBuilder = getBlockBuilder(blockTag);
+        IntrinsicMekanismTagBuilder<Block> tagBuilder = getBlockBuilder(blockTag);
         for (Map<?, ? extends IBlockProvider> blockProvider : blockProviders) {
             for (IBlockProvider value : blockProvider.values()) {
                 tagBuilder.add(value.getBlock());
@@ -191,7 +202,7 @@ public abstract class BaseTagProvider implements DataProvider {
     }
 
     protected void addToHarvestTag(TagKey<Block> tag, IBlockProvider... blockProviders) {
-        ForgeRegistryTagBuilder<Block> tagBuilder = getBlockBuilder(tag);
+        IntrinsicMekanismTagBuilder<Block> tagBuilder = getBlockBuilder(tag);
         for (IBlockProvider blockProvider : blockProviders) {
             Block block = blockProvider.getBlock();
             tagBuilder.add(block);
@@ -201,7 +212,7 @@ public abstract class BaseTagProvider implements DataProvider {
 
     @SafeVarargs
     protected final void addToHarvestTag(TagKey<Block> blockTag, Map<?, ? extends IBlockProvider>... blockProviders) {
-        ForgeRegistryTagBuilder<Block> tagBuilder = getBlockBuilder(blockTag);
+        IntrinsicMekanismTagBuilder<Block> tagBuilder = getBlockBuilder(blockTag);
         for (Map<?, ? extends IBlockProvider> blockProvider : blockProviders) {
             for (IBlockProvider value : blockProvider.values()) {
                 Block block = value.getBlock();
@@ -212,8 +223,8 @@ public abstract class BaseTagProvider implements DataProvider {
     }
 
     protected void addToTags(TagKey<Item> itemTag, TagKey<Block> blockTag, IBlockProvider... blockProviders) {
-        ForgeRegistryTagBuilder<Item> itemTagBuilder = getItemBuilder(itemTag);
-        ForgeRegistryTagBuilder<Block> blockTagBuilder = getBlockBuilder(blockTag);
+        IntrinsicMekanismTagBuilder<Item> itemTagBuilder = getItemBuilder(itemTag);
+        IntrinsicMekanismTagBuilder<Block> blockTagBuilder = getBlockBuilder(blockTag);
         for (IBlockProvider blockProvider : blockProviders) {
             itemTagBuilder.add(blockProvider.asItem());
             blockTagBuilder.add(blockProvider.getBlock());
@@ -224,12 +235,16 @@ public abstract class BaseTagProvider implements DataProvider {
         getGameEventBuilder(tag).addTyped(GameEventRegistryObject::get, gameEventROs);
     }
 
+    protected void addToTag(TagKey<DamageType> tag, MekanismDamageType... damageTypes) {
+        getDamageTypeBuilder(tag).add(type -> type.key().location(), damageTypes);
+    }
+
     protected void addToTag(TagKey<EntityType<?>> tag, IEntityTypeProvider... entityTypeProviders) {
         getEntityTypeBuilder(tag).addTyped(IEntityTypeProvider::getEntityType, entityTypeProviders);
     }
 
     protected void addToTag(TagKey<Fluid> tag, FluidRegistryObject<?, ?, ?, ?, ?>... fluidRegistryObjects) {
-        ForgeRegistryTagBuilder<Fluid> tagBuilder = getFluidBuilder(tag);
+        IntrinsicMekanismTagBuilder<Fluid> tagBuilder = getFluidBuilder(tag);
         for (FluidRegistryObject<?, ?, ?, ?, ?> fluidRO : fluidRegistryObjects) {
             tagBuilder.add(fluidRO.getStillFluid(), fluidRO.getFlowingFluid());
         }
@@ -256,7 +271,7 @@ public abstract class BaseTagProvider implements DataProvider {
     }
 
     @SafeVarargs
-    protected final <CHEMICAL extends Chemical<CHEMICAL>> void addToTag(ForgeRegistryTagBuilder<CHEMICAL> tagBuilder, IChemicalProvider<CHEMICAL>... providers) {
+    protected final <CHEMICAL extends Chemical<CHEMICAL>> void addToTag(IntrinsicMekanismTagBuilder<CHEMICAL> tagBuilder, IChemicalProvider<CHEMICAL>... providers) {
         tagBuilder.addTyped(IChemicalProvider::getChemical, providers);
     }
 }

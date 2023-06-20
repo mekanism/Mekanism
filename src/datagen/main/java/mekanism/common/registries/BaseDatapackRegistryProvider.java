@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.booleans.Boolean2ObjectFunction;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import mekanism.common.lib.FieldReflectionHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderGetter;
@@ -11,6 +12,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.registries.RegistriesDatapackGenerator;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -25,11 +27,19 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseDatapackRegistryProvider extends DatapackBuiltinEntriesProvider {
 
+    @SuppressWarnings("deprecation")
+    private static final FieldReflectionHelper<RegistriesDatapackGenerator, CompletableFuture<HolderLookup.Provider>> REGISTRIES = new FieldReflectionHelper<>(RegistriesDatapackGenerator.class, "f_254747_", () -> null);
+
     private final String modid;
 
     protected BaseDatapackRegistryProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries, RegistrySetBuilder registrySetBuilder, String modid) {
         super(output, registries, registrySetBuilder, Set.of(modid));
         this.modid = modid;
+    }
+
+    public CompletableFuture<HolderLookup.Provider> getRegistryProvider() {
+        //TODO - 1.20: Decide if this should just be PRd to forge as a patch or maybe just an AT
+        return REGISTRIES.getValue(this);
     }
 
     @NotNull

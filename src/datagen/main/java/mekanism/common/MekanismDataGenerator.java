@@ -36,8 +36,8 @@ public class MekanismDataGenerator {
         bootstrapConfigs(Mekanism.MODID);
         DataGenerator gen = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-        //TODO - 1.20: Do we need to build this ourselves for purposes of doing tags for things like damage types?
-        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        MekanismDatapackRegistryProvider drProvider = new MekanismDatapackRegistryProvider(gen.getPackOutput(), event.getLookupProvider());
+        CompletableFuture<HolderLookup.Provider> lookupProvider = drProvider.getRegistryProvider();
         //Bootstrap our advancement triggers as common setup doesn't run
         MekanismCriteriaTriggers.init();
         addProvider(gen, true, output -> new BasePackMetadataGenerator(output, MekanismLang.PACK_DESCRIPTION));
@@ -53,7 +53,7 @@ public class MekanismDataGenerator {
         //Server side data generators
         addProvider(gen, event.includeServer(), output -> new MekanismTagProvider(output, lookupProvider, existingFileHelper));
         addProvider(gen, event.includeServer(), MekanismLootProvider::new);
-        addProvider(gen, event.includeServer(), output -> new MekanismDatapackRegistryProvider(output, lookupProvider));
+        gen.addProvider(event.includeServer(), drProvider);
         MekanismRecipeProvider recipeProvider = new MekanismRecipeProvider(gen.getPackOutput(), existingFileHelper);
         gen.addProvider(event.includeServer(), recipeProvider);
         addProvider(gen, event.includeServer(), output -> new MekanismAdvancementProvider(output, existingFileHelper));
