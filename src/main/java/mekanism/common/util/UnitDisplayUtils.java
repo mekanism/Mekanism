@@ -266,9 +266,9 @@ public class UnitDisplayUtils {
     @NothingNullByDefault
     public enum TemperatureUnit implements IIncrementalEnum<TemperatureUnit>, IHasTranslationKey, Unit {
         KELVIN(MekanismLang.TEMPERATURE_KELVIN, MekanismLang.TEMPERATURE_KELVIN_SHORT, "K", "k", 0, 1),
-        CELSIUS(MekanismLang.TEMPERATURE_CELSIUS, MekanismLang.TEMPERATURE_CELSIUS_SHORT, "\u00B0C", "c", 273.15, 1),
+        CELSIUS(MekanismLang.TEMPERATURE_CELSIUS, MekanismLang.TEMPERATURE_CELSIUS_SHORT, "°C", "c", 273.15, 1),
         RANKINE(MekanismLang.TEMPERATURE_RANKINE, MekanismLang.TEMPERATURE_RANKINE_SHORT, "R", "r", 0, 1.8),
-        FAHRENHEIT(MekanismLang.TEMPERATURE_FAHRENHEIT, MekanismLang.TEMPERATURE_FAHRENHEIT_SHORT, "\u00B0F", "f", 459.67, 1.8),
+        FAHRENHEIT(MekanismLang.TEMPERATURE_FAHRENHEIT, MekanismLang.TEMPERATURE_FAHRENHEIT_SHORT, "°F", "f", 459.67, 1.8),
         AMBIENT(MekanismLang.TEMPERATURE_AMBIENT, MekanismLang.TEMPERATURE_AMBIENT_SHORT, "+STP", "stp", 300, 1);
 
         private static final TemperatureUnit[] TYPES = values();
@@ -350,7 +350,7 @@ public class UnitDisplayUtils {
         FEMTO("Femto", "f", 0.000_000_000_000_001D),
         PICO("Pico", "p", 0.000_000_000_001D),
         NANO("Nano", "n", 0.000_000_001D),
-        MICRO("Micro", "\u00B5", 0.000_001D),
+        MICRO("Micro", "µ", 0.000_001D),
         MILLI("Milli", "m", 0.001D),
         BASE("", "", 1),
         KILO("Kilo", "k", 1_000D),
