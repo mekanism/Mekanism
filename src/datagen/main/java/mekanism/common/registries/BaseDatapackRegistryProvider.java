@@ -38,7 +38,7 @@ public abstract class BaseDatapackRegistryProvider extends DatapackBuiltinEntrie
     }
 
     public CompletableFuture<HolderLookup.Provider> getRegistryProvider() {
-        //TODO - 1.20: Decide if this should just be PRd to forge as a patch or maybe just an AT
+        //TODO - 1.20: Replace with https://github.com/MinecraftForge/MinecraftForge/pull/9580 if it gets merged
         return REGISTRIES.getValue(this);
     }
 

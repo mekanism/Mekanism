@@ -8,7 +8,7 @@ import mekanism.tools.client.ToolsLangProvider;
 import mekanism.tools.common.recipe.ToolsRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -25,19 +25,16 @@ public class ToolsDataGenerator {
     public static void gatherData(GatherDataEvent event) {
         MekanismDataGenerator.bootstrapConfigs(MekanismTools.MODID);
         DataGenerator gen = event.getGenerator();
+        PackOutput output = gen.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-        addProvider(gen, true, output -> new BasePackMetadataGenerator(output, ToolsLang.PACK_DESCRIPTION));
+        gen.addProvider(true, new BasePackMetadataGenerator(output, ToolsLang.PACK_DESCRIPTION));
         //Client side data generators
-        addProvider(gen, event.includeClient(), ToolsLangProvider::new);
-        addProvider(gen, event.includeClient(), output -> new ToolsItemModelProvider(output, existingFileHelper));
+        MekanismDataGenerator.addProvider(gen, event.includeClient(), ToolsLangProvider::new);
+        gen.addProvider(event.includeClient(), new ToolsItemModelProvider(output, existingFileHelper));
         //Server side data generators
-        addProvider(gen, event.includeServer(), output -> new ToolsTagProvider(output, lookupProvider, existingFileHelper));
-        addProvider(gen, event.includeServer(), output -> new ToolsRecipeProvider(output, existingFileHelper));
-        addProvider(gen, event.includeServer(), output -> new ToolsAdvancementProvider(output, existingFileHelper));
-    }
-
-    private static <PROVIDER extends DataProvider> void addProvider(DataGenerator gen, boolean run, DataProvider.Factory<PROVIDER> factory) {
-        gen.addProvider(run, factory);
+        gen.addProvider(event.includeServer(), new ToolsTagProvider(output, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new ToolsRecipeProvider(output, existingFileHelper));
+        gen.addProvider(event.includeServer(), new ToolsAdvancementProvider(output, existingFileHelper));
     }
 }

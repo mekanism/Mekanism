@@ -7,7 +7,7 @@ import mekanism.defense.client.DefenseLangProvider;
 import mekanism.defense.common.loot.DefenseLootProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -24,18 +24,15 @@ public class DefenseDataGenerator {
     public static void gatherData(GatherDataEvent event) {
         MekanismDataGenerator.bootstrapConfigs(MekanismDefense.MODID);
         DataGenerator gen = event.getGenerator();
+        PackOutput output = gen.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-        addProvider(gen, true, output -> new BasePackMetadataGenerator(output, DefenseLang.PACK_DESCRIPTION));
+        gen.addProvider(true, new BasePackMetadataGenerator(output, DefenseLang.PACK_DESCRIPTION));
         //Client side data generators
-        addProvider(gen, event.includeClient(), DefenseLangProvider::new);
+        MekanismDataGenerator.addProvider(gen, event.includeClient(), DefenseLangProvider::new);
         //Server side data generators
-        addProvider(gen, event.includeServer(), output -> new DefenseTagProvider(output, lookupProvider, existingFileHelper));
-        addProvider(gen, event.includeServer(), DefenseLootProvider::new);
-        addProvider(gen, event.includeServer(), output -> new DefenseRecipeProvider(output, existingFileHelper));
-    }
-
-    private static <PROVIDER extends DataProvider> void addProvider(DataGenerator gen, boolean run, DataProvider.Factory<PROVIDER> factory) {
-        gen.addProvider(run, factory);
+        gen.addProvider(event.includeServer(), new DefenseTagProvider(output, lookupProvider, existingFileHelper));
+        MekanismDataGenerator.addProvider(gen, event.includeServer(), DefenseLootProvider::new);
+        gen.addProvider(event.includeServer(), new DefenseRecipeProvider(output, existingFileHelper));
     }
 }
