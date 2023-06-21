@@ -9,8 +9,10 @@ public abstract class BaseMekanismConfig implements IMekanismConfig {
     private final List<CachedValue<?>> cachedConfigValues = new ArrayList<>();
 
     @Override
-    public void clearCache() {
-        cachedConfigValues.forEach(CachedValue::clearCache);
+    public void clearCache(boolean unloading) {
+        for (CachedValue<?> cachedConfigValue : cachedConfigValues) {
+            cachedConfigValue.clearCache(unloading);
+        }
     }
 
     @Override

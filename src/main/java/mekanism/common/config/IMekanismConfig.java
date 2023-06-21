@@ -20,7 +20,7 @@ public interface IMekanismConfig {
         getConfigSpec().save();
     }
 
-    void clearCache();
+    void clearCache(boolean unloading);
 
     void addCachedValue(CachedValue<?> configValue);
 

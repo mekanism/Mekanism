@@ -7,6 +7,7 @@ import mekanism.common.Mekanism;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.config.ConfigFileTypeHandler;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 /**
@@ -30,8 +31,8 @@ public class MekanismModConfig extends ModConfig {
         return MEK_TOML;
     }
 
-    public void clearCache() {
-        mekanismConfig.clearCache();
+    public void clearCache(ModConfigEvent event) {
+        mekanismConfig.clearCache(event instanceof ModConfigEvent.Unloading);
     }
 
     private static class MekanismConfigFileTypeHandler extends ConfigFileTypeHandler {

@@ -164,12 +164,10 @@ public class MekanismAdditions implements IModModule {
     }
 
     private void onConfigLoad(ModConfigEvent configEvent) {
-        //Note: We listen to both the initial load and the reload, to make sure that we fix any accidentally
-        // cached values from calls before the initial loading
         ModConfig config = configEvent.getConfig();
         //Make sure it is for the same modid as us
         if (config.getModId().equals(MODID) && config instanceof MekanismModConfig mekConfig) {
-            mekConfig.clearCache();
+            mekConfig.clearCache(configEvent);
         }
     }
 }
