@@ -974,6 +974,7 @@
   "gui.mekanism.issues.no_energy.reduced_rate": " - Недостатньо енергії для роботи на максимальній швидкості",
   "gui.mekanism.issues.no_recipe": " - Немає відповідних рецептів або не вистачає вхідних матеріалів",
   "gui.mekanism.issues.no_space": " - Недостатньо місця на виході",
+  "gui.mekanism.issues.no_space.overflow": " - Недостатньо місця на виході, надлишок збережено у внутрішньому буфері",
   "gui.mekanism.liquid": "Рідина: %1$s",
   "gui.mekanism.max": "Максимум: %1$s",
   "gui.mekanism.max_output": "Максимальний вивід: %1$s/t",
