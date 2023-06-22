@@ -233,8 +233,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                     itemLootPool.apply(nbtBuilder);
                 }
                 add(block, LootTable.lootTable().withPool(applyExplosionCondition(hasContents, LootPool.lootPool()
-                      //TODO - 1.20: Loot pool names??
-                      //.name("main")
+                      .name("main")
                       .setRolls(ConstantValue.exactly(1))
                       .add(itemLootPool)
                 )));
@@ -253,10 +252,10 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
      * Like vanilla's {@link BlockLootSubProvider#createSlabItemTable(Block)} except with a named pool
      */
     @NotNull
-    protected LootTable.Builder createSlabItemTable(Block slab) {
+    @Override
+    protected LootTable.Builder createSlabItemTable(@NotNull Block slab) {
         return LootTable.lootTable().withPool(LootPool.lootPool()
-              //TODO - 1.20: Loot pool names??
-              //.name("main")
+              .name("main")
               .setRolls(ConstantValue.exactly(1))
               .add(applyExplosionDecay(slab, LootItem.lootTableItem(slab)
                           .apply(SetItemCountFunction.setCount(ConstantValue.exactly(2))
@@ -281,10 +280,9 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
      */
     @NotNull
     @Override
-    public LootTable.Builder createSingleItemTable(ItemLike item) {
+    public LootTable.Builder createSingleItemTable(@NotNull ItemLike item) {
         return LootTable.lootTable().withPool(applyExplosionCondition(item, LootPool.lootPool()
-              //TODO - 1.20: Loot pool names??
-              //.name("main")
+              .name("main")
               .setRolls(ConstantValue.exactly(1))
               .add(LootItem.lootTableItem(item))
         ));
@@ -314,8 +312,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
     protected static LootTable.Builder createSelfDropDispatchTable(@NotNull Block block, @NotNull LootItemCondition.Builder conditionBuilder,
           @NotNull LootPoolEntryContainer.Builder<?> entry) {
         return LootTable.lootTable().withPool(LootPool.lootPool()
-              //TODO - 1.20: Loot pool names??
-              //.name("main")
+              .name("main")
               .setRolls(ConstantValue.exactly(1))
               .add(LootItem.lootTableItem(block)
                     .when(conditionBuilder)

@@ -56,6 +56,7 @@
           "name": "mekanismgenerators:bio_generator"
         }
       ],
+      "name": "main",
       "rolls": 1.0
     }
   ],

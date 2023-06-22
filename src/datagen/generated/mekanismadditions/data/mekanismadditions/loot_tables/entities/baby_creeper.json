@@ -28,6 +28,7 @@
           "name": "minecraft:gunpowder"
         }
       ],
+      "name": "gunpowder",
       "rolls": 1.0
     },
     {
@@ -48,6 +49,7 @@
           "name": "minecraft:music_discs"
         }
       ],
+      "name": "music_discs",
       "rolls": 1.0
     }
   ],

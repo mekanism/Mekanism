@@ -28,8 +28,7 @@ public class AdditionsBlockLootTables extends BaseBlockLootTables {
     private void registerObsidianTNT() {
         Block tnt = AdditionsBlocks.OBSIDIAN_TNT.getBlock();
         add(tnt, LootTable.lootTable().withPool(applyExplosionCondition(tnt, LootPool.lootPool()
-                    //TODO - 1.20: Loot pool names??
-                    //.name("main")
+                    .name("main")
                     .setRolls(ConstantValue.exactly(1))
                     .add(LootItem.lootTableItem(tnt)
                           .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(tnt)

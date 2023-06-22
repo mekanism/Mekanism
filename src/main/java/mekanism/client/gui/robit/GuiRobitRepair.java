@@ -34,7 +34,6 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        //TODO - 1.20: Validate this behaves properly and there is no new version of sendRepeatsToGui
         itemNameField = addRenderableWidget(new GuiTextField(this, 60, 21, 103, 12));
         itemNameField.setCanLoseFocus(false);
         itemNameField.setTextColor(-1);

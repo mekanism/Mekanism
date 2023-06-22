@@ -51,6 +51,7 @@
           "name": "mekanismgenerators:solar_generator"
         }
       ],
+      "name": "main",
       "rolls": 1.0
     }
   ],

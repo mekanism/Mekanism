@@ -14,6 +14,7 @@
           "name": "mekanismgenerators:control_rod_assembly"
         }
       ],
+      "name": "main",
       "rolls": 1.0
     }
   ],

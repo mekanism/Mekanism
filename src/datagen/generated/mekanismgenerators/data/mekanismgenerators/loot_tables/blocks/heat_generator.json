@@ -61,6 +61,7 @@
           "name": "mekanismgenerators:heat_generator"
         }
       ],
+      "name": "main",
       "rolls": 1.0
     }
   ],

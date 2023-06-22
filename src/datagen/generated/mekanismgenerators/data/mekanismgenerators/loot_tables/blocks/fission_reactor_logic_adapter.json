@@ -31,6 +31,7 @@
           "name": "mekanismgenerators:fission_reactor_logic_adapter"
         }
       ],
+      "name": "main",
       "rolls": 1.0
     }
   ],

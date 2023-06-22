@@ -28,6 +28,7 @@
           "name": "minecraft:coal"
         }
       ],
+      "name": "coal",
       "rolls": 1.0
     },
     {
@@ -57,6 +58,7 @@
           "name": "minecraft:bone"
         }
       ],
+      "name": "bones",
       "rolls": 1.0
     },
     {
@@ -77,6 +79,7 @@
           "name": "minecraft:wither_skeleton_skull"
         }
       ],
+      "name": "skulls",
       "rolls": 1.0
     }
   ],

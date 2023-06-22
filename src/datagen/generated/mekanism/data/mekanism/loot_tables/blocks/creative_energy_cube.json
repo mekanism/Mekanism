@@ -59,5 +59,6 @@
       "name": "main",
       "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "mekanism:blocks/creative_energy_cube"
 }

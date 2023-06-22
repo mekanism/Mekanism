@@ -57,7 +57,6 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     protected void addGuiElements() {
         super.addGuiElements();
         int slotsY = MekanismConfig.client.qioItemViewerSlotsY.get();
-        //TODO - 1.20: Validate this behaves properly and there is no new version of sendRepeatsToGui
         addRenderableWidget(new GuiInnerScreen(this, 7, 15, imageWidth - 16, 12, () -> {
             FrequencyIdentity freq = getFrequency();
             if (freq == null) {
