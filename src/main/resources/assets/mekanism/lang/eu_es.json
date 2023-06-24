@@ -1,4 +1,10 @@
 {
+  "assemblicator.mekanism.auto_mode_toggle": "Modu automatikoa: %1$s",
+  "assemblicator.mekanism.craft_available": "Egin objektu erabilgarriak",
+  "assemblicator.mekanism.craft_single": "Egin objektu bakarra",
+  "assemblicator.mekanism.encode_formula": "Formula Kodifikatu",
+  "assemblicator.mekanism.fill_empty": "Bete/Hustu",
+  "assemblicator.mekanism.stock_control": "Stock-aren Kontrola: %1$s",
   "key.mekanism.description": "Show description",
   "key.mekanism.details": "Show details"
 }
