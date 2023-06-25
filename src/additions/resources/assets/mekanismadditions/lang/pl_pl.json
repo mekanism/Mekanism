@@ -280,6 +280,8 @@
   "block.mekanismadditions.yellow_plastic_transparent_stairs": "Żółte przezroczyste plastikowe schody",
   "block.mekanismadditions.yellow_reinforced_plastic": "Żółty blok wzmocnionego plastiku",
   "block.mekanismadditions.yellow_slick_plastic": "Żółty blok śliskiego plastiku",
+  "constants.mekanismadditions.mod_name": "Mekanism: Additions",
+  "constants.mekanismadditions.pack_description": "Zasoby używane przez Mekanism: Additions",
   "description.mekanismadditions.glow_panel": "Nowoczesne, trwałe źródło światła. Teraz w wielu kolorach!",
   "description.mekanismadditions.obsidian_tnt": "Bardzo potężny, obsydianowy blok TNT. Używaj go na własne ryzyko.",
   "entity.mekanismadditions.baby_creeper": "Dziecko Creepera",
