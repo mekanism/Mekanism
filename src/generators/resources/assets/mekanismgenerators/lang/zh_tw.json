@@ -35,6 +35,8 @@
   "block.mekanismgenerators.turbine_valve": "渦輪閥門",
   "block.mekanismgenerators.turbine_vent": "渦輪排氣口",
   "block.mekanismgenerators.wind_generator": "風力發電機",
+  "constants.mekanismgenerators.mod_name": "Mekanism: Generators",
+  "constants.mekanismgenerators.pack_description": "用於通用機械的資源包: Generators",
   "container.mekanismgenerators.advanced_solar_generator": "高級太陽能發電機",
   "container.mekanismgenerators.bio_generator": "生物能發電機",
   "container.mekanismgenerators.fission_reactor_logic_adapter": "核分裂反應爐邏輯適配器",
