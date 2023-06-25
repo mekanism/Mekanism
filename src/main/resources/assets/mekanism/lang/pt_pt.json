@@ -450,6 +450,7 @@
   "conversion.mekanism.infusion": "Item para Tipo Infundir",
   "crafting_formula.mekanism.encoded": "(codificado)",
   "crafting_formula.mekanism.ingredients": "Ingredientes",
+  "death.attack.mekanism.laser": "%1$s foi incinerado.",
   "description.mekanism.antiprotonic_nucleosynthesizer": "Uma máquina que usa pedaços de antimatéria e quantidades de energia em massa para transmutar vários recursos atomicamente.",
   "description.mekanism.attack_amplification_unit": "Amplia ataques corpo-a-corpo a jogadores ou monstros.",
   "description.mekanism.bin": "Um bloco usado para armazenar grandes quantidades de um único tipo de item.",
