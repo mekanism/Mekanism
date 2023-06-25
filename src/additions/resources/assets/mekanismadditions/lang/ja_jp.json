@@ -280,6 +280,7 @@
   "block.mekanismadditions.yellow_plastic_transparent_stairs": "黄色の透過プラスチックの階段",
   "block.mekanismadditions.yellow_reinforced_plastic": "黄色の強化プラスチックブロック",
   "block.mekanismadditions.yellow_slick_plastic": "黄色の滑らかなプラスチックブロック",
+  "constants.mekanismadditions.mod_name": "Mekanism: Additions",
   "description.mekanismadditions.glow_panel": "モダンな、飽きない光源です。今では数多の色で楽しめます。",
   "description.mekanismadditions.obsidian_tnt": "非常に強力な黒曜石を注入されたTNTブロックです。危険を承知で使用してください。",
   "entity.mekanismadditions.baby_creeper": "子どもクリーパー",
