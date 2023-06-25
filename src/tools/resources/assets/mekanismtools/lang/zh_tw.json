@@ -11,6 +11,8 @@
   "advancements.mekanismtools.not_enough_shielding.title": "更多種的盾牌!",
   "advancements.mekanismtools.paxel.description": "製作任一種鎬尖斧(鎬子, 斧頭, 鏟子)",
   "advancements.mekanismtools.paxel.title": "多功能工具",
+  "constants.mekanismtools.mod_name": "Mekanism: Tools",
+  "constants.mekanismtools.pack_description": "用於通用機械的資源包: Tools",
   "item.mekanismtools.bronze_axe": "青銅斧",
   "item.mekanismtools.bronze_boots": "青銅靴子",
   "item.mekanismtools.bronze_chestplate": "青銅胸甲",
