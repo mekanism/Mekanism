@@ -972,7 +972,7 @@
   "gui.mekanism.issues.no_energy.reduced_rate": " - Pas assez d'énergie pour fonctionner à la vitesse maximale",
   "gui.mekanism.issues.no_recipe": " - Aucune recette correspondante ou pas assez d'entrée",
   "gui.mekanism.issues.no_space": " - Pas assez de place en sortie",
-  "gui.mekanism.issues.no_space.overflow": " Pas assez de place dans la sortie excès stocker dans le stockage interne",
+  "gui.mekanism.issues.no_space.overflow": " - Pas assez de place dans la sortie, excès stocké dans le stockage interne",
   "gui.mekanism.liquid": "Liquide: %1$s",
   "gui.mekanism.max": "Max: %1$s",
   "gui.mekanism.max_output": "Sortie maximale: %1$s/t",
