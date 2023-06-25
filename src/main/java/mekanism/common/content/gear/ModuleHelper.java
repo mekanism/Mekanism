@@ -96,7 +96,7 @@ public class ModuleHelper implements IModuleHelper {
     }
 
     private void logDebugReceivedIMC(String imcMethod, String senderModId, IModuleDataProvider<?> moduleDataProvider) {
-        Mekanism.logger.debug("Received '{}' IMC message from '{}' for module ''{}.", imcMethod, senderModId, moduleDataProvider.getRegistryName());
+        Mekanism.logger.debug("Received IMC message '{}' from '{}' for module '{}'.", imcMethod, senderModId, moduleDataProvider.getRegistryName());
     }
 
     @Override

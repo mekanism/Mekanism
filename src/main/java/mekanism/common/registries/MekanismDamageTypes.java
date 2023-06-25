@@ -32,10 +32,14 @@ public class MekanismDamageTypes {
             this(ResourceKey.create(Registries.DAMAGE_TYPE, Mekanism.rl(name)));
         }
 
+        public String getMsgId() {
+            return key.location().getNamespace() + "." + key.location().getPath();
+        }
+
         @NotNull
         @Override
         public String getTranslationKey() {
-            return "death.attack." + key.location();
+            return "death.attack." + getMsgId();
         }
 
         public DamageSource source(Level level) {
