@@ -35,6 +35,8 @@
   "block.mekanismgenerators.turbine_valve": "Türbin Valfi",
   "block.mekanismgenerators.turbine_vent": "Türbin Havalandırması",
   "block.mekanismgenerators.wind_generator": "Rüzgar Jeneratörü",
+  "constants.mekanismgenerators.mod_name": "Mekanism: Jeneratörler",
+  "constants.mekanismgenerators.pack_description": "Mekanism: Jeneratörler için kullanılan kaynaklar",
   "container.mekanismgenerators.advanced_solar_generator": "Gelişmiş Güneş Jeneratötü",
   "container.mekanismgenerators.bio_generator": "Biyo-Jeneratör",
   "container.mekanismgenerators.fission_reactor_logic_adapter": "Fisyon Reaktörü Mantık Adaptörü",
