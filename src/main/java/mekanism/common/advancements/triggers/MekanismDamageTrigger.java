@@ -36,7 +36,7 @@ public class MekanismDamageTrigger extends SimpleCriterionTrigger<MekanismDamage
         String damageType = GsonHelper.getAsString(json, JsonConstants.DAMAGE);
         //TODO - 1.20: Better filter compare
         MekanismDamageType damageSource = MekanismDamageTypes.DAMAGE_TYPES.stream()
-              .filter(typeRO -> typeRO.key().location().toString().equals(damageType)).findFirst()
+              .filter(typeRO -> typeRO.registryName().toString().equals(damageType)).findFirst()
               .orElseThrow(() -> new JsonSyntaxException("Expected " + JsonConstants.DAMAGE + " to represent a Mekanism damage source."));
         return new TriggerInstance(playerPredicate, damageSource, GsonHelper.getAsBoolean(json, JsonConstants.KILLED));
     }
@@ -67,7 +67,7 @@ public class MekanismDamageTrigger extends SimpleCriterionTrigger<MekanismDamage
         @Override
         public JsonObject serializeToJson(@NotNull SerializationContext context) {
             JsonObject json = super.serializeToJson(context);
-            json.addProperty(JsonConstants.DAMAGE, damageType.key().location().toString());
+            json.addProperty(JsonConstants.DAMAGE, damageType.registryName().toString());
             json.addProperty(JsonConstants.KILLED, killed);
             return json;
         }

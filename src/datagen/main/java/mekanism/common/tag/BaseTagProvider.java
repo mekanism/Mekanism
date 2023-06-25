@@ -236,7 +236,7 @@ public abstract class BaseTagProvider implements DataProvider {
     }
 
     protected void addToTag(TagKey<DamageType> tag, MekanismDamageType... damageTypes) {
-        getDamageTypeBuilder(tag).add(type -> type.key().location(), damageTypes);
+        getDamageTypeBuilder(tag).add(MekanismDamageType::registryName, damageTypes);
     }
 
     protected void addToTag(TagKey<EntityType<?>> tag, IEntityTypeProvider... entityTypeProviders) {

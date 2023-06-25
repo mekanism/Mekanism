@@ -131,8 +131,7 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
           })
           .add(Registries.DAMAGE_TYPE, context -> {
               for (MekanismDamageType damageType : MekanismDamageTypes.DAMAGE_TYPES) {
-                  //TODO - 1.20: Decide if we want any other stats or exhaustion for our types
-                  context.register(damageType.key(), new DamageType(damageType.getMsgId(), 0));
+                  context.register(damageType.key(), new DamageType(damageType.getMsgId(), damageType.exhaustion()));
               }
           })
           ;

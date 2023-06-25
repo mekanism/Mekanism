@@ -1,0 +1,24 @@
+{
+  "values": [
+    "minecraft:falling_anvil",
+    "minecraft:cactus",
+    "minecraft:cramming",
+    "minecraft:dragon_breath",
+    "minecraft:dry_out",
+    "minecraft:fall",
+    "minecraft:falling_block",
+    "minecraft:fly_into_wall",
+    "minecraft:generic",
+    "minecraft:hot_floor",
+    "minecraft:in_fire",
+    "minecraft:in_wall",
+    "minecraft:lava",
+    "minecraft:lightning_bolt",
+    "minecraft:on_fire",
+    "minecraft:sweet_berry_bush",
+    "minecraft:wither",
+    "minecraft:freeze",
+    "minecraft:falling_stalactite",
+    "minecraft:stalagmite"
+  ]
+}

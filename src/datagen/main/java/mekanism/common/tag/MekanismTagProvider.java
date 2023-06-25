@@ -42,6 +42,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.GameEventTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -491,15 +492,14 @@ public class MekanismTagProvider extends BaseTagProvider {
     private void addDamageTypes() {
         addToTag(DamageTypeTags.BYPASSES_ARMOR, MekanismDamageTypes.RADIATION);
 
-        //TODO: Add to MEKASUIT_ALWAYS_SUPPORTED
-        /*new LinkedHashSet<>(List.of(
-              DamageSource.ANVIL, DamageSource.CACTUS, DamageSource.CRAMMING, DamageSource.DRAGON_BREATH, DamageSource.DRY_OUT,
-              DamageSource.FALL, DamageSource.FALLING_BLOCK, DamageSource.FLY_INTO_WALL, DamageSource.GENERIC,
-              DamageSource.HOT_FLOOR, DamageSource.IN_FIRE, DamageSource.IN_WALL, DamageSource.LAVA, DamageSource.LIGHTNING_BOLT,
-              DamageSource.ON_FIRE, DamageSource.SWEET_BERRY_BUSH, DamageSource.WITHER, DamageSource.FREEZE, DamageSource.FALLING_STALACTITE,
-              DamageSource.STALAGMITE));*/
-
-        //TODO: Add our radiation damage type to bypass armor
+        //TODO - 1.20: Re-evaluate this and also add any new 1.20 damage types that make sense to have in this
+        getDamageTypeBuilder(MekanismTags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED).add(
+              DamageTypes.FALLING_ANVIL, DamageTypes.CACTUS, DamageTypes.CRAMMING, DamageTypes.DRAGON_BREATH, DamageTypes.DRY_OUT,
+              DamageTypes.FALL, DamageTypes.FALLING_BLOCK, DamageTypes.FLY_INTO_WALL, DamageTypes.GENERIC,
+              DamageTypes.HOT_FLOOR, DamageTypes.IN_FIRE, DamageTypes.IN_WALL, DamageTypes.LAVA, DamageTypes.LIGHTNING_BOLT,
+              DamageTypes.ON_FIRE, DamageTypes.SWEET_BERRY_BUSH, DamageTypes.WITHER, DamageTypes.FREEZE, DamageTypes.FALLING_STALACTITE,
+              DamageTypes.STALAGMITE
+        );
     }
 
     private void addFluids() {
