@@ -549,6 +549,7 @@
   "constants.mekanism.ic2": "IndustrialCraft",
   "constants.mekanism.log_format": "[%1$s] %2$s",
   "constants.mekanism.mod_name": "Mekanism",
+  "constants.mekanism.pack_description": "Für Mekanism verwendete Ressourcen",
   "container.mekanism.advanced_chemical_tank": "Fortgeschrittener Chemikalienbehälter",
   "container.mekanism.advanced_combining_factory": "Fortschrittliche Kombinationsfabrik",
   "container.mekanism.advanced_compressing_factory": "Fortgeschrittene Komprimierungsfabrik",
