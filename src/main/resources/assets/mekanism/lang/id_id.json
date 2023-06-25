@@ -437,8 +437,6 @@
   "filter.mekanism.filters": "Filter:",
   "filter.mekanism.item": "Filter Item",
   "filter.mekanism.item.no_item": "Tidak ada item",
-  "filter.mekanism.material": "Filter Material",
-  "filter.mekanism.material.details": "Menggunakan material:",
   "filter.mekanism.modid": "Filter Mod ID",
   "filter.mekanism.modid.no_id": "Tidak ada ID",
   "filter.mekanism.modid.same_id": "ID Sama",
