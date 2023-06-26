@@ -2,6 +2,7 @@ package mekanism.client.gui.element.bar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
@@ -101,11 +102,10 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
         return button == GLFW.GLFW_MOUSE_BUTTON_1 || button == GLFW.GLFW_MOUSE_BUTTON_2;
     }
 
-    @Nullable
     @Override
-    public Object getIngredient(double mouseX, double mouseY) {
+    public Optional<?> getIngredient(double mouseX, double mouseY) {
         STACK stack = getHandler().getStack();
-        return isEmpty(stack) ? null : stack;
+        return isEmpty(stack) ? Optional.empty() : Optional.of(stack);
     }
 
     @Override

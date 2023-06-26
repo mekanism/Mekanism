@@ -21,7 +21,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import org.jetbrains.annotations.Nullable;
 
-//TODO - 1.20: Fix deprecations: https://docs.bai.lol/wthit/dokka/wthit/mcp.mobius.waila.api/-i-waila-plugin/index.html
+//TODO - 1.20: Fix deprecations: https://docs.bai.lol/wthit/plugin/getting_started/
 @WailaPlugin(id = Mekanism.MODID)
 public class MekanismWTHITPlugin implements IWailaPlugin {
 

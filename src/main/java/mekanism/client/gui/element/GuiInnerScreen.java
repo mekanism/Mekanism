@@ -1,6 +1,5 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
@@ -121,6 +120,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
 
     @Override
     public boolean isMouseOverJEIArea(double mouseX, double mouseY) {
+        //Override as active is occasionally false here so isMouseOver would return false
         return visible && mouseX >= getX() && mouseY >= getY() && mouseX < getX() + width && mouseY < getY() + height;
     }
 }

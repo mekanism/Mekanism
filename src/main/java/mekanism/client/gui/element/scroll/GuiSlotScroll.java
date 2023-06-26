@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
@@ -207,11 +208,10 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
         return slotList.get();
     }
 
-    @Nullable
     @Override
-    public Object getIngredient(double mouseX, double mouseY) {
+    public Optional<?> getIngredient(double mouseX, double mouseY) {
         IScrollableSlot slot = getSlot(mouseX, mouseY);
-        return slot == null ? null : slot.item().getInternalStack();
+        return slot == null ? Optional.empty() : Optional.of(slot.item().getInternalStack());
     }
 
     @Override

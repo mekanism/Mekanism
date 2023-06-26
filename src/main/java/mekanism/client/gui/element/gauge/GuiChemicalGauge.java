@@ -3,6 +3,7 @@ package mekanism.client.gui.element.gauge;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -113,10 +114,9 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
         }
     }
 
-    @Nullable
     @Override
-    public Object getIngredient(double mouseX, double mouseY) {
-        return getTank().isEmpty() ? null : getTank().getStack();
+    public Optional<?> getIngredient(double mouseX, double mouseY) {
+        return getTank().isEmpty() ? Optional.empty() : Optional.of(getTank().getStack());
     }
 
     @Override

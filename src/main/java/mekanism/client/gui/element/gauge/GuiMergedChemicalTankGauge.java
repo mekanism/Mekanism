@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.gauge;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.client.gui.IGuiWrapper;
@@ -82,11 +83,10 @@ public class GuiMergedChemicalTankGauge<HANDLER extends IGasTracker & IInfusionT
         }
     }
 
-    @Nullable
     @Override
-    public Object getIngredient(double mouseX, double mouseY) {
+    public Optional<?> getIngredient(double mouseX, double mouseY) {
         GuiTankGauge<?, ?> currentGauge = getCurrentGaugeNoFallback();
-        return currentGauge == null ? null : currentGauge.getIngredient(mouseX, mouseY);
+        return currentGauge == null ? Optional.empty() : currentGauge.getIngredient(mouseX, mouseY);
     }
 
     @Override

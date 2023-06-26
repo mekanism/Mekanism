@@ -12,14 +12,12 @@ import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.client.jei.interfaces.IJEIRecipeArea;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
-import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.runtime.IClickableIngredient;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.Rect2i;
-import org.jetbrains.annotations.Nullable;
 
 public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
 
@@ -70,7 +68,6 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
         return extraAreas;
     }
 
-    @Nullable
     @Override
     public Optional<IClickableIngredient<?>> getClickableIngredientUnderMouse(GuiMekanism<?> gui, double mouseX, double mouseY) {
         GuiWindow guiWindow = gui.getWindowHovering(mouseX, mouseY);
@@ -95,35 +92,20 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
                     }
                 }
             }
+            //Note: We do not need to check if there is a window over the child as if we are currently hovering any window
+            // we only check the children that are part of that window
             if (child instanceof IJEIIngredientHelper helper && child.isMouseOver(mouseX, mouseY)) {
-                Object ingredient = helper.getIngredient(mouseX, mouseY);
-                if (ingredient != null) {
-                    //TODO - 1.20: Test this works properly
-                    return getTypedIngredient(ingredient).map(typedIngredient -> {
-                        record ClickableIngredient<T>(ITypedIngredient<T> getTypedIngredient, Rect2i getArea) implements IClickableIngredient<T> {
-                        }
-                        Rect2i bounds = helper.getIngredientBounds(mouseX, mouseY);
-                        return new ClickableIngredient<>(typedIngredient, bounds);
-                    });
-                }
+                return helper.getIngredient(mouseX, mouseY)
+                      .flatMap(ingredientManager::createTypedIngredient)
+                      .map(typedIngredient -> {
+                          record ClickableIngredient<T>(ITypedIngredient<T> getTypedIngredient, Rect2i getArea) implements IClickableIngredient<T> {
+                          }
+                          Rect2i bounds = helper.getIngredientBounds(mouseX, mouseY);
+                          return new ClickableIngredient<>(typedIngredient, bounds);
+                      });
             }
         }
         return Optional.empty();
-    }
-
-    private <T> Optional<ITypedIngredient<T>> getTypedIngredient(T ingredient) {
-        return ingredientManager.getIngredientTypeChecked(ingredient)
-              .map(type -> new ITypedIngredient<T>() {
-                  @Override
-                  public IIngredientType<T> getType() {
-                      return type;
-                  }
-
-                  @Override
-                  public T getIngredient() {
-                      return ingredient;
-                  }
-              });
     }
 
     @Override
@@ -152,7 +134,9 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
                 //If we couldn't find any, then we need to continue on to checking this element itself
                 if (element instanceof IJEIRecipeArea<?> recipeArea && recipeArea.isJEIAreaActive()) {
                     MekanismJEIRecipeType<?>[] categories = recipeArea.getRecipeCategories();
-                    //getRecipeCategory is a cheaper call than isMouseOver, so we perform it first
+                    //getRecipeCategories is a cheaper call than isMouseOver, so we perform it first
+                    //Note: We do not need to check if there is a window over the child as if we are currently hovering any window
+                    // we only check the children that are part of that window
                     if (categories != null && recipeArea.isMouseOverJEIArea(mouseX, mouseY)) {
                         //TODO: Decide if we want our own implementation to overwrite the getTooltipStrings and have it show something like "Crusher Recipes"
                         IGuiClickableArea clickableArea = IGuiClickableArea.createBasic(element.getRelativeX(), element.getRelativeY(),

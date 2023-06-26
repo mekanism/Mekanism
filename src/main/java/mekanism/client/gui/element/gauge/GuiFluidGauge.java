@@ -2,6 +2,7 @@ package mekanism.client.gui.element.gauge;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.text.TextComponentUtil;
@@ -117,10 +118,9 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
         MekanismRenderer.color(dummy || getTank() == null ? dummyType : getTank().getFluid());
     }
 
-    @Nullable
     @Override
-    public Object getIngredient(double mouseX, double mouseY) {
-        return getTank().isEmpty() ? null : getTank().getFluid();
+    public Optional<?> getIngredient(double mouseX, double mouseY) {
+        return getTank().isEmpty() ? Optional.empty() : Optional.of(getTank().getFluid());
     }
 
     @Override

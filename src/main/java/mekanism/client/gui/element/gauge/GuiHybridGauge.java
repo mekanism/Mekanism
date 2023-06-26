@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.gauge;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -58,17 +59,16 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
         fluidGauge.applyRenderColor();
     }
 
-    @Nullable
     @Override
-    public Object getIngredient(double mouseX, double mouseY) {
-        Object gasIngredient = gasGauge.getIngredient(mouseX, mouseY);
-        return gasIngredient == null ? fluidGauge.getIngredient(mouseX, mouseY) : gasIngredient;
+    public Optional<?> getIngredient(double mouseX, double mouseY) {
+        Optional<?> gasIngredient = gasGauge.getIngredient(mouseX, mouseY);
+        return gasIngredient.isPresent() ? gasIngredient : fluidGauge.getIngredient(mouseX, mouseY);
     }
 
     @Override
     public Rect2i getIngredientBounds(double mouseX, double mouseY) {
-        Object gasIngredient = gasGauge.getIngredient(mouseX, mouseY);
-        return gasIngredient == null ? fluidGauge.getIngredientBounds(mouseX, mouseY) : gasGauge.getIngredientBounds(mouseX, mouseY);
+        Optional<?> gasIngredient = gasGauge.getIngredient(mouseX, mouseY);
+        return gasIngredient.isPresent() ? gasGauge.getIngredientBounds(mouseX, mouseY) : fluidGauge.getIngredientBounds(mouseX, mouseY);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.slot;
 
+import java.util.Optional;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.VirtualSlotContainerScreen;
 import mekanism.client.gui.element.GuiElement;
@@ -72,11 +73,10 @@ public class GuiVirtualSlot extends GuiSlot implements IJEIIngredientHelper {
         return super.mouseClickedNested(mouseX, mouseY, button);
     }
 
-    @Nullable
     @Override
-    public Object getIngredient(double mouseX, double mouseY) {
+    public Optional<?> getIngredient(double mouseX, double mouseY) {
         //Note: We can get away with just using the stack to render
-        return virtualSlot == null ? null : virtualSlot.getStackToRender();
+        return virtualSlot == null ? Optional.empty() : Optional.of(virtualSlot.getStackToRender());
     }
 
     @Override

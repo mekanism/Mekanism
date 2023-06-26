@@ -32,6 +32,7 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.util.ChemicalUtil;
 import mezz.jei.api.helpers.IColorHelper;
@@ -43,6 +44,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.tags.ITagManager;
 import org.jetbrains.annotations.NotNull;
@@ -73,6 +75,22 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
     @Override
     public ResourceLocation getResourceLocation(STACK ingredient) {
         return ingredient.getTypeRegistryName();
+    }
+
+    @Override
+    public ItemStack getCheatItemStack(STACK ingredient) {
+        ItemStack stack = MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemStack();
+        return ChemicalUtil.getFilledVariant(stack, ChemicalTankTier.CREATIVE.getStorage(), ingredient.getType());
+    }
+
+    @Override
+    public STACK normalizeIngredient(STACK ingredient) {
+        return ChemicalUtil.copyWithAmount(ingredient, FluidType.BUCKET_VOLUME);
+    }
+
+    @Override
+    public boolean isValidIngredient(STACK ingredient) {
+        return !ingredient.isEmpty();
     }
 
     @Override

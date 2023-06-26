@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.bar;
 
+import java.util.Optional;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -111,11 +112,10 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
         return currentBar.mouseClickedNested(mouseX, mouseY, button);
     }
 
-    @Nullable
     @Override
-    public Object getIngredient(double mouseX, double mouseY) {
+    public Optional<?> getIngredient(double mouseX, double mouseY) {
         GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
-        return currentBar == null ? null : currentBar.getIngredient(mouseX, mouseY);
+        return currentBar == null ? Optional.empty() : currentBar.getIngredient(mouseX, mouseY);
     }
 
     @Override
