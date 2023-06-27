@@ -1,7 +1,6 @@
 package mekanism.common.integration.crafttweaker;
 
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.recipe.component.BuiltinRecipeComponents;
 import com.blamejared.crafttweaker.api.recipe.component.DecomposedRecipeBuilder;
@@ -41,7 +40,6 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTI
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
-import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.SingleItemStackIngredient;
 
 public class CrTRecipeComponents {
 
@@ -62,27 +60,20 @@ public class CrTRecipeComponents {
     public static final PairedRecipeComponent<ItemStackIngredient, IItemStack> ITEM = new PairedRecipeComponent<>(IRecipeComponent.composite(
           Mekanism.rl("input/item"),
           new TypeToken<>() {},
-          (a, b) -> {
-              if (Objects.equals(a, b)) {
-                  return true;
-              } else if (a instanceof SingleItemStackIngredient as && b instanceof SingleItemStackIngredient bs && as.getAmountRaw() == bs.getAmountRaw()) {
-                  return RecipeComponentEqualityCheckers.areIngredientsEqual(IIngredient.fromIngredient(as.getInputRaw()), IIngredient.fromIngredient(bs.getInputRaw()));
-              }
-              return false;
-          },
+          CrTRecipeComponents::ingredientsMatch,
           CrTRecipeComponents::unwrapIngredient,
           ingredients -> IngredientCreatorAccess.item().from(ingredients.stream())
     ), BuiltinRecipeComponents.Output.ITEMS);
     public static final PairedRecipeComponent<FluidStackIngredient, IFluidStack> FLUID = new PairedRecipeComponent<>(IRecipeComponent.composite(
           Mekanism.rl("input/fluid"),
           new TypeToken<>() {},
-          Objects::equals,
+          CrTRecipeComponents::ingredientsMatch,
           CrTRecipeComponents::unwrapIngredient,
           ingredients -> IngredientCreatorAccess.fluid().from(ingredients.stream())
     ), IRecipeComponent.simple(
           Mekanism.rl("output/fluid"),
           new TypeToken<>() {},
-          (a, b) -> a.getInternal().isFluidStackIdentical(b.getInternal())
+          RecipeComponentEqualityCheckers::areFluidStacksEqual
     ));
 
     //Compiler can't actually infer these
@@ -121,6 +112,10 @@ public class CrTRecipeComponents {
           SLURRY
     );
 
+    private static <TYPE, INGREDIENT extends InputIngredient<TYPE>> boolean ingredientsMatch(INGREDIENT a, INGREDIENT b) {
+        return Objects.equals(a, b) || a.getRepresentations().stream().allMatch(b) && b.getRepresentations().stream().allMatch(a);
+    }
+
     private static <TYPE, INGREDIENT extends InputIngredient<TYPE>> Collection<INGREDIENT> unwrapIngredient(INGREDIENT ingredient) {
         if (ingredient instanceof IMultiIngredient) {
             return ((IMultiIngredient<TYPE, INGREDIENT>) ingredient).getIngredients();
@@ -145,13 +140,13 @@ public class CrTRecipeComponents {
             this(chemicalType, IRecipeComponent.composite(
                   Mekanism.rl("input/" + chemicalType.getSerializedName()),
                   inputType,
-                  Objects::equals,
+                  CrTRecipeComponents::ingredientsMatch,
                   CrTRecipeComponents::unwrapIngredient,
                   ingredients -> ingredientCreator.from(ingredients.stream())
             ), IRecipeComponent.simple(
                   Mekanism.rl("output/" + chemicalType.getSerializedName()),
                   outputType,
-                  (a, b) -> a.isTypeEqual(b) && a.getAmount() == b.getAmount()
+                  ICrTChemicalStack::containsOther
             ));
         }
 

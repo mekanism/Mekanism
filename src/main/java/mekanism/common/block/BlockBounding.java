@@ -155,19 +155,35 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
             BlockState mainState = world.getBlockState(mainPos);
             if (!mainState.isAir()) {
                 //Proxy the explosion to the main block which, will set it to air causing it to invalidate the rest of the bounding blocks
-                LootParams.Builder lootContextBuilder = new LootParams.Builder((ServerLevel) world)
-                      .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(mainPos))
-                      .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
-                      .withOptionalParameter(LootContextParams.BLOCK_ENTITY, mainState.hasBlockEntity() ? WorldUtils.getTileEntity(world, mainPos) : null)
-                      .withOptionalParameter(LootContextParams.THIS_ENTITY, explosion.getExploder());
-                if (explosion.blockInteraction == Explosion.BlockInteraction.DESTROY_WITH_DECAY) {
-                    lootContextBuilder.withParameter(LootContextParams.EXPLOSION_RADIUS, explosion.radius);
+                if (world instanceof ServerLevel serverLevel) {
+                    LootParams.Builder lootContextBuilder = new LootParams.Builder(serverLevel)
+                          .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(mainPos))
+                          .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
+                          .withOptionalParameter(LootContextParams.BLOCK_ENTITY, mainState.hasBlockEntity() ? WorldUtils.getTileEntity(serverLevel, mainPos) : null)
+                          .withOptionalParameter(LootContextParams.THIS_ENTITY, explosion.getExploder());
+                    if (explosion.blockInteraction == Explosion.BlockInteraction.DESTROY_WITH_DECAY) {
+                        lootContextBuilder.withParameter(LootContextParams.EXPLOSION_RADIUS, explosion.radius);
+                    }
+                    mainState.getDrops(lootContextBuilder).forEach(stack -> Block.popResource(serverLevel, mainPos, stack));
                 }
-                mainState.getDrops(lootContextBuilder).forEach(stack -> Block.popResource(world, mainPos, stack));
                 mainState.onBlockExploded(world, mainPos, explosion);
             }
         }
         super.onBlockExploded(state, world, pos, explosion);
+    }
+
+    @Override
+    @Deprecated
+    public void spawnAfterBreak(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull ItemStack stack, boolean dropExperience) {
+        BlockPos mainPos = getMainBlockPos(level, pos);
+        if (mainPos != null) {
+            BlockState mainState = level.getBlockState(mainPos);
+            if (!mainState.isAir()) {
+                //Proxy the call to the main block even though none of our blocks currently make use of this method
+                mainState.spawnAfterBreak(level, mainPos, stack, dropExperience);
+            }
+        }
+        super.spawnAfterBreak(state, level, pos, stack, dropExperience);
     }
 
     @Override

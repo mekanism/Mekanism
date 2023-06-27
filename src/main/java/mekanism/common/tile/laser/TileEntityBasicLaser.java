@@ -404,7 +404,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     protected void handleBreakBlock(BlockState state, BlockPos hitPos, Player player, ItemStack tool) {
-        Block.dropResources(state, level, hitPos, WorldUtils.getTileEntity(level, hitPos), player, tool);
+        Block.dropResources(state, level, hitPos, WorldUtils.getTileEntity(level, hitPos), player, tool, false);
         breakBlock(state, hitPos);
     }
 

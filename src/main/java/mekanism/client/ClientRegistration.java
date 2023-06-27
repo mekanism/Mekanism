@@ -590,8 +590,7 @@ public class ClientRegistration {
     public static void addLayers(EntityRenderersEvent.AddLayers event) {
         //Add our own custom armor layer to the various player renderers
         for (String skinName : event.getSkins()) {
-            //TODO - 1.20: Switch to get model manager from event https://github.com/MinecraftForge/MinecraftForge/pull/9562
-            addCustomLayers(EntityType.PLAYER, (PlayerRenderer) event.getSkin(skinName), Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getModelManager());
+            addCustomLayers(EntityType.PLAYER, (PlayerRenderer) event.getSkin(skinName), event.getContext().getModelManager());
         }
         //Add our own custom armor layer to everything that has an armor layer
         //Note: This includes any modded mobs that have vanilla's BipedArmorLayer added to them
@@ -599,9 +598,8 @@ public class ClientRegistration {
             EntityRenderer<?> renderer = entry.getValue();
             if (renderer instanceof LivingEntityRenderer) {
                 EntityType<?> entityType = entry.getKey();
-                //TODO - 1.20: Switch to get model manager from event https://github.com/MinecraftForge/MinecraftForge/pull/9562
                 //noinspection unchecked,rawtypes
-                addCustomLayers(entityType, event.getRenderer((EntityType) entityType), Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getModelManager());
+                addCustomLayers(entityType, event.getRenderer((EntityType) entityType), event.getContext().getModelManager());
             }
         }
     }

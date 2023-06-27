@@ -1,6 +1,5 @@
 package mekanism.common.integration.crafttweaker.bracket;
 
-import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.BracketValidator;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import mekanism.api.MekanismAPI;
@@ -95,14 +94,14 @@ public class CrTBracketValidators {
     private static boolean validate(String bracket, String tokens, IForgeRegistry<?> registry) {
         ResourceLocation registryName = ResourceLocation.tryParse(tokens);
         if (registryName == null) {
-            CraftTweakerAPI.LOGGER.error("Could not get BEP <{}:{}>. Syntax is <{}:modid:{}_name>", bracket, tokens, bracket, bracket);
+            CrTConstants.CRT_LOGGER.error("Could not get BEP <{}:{}>. Syntax is <{}:modid:{}_name>", bracket, tokens, bracket, bracket);
             return false;
         }
         if (isRegistryUnlocked(registry) || registry.containsKey(registryName)) {
             return true;
         }
         String typeName = bracket.replace("_", " ");
-        CraftTweakerAPI.LOGGER.error("Could not get {} for <{}:{}>, {} does not appear to exist!", typeName, bracket, tokens, typeName);
+        CrTConstants.CRT_LOGGER.error("Could not get {} for <{}:{}>, {} does not appear to exist!", typeName, bracket, tokens, typeName);
         return false;
     }
 

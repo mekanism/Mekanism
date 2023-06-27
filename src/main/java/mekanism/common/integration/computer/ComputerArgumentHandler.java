@@ -17,7 +17,7 @@ public abstract class ComputerArgumentHandler<EXCEPTION extends Exception, RESUL
     public abstract EXCEPTION error(String messageFormat, Object... args);
 
     @Nullable
-    public abstract Object getArgument(int index);
+    public abstract Object getArgument(int index) throws EXCEPTION;
 
     /**
      * Allows implementers to override and add in various extra "implicit" casts that are not in Java's default conversions. This method will only be called if the

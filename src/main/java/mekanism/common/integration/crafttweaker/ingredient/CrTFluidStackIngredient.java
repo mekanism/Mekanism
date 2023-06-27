@@ -9,14 +9,19 @@ import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
+import java.util.stream.Collectors;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
+import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.MultiFluidStackIngredient;
+import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.SingleFluidStackIngredient;
+import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.TaggedFluidStackIngredient;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.FluidStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -55,7 +60,7 @@ public class CrTFluidStackIngredient {
         if (instance.isEmpty()) {
             throw new IllegalArgumentException("FluidStackIngredients cannot be created from an empty stack.");
         }
-        return IngredientCreatorAccess.fluid().from(instance.getImmutableInternal());
+        return IngredientCreatorAccess.fluid().from(instance.<FluidStack>getImmutableInternal());
     }
 
     /**
@@ -95,7 +100,8 @@ public class CrTFluidStackIngredient {
     public static FluidStackIngredient from(CTFluidIngredient ingredient) {
         IFluidStackIngredientCreator ingredientCreator = IngredientCreatorAccess.fluid();
         return ingredient.mapTo(
-              ingredientCreator::from,
+              //Note: The ingredient creator will copy the stack to ensure it does not get modified
+              fluidStack -> ingredientCreator.from(fluidStack.<FluidStack>getInternal()),
               ingredientCreator::from,
               ingredientCreator::from
         );
@@ -122,6 +128,32 @@ public class CrTFluidStackIngredient {
     @ZenCodeType.Caster(implicit = true)
     public static IData asIData(FluidStackIngredient _this) {
         return JSONConverter.convert(_this.serialize());
+    }
+
+    /**
+     * Converts this {@link FluidStackIngredient} into CraftTweaker's own ({@link CTFluidIngredient}).
+     *
+     * @return {@link FluidStackIngredient} as a {@link CTFluidIngredient}.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Caster(implicit = true)
+    public static CTFluidIngredient asCTFluidIngredient(FluidStackIngredient _this) {
+        if (_this instanceof SingleFluidStackIngredient single) {
+            return new CTFluidIngredient.FluidStackIngredient(IFluidStack.of(single.getInputRaw()));
+        } else if (_this instanceof TaggedFluidStackIngredient tagged) {
+            return new CTFluidIngredient.FluidTagWithAmountIngredient(CrTUtils.fluidTags()
+                  .tag(tagged.getTag())
+                  .withAmount(tagged.getRawAmount())
+            );
+        } else if (_this instanceof MultiFluidStackIngredient multi) {
+            return new CTFluidIngredient.CompoundFluidIngredient(multi.getIngredients().stream()
+                  .map(CrTFluidStackIngredient::asCTFluidIngredient)
+                  //Collect to an array list as CompoundFluidIngredient assumes it is mutable
+                  .collect(Collectors.toList())
+            );
+        }
+        CrTConstants.CRT_LOGGER.error("Unknown fluid ingredient type {}, this should never happen. Returning empty.", _this.getClass().getName());
+        return CTFluidIngredient.EMPTY.get();
     }
 
     /**

@@ -38,7 +38,6 @@ public class PrideRobitTextureProvider implements DataProvider {
     @Override
     @SuppressWarnings("UnstableApiUsage")
     public CompletableFuture<?> run(@NotNull CachedOutput cache) {
-        //TODO - 1.20: Test this???
         return CompletableFuture.runAsync(() -> {
             PathProvider pathProvider = output.createPathProvider(Target.RESOURCE_PACK, ROBIT_SKIN_PATH);
             try {
@@ -87,7 +86,6 @@ public class PrideRobitTextureProvider implements DataProvider {
                     }
                 }
             } catch (IOException exception) {
-                //TODO - 1.20: Should this be rethrowing or something instead? Evaluate how other providers handle exceptions
                 Mekanism.logger.error("Couldn't create robit textures", exception);
             }
         }, Util.ioPool());
@@ -118,6 +116,6 @@ public class PrideRobitTextureProvider implements DataProvider {
     @NotNull
     @Override
     public String getName() {
-        return "Texture Provider";
+        return "Robit Texture Provider";
     }
 }

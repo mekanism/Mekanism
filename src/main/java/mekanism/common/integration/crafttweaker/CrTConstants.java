@@ -1,12 +1,16 @@
 package mekanism.common.integration.crafttweaker;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import mekanism.common.Mekanism;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Constants we use throughout our CraftTweaker integration.
  */
 public class CrTConstants {
+
+    public static final Logger CRT_LOGGER = CraftTweakerAPI.getLogger(Mekanism.MOD_NAME);
 
     public static final String CONTENT_LOADER = Mekanism.MODID + "content";
     public static final ResourceLocation CONTENT_LOADER_SOURCE_ID = Mekanism.rl("content");

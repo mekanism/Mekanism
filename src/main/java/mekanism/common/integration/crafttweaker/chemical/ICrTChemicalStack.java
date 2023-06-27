@@ -129,7 +129,7 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.CONTAINS)
     default boolean containsOther(CRT_STACK stack) {
-        return isTypeEqual(stack) && getInternal().getAmount() >= stack.getInternal().getAmount();
+        return getAmount() >= stack.getAmount() && isTypeEqual(stack);
     }
 
     /**

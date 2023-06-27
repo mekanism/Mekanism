@@ -82,9 +82,9 @@ public class CrTContentUtils {
         //Only queue our chemicals for registration on the first run of our loader
         if (queued != null) {
             if (queued.put(registryName, element) == null) {
-                CraftTweakerAPI.LOGGER.info("Queueing {} '{}' for registration.", type, registryName);
+                CrTConstants.CRT_LOGGER.info("Queueing {} '{}' for registration.", type, registryName);
             } else {
-                CraftTweakerAPI.LOGGER.warn("Registration for {} '{}' is already queued, skipping duplicate.", type, registryName);
+                CrTConstants.CRT_LOGGER.warn("Registration for {} '{}' is already queued, skipping duplicate.", type, registryName);
             }
         }
     }
@@ -101,7 +101,7 @@ public class CrTContentUtils {
                       ScriptRunConfiguration.RunKind.EXECUTE
                 )).execute();
             } catch (Throwable e) {
-                CraftTweakerAPI.LOGGER.error("Unable to register chemicals due to an error.", e);
+                CrTConstants.CRT_LOGGER.error("Unable to register chemicals due to an error.", e);
             }
             registerQueued(helper, queuedGases, () -> queuedGases = null, "Gas", "gases");
         });
@@ -117,11 +117,11 @@ public class CrTContentUtils {
             // we properly don't allow more registration to happen once we start registering a specific chemical type
             setNull.run();
             int count = queued.size();
-            CraftTweakerAPI.LOGGER.info("Registering {} custom {}.", count, count == 1 ? type.toLowerCase(Locale.ROOT) : plural);
+            CrTConstants.CRT_LOGGER.info("Registering {} custom {}.", count, count == 1 ? type.toLowerCase(Locale.ROOT) : plural);
             for (Map.Entry<ResourceLocation, V> entry : queued.entrySet()) {
                 ResourceLocation registryName = entry.getKey();
                 helper.register(registryName, entry.getValue());
-                CraftTweakerAPI.LOGGER.info("Registered {}: '{}'.", type, registryName);
+                CrTConstants.CRT_LOGGER.info("Registered {}: '{}'.", type, registryName);
             }
         }
     }

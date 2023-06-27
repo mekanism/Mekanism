@@ -37,12 +37,12 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     }
 
     private static final Set<String> PATHS_TO_SKIP = Set.of(
-          "/scripts/"//CraftTweaker script files
-          , "/pe_custom_conversions/"//ProjectE custom conversion files
+          //"/scripts/",//CraftTweaker script files
+          "/pe_custom_conversions/"//ProjectE custom conversion files
     );
     private static final List<String> FAKE_PROVIDERS = List.of(
-          "CraftTweaker Examples: mekanism"
-          , "Custom EMC Conversions: mekanism"
+          //"CraftTweaker Examples: mekanism",
+          "Custom EMC Conversions: mekanism"
     );
 
 
@@ -64,10 +64,6 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     }
 
     private <PROVIDER_CACHE> void tryPersist(HashCache cache) {
-        FieldReflectionHelper<HashCache, Set<String>> cachesToWrite = new FieldReflectionHelper<>(HashCache.class, "f_236083_", () -> null);
-        Set<String> toWrite = cachesToWrite.getValue(cache);
-        //Skip writing a cache for this data generator
-        toWrite.remove(getName());
         if (compatRecipesToSkip.isEmpty() && PATHS_TO_SKIP.isEmpty() && FAKE_PROVIDERS.isEmpty()) {
             //Skip if we don't have any things to override and persist
             return;
@@ -124,7 +120,8 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         int totalAdditionalWrites = additionalWrites;
         writes.transformValue(cache, ConstantPredicates.alwaysTrue(), c -> c + totalAdditionalWrites);
 
-
+        FieldReflectionHelper<HashCache, Set<String>> cachesToWrite = new FieldReflectionHelper<>(HashCache.class, "f_236083_", () -> null);
+        Set<String> toWrite = cachesToWrite.getValue(cache);
         Map<String, PROVIDER_CACHE> fakeCaches = new HashMap<>();
         Set<Path> paths = cachePaths.getValue(cache);
         Path cacheDir = baseOutputPath.resolve(".cache");

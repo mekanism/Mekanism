@@ -7,18 +7,22 @@ version '1.1.1'
 java.toolchain.languageVersion = JavaLanguageVersion.of("${java_version}")
 
 repositories {
-    maven {
+    def repo = maven {
         name 'CraftTweaker'
-        url "https://maven.blamejared.com"
-        content {
-            includeGroup 'com.blamejared.crafttweaker'
+        url 'https://maven.blamejared.com'
+    }
+    exclusiveContent {
+        forRepositories(repo)
+        filter { InclusiveRepositoryContentDescriptor f ->
+            f.includeGroup 'com.blamejared.crafttweaker'
+            f.includeGroup 'org.openzen.zencode'
         }
     }
     mavenCentral()
 }
 
 dependencies {
-    implementation "com.blamejared.crafttweaker:CraftTweaker-forge-${previous_minecraft_version}:${crafttweaker_version}"
+    implementation "com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}"
     //Version of GSON used by vanilla (and thus packed and already downloaded)
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.9'
 }

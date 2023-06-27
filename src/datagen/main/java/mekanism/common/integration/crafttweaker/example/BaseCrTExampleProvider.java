@@ -434,7 +434,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     /**
      * Basically a copy of {@link DataProvider#saveStable(CachedOutput, JsonElement, Path)} but it takes the contents as a string instead of serializes json using GSON.
      */
-    @SuppressWarnings("UnstableApiUsage")
+    @SuppressWarnings({"UnstableApiUsage", "deprecation"})
     private static CompletableFuture<?> save(CachedOutput cache, String contents, Path path) {
         return CompletableFuture.runAsync(() -> {
             try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -442,9 +442,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
                 hashingOutputStream.write(contents.getBytes(StandardCharsets.UTF_8));
                 cache.writeIfNeeded(path, outputStream.toByteArray(), hashingOutputStream.hash());
             } catch (IOException ioexception) {
-                //TODO - 1.20: Should this throw the exception on somehow instead
                 LOGGER.error("Failed to save file to {}", path, ioexception);
-                //throw new RuntimeException("Couldn't save example script: " + examplePath, e);
             }
         }, Util.backgroundExecutor());
     }

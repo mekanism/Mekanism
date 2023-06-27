@@ -356,10 +356,11 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://maven.blamejared.com', filter -> {
         filter.includeGroupByRegex 'com\\.blamejared.*'
         filter.includeGroup 'mezz.jei'
+        filter.includeGroup 'org.openzen.zencode'
     })
     exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
     exclusiveRepo(handler, 'https://maven.tterrag.com/', 'team.chisel.ctm')
-    exclusiveRepo(handler, 'https://squiddev.cc/maven/', 'org.squiddev')
+    exclusiveRepo(handler, 'https://squiddev.cc/maven/', 'cc.tweaked')
     exclusiveRepo(handler, 'https://maven2.bai.lol', 'mcp.mobius.waila')//WTHIT
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
     exclusiveRepo(handler, 'https://modmaven.dev/', 'appeng', 'mcjty.theoneprobe')
@@ -397,20 +398,21 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
     compileOnly fg.deobf("mcp.mobius.waila:wthit-api:forge-${wthit_version}")
 
-    //TODO - 1.20: Switch these two back to implementation when they update
-    compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${previous_minecraft_version}:${crafttweaker_version}")
+    implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
+    //TODO - 1.20: Switch these two back to implementation when it updates
     compileOnly fg.deobf("com.blamejared.jeitweaker:JeiTweaker-forge-${previous_minecraft_version}:${jeitweaker_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
     compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${previous_minecraft_version}-${curios_version}:api")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     compileOnly fg.deobf("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     compileOnly fg.deobf("curse.maven:opencomputers2-437654:${oc2_id}")
-    def cc = fg.deobf("org.squiddev:cc-tweaked-${previous_minecraft_version}:${cc_tweaked_version}:api")
-    compileOnly cc
+    compileOnly fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
+    def ccCoreAPI = fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-core-api:${cc_tweaked_version}")
+    compileOnly ccCoreAPI
     //We require cc tweaked so that our CCArgumentWrapper tests can load, so expose it to the test runtime
-    testRuntimeOnly cc
+    testRuntimeOnly ccCoreAPI
     compileOnly fg.deobf("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
 
     //Dependencies for data generators for mod compat reference

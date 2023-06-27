@@ -16,11 +16,13 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ChunkHolder.ChunkLoadingFailure;
 import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
@@ -370,7 +372,10 @@ public class WorldUtils {
      * Dismantles a block, dropping it and removing it from the world.
      */
     public static void dismantleBlock(BlockState state, Level world, BlockPos pos, @Nullable BlockEntity tile) {
-        Block.dropResources(state, world, pos, tile);
+        if (world instanceof ServerLevel level) {//Copy of Block#dropResources but skipping the xp dropping
+            Block.getDrops(state, level, pos, tile).forEach(stack -> Block.popResource(world, pos, stack));
+            state.spawnAfterBreak(level, pos, ItemStack.EMPTY, false);
+        }
         world.removeBlock(pos, false);
     }
 

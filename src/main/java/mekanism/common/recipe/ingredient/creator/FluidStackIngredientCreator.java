@@ -299,6 +299,14 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             return tag;
         }
 
+        public int getRawAmount() {
+            return amount;
+        }
+
+        public TagKey<Fluid> getTag() {
+            return tag.getKey();
+        }
+
         @Override
         public void write(FriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.TAGGED);

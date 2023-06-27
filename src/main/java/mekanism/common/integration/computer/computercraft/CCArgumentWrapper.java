@@ -101,7 +101,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
 
     @Nullable
     @Override
-    public Object getArgument(int index) {
+    public Object getArgument(int index) throws LuaException {
         return arguments.get(index);
     }
 

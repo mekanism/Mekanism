@@ -1,17 +1,14 @@
 package mekanism.common.integration.computer.computercraft;
 
 import dan200.computercraft.api.lua.IArguments;
-import dan200.computercraft.api.lua.ILuaCallback;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.integration.computer.BoundComputerMethod;
 import mekanism.common.integration.computer.BoundComputerMethod.SelectedMethodInfo;
-import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
 public abstract class CCMethodCaller {
@@ -44,47 +41,17 @@ public abstract class CCMethodCaller {
                   methods.length));
         }
         BoundComputerMethod method = methods[methodIndex];
-        CCArgumentWrapper argumentWrapper = new CCArgumentWrapper(arguments);
+        //Note: Even though we would not have to escape for if the method is thread safe we need to do so as finding our matching implementation
+        // may maintain references to the corresponding arguments and if those arguments require escaping then we don't have a simple way to do
+        // so later
+        CCArgumentWrapper argumentWrapper = new CCArgumentWrapper(arguments.escapes());
         //Our argument type validator should be thread-safe, so can be run on the ComputerCraft Lua thread
         SelectedMethodInfo selectedImplementation = method.findMatchingImplementation(argumentWrapper);
         if (selectedImplementation.getMethod().threadSafe()) {
             //If our selected implementation is thread-safe, run it directly
             return method.run(argumentWrapper, selectedImplementation);
         }
-        //Otherwise, if it is not thread-safe (which will be the majority of our cases), queue it up to run on the game thread
-        long task = context.issueMainThreadTask(() -> method.run(argumentWrapper, selectedImplementation).getResult());
-        return new TaskCallback(task).pull;
-    }
-
-    /**
-     * Basically a copy of dan200.computercraft.core.asm.TaskCallback as <a href="https://github.com/SquidDev-CC/CC-Tweaked/discussions/728">suggested</a> due to there
-     * not being a method via the API to do this. Ideally eventually it will be replaced by a method on ILuaContext that we can just call
-     * <p>
-     * <a href="https://github.com/SquidDev-CC/CC-Tweaked/blob/mc-1.16.x/LICENSE">Original License</a>
-     */
-    private static class TaskCallback implements ILuaCallback {
-
-        private final MethodResult pull = MethodResult.pullEvent("task_complete", this);
-        private final long task;
-
-        private TaskCallback(long task) {
-            this.task = task;
-        }
-
-        @NotNull
-        @Override
-        public MethodResult resume(Object[] response) throws LuaException {
-            if (response.length >= 3 && response[1] instanceof Number number && response[2] instanceof Boolean bool) {
-                if (number.longValue() != this.task) {
-                    return this.pull;
-                } else if (bool) {
-                    return MethodResult.of(Arrays.copyOfRange(response, 3, response.length));
-                } else if (response.length >= 4 && response[3] instanceof String string) {
-                    throw new LuaException(string);
-                }
-                throw new LuaException("error");
-            }
-            return this.pull;
-        }
+        //Otherwise, if it is not thread-safe (which will be the majority of our cases),queue the task up to run on the game thread
+        return context.executeMainThreadTask(() -> method.run(argumentWrapper, selectedImplementation).getResult());
     }
 }

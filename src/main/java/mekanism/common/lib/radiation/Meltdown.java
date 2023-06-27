@@ -158,6 +158,7 @@ public class Meltdown {
                     if (mode == Explosion.BlockInteraction.DESTROY_WITH_DECAY) {
                         lootContextBuilder.withParameter(LootContextParams.EXPLOSION_RADIUS, radius);
                     }
+                    state.spawnAfterBreak(level, toExplode, ItemStack.EMPTY, false);
                     state.getDrops(lootContextBuilder).forEach(stack -> addBlockDrops(drops, stack, toExplode));
                 }
                 state.onBlockExploded(world, toExplode, explosion);
