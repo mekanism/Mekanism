@@ -11,6 +11,8 @@
   "advancements.mekanismtools.not_enough_shielding.title": "Недостаточно защищён",
   "advancements.mekanismtools.paxel.description": "Создайте любой мультиинструмент (Кирка, Топор, Лопата)",
   "advancements.mekanismtools.paxel.title": "Многофункциональный инструмент",
+  "constants.mekanismtools.mod_name": "Mekanism: Tools",
+  "constants.mekanismtools.pack_description": "Ресурсы, используемые для Mekanism: Tools",
   "item.mekanismtools.bronze_axe": "Бронзовый топор",
   "item.mekanismtools.bronze_boots": "Бронзовые ботинки",
   "item.mekanismtools.bronze_chestplate": "Бронзовый нагрудник",
