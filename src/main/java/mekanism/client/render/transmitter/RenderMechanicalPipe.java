@@ -6,10 +6,11 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -42,7 +43,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     private static final float offset = 0.02F;
     //Note: this is basically used as an enum map (Direction), but null key is possible, which EnumMap doesn't support.
     // 6 is used for null side, and 7 is used for null side but flowing vertically
-    private static final Int2ObjectMap<FluidRenderMap<Int2ObjectMap<Model3D>>> cachedLiquids = new Int2ObjectArrayMap<>(8);
+    private static final Int2ObjectMap<Map<FluidStack, Int2ObjectMap<Model3D>>> cachedLiquids = new Int2ObjectArrayMap<>(8);
 
     public RenderMechanicalPipe(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -138,7 +139,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         } else {
             sideOrdinal = side.ordinal();
         }
-        return cachedLiquids.computeIfAbsent(sideOrdinal, s -> new FluidRenderMap<>())
+        return cachedLiquids.computeIfAbsent(sideOrdinal, s -> new HashMap<>())
               .computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>())
               .computeIfAbsent(stage, s -> {
                   float stageRatio = (s / (float) stages) * height;
