@@ -29,6 +29,7 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphics;
+import org.jetbrains.annotations.Nullable;
 
 public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiWindow {
 
@@ -42,23 +43,24 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         super(gui, x, y, 156, 115, WindowType.SIDE_CONFIG);
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
-        currentType = getTopTransmission();
+        List<TransmissionType> transmissions = this.tile.getConfig().getTransmissions();
+        //Get the top transmission as the initial type
+        setCurrentType(transmissions.get(0));
         //TODO: Try to make the GUI look a bit better as it still seems a bit off with the scales and such
         // Maybe we want to eventually add some sort of "in world preview" type thing
         addChild(new GuiInnerScreen(gui, relativeX + 41, relativeY + 25, 74, 12, () -> {
-            ConfigInfo config = this.tile.getConfig().getConfig(currentType);
+            ConfigInfo config = getCurrentConfig();
             if (config == null || !config.canEject()) {
                 return Collections.singletonList(MekanismLang.NO_EJECT.translate());
             }
             return Collections.singletonList(MekanismLang.EJECT.translate(OnOff.of(config.isEjecting())));
         }).tooltip(() -> {
-            ConfigInfo config = this.tile.getConfig().getConfig(currentType);
+            ConfigInfo config = getCurrentConfig();
             if (config == null || !config.canEject()) {
                 return Collections.singletonList(MekanismLang.CANT_EJECT_TOOLTIP.translate());
             }
             return Collections.emptyList();
         }));
-        List<TransmissionType> transmissions = this.tile.getConfig().getTransmissions();
         for (int i = 0; i < transmissions.size(); i++) {
             GuiConfigTypeTab tab = new GuiConfigTypeTab(gui, transmissions.get(i), relativeX + (i < 4 ? -26 : width), relativeY + (2 + 28 * (i % 4)), this, i < 4);
             addChild(tab);
@@ -77,8 +79,8 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         addSideDataButton(RelativeSide.LEFT, 56, 59);
         addSideDataButton(RelativeSide.RIGHT, 86, 59);
         updateTabs();
-        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_SIDE_CONFIG, tile, MekanismContainer.SIDE_CONFIG_WINDOW));
         ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).startTracking(MekanismContainer.SIDE_CONFIG_WINDOW, this.tile.getConfig());
+        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_SIDE_CONFIG, tile, MekanismContainer.SIDE_CONFIG_WINDOW));
     }
 
     private void addSideDataButton(RelativeSide side, int xPos, int yPos) {
@@ -108,12 +110,13 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         };
     }
 
-    private TransmissionType getTopTransmission() {
-        return tile.getConfig().getTransmissions().get(0);
-    }
-
     public void setCurrentType(TransmissionType type) {
         currentType = type;
+    }
+
+    @Nullable
+    private ConfigInfo getCurrentConfig() {
+        return this.tile.getConfig().getConfig(currentType);
     }
 
     public void updateTabs() {
@@ -122,7 +125,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
             tab.visible = currentType != tab.getTransmissionType();
         }
         //Disable or enable the eject button based on if the transmission type supports ejecting
-        ConfigInfo config = this.tile.getConfig().getConfig(currentType);
+        ConfigInfo config = getCurrentConfig();
         if (config == null) {//Should never actually be null but just in case handle it
             ejectButton.active = false;
             for (SideDataButton button : sideConfigButtons.values()) {

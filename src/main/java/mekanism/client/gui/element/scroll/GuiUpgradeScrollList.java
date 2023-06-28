@@ -132,5 +132,7 @@ public class GuiUpgradeScrollList extends GuiScrollList {
         super.syncFrom(element);
         GuiUpgradeScrollList old = (GuiUpgradeScrollList) element;
         selectedType = old.selectedType;
+        //Ensure that it knows about there being a selection
+        onSelectionChange.run();
     }
 }

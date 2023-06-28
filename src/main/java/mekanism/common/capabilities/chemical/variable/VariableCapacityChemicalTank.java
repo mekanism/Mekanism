@@ -37,7 +37,7 @@ public abstract class VariableCapacityChemicalTank<CHEMICAL extends Chemical<CHE
             return 0;
         } else if (amount <= 0) {
             if (action.execute()) {
-                setStack(getEmptyStack());
+                setEmpty();
             }
             return 0;
         }

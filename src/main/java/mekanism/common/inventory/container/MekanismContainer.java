@@ -1,6 +1,7 @@
 package mekanism.common.inventory.container;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.shorts.ShortUnaryOperator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,6 +52,7 @@ import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_server.PacketWindowSelect;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -141,17 +143,26 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         openInventory(inv);
     }
 
-    public void startTracking(Object key, ISpecificContainerTracker tracker) {
+    public void startTrackingServer(Object key, ISpecificContainerTracker tracker) {
+        int currentSize = trackedData.size();
+        List<ISyncableData> list = startTracking(key, tracker);
+        //Do the initial sync of all newly tracked data
+        sendInitialDataToRemote(list, index -> (short) (index + currentSize));
+    }
+
+    public List<ISyncableData> startTracking(Object key, ISpecificContainerTracker tracker) {
         List<ISyncableData> list = tracker.getSpecificSyncableData();
-        list.forEach(this::track);
+        for (ISyncableData data : list) {
+            track(data);
+        }
         specificTrackedData.put(key, list);
+        return list;
     }
 
     public void stopTracking(Object key) {
-        List<ISyncableData> list = specificTrackedData.get(key);
+        List<ISyncableData> list = specificTrackedData.remove(key);
         if (list != null) {
-            list.forEach(trackedData::remove);
-            specificTrackedData.remove(key);
+            trackedData.removeAll(list);
         }
     }
 
@@ -524,22 +535,33 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
+    @Nullable
+    private ISyncableData getTrackedData(short property) {
+        //In theory the property indexing should always be valid but in case we get something that is out of bounds handle it gracefully
+        if (property > 0 && property < trackedData.size()) {
+            return trackedData.get(property);
+        }
+        Mekanism.logger.warn("Received out of bounds window property {} for container {}. There are currently {} tracked properties.", property,
+              RegistryUtils.getName(getType()), trackedData.size());
+        return null;
+    }
+
     public void handleWindowProperty(short property, boolean value) {
-        ISyncableData data = trackedData.get(property);
+        ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableBoolean syncable) {
             syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, byte value) {
-        ISyncableData data = trackedData.get(property);
+        ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableByte syncable) {
             syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, short value) {
-        ISyncableData data = trackedData.get(property);
+        ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableShort syncable) {
             syncable.set(value);
         } else if (data instanceof SyncableFloatingLong syncable) {
@@ -548,7 +570,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     }
 
     public void handleWindowProperty(short property, int value) {
-        ISyncableData data = trackedData.get(property);
+        ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableInt syncable) {
             syncable.set(value);
         } else if (data instanceof SyncableEnum<?> syncable) {
@@ -561,7 +583,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     }
 
     public void handleWindowProperty(short property, long value) {
-        ISyncableData data = trackedData.get(property);
+        ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableLong syncable) {
             syncable.set(value);
         } else if (data instanceof SyncableChemicalStack<?, ?> syncable) {
@@ -570,49 +592,49 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     }
 
     public void handleWindowProperty(short property, float value) {
-        ISyncableData data = trackedData.get(property);
+        ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableFloat syncable) {
             syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, double value) {
-        ISyncableData data = trackedData.get(property);
+        ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableDouble syncable) {
             syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, @NotNull ItemStack value) {
-        ISyncableData data = trackedData.get(property);
+        ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableItemStack syncable) {
             syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, @NotNull FluidStack value) {
-        ISyncableData data = trackedData.get(property);
+        ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableFluidStack syncable) {
             syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, @Nullable BlockPos value) {
-        ISyncableData data = trackedData.get(property);
+        ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableBlockPos syncable) {
             syncable.set(value);
         }
     }
 
     public <V> void handleWindowProperty(short property, @NotNull V value) {
-        ISyncableData data = trackedData.get(property);
+        ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableRegistryEntry) {
             ((SyncableRegistryEntry<V>) data).set(value);
         }
     }
 
     public <STACK extends ChemicalStack<?>> void handleWindowProperty(short property, @NotNull STACK value) {
-        ISyncableData data = trackedData.get(property);
+        ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableGasStack syncable && value instanceof GasStack stack) {
             syncable.set(stack);
         } else if (data instanceof SyncableInfusionStack syncable && value instanceof InfusionStack stack) {
@@ -625,21 +647,21 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     }
 
     public <FREQUENCY extends Frequency> void handleWindowProperty(short property, @Nullable FREQUENCY value) {
-        ISyncableData data = trackedData.get(property);
+        ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableFrequency) {
             ((SyncableFrequency<FREQUENCY>) data).set(value);
         }
     }
 
     public void handleWindowProperty(short property, @NotNull FloatingLong value) {
-        ISyncableData data = trackedData.get(property);
+        ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableFloatingLong syncable) {
             syncable.set(value);
         }
     }
 
     public <TYPE> void handleWindowProperty(short property, @NotNull List<TYPE> value) {
-        ISyncableData data = trackedData.get(property);
+        ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableList) {
             ((SyncableList<TYPE>) data).set(value);
         }
@@ -670,11 +692,20 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     @Override
     public void sendAllDataToRemote() {
         super.sendAllDataToRemote();
+        sendInitialDataToRemote(trackedData, ShortUnaryOperator.identity());
+    }
+
+    private void sendInitialDataToRemote(List<ISyncableData> syncableData, ShortUnaryOperator propertyIndex) {
         if (inv.player instanceof ServerPlayer player) {
             //Send all contents to the listener when it first gets added
             List<PropertyData> dirtyData = new ArrayList<>();
-            for (short i = 0; i < trackedData.size(); i++) {
-                dirtyData.add(trackedData.get(i).getPropertyData(i, DirtyType.DIRTY));
+            for (short i = 0; i < syncableData.size(); i++) {
+                ISyncableData data = syncableData.get(i);
+                //Query if the data is dirty or not so that we update our last known value to the initial values
+                data.isDirty();
+                //And then add the property data as if it was dirty regardless of if it was in case the value is the same as the default
+                // as the client may not actually know about it
+                dirtyData.add(data.getPropertyData(propertyIndex.apply(i), DirtyType.DIRTY));
             }
             if (!dirtyData.isEmpty()) {
                 Mekanism.packetHandler().sendTo(new PacketUpdateContainer((short) containerId, dirtyData), player);

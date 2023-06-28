@@ -316,9 +316,14 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         nbtTags.put(NBTConstants.COMPONENT_CONFIG, configNBT);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote This is slightly different from read and write as we don't bother syncing the ejecting status. We can skip syncing the ejecting status as the client only
+     * needs that information when in the gui see {@link #getSpecificSyncableData()} for where we sync ejecting status while in GUIs.
+     */
     @Override
     public void addToUpdateTag(CompoundTag updateTag) {
-        //Note: This is slightly different from read and write as we don't bother syncing the ejecting status
         CompoundTag configNBT = new CompoundTag();
         for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
@@ -350,8 +355,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     @Override
     public List<ISyncableData> getSpecificSyncableData() {
         List<ISyncableData> list = new ArrayList<>();
-        List<TransmissionType> transmissions = getTransmissions();
-        for (TransmissionType transmission : transmissions) {
+        for (TransmissionType transmission : getTransmissions()) {
             ConfigInfo info = configInfo.get(transmission);
             list.add(SyncableBoolean.create(info::isEjecting, info::setEjecting));
         }

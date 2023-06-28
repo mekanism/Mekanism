@@ -180,17 +180,17 @@ public class PacketGuiInteract implements IMekanismPacket {
         }),
         CONTAINER_TRACK_EJECTOR((tile, player, extra) -> {
             if (player.containerMenu instanceof MekanismContainer container && tile instanceof ISideConfiguration sideConfig) {
-                container.startTracking(extra, sideConfig.getEjector());
+                container.startTrackingServer(extra, sideConfig.getEjector());
             }
         }),
         CONTAINER_TRACK_SIDE_CONFIG((tile, player, extra) -> {
             if (player.containerMenu instanceof MekanismContainer container && tile instanceof ISideConfiguration sideConfig) {
-                container.startTracking(extra, sideConfig.getConfig());
+                container.startTrackingServer(extra, sideConfig.getConfig());
             }
         }),
         CONTAINER_TRACK_UPGRADES((tile, player, extra) -> {
             if (player.containerMenu instanceof MekanismContainer container) {//tile instanceof IUpgradeTile
-                container.startTracking(extra, ((IUpgradeTile) tile).getComponent());
+                container.startTrackingServer(extra, ((IUpgradeTile) tile).getComponent());
             }
         }),
         QIO_REDSTONE_ADAPTER_COUNT((tile, player, extra) -> {
@@ -441,7 +441,7 @@ public class PacketGuiInteract implements IMekanismPacket {
         }),
         CONTAINER_TRACK_SKIN_SELECT((entity, player, extra) -> {
             if (player.containerMenu instanceof MainRobitContainer container) {
-                container.startTracking(extra, container);
+                container.startTrackingServer(extra, container);
             }
         }),
         ;

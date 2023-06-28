@@ -71,17 +71,9 @@ public class RegistryUtils {
     }
 
     @Nullable
-    public static ResourceLocation getName(Object element) {
-        //TODO - 1.20: Validate
-        //ResourceLocation registryName = getName(Registry.REGISTRY, element);
-        //return registryName == null ? getName(BuiltInRegistries.REGISTRY, element) : registryName;
-        return getName(BuiltInRegistries.REGISTRY, element);
-    }
-
-    @Nullable
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private static ResourceLocation getName(Registry<? extends Registry<?>> registries, Object element) {
-        for (Registry<?> registry : registries) {
+    public static ResourceLocation getName(Object element) {
+        for (Registry<?> registry : BuiltInRegistries.REGISTRY) {
             //Note: We have to use getResourceKey as getKey for defaulted registries returns the default key
             Optional<ResourceKey<?>> resourceKey = ((Registry) registry).getResourceKey(element);
             if (resourceKey.isPresent()) {

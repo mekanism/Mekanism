@@ -51,8 +51,8 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
         addSideDataButton(RelativeSide.BACK, 29, 64);
         addSideDataButton(RelativeSide.LEFT, 29, 49);
         addSideDataButton(RelativeSide.RIGHT, 59, 49);
-        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_EJECTOR, this.tile, MekanismContainer.TRANSPORTER_CONFIG_WINDOW));
         ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).startTracking(MekanismContainer.TRANSPORTER_CONFIG_WINDOW, this.tile.getEjector());
+        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_EJECTOR, this.tile, MekanismContainer.TRANSPORTER_CONFIG_WINDOW));
     }
 
     private void addSideDataButton(RelativeSide side, int xPos, int yPos) {

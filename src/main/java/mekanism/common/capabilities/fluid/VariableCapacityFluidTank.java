@@ -70,7 +70,7 @@ public class VariableCapacityFluidTank extends BasicFluidTank {
             return 0;
         } else if (amount <= 0) {
             if (action.execute()) {
-                setStack(FluidStack.EMPTY);
+                setEmpty();
             }
             return 0;
         }

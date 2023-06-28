@@ -32,8 +32,8 @@ public class GuiRobitSkinSelect extends GuiWindow {
             }
             close();
         }));
-        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteractionEntity.CONTAINER_TRACK_SKIN_SELECT, this.robit, MekanismContainer.SKIN_SELECT_WINDOW));
         gui.getMenu().startTracking(MekanismContainer.SKIN_SELECT_WINDOW, gui.getMenu());
+        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteractionEntity.CONTAINER_TRACK_SKIN_SELECT, this.robit, MekanismContainer.SKIN_SELECT_WINDOW));
     }
 
     @Override
