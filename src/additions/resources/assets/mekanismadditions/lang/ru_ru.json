@@ -280,6 +280,8 @@
   "block.mekanismadditions.yellow_plastic_transparent_stairs": "Жёлтые прозрачные пластиковые ступеньки",
   "block.mekanismadditions.yellow_reinforced_plastic": "Жёлтый укреплённый пластиковый блок",
   "block.mekanismadditions.yellow_slick_plastic": "Жёлтый скользкий пластиковый блок",
+  "constants.mekanismadditions.mod_name": "Mekanism: Additions",
+  "constants.mekanismadditions.pack_description": "Ресурсы, используемые для Mekanism: Additions",
   "description.mekanismadditions.glow_panel": "Современный, вечный источник света. Теперь во многих цветах!",
   "description.mekanismadditions.obsidian_tnt": "Чрезвычайно мощный, насыщенный обсидианом блок динамита. Используйте на свой страх и риск.",
   "entity.mekanismadditions.baby_creeper": "Малыш крипер",
