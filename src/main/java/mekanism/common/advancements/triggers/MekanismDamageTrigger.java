@@ -33,20 +33,20 @@ public class MekanismDamageTrigger extends SimpleCriterionTrigger<MekanismDamage
     @NotNull
     @Override
     protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull ContextAwarePredicate playerPredicate, @NotNull DeserializationContext context) {
-        String damageType = GsonHelper.getAsString(json, JsonConstants.DAMAGE);
-        //TODO - 1.20: Better filter compare
-        MekanismDamageType damageSource = MekanismDamageTypes.DAMAGE_TYPES.stream()
-              .filter(typeRO -> typeRO.registryName().toString().equals(damageType)).findFirst()
-              .orElseThrow(() -> new JsonSyntaxException("Expected " + JsonConstants.DAMAGE + " to represent a Mekanism damage source."));
-        return new TriggerInstance(playerPredicate, damageSource, GsonHelper.getAsBoolean(json, JsonConstants.KILLED));
+        String damage = GsonHelper.getAsString(json, JsonConstants.DAMAGE);
+        MekanismDamageType damageType = MekanismDamageTypes.DAMAGE_TYPES.get(damage);
+        if (damageType == null) {
+            throw new JsonSyntaxException("Expected " + JsonConstants.DAMAGE + " to represent a Mekanism damage type.");
+        }
+        return new TriggerInstance(playerPredicate, damageType, GsonHelper.getAsBoolean(json, JsonConstants.KILLED));
     }
 
-    public void trigger(ServerPlayer player, MekanismDamageType damageSource, boolean hardcoreTotem) {
+    public void trigger(ServerPlayer player, MekanismDamageType damageType, boolean hardcoreTotem) {
         this.trigger(player, instance -> {
             //If it is just any damage regardless of killed or the player is dead (or is on hardcore and used up a totem of undying)
             if (!instance.killed || player.isDeadOrDying() || hardcoreTotem) {
                 //And the damage source matches
-                return instance.damageType.key() == damageSource.key();
+                return instance.damageType.key() == damageType.key();
             }
             return false;
         });

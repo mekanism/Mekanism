@@ -1,8 +1,8 @@
 package mekanism.common.registries;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.Mekanism;
 import net.minecraft.core.RegistryAccess;
@@ -16,8 +16,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class MekanismDamageTypes {
 
-    private static final List<MekanismDamageType> INTERNAL_DAMAGE_TYPES = new ArrayList<>();
-    public static final List<MekanismDamageType> DAMAGE_TYPES = Collections.unmodifiableList(INTERNAL_DAMAGE_TYPES);
+    private static final Map<String, MekanismDamageType> INTERNAL_DAMAGE_TYPES = new HashMap<>();
+    public static final Map<String, MekanismDamageType> DAMAGE_TYPES = Collections.unmodifiableMap(INTERNAL_DAMAGE_TYPES);
 
     public static final MekanismDamageType LASER = new MekanismDamageType("laser", 0.1F);
     public static final MekanismDamageType RADIATION = new MekanismDamageType("radiation");
@@ -25,7 +25,7 @@ public class MekanismDamageTypes {
     public record MekanismDamageType(ResourceKey<DamageType> key, float exhaustion) implements IHasTranslationKey {
 
         public MekanismDamageType {
-            INTERNAL_DAMAGE_TYPES.add(this);
+            INTERNAL_DAMAGE_TYPES.put(key.location().toString(), this);
         }
 
         private MekanismDamageType(String name) {

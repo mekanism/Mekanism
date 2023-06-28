@@ -538,7 +538,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     @Nullable
     private ISyncableData getTrackedData(short property) {
         //In theory the property indexing should always be valid but in case we get something that is out of bounds handle it gracefully
-        if (property > 0 && property < trackedData.size()) {
+        if (property >= 0 && property < trackedData.size()) {
             return trackedData.get(property);
         }
         Mekanism.logger.warn("Received out of bounds window property {} for container {}. There are currently {} tracked properties.", property,

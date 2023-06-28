@@ -130,7 +130,7 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
                     GenerationStep.Decoration.UNDERGROUND_ORES));
           })
           .add(Registries.DAMAGE_TYPE, context -> {
-              for (MekanismDamageType damageType : MekanismDamageTypes.DAMAGE_TYPES) {
+              for (MekanismDamageType damageType : MekanismDamageTypes.DAMAGE_TYPES.values()) {
                   context.register(damageType.key(), new DamageType(damageType.getMsgId(), damageType.exhaustion()));
               }
           })
