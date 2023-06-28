@@ -71,9 +71,6 @@ public final class MekanismHooks {
     }
 
     public void sendIMCMessages(InterModEnqueueEvent event) {
-        if (CuriosLoaded) {
-            CuriosIntegration.sendIMC();
-        }
         if (DMELoaded) {
             //Note: While it is only strings, so it is safe to call and IMC validates the mods are loaded
             // we add this check here, so we can skip iterating the list of things we want to blacklist when it is not present

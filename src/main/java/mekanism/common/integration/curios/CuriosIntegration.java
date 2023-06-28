@@ -5,7 +5,6 @@ import java.util.function.Predicate;
 import mekanism.client.render.MekanismCurioRenderer;
 import mekanism.client.render.armor.ISpecialGear;
 import mekanism.common.Mekanism;
-import mekanism.common.integration.MekanismHooks;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,21 +13,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotResult;
-import top.theillusivec4.curios.api.SlotTypePreset;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
 public class CuriosIntegration {
-
-    public static void sendIMC() {
-        //TODO - 1.20: Switch to datapack? https://docs.illusivesoulworks.com/curios/slot-register
-        InterModComms.sendTo(MekanismHooks.CURIOS_MODID, "register_type", () -> SlotTypePreset.BODY.getMessageBuilder().build());
-    }
 
     public static void addListeners(IEventBus bus) {
         bus.addListener((FMLClientSetupEvent event) -> registerRenderers(MekanismItems.JETPACK, MekanismItems.ARMORED_JETPACK));
