@@ -107,24 +107,19 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipe> {
     }
 
     @Override
-    protected ActionAddMekanismRecipe getAction(RotaryRecipe recipe) {
-        return new ActionAddMekanismRecipe(recipe) {
-            @Override
-            protected String describeOutputs() {
-                StringBuilder builder = new StringBuilder();
-                if (recipe.hasFluidToGas()) {
-                    builder.append(CrTUtils.describeOutputs(recipe.getGasOutputDefinition()))
-                          .append(" for fluid to gas");
-                }
-                if (recipe.hasGasToFluid()) {
-                    if (recipe.hasFluidToGas()) {
-                        builder.append(" and ");
-                    }
-                    builder.append(CrTUtils.describeOutputs(recipe.getFluidOutputDefinition(), IFluidStack::of))
-                          .append(" for gas to fluid");
-                }
-                return builder.toString();
+    protected String describeOutputs(RotaryRecipe recipe) {
+        StringBuilder builder = new StringBuilder();
+        if (recipe.hasFluidToGas()) {
+            builder.append(CrTUtils.describeOutputs(recipe.getGasOutputDefinition()))
+                  .append(" for fluid to gas");
+        }
+        if (recipe.hasGasToFluid()) {
+            if (recipe.hasFluidToGas()) {
+                builder.append(" and ");
             }
-        };
+            builder.append(CrTUtils.describeOutputs(recipe.getFluidOutputDefinition(), IFluidStack::of))
+                  .append(" for gas to fluid");
+        }
+        return builder.toString();
     }
 }

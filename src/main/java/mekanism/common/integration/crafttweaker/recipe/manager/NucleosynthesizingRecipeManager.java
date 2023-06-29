@@ -55,12 +55,7 @@ public class NucleosynthesizingRecipeManager extends MekanismRecipeManager<Nucle
     }
 
     @Override
-    protected ActionAddMekanismRecipe getAction(NucleosynthesizingRecipe recipe) {
-        return new ActionAddMekanismRecipe(recipe) {
-            @Override
-            protected String describeOutputs() {
-                return CrTUtils.describeOutputs(recipe.getOutputDefinition(), ItemStackUtil::getCommandString);
-            }
-        };
+    protected String describeOutputs(NucleosynthesizingRecipe recipe) {
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), ItemStackUtil::getCommandString);
     }
 }

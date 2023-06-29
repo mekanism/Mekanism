@@ -46,12 +46,7 @@ public class ChemicalCrystallizerRecipeManager extends MekanismRecipeManager<Che
     }
 
     @Override
-    protected ActionAddMekanismRecipe getAction(ChemicalCrystallizerRecipe recipe) {
-        return new ActionAddMekanismRecipe(recipe) {
-            @Override
-            protected String describeOutputs() {
-                return CrTUtils.describeOutputs(recipe.getOutputDefinition(), ItemStackUtil::getCommandString);
-            }
-        };
+    protected String describeOutputs(ChemicalCrystallizerRecipe recipe) {
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), ItemStackUtil::getCommandString);
     }
 }

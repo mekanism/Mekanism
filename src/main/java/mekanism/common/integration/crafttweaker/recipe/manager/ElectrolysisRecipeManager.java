@@ -73,12 +73,7 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<Electrolysi
     }
 
     @Override
-    protected ActionAddMekanismRecipe getAction(ElectrolysisRecipe recipe) {
-        return new ActionAddMekanismRecipe(recipe) {
-            @Override
-            protected String describeOutputs() {
-                return CrTUtils.describeOutputs(recipe.getOutputDefinition(), output -> new CrTGasStack(output.left()) + " and " + new CrTGasStack(output.right()));
-            }
-        };
+    protected String describeOutputs(ElectrolysisRecipe recipe) {
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), output -> new CrTGasStack(output.left()) + " and " + new CrTGasStack(output.right()));
     }
 }

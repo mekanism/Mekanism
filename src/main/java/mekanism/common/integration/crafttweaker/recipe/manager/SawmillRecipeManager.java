@@ -137,30 +137,25 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SawmillRecipe> {
     }
 
     @Override
-    protected ActionAddMekanismRecipe getAction(SawmillRecipe recipe) {
-        return new ActionAddMekanismRecipe(recipe) {
-            @Override
-            protected String describeOutputs() {
-                StringBuilder builder = new StringBuilder();
-                List<ItemStack> mainOutputs = recipe.getMainOutputDefinition();
-                if (!mainOutputs.isEmpty()) {
-                    builder.append("main: ").append(CrTUtils.describeOutputs(mainOutputs, ItemStackUtil::getCommandString));
-                }
-                if (recipe.getSecondaryChance() > 0) {
-                    if (!mainOutputs.isEmpty()) {
-                        builder.append("; ");
-                    }
-                    if (recipe.getSecondaryChance() == 1) {
-                        builder.append("secondary: ");
-                    } else {
-                        builder.append("secondary with chance ")
-                              .append(TextUtils.getPercent(recipe.getSecondaryChance()))
-                              .append(": ");
-                    }
-                    builder.append(CrTUtils.describeOutputs(recipe.getSecondaryOutputDefinition(), ItemStackUtil::getCommandString));
-                }
-                return builder.toString();
+    protected String describeOutputs(SawmillRecipe recipe) {
+        StringBuilder builder = new StringBuilder();
+        List<ItemStack> mainOutputs = recipe.getMainOutputDefinition();
+        if (!mainOutputs.isEmpty()) {
+            builder.append("main: ").append(CrTUtils.describeOutputs(mainOutputs, ItemStackUtil::getCommandString));
+        }
+        if (recipe.getSecondaryChance() > 0) {
+            if (!mainOutputs.isEmpty()) {
+                builder.append("; ");
             }
-        };
+            if (recipe.getSecondaryChance() == 1) {
+                builder.append("secondary: ");
+            } else {
+                builder.append("secondary with chance ")
+                      .append(TextUtils.getPercent(recipe.getSecondaryChance()))
+                      .append(": ");
+            }
+            builder.append(CrTUtils.describeOutputs(recipe.getSecondaryOutputDefinition(), ItemStackUtil::getCommandString));
+        }
+        return builder.toString();
     }
 }

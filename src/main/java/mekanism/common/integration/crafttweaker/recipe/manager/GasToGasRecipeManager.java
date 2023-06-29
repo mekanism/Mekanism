@@ -52,13 +52,8 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager<GasToG
     protected abstract GasToGasRecipe makeRecipe(ResourceLocation id, GasStackIngredient ingredient, GasStack output);
 
     @Override
-    protected ActionAddMekanismRecipe getAction(GasToGasRecipe recipe) {
-        return new ActionAddMekanismRecipe(recipe) {
-            @Override
-            protected String describeOutputs() {
-                return CrTUtils.describeOutputs(recipe.getOutputDefinition());
-            }
-        };
+    protected String describeOutputs(GasToGasRecipe recipe) {
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition());
     }
 
     @ZenRegister

@@ -52,13 +52,8 @@ public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeMan
     protected abstract FluidSlurryToSlurryRecipe makeRecipe(ResourceLocation id, FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output);
 
     @Override
-    protected ActionAddMekanismRecipe getAction(FluidSlurryToSlurryRecipe recipe) {
-        return new ActionAddMekanismRecipe(recipe) {
-            @Override
-            protected String describeOutputs() {
-                return CrTUtils.describeOutputs(recipe.getOutputDefinition());
-            }
-        };
+    protected String describeOutputs(FluidSlurryToSlurryRecipe recipe) {
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition());
     }
 
     @ZenRegister

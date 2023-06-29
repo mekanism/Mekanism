@@ -168,26 +168,21 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Pres
     }
 
     @Override
-    protected ActionAddMekanismRecipe getAction(PressurizedReactionRecipe recipe) {
-        return new ActionAddMekanismRecipe(recipe) {
-            @Override
-            protected String describeOutputs() {
-                return CrTUtils.describeOutputs(recipe.getOutputDefinition(), output -> {
-                    StringBuilder builder = new StringBuilder();
-                    ItemStack itemOutput = output.item();
-                    if (!itemOutput.isEmpty()) {
-                        builder.append(ItemStackUtil.getCommandString(itemOutput));
-                    }
-                    GasStack gasOutput = output.gas();
-                    if (!gasOutput.isEmpty()) {
-                        if (!itemOutput.isEmpty()) {
-                            builder.append(" and ");
-                        }
-                        builder.append(new CrTGasStack(gasOutput));
-                    }
-                    return builder.toString();
-                });
+    protected String describeOutputs(PressurizedReactionRecipe recipe) {
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), output -> {
+            StringBuilder builder = new StringBuilder();
+            ItemStack itemOutput = output.item();
+            if (!itemOutput.isEmpty()) {
+                builder.append(ItemStackUtil.getCommandString(itemOutput));
             }
-        };
+            GasStack gasOutput = output.gas();
+            if (!gasOutput.isEmpty()) {
+                if (!itemOutput.isEmpty()) {
+                    builder.append(" and ");
+                }
+                builder.append(new CrTGasStack(gasOutput));
+            }
+            return builder.toString();
+        });
     }
 }

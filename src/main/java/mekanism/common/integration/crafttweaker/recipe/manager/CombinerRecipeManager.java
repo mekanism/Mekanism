@@ -48,12 +48,7 @@ public class CombinerRecipeManager extends MekanismRecipeManager<CombinerRecipe>
     }
 
     @Override
-    protected ActionAddMekanismRecipe getAction(CombinerRecipe recipe) {
-        return new ActionAddMekanismRecipe(recipe) {
-            @Override
-            protected String describeOutputs() {
-                return CrTUtils.describeOutputs(recipe.getOutputDefinition(), ItemStackUtil::getCommandString);
-            }
-        };
+    protected String describeOutputs(CombinerRecipe recipe) {
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), ItemStackUtil::getCommandString);
     }
 }

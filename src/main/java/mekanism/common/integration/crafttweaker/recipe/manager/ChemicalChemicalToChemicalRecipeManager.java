@@ -69,13 +69,8 @@ public abstract class ChemicalChemicalToChemicalRecipeManager<CHEMICAL extends C
     protected abstract RECIPE makeRecipe(ResourceLocation id, INGREDIENT leftInput, INGREDIENT rightInput, STACK output);
 
     @Override
-    protected ActionAddMekanismRecipe getAction(RECIPE recipe) {
-        return new ActionAddMekanismRecipe(recipe) {
-            @Override
-            protected String describeOutputs() {
-                return CrTUtils.describeOutputs(recipe.getOutputDefinition());
-            }
-        };
+    protected String describeOutputs(RECIPE recipe) {
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition());
     }
 
     @ZenRegister

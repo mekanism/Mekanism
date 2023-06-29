@@ -89,13 +89,8 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
     protected abstract RECIPE makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, INGREDIENT chemicalInput, ItemStack output);
 
     @Override
-    protected ActionAddMekanismRecipe getAction(RECIPE recipe) {
-        return new ActionAddMekanismRecipe(recipe) {
-            @Override
-            protected String describeOutputs() {
-                return CrTUtils.describeOutputs(recipe.getOutputDefinition(), ItemStackUtil::getCommandString);
-            }
-        };
+    protected String describeOutputs(RECIPE recipe) {
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), ItemStackUtil::getCommandString);
     }
 
     @ZenRegister

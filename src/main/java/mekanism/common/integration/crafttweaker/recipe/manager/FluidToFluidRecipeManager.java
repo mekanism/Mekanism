@@ -49,13 +49,8 @@ public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<Fl
     protected abstract FluidToFluidIRecipe makeRecipe(ResourceLocation id, FluidStackIngredient input, FluidStack output);
 
     @Override
-    protected ActionAddMekanismRecipe getAction(FluidToFluidRecipe recipe) {
-        return new ActionAddMekanismRecipe(recipe) {
-            @Override
-            protected String describeOutputs() {
-                return CrTUtils.describeOutputs(recipe.getOutputDefinition(), IFluidStack::of);
-            }
-        };
+    protected String describeOutputs(FluidToFluidRecipe recipe) {
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), IFluidStack::of);
     }
 
     @ZenRegister

@@ -52,13 +52,8 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
     protected abstract ItemStackToEnergyRecipe makeRecipeInternal(ResourceLocation id, ItemStackIngredient input, FloatingLong output);
 
     @Override
-    protected ActionAddMekanismRecipe getAction(ItemStackToEnergyRecipe recipe) {
-        return new ActionAddMekanismRecipe(recipe) {
-            @Override
-            protected String describeOutputs() {
-                return CrTUtils.describeOutputs(recipe.getOutputDefinition(), fl -> fl);
-            }
-        };
+    protected String describeOutputs(ItemStackToEnergyRecipe recipe) {
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), fl -> fl);
     }
 
     @ZenRegister

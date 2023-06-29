@@ -31,10 +31,10 @@ public abstract class MekanismRecipeManager<RECIPE extends MekanismRecipe> imple
         this.recipeType = recipeType;
     }
 
-    protected abstract ActionAddMekanismRecipe getAction(RECIPE recipe);
+    protected abstract String describeOutputs(RECIPE recipe);
 
     protected void addRecipe(RECIPE recipe) {
-        CraftTweakerAPI.apply(getAction(recipe));
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe).outputDescriber(this::describeOutputs));
     }
 
     @Override
@@ -83,15 +83,5 @@ public abstract class MekanismRecipeManager<RECIPE extends MekanismRecipe> imple
             throw new IllegalArgumentException("Output stack cannot be empty.");
         }
         return stack.getImmutableInternal();
-    }
-
-    protected abstract class ActionAddMekanismRecipe extends ActionAddRecipe<RECIPE> {
-
-        protected ActionAddMekanismRecipe(RECIPE recipe) {
-            super(MekanismRecipeManager.this, recipe);
-        }
-
-        @Override//Force implementers to describe the outputs
-        protected abstract String describeOutputs();
     }
 }

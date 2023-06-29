@@ -57,13 +57,8 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
     protected abstract ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output);
 
     @Override
-    protected ActionAddMekanismRecipe getAction(ItemStackToItemStackRecipe recipe) {
-        return new ActionAddMekanismRecipe(recipe) {
-            @Override
-            protected String describeOutputs() {
-                return CrTUtils.describeOutputs(recipe.getOutputDefinition(), ItemStackUtil::getCommandString);
-            }
-        };
+    protected String describeOutputs(ItemStackToItemStackRecipe recipe) {
+        return CrTUtils.describeOutputs(recipe.getOutputDefinition(), ItemStackUtil::getCommandString);
     }
 
     @ZenRegister
