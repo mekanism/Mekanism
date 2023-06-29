@@ -1,7 +1,7 @@
 package mekanism.tools.client;
 
 import mekanism.tools.common.MekanismTools;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.resources.model.Material;
 
 public enum ShieldTextures {
@@ -15,14 +15,10 @@ public enum ShieldTextures {
     private final Material base;
 
     ShieldTextures(String name) {
-        base = material("item/" + name + "/shield");
+        base = new Material(Sheets.SHIELD_SHEET, MekanismTools.rl("entity/shield/" + name));
     }
 
     public Material getBase() {
         return base;
-    }
-
-    private static Material material(String path) {
-        return new Material(TextureAtlas.LOCATION_BLOCKS, MekanismTools.rl(path));
     }
 }

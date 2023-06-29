@@ -1,0 +1,28 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "mekanismtools:entity/shield/bronze"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanismtools:entity/shield/lapis_lazuli"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanismtools:entity/shield/osmium"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanismtools:entity/shield/refined_glowstone"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanismtools:entity/shield/refined_obsidian"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanismtools:entity/shield/steel"
+    }
+  ]
+}

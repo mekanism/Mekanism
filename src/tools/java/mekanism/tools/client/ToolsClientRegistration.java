@@ -37,14 +37,4 @@ public class ToolsClientRegistration {
     public static void registerClientReloadListeners(RegisterClientReloadListenersEvent event) {
         event.registerReloadListener(RenderMekanismShieldItem.RENDERER);
     }
-
-    //TODO - 1.20: Add these via an atlas file that is datagenned
-    /*@SubscribeEvent
-    public static void onStitch(TextureStitchEvent.Pre event) {
-        if (event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
-            for (ShieldTextures textures : ShieldTextures.values()) {
-                event.addSprite(textures.getBase().texture());
-            }
-        }
-    }*/
 }

@@ -5,6 +5,7 @@ import mekanism.common.BasePackMetadataGenerator;
 import mekanism.common.MekanismDataGenerator;
 import mekanism.tools.client.ToolsItemModelProvider;
 import mekanism.tools.client.ToolsLangProvider;
+import mekanism.tools.client.ToolsSpriteSourceProvider;
 import mekanism.tools.common.recipe.ToolsRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -31,6 +32,7 @@ public class ToolsDataGenerator {
         gen.addProvider(true, new BasePackMetadataGenerator(output, ToolsLang.PACK_DESCRIPTION));
         //Client side data generators
         MekanismDataGenerator.addProvider(gen, event.includeClient(), ToolsLangProvider::new);
+        gen.addProvider(event.includeClient(), new ToolsSpriteSourceProvider(output, existingFileHelper));
         gen.addProvider(event.includeClient(), new ToolsItemModelProvider(output, existingFileHelper));
         //Server side data generators
         gen.addProvider(event.includeServer(), new ToolsTagProvider(output, lookupProvider, existingFileHelper));
