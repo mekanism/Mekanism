@@ -221,16 +221,19 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             return result.toString();
         } else if (result instanceof ChemicalStack<?> stack) {
             Map<String, Object> wrapped = new HashMap<>(2);
-            wrapped.put("name", getName(stack.getType()));
+            wrapped.put("name", stack.getTypeRegistryName().toString());
             wrapped.put("amount", stack.getAmount());
             return wrapped;
         } else if (result instanceof FluidStack stack) {
-            return wrapStack(stack.getFluid(), "amount", stack.getAmount(), stack.getTag());
+            return wrapStack(RegistryUtils.getName(stack.getFluid()), "amount", stack.getAmount(), stack.getTag());
         } else if (result instanceof ItemStack stack) {
-            return wrapStack(stack.getItem(), "count", stack.getCount(), stack.getTag());
+            return wrapStack(RegistryUtils.getName(stack.getItem()), "count", stack.getCount(), stack.getTag());
         } else if (result instanceof BlockState state) {
             Map<String, Object> wrapped = new HashMap<>(2);
-            wrapped.put("block", getName(state.getBlock()));
+            ResourceLocation name = RegistryUtils.getName(state.getBlock());
+            if (name != null) {
+                wrapped.put("block", name.toString());
+            }
             Map<String, Object> stateData = new HashMap<>();
             for (Map.Entry<Property<?>, Comparable<?>> entry : state.getValues().entrySet()) {
                 Property<?> property = entry.getKey();
@@ -323,17 +326,17 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             return Arrays.stream(res).map(CCArgumentWrapper::wrapReturnType).toArray();
         }
         //If the object has a registry name, return the object's registry name
-        String name = getName(result);
+        ResourceLocation name = RegistryUtils.getName(result);
         if (name != null) {
-            return name;
+            return name.toString();
         }
         return result;
     }
 
-    private static Map<String, Object> wrapStack(Object entry, String sizeKey, int amount, @Nullable CompoundTag tag) {
+    private static Map<String, Object> wrapStack(ResourceLocation name, String sizeKey, int amount, @Nullable CompoundTag tag) {
         boolean hasTag = tag != null && !tag.isEmpty() && amount > 0;
         Map<String, Object> wrapped = new HashMap<>(hasTag ? 3 : 2);
-        wrapped.put("name", getName(entry));
+        wrapped.put("name", name == null ? "unknown" : name.toString());
         wrapped.put(sizeKey, amount);
         if (hasTag) {
             wrapped.put("nbt", wrapNBT(tag));
@@ -372,11 +375,6 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             }
             default -> null;
         };
-    }
-
-    private static String getName(Object entry) {
-        ResourceLocation registryName = RegistryUtils.getName(entry);
-        return registryName == null ? null : registryName.toString();
     }
 
     @Nullable
