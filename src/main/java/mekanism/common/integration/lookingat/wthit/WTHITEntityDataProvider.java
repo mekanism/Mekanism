@@ -13,9 +13,8 @@ public class WTHITEntityDataProvider implements IDataProvider<Entity> {
 
     @Override
     public void appendData(IDataWriter dataWriter, IServerAccessor<Entity> serverAccessor, IPluginConfig config) {
-        //TODO - 1.20: Test this stuff relating to new data system
         WTHITLookingAtHelper helper = new WTHITLookingAtHelper();
         LookingAtUtils.addInfo(helper, serverAccessor.getTarget());
-        dataWriter.add(WTHITLookingAtHelper.class, IDataWriter.Result::block);
+        dataWriter.add(WTHITLookingAtHelper.class, result -> result.add(helper));
     }
 }

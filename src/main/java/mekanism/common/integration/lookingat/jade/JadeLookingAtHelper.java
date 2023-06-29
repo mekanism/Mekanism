@@ -11,8 +11,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class JadeLookingAtHelper implements LookingAtHelper {
 
-    public static final String CHEMICAL_STACK = "chemical";
-    public static final String TEXT = "text";
+    static final String CHEMICAL_STACK = "chemical";
+    static final String TEXT = "text";
 
     private final ListTag data = new ListTag();
 

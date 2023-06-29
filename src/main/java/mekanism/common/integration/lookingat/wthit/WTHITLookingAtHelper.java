@@ -14,7 +14,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.FluidStack;
 
-//TODO - 1.20: Test this
 public class WTHITLookingAtHelper implements LookingAtHelper, IData {
 
     public static final IData.Serializer<WTHITLookingAtHelper> SERIALIZER = buffer -> {
@@ -39,8 +38,7 @@ public class WTHITLookingAtHelper implements LookingAtHelper, IData {
         return helper;
     };
 
-    //TODO - 1.20: Private?
-    public final List<Object> elements = new ArrayList<>();
+    final List<Object> elements = new ArrayList<>();
 
     @Override
     public void write(FriendlyByteBuf buffer) {

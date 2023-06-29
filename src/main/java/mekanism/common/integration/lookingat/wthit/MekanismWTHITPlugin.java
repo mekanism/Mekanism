@@ -7,7 +7,6 @@ import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IRegistrar;
 import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.TooltipPosition;
-import mcp.mobius.waila.api.WailaPlugin;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.entity.EntityRobit;
@@ -21,8 +20,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import org.jetbrains.annotations.Nullable;
 
-//TODO - 1.20: Fix deprecations: https://docs.bai.lol/wthit/plugin/getting_started/
-@WailaPlugin(id = Mekanism.MODID)
+@SuppressWarnings("unused")
 public class MekanismWTHITPlugin implements IWailaPlugin {
 
     @Override
@@ -37,12 +35,12 @@ public class MekanismWTHITPlugin implements IWailaPlugin {
         registration.addConfig(LookingAtUtils.SLURRY, true);
         registration.addComponent((IEntityComponentProvider) WTHITTooltipRenderer.INSTANCE, TooltipPosition.BODY, EntityRobit.class);
         registration.addComponent((IBlockComponentProvider) WTHITTooltipRenderer.INSTANCE, TooltipPosition.BODY, Block.class);
-        //TODO - 1.20: Test this
         registration.addDataType(Mekanism.rl("wthit_data"), WTHITLookingAtHelper.class, WTHITLookingAtHelper.SERIALIZER);
 
         registration.addOverride(new IBlockComponentProvider() {
+            @Nullable
             @Override
-            public @Nullable BlockState getOverride(IBlockAccessor accessor, IPluginConfig config) {
+            public BlockState getOverride(IBlockAccessor accessor, IPluginConfig config) {
                 if (accessor.getHitResult() instanceof BlockHitResult result && result.getType() != Type.MISS) {
                     Level level = accessor.getWorld();
                     BlockPos mainPos = BlockBounding.getMainBlockPos(level, result.getBlockPos());

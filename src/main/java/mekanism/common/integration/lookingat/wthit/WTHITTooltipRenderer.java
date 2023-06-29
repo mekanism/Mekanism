@@ -35,7 +35,6 @@ public class WTHITTooltipRenderer implements IBlockComponentProvider, IEntityCom
     }
 
     private void append(ITooltip tooltip, IDataReader dataReader, IPluginConfig config) {
-        //TODO - 1.20: Convert
         WTHITLookingAtHelper helper = dataReader.get(WTHITLookingAtHelper.class);
         if (helper != null) {
             Component lastText = null;
@@ -98,7 +97,6 @@ public class WTHITTooltipRenderer implements IBlockComponentProvider, IEntityCom
                 LookingAtElement.renderScaledText(Minecraft.getInstance(), guiGraphics, x + 4, y + 3, 0xFFFFFF, 92, text);
                 y += 13;
             }
-            //TODO - 1.20: Validate this
             PoseStack pose = guiGraphics.pose();
             pose.pushPose();
             pose.translate(x, y, 0);

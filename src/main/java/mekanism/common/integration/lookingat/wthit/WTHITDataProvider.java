@@ -28,9 +28,8 @@ public class WTHITDataProvider implements IDataProvider<BlockEntity> {
                 return;
             }
         }
-        //TODO - 1.20: Test this stuff relating to new data system
         WTHITLookingAtHelper helper = new WTHITLookingAtHelper();
         LookingAtUtils.addInfo(helper, tile, true, true);
-        dataWriter.add(WTHITLookingAtHelper.class, IDataWriter.Result::block);
+        dataWriter.add(WTHITLookingAtHelper.class, result -> result.add(helper));
     }
 }
