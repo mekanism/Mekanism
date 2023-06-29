@@ -68,7 +68,7 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -211,7 +211,11 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
         if (world == null) {
             //Try to get a fallback world if we are in a context that may not have one
             //If we are on the client get the client's world, if we are on the server get the current server's world
-            world = DistExecutor.unsafeRunForDist(() -> MekanismClient::tryGetClientWorld, () -> () -> ServerLifecycleHooks.getCurrentServer().overworld());
+            if (FMLEnvironment.dist.isClient()) {
+                world = MekanismClient.tryGetClientWorld();
+            } else {
+                world = ServerLifecycleHooks.getCurrentServer().overworld();
+            }
             if (world == null) {
                 //If we failed, then return no recipes
                 return Collections.emptyList();

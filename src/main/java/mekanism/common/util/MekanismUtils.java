@@ -94,7 +94,6 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
@@ -102,7 +101,7 @@ import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -146,9 +145,12 @@ public final class MekanismUtils {
 
     @Nullable
     public static Player tryGetClientPlayer() {
+        if (FMLEnvironment.dist.isClient()) {
+            return MekanismClient.tryGetClientPlayer();
+        }
         //Note: Ideally we would have some way to get which player is in question on the server
         // as this is mostly used in tooltips, but odds are it won't end up being called
-        return DistExecutor.safeCallWhenOn(Dist.CLIENT, () -> MekanismClient::tryGetClientPlayer);
+        return null;
     }
 
     /**

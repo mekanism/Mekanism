@@ -19,7 +19,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
@@ -59,7 +58,7 @@ public final class FluidUtils {
             // chemicals
             if (stack.getFluid().isSame(Fluids.LAVA)) {//Special case lava
                 return OptionalInt.of(0xFFDB6B19);
-            } else if (FMLEnvironment.dist == Dist.CLIENT) {
+            } else if (FMLEnvironment.dist.isClient()) {
                 //Note: We can only return an accurate result on the client side. This method should never be called from the server
                 // but in case it is make sure we only run on the client side
                 return OptionalInt.of(IClientFluidTypeExtensions.of(stack.getFluid()).getTintColor(stack));
