@@ -280,6 +280,8 @@
   "block.mekanismadditions.yellow_plastic_transparent_stairs": "Gul genomskinlig plasttrappa",
   "block.mekanismadditions.yellow_reinforced_plastic": "Gult förstärkt plastblock",
   "block.mekanismadditions.yellow_slick_plastic": "Gult halkigt plastblock",
+  "constants.mekanismadditions.mod_name": "Mekanism: Additions",
+  "constants.mekanismadditions.pack_description": "Resurser som används för Mekanism: Additions",
   "description.mekanismadditions.glow_panel": "En modern beständig ljuskälla. Nu med flera färger!",
   "description.mekanismadditions.obsidian_tnt": "Ett extremt kraftfullt obsidianfyllt dynamitblock. Använd på egen risk.",
   "entity.mekanismadditions.baby_creeper": "Creeperbaby",
