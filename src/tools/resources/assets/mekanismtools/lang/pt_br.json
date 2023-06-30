@@ -11,6 +11,8 @@
   "advancements.mekanismtools.not_enough_shielding.title": "Proteção insuficiente",
   "advancements.mekanismtools.paxel.description": "Fabrique qualquer pacachado (picareta, machado e pá)",
   "advancements.mekanismtools.paxel.title": "Multiferramenta",
+  "constants.mekanismtools.mod_name": "Mekanism: Ferramentas",
+  "constants.mekanismtools.pack_description": "Recursos usados para Mekanism: Adições",
   "item.mekanismtools.bronze_axe": "Machado de Bronze",
   "item.mekanismtools.bronze_boots": "Botas de Bronze",
   "item.mekanismtools.bronze_chestplate": "Peitoral de Bronze",
