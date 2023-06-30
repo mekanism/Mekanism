@@ -12,7 +12,6 @@ import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -41,7 +40,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     }
 
     public ItemBlockTooltip(BLOCK block) {
-        this(block, true, ItemDeferredRegister.getMekBaseProperties().stacksTo(1));
+        this(block, true, new Item.Properties().stacksTo(1));
     }
 
     protected ItemBlockTooltip(BLOCK block, boolean hasDetails, Properties properties) {

@@ -5,7 +5,6 @@ import mekanism.additions.common.entity.EntityBalloon;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.lib.math.Pos3D;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
@@ -33,7 +32,7 @@ public class ItemBalloon extends Item {
     private final EnumColor color;
 
     public ItemBalloon(EnumColor color) {
-        super(ItemDeferredRegister.getMekBaseProperties());
+        super(new Item.Properties());
         this.color = color;
         DispenserBlock.registerBehavior(this, new DispenserBehavior(this.color));
     }

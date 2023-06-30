@@ -3,7 +3,6 @@ package mekanism.common.item.block;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.block.interfaces.IColoredBlock;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -15,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemBlockColoredName extends BlockItem {
 
     public <BLOCK extends Block & IColoredBlock> ItemBlockColoredName(BLOCK block) {
-        this(block, ItemDeferredRegister.getMekBaseProperties());
+        this(block, new Item.Properties());
     }
 
     public <BLOCK extends Block & IColoredBlock> ItemBlockColoredName(BLOCK block, Item.Properties properties) {

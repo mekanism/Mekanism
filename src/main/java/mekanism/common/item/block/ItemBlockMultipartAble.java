@@ -1,11 +1,11 @@
 package mekanism.common.item.block;
 
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBlockMekanism<BLOCK> {
 
     public ItemBlockMultipartAble(BLOCK block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties());
+        super(block, new Item.Properties());
     }
 
     /**

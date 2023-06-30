@@ -157,7 +157,6 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
                     //If the part should be rotated, then we need to use a custom IModelTransform
                     Vector3f vecForDirection = Vec3.atLowerCornerOf(side.getNormal()).toVector3f();
                     vecForDirection.mul(-1);
-                    //TODO - 1.20: Test this
                     Quaternionf quaternion = new Quaternionf().setAngleAxis(iconStatus.getAngle(), vecForDirection.x, vecForDirection.y, vecForDirection.z);
                     Transformation matrix = new Transformation(null, quaternion, null, null);
                     transform = new SimpleModelState(transform.getRotation().compose(matrix), transform.isUvLocked());

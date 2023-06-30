@@ -132,7 +132,7 @@ public class FluidDeferredRegister {
         fluidRegistryObject.updateStill(fluidRegister.register(name, () -> new Source(fluidProperties)));
         fluidRegistryObject.updateFlowing(fluidRegister.register(flowingName, () -> new Flowing(fluidProperties)));
         fluidRegistryObject.updateBucket(itemRegister.register(bucketName, () -> bucketCreator.create(fluidRegistryObject::getStillFluid,
-              ItemDeferredRegister.getMekBaseProperties().stacksTo(1).craftRemainder(Items.BUCKET))));
+              new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET))));
         //Note: The block properties used here is a copy of the ones for water
         fluidRegistryObject.updateBlock(blockRegister.register(name, () -> new LiquidBlock(fluidRegistryObject::getStillFluid, BlockBehaviour.Properties.of()
               .noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid().mapColor(MapColor.WATER))));

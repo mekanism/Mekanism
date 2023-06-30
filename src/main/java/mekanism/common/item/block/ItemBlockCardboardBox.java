@@ -10,7 +10,6 @@ import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.ItemDataUtils;
@@ -24,6 +23,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -39,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
 public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> {
 
     public ItemBlockCardboardBox(BlockCardboardBox block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().stacksTo(16));
+        super(block, new Item.Properties().stacksTo(16));
     }
 
     @Override

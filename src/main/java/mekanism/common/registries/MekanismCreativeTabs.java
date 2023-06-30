@@ -24,7 +24,6 @@ public class MekanismCreativeTabs {
     public static final CreativeTabRegistryObject MEKANISM = CREATIVE_TABS.registerMain(MekanismLang.MEKANISM, MekanismItems.ATOMIC_ALLOY, builder ->
           builder.withSearchBar()//Allow our tabs to be searchable for convenience purposes
                 .displayItems((displayParameters, output) -> {
-                    //TODO - 1.20: Add other module's items unless we decide to split up into multiple tabs which might be time to do so
                     CreativeTabDeferredRegister.addToDisplay(MekanismItems.ITEMS, output);
                     CreativeTabDeferredRegister.addToDisplay(MekanismBlocks.BLOCKS, output);
                     CreativeTabDeferredRegister.addToDisplay(MekanismFluids.FLUIDS, output);

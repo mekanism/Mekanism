@@ -8,10 +8,10 @@ import mekanism.common.block.basic.BlockBin;
 import mekanism.common.inventory.BinMekanismInventory;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tier.BinTier;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IItemSustainedInventory {
 
     public ItemBlockBin(BlockBin block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().stacksTo(1));
+        super(block, new Item.Properties().stacksTo(1));
     }
 
     @Override

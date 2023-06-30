@@ -33,7 +33,7 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 
     public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> registerDefaultProperties(String name, Supplier<? extends BLOCK> blockSupplier,
           BiFunction<BLOCK, Item.Properties, ITEM> itemCreator) {
-        return register(name, blockSupplier, block -> itemCreator.apply(block, ItemDeferredRegister.getMekBaseProperties()));
+        return register(name, blockSupplier, block -> itemCreator.apply(block, new Item.Properties()));
     }
 
     public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> register(String name, Supplier<? extends BLOCK> blockSupplier,

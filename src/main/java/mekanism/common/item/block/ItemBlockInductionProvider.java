@@ -6,11 +6,11 @@ import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.BlockTypeTile;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.multiblock.TileEntityInductionProvider;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemBlockInductionProvider extends ItemBlockTooltip<BlockTile<TileEntityInductionProvider, BlockTypeTile<TileEntityInductionProvider>>> {
 
     public ItemBlockInductionProvider(BlockTile<TileEntityInductionProvider, BlockTypeTile<TileEntityInductionProvider>> block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties());
+        super(block, new Item.Properties());
     }
 
     @Override

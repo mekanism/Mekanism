@@ -1,8 +1,10 @@
 package mekanism.common.registration.impl;
 
 import java.util.function.UnaryOperator;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.ILangEntry;
+import mekanism.common.block.BlockBounding;
 import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
@@ -60,8 +62,11 @@ public class CreativeTabDeferredRegister extends WrappedDeferredRegister<Creativ
     }
 
     public static void addToDisplay(BlockDeferredRegister register, CreativeModeTab.Output output) {
-        for (IItemProvider itemProvider : register.getAllBlocks()) {
-            addToDisplay(itemProvider, output);
+        for (IBlockProvider itemProvider : register.getAllBlocks()) {
+            //Don't add bounding blocks to the creative tab
+            if (!(itemProvider.getBlock() instanceof BlockBounding)) {
+                addToDisplay(itemProvider, output);
+            }
         }
     }
 
@@ -74,8 +79,7 @@ public class CreativeTabDeferredRegister extends WrappedDeferredRegister<Creativ
     //TODO - 1.20: Re-evaluate this and maybe inline the stuff into their respective creative tabs
     public interface ICustomCreativeTabContents {
 
-        default void addItems(CreativeModeTab.Output tabOutput) {
-        }
+        void addItems(CreativeModeTab.Output tabOutput);
 
         default boolean addDefault() {
             return true;

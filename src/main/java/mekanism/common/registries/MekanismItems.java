@@ -66,7 +66,7 @@ public class MekanismItems {
     public static final Table<ResourceType, PrimaryResource, ItemRegistryObject<Item>> PROCESSED_RESOURCES = HashBasedTable.create();
 
     public static final ItemRegistryObject<ItemRobit> ROBIT = ITEMS.register("robit", ItemRobit::new);
-    public static final ItemRegistryObject<ItemEnergized> ENERGY_TABLET = ITEMS.register("energy_tablet", () -> new ItemEnergized(MekanismConfig.gear.tabletChargeRate, MekanismConfig.gear.tabletMaxEnergy, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, ItemDeferredRegister.getMekBaseProperties().rarity(Rarity.UNCOMMON)));
+    public static final ItemRegistryObject<ItemEnergized> ENERGY_TABLET = ITEMS.register("energy_tablet", () -> new ItemEnergized(MekanismConfig.gear.tabletChargeRate, MekanismConfig.gear.tabletMaxEnergy, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final ItemRegistryObject<ItemConfigurator> CONFIGURATOR = ITEMS.register("configurator", ItemConfigurator::new);
     public static final ItemRegistryObject<ItemNetworkReader> NETWORK_READER = ITEMS.register("network_reader", ItemNetworkReader::new);
     public static final ItemRegistryObject<ItemDictionary> DICTIONARY = ITEMS.register("dictionary", ItemDictionary::new);

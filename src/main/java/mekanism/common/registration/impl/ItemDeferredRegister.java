@@ -28,12 +28,6 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
         super(modid, ForgeRegistries.ITEMS);
     }
 
-    public static Item.Properties getMekBaseProperties() {
-        //TODO - 1.20: Do we want to inline the creation as we now have no other base properties?
-        //TODO - 1.20: Ensure everything actually ends up in a creative tab
-        return new Item.Properties();
-    }
-
     public ItemRegistryObject<Item> register(String name) {
         return register(name, Item::new);
     }
@@ -59,15 +53,15 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
     public ItemRegistryObject<ItemModule> registerModule(ModuleRegistryObject<?> moduleDataSupplier) {
         //Note: We use the internal helper just in case we end up needing to know it is an ItemModule instead of just an Item somewhere
         return register("module_" + moduleDataSupplier.getInternalRegistryName(),
-              () -> ModuleHelper.INSTANCE.createModuleItem(moduleDataSupplier, getMekBaseProperties()));
+              () -> ModuleHelper.INSTANCE.createModuleItem(moduleDataSupplier, new Item.Properties()));
     }
 
     public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Function<Item.Properties, ITEM> sup) {
-        return register(name, () -> sup.apply(getMekBaseProperties()));
+        return register(name, () -> sup.apply(new Item.Properties()));
     }
 
     public <ITEM extends Item> ItemRegistryObject<ITEM> registerUnburnable(String name, Function<Item.Properties, ITEM> sup) {
-        return register(name, () -> sup.apply(getMekBaseProperties().fireResistant()));
+        return register(name, () -> sup.apply(new Item.Properties().fireResistant()));
     }
 
     public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Supplier<? extends ITEM> sup) {
