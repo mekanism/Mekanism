@@ -1,7 +1,7 @@
 package mekanism.client.jei;
 
+import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +44,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
     }
 
     private ChemicalStackRenderer(long capacityMb, TooltipMode tooltipMode, int width, int height) {
+        Preconditions.checkArgument(capacityMb > 0, "capacity must be > 0");
         this.capacityMb = capacityMb;
         this.tooltipMode = tooltipMode;
         this.width = width;

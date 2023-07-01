@@ -21,7 +21,7 @@ public class MekanismCreativeTabs {
 
     public static final CreativeTabDeferredRegister CREATIVE_TABS = new CreativeTabDeferredRegister(Mekanism.MODID);
 
-    public static final CreativeTabRegistryObject MEKANISM = CREATIVE_TABS.registerMain(MekanismLang.MEKANISM, MekanismItems.ATOMIC_ALLOY, builder ->
+    public static final CreativeTabRegistryObject MEKANISM = CREATIVE_TABS.registerMain(MekanismLang.MEKANISM, MekanismBlocks.METALLURGIC_INFUSER, builder ->
           builder.withSearchBar()//Allow our tabs to be searchable for convenience purposes
                 .displayItems((displayParameters, output) -> {
                     CreativeTabDeferredRegister.addToDisplay(MekanismItems.ITEMS, output);

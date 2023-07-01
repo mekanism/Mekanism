@@ -4,6 +4,7 @@ import java.util.function.UnaryOperator;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.ILangEntry;
+import mekanism.client.SpecialColors;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.core.registries.Registries;
@@ -36,7 +37,8 @@ public class CreativeTabDeferredRegister extends WrappedDeferredRegister<Creativ
             CreativeModeTab.Builder builder = CreativeModeTab.builder()
                   .title(title.translate())
                   .icon(icon::getItemStack)
-                  //TODO - 1.21: Check if Vanilla adds any other creative tabs and if so ensure we are after them
+                  .withTabFactory(MekanismCreativeTab::new)
+                  //TODO - 1.20: Remove this once https://github.com/MinecraftForge/MinecraftForge/pull/9612 is merged
                   .withTabsBefore(CreativeModeTabs.BUILDING_BLOCKS, CreativeModeTabs.COLORED_BLOCKS, CreativeModeTabs.NATURAL_BLOCKS, CreativeModeTabs.FUNCTIONAL_BLOCKS,
                         CreativeModeTabs.REDSTONE_BLOCKS, CreativeModeTabs.TOOLS_AND_UTILITIES, CreativeModeTabs.COMBAT, CreativeModeTabs.FOOD_AND_DRINKS,
                         CreativeModeTabs.INGREDIENTS, CreativeModeTabs.SPAWN_EGGS);
@@ -83,6 +85,18 @@ public class CreativeTabDeferredRegister extends WrappedDeferredRegister<Creativ
 
         default boolean addDefault() {
             return true;
+        }
+    }
+
+    public static class MekanismCreativeTab extends CreativeModeTab {
+
+        protected MekanismCreativeTab(CreativeModeTab.Builder builder) {
+            super(builder);
+        }
+
+        @Override
+        public int getLabelColor() {
+            return SpecialColors.TEXT_TITLE.argb();
         }
     }
 }
