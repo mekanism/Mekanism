@@ -53,7 +53,7 @@ public abstract class BaseSpriteSourceProvider extends SpriteSourceProvider {
     protected void addFluids(SourceList atlas, FluidDeferredRegister register) {
         for (FluidRegistryObject<? extends MekanismFluidType, ?, ?, ?, ?> fluidRO : register.getAllFluids()) {
             MekanismFluidType fluidType = fluidRO.getFluidType();
-            addFiles(atlas, fluidType.stillTexture, fluidType.flowingTexture, fluidType.overlayTexture, fluidType.renderOverlayTexture);
+            addFiles(atlas, fluidType.stillTexture, fluidType.flowingTexture, fluidType.overlayTexture);
         }
     }
 

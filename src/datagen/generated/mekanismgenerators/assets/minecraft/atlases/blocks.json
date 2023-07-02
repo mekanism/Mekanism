@@ -11,10 +11,6 @@
     {
       "type": "minecraft:single",
       "resource": "minecraft:block/water_overlay"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "minecraft:misc/underwater"
     }
   ]
 }
