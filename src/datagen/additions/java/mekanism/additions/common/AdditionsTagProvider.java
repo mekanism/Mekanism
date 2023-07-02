@@ -13,9 +13,11 @@ import mekanism.common.tag.MekanismTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -37,6 +39,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
     @Override
     protected void registerTags(HolderLookup.Provider registries) {
         addEntities();
+        addDamageTypes();
         addBalloons();
         addSlabs();
         addStairs();
@@ -49,12 +52,24 @@ public class AdditionsTagProvider extends BaseTagProvider {
     }
 
     private void addEntities() {
+        addToTag(EntityTypeTags.FALL_DAMAGE_IMMUNE, AdditionsEntityTypes.BALLOON);
         addToTag(EntityTypeTags.SKELETONS, AdditionsEntityTypes.BABY_SKELETON, AdditionsEntityTypes.BABY_STRAY, AdditionsEntityTypes.BABY_WITHER_SKELETON);
         getEntityTypeBuilder(AdditionsTags.Entities.CREEPERS).add(EntityType.CREEPER, AdditionsEntityTypes.BABY_CREEPER.getEntityType());
         getEntityTypeBuilder(AdditionsTags.Entities.ENDERMEN).add(EntityType.ENDERMAN, AdditionsEntityTypes.BABY_ENDERMAN.getEntityType());
         addToTag(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES, AdditionsEntityTypes.BABY_STRAY);
         addToTag(MekanismTagProvider.PVI_COMPAT, AdditionsEntityTypes.BABY_CREEPER, AdditionsEntityTypes.BABY_ENDERMAN, AdditionsEntityTypes.BABY_SKELETON,
               AdditionsEntityTypes.BABY_STRAY, AdditionsEntityTypes.BABY_WITHER_SKELETON);
+    }
+
+    private void addDamageTypes() {
+        getDamageTypeBuilder(AdditionsTags.DamageTypes.BALLOON_INVULNERABLE).add(
+              DamageTypeTags.IS_FALL
+        ).add(
+              DamageTypes.DROWN,
+              DamageTypes.FLY_INTO_WALL,
+              DamageTypes.MAGIC,
+              DamageTypes.INDIRECT_MAGIC
+        );
     }
 
     private void addBalloons() {

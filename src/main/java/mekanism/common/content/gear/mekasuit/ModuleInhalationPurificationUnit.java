@@ -11,6 +11,7 @@ import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -90,7 +91,7 @@ public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInh
     @Nullable
     @Override
     public ModuleDamageAbsorbInfo getDamageAbsorbInfo(IModule<ModuleInhalationPurificationUnit> module, DamageSource damageSource) {
-        return MekanismUtils.isPreventableMagicDamage(damageSource) ? INHALATION_ABSORB_INFO : null;
+        return damageSource.is(MekanismTags.DamageTypes.IS_PREVENTABLE_MAGIC) ? INHALATION_ABSORB_INFO : null;
     }
 
     private void speedupEffect(Player player, MobEffectInstance effect) {

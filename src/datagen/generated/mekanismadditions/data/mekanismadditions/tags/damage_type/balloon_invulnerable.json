@@ -1,0 +1,9 @@
+{
+  "values": [
+    "#minecraft:is_fall",
+    "minecraft:drown",
+    "minecraft:fly_into_wall",
+    "minecraft:magic",
+    "minecraft:indirect_magic"
+  ]
+}

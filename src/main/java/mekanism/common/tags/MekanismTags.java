@@ -260,6 +260,7 @@ public class MekanismTags {
         }
 
         public static final TagKey<DamageType> MEKASUIT_ALWAYS_SUPPORTED = tag("mekasuit_always_supported");
+        public static final TagKey<DamageType> IS_PREVENTABLE_MAGIC = tag("is_preventable_magic");
 
         private static TagKey<DamageType> tag(String name) {
             return TagUtils.createKey(Registries.DAMAGE_TYPE, Mekanism.rl(name));

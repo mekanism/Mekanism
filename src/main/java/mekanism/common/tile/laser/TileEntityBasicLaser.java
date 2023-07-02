@@ -233,12 +233,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                                 totemTimesUsed = player.getStats().getValue(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
                             }
                         }
-                        int lastHurtResistTime = entity.invulnerableTime;
-                        //Set the hurt resistance time to zero to ensure we get a chance to do damage
-                        entity.invulnerableTime = 0;
+                        //Note: We add the laser damage type to bypass cooldown via tags so this will go off regardless of invulnerability timer
                         boolean damaged = entity.hurt(MekanismDamageTypes.LASER.source(level), damage);
-                        //Set the hurt resistance time to whatever it was before the laser hit as lasers should not have a downtime in damage frequency
-                        entity.invulnerableTime = lastHurtResistTime;
                         if (damaged) {
                             //If we damaged it
                             if (entity instanceof LivingEntity livingEntity) {

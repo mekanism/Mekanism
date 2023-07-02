@@ -1,10 +1,12 @@
 package mekanism.additions.common;
 
 import mekanism.common.tags.TagUtils;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -18,6 +20,7 @@ public class AdditionsTags {
     public static void init() {
         Items.init();
         Blocks.init();
+        DamageTypes.init();
         Entities.init();
     }
 
@@ -95,6 +98,21 @@ public class AdditionsTags {
 
         private static TagKey<Block> tag(String name) {
             return BlockTags.create(MekanismAdditions.rl(name));
+        }
+    }
+
+    public static class DamageTypes {
+
+        private static void init() {
+        }
+
+        private DamageTypes() {
+        }
+
+        public static final TagKey<DamageType> BALLOON_INVULNERABLE = tag("balloon_invulnerable");
+
+        private static TagKey<DamageType> tag(String name) {
+            return TagUtils.createKey(Registries.DAMAGE_TYPE, MekanismAdditions.rl(name));
         }
     }
 

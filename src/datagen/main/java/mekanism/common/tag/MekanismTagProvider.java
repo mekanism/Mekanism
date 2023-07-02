@@ -491,6 +491,8 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     private void addDamageTypes() {
         addToTag(DamageTypeTags.BYPASSES_ARMOR, MekanismDamageTypes.RADIATION);
+        addToTag(DamageTypeTags.BYPASSES_COOLDOWN, MekanismDamageTypes.LASER);
+        getDamageTypeBuilder(MekanismTags.DamageTypes.IS_PREVENTABLE_MAGIC).add(DamageTypes.MAGIC, DamageTypes.INDIRECT_MAGIC);
 
         //TODO - 1.20: Re-evaluate this and also add any new 1.20 damage types that make sense to have in this
         getDamageTypeBuilder(MekanismTags.DamageTypes.MEKASUIT_ALWAYS_SUPPORTED).add(

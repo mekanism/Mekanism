@@ -2,6 +2,7 @@ package mekanism.additions.common.entity;
 
 import java.util.Optional;
 import java.util.UUID;
+import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.additions.common.registries.AdditionsSounds;
@@ -363,20 +364,20 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
+    public boolean isInvulnerableTo(@NotNull DamageSource source) {
+        return source.is(AdditionsTags.DamageTypes.BALLOON_INVULNERABLE) || super.isInvulnerableTo(source);
+    }
+
+    @Override
     public boolean hurt(@NotNull DamageSource dmgSource, float damage) {
         if (isInvulnerableTo(dmgSource)) {
             return false;
         }
-        markHurt();
-        //TODO - 1.20: Should this use a tag and potentially include other damage types?
-        if (dmgSource != damageSources().magic() && dmgSource != damageSources().drown() && dmgSource != damageSources().fall()) {
-            pop();
-            if (dmgSource.getEntity() instanceof ServerPlayer player) {
-                CriteriaTriggers.PLAYER_KILLED_ENTITY.trigger(player, this, dmgSource);
-            }
-            return true;
+        pop();
+        if (dmgSource.getEntity() instanceof ServerPlayer player) {
+            CriteriaTriggers.PLAYER_KILLED_ENTITY.trigger(player, this, dmgSource);
         }
-        return false;
+        return true;
     }
 
     public boolean isLatched() {
