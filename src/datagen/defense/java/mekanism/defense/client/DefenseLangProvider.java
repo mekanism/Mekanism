@@ -18,7 +18,7 @@ public class DefenseLangProvider extends BaseLanguageProvider {
     }
 
     private void addMisc() {
-        String name = Mekanism.MOD_NAME + ": Defense";
+        String name = Mekanism.MOD_NAME + ": " + MekanismDefense.instance.getName();
         add(DefenseLang.MEKANISM_DEFENSE, name);
         add(DefenseLang.PACK_DESCRIPTION, "Resources used for " + name);
     }

@@ -60,7 +60,7 @@ public class ToolsLangProvider extends BaseLanguageProvider {
     }
 
     private void addMisc() {
-        String name = Mekanism.MOD_NAME + ": Tools";
+        String name = Mekanism.MOD_NAME + ": " + MekanismTools.instance.getName();
         add(ToolsLang.MEKANISM_TOOLS, name);
         add(ToolsLang.PACK_DESCRIPTION, "Resources used for " + name);
         add(ToolsLang.HP, "HP: %1$s");

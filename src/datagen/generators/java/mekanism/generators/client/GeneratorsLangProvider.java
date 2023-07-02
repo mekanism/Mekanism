@@ -94,7 +94,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
     }
 
     private void addMisc() {
-        String name = Mekanism.MOD_NAME + ": Generators";
+        String name = Mekanism.MOD_NAME + ": " + MekanismGenerators.instance.getName();
         add(GeneratorsLang.MEKANISM_GENERATORS, name);
         add(GeneratorsLang.PACK_DESCRIPTION, "Resources used for " + name);
         add(GeneratorsLang.REACTOR_LOGIC_ACTIVE_COOLING, "Active cooling: %1$s");

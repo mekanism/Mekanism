@@ -86,7 +86,7 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
     }
 
     private void addMisc() {
-        String name = Mekanism.MOD_NAME + ": Additions";
+        String name = Mekanism.MOD_NAME + ": " + MekanismAdditions.instance.getName();
         add(AdditionsLang.MEKANISM_ADDITIONS, name);
         add(AdditionsLang.PACK_DESCRIPTION, "Resources used for " + name);
         add(AdditionsLang.CHANNEL, "Channel: %1$s");
