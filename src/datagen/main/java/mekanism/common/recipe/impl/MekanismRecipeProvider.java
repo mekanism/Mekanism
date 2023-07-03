@@ -39,6 +39,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -161,6 +162,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.CONSTANT, MekanismTags.Items.ALLOYS_ATOMIC)
+              .category(RecipeCategory.TOOLS)
               .build(consumer);
         //Boiler casing
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.BOILER_CASING, 4)
@@ -188,6 +190,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
               ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN))
               .key(Pattern.CONSTANT, Items.BOWL)
+              .category(RecipeCategory.FOOD)
               .build(consumer);
         //Cardboard box
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CARDBOARD_BOX)
@@ -353,6 +356,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
               ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
               .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
+              .category(RecipeCategory.TOOLS)
               .build(consumer);
         //Dye Base
         ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.DYE_BASE, 3)
@@ -386,6 +390,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.CONSTANT, Tags.Items.STRING)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .category(RecipeCategory.COMBAT)
               .build(consumer);
         //Electric pump
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ELECTRIC_PUMP)
@@ -463,6 +468,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, MekanismTags.Items.INGOTS_BRONZE)
               .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN))
               .key(Pattern.STEEL, Items.FLINT_AND_STEEL)
+              .category(RecipeCategory.TOOLS)
               .build(consumer);
         //Fluidic plenisher
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.FLUIDIC_PLENISHER)
@@ -495,6 +501,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .category(RecipeCategory.TRANSPORTATION)
               .build(consumer);
         //Armored Free Runners
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.ARMORED_FREE_RUNNERS)
@@ -506,6 +513,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.INGOT, MekanismTags.Items.INGOTS_BRONZE)
               .key(Pattern.CONSTANT, MekanismTags.Items.DUSTS_DIAMOND)
               .key(Pattern.STEEL, MekanismTags.Items.STORAGE_BLOCKS_STEEL)
+              .category(RecipeCategory.TRANSPORTATION)
               .build(consumer);
         //Fuelwood heater
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.FUELWOOD_HEATER)
@@ -527,6 +535,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(GLASS_CHAR, Tags.Items.GLASS)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .category(RecipeCategory.TOOLS)
               .build(consumer);
         //Gauge dropper
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.GAUGE_DROPPER)
@@ -536,6 +545,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(GLASS_CHAR, GLASS_CHAR, GLASS_CHAR))
               ).key(GLASS_CHAR, Tags.Items.GLASS_PANES)
               .key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
+              .category(RecipeCategory.TOOLS)
               .build(consumer);
         //Geiger Counter
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.GEIGER_COUNTER)
@@ -545,6 +555,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
               ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .category(RecipeCategory.TOOLS)
               .build(consumer);
         //Hazmat Mask
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HAZMAT_MASK)
@@ -553,6 +564,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.DYE, Pattern.INGOT))
               ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
               .key(Pattern.DYE, Tags.Items.DYES_ORANGE)
+              .category(RecipeCategory.TOOLS)
               .build(consumer);
         //Hazmat Gown
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HAZMAT_GOWN)
@@ -562,6 +574,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT))
               ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
               .key(Pattern.DYE, Tags.Items.DYES_ORANGE)
+              .category(RecipeCategory.TOOLS)
               .build(consumer);
         //Hazmat Pants
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HAZMAT_PANTS)
@@ -571,6 +584,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT))
               ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
               .key(Pattern.DYE, Tags.Items.DYES_ORANGE)
+              .category(RecipeCategory.TOOLS)
               .build(consumer);
         //Hazmat Boots
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HAZMAT_BOOTS)
@@ -579,6 +593,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.DYE, Pattern.INGOT))
               ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
               .key(Pattern.DYE, Tags.Items.DYES_BLACK)
+              .category(RecipeCategory.TOOLS)
               .build(consumer);
         //HDPE rod
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HDPE_ROD)
@@ -611,6 +626,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.CONSTANT, Blocks.REDSTONE_LAMP)
+              .category(RecipeCategory.REDSTONE)
               .build(consumer);
         //Isotopic Centrifuge
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ISOTOPIC_CENTRIFUGE)
@@ -632,6 +648,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN))
+              .category(RecipeCategory.TRANSPORTATION)
               .build(consumer);
         //Jetpack armored
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.ARMORED_JETPACK)
@@ -643,6 +660,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.INGOT, MekanismTags.Items.INGOTS_BRONZE)
               .key(Pattern.STEEL, MekanismTags.Items.STORAGE_BLOCKS_STEEL)
               .key(Pattern.CONSTANT, MekanismTags.Items.DUSTS_DIAMOND)
+              .category(RecipeCategory.TRANSPORTATION)
               .build(consumer);
         //HDPE Elytra
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HDPE_REINFORCED_ELYTRA)
@@ -754,6 +772,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(GLASS_CHAR, Tags.Items.GLASS)
+              .category(RecipeCategory.DECORATIONS)
               .build(consumer);
         //Personal chest
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PERSONAL_CHEST)
@@ -765,6 +784,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(GLASS_CHAR, Tags.Items.GLASS)
+              .category(RecipeCategory.DECORATIONS)
               .build(consumer);
         //Portable teleporter
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.PORTABLE_TELEPORTER)
@@ -886,6 +906,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .category(RecipeCategory.TOOLS)
               .build(consumer);
         //Security desk
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SECURITY_DESK)
@@ -1112,6 +1133,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
               .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
+              .category(RecipeCategory.COMBAT)
               .build(consumer);
         //MekaSuit Helmet
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKASUIT_HELMET)
@@ -1124,6 +1146,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
               .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
+              .category(RecipeCategory.COMBAT)
               .build(consumer);
         //MekaSuit Bodyarmor
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKASUIT_BODYARMOR)
@@ -1136,6 +1159,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
               .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
+              .category(RecipeCategory.COMBAT)
               .build(consumer);
         //MekaSuit Pants
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKASUIT_PANTS)
@@ -1148,6 +1172,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
               .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
+              .category(RecipeCategory.COMBAT)
               .build(consumer);
         //MekaSuit Boots
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MEKASUIT_BOOTS)
@@ -1160,6 +1185,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_INDUCTION_CELL)
               .key(Pattern.PLASTIC, MekanismItems.HDPE_SHEET)
               .key(Pattern.ALLOY, MekanismTags.Items.PELLETS_POLONIUM)
+              .category(RecipeCategory.COMBAT)
               .build(consumer);
         //SPS Casing
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SPS_CASING)

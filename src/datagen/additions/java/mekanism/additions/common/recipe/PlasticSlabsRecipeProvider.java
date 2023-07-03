@@ -13,6 +13,7 @@ import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -43,6 +44,7 @@ public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 6)
               .pattern(PLASTIC_SLAB)
               .key(Pattern.CONSTANT, plastic)
+              .category(RecipeCategory.BUILDING_BLOCKS)
               .build(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
         if (transparent) {
             PlasticBlockRecipeProvider.registerTransparentRecolor(consumer, result, blockType, color, basePath);

@@ -16,6 +16,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -80,7 +81,9 @@ public class Meltdown {
             int x = Mth.nextInt(world.random, minPos.getX(), maxPos.getX());
             int y = Mth.nextInt(world.random, minPos.getY(), maxPos.getY());
             int z = Mth.nextInt(world.random, minPos.getZ(), maxPos.getZ());
-            createExplosion(world, x, y, z, radius, true, Explosion.BlockInteraction.DESTROY_WITH_DECAY);
+            Explosion.BlockInteraction mode = world.getGameRules().getBoolean(GameRules.RULE_BLOCK_EXPLOSION_DROP_DECAY) ? Explosion.BlockInteraction.DESTROY_WITH_DECAY
+                                                                                                                         : Explosion.BlockInteraction.DESTROY;
+            createExplosion(world, x, y, z, radius, true, mode);
         }
 
         if (!WorldUtils.isBlockLoaded(world, minPos) || !WorldUtils.isBlockLoaded(world, maxPos)) {

@@ -22,6 +22,7 @@ import mekanism.tools.common.registries.ToolsItems;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -122,13 +123,14 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               .pattern(SHIELD)
               .key(Pattern.PREVIOUS, Items.SHIELD)
               .key(Pattern.INGOT, ingot)
+              .category(RecipeCategory.COMBAT)
               .build(consumer, MekanismTools.rl(name + "/shield"));
         String baseToolsPath = name + "/tools/";
-        tool(SWORD, sword, ingot, rod).build(consumer, MekanismTools.rl(baseToolsPath + "sword"));
-        tool(PICKAXE, pickaxe, ingot, rod).build(consumer, MekanismTools.rl(baseToolsPath + "pickaxe"));
-        tool(AXE, axe, ingot, rod).build(consumer, MekanismTools.rl(baseToolsPath + "axe"));
-        tool(SHOVEL, shovel, ingot, rod).build(consumer, MekanismTools.rl(baseToolsPath + "shovel"));
-        tool(HOE, hoe, ingot, rod).build(consumer, MekanismTools.rl(baseToolsPath + "hoe"));
+        tool(SWORD, sword, ingot, rod).category(RecipeCategory.COMBAT).build(consumer, MekanismTools.rl(baseToolsPath + "sword"));
+        tool(PICKAXE, pickaxe, ingot, rod).category(RecipeCategory.TOOLS).build(consumer, MekanismTools.rl(baseToolsPath + "pickaxe"));
+        tool(AXE, axe, ingot, rod).category(RecipeCategory.TOOLS).build(consumer, MekanismTools.rl(baseToolsPath + "axe"));
+        tool(SHOVEL, shovel, ingot, rod).category(RecipeCategory.TOOLS).build(consumer, MekanismTools.rl(baseToolsPath + "shovel"));
+        tool(HOE, hoe, ingot, rod).category(RecipeCategory.TOOLS).build(consumer, MekanismTools.rl(baseToolsPath + "hoe"));
         PaxelShapedRecipeBuilder.shapedRecipe(paxel)
               .pattern(PAXEL)
               .key(AXE_CHAR, ItemTags.create(new ResourceLocation("forge", "tools/axes/" + name)))
@@ -172,7 +174,8 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
     private ExtendedShapedRecipeBuilder armor(RecipePattern pattern, IItemProvider armor, TagKey<Item> ingot) {
         return ExtendedShapedRecipeBuilder.shapedRecipe(armor)
               .pattern(pattern)
-              .key(Pattern.INGOT, ingot);
+              .key(Pattern.INGOT, ingot)
+              .category(RecipeCategory.COMBAT);
     }
 
     private ExtendedShapedRecipeBuilder tool(RecipePattern pattern, IItemProvider tool, TagKey<Item> ingot, TagKey<Item> rod) {

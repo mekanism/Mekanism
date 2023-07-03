@@ -31,6 +31,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -77,6 +78,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(OBSIDIAN_CHAR, OBSIDIAN_CHAR, OBSIDIAN_CHAR))
               ).key(OBSIDIAN_CHAR, Tags.Items.OBSIDIAN)
               .key(TNT_CHAR, Blocks.TNT)
+              .category(RecipeCategory.REDSTONE)
               .build(consumer);
         registerBalloons(consumer);
         registerGlowPanels(consumer);
@@ -109,10 +111,12 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                   .addIngredient(Tags.Items.LEATHER)
                   .addIngredient(Tags.Items.STRING)
                   .addIngredient(dye.getTag())
+                  .category(RecipeCategory.DECORATIONS)
                   .build(consumer, MekanismAdditions.rl(basePath + colorString));
             ExtendedShapelessRecipeBuilder.shapelessRecipe(result)
                   .addIngredient(recolorInput)
                   .addIngredient(dye.getTag())
+                  .category(RecipeCategory.DECORATIONS)
                   .build(consumer, MekanismAdditions.rl(basePath + "recolor/" + colorString));
         }
         ItemStackChemicalToItemStackRecipeBuilder.painting(
@@ -138,6 +142,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                   .key(GLASS_PANES_CHAR, Tags.Items.GLASS_PANES)
                   .key(Pattern.GLOWSTONE, Tags.Items.DUSTS_GLOWSTONE)
                   .key(Pattern.DYE, dye.getTag())
+                  .category(RecipeCategory.BUILDING_BLOCKS)
                   .build(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
         }
         PlasticBlockRecipeProvider.registerRecolor(consumer, result, AdditionsTags.Items.GLOW_PANELS, color, basePath);

@@ -260,6 +260,7 @@ public class MekanismTagProvider extends BaseTagProvider {
     private void addWrenches() {
         addToTag(MekanismTags.Items.WRENCHES, MekanismItems.CONFIGURATOR);
         getItemBuilder(Tags.Items.TOOLS).add(MekanismTags.Items.TOOLS_WRENCH);
+        getItemBuilder(ItemTags.TOOLS).add(MekanismTags.Items.TOOLS_WRENCH);
         addToTag(MekanismTags.Items.TOOLS_WRENCH, MekanismItems.CONFIGURATOR);
         getItemBuilder(MekanismTags.Items.CONFIGURATORS).add(MekanismTags.Items.WRENCHES, MekanismTags.Items.TOOLS_WRENCH);
     }

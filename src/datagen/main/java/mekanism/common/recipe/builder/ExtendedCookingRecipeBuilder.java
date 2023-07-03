@@ -6,7 +6,10 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
@@ -14,12 +17,14 @@ import net.minecraft.world.level.ItemLike;
 @NothingNullByDefault
 public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCookingRecipeBuilder> {
 
+    private final RecipeSerializer<?> serializer;
     private final Ingredient ingredient;
     private final int cookingTime;
     private float experience;
 
     private ExtendedCookingRecipeBuilder(RecipeSerializer<? extends AbstractCookingRecipe> serializer, ItemLike result, int count, Ingredient ingredient, int cookingTime) {
         super(serializer, result, count);
+        this.serializer = serializer;
         this.ingredient = ingredient;
         this.cookingTime = cookingTime;
     }
@@ -67,6 +72,21 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
     @Override
     protected RecipeResult getResult(ResourceLocation id) {
         return new Result(id);
+    }
+
+    @Override//Copy of #determineRecipeCategory
+    protected StringRepresentable determineBookCategory() {
+        if (serializer == RecipeSerializer.SMELTING_RECIPE) {
+            if (result.isEdible()) {
+                return CookingBookCategory.FOOD;
+            }
+            return result instanceof BlockItem ? CookingBookCategory.BLOCKS : CookingBookCategory.MISC;
+        } else if (serializer == RecipeSerializer.BLASTING_RECIPE) {
+            return result instanceof BlockItem ? CookingBookCategory.BLOCKS : CookingBookCategory.MISC;
+        } else if (serializer != RecipeSerializer.SMOKING_RECIPE && serializer != RecipeSerializer.CAMPFIRE_COOKING_RECIPE) {
+            throw new IllegalStateException("Unknown cooking recipe type");
+        }
+        return CookingBookCategory.FOOD;
     }
 
     public class Result extends BaseRecipeResult {

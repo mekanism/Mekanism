@@ -1,5 +1,6 @@
 {
   "type": "mekanismtools:paxel",
+  "category": "equipment",
   "key": {
     "A": {
       "item": "minecraft:stone_axe"
