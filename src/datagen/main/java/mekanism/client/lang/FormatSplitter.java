@@ -287,9 +287,9 @@ public class FormatSplitter {
                         return null;
                     }
                 }
-                case "lower", "upper", "vr" -> {
+                case "featurebound", "lower", "upper", "vr" -> {
                     if (formatStyle != null) {
-                        //lower, upper, and vr do not support any format style
+                        //featurebound, lower, upper, and vr do not support any format style
                         return null;
                     }
                 }
