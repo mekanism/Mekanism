@@ -1,5 +1,6 @@
 package mekanism.common.registration.impl;
 
+import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
@@ -11,15 +12,29 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 
-//TODO - 1.20: Maybe add some things to vanilla tabs/groups? At the very least things like mek additions' spawn eggs to the spawn egg tab
 public class CreativeTabDeferredRegister extends WrappedDeferredRegister<CreativeModeTab> {
 
+    private final Consumer<BuildCreativeModeTabContentsEvent> addToExistingTabs;
     private final String modid;
 
     public CreativeTabDeferredRegister(String modid) {
+        this(modid, event -> {
+        });
+    }
+
+    public CreativeTabDeferredRegister(String modid, Consumer<BuildCreativeModeTabContentsEvent> addToExistingTabs) {
         super(modid, Registries.CREATIVE_MODE_TAB);
         this.modid = modid;
+        this.addToExistingTabs = addToExistingTabs;
+    }
+
+    @Override
+    public void register(IEventBus bus) {
+        super.register(bus);
+        bus.addListener(addToExistingTabs);
     }
 
     /**
@@ -46,7 +61,13 @@ public class CreativeTabDeferredRegister extends WrappedDeferredRegister<Creativ
         }, CreativeTabRegistryObject::new);
     }
 
-    private static void addToDisplay(ItemLike itemLike, CreativeModeTab.Output output) {
+    public static void addToDisplay(CreativeModeTab.Output output, ItemLike... items) {
+        for (ItemLike item : items) {
+            addToDisplay(output, item);
+        }
+    }
+
+    public static void addToDisplay(CreativeModeTab.Output output, ItemLike itemLike) {
         if (itemLike.asItem() instanceof ICustomCreativeTabContents contents) {
             if (contents.addDefault()) {
                 output.accept(itemLike);
@@ -59,7 +80,7 @@ public class CreativeTabDeferredRegister extends WrappedDeferredRegister<Creativ
 
     public static void addToDisplay(ItemDeferredRegister register, CreativeModeTab.Output output) {
         for (IItemProvider itemProvider : register.getAllItems()) {
-            addToDisplay(itemProvider, output);
+            addToDisplay(output, itemProvider);
         }
     }
 
@@ -67,18 +88,17 @@ public class CreativeTabDeferredRegister extends WrappedDeferredRegister<Creativ
         for (IBlockProvider itemProvider : register.getAllBlocks()) {
             //Don't add bounding blocks to the creative tab
             if (!(itemProvider.getBlock() instanceof BlockBounding)) {
-                addToDisplay(itemProvider, output);
+                addToDisplay(output, itemProvider);
             }
         }
     }
 
     public static void addToDisplay(FluidDeferredRegister register, CreativeModeTab.Output output) {
         for (FluidRegistryObject<?, ?, ?, ?, ?> fluidRO : register.getAllFluids()) {
-            addToDisplay(fluidRO.getBucket(), output);
+            addToDisplay(output, fluidRO.getBucket());
         }
     }
 
-    //TODO - 1.20: Re-evaluate this and maybe inline the stuff into their respective creative tabs
     public interface ICustomCreativeTabContents {
 
         void addItems(CreativeModeTab.Output tabOutput);

@@ -1,22 +1,63 @@
 package mekanism.additions.common.registries;
 
+import java.util.Map;
 import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.MekanismAdditions;
+import mekanism.api.providers.IBlockProvider;
+import mekanism.api.text.EnumColor;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister;
 import mekanism.common.registration.impl.CreativeTabRegistryObject;
 import mekanism.common.registries.MekanismCreativeTabs;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 
 public class AdditionsCreativeTabs {
 
-    public static final CreativeTabDeferredRegister CREATIVE_TABS = new CreativeTabDeferredRegister(MekanismAdditions.MODID);
+    public static final CreativeTabDeferredRegister CREATIVE_TABS = new CreativeTabDeferredRegister(MekanismAdditions.MODID, AdditionsCreativeTabs::addToExistingTabs);
 
-    public static final CreativeTabRegistryObject ADDITIONS = CREATIVE_TABS.registerMain(AdditionsLang.MEKANISM_ADDITIONS, AdditionsBlocks.OBSIDIAN_TNT, builder ->
-          builder.withBackgroundLocation(MekanismAdditions.rl("textures/gui/creative_tab.png"))
-                .withSearchBar(65)//Allow our tabs to be searchable for convenience purposes
-                .withTabsBefore(MekanismCreativeTabs.MEKANISM.key())
-                .displayItems((displayParameters, output) -> {
-                    CreativeTabDeferredRegister.addToDisplay(AdditionsItems.ITEMS, output);
-                    CreativeTabDeferredRegister.addToDisplay(AdditionsBlocks.BLOCKS, output);
-                })
+    public static final CreativeTabRegistryObject ADDITIONS = CREATIVE_TABS.registerMain(AdditionsLang.MEKANISM_ADDITIONS,
+          AdditionsItems.BALLOONS.get(EnumColor.BRIGHT_GREEN), builder ->
+                builder.withBackgroundLocation(MekanismAdditions.rl("textures/gui/creative_tab.png"))
+                      .withSearchBar(65)//Allow our tabs to be searchable for convenience purposes
+                      .withTabsBefore(MekanismCreativeTabs.MEKANISM.key())
+                      .displayItems((displayParameters, output) -> {
+                          CreativeTabDeferredRegister.addToDisplay(AdditionsItems.ITEMS, output);
+                          CreativeTabDeferredRegister.addToDisplay(AdditionsBlocks.BLOCKS, output);
+                      })
     );
+
+    private static void addToExistingTabs(BuildCreativeModeTabContentsEvent event) {
+        ResourceKey<CreativeModeTab> tabKey = event.getTabKey();
+        if (tabKey == CreativeModeTabs.BUILDING_BLOCKS) {
+            addToDisplay(event, AdditionsBlocks.PLASTIC_BLOCKS, AdditionsBlocks.SLICK_PLASTIC_BLOCKS, AdditionsBlocks.PLASTIC_GLOW_BLOCKS,
+                  AdditionsBlocks.REINFORCED_PLASTIC_BLOCKS, AdditionsBlocks.PLASTIC_ROADS, AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS, AdditionsBlocks.PLASTIC_STAIRS,
+                  AdditionsBlocks.PLASTIC_SLABS, AdditionsBlocks.PLASTIC_FENCES, AdditionsBlocks.PLASTIC_FENCE_GATES, AdditionsBlocks.PLASTIC_GLOW_STAIRS,
+                  AdditionsBlocks.PLASTIC_GLOW_SLABS, AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS, AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS);
+        } else if (tabKey == CreativeModeTabs.COLORED_BLOCKS) {
+            addToDisplay(event, AdditionsBlocks.GLOW_PANELS, AdditionsBlocks.PLASTIC_BLOCKS, AdditionsBlocks.SLICK_PLASTIC_BLOCKS, AdditionsBlocks.PLASTIC_GLOW_BLOCKS,
+                  AdditionsBlocks.REINFORCED_PLASTIC_BLOCKS, AdditionsBlocks.PLASTIC_ROADS, AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS, AdditionsBlocks.PLASTIC_STAIRS,
+                  AdditionsBlocks.PLASTIC_SLABS, AdditionsBlocks.PLASTIC_FENCES, AdditionsBlocks.PLASTIC_FENCE_GATES, AdditionsBlocks.PLASTIC_GLOW_STAIRS,
+                  AdditionsBlocks.PLASTIC_GLOW_SLABS, AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS, AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS);
+        } else if (tabKey == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+            addToDisplay(event, AdditionsBlocks.GLOW_PANELS, AdditionsBlocks.PLASTIC_GLOW_BLOCKS, AdditionsBlocks.PLASTIC_GLOW_STAIRS, AdditionsBlocks.PLASTIC_GLOW_SLABS);
+        } else if (tabKey == CreativeModeTabs.REDSTONE_BLOCKS) {
+            CreativeTabDeferredRegister.addToDisplay(event, AdditionsBlocks.OBSIDIAN_TNT);
+        } else if (tabKey == CreativeModeTabs.COMBAT) {
+            CreativeTabDeferredRegister.addToDisplay(event, AdditionsBlocks.OBSIDIAN_TNT);
+        } else if (tabKey == CreativeModeTabs.SPAWN_EGGS) {
+            CreativeTabDeferredRegister.addToDisplay(event, AdditionsItems.BABY_CREEPER_SPAWN_EGG, AdditionsItems.BABY_ENDERMAN_SPAWN_EGG,
+                  AdditionsItems.BABY_SKELETON_SPAWN_EGG, AdditionsItems.BABY_STRAY_SPAWN_EGG, AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG);
+        }
+    }
+
+    @SafeVarargs
+    private static void addToDisplay(CreativeModeTab.Output output, Map<EnumColor, ? extends IBlockProvider>... blocks) {
+        for (Map<EnumColor, ? extends IBlockProvider> blockMap : blocks) {
+            for (IBlockProvider block : blockMap.values()) {
+                CreativeTabDeferredRegister.addToDisplay(output, block);
+            }
+        }
+    }
 }
