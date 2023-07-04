@@ -1426,6 +1426,13 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.RADIAL_EXCAVATION_SPEED_FAST, "Fast");
         add(MekanismLang.RADIAL_EXCAVATION_SPEED_SUPER, "Super Fast");
         add(MekanismLang.RADIAL_EXCAVATION_SPEED_EXTREME, "Extreme");
+
+        add(MekanismLang.RADIAL_BLASTING_POWER, "Blasting Power");
+        add(MekanismLang.RADIAL_BLASTING_POWER_OFF, "Off");
+        add(MekanismLang.RADIAL_BLASTING_POWER_LOW, "Low");
+        add(MekanismLang.RADIAL_BLASTING_POWER_MED, "Medium");
+        add(MekanismLang.RADIAL_BLASTING_POWER_HIGH, "High");
+        add(MekanismLang.RADIAL_BLASTING_POWER_EXTREME, "Extreme");
         // Modules
         add(MekanismLang.MODULE_ENABLED, "Enabled");
         add(MekanismLang.MODULE_ENABLED_LOWER, "enabled");
