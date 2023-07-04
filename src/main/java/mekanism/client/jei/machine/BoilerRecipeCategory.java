@@ -79,11 +79,16 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
         //Update what the current recipe is so that we have the proper values for temperature and the like
         this.recipe = recipe;
         super.draw(recipe, recipeSlotView, guiGraphics, mouseX, mouseY);
+        this.recipe = null;
+    }
+
+    @Override
+    protected void renderElements(BoilerJEIRecipe recipe, IRecipeSlotsView recipeSlotView, GuiGraphics guiGraphics, int x, int y) {
+        super.renderElements(recipe, recipeSlotView, guiGraphics, x, y);
         if (recipe.superHeatedCoolant() == null) {
             superHeatedCoolantTank.drawBarOverlay(guiGraphics);
             cooledCoolantTank.drawBarOverlay(guiGraphics);
         }
-        this.recipe = null;
     }
 
     @Override

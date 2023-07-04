@@ -54,8 +54,8 @@ public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStac
     }
 
     @Override
-    public void draw(ItemStackToEnergyRecipe recipe, IRecipeSlotsView recipeSlotView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        super.draw(recipe, recipeSlotView, guiGraphics, mouseX, mouseY);
+    protected void renderElements(ItemStackToEnergyRecipe recipe, IRecipeSlotsView recipeSlotView, GuiGraphics guiGraphics, int x, int y) {
+        super.renderElements(recipe, recipeSlotView, guiGraphics, x, y);
         if (!getOutputEnergy(recipe, recipeSlotView).isZero()) {
             //Manually draw the contents of the recipe
             gauge.renderContents(guiGraphics);

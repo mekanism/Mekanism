@@ -141,8 +141,12 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         pose.translate(-xOffset, -yOffset, 0);
-        int x = (int) mouseX;
-        int y = (int) mouseY;
+        renderElements(recipe, recipeSlotsView, guiGraphics, (int) mouseX, (int) mouseY);
+        pose.popPose();
+    }
+
+    protected void renderElements(RECIPE recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, int x, int y) {
+        PoseStack pose = guiGraphics.pose();
         guiElements.forEach(e -> e.renderShifted(guiGraphics, x, y, 0));
         guiElements.forEach(e -> e.onDrawBackground(guiGraphics, x, y, 0));
         int zOffset = 200;//TODO - 1.20: Re-evaluate this offset being used/needed
@@ -151,7 +155,6 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
             element.onRenderForeground(guiGraphics, x, y, zOffset, zOffset);
             pose.popPose();
         }
-        pose.popPose();
     }
 
     @Override

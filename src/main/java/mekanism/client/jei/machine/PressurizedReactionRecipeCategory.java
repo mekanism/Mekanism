@@ -53,8 +53,8 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
     }
 
     @Override
-    public void draw(PressurizedReactionRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
+    protected void renderElements(PressurizedReactionRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, int x, int y) {
+        super.renderElements(recipe, recipeSlotsView, guiGraphics, x, y);
         if (recipeSlotsView.findSlotByName(OUTPUT_GAS).isEmpty()) {
             //If we don't have an output gas at all for this recipe, draw the bar overlay manually
             outputGas.drawBarOverlay(guiGraphics);
