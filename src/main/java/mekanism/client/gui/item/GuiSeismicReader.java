@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.GuiArrowSelection;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismButton;
@@ -117,7 +116,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                     renderTarget = (graphics, x, y) -> {
                         MekanismRenderer.color(properties.getTintColor());
                         TextureAtlasSprite texture = MekanismRenderer.getSprite(properties.getStillTexture());
-                        GuiUtils.drawSprite(graphics.pose(), x, y, 16, 16, texture);
+                        guiGraphics.blit(x, y, 0, 16, 16, texture);
                         MekanismRenderer.resetColor();
                     };
                 } else {

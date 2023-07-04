@@ -17,7 +17,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -178,21 +177,6 @@ public class GuiUtils {
         }
     }
 
-    public static void drawSprite(PoseStack matrix, int x, int y, int width, int height, TextureAtlasSprite sprite) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
-        RenderSystem.enableBlend();
-        BufferBuilder vertexBuffer = Tesselator.getInstance().getBuilder();
-        vertexBuffer.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        Matrix4f matrix4f = matrix.last().pose();
-        vertexBuffer.vertex(matrix4f, x, y + height, 0).uv(sprite.getU0(), sprite.getV1()).endVertex();
-        vertexBuffer.vertex(matrix4f, x + width, y + height, 0).uv(sprite.getU1(), sprite.getV1()).endVertex();
-        vertexBuffer.vertex(matrix4f, x + width, y, 0).uv(sprite.getU1(), sprite.getV0()).endVertex();
-        vertexBuffer.vertex(matrix4f, x, y, 0).uv(sprite.getU0(), sprite.getV0()).endVertex();
-        BufferUploader.drawWithShader(vertexBuffer.end());
-        RenderSystem.disableBlend();
-    }
-
     public static void drawTiledSprite(PoseStack matrix, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
           int textureWidth, int textureHeight, int zLevel, TilingDirection tilingDirection) {
         drawTiledSprite(matrix, xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, textureWidth, textureHeight, zLevel, tilingDirection, true);
@@ -204,7 +188,7 @@ public class GuiUtils {
             return;
         }
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
+        RenderSystem.setShaderTexture(0, sprite.atlasLocation());
         int xTileCount = desiredWidth / textureWidth;
         int xRemainder = desiredWidth - (xTileCount * textureWidth);
         int yTileCount = desiredHeight / textureHeight;

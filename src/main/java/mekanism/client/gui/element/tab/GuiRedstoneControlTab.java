@@ -1,7 +1,6 @@
 package mekanism.client.gui.element.tab;
 
 import mekanism.client.SpecialColors;
-import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.render.MekanismRenderer;
@@ -61,7 +60,7 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     @Override
     protected void drawBackgroundOverlay(@NotNull GuiGraphics guiGraphics) {
         if (dataSource.getControlType() == RedstoneControl.PULSE) {
-            GuiUtils.drawSprite(guiGraphics.pose(), getButtonX() + 1, getButtonY() + 1, innerWidth - 2, innerHeight - 2, MekanismRenderer.redstonePulse);
+            guiGraphics.blit(getButtonX() + 1, getButtonY() + 1, 0, innerWidth - 2, innerHeight - 2, MekanismRenderer.redstonePulse);
         } else {
             super.drawBackgroundOverlay(guiGraphics);
         }
