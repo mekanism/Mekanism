@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.slot;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
@@ -14,6 +13,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -172,18 +172,13 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISup
         if (renderHover && hovered) {
             int xPos = relativeX + 1;
             int yPos = relativeY + 1;
-            guiGraphics.fill(xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
+            guiGraphics.fill(RenderType.guiOverlay(), xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
             MekanismRenderer.resetColor();
         }
         if (overlayColorSupplier != null) {
-            //TODO - 1.20: Re-evaluate if this is needed
-            PoseStack pose = guiGraphics.pose();
-            pose.pushPose();
-            pose.translate(0, 0, 10);
             int xPos = relativeX + 1;
             int yPos = relativeY + 1;
-            guiGraphics.fill(xPos, yPos, xPos + 16, yPos + 16, overlayColorSupplier.getAsInt());
-            pose.popPose();
+            guiGraphics.fill(RenderType.guiOverlay(), xPos, yPos, xPos + 16, yPos + 16, overlayColorSupplier.getAsInt());
             MekanismRenderer.resetColor();
         }
         if (hovered) {

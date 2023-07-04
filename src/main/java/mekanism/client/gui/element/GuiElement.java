@@ -546,7 +546,6 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     protected void drawTiledSprite(GuiGraphics guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
           TilingDirection tilingDirection) {
-        //TODO - 1.20: Evaluate the z level as it used to be blit offset, also maybe just remove the param in general
         GuiUtils.drawTiledSprite(guiGraphics.pose(), xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, 16, 16, 0, tilingDirection);
     }
 

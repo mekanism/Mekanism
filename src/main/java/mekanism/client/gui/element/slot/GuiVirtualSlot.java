@@ -11,6 +11,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,7 +54,7 @@ public class GuiVirtualSlot extends GuiSlot implements IJEIIngredientHelper {
                 int xPos = relativeX + 1;
                 int yPos = relativeY + 1;
                 if (virtualSlot.shouldDrawOverlay()) {
-                    guiGraphics.fill(xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
+                    guiGraphics.fill(RenderType.guiOverlay(), xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
                 }
                 gui().renderItemWithOverlay(guiGraphics, stack, xPos, yPos, 1, virtualSlot.getTooltipOverride());
             }

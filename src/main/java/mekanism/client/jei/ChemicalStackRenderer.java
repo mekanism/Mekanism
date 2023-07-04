@@ -1,7 +1,6 @@
 package mekanism.client.jei;
 
 import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,7 +53,6 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, @NotNull STACK stack) {
         if (!stack.isEmpty()) {
-            RenderSystem.enableBlend();
             int desiredHeight = MathUtils.clampToInt(height * (double) stack.getAmount() / capacityMb);
             if (desiredHeight < MIN_CHEMICAL_HEIGHT) {
                 desiredHeight = MIN_CHEMICAL_HEIGHT;
@@ -65,10 +63,10 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
             Chemical<?> chemical = stack.getType();
             MekanismRenderer.color(chemical);
             //Tile upwards and to the right as the majority of things we render are gauges which look better when tiling upwards
+            //Note: Blend is handled by JEI
             GuiUtils.drawTiledSprite(guiGraphics.pose(), 0, 0, height, width, desiredHeight, MekanismRenderer.getSprite(chemical.getIcon()),
                   TEXTURE_SIZE, TEXTURE_SIZE, 100, TilingDirection.UP_RIGHT, false);
             MekanismRenderer.resetColor();
-            RenderSystem.disableBlend();
         }
     }
 

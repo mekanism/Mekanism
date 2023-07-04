@@ -24,6 +24,7 @@ import mekanism.common.entity.EntityRobit;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
@@ -113,7 +114,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
                     // Note: Currently we have no other windows that could be in front of it
                     int slot = (slotY + scrollBar.getCurrentSelection()) * SLOT_COUNT + slotX;
                     if (checkWindows(mouseX, mouseY, slot < skins.size())) {
-                        guiGraphics.fill(slotStartX, slotStartY, slotStartX + SLOT_DIMENSIONS, slotStartY + SLOT_DIMENSIONS, 0x70FFEA00);
+                        guiGraphics.fill(RenderType.guiOverlay(), slotStartX, slotStartY, slotStartX + SLOT_DIMENSIONS, slotStartY + SLOT_DIMENSIONS, 0x70FFEA00);
                         MekanismRenderer.resetColor();
                     }
                 }
