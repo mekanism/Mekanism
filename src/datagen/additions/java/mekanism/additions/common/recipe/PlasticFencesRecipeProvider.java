@@ -19,6 +19,7 @@ import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 
 public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
 
@@ -49,6 +50,7 @@ public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
               .pattern(PLASTIC_FENCE)
               .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, MekanismTags.Items.RODS_PLASTIC)
               .key(Pattern.CONSTANT, plastic)
+              .category(RecipeCategory.DECORATIONS)
               .build(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
         PlasticBlockRecipeProvider.registerRecolor(consumer, result, AdditionsTags.Items.FENCES_PLASTIC, color, basePath);
     }
@@ -66,6 +68,7 @@ public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
               .pattern(PLASTIC_FENCE_GATE)
               .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, MekanismTags.Items.RODS_PLASTIC)
               .key(Pattern.CONSTANT, plastic)
+              .category(RecipeCategory.REDSTONE)
               .build(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
         PlasticBlockRecipeProvider.registerRecolor(consumer, result, AdditionsTags.Items.FENCE_GATES_PLASTIC, color, basePath);
     }

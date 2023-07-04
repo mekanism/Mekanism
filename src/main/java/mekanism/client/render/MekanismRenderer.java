@@ -1,12 +1,8 @@
 package mekanism.client.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Axis;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -46,7 +42,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -63,7 +59,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MekanismRenderer {
@@ -282,30 +277,7 @@ public class MekanismRenderer {
     }
 
     public static void renderColorOverlay(GuiGraphics guiGraphics, int x, int y, int color) {
-        renderColorOverlay(guiGraphics.pose(), x, y, guiGraphics.guiWidth(), guiGraphics.guiHeight(), color);
-    }
-
-    public static void renderColorOverlay(PoseStack matrix, int x, int y, int width, int height, int color) {
-        int r = FastColor.ARGB32.red(color);
-        int g = FastColor.ARGB32.green(color);
-        int b = FastColor.ARGB32.blue(color);
-        int a = FastColor.ARGB32.alpha(color);
-        RenderSystem.disableDepthTest();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tesselator.getBuilder();
-        bufferbuilder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        Matrix4f matrix4f = matrix.last().pose();
-        bufferbuilder.vertex(matrix4f, width, y, 0).color(r, g, b, a).endVertex();
-        bufferbuilder.vertex(matrix4f, x, y, 0).color(r, g, b, a).endVertex();
-        bufferbuilder.vertex(matrix4f, x, height, 0).color(r, g, b, a).endVertex();
-        bufferbuilder.vertex(matrix4f, width, height, 0).color(r, g, b, a).endVertex();
-        tesselator.end();
-        RenderSystem.disableBlend();
-        RenderSystem.enableDepthTest();
+        guiGraphics.fill(RenderType.guiOverlay(), x, y, guiGraphics.guiWidth(), guiGraphics.guiHeight(), color);
     }
 
     public static float getPartialTick() {

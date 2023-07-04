@@ -8,8 +8,12 @@ import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.CookingBookCategory;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
@@ -19,6 +23,7 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
 
     protected final Item result;
     protected final int count;
+    private RecipeCategory category = RecipeCategory.MISC;
     @Nullable
     private String group;
 
@@ -29,13 +34,32 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
     }
 
     @SuppressWarnings("unchecked")
-    public BUILDER setGroup(String group) {
-        this.group = group;
+    private BUILDER getThis() {
         return (BUILDER) this;
+    }
+
+    public BUILDER group(String group) {
+        this.group = group;
+        return getThis();
+    }
+
+    public BUILDER category(RecipeCategory category) {
+        this.category = category;
+        return getThis();
     }
 
     public void build(Consumer<FinishedRecipe> consumer) {
         build(consumer, result);
+    }
+
+    //Copied from CraftingRecipeBuilder#determineBookCategory
+    protected StringRepresentable determineBookCategory() {
+        return switch (category) {
+            case BUILDING_BLOCKS -> CraftingBookCategory.BUILDING;
+            case TOOLS, COMBAT -> CraftingBookCategory.EQUIPMENT;
+            case REDSTONE -> CraftingBookCategory.REDSTONE;
+            default -> CraftingBookCategory.MISC;
+        };
     }
 
     protected abstract class BaseRecipeResult extends RecipeResult {
@@ -53,6 +77,10 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
         }
 
         protected void serializeResult(JsonObject json) {
+            StringRepresentable category = determineBookCategory();
+            if (category != CraftingBookCategory.MISC && category != CookingBookCategory.MISC) {
+                json.addProperty(DataGenJsonConstants.CATEGORY, category.getSerializedName());
+            }
             JsonObject jsonResult = new JsonObject();
             jsonResult.addProperty(JsonConstants.ITEM, RegistryUtils.getName(result).toString());
             if (count > 1) {

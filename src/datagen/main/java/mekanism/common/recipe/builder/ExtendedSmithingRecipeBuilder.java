@@ -12,22 +12,22 @@ import net.minecraft.world.level.ItemLike;
 public class ExtendedSmithingRecipeBuilder extends BaseRecipeBuilder<ExtendedSmithingRecipeBuilder> {
 
     private final Ingredient template;
-    private final Ingredient ingredient;
-    private final Ingredient upgradeIngredient;
+    private final Ingredient base;
+    private final Ingredient addition;
 
-    private ExtendedSmithingRecipeBuilder(Ingredient template, Ingredient ingredient, Ingredient upgradeIngredient, ItemLike result) {
+    private ExtendedSmithingRecipeBuilder(Ingredient template, Ingredient base, Ingredient addition, ItemLike result) {
         super(RecipeSerializer.SMITHING_TRANSFORM, result, 1);
         this.template = template;
-        this.ingredient = ingredient;
-        this.upgradeIngredient = upgradeIngredient;
+        this.base = base;
+        this.addition = addition;
     }
 
-    public static ExtendedSmithingRecipeBuilder smithing(ItemLike template, ItemLike ingredient, ItemLike upgradeIngredient, ItemLike result) {
-        return smithing(Ingredient.of(template), Ingredient.of(ingredient), Ingredient.of(upgradeIngredient), result);
+    public static ExtendedSmithingRecipeBuilder smithing(ItemLike template, ItemLike base, ItemLike addition, ItemLike result) {
+        return smithing(Ingredient.of(template), Ingredient.of(base), Ingredient.of(addition), result);
     }
 
-    public static ExtendedSmithingRecipeBuilder smithing(Ingredient template, Ingredient ingredient, Ingredient upgradeIngredient, ItemLike result) {
-        return new ExtendedSmithingRecipeBuilder(template, ingredient, upgradeIngredient, result);
+    public static ExtendedSmithingRecipeBuilder smithing(Ingredient template, Ingredient base, Ingredient addition, ItemLike result) {
+        return new ExtendedSmithingRecipeBuilder(template, base, addition, result);
     }
 
     @Override
@@ -45,8 +45,8 @@ public class ExtendedSmithingRecipeBuilder extends BaseRecipeBuilder<ExtendedSmi
         public void serializeRecipeData(JsonObject json) {
             super.serializeRecipeData(json);
             json.add(DataGenJsonConstants.TEMPLATE, template.toJson());
-            json.add(DataGenJsonConstants.BASE, ingredient.toJson());
-            json.add(DataGenJsonConstants.ADDITION, upgradeIngredient.toJson());
+            json.add(DataGenJsonConstants.BASE, base.toJson());
+            json.add(DataGenJsonConstants.ADDITION, addition.toJson());
         }
     }
 }

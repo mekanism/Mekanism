@@ -71,6 +71,7 @@ public class ToolsTagProvider extends BaseTagProvider {
 
     private void addPaxels() {
         getItemBuilder(Tags.Items.TOOLS).add(ToolsTags.Items.TOOLS_PAXELS);
+        getItemBuilder(ItemTags.TOOLS).add(ToolsTags.Items.TOOLS_PAXELS);
         getItemBuilder(ToolsTags.Items.TOOLS_PAXELS).add(
               //Vanilla Paxels
               ToolsTags.Items.TOOLS_PAXELS_WOOD,

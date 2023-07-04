@@ -1,4 +1,4 @@
-// 1.20.1	2023-07-02T11:43:38.0998038	Tags: mekanismadditions
+// 1.20.1	2023-07-03T16:01:25.8181842	Tags: mekanismadditions
 ebad0e2e5e4bec366309ad1143bc09f5c1c0df45 data/forge/tags/blocks/fences.json
 6e1bbbf4944812dcbac28a3d31386a9073bad6e1 data/forge/tags/blocks/fences/plastic.json
 d73edb6ae8698a112de18b2ff291a82574f4a7d4 data/forge/tags/blocks/fence_gates.json
@@ -49,6 +49,7 @@ fd4b3e81af5bad3fb3bcfd35b2ece65816aae6b6 data/minecraft/tags/blocks/stairs.json
 250f04137941705828e4ae8fd8e813f4bba0f081 data/minecraft/tags/entity_types/freeze_immune_entity_types.json
 a98f0ade149c90d9accb727d2d86948f01f4aa9e data/minecraft/tags/entity_types/skeletons.json
 ebad0e2e5e4bec366309ad1143bc09f5c1c0df45 data/minecraft/tags/items/fences.json
+d73edb6ae8698a112de18b2ff291a82574f4a7d4 data/minecraft/tags/items/fence_gates.json
 72637c50ddc971af43d25d31f5bf18447f2cafbc data/minecraft/tags/items/slabs.json
 fd4b3e81af5bad3fb3bcfd35b2ece65816aae6b6 data/minecraft/tags/items/stairs.json
 fd4476443818c2cceacdb8adb0af103d8ee3b87b data/per-viam-invenire/tags/entity_types/replace_vanilla_navigator.json

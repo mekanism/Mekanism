@@ -111,6 +111,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -416,6 +417,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         } else if (!level().isClientSide) {
             MenuProvider provider = MekanismContainerTypes.MAIN_ROBIT.getProvider(MekanismLang.ROBIT, this);
             if (provider != null) {
+                gameEvent(GameEvent.ENTITY_INTERACT, player);
                 //Validate the provider isn't null, it shouldn't be but just in case
                 NetworkHooks.openScreen((ServerPlayer) player, provider, buf -> buf.writeVarInt(getId()));
             }
