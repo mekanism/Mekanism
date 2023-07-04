@@ -11,7 +11,6 @@ import mekanism.client.state.BaseBlockStateProvider;
 import mekanism.common.item.block.ItemBlockColoredName;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.Direction;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.SlabBlock;

@@ -2,11 +2,9 @@ package mekanism.common.lib.inventory;
 
 import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public interface Finder {

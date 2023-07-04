@@ -1,6 +1,5 @@
 package mekanism.client.gui.qio;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.custom.GuiFrequencySelector;

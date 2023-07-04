@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.HashSet;
 import java.util.Set;
 import mekanism.api.chemical.ChemicalStack;

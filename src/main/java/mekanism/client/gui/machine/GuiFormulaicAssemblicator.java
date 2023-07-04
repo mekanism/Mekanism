@@ -1,7 +1,5 @@
 package mekanism.client.gui.machine;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.MekanismButton;

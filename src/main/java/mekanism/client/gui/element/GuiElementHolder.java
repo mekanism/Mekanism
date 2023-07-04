@@ -1,7 +1,6 @@
 package mekanism.client.gui.element;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.io.InputStream;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.Mekanism;

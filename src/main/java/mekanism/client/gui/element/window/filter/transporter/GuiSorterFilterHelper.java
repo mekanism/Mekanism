@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.window.filter.transporter;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.UnaryOperator;

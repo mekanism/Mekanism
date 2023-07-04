@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.PigmentMixingRecipe;

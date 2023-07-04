@@ -3,7 +3,6 @@ package mekanism.common.registration.impl;
 import com.mojang.serialization.Codec;
 import java.util.function.Supplier;
 import mekanism.common.registration.WrappedDeferredRegister;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;

@@ -15,7 +15,6 @@ import mekanism.tools.common.item.ItemMekanismSword;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;

@@ -1,6 +1,5 @@
 package mekanism.client.jei.machine;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.math.FloatingLong;

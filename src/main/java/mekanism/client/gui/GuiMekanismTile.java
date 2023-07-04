@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Set;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
