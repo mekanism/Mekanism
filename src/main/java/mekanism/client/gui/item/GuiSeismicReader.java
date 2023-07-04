@@ -114,10 +114,10 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                     }
                     IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(fluid);
                     renderTarget = (graphics, x, y) -> {
-                        MekanismRenderer.color(properties.getTintColor());
+                        MekanismRenderer.color(guiGraphics, properties.getTintColor());
                         TextureAtlasSprite texture = MekanismRenderer.getSprite(properties.getStillTexture());
                         guiGraphics.blit(x, y, 0, 16, 16, texture);
-                        MekanismRenderer.resetColor();
+                        MekanismRenderer.resetColor(guiGraphics);
                     };
                 } else {
                     renderTarget = (graphics, x, y) -> renderItem(graphics, stack, x, y);
@@ -150,7 +150,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
             frequency = frequencies.computeIfAbsent(block, b -> (int) blockList.stream().filter(blockState -> b == blockState.getBlock()).count());
         }
         drawTextScaledBound(guiGraphics, MekanismLang.ABUNDANCY.translate(frequency), 10, 26, screenTextColor(), 57);
-        MekanismRenderer.resetColor();
+        MekanismRenderer.resetColor(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 

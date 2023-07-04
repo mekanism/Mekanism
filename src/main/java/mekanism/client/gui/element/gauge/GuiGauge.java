@@ -66,7 +66,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
         return gaugeType.getGaugeInfo();
     }
 
-    protected void applyRenderColor() {
+    protected void applyRenderColor(GuiGraphics guiGraphics) {
     }
 
     @Override
@@ -89,9 +89,9 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
         int scale = getScaledLevel();
         TextureAtlasSprite icon = getIcon();
         if (scale > 0 && icon != null) {
-            applyRenderColor();
+            applyRenderColor(guiGraphics);
             drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, height - 2, width - 2, scale, icon, TilingDirection.UP_RIGHT);
-            MekanismRenderer.resetColor();
+            MekanismRenderer.resetColor(guiGraphics);
             if (warning && (scale / (double) (height - 2)) > 0.98) {
                 //If we have a warning and the gauge is entirely filled (or almost completely filled, > 95%), draw a warning vertically next to it
                 int halfWidth = (width - 2) / 2;

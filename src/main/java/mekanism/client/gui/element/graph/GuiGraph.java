@@ -50,18 +50,20 @@ public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
-            RenderSystem.setShaderColor(1, 1, 1, 0.2F + 0.8F * i / size);
+            guiGraphics.setColor(1, 1, 1, 0.2F + 0.8F * i / size);
             guiGraphics.blit(texture, x + i, y + height - relativeHeight, 1, 0, 1, relativeHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
             int hoverIndex = mouseX - getButtonX();
             if (hoverIndex == i && mouseY >= getButtonY() && mouseY < getButtonY() + height) {
-                RenderSystem.setShaderColor(1, 1, 1, 0.5F);
+                guiGraphics.setColor(1, 1, 1, 0.5F);
                 guiGraphics.blit(texture, x + i, y, 2, 0, 1, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-                MekanismRenderer.resetColor();
+                MekanismRenderer.resetColor(guiGraphics);
                 guiGraphics.blit(texture, x + i, y + height - relativeHeight, 0, 1, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+            } else {
+                //Note: We can skip resetting the color if we enter the above if as it will reset it already
+                MekanismRenderer.resetColor(guiGraphics);
             }
 
-            MekanismRenderer.resetColor();
             RenderSystem.disableBlend();
         }
     }

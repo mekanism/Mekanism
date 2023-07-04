@@ -19,8 +19,8 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
     public static GuiSideHolder create(IGuiWrapper gui, int x, int y, int height, boolean left, boolean slotHolder, ColorRegistryObject tabColor) {
         return new GuiSideHolder(gui, x, y, height, left, slotHolder) {
             @Override
-            protected void colorTab() {
-                MekanismRenderer.color(tabColor);
+            protected void colorTab(GuiGraphics guiGraphics) {
+                MekanismRenderer.color(guiGraphics, tabColor);
             }
         };
     }
@@ -43,7 +43,7 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
         }
     }
 
-    protected abstract void colorTab();
+    protected abstract void colorTab(GuiGraphics guiGraphics);
 
     @Override
     public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
@@ -63,7 +63,7 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
     }
 
     private void draw(@NotNull GuiGraphics guiGraphics) {
-        colorTab();
+        colorTab(guiGraphics);
         //Top
         guiGraphics.blit(getResource(), relativeX, relativeY, 0, 0, width, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         //Middle
@@ -73,6 +73,6 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
         }
         //Bottom
         guiGraphics.blit(getResource(), relativeX, relativeY + 4 + middleHeight, 0, 5, width, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-        MekanismRenderer.resetColor();
+        MekanismRenderer.resetColor(guiGraphics);
     }
 }

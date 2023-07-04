@@ -155,7 +155,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISup
                 int xPos = relativeX + 1;
                 int yPos = relativeY + 1;
                 guiGraphics.fill(xPos, yPos, xPos + 16, yPos + 16, INVALID_SLOT_COLOR);
-                MekanismRenderer.resetColor();
+                MekanismRenderer.resetColor(guiGraphics);
                 gui().renderItem(guiGraphics, invalid, xPos, yPos);
             }
         } else if (storedStackSupplier != null) {
@@ -173,13 +173,13 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISup
             int xPos = relativeX + 1;
             int yPos = relativeY + 1;
             guiGraphics.fill(RenderType.guiOverlay(), xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
-            MekanismRenderer.resetColor();
+            MekanismRenderer.resetColor(guiGraphics);
         }
         if (overlayColorSupplier != null) {
             int xPos = relativeX + 1;
             int yPos = relativeY + 1;
             guiGraphics.fill(RenderType.guiOverlay(), xPos, yPos, xPos + 16, yPos + 16, overlayColorSupplier.getAsInt());
-            MekanismRenderer.resetColor();
+            MekanismRenderer.resetColor(guiGraphics);
         }
         if (hovered) {
             //TODO: Should it pass it the proper mouseX and mouseY. Probably, though buttons may have to be redone slightly then

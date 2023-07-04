@@ -57,9 +57,9 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         TYPE mode = modeSupplier.get();
         if (mode != null) {
-            MekanismRenderer.color(mode.getColor());
+            MekanismRenderer.color(guiGraphics, mode.getColor());
             guiGraphics.blit(TEXTURE, getButtonX(), getButtonY(), 0, mode == tile.getMode() ? 22 : 0, getButtonWidth(), getButtonHeight(), 128, 44);
-            MekanismRenderer.resetColor();
+            MekanismRenderer.resetColor(guiGraphics);
         }
     }
 

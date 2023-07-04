@@ -27,7 +27,7 @@ public class FilterSelectButton extends MekanismButton {
     @Override
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (resetColorBeforeRender()) {
-            MekanismRenderer.resetColor();
+            MekanismRenderer.resetColor(guiGraphics);
         }
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();

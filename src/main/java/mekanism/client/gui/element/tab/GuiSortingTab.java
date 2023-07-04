@@ -25,7 +25,7 @@ public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         drawTextScaledBound(guiGraphics, OnOff.of(dataSource.isSorting()).getTextComponent(), relativeX + 3, relativeY + 24, titleTextColor(), 21);
-        MekanismRenderer.resetColor();
+        MekanismRenderer.resetColor(guiGraphics);
     }
 
     @Override
@@ -35,8 +35,8 @@ public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
     }
 
     @Override
-    protected void colorTab() {
-        MekanismRenderer.color(SpecialColors.TAB_FACTORY_SORT);
+    protected void colorTab(GuiGraphics guiGraphics) {
+        MekanismRenderer.color(guiGraphics, SpecialColors.TAB_FACTORY_SORT);
     }
 
     @Override

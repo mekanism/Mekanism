@@ -191,7 +191,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
         tessellator.end();
         //Reset blit and fill gradient states
         RenderSystem.disableBlend();
-        MekanismRenderer.resetColor();
+        MekanismRenderer.resetColor(guiGraphics);
     }
 
     public interface ColorDetails {

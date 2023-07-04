@@ -55,7 +55,7 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
         return tooltips;
     }
 
-    protected abstract void applyRenderColor(STACK stack);
+    protected abstract void applyRenderColor(GuiGraphics guiGraphics, STACK stack);
 
     protected abstract TextureAtlasSprite getIcon(STACK stack);
 
@@ -65,14 +65,14 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
         if (!isEmpty(stored)) {
             int displayInt = (int) (handlerLevel * ((horizontal ? width : height) - 2));
             if (displayInt > 0) {
-                applyRenderColor(stored);
+                applyRenderColor(guiGraphics, stored);
                 TextureAtlasSprite icon = getIcon(stored);
                 if (horizontal) {
                     drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, height - 2, displayInt, height - 2, icon, TilingDirection.DOWN_RIGHT);
                 } else {
                     drawTiledSprite(guiGraphics, relativeX + 1, relativeY + 1, height - 2, width - 2, displayInt, icon, TilingDirection.DOWN_RIGHT);
                 }
-                MekanismRenderer.resetColor();
+                MekanismRenderer.resetColor(guiGraphics);
             }
         }
     }

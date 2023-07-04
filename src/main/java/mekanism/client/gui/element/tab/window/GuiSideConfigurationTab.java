@@ -27,8 +27,8 @@ public class GuiSideConfigurationTab<TILE extends TileEntityMekanism & ISideConf
     }
 
     @Override
-    protected void colorTab() {
-        MekanismRenderer.color(SpecialColors.TAB_CONFIGURATION);
+    protected void colorTab(GuiGraphics guiGraphics) {
+        MekanismRenderer.color(guiGraphics, SpecialColors.TAB_CONFIGURATION);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -157,8 +156,8 @@ public class MekanismRenderer {
     }
 
     //Color
-    public static void resetColor() {
-        RenderSystem.setShaderColor(1, 1, 1, 1);
+    public static void resetColor(GuiGraphics guiGraphics) {//TODO - 1.20: Re-evaluate uses as some things like fill may no longer have minor gl leaks
+        guiGraphics.setColor(1, 1, 1, 1);
     }
 
     public static float getRed(int color) {
@@ -177,48 +176,48 @@ public class MekanismRenderer {
         return FastColor.ARGB32.alpha(color) / 255.0F;
     }
 
-    public static void color(int color) {
-        RenderSystem.setShaderColor(getRed(color), getGreen(color), getBlue(color), getAlpha(color));
+    public static void color(GuiGraphics guiGraphics, int color) {
+        guiGraphics.setColor(getRed(color), getGreen(color), getBlue(color), getAlpha(color));
     }
 
-    public static void color(ColorRegistryObject colorRO) {
-        color(colorRO.get());
+    public static void color(GuiGraphics guiGraphics, ColorRegistryObject colorRO) {
+        color(guiGraphics, colorRO.get());
     }
 
-    public static void color(Color color) {
-        RenderSystem.setShaderColor(color.rf(), color.gf(), color.bf(), color.af());
+    public static void color(GuiGraphics guiGraphics, Color color) {
+        guiGraphics.setColor(color.rf(), color.gf(), color.bf(), color.af());
     }
 
-    public static void color(@NotNull FluidStack fluid) {
+    public static void color(GuiGraphics guiGraphics, @NotNull FluidStack fluid) {
         if (!fluid.isEmpty()) {
-            color(IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid));
+            color(guiGraphics, IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid));
         }
     }
 
-    public static void color(@NotNull ChemicalStack<?> chemicalStack) {
+    public static void color(GuiGraphics guiGraphics, @NotNull ChemicalStack<?> chemicalStack) {
         if (!chemicalStack.isEmpty()) {
-            color(chemicalStack.getType());
+            color(guiGraphics, chemicalStack.getType());
         }
     }
 
-    public static void color(@NotNull Chemical<?> chemical) {
+    public static void color(GuiGraphics guiGraphics, @NotNull Chemical<?> chemical) {
         if (!chemical.isEmptyType()) {
             int color = chemical.getTint();
-            RenderSystem.setShaderColor(getRed(color), getGreen(color), getBlue(color), 1);
+            guiGraphics.setColor(getRed(color), getGreen(color), getBlue(color), 1);
         }
     }
 
-    public static void color(@NotNull BaseTier tier) {
-        color(tier.getColor());
+    public static void color(GuiGraphics guiGraphics, @NotNull BaseTier tier) {
+        color(guiGraphics, tier.getColor());
     }
 
-    public static void color(@Nullable EnumColor color) {
-        color(color, 1.0F);
+    public static void color(GuiGraphics guiGraphics, @Nullable EnumColor color) {
+        color(guiGraphics, color, 1.0F);
     }
 
-    public static void color(@Nullable EnumColor color, float alpha) {
+    public static void color(GuiGraphics guiGraphics, @Nullable EnumColor color, float alpha) {
         if (color != null) {
-            RenderSystem.setShaderColor(color.getColor(0), color.getColor(1), color.getColor(2), alpha);
+            guiGraphics.setColor(color.getColor(0), color.getColor(1), color.getColor(2), alpha);
         }
     }
 

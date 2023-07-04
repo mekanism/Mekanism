@@ -27,13 +27,13 @@ public class TranslationButton extends MekanismButton {
     @Override
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (colorSupplier == null) {
-            MekanismRenderer.resetColor();
+            MekanismRenderer.resetColor(guiGraphics);
             super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
             return;
         }
-        MekanismRenderer.color(colorSupplier.get());
+        MekanismRenderer.color(guiGraphics, colorSupplier.get());
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        MekanismRenderer.resetColor();
+        MekanismRenderer.resetColor(guiGraphics);
     }
 
     @Override

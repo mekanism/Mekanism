@@ -57,8 +57,8 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable ICapabili
     }
 
     @Override
-    protected void colorTab() {
-        MekanismRenderer.color(SpecialColors.TAB_SECURITY);
+    protected void colorTab(GuiGraphics guiGraphics) {
+        MekanismRenderer.color(guiGraphics, SpecialColors.TAB_SECURITY);
     }
 
     @Override

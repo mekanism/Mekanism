@@ -15,6 +15,7 @@ import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -55,8 +56,8 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
     }
 
     @Override
-    protected void applyRenderColor(STACK stack) {
-        MekanismRenderer.color(stack);
+    protected void applyRenderColor(GuiGraphics guiGraphics, STACK stack) {
+        MekanismRenderer.color(guiGraphics, stack);
     }
 
     @Override

@@ -28,7 +28,7 @@ public abstract class GuiTabElementType<TILE extends BlockEntity, TAB extends En
     }
 
     @Override
-    protected void colorTab() {
-        MekanismRenderer.color(tabType.getTabColor());
+    protected void colorTab(GuiGraphics guiGraphics) {
+        MekanismRenderer.color(guiGraphics, tabType.getTabColor());
     }
 }

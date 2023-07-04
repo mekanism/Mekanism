@@ -9,6 +9,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.common.lib.transmitter.TransmissionType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -54,9 +55,9 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
     }
 
     @Override
-    protected void applyRenderColor() {
-        gasGauge.applyRenderColor();
-        fluidGauge.applyRenderColor();
+    protected void applyRenderColor(GuiGraphics guiGraphics) {
+        gasGauge.applyRenderColor(guiGraphics);
+        fluidGauge.applyRenderColor(guiGraphics);
     }
 
     @Override

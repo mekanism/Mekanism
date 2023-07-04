@@ -41,13 +41,13 @@ public class BasicColorButton extends MekanismButton {
             double[] hsv = c.hsvArray();
             hsv[1] = Math.max(0, hsv[1] - 0.25F);
             hsv[2] = Math.min(1, hsv[2] + 0.4F);
-            MekanismRenderer.color(Color.hsv(hsv[0], hsv[1], hsv[2]));
+            MekanismRenderer.color(guiGraphics, Color.hsv(hsv[0], hsv[1], hsv[2]));
         } else {
-            MekanismRenderer.resetColor();
+            MekanismRenderer.resetColor(guiGraphics);
         }
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         if (doColor) {
-            MekanismRenderer.resetColor();
+            MekanismRenderer.resetColor(guiGraphics);
         }
     }
 

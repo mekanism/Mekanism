@@ -12,6 +12,7 @@ import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
 import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.lib.transmitter.TransmissionType;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -76,10 +77,10 @@ public class GuiMergedChemicalTankGauge<HANDLER extends IGasTracker & IInfusionT
     }
 
     @Override
-    protected void applyRenderColor() {
+    protected void applyRenderColor(GuiGraphics guiGraphics) {
         GuiTankGauge<?, ?> currentGauge = getCurrentGaugeNoFallback();
         if (currentGauge != null) {
-            currentGauge.applyRenderColor();
+            currentGauge.applyRenderColor(guiGraphics);
         }
     }
 

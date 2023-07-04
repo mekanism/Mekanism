@@ -81,7 +81,7 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
             int slotStartX = relativeX + slotX * 18 + 1, slotStartY = relativeY + slotY * 18 + 1;
             if (xAxis >= slotStartX && xAxis < slotStartX + 16 && yAxis >= slotStartY && yAxis < slotStartY + 16 && checkWindows(mouseX, mouseY)) {
                 guiGraphics.fill(RenderType.guiOverlay(), slotStartX, slotStartY, slotStartX + 16, slotStartY + 16, GuiSlot.DEFAULT_HOVER_COLOR);
-                MekanismRenderer.resetColor();
+                MekanismRenderer.resetColor(guiGraphics);
             }
         }
     }
@@ -175,7 +175,7 @@ public class GuiSlotScroll extends GuiElement implements IJEIIngredientHelper {
     private void renderSlotText(GuiGraphics guiGraphics, String text, int x, int y) {
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
-        MekanismRenderer.resetColor();
+        MekanismRenderer.resetColor(guiGraphics);
         float scale = 0.6F;
         int width = getFont().width(text);
         //If we need a lower scale due to having a lot of text, calculate it

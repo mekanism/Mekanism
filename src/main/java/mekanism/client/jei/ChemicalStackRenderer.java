@@ -61,12 +61,12 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
                 desiredHeight = height;
             }
             Chemical<?> chemical = stack.getType();
-            MekanismRenderer.color(chemical);
+            MekanismRenderer.color(guiGraphics, chemical);
             //Tile upwards and to the right as the majority of things we render are gauges which look better when tiling upwards
             //Note: Blend is handled by JEI
-            GuiUtils.drawTiledSprite(guiGraphics.pose(), 0, 0, height, width, desiredHeight, MekanismRenderer.getSprite(chemical.getIcon()),
+            GuiUtils.drawTiledSprite(guiGraphics, 0, 0, height, width, desiredHeight, MekanismRenderer.getSprite(chemical.getIcon()),
                   TEXTURE_SIZE, TEXTURE_SIZE, 100, TilingDirection.UP_RIGHT, false);
-            MekanismRenderer.resetColor();
+            MekanismRenderer.resetColor(guiGraphics);
         }
     }
 

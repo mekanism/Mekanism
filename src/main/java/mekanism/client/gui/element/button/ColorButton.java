@@ -31,7 +31,7 @@ public class ColorButton extends MekanismButton {
         EnumColor color = colorSupplier.get();
         if (color != null) {
             guiGraphics.fill(getButtonX(), getButtonY(), getButtonX() + getButtonWidth(), getButtonY() + getButtonHeight(), MekanismRenderer.getColorARGB(color, 1));
-            MekanismRenderer.resetColor();
+            MekanismRenderer.resetColor(guiGraphics);
         }
     }
 }

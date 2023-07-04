@@ -215,7 +215,7 @@ public class GuiTextField extends GuiElement {
             textField.render(guiGraphics, mouseX, mouseY, partialTicks);
         }
         pose.popPose();
-        MekanismRenderer.resetColor();
+        MekanismRenderer.resetColor(guiGraphics);
         if (iconType != null) {
             guiGraphics.blit(iconType.getIcon(), relativeX + 2, relativeY + (height / 2) - (int) Math.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
         }

@@ -142,9 +142,9 @@ public class HUDRenderer {
     private void renderHUDElement(Font font, GuiGraphics guiGraphics, int x, int y, IHUDElement element, int color, boolean iconRight) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        MekanismRenderer.color(color);
+        MekanismRenderer.color(guiGraphics, color);
         guiGraphics.blit(element.getIcon(), iconRight ? x + font.width(element.getText()) + 2 : x, y, 0, 0, 16, 16, 16, 16);
-        MekanismRenderer.resetColor();
+        MekanismRenderer.resetColor(guiGraphics);
         guiGraphics.drawString(font, element.getText(), iconRight ? x : x + 18, y + 5, element.getColor(), false);
     }
 
@@ -170,13 +170,13 @@ public class HUDRenderer {
         pose.mulPose(Axis.ZP.rotationDegrees(angle));
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        MekanismRenderer.color(color);
+        MekanismRenderer.color(guiGraphics, color);
         guiGraphics.blit(COMPASS, -50, -50, 100, 100, 0, 0, 256, 256, 256, 256);
         rotateStr(font, guiGraphics, MekanismLang.NORTH_SHORT, angle, 0, color);
         rotateStr(font, guiGraphics, MekanismLang.EAST_SHORT, angle, 90, color);
         rotateStr(font, guiGraphics, MekanismLang.SOUTH_SHORT, angle, 180, color);
         rotateStr(font, guiGraphics, MekanismLang.WEST_SHORT, angle, 270, color);
-        MekanismRenderer.resetColor();
+        MekanismRenderer.resetColor(guiGraphics);
         pose.popPose();
         pose.popPose();
     }

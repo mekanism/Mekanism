@@ -6,6 +6,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -58,8 +59,8 @@ public class ChemicalElement extends LookingAtElement {
     }
 
     @Override
-    protected boolean applyRenderColor() {
-        MekanismRenderer.color(stored.getType());
+    protected boolean applyRenderColor(GuiGraphics guiGraphics) {
+        MekanismRenderer.color(guiGraphics, stored.getType());
         return true;
     }
 }

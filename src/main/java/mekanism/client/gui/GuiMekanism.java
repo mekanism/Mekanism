@@ -551,7 +551,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
-        MekanismRenderer.resetColor();
+        MekanismRenderer.resetColor(guiGraphics);
         if (width < 8 || height < 8) {
             Mekanism.logger.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
             return;

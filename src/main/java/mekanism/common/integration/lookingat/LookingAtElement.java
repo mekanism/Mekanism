@@ -32,11 +32,11 @@ public abstract class LookingAtElement {
         if (icon != null) {
             int scale = getScaledLevel(width - 2);
             if (scale > 0) {
-                boolean colored = applyRenderColor();
-                GuiUtils.drawTiledSprite(guiGraphics.pose(), x + 1, y + 1, height - 2, scale, height - 2, icon,
+                boolean colored = applyRenderColor(guiGraphics);
+                GuiUtils.drawTiledSprite(guiGraphics, x + 1, y + 1, height - 2, scale, height - 2, icon,
                       16, 16, 0, TilingDirection.DOWN_RIGHT);
                 if (colored) {
-                    MekanismRenderer.resetColor();
+                    MekanismRenderer.resetColor(guiGraphics);
                 }
             }
         }
@@ -58,7 +58,7 @@ public abstract class LookingAtElement {
 
     public abstract Component getText();
 
-    protected boolean applyRenderColor() {
+    protected boolean applyRenderColor(GuiGraphics guiGraphics) {
         return false;
     }
 
@@ -77,6 +77,6 @@ public abstract class LookingAtElement {
             pose.popPose();
         }
         //Make sure the color does not leak from having drawn the string
-        MekanismRenderer.resetColor();
+        MekanismRenderer.resetColor(guiGraphics);
     }
 }

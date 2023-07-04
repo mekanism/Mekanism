@@ -33,8 +33,8 @@ public class GuiConfigTypeTab extends GuiInsetElement<Void> {
     }
 
     @Override
-    protected void colorTab() {
-        MekanismRenderer.color(switch (transmission) {
+    protected void colorTab(GuiGraphics guiGraphics) {
+        MekanismRenderer.color(guiGraphics, switch (transmission) {
             case ENERGY -> SpecialColors.TAB_ENERGY_CONFIG;
             case FLUID -> SpecialColors.TAB_FLUID_CONFIG;
             case GAS -> SpecialColors.TAB_GAS_CONFIG;

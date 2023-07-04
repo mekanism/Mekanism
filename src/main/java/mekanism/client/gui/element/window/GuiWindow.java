@@ -153,11 +153,11 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         if (isFocusOverlay()) {
             MekanismRenderer.renderColorOverlay(guiGraphics, -getX(), -getY(), OVERLAY_COLOR.rgba());
         } else {
-            RenderSystem.setShaderColor(1, 1, 1, 0.75F);
+            guiGraphics.setColor(1, 1, 1, 0.75F);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             GuiUtils.renderBackgroundTexture(guiGraphics, GuiMekanism.SHADOW, 4, 4, relativeX - 3, relativeY - 3, width + 6, height + 6, 256, 256);
-            MekanismRenderer.resetColor();
+            MekanismRenderer.resetColor(guiGraphics);
         }
         renderBackgroundTexture(guiGraphics, getResource(), 4, 4);
     }
@@ -192,11 +192,12 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     public void renderBlur(GuiGraphics guiGraphics) {
-        RenderSystem.setShaderColor(1, 1, 1, 0.3F);
+        guiGraphics.setColor(1, 1, 1, 0.3F);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
+        //TODO - 1.20: Fix this as it doesn't blur over the items like I think it used to
         GuiUtils.renderBackgroundTexture(guiGraphics, GuiMekanism.BLUR, 4, 4, relativeX, relativeY, width, height, 256, 256);
-        MekanismRenderer.resetColor();
+        MekanismRenderer.resetColor(guiGraphics);
     }
 
     public void close() {

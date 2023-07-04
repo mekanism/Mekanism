@@ -103,7 +103,7 @@ public class GuiRadialSelector extends Screen {
         // other bits may be drawn by hovering or current selection, it is not practical to do so due
         // to floating point precision causing some values to have gaps in the torus, and also the light
         // colors occasionally being harder to see without the added back layer torus
-        RenderSystem.setShaderColor(0.3F, 0.3F, 0.3F, 0.5F);
+        guiGraphics.setColor(0.3F, 0.3F, 0.3F, 0.5F);
         drawTorus(guiGraphics, 0, 360);
 
         MODE current = getCurrent(radialData);
@@ -119,9 +119,9 @@ public class GuiRadialSelector extends Screen {
             // draw current selected if any is selected
             EnumColor color = current.color();
             if (color == null) {
-                RenderSystem.setShaderColor(0.4F, 0.4F, 0.4F, 0.7F);
+                guiGraphics.setColor(0.4F, 0.4F, 0.4F, 0.7F);
             } else {
-                MekanismRenderer.color(color, 0.3F);
+                MekanismRenderer.color(guiGraphics, color, 0.3F);
             }
             float startAngle = -90F + 360F * (-0.5F + section) / activeModes;
             drawTorus(guiGraphics, startAngle, angleSize);
@@ -135,7 +135,7 @@ public class GuiRadialSelector extends Screen {
             // draw mouse selection highlight
             float angle = (float) (Mth.RAD_TO_DEG * Mth.atan2(yDiff, xDiff));
             float modeSize = 180F / activeModes;
-            RenderSystem.setShaderColor(0.8F, 0.8F, 0.8F, 0.3F);
+            guiGraphics.setColor(0.8F, 0.8F, 0.8F, 0.3F);
             drawTorus(guiGraphics, angle - modeSize, angleSize);
 
             float selectionAngle = StatUtils.wrapDegrees(angle + modeSize + 90F);
@@ -143,7 +143,7 @@ public class GuiRadialSelector extends Screen {
             selection = modes.get(selectionDrawnPos);
 
             // draw hovered selection
-            RenderSystem.setShaderColor(0.6F, 0.6F, 0.6F, 0.7F);
+            guiGraphics.setColor(0.6F, 0.6F, 0.6F, 0.7F);
             drawTorus(guiGraphics, -90F + 360F * (-0.5F + selectionDrawnPos) / activeModes, angleSize);
         } else {
             selection = null;
@@ -155,12 +155,12 @@ public class GuiRadialSelector extends Screen {
         if (!parents.isEmpty()) {
             overBackButton = distanceFromCenter <= SELECT_RADIUS_WITH_PARENT;
             if (overBackButton) {
-                RenderSystem.setShaderColor(0.8F, 0.8F, 0.8F, 0.3F);
+                guiGraphics.setColor(0.8F, 0.8F, 0.8F, 0.3F);
             } else {
-                RenderSystem.setShaderColor(0.3F, 0.3F, 0.3F, 0.5F);
+                guiGraphics.setColor(0.3F, 0.3F, 0.3F, 0.5F);
             }
             drawTorus(guiGraphics, 0, 360, 0, SELECT_RADIUS_WITH_PARENT);
-            MekanismRenderer.resetColor();
+            MekanismRenderer.resetColor(guiGraphics);
             // draw icon
             guiGraphics.blit(MekanismUtils.getResource(ResourceType.GUI_RADIAL, "back.png"), -12, -18, 24, 24, 0, 0, 18, 18, 18, 18);
             textToDraw.add(new PositionedText(0, 0, MekanismLang.BACK.translate()));
@@ -168,7 +168,7 @@ public class GuiRadialSelector extends Screen {
             overBackButton = false;
         }
 
-        MekanismRenderer.resetColor();
+        MekanismRenderer.resetColor(guiGraphics);
 
         // Icons
         int position = 0;
@@ -197,7 +197,7 @@ public class GuiRadialSelector extends Screen {
             pose.popPose();
         }
 
-        MekanismRenderer.resetColor();
+        MekanismRenderer.resetColor(guiGraphics);
         pose.popPose();
     }
 

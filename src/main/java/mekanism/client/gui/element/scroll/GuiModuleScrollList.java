@@ -151,7 +151,7 @@ public class GuiModuleScrollList extends GuiScrollList {
                 j = 0;
             }
             guiGraphics.blit(MODULE_SELECTION, relativeX + 1, relativeY + 1 + multipliedElement, 0, elementHeight * j, TEXTURE_WIDTH, elementHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-            MekanismRenderer.resetColor();
+            MekanismRenderer.resetColor(guiGraphics);
         });
         //Note: This needs to be in its own loop as rendering the items is likely to cause the texture manager to be bound to a different texture
         // and thus would make the selection area background get all screwed up
