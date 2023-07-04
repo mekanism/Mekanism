@@ -783,6 +783,14 @@ public enum MekanismLang implements ILangEntry {
     RADIAL_EXCAVATION_SPEED_FAST("radial", "excavation_speed.fast"),
     RADIAL_EXCAVATION_SPEED_SUPER("radial", "excavation_speed.super_fast"),
     RADIAL_EXCAVATION_SPEED_EXTREME("radial", "excavation_speed.extreme"),
+
+    RADIAL_BLASTING_POWER("radial", "blasting_power"),
+    RADIAL_BLASTING_POWER_OFF("radial", "blasting_power.off"),
+    RADIAL_BLASTING_POWER_LOW("radial", "blasting_power.low"),
+    RADIAL_BLASTING_POWER_MED("radial", "blasting_power.med"),
+    RADIAL_BLASTING_POWER_HIGH("radial", "blasting_power.high"),
+    RADIAL_BLASTING_POWER_EXTREME("radial", "blasting_power.extreme"),
+
     //Modules
     MODULE_ENABLED("module", "enabled"),
     MODULE_ENABLED_LOWER("module", "enabled_lower"),
