@@ -42,6 +42,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -161,6 +162,10 @@ public abstract class BaseTagProvider implements DataProvider {
 
     protected MekanismTagBuilder<DamageType, ?> getDamageTypeBuilder(TagKey<DamageType> tag) {
         return getBuilder(Registries.DAMAGE_TYPE, tag);
+    }
+
+    protected MekanismTagBuilder<Biome, ?> getBiomeBuilder(TagKey<Biome> tag) {
+        return getBuilder(Registries.BIOME, tag);
     }
 
     protected IntrinsicMekanismTagBuilder<Gas> getGasBuilder(TagKey<Gas> tag) {

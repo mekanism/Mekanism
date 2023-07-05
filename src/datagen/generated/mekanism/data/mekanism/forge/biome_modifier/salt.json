@@ -1,6 +1,6 @@
 {
   "type": "forge:add_features",
-  "biomes": "#minecraft:is_overworld",
+  "biomes": "#mekanism:spawn_ores",
   "features": "mekanism:salt",
   "step": "underground_ores"
 }

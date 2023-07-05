@@ -13,6 +13,7 @@ import mekanism.common.registries.MekanismDamageTypes.MekanismDamageType;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.resource.ore.OreType.OreVeinType;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.world.ConfigurableConstantInt;
 import mekanism.common.world.DisableableFeaturePlacement;
@@ -29,7 +30,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.level.biome.Biome;
@@ -110,9 +110,7 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
               ));
           })
           .add(ForgeRegistries.Keys.BIOME_MODIFIERS, context -> {
-              //TODO - 1.20: Replace the overworld tag check with a mekanism biome tag that just defaults to containing the overworld
-              // that way it will be easier for people to add mining dims to have our ores in them
-              HolderSet.Named<Biome> isOverworldTag = context.lookup(Registries.BIOME).getOrThrow(BiomeTags.IS_OVERWORLD);
+              HolderSet.Named<Biome> isOverworldTag = context.lookup(Registries.BIOME).getOrThrow(MekanismTags.Biomes.SPAWN_ORES);
               HolderGetter<PlacedFeature> placedFeatures = context.lookup(Registries.PLACED_FEATURE);
               for (OreType type : EnumUtils.ORE_TYPES) {
                   int features = type.getBaseConfigs().size();

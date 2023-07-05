@@ -25,6 +25,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
@@ -38,6 +39,7 @@ public class MekanismTags {
     public static void init() {
         Items.init();
         Blocks.init();
+        Biomes.init();
         DamageTypes.init();
         Fluids.init();
         Gases.init();
@@ -248,6 +250,21 @@ public class MekanismTags {
 
         private static TagKey<Block> tag(String name) {
             return BlockTags.create(Mekanism.rl(name));
+        }
+    }
+
+    public static class Biomes {
+
+        private static void init() {
+        }
+
+        private Biomes() {
+        }
+
+        public static final TagKey<Biome> SPAWN_ORES = tag("spawn_ores");
+
+        private static TagKey<Biome> tag(String name) {
+            return TagUtils.createKey(Registries.BIOME, Mekanism.rl(name));
         }
     }
 

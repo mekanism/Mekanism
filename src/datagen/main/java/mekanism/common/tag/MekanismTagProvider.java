@@ -35,6 +35,7 @@ import mekanism.common.tags.TagUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EntityTypeTags;
@@ -92,6 +93,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addNuggets();
         addDusts();
         addGems();
+        addBiomes();
         addDamageTypes();
         addFluids();
         addGameEvents();
@@ -488,6 +490,10 @@ public class MekanismTagProvider extends BaseTagProvider {
               Blocks.LIGHT_GRAY_CONCRETE_POWDER, Blocks.CYAN_CONCRETE_POWDER, Blocks.PURPLE_CONCRETE_POWDER, Blocks.BLUE_CONCRETE_POWDER, Blocks.BROWN_CONCRETE_POWDER,
               Blocks.GREEN_CONCRETE_POWDER, Blocks.RED_CONCRETE_POWDER, Blocks.BLACK_CONCRETE_POWDER);
         getItemBuilder(MekanismTags.Items.COLORABLE_BANNERS).addTyped(color -> BannerBlock.byColor(color).asItem(), DyeColor.values());
+    }
+
+    private void addBiomes() {
+        getBiomeBuilder(MekanismTags.Biomes.SPAWN_ORES).add(BiomeTags.IS_OVERWORLD);
     }
 
     private void addDamageTypes() {

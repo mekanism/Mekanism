@@ -1,6 +1,6 @@
 {
   "type": "forge:add_features",
-  "biomes": "#minecraft:is_overworld",
+  "biomes": "#mekanism:spawn_ores",
   "features": [
     "mekanism:ore_osmium_upper",
     "mekanism:ore_osmium_middle",
