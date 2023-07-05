@@ -36,6 +36,7 @@
   "block.mekanismgenerators.turbine_vent": "蒸気排出口",
   "block.mekanismgenerators.wind_generator": "風力発電機",
   "constants.mekanismgenerators.mod_name": "Mekanism: Generators",
+  "constants.mekanismgenerators.pack_description": "Mekanism: Generatorsのリソース",
   "container.mekanismgenerators.advanced_solar_generator": "発展型太陽光発電機",
   "container.mekanismgenerators.bio_generator": "バイオ発電機",
   "container.mekanismgenerators.fission_reactor_logic_adapter": "核分裂炉論理アダプター",
