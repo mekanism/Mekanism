@@ -10,7 +10,6 @@ import mekanism.common.block.BlockBounding;
 import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -52,11 +51,7 @@ public class CreativeTabDeferredRegister extends WrappedDeferredRegister<Creativ
             CreativeModeTab.Builder builder = CreativeModeTab.builder()
                   .title(title.translate())
                   .icon(icon::getItemStack)
-                  .withTabFactory(MekanismCreativeTab::new)
-                  //TODO - 1.20: Remove this once https://github.com/MinecraftForge/MinecraftForge/pull/9612 is merged
-                  .withTabsBefore(CreativeModeTabs.BUILDING_BLOCKS, CreativeModeTabs.COLORED_BLOCKS, CreativeModeTabs.NATURAL_BLOCKS, CreativeModeTabs.FUNCTIONAL_BLOCKS,
-                        CreativeModeTabs.REDSTONE_BLOCKS, CreativeModeTabs.TOOLS_AND_UTILITIES, CreativeModeTabs.COMBAT, CreativeModeTabs.FOOD_AND_DRINKS,
-                        CreativeModeTabs.INGREDIENTS, CreativeModeTabs.SPAWN_EGGS);
+                  .withTabFactory(MekanismCreativeTab::new);
             return operator.apply(builder).build();
         }, CreativeTabRegistryObject::new);
     }
