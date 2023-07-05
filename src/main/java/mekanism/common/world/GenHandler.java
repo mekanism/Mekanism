@@ -10,6 +10,8 @@ import mekanism.common.resource.ore.OreType.OreVeinType;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.SectionPos;
@@ -34,6 +36,16 @@ import org.jetbrains.annotations.Nullable;
 public class GenHandler {
 
     private GenHandler() {
+    }
+
+    @Nullable
+    private static List<MekFeature> cachedFeatures;
+
+    /**
+     * Call to clear the cached holder lookup of placed features.
+     */
+    public static void reset() {
+        cachedFeatures = null;
     }
 
     /**
@@ -63,7 +75,7 @@ public class GenHandler {
             } else {
                 featureIndex = feature -> -1;
             }
-            List<MekFeature> features = gatherFeatures(world.registryAccess());
+            List<MekFeature> features = getMekanismFeatures(world.registryAccess());
             for (MekFeature feature : features) {
                 generated |= place(world, chunkGenerator, blockPos, random, decorationSeed, decorationStep, featureIndex, feature);
             }
@@ -74,51 +86,54 @@ public class GenHandler {
 
     private static boolean place(WorldGenLevel world, ChunkGenerator chunkGenerator, BlockPos blockPos, WorldgenRandom random,
           long decorationSeed, int decorationStep, ToIntFunction<PlacedFeature> featureIndex, MekFeature feature) {
-        PlacedFeature baseFeature = feature.feature();
+        PlacedFeature baseFeature = feature.feature().get();
         //Check the index of the source feature instead of the retrogen feature
         random.setFeatureSeed(decorationSeed, featureIndex.applyAsInt(baseFeature), decorationStep);
         world.setCurrentlyGenerating(feature::retrogenKey);
         //Note: We call placeWithContext directly to allow for doing a placeWithBiomeCheck, except by having the context pretend
         // it is the non retrogen feature which actually is added to the various biomes
-        return feature.retrogen().placeWithContext(new PlacementContext(world, chunkGenerator, Optional.of(baseFeature)), random, blockPos);
+        return feature.retrogen().get().placeWithContext(new PlacementContext(world, chunkGenerator, Optional.of(baseFeature)), random, blockPos);
     }
 
-    //TODO - 1.20: Cache this somehow
-    private static List<MekFeature> gatherFeatures(RegistryAccess registryAccess) {
-        List<MekFeature> mekFeatures = new ArrayList<>();
+    private static List<MekFeature> getMekanismFeatures(RegistryAccess registryAccess) {
+        if (cachedFeatures != null) {
+            return cachedFeatures;
+        }
+        cachedFeatures = new ArrayList<>();
         Registry<PlacedFeature> placedFeatures = registryAccess.registryOrThrow(Registries.PLACED_FEATURE);
         for (OreType type : EnumUtils.ORE_TYPES) {
             for (int vein = 0, features = type.getBaseConfigs().size(); vein < features; vein++) {
                 OreVeinType oreVeinType = new OreVeinType(type, vein);
                 MekFeature mekFeature = MekFeature.create(placedFeatures, Mekanism.rl(oreVeinType.name()));
                 if (mekFeature != null) {
-                    mekFeatures.add(mekFeature);
+                    cachedFeatures.add(mekFeature);
                 }
             }
         }
         MekFeature saltFeature = MekFeature.create(placedFeatures, Mekanism.rl("salt"));
         if (saltFeature != null) {
-            mekFeatures.add(saltFeature);
+            cachedFeatures.add(saltFeature);
         }
-        return mekFeatures;
+        return cachedFeatures;
     }
 
-    private record MekFeature(PlacedFeature feature, PlacedFeature retrogen, String retrogenKey) {
+    private record MekFeature(Holder<PlacedFeature> feature, Holder<PlacedFeature> retrogen, String retrogenKey) {
 
         @Nullable
         public static MekFeature create(Registry<PlacedFeature> placedFeatures, ResourceLocation name) {
-            PlacedFeature placedFeature = placedFeatures.get(name);
-            if (placedFeature == null) {
+            Optional<Reference<PlacedFeature>> placedFeature = placedFeatures.getHolder(ResourceKey.create(Registries.PLACED_FEATURE, name));
+            if (placedFeature.isEmpty()) {
                 Mekanism.logger.error("Failed to retrieve placed feature ({}).", name);
                 return null;
             }
             ResourceLocation retrogenName = name.withSuffix("_retrogen");
-            PlacedFeature retrogenFeature = placedFeatures.get(retrogenName);
-            if (retrogenFeature == null) {
+            ResourceKey<PlacedFeature> retrogenKey = ResourceKey.create(Registries.PLACED_FEATURE, retrogenName);
+            Optional<Reference<PlacedFeature>> retrogenFeature = placedFeatures.getHolder(retrogenKey);
+            if (retrogenFeature.isEmpty()) {
                 Mekanism.logger.error("Failed to retrieve retrogen placed feature ({}).", retrogenName);
                 return null;
             }
-            return new MekFeature(placedFeature, retrogenFeature, ResourceKey.create(Registries.PLACED_FEATURE, retrogenName).toString());
+            return new MekFeature(placedFeature.get(), retrogenFeature.get(), retrogenKey.toString());
         }
     }
 }

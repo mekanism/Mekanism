@@ -95,6 +95,7 @@ import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.component.TileComponentChunkLoader.ChunkValidationCallback;
 import mekanism.common.tile.machine.TileEntityOredictionificator.ODConfigValueInvalidationListener;
+import mekanism.common.world.GenHandler;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
@@ -320,6 +321,7 @@ public class Mekanism {
         TransporterManager.reset();
         PathfinderCache.reset();
         TransmitterNetworkRegistry.reset();
+        GenHandler.reset();
     }
 
     private void imcQueue(InterModEnqueueEvent event) {
