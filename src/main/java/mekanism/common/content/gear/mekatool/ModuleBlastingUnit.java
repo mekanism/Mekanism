@@ -129,14 +129,21 @@ public class ModuleBlastingUnit implements ICustomModule<ModuleBlastingUnit> {
             return radius;
         }
 
+        @NotNull
         @Override
-        public @NotNull Component sliceName() {
+        public Component sliceName() {
             return langEntry.translateColored(color);
         }
 
+        @NotNull
         @Override
-        public @NotNull ResourceLocation icon() {
+        public ResourceLocation icon() {
             return icon;
+        }
+
+        @Override
+        public EnumColor color() {
+            return color;
         }
     }
 }
