@@ -1,9 +1,14 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "ingredient": {
-      "item": "minecraft:pink_tulip"
-    }
+    "ingredient": [
+      {
+        "item": "minecraft:pink_tulip"
+      },
+      {
+        "item": "minecraft:pink_petals"
+      }
+    ]
   },
   "output": {
     "amount": 768,

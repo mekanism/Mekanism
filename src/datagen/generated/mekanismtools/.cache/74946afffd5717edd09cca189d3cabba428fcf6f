@@ -1,4 +1,4 @@
-// 1.20.1	2023-07-03T16:25:32.8276892	Tags: mekanismtools
+// 1.20.1	2023-07-06T11:03:22.3111695	Tags: mekanismtools
 13cf1fe06cf159d32d074144254a0d375f6b20e7 data/forge/tags/blocks/mineable/paxel.json
 1ab0df6429d1970340ec4569317573a4a9eba83b data/forge/tags/items/armors/boots.json
 af96c784f584395bc4a681ca629dd189a19e5e70 data/forge/tags/items/armors/boots/bronze.json
@@ -93,3 +93,4 @@ d0d1c465cdc61d787cfc2a3550b2815245a41cf5 data/minecraft/tags/items/pickaxes.json
 093fcdff8a397f421836cba0e18eca3a8ecba38d data/minecraft/tags/items/shovels.json
 380f44893a403d8cdf9e3f090017286b153a7567 data/minecraft/tags/items/swords.json
 64dc89347621097fba7e74cca9e2170ac678724a data/minecraft/tags/items/tools.json
+24b012fc7c9892521a590536279bdb6bad72db6e data/minecraft/tags/items/trimmable_armor.json

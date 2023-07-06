@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:bamboo_raft"
+    }
+  },
+  "mainOutput": {
+    "count": 5,
+    "item": "minecraft:bamboo_planks"
+  }
+}

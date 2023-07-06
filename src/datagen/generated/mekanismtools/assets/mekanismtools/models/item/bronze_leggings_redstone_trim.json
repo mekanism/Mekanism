@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mekanismtools:item/bronze/leggings",
+    "layer1": "minecraft:trims/items/leggings_trim_redstone"
+  }
+}

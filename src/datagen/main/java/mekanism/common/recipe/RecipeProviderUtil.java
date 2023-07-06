@@ -46,12 +46,12 @@ public class RecipeProviderUtil {
     }
 
     public static void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, @Nullable ItemLike boat,
-          @Nullable ItemLike chestBoat, ItemLike door, ItemLike fenceGate, TagKey<Item> log, ItemLike pressurePlate, ItemLike trapdoor, String name) {
+          @Nullable ItemLike chestBoat, ItemLike door, ItemLike fenceGate, @Nullable TagKey<Item> log, ItemLike pressurePlate, ItemLike trapdoor, String name) {
         addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, chestBoat, door, fenceGate, log, pressurePlate, trapdoor, name, null);
     }
 
     public static void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, @Nullable ItemLike boat,
-          @Nullable ItemLike chestBoat, ItemLike door, ItemLike fenceGate, TagKey<Item> log, ItemLike pressurePlate, ItemLike trapdoor, String name,
+          @Nullable ItemLike chestBoat, ItemLike door, ItemLike fenceGate, @Nullable TagKey<Item> log, ItemLike pressurePlate, ItemLike trapdoor, String name,
           @Nullable ICondition condition) {
         if (boat != null) {
             //Boat
@@ -81,13 +81,15 @@ public class RecipeProviderUtil {
               new ItemStack(Items.STICK, 4),
               1
         ), basePath + "fence_gate/" + name, condition);
-        //Log
-        build(consumer, SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(log),
-              new ItemStack(planks, 6),
-              MekanismItems.SAWDUST.getItemStack(),
-              0.25
-        ), basePath + "log/" + name, condition);
+        if (log != null) {
+            //Log
+            build(consumer, SawmillRecipeBuilder.sawing(
+                  IngredientCreatorAccess.item().from(log),
+                  new ItemStack(planks, 6),
+                  MekanismItems.SAWDUST.getItemStack(),
+                  0.25
+            ), basePath + "log/" + name, condition);
+        }
         //Pressure plate
         build(consumer, SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(pressurePlate),

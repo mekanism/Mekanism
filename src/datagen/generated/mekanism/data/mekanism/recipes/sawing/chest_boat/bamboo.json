@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:bamboo_chest_raft"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:bamboo_raft"
+  },
+  "secondaryChance": 1.0,
+  "secondaryOutput": {
+    "item": "minecraft:chest"
+  }
+}

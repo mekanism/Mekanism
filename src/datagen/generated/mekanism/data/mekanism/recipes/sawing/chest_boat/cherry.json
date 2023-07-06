@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:cherry_chest_boat"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:cherry_boat"
+  },
+  "secondaryChance": 1.0,
+  "secondaryOutput": {
+    "item": "minecraft:chest"
+  }
+}

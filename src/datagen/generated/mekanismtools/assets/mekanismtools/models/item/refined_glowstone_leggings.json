@@ -1,5 +1,67 @@
 {
   "parent": "minecraft:item/generated",
+  "overrides": [
+    {
+      "model": "mekanismtools:item/refined_glowstone_leggings_quartz_trim",
+      "predicate": {
+        "minecraft:trim_type": 0.1
+      }
+    },
+    {
+      "model": "mekanismtools:item/refined_glowstone_leggings_iron_trim",
+      "predicate": {
+        "minecraft:trim_type": 0.2
+      }
+    },
+    {
+      "model": "mekanismtools:item/refined_glowstone_leggings_netherite_trim",
+      "predicate": {
+        "minecraft:trim_type": 0.3
+      }
+    },
+    {
+      "model": "mekanismtools:item/refined_glowstone_leggings_redstone_trim",
+      "predicate": {
+        "minecraft:trim_type": 0.4
+      }
+    },
+    {
+      "model": "mekanismtools:item/refined_glowstone_leggings_copper_trim",
+      "predicate": {
+        "minecraft:trim_type": 0.5
+      }
+    },
+    {
+      "model": "mekanismtools:item/refined_glowstone_leggings_gold_trim",
+      "predicate": {
+        "minecraft:trim_type": 0.6
+      }
+    },
+    {
+      "model": "mekanismtools:item/refined_glowstone_leggings_emerald_trim",
+      "predicate": {
+        "minecraft:trim_type": 0.7
+      }
+    },
+    {
+      "model": "mekanismtools:item/refined_glowstone_leggings_diamond_trim",
+      "predicate": {
+        "minecraft:trim_type": 0.8
+      }
+    },
+    {
+      "model": "mekanismtools:item/refined_glowstone_leggings_lapis_trim",
+      "predicate": {
+        "minecraft:trim_type": 0.9
+      }
+    },
+    {
+      "model": "mekanismtools:item/refined_glowstone_leggings_amethyst_trim",
+      "predicate": {
+        "minecraft:trim_type": 1.0
+      }
+    }
+  ],
   "textures": {
     "layer0": "mekanismtools:item/refined_glowstone/leggings"
   }

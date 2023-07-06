@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:bamboo_block"
+    }
+  },
+  "mainOutput": {
+    "count": 9,
+    "item": "minecraft:bamboo"
+  }
+}

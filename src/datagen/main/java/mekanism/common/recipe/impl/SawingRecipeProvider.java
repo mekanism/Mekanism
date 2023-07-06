@@ -21,20 +21,27 @@ class SawingRecipeProvider implements ISubRecipeProvider {
     public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "sawing/";
         addPrecisionSawmillBedRecipes(consumer, basePath + "bed/");
+        //TODO - 1.20: Do we want to support signs??
         RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.ACACIA_PLANKS, Items.ACACIA_BOAT, Items.ACACIA_CHEST_BOAT, Items.ACACIA_DOOR,
               Blocks.ACACIA_FENCE_GATE, ItemTags.ACACIA_LOGS, Blocks.ACACIA_PRESSURE_PLATE, Blocks.ACACIA_TRAPDOOR, "acacia");
+        //Note: We intentionally do not treat bamboo mosaic as wood as vanilla doesn't seem to do so anywhere
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.BAMBOO_PLANKS, Items.BAMBOO_RAFT, Items.BAMBOO_CHEST_RAFT,
+              Items.BAMBOO_DOOR, Blocks.BAMBOO_FENCE_GATE, null, Blocks.BAMBOO_PRESSURE_PLATE, Blocks.BAMBOO_TRAPDOOR, "bamboo");
         RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.BIRCH_PLANKS, Items.BIRCH_BOAT, Items.BIRCH_CHEST_BOAT, Items.BIRCH_DOOR,
               Blocks.BIRCH_FENCE_GATE, ItemTags.BIRCH_LOGS, Blocks.BIRCH_PRESSURE_PLATE, Blocks.BIRCH_TRAPDOOR, "birch");
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.CHERRY_PLANKS, Items.CHERRY_BOAT, Items.CHERRY_CHEST_BOAT,
+              Items.CHERRY_DOOR, Blocks.CHERRY_FENCE_GATE, ItemTags.CHERRY_LOGS, Blocks.CHERRY_PRESSURE_PLATE, Blocks.CHERRY_TRAPDOOR, "cherry");
         RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.DARK_OAK_PLANKS, Items.DARK_OAK_BOAT, Items.DARK_OAK_CHEST_BOAT,
               Items.DARK_OAK_DOOR, Blocks.DARK_OAK_FENCE_GATE, ItemTags.DARK_OAK_LOGS, Blocks.DARK_OAK_PRESSURE_PLATE, Blocks.DARK_OAK_TRAPDOOR, "dark_oak");
         RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.JUNGLE_PLANKS, Items.JUNGLE_BOAT, Items.JUNGLE_CHEST_BOAT, Items.JUNGLE_DOOR,
               Blocks.JUNGLE_FENCE_GATE, ItemTags.JUNGLE_LOGS, Blocks.JUNGLE_PRESSURE_PLATE, Blocks.JUNGLE_TRAPDOOR, "jungle");
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.MANGROVE_PLANKS, Items.MANGROVE_BOAT, Items.MANGROVE_CHEST_BOAT,
+              Items.MANGROVE_DOOR, Blocks.MANGROVE_FENCE_GATE, ItemTags.MANGROVE_LOGS, Blocks.MANGROVE_PRESSURE_PLATE, Blocks.MANGROVE_TRAPDOOR, "mangrove");
         RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.OAK_PLANKS, Items.OAK_BOAT, Items.OAK_CHEST_BOAT, Items.OAK_DOOR,
               Blocks.OAK_FENCE_GATE, ItemTags.OAK_LOGS, Blocks.OAK_PRESSURE_PLATE, Blocks.OAK_TRAPDOOR, "oak");
         RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.SPRUCE_PLANKS, Items.SPRUCE_BOAT, Items.SPRUCE_CHEST_BOAT, Items.SPRUCE_DOOR,
               Blocks.SPRUCE_FENCE_GATE, ItemTags.SPRUCE_LOGS, Blocks.SPRUCE_PRESSURE_PLATE, Blocks.SPRUCE_TRAPDOOR, "spruce");
-        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.MANGROVE_PLANKS, Items.MANGROVE_BOAT, Items.MANGROVE_CHEST_BOAT,
-              Items.MANGROVE_DOOR, Blocks.MANGROVE_FENCE_GATE, ItemTags.MANGROVE_LOGS, Blocks.MANGROVE_PRESSURE_PLATE, Blocks.MANGROVE_TRAPDOOR, "mangrove");
+
         RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.CRIMSON_PLANKS, null, null, Items.CRIMSON_DOOR,
               Blocks.CRIMSON_FENCE_GATE, ItemTags.CRIMSON_STEMS, Blocks.CRIMSON_PRESSURE_PLATE, Blocks.CRIMSON_TRAPDOOR, "crimson");
         RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.WARPED_PLANKS, null, null, Items.WARPED_DOOR,
@@ -51,6 +58,13 @@ class SawingRecipeProvider implements ISubRecipeProvider {
               new ItemStack(Items.BOOK, 3),
               1
         ).build(consumer, Mekanism.rl(basePath + "bookshelf"));
+        //Chiseled Bookshelf
+        SawmillRecipeBuilder.sawing(
+              IngredientCreatorAccess.item().from(Blocks.CHISELED_BOOKSHELF),
+              new ItemStack(Blocks.OAK_PLANKS, 6),
+              new ItemStack(Blocks.OAK_SLAB, 3),
+              1
+        ).build(consumer, Mekanism.rl(basePath + "chiseled_bookshelf"));
         //Chest
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(Blocks.CHEST),
@@ -170,6 +184,12 @@ class SawingRecipeProvider implements ISubRecipeProvider {
               new ItemStack(Blocks.TRIPWIRE_HOOK),
               0.75
         ).build(consumer, Mekanism.rl(basePath + "trapped_chest"));
+        //Bamboo block
+        SawmillRecipeBuilder.sawing(
+              //Note: We don't use the tag as turning stripped bamboo back into regular bamboo makes no sense
+              IngredientCreatorAccess.item().from(Blocks.BAMBOO_BLOCK),
+              new ItemStack(Items.BAMBOO, 9)
+        ).build(consumer, Mekanism.rl(basePath + "bamboo_block"));
     }
 
     private void addPrecisionSawmillBedRecipes(Consumer<FinishedRecipe> consumer, String basePath) {

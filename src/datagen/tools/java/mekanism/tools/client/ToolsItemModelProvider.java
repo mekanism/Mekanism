@@ -46,7 +46,7 @@ public class ToolsItemModelProvider extends BaseItemModelProvider {
                 texture = modLoc("item/" + name.substring(0, index) + '/' + name.substring(index + 1));
             }
             if (item instanceof ArmorItem) {
-                generated(itemProvider, texture);
+                armorWithTrim(itemProvider, texture);
             } else {
                 handheld(itemProvider, texture);
             }

@@ -1,9 +1,14 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "ingredient": {
-      "item": "minecraft:orange_tulip"
-    }
+    "ingredient": [
+      {
+        "item": "minecraft:orange_tulip"
+      },
+      {
+        "item": "minecraft:torchflower"
+      }
+    ]
   },
   "output": {
     "count": 2,

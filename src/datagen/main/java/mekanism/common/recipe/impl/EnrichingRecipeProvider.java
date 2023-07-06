@@ -412,6 +412,11 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
               )),
               new ItemStack(Items.RED_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "small_red"));
+        //Cyan
+        ItemStackToItemStackRecipeBuilder.enriching(
+              IngredientCreatorAccess.item().from(Blocks.PITCHER_PLANT),
+              new ItemStack(Items.CYAN_DYE, 4)
+        ).build(consumer, Mekanism.rl(basePath + "large_cyan"));
         //Green
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Blocks.CACTUS),
@@ -432,7 +437,10 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
               new ItemStack(Items.PINK_DYE, 4)
         ).build(consumer, Mekanism.rl(basePath + "large_pink"));
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(Blocks.PINK_TULIP),
+              IngredientCreatorAccess.item().from(Ingredient.of(
+                    Blocks.PINK_TULIP,
+                    Blocks.PINK_PETALS
+              )),
               new ItemStack(Items.PINK_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "small_pink"));
         //Lime
@@ -465,7 +473,10 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "small_magenta"));
         //Orange
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(Blocks.ORANGE_TULIP),
+              IngredientCreatorAccess.item().from(Ingredient.of(
+                    Blocks.ORANGE_TULIP,
+                    Blocks.TORCHFLOWER
+              )),
               new ItemStack(Items.ORANGE_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "orange"));
         //Blue

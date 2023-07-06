@@ -286,7 +286,8 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
             }
             //Or it is a replaceable plant that is also not solid (such as tall grass)
             //TODO - 1.20: Figure out if we want to just allow it if the above state is replaceable in general or do we want to maybe add a tag for this
-            // or do some form of instance checking?
+            // or do some form of instance checking? maybe replaceable_by_trees block tag? and validate not a liquid though it also includes other things
+            // that make no sense for this like leaves. We may just have to make our own tag?
             /*Material material = aboveState.getMaterial();
             if (material == Material.REPLACEABLE_PLANT || material == Material.REPLACEABLE_FIREPROOF_PLANT) {
                 return !aboveState.isSolidRender(level, abovePos);

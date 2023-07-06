@@ -261,8 +261,8 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     private void addWrenches() {
         addToTag(MekanismTags.Items.WRENCHES, MekanismItems.CONFIGURATOR);
+        //Note: We don't add wrenches to the vanilla tools tag as that is for a different style of tool and used for things like breaking pots
         getItemBuilder(Tags.Items.TOOLS).add(MekanismTags.Items.TOOLS_WRENCH);
-        getItemBuilder(ItemTags.TOOLS).add(MekanismTags.Items.TOOLS_WRENCH);
         addToTag(MekanismTags.Items.TOOLS_WRENCH, MekanismItems.CONFIGURATOR);
         getItemBuilder(MekanismTags.Items.CONFIGURATORS).add(MekanismTags.Items.WRENCHES, MekanismTags.Items.TOOLS_WRENCH);
     }
@@ -530,9 +530,11 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Fluids.URANIUM_OXIDE, MekanismFluids.URANIUM_OXIDE);
         addToTag(MekanismTags.Fluids.URANIUM_HEXAFLUORIDE, MekanismFluids.URANIUM_HEXAFLUORIDE);
         addToTag(Tags.Fluids.GASEOUS, MekanismFluids.STEAM);
-        //Prevent all our fluids from being duped by create
+        IntrinsicMekanismTagBuilder<Block> replaceableBuilder = getBlockBuilder(BlockTags.REPLACEABLE);
         for (FluidRegistryObject<?, ?, ?, ?, ?> fluid : MekanismFluids.FLUIDS.getAllFluids()) {
+            //Prevent all our fluids from being duped by create
             addToTag(CREATE_NO_INFINITE_FLUID, fluid);
+            replaceableBuilder.add(fluid.getBlock());
         }
     }
 

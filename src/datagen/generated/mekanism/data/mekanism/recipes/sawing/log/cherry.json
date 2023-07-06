@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "tag": "minecraft:cherry_logs"
+    }
+  },
+  "mainOutput": {
+    "count": 6,
+    "item": "minecraft:cherry_planks"
+  },
+  "secondaryChance": 0.25,
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  }
+}

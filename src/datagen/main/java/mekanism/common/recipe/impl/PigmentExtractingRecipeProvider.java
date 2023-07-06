@@ -121,6 +121,11 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
               )),
               MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.RED).getStack(flowerRate)
         ).build(consumer, Mekanism.rl(basePath + "small_red"));
+        //Cyan
+        ItemStackToChemicalRecipeBuilder.pigmentExtracting(
+              IngredientCreatorAccess.item().from(Blocks.PITCHER_PLANT),
+              MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.DARK_AQUA).getStack(largeFlowerRate)
+        ).build(consumer, Mekanism.rl(basePath + "large_cyan"));
         //Green
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Blocks.CACTUS),
@@ -141,7 +146,10 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
               MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.BRIGHT_PINK).getStack(largeFlowerRate)
         ).build(consumer, Mekanism.rl(basePath + "large_pink"));
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
-              IngredientCreatorAccess.item().from(Blocks.PINK_TULIP),
+              IngredientCreatorAccess.item().from(Ingredient.of(
+                    Blocks.PINK_TULIP,
+                    Blocks.PINK_PETALS
+              )),
               MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.BRIGHT_PINK).getStack(flowerRate)
         ).build(consumer, Mekanism.rl(basePath + "small_pink"));
         //Lime
@@ -174,7 +182,10 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "small_magenta"));
         //Orange
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
-              IngredientCreatorAccess.item().from(Blocks.ORANGE_TULIP),
+              IngredientCreatorAccess.item().from(Ingredient.of(
+                    Blocks.ORANGE_TULIP,
+                    Blocks.TORCHFLOWER
+              )),
               MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.ORANGE).getStack(flowerRate)
         ).build(consumer, Mekanism.rl(basePath + "orange"));
         //Blue

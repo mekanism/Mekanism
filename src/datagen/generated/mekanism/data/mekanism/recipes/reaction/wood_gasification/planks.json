@@ -15,9 +15,14 @@
   },
   "itemInput": {
     "amount": 20,
-    "ingredient": {
-      "tag": "minecraft:planks"
-    }
+    "ingredient": [
+      {
+        "tag": "minecraft:planks"
+      },
+      {
+        "item": "minecraft:bamboo_mosaic"
+      }
+    ]
   },
   "itemOutput": {
     "item": "mekanism:dust_charcoal"

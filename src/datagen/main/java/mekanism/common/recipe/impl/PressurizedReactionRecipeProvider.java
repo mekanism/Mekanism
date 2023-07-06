@@ -14,6 +14,7 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 
 class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
@@ -85,7 +86,11 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "logs"));
         //Planks, each worth a 5th of a log.
         PressurizedReactionRecipeBuilder.reaction(
-              IngredientCreatorAccess.item().from(ItemTags.PLANKS, 20),
+              IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
+                    ItemTags.PLANKS,
+                    //Allow mosaic as it can be smelted, so it makes sense it can be used in wood gasification
+                    Blocks.BAMBOO_MOSAIC
+              ), 20),
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 400),
               IngredientCreatorAccess.gas().from(MekanismGases.OXYGEN, 400),
               600,
@@ -102,7 +107,11 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "rods_wooden"));
         //Slabs, each worth a 10th of a log.
         PressurizedReactionRecipeBuilder.reaction(
-              IngredientCreatorAccess.item().from(ItemTags.WOODEN_SLABS),
+              IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
+                    ItemTags.WOODEN_SLABS,
+                    //Allow mosaic as it can be smelted, so it makes sense it can be used in wood gasification
+                    Blocks.BAMBOO_MOSAIC_SLAB
+              )),
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 10),
               IngredientCreatorAccess.gas().from(MekanismGases.OXYGEN, 10),
               15,
@@ -110,7 +119,11 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "wooden_slabs"));
         //Stairs, each worth a 6⅔th of a log.
         PressurizedReactionRecipeBuilder.reaction(
-              IngredientCreatorAccess.item().from(ItemTags.WOODEN_STAIRS),
+              IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
+                    ItemTags.WOODEN_STAIRS,
+                    //Allow mosaic as it can be smelted, so it makes sense it can be used in wood gasification
+                    Blocks.BAMBOO_MOSAIC_STAIRS
+              )),
               IngredientCreatorAccess.fluid().from(FluidTags.WATER, 15),
               IngredientCreatorAccess.gas().from(MekanismGases.OXYGEN, 15),
               22,

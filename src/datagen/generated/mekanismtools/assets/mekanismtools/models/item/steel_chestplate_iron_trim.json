@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mekanismtools:item/steel/chestplate",
+    "layer1": "minecraft:trims/items/chestplate_trim_iron"
+  }
+}

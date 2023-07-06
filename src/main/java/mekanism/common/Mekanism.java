@@ -370,6 +370,8 @@ public class Mekanism {
             //Register custom item predicates
             ItemPredicate.register(FullCanteenItemPredicate.ID, json -> FullCanteenItemPredicate.INSTANCE);
             ItemPredicate.register(MaxedModuleContainerItemPredicate.ID, MaxedModuleContainerItemPredicate::fromJson);
+            //Add any extra game event frequencies
+            MekanismGameEvents.addFrequencies();
         });
 
         //Register player tracker

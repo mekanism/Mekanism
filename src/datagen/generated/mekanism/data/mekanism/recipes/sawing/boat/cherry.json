@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:cherry_boat"
+    }
+  },
+  "mainOutput": {
+    "count": 5,
+    "item": "minecraft:cherry_planks"
+  }
+}

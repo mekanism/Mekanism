@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:pitcher_plant"
+    }
+  },
+  "output": {
+    "count": 4,
+    "item": "minecraft:cyan_dye"
+  }
+}

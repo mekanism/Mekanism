@@ -14,8 +14,13 @@
     "gas": "mekanism:hydrogen"
   },
   "itemInput": {
-    "ingredient": {
-      "tag": "minecraft:wooden_stairs"
-    }
+    "ingredient": [
+      {
+        "tag": "minecraft:wooden_stairs"
+      },
+      {
+        "item": "minecraft:bamboo_mosaic_stairs"
+      }
+    ]
   }
 }

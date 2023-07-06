@@ -1,0 +1,22 @@
+{
+  "values": [
+    "mekanism:hydrogen",
+    "mekanism:oxygen",
+    "mekanism:chlorine",
+    "mekanism:sulfur_dioxide",
+    "mekanism:sulfur_trioxide",
+    "mekanism:sulfuric_acid",
+    "mekanism:hydrogen_chloride",
+    "mekanism:hydrofluoric_acid",
+    "mekanism:uranium_oxide",
+    "mekanism:uranium_hexafluoride",
+    "mekanism:ethene",
+    "mekanism:sodium",
+    "mekanism:superheated_sodium",
+    "mekanism:brine",
+    "mekanism:lithium",
+    "mekanism:steam",
+    "mekanism:heavy_water",
+    "mekanism:nutritional_paste"
+  ]
+}

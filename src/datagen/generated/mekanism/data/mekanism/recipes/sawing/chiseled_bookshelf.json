@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:chiseled_bookshelf"
+    }
+  },
+  "mainOutput": {
+    "count": 6,
+    "item": "minecraft:oak_planks"
+  },
+  "secondaryChance": 1.0,
+  "secondaryOutput": {
+    "count": 3,
+    "item": "minecraft:oak_slab"
+  }
+}

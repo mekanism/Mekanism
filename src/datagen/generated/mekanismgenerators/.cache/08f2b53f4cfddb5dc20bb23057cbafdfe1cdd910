@@ -1,4 +1,4 @@
-// 1.20.1	2023-06-15T18:11:13.9961573	Tags: mekanismgenerators
+// 1.20.1	2023-07-06T11:03:22.4476866	Tags: mekanismgenerators
 51c625436874fdd2506b20267e03dabf44c090b0 data/create/tags/fluids/no_infinite_draining.json
 1fcda8d5db3dac92eb2d3bd6339ec5b91b0c888e data/forge/tags/blocks/enderman_place_on_blacklist.json
 f30d0458accef4b51831b90f9039c05d00276e48 data/forge/tags/blocks/relocation_not_supported.json
@@ -13,3 +13,4 @@ f335abd8b1bb57e1fb2740b6c80d8c5cb80b06c1 data/mekanism/tags/mekanism/gas/fusion_
 e7f3de2230470165a4e2f84ad01e7a005ad81e2f data/mekanism/tags/mekanism/gas/tritium.json
 974b8e28094a061f02f670ce4f597cb76f95255f data/minecraft/tags/blocks/impermeable.json
 0e8259a96fd81c042f2427e5b5a9b4ff39138b10 data/minecraft/tags/blocks/mineable/pickaxe.json
+c8217fe7b5f69c23b0511f1a203c7d525a9f9f22 data/minecraft/tags/blocks/replaceable.json

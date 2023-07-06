@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "ingredient": {
-      "tag": "minecraft:wooden_stairs"
+      "tag": "mekanism:wooden_stairs"
     }
   },
   "mainOutput": {

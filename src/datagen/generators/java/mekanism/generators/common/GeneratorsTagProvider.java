@@ -6,6 +6,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tag.BaseTagProvider;
+import mekanism.common.tag.IntrinsicMekanismTagBuilder;
 import mekanism.common.tag.MekanismTagProvider;
 import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -15,6 +16,7 @@ import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
@@ -81,9 +83,11 @@ public class GeneratorsTagProvider extends BaseTagProvider {
         addToTag(GeneratorTags.Fluids.DEUTERIUM, GeneratorsFluids.DEUTERIUM);
         addToTag(GeneratorTags.Fluids.FUSION_FUEL, GeneratorsFluids.FUSION_FUEL);
         addToTag(GeneratorTags.Fluids.TRITIUM, GeneratorsFluids.TRITIUM);
-        //Prevent all our fluids from being duped by create
+        IntrinsicMekanismTagBuilder<Block> replaceableBuilder = getBlockBuilder(BlockTags.REPLACEABLE);
         for (FluidRegistryObject<?, ?, ?, ?, ?> fluid : GeneratorsFluids.FLUIDS.getAllFluids()) {
+            //Prevent all our fluids from being duped by create
             addToTag(MekanismTagProvider.CREATE_NO_INFINITE_FLUID, fluid);
+            replaceableBuilder.add(fluid.getBlock());
         }
     }
 

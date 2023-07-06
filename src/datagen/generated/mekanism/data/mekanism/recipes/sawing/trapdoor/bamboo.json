@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:bamboo_trapdoor"
+    }
+  },
+  "mainOutput": {
+    "count": 3,
+    "item": "minecraft:bamboo_planks"
+  }
+}

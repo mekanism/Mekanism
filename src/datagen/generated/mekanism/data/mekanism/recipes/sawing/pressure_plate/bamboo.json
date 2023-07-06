@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:bamboo_pressure_plate"
+    }
+  },
+  "mainOutput": {
+    "count": 2,
+    "item": "minecraft:bamboo_planks"
+  }
+}
