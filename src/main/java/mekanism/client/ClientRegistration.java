@@ -285,7 +285,7 @@ public class ClientRegistration {
         addCustomModel(MekanismBlocks.QIO_REDSTONE_ADAPTER, (orig, evt) -> new QIORedstoneAdapterBakedModel(orig));
         addCustomModel(MekanismBlocks.DIGITAL_MINER, (orig, evt) -> new DigitalMinerBakedModel(orig));
 
-        addLitModel(MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismItems.MEKA_TOOL);
+        addLitModel(MekanismItems.MEKA_TOOL);
     }
 
     @SubscribeEvent
