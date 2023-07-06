@@ -10,7 +10,7 @@
 		"ports": "mekanism:block/models/ports",
 		"ports_led": "mekanism:block/models/ports_led",
 		"led": "mekanism:block/factory/led",
-		"back": "mekanism:block/factory/basic/crushing/crushing_factory_back_2"
+		"back": "mekanism:block/factory/crushing/crushing_factory_back_2"
 	},
 	"elements": [
 		{
