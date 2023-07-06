@@ -96,7 +96,7 @@
 				"south": {"uv": [0, 8, 8, 16], "texture": "#ports", "cullface": "south"},
 				"west": {"uv": [7, 0, 9, 8], "texture": "#ports"},
 				"up": {"uv": [0, 7, 8, 9], "texture": "#ports", "cullface": "south"},
-				"down": {"uv": [0, 0, 8, 2], "texture": "#missing"}
+				"down": {"uv": [0, 7, 8, 9], "texture": "#ports"}
 			}
 		},
 		{
