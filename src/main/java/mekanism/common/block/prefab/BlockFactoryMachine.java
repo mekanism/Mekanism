@@ -19,7 +19,7 @@ public class BlockFactoryMachine<TILE extends TileEntityMekanism, MACHINE extend
         }
     }
 
-    public static class BlockFactory<TILE extends TileEntityFactory<?>> extends BlockFactoryMachine<TILE, Factory<TILE>> {
+    public static class BlockFactory<TILE extends TileEntityFactory<?>> extends BlockFactoryMachineModel<TILE, Factory<TILE>> {
 
         public BlockFactory(Factory<TILE> factoryType) {
             super(factoryType);

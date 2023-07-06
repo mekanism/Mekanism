@@ -3,6 +3,7 @@ package mekanism.common.content.blocktype;
 import static mekanism.common.util.VoxelShapeUtils.setShape;
 import static net.minecraft.world.level.block.Block.box;
 
+import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.core.Direction;
@@ -51,6 +52,17 @@ public final class BlockShapes {
     public static final VoxelShape[] SUPERCHARGED_COIL = new VoxelShape[EnumUtils.DIRECTIONS.length];
     public static final VoxelShape[] ANTIPROTONIC_NUCLEOSYNTHESIZER = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] PIGMENT_MIXER = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+
+    //Factories
+    public static final VoxelShape[] SMELTING_FACTORY = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] ENRICHING_FACTORY = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] CRUSHING_FACTORY = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] COMPRESSING_FACTORY = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] COMBINING_FACTORY = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] PURIFYING_FACTORY = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] INJECTING_FACTORY = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] INFUSING_FACTORY = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] SAWING_FACTORY = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
         setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
@@ -739,5 +751,116 @@ public final class BlockShapes {
               box(5, 30, 4, 11, 32, 16), // top_electronics_box
               box(7, 18, 6, 9, 27, 8) // mixer_rod
         ), PIGMENT_MIXER);
+
+        //Factories:
+        setShape(VoxelShapeUtils.combine(
+              box(0, 0, 0, 16, 16, 4), // front_panel
+              box(0, 0, 5, 16, 4, 16), // base
+              box(1, 0, 4, 15, 15, 15), // body
+              box(4, 4, 14, 12, 12, 16), // port
+              box(11, 4, 5, 16, 16, 10), // stack1
+              box(0, 4, 5, 5, 16, 10), // stack2
+              box(11, 4, 11, 16, 16, 16), // stack3
+              box(0, 4, 11, 5, 16, 16) // stack4
+        ), SMELTING_FACTORY);
+
+        setShape(VoxelShapeUtils.combine(
+              box(0, 0, 0, 16, 16, 4), // front_panel
+              box(4, 4, 14, 12, 12, 16), // port
+              box(1, 7, 4, 15, 14, 14), // core
+              box(2, 4, 4, 14, 7, 10), // middle
+              box(5, 5, 10, 11, 7, 14), // middle_connector
+              box(0, 0, 4, 16, 4, 16), // base
+              box(0, 14, 4, 16, 16, 16), // shell_01
+              box(0, 6, 4, 2, 14, 16), // shell_02
+              box(14, 6, 4, 16, 14, 16) // shell_03
+        ), ENRICHING_FACTORY);
+
+        setShape(VoxelShapeUtils.combine(
+              box(0, 0, 0, 16, 16, 4), // front_panel
+              box(1, 0, 5, 15, 4, 15), // tank
+              box(1, 6, 5, 15, 8, 15), // tank
+              box(2, 4, 6, 14, 12, 14), // tank
+              box(0, 12, 4, 16, 16, 16), // top
+              box(4, 4, 14, 12, 12, 16) // port
+        ), CRUSHING_FACTORY);
+
+        setShape(VoxelShapeUtils.combine(
+              box(0, 0, 0, 16, 16, 4), // front_panel
+              box(0, 0, 12, 16, 16, 16), // vent
+              box(0, 12, 4, 16, 16, 11), // top
+              box(0, 0, 4, 16, 4, 11), // base
+              box(1, 0, 4, 15, 15, 12), // core
+              box(0, 5, 5, 16, 11, 12), // window
+              box(4, 4, 14, 12, 12, 16) // port
+        ), COMPRESSING_FACTORY);
+
+        setShape(VoxelShapeUtils.combine(
+              box(0, 12, 4, 16, 16, 16), // top
+              box(5, 4, 4, 11, 12, 14), // body
+              box(0, 0, 0, 16, 16, 4), // front_panel
+              box(4, 4, 14, 12, 12, 16), // port
+              box(0, 0, 4, 16, 4, 16), // bottom
+              box(1, 4, 5, 15, 7, 15), // plate2
+              box(1, 8, 5, 15, 11, 15), // plate1
+              box(3, 11, 12, 13, 12, 14), // press2
+              box(3, 11, 6, 13, 12, 8) // press1
+        ), COMBINING_FACTORY);
+
+        setShape(VoxelShapeUtils.combine(
+              box(0, 12, 4, 16, 16, 16), // top
+              box(1, 0, 4, 15, 15, 15), // body
+              box(0, 0, 0, 16, 16, 4), // front_panel
+              box(4, 4, 14, 12, 12, 16), // port
+              box(11, 1, 5, 16, 12, 10), // stack1
+              box(0, 1, 5, 5, 12, 10), // stack2
+              box(0, 1, 11, 16, 12, 16) // stack3
+        ), PURIFYING_FACTORY);
+
+        setShape(VoxelShapeUtils.combine(
+              box(0, 0, 0, 16, 16, 4), // front_panel
+              box(4, 4, 4, 12, 12, 16), // port
+              box(0, 0, 4, 16, 4, 16), // base
+              box(0, 4, 4, 7, 16, 16), // tank1
+              box(9, 4, 4, 16, 16, 16), // tank2
+              box(7, 12, 12, 9, 14, 13), // tube1
+              box(7, 12, 9, 9, 14, 10), // tube2
+              box(7, 12, 6, 9, 14, 7) // tube3
+        ), INJECTING_FACTORY);
+
+        setShape(VoxelShapeUtils.combine(
+              box(0, 0, 4, 16, 4, 16), // base
+              box(2, 4, 4, 14, 13, 14), // body
+              box(0, 0, 0, 16, 16, 4), // front_panel
+              box(4, 4, 14, 12, 12, 16), // port
+              box(0, 13, 4, 16, 16, 16), // fin1
+              box(0, 9, 4, 4, 12, 16), // fin2a
+              box(12, 9, 4, 16, 12, 16), // fin2b
+              box(0, 5, 4, 5, 8, 16), // fin3a
+              box(11, 5, 4, 16, 8, 16) // fin3b
+        ), INFUSING_FACTORY);
+
+        setShape(VoxelShapeUtils.combine(
+              box(0, 0, 0, 16, 16, 4), // front_panel
+              box(4, 4, 14, 12, 12, 16), // port
+              box(0, 5, 5, 7, 16, 16), // saw2
+              box(9, 5, 5, 16, 16, 16), // saw1
+              box(0, 0, 4, 16, 4, 16), // base
+              box(1, 4, 4, 15, 15, 15) // core
+        ), SAWING_FACTORY);
+    }
+
+    public static VoxelShape[] getShape(FactoryTier tier, FactoryType type) {
+        return switch (type) {
+            case SMELTING -> SMELTING_FACTORY;
+            case ENRICHING -> ENRICHING_FACTORY;
+            case CRUSHING -> CRUSHING_FACTORY;
+            case COMPRESSING -> COMPRESSING_FACTORY;
+            case COMBINING -> COMBINING_FACTORY;
+            case PURIFYING -> PURIFYING_FACTORY;
+            case INJECTING -> INJECTING_FACTORY;
+            case INFUSING -> INFUSING_FACTORY;
+            case SAWING -> SAWING_FACTORY;
+        };
     }
 }

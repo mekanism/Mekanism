@@ -59,6 +59,7 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
             //Note, we can't just return the builder here as then it gets all confused about object types, so we just
             // assign the value here, and then return the builder itself as it is the same object
             builder.withComputerSupport(tier, type.getRegistryNameComponentCapitalized() + "Factory");
+            builder.withCustomShape(BlockShapes.getShape(tier, type));
             return builder;
         }
     }
