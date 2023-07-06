@@ -274,7 +274,7 @@ public class ClientRegistration {
             });
             //Note: Our implementation allows for a null entity so don't worry about it and pass it
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.HDPE_REINFORCED_ELYTRA, Mekanism.rl("broken"),
-                  (stack, world, entity, seed) -> MekanismItems.HDPE_REINFORCED_ELYTRA.get().canElytraFly(stack, entity) ? 0.0F : 1.0F);
+                  (stack, world, entity, seed) -> entity != null && MekanismItems.HDPE_REINFORCED_ELYTRA.get().canElytraFly(stack, entity) ? 0.0F : 1.0F);
         });
 
         addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig));
