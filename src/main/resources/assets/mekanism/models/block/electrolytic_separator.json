@@ -34,7 +34,11 @@
 			"from": [-0.01, 4, 4],
 			"to": [0.99, 12, 12],
 			"faces": {
-				"west": {"uv": [8, 0, 16, 8], "texture": "#3", "cullface": "west", "emissivity": 15}
+				"west": {"uv": [8, 0, 16, 8], "texture": "#3", "cullface": "west"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{
@@ -76,7 +80,11 @@
 			"from": [4, 4, 15.01],
 			"to": [12, 12, 16.01],
 			"faces": {
-				"south": {"uv": [8, 0, 16, 8], "texture": "#3", "cullface": "south", "emissivity": 15}
+				"south": {"uv": [8, 0, 16, 8], "texture": "#3", "cullface": "south"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{
@@ -218,7 +226,11 @@
 			"from": [4, 4, -0.01],
 			"to": [12, 12, 0.99],
 			"faces": {
-				"north": {"uv": [8, 0, 16, 8], "texture": "#3", "cullface": "north", "emissivity": 15}
+				"north": {"uv": [8, 0, 16, 8], "texture": "#3", "cullface": "north"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		}
 	]

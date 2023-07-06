@@ -214,7 +214,11 @@
 			"from": [-0.01, 3, 3],
 			"to": [-0.01, 13, 13],
 			"faces": {
-				"west": {"uv": [0, 0, 5, 5], "texture": "#4", "cullface": "west", "emissivity": 15}
+				"west": {"uv": [0, 0, 5, 5], "texture": "#4", "cullface": "west"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{
@@ -233,7 +237,11 @@
 			"from": [16.01, 4, 4],
 			"to": [16.01, 12, 12],
 			"faces": {
-				"east": {"uv": [0, 0, 8, 8], "texture": "#5", "cullface": "east", "emissivity": 15}
+				"east": {"uv": [0, 0, 8, 8], "texture": "#5", "cullface": "east"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{

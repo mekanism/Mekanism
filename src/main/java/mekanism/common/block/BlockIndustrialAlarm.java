@@ -1,7 +1,7 @@
 package mekanism.common.block;
 
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.prefab.BlockTile;
+import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
@@ -20,7 +20,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-public class BlockIndustrialAlarm extends BlockTile<TileEntityIndustrialAlarm, BlockTypeTile<TileEntityIndustrialAlarm>> {
+public class BlockIndustrialAlarm extends BlockTileModel<TileEntityIndustrialAlarm, BlockTypeTile<TileEntityIndustrialAlarm>> {
 
     private static final VoxelShape[] MIN_SHAPES = new VoxelShape[EnumUtils.DIRECTIONS.length];
 

@@ -24,7 +24,11 @@
 			"from": [2, 1.005, 2],
 			"to": [14, 1.005, 14],
 			"faces": {
-				"up": {"uv": [1, 1, 13, 13], "rotation": 180, "texture": "#2", "tintindex": 1, "emissivity": 15}
+				"up": {"uv": [1, 1, 13, 13], "rotation": 180, "texture": "#2", "tintindex": 1}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		}
 	],

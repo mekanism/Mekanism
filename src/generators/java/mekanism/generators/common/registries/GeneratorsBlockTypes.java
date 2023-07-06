@@ -174,6 +174,7 @@ public class GeneratorsBlockTypes {
     // Turbine Rotor
     public static final BlockTypeTile<TileEntityTurbineRotor> TURBINE_ROTOR = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.TURBINE_ROTOR, GeneratorsLang.DESCRIPTION_TURBINE_ROTOR)
+          .withCustomShape(BlockShapes.TURBINE_ROTOR)
           .internalMultiblock()
           .build();
 

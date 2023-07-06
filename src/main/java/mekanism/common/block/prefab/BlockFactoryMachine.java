@@ -12,9 +12,9 @@ public class BlockFactoryMachine<TILE extends TileEntityMekanism, MACHINE extend
         super(machineType);
     }
 
-    public static class BlockFactoryMachineModel<TILE extends TileEntityMekanism> extends BlockFactoryMachine<TILE, FactoryMachine<TILE>> implements IStateFluidLoggable {
+    public static class BlockFactoryMachineModel<TILE extends TileEntityMekanism, MACHINE extends FactoryMachine<TILE>> extends BlockFactoryMachine<TILE, MACHINE> implements IStateFluidLoggable {
 
-        public BlockFactoryMachineModel(FactoryMachine<TILE> machineType) {
+        public BlockFactoryMachineModel(MACHINE machineType) {
             super(machineType);
         }
     }

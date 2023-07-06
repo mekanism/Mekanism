@@ -10,12 +10,16 @@
 			"from": [5, 0, 5],
 			"to": [11, 2.5, 11],
 			"faces": {
-				"north": {"uv": [2, 2, 14, 5], "texture": "#all", "tintindex": 0, "emissivity": 15},
-				"east": {"uv": [2, 2, 5, 14], "rotation": 90, "texture": "#all", "tintindex": 0, "emissivity": 15},
-				"south": {"uv": [2, 11, 14, 14], "texture": "#all", "tintindex": 0, "emissivity": 15},
-				"west": {"uv": [11, 2, 14, 14], "rotation": 90, "texture": "#all", "tintindex": 0, "emissivity": 15},
-				"up": {"uv": [2, 2, 14, 14], "texture": "#all", "tintindex": 0, "emissivity": 15},
-				"down": {"uv": [2, 2, 14, 14], "texture": "#all", "tintindex": 0, "emissivity": 15}
+				"north": {"uv": [2, 2, 14, 5], "texture": "#all", "tintindex": 0},
+				"east": {"uv": [2, 2, 5, 14], "rotation": 90, "texture": "#all", "tintindex": 0},
+				"south": {"uv": [2, 11, 14, 14], "texture": "#all", "tintindex": 0},
+				"west": {"uv": [11, 2, 14, 14], "rotation": 90, "texture": "#all", "tintindex": 0},
+				"up": {"uv": [2, 2, 14, 14], "texture": "#all", "tintindex": 0},
+				"down": {"uv": [2, 2, 14, 14], "texture": "#all", "tintindex": 0}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{

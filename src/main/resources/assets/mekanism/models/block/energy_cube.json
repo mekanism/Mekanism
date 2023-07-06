@@ -157,9 +157,13 @@
 			"from": [13, 13, 0],
 			"to": [16, 16, 3],
 			"faces": {
-				"north": {"uv": [13, 6, 16, 9], "texture": "#1", "cullface": "north", "tintindex": 1, "emissivity": 10},
-				"east": {"uv": [13, 9, 16, 12], "texture": "#1", "cullface": "east", "tintindex": 1, "emissivity": 10},
-				"up": {"uv": [13, 3, 16, 6], "texture": "#1", "cullface": "up", "tintindex": 1, "emissivity": 10}
+				"north": {"uv": [13, 6, 16, 9], "texture": "#1", "cullface": "north", "tintindex": 1},
+				"east": {"uv": [13, 9, 16, 12], "texture": "#1", "cullface": "east", "tintindex": 1},
+				"up": {"uv": [13, 3, 16, 6], "texture": "#1", "cullface": "up", "tintindex": 1}
+			},
+			"forge_data": {
+				"block_light": 10,
+				"sky_light": 10
 			}
 		},
 		{
@@ -177,9 +181,13 @@
 			"from": [13, 13, 13],
 			"to": [16, 16, 16],
 			"faces": {
-				"east": {"uv": [13, 6, 16, 9], "texture": "#1", "cullface": "east", "tintindex": 1, "emissivity": 10},
-				"south": {"uv": [13, 9, 16, 12], "texture": "#1", "cullface": "south", "tintindex": 1, "emissivity": 10},
-				"up": {"uv": [13, 3, 16, 6], "texture": "#1", "cullface": "up", "tintindex": 1, "emissivity": 10}
+				"east": {"uv": [13, 6, 16, 9], "texture": "#1", "cullface": "east", "tintindex": 1},
+				"south": {"uv": [13, 9, 16, 12], "texture": "#1", "cullface": "south", "tintindex": 1},
+				"up": {"uv": [13, 3, 16, 6], "texture": "#1", "cullface": "up", "tintindex": 1}
+			},
+			"forge_data": {
+				"block_light": 10,
+				"sky_light": 10
 			}
 		},
 		{
@@ -197,9 +205,13 @@
 			"from": [0, 13, 0],
 			"to": [3, 16, 3],
 			"faces": {
-				"north": {"uv": [13, 9, 16, 12], "texture": "#1", "cullface": "north", "tintindex": 1, "emissivity": 10},
-				"west": {"uv": [13, 6, 16, 9], "texture": "#1", "cullface": "west", "tintindex": 1, "emissivity": 10},
-				"up": {"uv": [13, 3, 16, 6], "texture": "#1", "cullface": "up", "tintindex": 1, "emissivity": 10}
+				"north": {"uv": [13, 9, 16, 12], "texture": "#1", "cullface": "north", "tintindex": 1},
+				"west": {"uv": [13, 6, 16, 9], "texture": "#1", "cullface": "west", "tintindex": 1},
+				"up": {"uv": [13, 3, 16, 6], "texture": "#1", "cullface": "up", "tintindex": 1}
+			},
+			"forge_data": {
+				"block_light": 10,
+				"sky_light": 10
 			}
 		},
 		{
@@ -217,9 +229,13 @@
 			"from": [0, 13, 13],
 			"to": [3, 16, 16],
 			"faces": {
-				"south": {"uv": [13, 6, 16, 9], "texture": "#1", "cullface": "south", "tintindex": 1, "emissivity": 10},
-				"west": {"uv": [13, 9, 16, 12], "texture": "#1", "cullface": "west", "tintindex": 1, "emissivity": 10},
-				"up": {"uv": [13, 3, 16, 6], "texture": "#1", "cullface": "up", "tintindex": 1, "emissivity": 10}
+				"south": {"uv": [13, 6, 16, 9], "texture": "#1", "cullface": "south", "tintindex": 1},
+				"west": {"uv": [13, 9, 16, 12], "texture": "#1", "cullface": "west", "tintindex": 1},
+				"up": {"uv": [13, 3, 16, 6], "texture": "#1", "cullface": "up", "tintindex": 1}
+			},
+			"forge_data": {
+				"block_light": 10,
+				"sky_light": 10
 			}
 		},
 		{
@@ -237,9 +253,13 @@
 			"from": [13, 0, 0],
 			"to": [16, 3, 3],
 			"faces": {
-				"north": {"uv": [13, 9, 16, 12], "texture": "#1", "cullface": "north", "tintindex": 1, "emissivity": 10},
-				"east": {"uv": [13, 6, 16, 9], "texture": "#1", "cullface": "east", "tintindex": 1, "emissivity": 10},
-				"down": {"uv": [13, 3, 16, 6], "texture": "#1", "cullface": "down", "tintindex": 1, "emissivity": 10}
+				"north": {"uv": [13, 9, 16, 12], "texture": "#1", "cullface": "north", "tintindex": 1},
+				"east": {"uv": [13, 6, 16, 9], "texture": "#1", "cullface": "east", "tintindex": 1},
+				"down": {"uv": [13, 3, 16, 6], "texture": "#1", "cullface": "down", "tintindex": 1}
+			},
+			"forge_data": {
+				"block_light": 10,
+				"sky_light": 10
 			}
 		},
 		{
@@ -257,9 +277,13 @@
 			"from": [13, 0, 13],
 			"to": [16, 3, 16],
 			"faces": {
-				"east": {"uv": [13, 9, 16, 12], "texture": "#1", "cullface": "east", "tintindex": 1, "emissivity": 10},
-				"south": {"uv": [13, 6, 16, 9], "texture": "#1", "cullface": "south", "tintindex": 1, "emissivity": 10},
-				"down": {"uv": [13, 3, 16, 6], "texture": "#1", "cullface": "down", "tintindex": 1, "emissivity": 10}
+				"east": {"uv": [13, 9, 16, 12], "texture": "#1", "cullface": "east", "tintindex": 1},
+				"south": {"uv": [13, 6, 16, 9], "texture": "#1", "cullface": "south", "tintindex": 1},
+				"down": {"uv": [13, 3, 16, 6], "texture": "#1", "cullface": "down", "tintindex": 1}
+			},
+			"forge_data": {
+				"block_light": 10,
+				"sky_light": 10
 			}
 		},
 		{
@@ -277,9 +301,13 @@
 			"from": [0, 0, 0],
 			"to": [3, 3, 3],
 			"faces": {
-				"north": {"uv": [13, 6, 16, 9], "texture": "#1", "cullface": "north", "tintindex": 1, "emissivity": 10},
-				"west": {"uv": [13, 9, 16, 12], "texture": "#1", "cullface": "west", "tintindex": 1, "emissivity": 10},
-				"down": {"uv": [13, 3, 16, 6], "texture": "#1", "cullface": "down", "tintindex": 1, "emissivity": 10}
+				"north": {"uv": [13, 6, 16, 9], "texture": "#1", "cullface": "north", "tintindex": 1},
+				"west": {"uv": [13, 9, 16, 12], "texture": "#1", "cullface": "west", "tintindex": 1},
+				"down": {"uv": [13, 3, 16, 6], "texture": "#1", "cullface": "down", "tintindex": 1}
+			},
+			"forge_data": {
+				"block_light": 10,
+				"sky_light": 10
 			}
 		},
 		{
@@ -297,9 +325,13 @@
 			"from": [0, 0, 13],
 			"to": [3, 3, 16],
 			"faces": {
-				"south": {"uv": [13, 6, 16, 9], "texture": "#1", "cullface": "south", "tintindex": 1, "emissivity": 10},
-				"west": {"uv": [13, 9, 16, 12], "texture": "#1", "cullface": "west", "tintindex": 1, "emissivity": 10},
-				"down": {"uv": [13, 3, 16, 6], "texture": "#1", "cullface": "down", "tintindex": 1, "emissivity": 10}
+				"south": {"uv": [13, 6, 16, 9], "texture": "#1", "cullface": "south", "tintindex": 1},
+				"west": {"uv": [13, 9, 16, 12], "texture": "#1", "cullface": "west", "tintindex": 1},
+				"down": {"uv": [13, 3, 16, 6], "texture": "#1", "cullface": "down", "tintindex": 1}
+			},
+			"forge_data": {
+				"block_light": 10,
+				"sky_light": 10
 			}
 		}
 	],

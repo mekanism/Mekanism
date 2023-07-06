@@ -29,7 +29,11 @@
 			"from": [11, 5, 15.005],
 			"to": [12, 6, 16.005],
 			"faces": {
-				"south": {"uv": [1, 1, 2, 2], "texture": "#6", "cullface": "south", "emissivity": 15}
+				"south": {"uv": [1, 1, 2, 2], "texture": "#6", "cullface": "south"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{
@@ -37,7 +41,11 @@
 			"from": [11, 3, 15.005],
 			"to": [12, 4, 16.005],
 			"faces": {
-				"south": {"uv": [1, 1, 2, 2], "texture": "#6", "cullface": "south", "emissivity": 15}
+				"south": {"uv": [1, 1, 2, 2], "texture": "#6", "cullface": "south"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{
@@ -45,7 +53,11 @@
 			"from": [14, 10, 15.005],
 			"to": [15, 13, 16.005],
 			"faces": {
-				"south": {"uv": [13, 1, 14, 2], "texture": "#6", "cullface": "south", "tintindex": 1, "emissivity": 15}
+				"south": {"uv": [13, 1, 14, 2], "texture": "#6", "cullface": "south", "tintindex": 1}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{
@@ -53,7 +65,11 @@
 			"from": [1, 10, 15.005],
 			"to": [2, 13, 16.005],
 			"faces": {
-				"south": {"uv": [13, 1, 14, 2], "texture": "#6", "cullface": "south", "tintindex": 1, "emissivity": 15}
+				"south": {"uv": [13, 1, 14, 2], "texture": "#6", "cullface": "south", "tintindex": 1}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{

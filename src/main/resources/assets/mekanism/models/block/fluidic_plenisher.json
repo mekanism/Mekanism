@@ -39,7 +39,11 @@
 			"from": [4, 4, 16],
 			"to": [12, 12, 16],
 			"faces": {
-				"south": {"uv": [8, 8, 16, 16], "texture": "#4", "cullface": "south", "emissivity": 15}
+				"south": {"uv": [8, 8, 16, 16], "texture": "#4", "cullface": "south"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{
@@ -84,7 +88,11 @@
 			"from": [3, 16, 3],
 			"to": [13, 16, 13],
 			"faces": {
-				"up": {"uv": [0, 0, 5, 5], "texture": "#2", "cullface": "up", "emissivity": 15}
+				"up": {"uv": [0, 0, 5, 5], "texture": "#2", "cullface": "up"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{

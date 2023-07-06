@@ -21,6 +21,7 @@ public final class BlockShapes {
     public static final VoxelShape[] ADVANCED_SOLAR_GENERATOR = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] CONTROL_ROD_ASSEMBLY = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] FUEL_ASSEMBLY = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] TURBINE_ROTOR = {box(6, 0, 6, 10, 16, 10)};
 
     static {
         setShape(VoxelShapeUtils.combine(

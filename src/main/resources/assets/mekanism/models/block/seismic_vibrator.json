@@ -455,7 +455,11 @@
 			"from": [4, 5, 16.01],
 			"to": [12, 13, 16.01],
 			"faces": {
-				"south": {"uv": [8, 8, 16, 16], "texture": "#3", "cullface": "south", "emissivity": 15}
+				"south": {"uv": [8, 8, 16, 16], "texture": "#3", "cullface": "south"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{

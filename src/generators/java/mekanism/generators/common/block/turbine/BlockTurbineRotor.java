@@ -13,17 +13,12 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, BlockTypeTile<TileEntityTurbineRotor>> {
-
-    private static final VoxelShape bounds = box(6, 0, 6, 10, 16, 10);
 
     public BlockTurbineRotor() {
         super(GeneratorsBlockTypes.TURBINE_ROTOR);
@@ -69,12 +64,5 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
             }
         }
         return InteractionResult.PASS;
-    }
-
-    @NotNull
-    @Override
-    @Deprecated
-    public VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        return bounds;
     }
 }

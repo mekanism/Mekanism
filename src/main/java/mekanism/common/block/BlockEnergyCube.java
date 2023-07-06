@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -130,6 +131,14 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
         //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the energy cube
         // this may change based on what sides are enabled. Torches cannot be placed on the sides due to vanilla checking the incorrect shape
         super(type, BlockBehaviour.Properties.of().strength(2, 2.4F).requiresCorrectToolForDrops().dynamicShape().mapColor(MapColor.METAL));
+    }
+
+    @Override
+    @Deprecated
+    public boolean isPathfindable(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull PathComputationType pathType) {
+        //If we have a custom shape which means we are not a full block then mark that movement is not
+        // allowed through this block it is not a full block. Otherwise, use the normal handling for if movement is allowed
+        return false;
     }
 
     @NotNull
