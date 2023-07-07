@@ -778,10 +778,12 @@ public final class BlockShapes {
 
         setShape(VoxelShapeUtils.combine(
               box(0, 0, 0, 16, 16, 4), // front_panel
-              box(1, 0, 5, 15, 4, 15), // tank
-              box(1, 6, 5, 15, 8, 15), // tank
-              box(2, 4, 6, 14, 12, 14), // tank
+              box(2, 0, 7, 14, 4, 12), // base
+              box(2, 10, 7, 14, 12, 12), // bracket
+              box(3, 4, 7, 13, 12, 12), // shaft
               box(0, 12, 4, 16, 16, 16), // top
+              box(1, 0, 4, 15, 12, 7), // leg1
+              box(1, 0, 12, 15, 12, 15), // leg2
               box(4, 4, 14, 12, 12, 16) // port
         ), CRUSHING_FACTORY);
 
