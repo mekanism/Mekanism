@@ -51,8 +51,8 @@
 		},
 		{
 			"name": "port",
-			"from": [4, 4, 14],
-			"to": [12, 12, 16],
+			"from": [4, 4, 14.02],
+			"to": [12, 12, 16.02],
 			"faces": {
 				"east": {"uv": [7, 0, 9, 8], "texture": "#ports"},
 				"south": {"uv": [0, 0, 8, 8], "texture": "#ports", "cullface": "south"},
@@ -63,8 +63,8 @@
 		},
 		{
 			"name": "port_led",
-			"from": [4, 4, 16],
-			"to": [12, 12, 16],
+			"from": [4, 4, 16.02],
+			"to": [12, 12, 16.02],
 			"faces": {
 				"south": {"uv": [8, 8, 16, 16], "texture": "#ports_led", "cullface": "south"}
 			},
