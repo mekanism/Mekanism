@@ -1,0 +1,21 @@
+{
+  "textures": {
+    "led": "mekanism:block/factory/led"
+  },
+  "elements": [
+    {
+      "name": "front_panel_led",
+      "from": [4.98, 14.99, 0.01],
+      "to": [11.02, 15.99, 1.01],
+      "rotation": {"angle": 0, "axis": "y", "origin": [8, 16, 0]},
+      "faces": {
+        "north": {"uv": [0, 0, 6, 1], "texture": "#led", "cullface": "north"},
+        "up": {"uv": [0, 0, 6, 1], "rotation": 180, "texture": "#led", "cullface": "up"}
+      },
+      "forge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
+    }
+  ]
+}

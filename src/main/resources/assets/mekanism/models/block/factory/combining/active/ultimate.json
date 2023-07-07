@@ -1,6 +1,18 @@
 {
-    "parent": "mekanism:block/factory/combining/ultimate",
+    "loader": "forge:composite",
+    "parent": "block/block",
     "textures": {
-        "front": "mekanism:block/factory/combining/combining_factory_front_active"
+        "particle": "mekanism:block/factory/combining/combining_factory_front"
+    },
+    "children": {
+        "base": {
+            "parent": "mekanism:block/factory/combining/base",
+            "textures": {
+                "front": "mekanism:block/factory/combining/combining_factory_front_active"
+            }
+        },
+        "front_led": {
+            "parent": "mekanism:block/factory/front_led/active/ultimate"
+        }
     }
 }

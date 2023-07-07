@@ -1,6 +1,18 @@
 {
-    "parent": "mekanism:block/factory/smelting/advanced",
+    "loader": "forge:composite",
+    "parent": "block/block",
     "textures": {
-        "front": "mekanism:block/factory/smelting/smelting_factory_front_active"
+        "particle": "mekanism:block/factory/smelting/smelting_factory_front"
+    },
+    "children": {
+        "base": {
+            "parent": "mekanism:block/factory/smelting/base",
+            "textures": {
+                "front": "mekanism:block/factory/smelting/smelting_factory_front_active"
+            }
+        },
+        "front_led": {
+            "parent": "mekanism:block/factory/front_led/active/advanced"
+        }
     }
 }
