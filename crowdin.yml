@@ -103,6 +103,7 @@ files:
         so: so_so
         sq: sq_al
         sr: sr_sp
+        sr-CS: sr_cs
         sv-SE: sv_se
         ta: ta_in
         th: th_th
@@ -224,6 +225,7 @@ files:
         so: so_so
         sq: sq_al
         sr: sr_sp
+        sr-CS: sr_cs
         sv-SE: sv_se
         ta: ta_in
         th: th_th
@@ -345,6 +347,7 @@ files:
         so: so_so
         sq: sq_al
         sr: sr_sp
+        sr-CS: sr_cs
         sv-SE: sv_se
         ta: ta_in
         th: th_th
@@ -465,6 +468,7 @@ files:
         so: so_so
         sq: sq_al
         sr: sr_sp
+        sr-CS: sr_cs
         sv-SE: sv_se
         ta: ta_in
         th: th_th
