@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
 import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.graph.GuiLongGraph.LongGraphDataHandler;
 import net.minecraft.network.chat.Component;
 
@@ -47,6 +48,19 @@ public class GuiLongGraph extends GuiGraph<LongList, LongGraphDataHandler> {
     @Override
     protected Component getDataDisplay(int hoverIndex) {
         return dataHandler.getDataDisplay(graphData.getLong(hoverIndex));
+    }
+
+    @Override
+    public boolean hasPersistentData() {
+        return true;
+    }
+
+    @Override
+    public void syncFrom(GuiElement element) {
+        super.syncFrom(element);
+        for (long data : ((GuiLongGraph) element).graphData) {
+            addData(data);
+        }
     }
 
     public interface LongGraphDataHandler extends GraphDataHandler {

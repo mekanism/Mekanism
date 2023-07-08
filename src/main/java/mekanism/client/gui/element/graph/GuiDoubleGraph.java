@@ -4,13 +4,13 @@ import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
 import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.graph.GuiDoubleGraph.DoubleGraphDataHandler;
 import net.minecraft.network.chat.Component;
 
 public class GuiDoubleGraph extends GuiGraph<DoubleList, DoubleGraphDataHandler> {
 
     private double currentScale = 10;
-    private boolean fixedScale = false;
 
     public GuiDoubleGraph(IGuiWrapper gui, int x, int y, int width, int height, DoubleGraphDataHandler handler) {
         super(gui, x, y, width, height, new DoubleArrayList(), handler);
@@ -48,6 +48,19 @@ public class GuiDoubleGraph extends GuiGraph<DoubleList, DoubleGraphDataHandler>
     @Override
     protected Component getDataDisplay(int hoverIndex) {
         return dataHandler.getDataDisplay(graphData.getDouble(hoverIndex));
+    }
+
+    @Override
+    public boolean hasPersistentData() {
+        return true;
+    }
+
+    @Override
+    public void syncFrom(GuiElement element) {
+        super.syncFrom(element);
+        for (double data : ((GuiDoubleGraph) element).graphData) {
+            addData(data);
+        }
     }
 
     public interface DoubleGraphDataHandler extends GraphDataHandler {
