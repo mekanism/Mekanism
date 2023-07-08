@@ -45,6 +45,7 @@ import org.joml.Matrix4f;
 // For now no as it might be confusing to people what the menu is relating to especially on the Meka-Tool but it is worth thinking more about
 public class GuiRadialSelector extends Screen {
 
+    private static final ResourceLocation BACK_BUTTON = MekanismUtils.getResource(ResourceType.GUI_RADIAL, "back.png");
     private static final float DRAWS = 300;
 
     private static final float INNER = 40, OUTER = 100;
@@ -104,8 +105,7 @@ public class GuiRadialSelector extends Screen {
         // other bits may be drawn by hovering or current selection, it is not practical to do so due
         // to floating point precision causing some values to have gaps in the torus, and also the light
         // colors occasionally being harder to see without the added back layer torus
-        guiGraphics.setColor(0.3F, 0.3F, 0.3F, 0.5F);
-        drawTorus(guiGraphics, 0, 360);
+        drawTorus(guiGraphics, 0, 360, 0.3F, 0.3F, 0.3F, 0.5F);
 
         MODE current = getCurrent(radialData);
         if (current == null) {
@@ -118,14 +118,13 @@ public class GuiRadialSelector extends Screen {
         int section = radialData.indexNullable(modes, current);
         if (current != null && section != -1) {
             // draw current selected if any is selected
+            float startAngle = -90F + 360F * (-0.5F + section) / activeModes;
             EnumColor color = current.color();
             if (color == null) {
-                guiGraphics.setColor(0.4F, 0.4F, 0.4F, 0.7F);
+                drawTorus(guiGraphics, startAngle, angleSize, 0.4F, 0.4F, 0.4F, 0.7F);
             } else {
-                MekanismRenderer.color(guiGraphics, color, 0.3F);
+                drawTorus(guiGraphics, startAngle, angleSize, color.getColor(0), color.getColor(1), color.getColor(2), 0.3F);
             }
-            float startAngle = -90F + 360F * (-0.5F + section) / activeModes;
-            drawTorus(guiGraphics, startAngle, angleSize);
         }
 
         // Draw current hovered selection and selection highlighter
@@ -136,16 +135,14 @@ public class GuiRadialSelector extends Screen {
             // draw mouse selection highlight
             float angle = (float) (Mth.RAD_TO_DEG * Mth.atan2(yDiff, xDiff));
             float modeSize = 180F / activeModes;
-            guiGraphics.setColor(0.8F, 0.8F, 0.8F, 0.3F);
-            drawTorus(guiGraphics, angle - modeSize, angleSize);
+            drawTorus(guiGraphics, angle - modeSize, angleSize, 0.8F, 0.8F, 0.8F, 0.3F);
 
             float selectionAngle = StatUtils.wrapDegrees(angle + modeSize + 90F);
             int selectionDrawnPos = (int) (selectionAngle * (activeModes / 360F));
             selection = modes.get(selectionDrawnPos);
 
             // draw hovered selection
-            guiGraphics.setColor(0.6F, 0.6F, 0.6F, 0.7F);
-            drawTorus(guiGraphics, -90F + 360F * (-0.5F + selectionDrawnPos) / activeModes, angleSize);
+            drawTorus(guiGraphics, -90F + 360F * (-0.5F + selectionDrawnPos) / activeModes, angleSize, 0.6F, 0.6F, 0.6F, 0.7F);
         } else {
             selection = null;
         }
@@ -156,14 +153,12 @@ public class GuiRadialSelector extends Screen {
         if (!parents.isEmpty()) {
             overBackButton = distanceFromCenter <= SELECT_RADIUS_WITH_PARENT;
             if (overBackButton) {
-                guiGraphics.setColor(0.8F, 0.8F, 0.8F, 0.3F);
+                drawTorus(guiGraphics, 0, 360, 0, SELECT_RADIUS_WITH_PARENT, 0.8F, 0.8F, 0.8F, 0.3F);
             } else {
-                guiGraphics.setColor(0.3F, 0.3F, 0.3F, 0.5F);
+                drawTorus(guiGraphics, 0, 360, 0, SELECT_RADIUS_WITH_PARENT, 0.3F, 0.3F, 0.3F, 0.5F);
             }
-            drawTorus(guiGraphics, 0, 360, 0, SELECT_RADIUS_WITH_PARENT);
-            MekanismRenderer.resetColor(guiGraphics);
             // draw icon
-            guiGraphics.blit(MekanismUtils.getResource(ResourceType.GUI_RADIAL, "back.png"), -12, -18, 24, 24, 0, 0, 18, 18, 18, 18);
+            guiGraphics.blit(BACK_BUTTON, -12, -18, 24, 24, 0, 0, 18, 18, 18, 18);
             textToDraw.add(new PositionedText(0, 0, MekanismLang.BACK.translate()));
         } else {
             overBackButton = false;
@@ -250,15 +245,15 @@ public class GuiRadialSelector extends Screen {
         return false;
     }
 
-    private void drawTorus(GuiGraphics guiGraphics, float startAngle, float sizeAngle) {
-        drawTorus(guiGraphics, startAngle, sizeAngle, INNER, OUTER);
+    private void drawTorus(GuiGraphics guiGraphics, float startAngle, float sizeAngle, float red, float green, float blue, float alpha) {
+        drawTorus(guiGraphics, startAngle, sizeAngle, INNER, OUTER, red, green, blue, alpha);
     }
 
-    private void drawTorus(GuiGraphics guiGraphics, float startAngle, float sizeAngle, float inner, float outer) {
-        RenderSystem.setShader(GameRenderer::getPositionShader);
-        //Note: We still use the tesselator as that is what the position_color_tex GuiGraphics#innerBlit does
+    private void drawTorus(GuiGraphics guiGraphics, float startAngle, float sizeAngle, float inner, float outer, float red, float green, float blue, float alpha) {
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        //Note: We still use the tesselator as that is what GuiGraphics#innerBlit does, and we also need to be able to use a custom vertex mode
         BufferBuilder vertexBuffer = Tesselator.getInstance().getBuilder();
-        vertexBuffer.begin(Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION);
+        vertexBuffer.begin(Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
         Matrix4f matrix4f = guiGraphics.pose().last().pose();
         float draws = DRAWS * (sizeAngle / 360F);
         for (int i = 0; i <= draws; i++) {
@@ -266,8 +261,8 @@ public class GuiRadialSelector extends Screen {
             float angle = Mth.DEG_TO_RAD * degrees;
             float cos = Mth.cos(angle);
             float sin = Mth.sin(angle);
-            vertexBuffer.vertex(matrix4f, outer * cos, outer * sin, 0).endVertex();
-            vertexBuffer.vertex(matrix4f, inner * cos, inner * sin, 0).endVertex();
+            vertexBuffer.vertex(matrix4f, outer * cos, outer * sin, 0).color(red, green, blue, alpha).endVertex();
+            vertexBuffer.vertex(matrix4f, inner * cos, inner * sin, 0).color(red, green, blue, alpha).endVertex();
         }
         BufferUploader.drawWithShader(vertexBuffer.end());
     }
