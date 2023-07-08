@@ -1,7 +1,6 @@
 package mekanism.common.config;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.stream.Collectors;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedDoubleValue;
@@ -9,7 +8,9 @@ import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
-import net.minecraft.world.damagesource.DamageSource;
+import mekanism.common.config.value.CachedRL2FloatMapConfigValue;
+import mekanism.common.item.gear.ItemMekaSuitArmor;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterials;
@@ -144,7 +145,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedIntValue mekaSuitBootsArmor;
     public final CachedFloatValue mekaSuitToughness;
     public final CachedFloatValue mekaSuitKnockbackResistance;
-    public final Map<DamageSource, CachedFloatValue> mekaSuitDamageRatios = new LinkedHashMap<>();
+    public final CachedRL2FloatMapConfigValue mekaSuitDamageRatios;
     public final CachedFloatValue mekaSuitFallDamageRatio;
     public final CachedFloatValue mekaSuitMagicDamageRatio;
     public final CachedFloatValue mekaSuitUnspecifiedDamageRatio;
@@ -382,14 +383,13 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("fallDamageReductionRatio", 1D, 0, 1));
         mekaSuitMagicDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from magic damage that can be absorbed by MekaSuit Helmet with Purification unit when it has enough power.")
               .defineInRange("magicDamageReductionRatio", 1D, 0, 1));
-        mekaSuitUnspecifiedDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from other non explicitly supported damage types that don't bypass armor when the MekaSuit has enough power and a full suit is equipped.")
+        mekaSuitUnspecifiedDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from other non explicitly supported damage types that don't bypass armor when the MekaSuit has enough power and a full suit is equipped.",
+                    "Note: Support for specific damage types can be added by adding an entry for the damage type in the damageReductionRatio config.")
               .defineInRange("unspecifiedDamageReductionRatio", 1D, 0, 1));
-        //TODO - 1.20: Figure out how to reimplement this Do we just need to do it for all damage sources??
-        /*for (DamageSource type : ItemMekaSuitArmor.getSupportedSources()) {
-            mekaSuitDamageRatios.put(type, CachedFloatValue.wrap(this, builder
-                  .comment("Percent of damage taken from " + type.getMsgId() + " that can be absorbed by the MekaSuit when there is enough power and a full suit is equipped.")
-                  .defineInRange(type.getMsgId() + "DamageReductionRatio", 1D, 0, 1)));
-        }*/
+        mekaSuitDamageRatios = CachedRL2FloatMapConfigValue.define(this, builder.comment("Map representing the percent of damage from different damage types that can be absorbed by the MekaSuit when there is enough power and a full suit is equipped.",
+                    "Values may be in the range [0.0, 1.0].", "See the #mekainsm:mekasuit_always_supported damage type tag for allowing damage that bypasses armor to be blocked."),
+              "damageReductionRatio", () -> ItemMekaSuitArmor.BASE_ALWAYS_SUPPORTED.stream().collect(Collectors.toMap(ResourceKey::location, damageType -> 1F)),
+              f -> f >= 0F && f <= 1F);
         builder.pop(2);
 
         builder.pop();

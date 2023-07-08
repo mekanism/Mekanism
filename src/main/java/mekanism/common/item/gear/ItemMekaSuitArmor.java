@@ -16,7 +16,6 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ICustomModule.ModuleDamageAbsorbInfo;
 import mekanism.api.gear.IModule;
@@ -59,12 +58,17 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -92,6 +96,11 @@ import org.jetbrains.annotations.Nullable;
 public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IModeItem, IJetpackItem, IAttributeRefresher, ICustomCreativeTabContents {
 
     private static final MekaSuitMaterial MEKASUIT_MATERIAL = new MekaSuitMaterial();
+
+    public static final List<ResourceKey<DamageType>> BASE_ALWAYS_SUPPORTED = List.of(DamageTypes.FALLING_ANVIL, DamageTypes.CACTUS, DamageTypes.CRAMMING,
+          DamageTypes.DRAGON_BREATH, DamageTypes.DRY_OUT, DamageTypes.FALL, DamageTypes.FALLING_BLOCK, DamageTypes.FLY_INTO_WALL, DamageTypes.GENERIC,
+          DamageTypes.HOT_FLOOR, DamageTypes.IN_FIRE, DamageTypes.IN_WALL, DamageTypes.LAVA, DamageTypes.LIGHTNING_BOLT, DamageTypes.ON_FIRE,
+          DamageTypes.SWEET_BERRY_BUSH, DamageTypes.WITHER, DamageTypes.FREEZE, DamageTypes.FALLING_STALACTITE, DamageTypes.STALAGMITE);
 
     private final AttributeCache attributeCache;
     //TODO: Expand this system so that modules can maybe define needed tanks?
@@ -358,7 +367,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public boolean canUseJetpack(ItemStack stack) {
         return type == ArmorItem.Type.CHESTPLATE && (isModuleEnabled(stack, MekanismModules.JETPACK_UNIT) ? ChemicalUtil.hasChemical(stack, MekanismGases.HYDROGEN.get()) :
-                                               getModules(stack).stream().anyMatch(module -> module.isEnabled() && module.getData().isExclusive(ExclusiveFlag.OVERRIDE_JUMP.getMask())));
+                                                     getModules(stack).stream().anyMatch(module -> module.isEnabled() && module.getData().isExclusive(ExclusiveFlag.OVERRIDE_JUMP.getMask())));
     }
 
     @Override
@@ -461,7 +470,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         }
         if (ratioAbsorbed < 1) {
             //If we haven't fully absorbed it check the individual pieces of armor for if they can absorb any
-            FloatSupplier absorbRatio = null;
+            Float absorbRatio = null;
             for (FoundArmorDetails details : armorDetails) {
                 if (absorbRatio == null) {
                     //If we haven't looked up yet if we can absorb the damage type and if we can't
@@ -470,14 +479,27 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                         break;
                     }
                     // Next lookup the ratio at which we can absorb the given damage type from the config
-                    absorbRatio = MekanismConfig.gear.mekaSuitDamageRatios.getOrDefault(source, MekanismConfig.gear.mekaSuitUnspecifiedDamageRatio);
-                    if (absorbRatio.getAsFloat() == 0) {
+                    ResourceLocation damageTypeName = source.typeHolder().unwrapKey()
+                          .map(ResourceKey::location)
+                          //Note: In theory the above path should always be done as vanilla only makes damage sources with reference holders
+                          // but just in case have the fallback to look up the name from the registry
+                          .orElseGet(() -> player.level().registryAccess().registry(Registries.DAMAGE_TYPE)
+                                .map(registry -> registry.getKey(source.type()))
+                                .orElse(null)
+                          );
+                    if (damageTypeName != null) {//Note: This should not be null unless something went wrong and the damage source is for a damage type that is not registered
+                        absorbRatio = MekanismConfig.gear.mekaSuitDamageRatios.get().get(damageTypeName);
+                    }
+                    if (absorbRatio == null) {
+                        absorbRatio = MekanismConfig.gear.mekaSuitUnspecifiedDamageRatio.getAsFloat();
+                    }
+                    if (absorbRatio == 0) {
                         //If the config specifies that the damage type shouldn't be blocked at all
                         // stop checking if the armor is able to
                         break;
                     }
                 }
-                float absorption = details.armor.absorption * absorbRatio.getAsFloat();
+                float absorption = details.armor.absorption * absorbRatio;
                 ratioAbsorbed += absorbDamage(details.usageInfo, amount, absorption, ratioAbsorbed, MekanismConfig.gear.mekaSuitEnergyUsageDamage);
                 if (ratioAbsorbed >= 1) {
                     //If we have fully absorbed the damage, stop checking/trying to absorb more

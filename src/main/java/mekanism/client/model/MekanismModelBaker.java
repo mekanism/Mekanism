@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 //Vanilla Copy of ModelBakery.ModelBakerImpl but uses the material's sprite lookup for getting textures from materials
 @NothingNullByDefault
 public class MekanismModelBaker implements ModelBaker {
-    //TODO - 1.20: Re-evaluate as I think this is effectively unused as we only use it for obj models and those don't require the ModelBaker
 
     private final Function<Material, TextureAtlasSprite> modelTextureGetter;
     private final ModelBakery bakery;
