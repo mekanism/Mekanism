@@ -510,15 +510,8 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         //Right Bottom Corner
         guiGraphics.blit(texture, x + halfWidthLeft, y + halfHeightTop, 200 - halfWidthRight, position + 20 - halfHeightBottom, halfWidthRight, halfHeightBottom, BUTTON_TEX_X, BUTTON_TEX_Y);
 
-        //TODO: Add support for buttons that are larger than 200x20 in either direction (most likely would be in the height direction
-        // Can use a lot of the same logic as GuiMekanism does for its background
-
-        //TODO - 1.20: Valdiate this is unneeded for our use cases
-        //renderBg(guiGraphics, minecraft, mouseX, mouseY);
-        //TODO: Re-evaluate this and FilterSelectButton#drawBackground as vanilla doesn't disable these after
-        // it draws a button but I am not sure if that is intentional or causes issues
-        RenderSystem.disableBlend();
-        RenderSystem.disableDepthTest();
+        //TODO: Add support for buttons that are larger than 200x20 in either direction (most likely would be in the height direction)
+        // Can use a lot of the same logic as GuiMekanism does for its background, or figure out a way to use GuiGraphics#blitNineSliced
     }
 
     protected void renderExtendedTexture(GuiGraphics guiGraphics, ResourceLocation resource, int sideWidth, int sideHeight) {

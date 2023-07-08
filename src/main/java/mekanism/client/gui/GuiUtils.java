@@ -203,6 +203,7 @@ public class GuiUtils {
         if (blend) {
             RenderSystem.enableBlend();
         }
+        //Note: We still use the tesselator as that is what GuiGraphics#innerBlit does
         BufferBuilder vertexBuffer = Tesselator.getInstance().getBuilder();
         vertexBuffer.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         Matrix4f matrix4f = guiGraphics.pose().last().pose();
@@ -275,8 +276,6 @@ public class GuiUtils {
             try {
                 PoseStack pose = guiGraphics.pose();
                 pose.pushPose();
-                //TODO - 1.20: Is this depth test stuff still needed?
-                RenderSystem.enableDepthTest();
                 if (scale != 1) {
                     //Translate before scaling, and then set xAxis and yAxis to zero so that we don't translate a second time
                     pose.translate(xAxis, yAxis, 0);
@@ -292,7 +291,6 @@ public class GuiUtils {
                     guiGraphics.renderItemDecorations(font, stack, xAxis, yAxis, text);
                 }
 
-                RenderSystem.disableDepthTest();
                 pose.popPose();
             } catch (Exception e) {
                 Mekanism.logger.error("Failed to render stack into gui: {}", stack, e);

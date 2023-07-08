@@ -1,6 +1,5 @@
 package mekanism.client.render.item;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Optional;
 import java.util.function.Predicate;
 import mekanism.api.chemical.ChemicalStack;
@@ -43,7 +42,6 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
         if (!visibleFor.test(stack)) {
             return false;
         }
-        RenderSystem.disableDepthTest();
         yOffset += 12;
         for (Capability<? extends IChemicalHandler<?, ?>> chemicalCap : chemicalCaps) {
             Optional<? extends IChemicalHandler<?, ?>> capabilityInstance = stack.getCapability(chemicalCap).resolve();

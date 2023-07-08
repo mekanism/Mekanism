@@ -2,6 +2,7 @@ package mekanism.client.gui.element.progress;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
@@ -166,14 +167,14 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
             greenFrom = greenTemp;
             blueFrom = blueTemp;
         }
-        //Prep fill gradient
+        //Prep colored blit
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderTexture(0, resource);
         RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
 
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder builder = tessellator.getBuilder();
+        //Note: We still use the tesselator as that is what the position_color_tex GuiGraphics#innerBlit does
+        BufferBuilder builder = Tesselator.getInstance().getBuilder();
         builder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
 
         if (type.isVertical()) {
@@ -188,7 +189,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
             builder.vertex(matrix, x, y, 0).color(redFrom, greenFrom, blueFrom, alphaFrom).uv(minU, minV).endVertex();
         }
 
-        tessellator.end();
+        BufferUploader.drawWithShader(builder.end());
         //Reset blit and fill gradient states
         RenderSystem.disableBlend();
         MekanismRenderer.resetColor(guiGraphics);

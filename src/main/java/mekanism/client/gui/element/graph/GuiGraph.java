@@ -53,8 +53,8 @@ public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends
             guiGraphics.setColor(1, 1, 1, 0.2F + 0.8F * i / size);
             guiGraphics.blit(texture, x + i, y + height - relativeHeight, 1, 0, 1, relativeHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
-            int hoverIndex = mouseX - getButtonX();
-            if (hoverIndex == i && mouseY >= getButtonY() && mouseY < getButtonY() + height) {
+            int hoverIndex = mouseX - getX();
+            if (hoverIndex == i && mouseY >= getY() && mouseY < getY() + height) {
                 guiGraphics.setColor(1, 1, 1, 0.5F);
                 guiGraphics.blit(texture, x + i, y, 2, 0, 1, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
                 MekanismRenderer.resetColor(guiGraphics);

@@ -1,12 +1,12 @@
 package mekanism.client.gui.element.custom;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Set;
 import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
+import mekanism.client.render.MekanismRenderType;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.Color;
 import mekanism.common.util.EnumUtils;
@@ -14,7 +14,6 @@ import mekanism.common.util.UpgradeUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.opengl.GL11;
 
 public class GuiSupportedUpgrades extends GuiElement {
 
@@ -52,9 +51,7 @@ public class GuiSupportedUpgrades extends GuiElement {
             gui().renderItem(guiGraphics, UpgradeUtils.getStack(upgrade), xPos, yPos, 0.75F);
             if (!supportedUpgrades.contains(upgrade)) {
                 //Make the upgrade appear faded if it is not supported
-                RenderSystem.depthFunc(GL11.GL_GREATER);
-                guiGraphics.fill(xPos, yPos, xPos + ELEMENT_SIZE, yPos + ELEMENT_SIZE, backgroundColor);
-                RenderSystem.depthFunc(GL11.GL_LEQUAL);
+                guiGraphics.fill(MekanismRenderType.MEK_GUI_FADE, xPos, yPos, xPos + ELEMENT_SIZE, yPos + ELEMENT_SIZE, backgroundColor);
             }
         }
     }

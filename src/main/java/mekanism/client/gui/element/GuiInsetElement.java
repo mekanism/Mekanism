@@ -60,7 +60,10 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder {
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         //Draw the button background
-        drawButton(guiGraphics, mouseX, mouseY);
+        if (buttonBackground != ButtonBackground.NONE) {
+            //Validate the background didn't get set to none by a child
+            drawButton(guiGraphics, mouseX, mouseY);
+        }
         drawBackgroundOverlay(guiGraphics);
     }
 

@@ -1,6 +1,5 @@
 package mekanism.client.render.item;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.List;
@@ -36,7 +35,6 @@ public class MekaSuitBarDecorator implements IItemDecorator {
         if (stack.isEmpty() || !(stack.getItem() instanceof ItemMekaSuitArmor armor)) {
             return false;
         }
-        RenderSystem.disableDepthTest();
         yOffset += 12;
 
         if (tryRender(guiGraphics, stack, Capabilities.GAS_HANDLER, xOffset, yOffset, armor.getGasTankSpecs())) {

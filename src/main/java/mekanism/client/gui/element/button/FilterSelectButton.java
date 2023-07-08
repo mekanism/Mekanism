@@ -37,8 +37,6 @@ public class FilterSelectButton extends MekanismButton {
         int x = getButtonX();
         int y = getButtonY();
         guiGraphics.blit(ARROWS, x, y, isMouseOverCheckWindows(mouseX, mouseY) ? width : 0, down ? 7 : 0, width, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-        RenderSystem.disableBlend();
-        RenderSystem.disableDepthTest();
     }
 
     @Override

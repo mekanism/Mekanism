@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -255,8 +256,8 @@ public class GuiRadialSelector extends Screen {
 
     private void drawTorus(GuiGraphics guiGraphics, float startAngle, float sizeAngle, float inner, float outer) {
         RenderSystem.setShader(GameRenderer::getPositionShader);
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder vertexBuffer = tesselator.getBuilder();
+        //Note: We still use the tesselator as that is what the position_color_tex GuiGraphics#innerBlit does
+        BufferBuilder vertexBuffer = Tesselator.getInstance().getBuilder();
         vertexBuffer.begin(Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION);
         Matrix4f matrix4f = guiGraphics.pose().last().pose();
         float draws = DRAWS * (sizeAngle / 360F);
@@ -268,7 +269,7 @@ public class GuiRadialSelector extends Screen {
             vertexBuffer.vertex(matrix4f, outer * cos, outer * sin, 0).endVertex();
             vertexBuffer.vertex(matrix4f, inner * cos, inner * sin, 0).endVertex();
         }
-        tesselator.end();
+        BufferUploader.drawWithShader(vertexBuffer.end());
     }
 
     @Nullable
