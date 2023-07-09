@@ -195,9 +195,10 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         guiGraphics.setColor(1, 1, 1, 0.3F);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        //TODO - 1.20: Fix this as it doesn't blur over the items like I think it used to
+        RenderSystem.disableDepthTest();
         GuiUtils.renderBackgroundTexture(guiGraphics, GuiMekanism.BLUR, 4, 4, relativeX, relativeY, width, height, 256, 256);
         MekanismRenderer.resetColor(guiGraphics);
+        RenderSystem.enableDepthTest();
     }
 
     public void close() {
