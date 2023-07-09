@@ -19,6 +19,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.to_client.PacketLightningRender;
 import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
@@ -42,6 +43,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.common.util.Lazy;
@@ -285,13 +287,10 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
                 return true;
             }
             //Or it is a replaceable plant that is also not solid (such as tall grass)
-            //TODO - 1.20: Figure out if we want to just allow it if the above state is replaceable in general or do we want to maybe add a tag for this
-            // or do some form of instance checking? maybe replaceable_by_trees block tag? and validate not a liquid though it also includes other things
-            // that make no sense for this like leaves. We may just have to make our own tag?
-            /*Material material = aboveState.getMaterial();
-            if (material == Material.REPLACEABLE_PLANT || material == Material.REPLACEABLE_FIREPROOF_PLANT) {
-                return !aboveState.isSolidRender(level, abovePos);
-            }*/
+            //Note: This may not be the most optimal way of checking this, but it gives a decent enough estimate of it
+            if (aboveState.is(MekanismTags.Blocks.FARMING_OVERRIDE) || aboveState.canBeReplaced() && aboveState.getBlock() instanceof IPlantable) {
+                return aboveState.getFluidState().isEmpty() && !aboveState.isSolidRender(level, abovePos);
+            }
             return false;
         }
     }

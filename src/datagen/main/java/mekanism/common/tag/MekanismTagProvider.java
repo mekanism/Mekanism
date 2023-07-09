@@ -130,6 +130,10 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(ItemTags.FREEZE_IMMUNE_WEARABLES, MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS, MekanismItems.MEKASUIT_BOOTS);
         addToTag(BlockTags.SCULK_REPLACEABLE, MekanismBlocks.SALT_BLOCK);
         getMobEffectBuilder(MekanismTags.MobEffects.SPEED_UP_BLACKLIST);
+
+        getBlockBuilder(MekanismTags.Blocks.FARMING_OVERRIDE).add(
+              Blocks.PINK_PETALS
+        );
     }
 
     private void addEntities() {

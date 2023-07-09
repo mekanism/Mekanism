@@ -231,6 +231,10 @@ public class MekanismTags {
         public static final TagKey<Block> MINER_BLACKLIST = tag("miner_blacklist");
         public static final LazyTagLookup<Block> MINER_BLACKLIST_LOOKUP = LazyTagLookup.create(ForgeRegistries.BLOCKS, MINER_BLACKLIST);
         public static final TagKey<Block> ATOMIC_DISASSEMBLER_ORE = tag("atomic_disassembler_ore");
+        /**
+         * For use in the farming module to target blocks that should be effectively ignored when checking if the block below should be targeted.
+         */
+        public static final TagKey<Block> FARMING_OVERRIDE = tag("farming_override");
 
         public static final TagKey<Block> CHESTS_ELECTRIC = forgeTag("chests/electric");
         public static final TagKey<Block> CHESTS_PERSONAL = forgeTag("chests/personal");
