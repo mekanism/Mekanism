@@ -1,18 +1,20 @@
 package mekanism.common.content.blocktype;
 
-import static mekanism.common.util.VoxelShapeUtils.setShape;
-import static net.minecraft.world.level.block.Block.box;
-
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public final class BlockShapes {
 
     private BlockShapes() {
+    }
+
+    private static VoxelShape box(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+        return Block.box(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
     public static final VoxelShape[] ELECTROLYTIC_SEPARATOR = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
@@ -65,7 +67,7 @@ public final class BlockShapes {
     public static final VoxelShape[] SAWING_FACTORY = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
-        setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
               box(0, 0, 0, 16, 4, 16), // base
               box(15, 3, 3, 16, 13, 13), // portToggle1
               box(0, 4, 4, 1, 12, 12), // portToggle2a
@@ -86,7 +88,7 @@ public final class BlockShapes {
               box(6, 10, 7.5, 7, 12, 8.5)// tube7
         ), Rotation.CLOCKWISE_90), ELECTROLYTIC_SEPARATOR);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(16, 18, -13, 30, 28, -11), // monitor1
               box(17, 19, -13.01, 29, 27, -13.01), // monitor1_on
               box(17, 20, -11, 29, 26, -10), // monitor_back1
@@ -149,7 +151,7 @@ public final class BlockShapes {
               box(4, 31, 4, 12, 32, 12) // port_top
         ), DIGITAL_MINER);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 5, 14, 16, 7, 16), // rim_south
               box(0, 5, 2, 2, 7, 14), // rim_west
               box(0, 5, 0, 16, 7, 2), // rim_north
@@ -169,7 +171,7 @@ public final class BlockShapes {
               box(1, 7, 1, 15, 11, 15) // glass
         ), CHEMICAL_CRYSTALLIZER);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 4, 6, 16, 16, 16), // body
               box(10, 4, 1, 12, 15, 6), // front_div_1
               box(13, 4, 1, 15, 15, 6), // front_div_2
@@ -182,7 +184,7 @@ public final class BlockShapes {
               box(12, 5, 2, 13, 6, 6) // bar5
         ), PRESSURIZED_REACTION_CHAMBER);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(11, 11, 5, 12, 16, 8), // connector1
               box(4, 11, 5, 5, 16, 8), // connector2
               box(2, 7, 2, 14, 8, 8), // divider
@@ -195,7 +197,7 @@ public final class BlockShapes {
               box(2, 11, 2, 3, 12, 3) // bar2
         ), METALLURGIC_INFUSER);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 0, 0, 16, 4, 16), // base
               box(4, 13, 4, 12, 15, 12), // pipe1
               box(5, 4, 5, 11, 13, 10), // pipe2
@@ -217,7 +219,7 @@ public final class BlockShapes {
               box(15, 4, 4, 16, 12, 12) // port_east
         ), CHEMICAL_WASHER);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(9, 4, 2, 13, 5, 14), // stand
               box(8, 5, 7, 14, 16, 15), // tower2
               box(8, 5, 1, 14, 16, 6), // tower1
@@ -230,7 +232,7 @@ public final class BlockShapes {
               box(0, 0, 0, 16, 4, 16) // base
         ), CHEMICAL_OXIDIZER);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 4, 4, 1, 12, 12), // portRight
               box(15, 4, 4, 16, 12, 12), // portLeft
               box(2, 5, 1, 14, 12, 8), // tank3
@@ -261,7 +263,7 @@ public final class BlockShapes {
               box(1, 5, 9, 7, 16, 15) // tank2
         ), CHEMICAL_INFUSER);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 0, 0, 16, 7, 16), // base
               box(0, 3, 4, 1, 11, 12), // port_right
               box(15, 3, 3, 16, 13, 13), // port_left
@@ -275,7 +277,7 @@ public final class BlockShapes {
               box(1, 7, 1, 15, 12, 14) // glass
         ), CHEMICAL_DISSOLUTION_CHAMBER);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 0, 0, 16, 5, 16), // base
               box(0, 15, 0, 16, 16, 16), // top
               box(0, 13, 0, 16, 14, 16), // middle
@@ -300,7 +302,7 @@ public final class BlockShapes {
               box(7, 5, 13, 9, 6, 14)// tube8
         ), ROTARY_CONDENSENTRATOR);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(3, 1, 3, 13, 13, 13), // main
               box(4, 4, 15, 12, 12, 16), // port_side
               box(5, 5, 13, 11, 11, 15), // energy_connector
@@ -313,7 +315,7 @@ public final class BlockShapes {
               box(13, 6, 6, 14, 10, 10) // knob_2
         ), FLUIDIC_PLENISHER);
 
-        setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
               box(4, 1, 4, 12, 12, 12), // pumpCasing
               box(10, 10, 1, 11, 11, 5), // powerConnectorFrame1
               box(5, 10, 1, 6, 11, 5), // powerConnectorFrame2
@@ -326,7 +328,7 @@ public final class BlockShapes {
               box(4, 4, 0, 12, 12, 1) // powerPort
         ), Rotation.CLOCKWISE_180), ELECTRIC_PUMP);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(6, 27, 4, 10, 28, 14), // panel_base
               box(7, 26, 8, 9, 27, 14), // panel_connector
               box(0, 0, 0, 16, 4, 16), // base_bottom
@@ -362,7 +364,7 @@ public final class BlockShapes {
               box(-0.5, 30, 0, 2, 31, 16)
         ), SOLAR_NEUTRON_ACTIVATOR);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(10, 1, 11.99, 12, 8, 13.99),//pillar1
               box(4, 1, 11.99, 6, 8, 13.99),//pillar2
               box(0, 0, 0, 16, 1, 16),//base
@@ -373,7 +375,7 @@ public final class BlockShapes {
               box(5, 5, 15, 11, 11, 16)//port_ring
         ), CHARGEPAD);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(5, 2, 4, 11, 9, 12), // body
               box(8.995, 10, 7.5, 9.995, 13, 8.5), // wire
               box(11, 8, 4, 12, 9, 12), // fin1
@@ -396,7 +398,7 @@ public final class BlockShapes {
               box(6, 11, 6, 10, 12, 10) // ring2
         ), LASER, true, true);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(1, 1, 1, 15, 15, 15),//Base
               box(0, 3, 3, 1, 13, 13),//S1
               box(3, 3, 15, 13, 13, 16),//S2
@@ -406,7 +408,7 @@ public final class BlockShapes {
               box(3, 15, 3, 13, 16, 13)//S6
         ), LASER_AMPLIFIER, true);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 4, 4, 1, 12, 12), // port_left
               box(15, 4, 4, 16, 12, 12), // port_right
               box(4, 13, 1.5, 5, 14, 14.5), // bar1
@@ -426,7 +428,7 @@ public final class BlockShapes {
               box(3, 6, 14, 13, 15, 15) // fin8
         ), RESISTIVE_HEATER);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 0, 0, 16, 5, 3), // base1
               box(0, 0, 13, 16, 5, 16), // base2
               box(0, 0, 3, 3, 5, 13), // base3
@@ -459,12 +461,12 @@ public final class BlockShapes {
               box(14, 5, 1, 15, 30, 15)//pole2 - pole3
         ), SEISMIC_VIBRATOR);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(1, 0, 1, 15, 14, 15),//Main chest
               box(7, 7, 0, 9, 11, 1)//latch
         ), PERSONAL_CHEST);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 0, 0, 3, 3, 3), // corner1
               box(0, 0, 13, 3, 3, 16), // corner2
               box(13, 0, 13, 16, 3, 16), // corner3
@@ -505,7 +507,7 @@ public final class BlockShapes {
               box(4, 0, 4, 12, 1, 12) // port_small_down
         ), QUANTUM_ENTANGLOPORTER, true);
 
-        setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
               box(2, 2, 15, 14, 14, 16), // portBackLarge
               box(7, 10, 2, 9, 12, 3), // pistonBrace1
               box(7, 4, 2, 9, 6, 3), // pistonBrace2
@@ -534,7 +536,7 @@ public final class BlockShapes {
               box(11.5, 7.5, 6, 12.5, 8.5, 7) // bulb4
         ), Direction.NORTH), LOGISTICAL_SORTER, true, true);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 6, 0, 16, 13, 16), // desk_top
               box(1, 5, 1, 15, 6, 15), // desk_middle
               box(0, 0, 0, 16, 5, 16), // desk_base
@@ -547,7 +549,7 @@ public final class BlockShapes {
               box(3, 13, 2, 13, 14, 7) // keyboard
         ), SECURITY_DESK);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(6, 13, 4, 10, 14, 5), // rim0
               box(10, 13, 4, 12, 16, 5), // rim1
               box(11, 13, 5, 12, 16, 11), // rim2
@@ -560,16 +562,16 @@ public final class BlockShapes {
               box(7, 12, 7, 9, 14, 9) // valveBase
         ), CHEMICAL_TANK);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(5, 15, 5, 11, 16, 11),
               box(6, 11, 6, 10, 15, 10)
         ), INDUSTRIAL_ALARM, true);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(1, 15, 1, 15, 16, 15)
         ), QIO_DASHBOARD, true);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 12, 0, 16, 16, 9), // drive_top
               box(0, 0, 9, 16, 16, 16), // drive_front
               box(0, 6, 0, 16, 9, 9), // rack_top
@@ -580,7 +582,7 @@ public final class BlockShapes {
               box(15, 9, 0, 16, 12, 1) // post_top_left
         ), QIO_DRIVE_ARRAY);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(4, 0, 4, 12, 1, 12), // disc_base
               box(5, 4, 5, 11, 5, 6), // ring_top_led_1
               box(5, 4, 10, 11, 5, 11), // ring_top_led_2
@@ -602,7 +604,7 @@ public final class BlockShapes {
               box(6, 7, 6, 7, 9, 7) // antenna_2
         ), QIO_IMPORTER, true, true);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(4, 0, 4, 12, 1, 12), // disc_base
               box(5, 4, 5, 11, 5, 6), // ring_top_led_1
               box(5, 4, 10, 11, 5, 11), // ring_top_led_2
@@ -627,7 +629,7 @@ public final class BlockShapes {
               box(9, 9, 6, 10, 10, 7) // crown_4
         ), QIO_EXPORTER, true, true);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(4, 0, 4, 12, 1, 12), // disc_base
               box(5, 2, 5, 11, 3, 6), // ring_led_1
               box(5, 2, 10, 11, 3, 11), // ring_led_2
@@ -643,7 +645,7 @@ public final class BlockShapes {
               box(7, 5, 7, 9, 11, 9) // torch
         ), QIO_REDSTONE_ADAPTER, true, true);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(-16, 13, 0, 16, 16, 16), // desk_top
               box(13, 0, 0, 16, 13, 3), // desk_part1
               box(0, 0, 0, 3, 13, 3), // desk_part2
@@ -676,7 +678,7 @@ public final class BlockShapes {
               box(4, 4, 15, 12, 12, 16) // energy_port
         ), MODIFICATION_STATION);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 0, 0, 16, 2, 16), // base
               box(1, 2, 14, 2, 3, 15), // rivet1
               box(1, 2, 1, 2, 3, 2), // rivet2
@@ -704,7 +706,7 @@ public final class BlockShapes {
               box(8, 15, 7, 9, 17, 8) // random_shape3
         ), ISOTOPIC_CENTRIFUGE);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(5, 1, 5, 11, 10, 11), // body
               box(4.995, 8, 7, 5.995, 13, 8), // wire1
               box(10.005, 8, 8, 11.005, 13, 9), // wire2
@@ -717,7 +719,7 @@ public final class BlockShapes {
               box(10, 3, 7, 12, 8, 9) // coil_4
         ), SUPERCHARGED_COIL, true, true);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 5, 0, 16, 8, 16),
               box(1, 3, 1, 15, 5, 15),
               box(0, 0, 0, 16, 3, 16),
@@ -741,7 +743,7 @@ public final class BlockShapes {
               box(4, 8, 1, 12, 15, 10) // glass
         ), ANTIPROTONIC_NUCLEOSYNTHESIZER);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 0, 0, 16, 16, 16), // base
               box(5, 27, 4, 11, 28, 16), // mixer_rod_support
               box(6, 28, 5, 10, 30, 9), // mixer_motor
@@ -753,7 +755,7 @@ public final class BlockShapes {
         ), PIGMENT_MIXER);
 
         //Factories:
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 0, 0, 16, 16, 4), // front_panel
               box(0, 0, 5, 16, 4, 16), // base
               box(1, 0, 4, 15, 15, 15), // body
@@ -764,7 +766,7 @@ public final class BlockShapes {
               box(0, 4, 11, 5, 16, 16) // stack4
         ), SMELTING_FACTORY);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 0, 0, 16, 16, 4), // front_panel
               box(4, 4, 14, 12, 12, 16), // port
               box(1, 7, 4, 15, 14, 14), // core
@@ -776,7 +778,7 @@ public final class BlockShapes {
               box(14, 6, 4, 16, 14, 16) // shell_03
         ), ENRICHING_FACTORY);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 0, 0, 16, 16, 4), // front_panel
               box(2, 0, 7, 14, 4, 12), // base
               box(2, 10, 7, 14, 12, 12), // bracket
@@ -787,7 +789,7 @@ public final class BlockShapes {
               box(4, 4, 14, 12, 12, 16) // port
         ), CRUSHING_FACTORY);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 0, 0, 16, 16, 4), // front_panel
               box(0, 0, 12, 16, 16, 16), // vent
               box(0, 12, 4, 16, 16, 11), // top
@@ -797,7 +799,7 @@ public final class BlockShapes {
               box(4, 4, 14, 12, 12, 16) // port
         ), COMPRESSING_FACTORY);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 12, 4, 16, 16, 16), // top
               box(5, 4, 4, 11, 12, 14), // body
               box(0, 0, 0, 16, 16, 4), // front_panel
@@ -809,7 +811,7 @@ public final class BlockShapes {
               box(3, 11, 6, 13, 12, 8) // press1
         ), COMBINING_FACTORY);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 12, 4, 16, 16, 16), // top
               box(1, 0, 4, 15, 15, 15), // body
               box(0, 0, 0, 16, 16, 4), // front_panel
@@ -819,7 +821,7 @@ public final class BlockShapes {
               box(0, 1, 11, 16, 12, 16) // stack3
         ), PURIFYING_FACTORY);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 0, 0, 16, 16, 4), // front_panel
               box(4, 4, 4, 12, 12, 16), // port
               box(0, 0, 4, 16, 4, 16), // base
@@ -830,7 +832,7 @@ public final class BlockShapes {
               box(7, 12, 6, 9, 14, 7) // tube3
         ), INJECTING_FACTORY);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 0, 4, 16, 4, 16), // base
               box(2, 4, 4, 14, 13, 14), // body
               box(0, 0, 0, 16, 16, 4), // front_panel
@@ -842,7 +844,7 @@ public final class BlockShapes {
               box(11, 5, 4, 16, 8, 16) // fin3b
         ), INFUSING_FACTORY);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 0, 0, 16, 16, 4), // front_panel
               box(4, 4, 14, 12, 12, 16), // port
               box(0, 5, 5, 7, 16, 16), // saw2

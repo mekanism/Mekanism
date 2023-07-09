@@ -1,16 +1,18 @@
 package mekanism.generators.common.content.blocktype;
 
-import static mekanism.common.util.VoxelShapeUtils.setShape;
-import static net.minecraft.world.level.block.Block.box;
-
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public final class BlockShapes {
 
     private BlockShapes() {
+    }
+
+    private static VoxelShape box(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+        return Block.box(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
     public static final VoxelShape[] HEAT_GENERATOR = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
@@ -24,7 +26,7 @@ public final class BlockShapes {
     public static final VoxelShape[] TURBINE_ROTOR = {box(6, 0, 6, 10, 16, 10)};
 
     static {
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 7, 6, 16, 16, 15), // drum
               box(0, 0, 0, 16, 6, 16), // base
               box(3, 6, 5, 5, 15, 16), // ring1
@@ -43,7 +45,7 @@ public final class BlockShapes {
               box(12, 7, 0, 16, 8, 2) // fin6
         ), HEAT_GENERATOR);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(4.5, 68.5, 4, 11.5, 75.5, 13),
               box(5, 5, 1, 11, 11, 11),
               box(6, 3, 2.5, 10, 5, 4.5),
@@ -67,7 +69,7 @@ public final class BlockShapes {
               box(3, 3, 3, 13, 15, 13)
         ), WIND_GENERATOR);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(6, -4, 6, 10, 25, 10), // pole
               box(4, 22, 2, 6, 24, 14), // tube1
               box(10, 22, 2, 12, 24, 14), // tube2
@@ -87,7 +89,7 @@ public final class BlockShapes {
               box(-12, 27, 7, 4, 29, 9) // solar_panel_west_arm
         ).move(0, 1, 0), ADVANCED_SOLAR_GENERATOR);
 
-        setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
               box(0, 0, 0, 16, 7, 16), // base
               box(3, 14.01, 0.99, 13, 15.01, 1.99), // bar
               box(13, 7, 0, 16, 16, 8), // sideRight
@@ -96,7 +98,7 @@ public final class BlockShapes {
               box(2, 7, 1, 14, 15, 8) // glass
         ), Rotation.CLOCKWISE_180), BIO_GENERATOR);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(0, 6, 0, 16, 8, 16), // solarPanel
               box(4, 0, 4, 12, 1, 12), // solarPanelPort
               box(6, 4, 6, 10, 6, 10), // solarPanelConnector
@@ -109,7 +111,7 @@ public final class BlockShapes {
               box(1, 5, 1, 15, 6, 15) // solarPanelBottom
         ), SOLAR_GENERATOR);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(4, 12, 13, 12, 13, 14), // port_connector_south1
               box(4, 11.3536, 12.6464, 12, 12.8536, 13.6464), // port_connector_south2
               box(0.5, 12, 4, 2, 13, 12), // port_connector_west1
@@ -135,7 +137,7 @@ public final class BlockShapes {
               box(0, 4, 4, 1, 12, 12) // port_west
         ), GAS_BURNING_GENERATOR);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(4, 7, 4, 6, 15, 6), // connector_1
               box(10, 8, 4, 12, 16, 6), // connector_2
               box(10, 7, 10, 12, 15, 12), // connector_3
@@ -165,7 +167,7 @@ public final class BlockShapes {
               box(0, 0, 0, 16, 3, 16) // connector_ring_bottom
         ), CONTROL_ROD_ASSEMBLY);
 
-        setShape(VoxelShapeUtils.combine(
+        VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
               box(2, 3, 2, 14, 13, 14), // core
               box(13, 1, 1, 15, 15, 3), // rod_1
               box(9, 1, 1, 11, 15, 15), // rod_2
