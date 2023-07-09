@@ -222,7 +222,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         FluidStack stack = fluidTank.getFluid();
         if (stack.isEmpty()) {
             //If we are empty, base it off of if it is replaceable in general or if it is a liquid container
-            return WorldUtils.isValidReplaceableBlock(level, pos) || state.getBlock() instanceof LiquidBlockContainer;
+            return state.canBeReplaced() || state.getBlock() instanceof LiquidBlockContainer;
         }
         Fluid fluid = stack.getFluid();
         if (state.canBeReplaced(fluid)) {

@@ -7,18 +7,19 @@ import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.transmitter.BlockThermodynamicConductor;
-import mekanism.common.item.block.ItemBlockMultipartAble;
+import mekanism.common.item.block.ItemBlockMekanism;
 import mekanism.common.tier.ConductorTier;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemBlockThermodynamicConductor extends ItemBlockMultipartAble<BlockThermodynamicConductor> {
+public class ItemBlockThermodynamicConductor extends ItemBlockMekanism<BlockThermodynamicConductor> {
 
     public ItemBlockThermodynamicConductor(BlockThermodynamicConductor block) {
-        super(block);
+        super(block, new Item.Properties());
     }
 
     @NotNull

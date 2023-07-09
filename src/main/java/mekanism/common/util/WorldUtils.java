@@ -542,7 +542,6 @@ public class WorldUtils {
      * @return True if the block can be replaced and is within the world's bounds.
      */
     public static boolean isValidReplaceableBlock(@NotNull BlockGetter world, @NotNull BlockPos pos) {
-        //TODO - 1.20: Should this use one of the overloads of canBeReplaced
         return isBlockInBounds(world, pos) && world.getBlockState(pos).canBeReplaced();
     }
 

@@ -1027,6 +1027,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.BLOCKS, "- Blocks (%1$s)");
         add(MekanismLang.FLUIDS, "- Fluids (%1$s)");
         add(MekanismLang.GASES, "- Gases (%1$s)");
+        add(MekanismLang.INFUSE_TYPES, "- Infuse Types (%1$s)");
+        add(MekanismLang.PIGMENTS, "- Pigments (%1$s)");
+        add(MekanismLang.SLURRIES, "- Slurries (%1$s)");
         add(MekanismLang.HEAT, "- Heat (%1$s)");
         add(MekanismLang.CONDUCTION, "Conduction: %1$s");
         add(MekanismLang.INSULATION, "Insulation: %1$s");

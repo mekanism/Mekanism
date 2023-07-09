@@ -6,17 +6,18 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.transmitter.BlockDiversionTransporter;
-import mekanism.common.item.block.ItemBlockMultipartAble;
+import mekanism.common.item.block.ItemBlockMekanism;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemBlockDiversionTransporter extends ItemBlockMultipartAble<BlockDiversionTransporter> {
+public class ItemBlockDiversionTransporter extends ItemBlockMekanism<BlockDiversionTransporter> {
 
     public ItemBlockDiversionTransporter(BlockDiversionTransporter block) {
-        super(block);
+        super(block, new Item.Properties());
     }
 
     @Override
