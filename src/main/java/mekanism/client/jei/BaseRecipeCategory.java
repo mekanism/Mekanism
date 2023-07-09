@@ -149,7 +149,9 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         PoseStack pose = guiGraphics.pose();
         guiElements.forEach(e -> e.renderShifted(guiGraphics, x, y, 0));
         guiElements.forEach(e -> e.onDrawBackground(guiGraphics, x, y, 0));
-        int zOffset = 200;//TODO - 1.20: Re-evaluate this offset being used/needed
+        //Note: We don't care that onRenderForeground updates the maxZOffset in the mekanism gui as that is just used for rendering windows
+        // and as our categories don't support windows we don't need to worry about that
+        int zOffset = 200;
         for (GuiTexturedElement element : guiElements) {
             pose.pushPose();
             element.onRenderForeground(guiGraphics, x, y, zOffset, zOffset);
