@@ -7,6 +7,8 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.mojang.math.Divisor;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import java.util.List;
 import java.util.function.Predicate;
 import mekanism.client.gui.element.GuiElement;
@@ -21,6 +23,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,113 +37,86 @@ public class GuiUtils {
     // Note: Does not validate that the passed in dimensions are valid
     // this strategy starts with a small texture and will expand it (by scaling) to meet the size requirements. good for small widgets
     // where the background texture is a single color
-    //TODO - 1.20: Compare against GuiGraphics#blitNineSliced
-    // Maybe something along the lines of guiGraphics.blitNineSliced(resource, left, top, width, height, , , , , );
     public static void renderExtendedTexture(GuiGraphics guiGraphics, ResourceLocation resource, int sideWidth, int sideHeight, int left, int top, int width, int height) {
         int textureWidth = 2 * sideWidth + 1;
         int textureHeight = 2 * sideHeight + 1;
-        int centerWidth = width - 2 * sideWidth;
-        int centerHeight = height - 2 * sideHeight;
-        int leftEdgeEnd = left + sideWidth;
-        int rightEdgeStart = leftEdgeEnd + centerWidth;
-        int topEdgeEnd = top + sideHeight;
-        int bottomEdgeStart = topEdgeEnd + centerHeight;
-        //Left Side
-        //Top Left Corner
-        guiGraphics.blit(resource, left, top, 0, 0, sideWidth, sideHeight, textureWidth, textureHeight);
-        //Left Middle
-        if (centerHeight > 0) {
-            guiGraphics.blit(resource, left, topEdgeEnd, sideWidth, centerHeight, 0, sideHeight, sideWidth, 1, textureWidth, textureHeight);
-        }
-        //Bottom Left Corner
-        guiGraphics.blit(resource, left, bottomEdgeStart, 0, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
-
-        //Middle
-        if (centerWidth > 0) {
-            //Top Middle
-            guiGraphics.blit(resource, leftEdgeEnd, top, centerWidth, sideHeight, sideWidth, 0, 1, sideHeight, textureWidth, textureHeight);
-            if (centerHeight > 0) {
-                //Center
-                guiGraphics.blit(resource, leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, sideWidth, sideHeight, 1, 1, textureWidth, textureHeight);
-            }
-            //Bottom Middle
-            guiGraphics.blit(resource, leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, sideWidth, sideHeight + 1, 1, sideHeight, textureWidth, textureHeight);
-        }
-
-        //Right side
-        //Top Right Corner
-        guiGraphics.blit(resource, rightEdgeStart, top, sideWidth + 1, 0, sideWidth, sideHeight, textureWidth, textureHeight);
-        //Right Middle
-        if (centerHeight > 0) {
-            guiGraphics.blit(resource, rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, sideWidth + 1, sideHeight, sideWidth, 1, textureWidth, textureHeight);
-        }
-        //Bottom Right Corner
-        guiGraphics.blit(resource, rightEdgeStart, bottomEdgeStart, sideWidth + 1, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
+        blitNineSliced(guiGraphics, resource, left, top, width, height, sideWidth, sideHeight, textureWidth, textureHeight, 0, 0, textureWidth, textureHeight);
     }
 
-    // this strategy starts with a large texture and will scale it down or tile it if necessary. good for larger widgets, but requires a large texture; small textures will tank FPS due
-    // to tiling
-    public static void renderBackgroundTexture(GuiGraphics guiGraphics, ResourceLocation resource, int texSideWidth, int texSideHeight, int left, int top, int width, int height, int textureWidth, int textureHeight) {
-        // render as much side as we can, based on element dimensions
-        int sideWidth = Math.min(texSideWidth, width / 2);
-        int sideHeight = Math.min(texSideHeight, height / 2);
-
-        // Adjustment for small odd-height and odd-width GUIs
-        int leftWidth = sideWidth < texSideWidth ? sideWidth + (width % 2) : sideWidth;
-        int topHeight = sideHeight < texSideHeight ? sideHeight + (height % 2) : sideHeight;
-
-        int texCenterWidth = textureWidth - texSideWidth * 2, texCenterHeight = textureHeight - texSideHeight * 2;
-        int centerWidth = width - leftWidth - sideWidth, centerHeight = height - topHeight - sideHeight;
-
-        int leftEdgeEnd = left + leftWidth;
-        int rightEdgeStart = leftEdgeEnd + centerWidth;
-        int topEdgeEnd = top + topHeight;
-        int bottomEdgeStart = topEdgeEnd + centerHeight;
-
-        //Top Left Corner
-        guiGraphics.blit(resource, left, top, 0, 0, leftWidth, topHeight, textureWidth, textureHeight);
-        //Bottom Left Corner
-        guiGraphics.blit(resource, left, bottomEdgeStart, 0, textureHeight - sideHeight, leftWidth, sideHeight, textureWidth, textureHeight);
-
-        //Middle
-        if (centerWidth > 0) {
-            //Top Middle
-            blitTiled(guiGraphics, resource, leftEdgeEnd, top, centerWidth, topHeight, texSideWidth, 0, texCenterWidth, texSideHeight, textureWidth, textureHeight);
-            if (centerHeight > 0) {
-                //Center
-                blitTiled(guiGraphics, resource, leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, texSideWidth, texSideHeight, texCenterWidth, texCenterHeight, textureWidth, textureHeight);
-            }
-            //Bottom Middle
-            blitTiled(guiGraphics, resource, leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, texSideWidth, textureHeight - sideHeight, texCenterWidth, texSideHeight, textureWidth, textureHeight);
-        }
-
-        if (centerHeight > 0) {
-            //Left Middle
-            blitTiled(guiGraphics, resource, left, topEdgeEnd, leftWidth, centerHeight, 0, texSideHeight, texSideWidth, texCenterHeight, textureWidth, textureHeight);
-            //Right Middle
-            blitTiled(guiGraphics, resource, rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, textureWidth - sideWidth, texSideHeight, texSideWidth, texCenterHeight, textureWidth, textureHeight);
-        }
-
-        //Top Right Corner
-        guiGraphics.blit(resource, rightEdgeStart, top, textureWidth - sideWidth, 0, sideWidth, topHeight, textureWidth, textureHeight);
-        //Bottom Right Corner
-        guiGraphics.blit(resource, rightEdgeStart, bottomEdgeStart, textureWidth - sideWidth, textureHeight - sideHeight, sideWidth, sideHeight, textureWidth, textureHeight);
+    // this strategy starts with a large texture and will scale it down or tile it if necessary. good for larger widgets, but requires a large texture;
+    // small textures will tank FPS due to tiling
+    public static void renderBackgroundTexture(GuiGraphics guiGraphics, ResourceLocation resource, int texSideWidth, int texSideHeight, int left, int top, int width,
+          int height, int textureWidth, int textureHeight) {
+        blitNineSliced(guiGraphics, resource, left, top, width, height, texSideWidth, texSideHeight, textureWidth, textureHeight, 0, 0, textureWidth,
+              textureHeight);
     }
 
-    public static void blitTiled(GuiGraphics guiGraphics, ResourceLocation resource, int x, int y, int width, int height, int texX, int texY, int texDrawWidth,
-          int texDrawHeight, int textureWidth, int textureHeight) {
-        int xTiles = (int) Math.ceil((float) width / texDrawWidth), yTiles = (int) Math.ceil((float) height / texDrawHeight);
+    //TODO - 1.20: Replace the below nineSlicedMethods with using https://github.com/MinecraftForge/MinecraftForge/pull/9641
+    //Copy of GuiGraphics#blitNineSliced but modified to support specifying texture size
+    public static void blitNineSliced(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height, int sliceSize, int uWidth,
+          int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
+        blitNineSliced(guiGraphics, texture, x, y, width, height, sliceSize, sliceSize, uWidth, vHeight, uOffset, vOffset, textureWidth, textureHeight);
+    }
 
-        int drawWidth = width, drawHeight = height;
-        for (int tileX = 0; tileX < xTiles; tileX++) {
-            for (int tileY = 0; tileY < yTiles; tileY++) {
-                guiGraphics.blit(resource, x + texDrawWidth * tileX, y + texDrawHeight * tileY, texX, texY, Math.min(drawWidth, texDrawWidth),
-                      Math.min(drawHeight, texDrawHeight), textureWidth, textureHeight);
-                drawHeight -= texDrawHeight;
-            }
-            drawWidth -= texDrawWidth;
-            drawHeight = height;
+    //Copy of GuiGraphics#blitNineSliced but modified to support specifying texture size
+    public static void blitNineSliced(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height, int sliceWidth, int sliceHeight,
+          int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
+        blitNineSliced(guiGraphics, texture, x, y, width, height, sliceWidth, sliceHeight, sliceWidth, sliceHeight, uWidth, vHeight, uOffset, vOffset,
+              textureWidth, textureHeight);
+    }
+
+    //Copy of GuiGraphics#blitNineSliced but modified to support specifying texture size
+    public static void blitNineSliced(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height, int cornerWidth, int cornerHeight,
+          int edgeWidth, int edgeHeight, int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
+        cornerWidth = Math.min(cornerWidth, width / 2);
+        edgeWidth = Math.min(edgeWidth, width / 2);
+        cornerHeight = Math.min(cornerHeight, height / 2);
+        edgeHeight = Math.min(edgeHeight, height / 2);
+        if (width == uWidth && height == vHeight) {
+            guiGraphics.blit(texture, x, y, uOffset, vOffset, width, height, textureWidth, textureHeight);
+        } else if (height == vHeight) {
+            guiGraphics.blit(texture, x, y, uOffset, vOffset, cornerWidth, height, textureWidth, textureHeight);
+            blitRepeating(guiGraphics, texture, x + cornerWidth, y, width - edgeWidth - cornerWidth, height, uOffset + cornerWidth, vOffset, uWidth - edgeWidth - cornerWidth, vHeight, textureWidth, textureHeight);
+            guiGraphics.blit(texture, x + width - edgeWidth, y, uOffset + uWidth - edgeWidth, vOffset, edgeWidth, height, textureWidth, textureHeight);
+        } else if (width == uWidth) {
+            guiGraphics.blit(texture, x, y, uOffset, vOffset, width, cornerHeight, textureWidth, textureHeight);
+            blitRepeating(guiGraphics, texture, x, y + cornerHeight, width, height - edgeHeight - cornerHeight, uOffset, vOffset + cornerHeight, uWidth, vHeight - edgeHeight - cornerHeight, textureWidth, textureHeight);
+            guiGraphics.blit(texture, x, y + height - edgeHeight, uOffset, vOffset + vHeight - edgeHeight, width, edgeHeight, textureWidth, textureHeight);
+        } else {
+            guiGraphics.blit(texture, x, y, uOffset, vOffset, cornerWidth, cornerHeight, textureWidth, textureHeight);
+            blitRepeating(guiGraphics, texture, x + cornerWidth, y, width - edgeWidth - cornerWidth, cornerHeight, uOffset + cornerWidth, vOffset, uWidth - edgeWidth - cornerWidth, cornerHeight, textureWidth, textureHeight);
+            guiGraphics.blit(texture, x + width - edgeWidth, y, uOffset + uWidth - edgeWidth, vOffset, edgeWidth, cornerHeight, textureWidth, textureHeight);
+            guiGraphics.blit(texture, x, y + height - edgeHeight, uOffset, vOffset + vHeight - edgeHeight, cornerWidth, edgeHeight, textureWidth, textureHeight);
+            blitRepeating(guiGraphics, texture, x + cornerWidth, y + height - edgeHeight, width - edgeWidth - cornerWidth, edgeHeight, uOffset + cornerWidth, vOffset + vHeight - edgeHeight, uWidth - edgeWidth - cornerWidth, edgeHeight, textureWidth, textureHeight);
+            guiGraphics.blit(texture, x + width - edgeWidth, y + height - edgeHeight, uOffset + uWidth - edgeWidth, vOffset + vHeight - edgeHeight, edgeWidth, edgeHeight, textureWidth, textureHeight);
+            blitRepeating(guiGraphics, texture, x, y + cornerHeight, cornerWidth, height - edgeHeight - cornerHeight, uOffset, vOffset + cornerHeight, cornerWidth, vHeight - edgeHeight - cornerHeight, textureWidth, textureHeight);
+            blitRepeating(guiGraphics, texture, x + cornerWidth, y + cornerHeight, width - edgeWidth - cornerWidth, height - edgeHeight - cornerHeight, uOffset + cornerWidth, vOffset + cornerHeight, uWidth - edgeWidth - cornerWidth, vHeight - edgeHeight - cornerHeight, textureWidth, textureHeight);
+            blitRepeating(guiGraphics, texture, x + width - edgeWidth, y + cornerHeight, cornerWidth, height - edgeHeight - cornerHeight, uOffset + uWidth - edgeWidth, vOffset + cornerHeight, edgeWidth, vHeight - edgeHeight - cornerHeight, textureWidth, textureHeight);
         }
+    }
+
+    //Copy of GuiGraphics#blitRepeating but modified to support specifying texture size
+    public static void blitRepeating(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height, int uOffset, int yOffset, int sourceWidth,
+          int sourceHeight, int textureWidth, int textureHeight) {
+        int xStart = x;
+        int uWidth;
+        for (IntIterator xSlices = slices(width, sourceWidth); xSlices.hasNext(); xStart += uWidth) {
+            uWidth = xSlices.nextInt();
+            int uShift = (sourceWidth - uWidth) / 2;
+            int yStart = y;
+            int vHeight;
+            for (IntIterator ySlices = slices(height, sourceHeight); ySlices.hasNext(); yStart += vHeight) {
+                vHeight = ySlices.nextInt();
+                int vShift = (sourceHeight - vHeight) / 2;
+                guiGraphics.blit(texture, xStart, yStart, uOffset + uShift, yOffset + vShift, uWidth, vHeight, textureWidth, textureHeight);
+            }
+        }
+    }
+
+    //Copy of GuiGraphics#slices
+    private static IntIterator slices(int target, int total) {
+        int denominator = Mth.positiveCeilDiv(target, total);
+        return new Divisor(target, denominator);
     }
 
     public static void drawOutline(GuiGraphics guiGraphics, int x, int y, int width, int height, int color) {
