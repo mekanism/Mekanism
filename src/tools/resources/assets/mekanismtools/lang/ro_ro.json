@@ -1,4 +1,6 @@
 {
+  "constants.mekanismtools.mod_name": "Mekanism: Scule",
+  "constants.mekanismtools.pack_description": "Resurse necesare pentru Mekanism: Scule",
   "item.mekanismtools.bronze_axe": "Topor de bronz",
   "item.mekanismtools.bronze_boots": "Cizme de bronz",
   "item.mekanismtools.bronze_chestplate": "Platoșă de bronz",
