@@ -437,8 +437,8 @@ public class Mekanism {
     private void onWorldUnload(LevelEvent.Unload event) {
         // Make sure the global fake player drops its reference to the World
         // when the server shuts down
-        if (event.getLevel() instanceof ServerLevel) {
-            MekFakePlayer.releaseInstance(event.getLevel());
+        if (event.getLevel() instanceof ServerLevel level) {
+            MekFakePlayer.releaseInstance(level);
         }
         if (event.getLevel() instanceof Level level && MekanismConfig.general.validOredictionificatorFilters.hasInvalidationListeners()) {
             //Remove any invalidation listeners that loaded oredictionificators might have added if the OD was in the given level
