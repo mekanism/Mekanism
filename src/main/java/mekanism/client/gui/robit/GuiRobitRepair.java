@@ -2,7 +2,6 @@ package mekanism.client.gui.robit;
 
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
 import net.minecraft.client.gui.GuiGraphics;
@@ -88,7 +87,6 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
                 int width = imageWidth - 8 - getStringWidth(component) - 2;
                 guiGraphics.fill(width - 2, 67, imageWidth - 8, 79, 0x4F000000);
                 guiGraphics.drawString(getFont(), component, width, 69, k);
-                MekanismRenderer.resetColor(guiGraphics);
             }
         }
         drawString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
@@ -102,7 +100,6 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
 
     @Override
     protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        MekanismRenderer.resetColor(guiGraphics);
         guiGraphics.blit(ANVIL_RESOURCE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         guiGraphics.blit(ANVIL_RESOURCE, leftPos + 59, topPos + 20, 0, imageHeight + (menu.getSlot(0).hasItem() ? 0 : 16), 110, 16);
         if ((menu.getSlot(0).hasItem() || menu.getSlot(1).hasItem()) && !menu.getSlot(2).hasItem()) {

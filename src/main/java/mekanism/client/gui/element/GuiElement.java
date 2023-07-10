@@ -339,8 +339,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
      * Override this to render the button with a different x position than this GuiElement
      */
     protected int getButtonX() {
-        //TODO - 1.20: Re-evaluate usages of this to see which are actually meant to be this/getButtonY/Width/Height and which are meant to be direct
-        // Also maybe we should be overriding this in more places?
+        //TODO: Re-evaluate uses of relativeX and see what would be more logical to have using this/getButtonY/Width/Height and potentially just override this in more locations
         return relativeX;
     }
 

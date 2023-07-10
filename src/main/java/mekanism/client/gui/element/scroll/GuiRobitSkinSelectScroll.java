@@ -15,7 +15,6 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.model.MekanismModelCache;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.common.Mekanism;
@@ -115,7 +114,6 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
                     int slot = (slotY + scrollBar.getCurrentSelection()) * SLOT_COUNT + slotX;
                     if (checkWindows(mouseX, mouseY, slot < skins.size())) {
                         guiGraphics.fill(RenderType.guiOverlay(), slotStartX, slotStartY, slotStartX + SLOT_DIMENSIONS, slotStartY + SLOT_DIMENSIONS, 0x70FFEA00);
-                        MekanismRenderer.resetColor(guiGraphics);
                     }
                 }
             }

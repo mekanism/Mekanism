@@ -10,7 +10,6 @@ import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.button.MekanismImageButton;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -215,7 +214,6 @@ public class GuiTextField extends GuiElement {
             textField.render(guiGraphics, mouseX, mouseY, partialTicks);
         }
         pose.popPose();
-        MekanismRenderer.resetColor(guiGraphics);
         if (iconType != null) {
             guiGraphics.blit(iconType.getIcon(), relativeX + 2, relativeY + (height / 2) - (int) Math.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
         }

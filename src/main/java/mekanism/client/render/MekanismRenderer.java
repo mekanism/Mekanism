@@ -156,7 +156,7 @@ public class MekanismRenderer {
     }
 
     //Color
-    public static void resetColor(GuiGraphics guiGraphics) {//TODO - 1.20: Re-evaluate uses as some things like fill may no longer have minor gl leaks
+    public static void resetColor(GuiGraphics guiGraphics) {
         guiGraphics.setColor(1, 1, 1, 1);
     }
 

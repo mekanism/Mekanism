@@ -13,7 +13,6 @@ public abstract class BaseLootProvider extends LootTableProvider {
         this(output, Collections.emptySet(), subProviders);
     }
 
-    //TODO - 1.20: Do we want to mark any tables as required??
     protected BaseLootProvider(PackOutput output, Set<ResourceLocation> requiredTables, List<LootTableProvider.SubProviderEntry> subProviders) {
         super(output, requiredTables, subProviders);
     }

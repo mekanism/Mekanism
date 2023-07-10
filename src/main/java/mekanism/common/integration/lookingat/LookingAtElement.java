@@ -76,7 +76,5 @@ public abstract class LookingAtElement {
             guiGraphics.drawString(mc.font, component, (int) (x * reverse), (int) ((y * reverse) + yAdd), color, false);
             pose.popPose();
         }
-        //Make sure the color does not leak from having drawn the string
-        MekanismRenderer.resetColor(guiGraphics);
     }
 }
