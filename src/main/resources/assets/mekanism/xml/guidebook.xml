@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book title="Mekanism HandyGuide" cover="mekanism:item/alloy_infused" fontSize="1.0">
+    <include ref="gbook:xml/standard.xml"/>
+
+    <chapter>
+        <section>
+            <!--
+            'p' tags draw text, and increment the vertical offset.
+            They do NOT behave exactly like in html.
+            The space attribute changes the default spacing added after the paragraph.
+            -->
+            <p color="#606060" space="8">This book is a work in progress.</p>
+
+
+            <section-break/>
+
+            <!--
+            'space' tags increment the vertical offset without drawing text.
+            The 'height' attribute specifies how much.
+            The % refers to a % of the section's height, while integer values refer to pixels.
+            -->
+            <space height="33%"/>
+            <p space="8" align="center" scale="2">Mekanism</p>
+            <p align="center">Here at Mekanism, Inc. we pride ourselves on our user-friendly creations, but sometimes a
+                little nudge in the right direction is needed. Enter: the Mekanism HandyGuide - your handy dandy guide
+                to the world of Mekanism.
+            </p>
+        </section>
+        <section>
+            <page_title>
+                <title>Index</title>
+            </page_title>
+            <p>Introduction</p>
+            <link indent="8" ref="intro">Introduction</link>
+            <link indent="8" ref="intro:features">Main Features</link>
+
+            <link ref="machines">Machines</link>
+
+            <link ref="gear">Gear</link>
+
+            <link ref="items">Items</link>
+
+            <!--<link ref="API">1. Adding new Books</link>
+            <link indent="8" ref="API:respack">1.1. Via Resource Packs</link>
+            <link indent="8" ref="API:configuration">1.2. Via Config Folder</link>
+            <link ref="XML">2. Structure of the book</link>
+            <link indent="8" ref="XML:pages">2.1. Chapters and Pages</link>
+            <link indent="8" ref="XML:text">2.2. Paragraphs and titles</link>
+            <link indent="8" ref="XML:images">2.3. Images and Links</link>
+            <link indent="8" ref="XML:stacks">2.4. Item Stacks</link>
+            <link ref="templates">3. Templates (WIP)</link>
+            <link indent="8" ref="templates:recipes">3.1. Recipes (WIP)</link>-->
+        </section>
+    </chapter>
+    <chapter id="intro">
+        <section>
+            <page_title>
+                <title>Introduction</title>
+            </page_title>
+            <p space="8">Mekanism is an independent tech mod that brings many different machinery types to Minecraft,
+                solving
+                problems nobody knew they had. The mod doesn't have any main goals, and you'll notice this when you see
+                the seemingly random content Mekanism contains (from jetpacks to balloons). However, there is a somewhat
+                linear progression system that is both easy to follow and increases in complexity as the player becomes
+                more accustomed to the mod, making sure that the player will have an easy time getting into the mod
+                without ever getting bored with it.
+            </p>
+            <p space="8">By the time anybody has finished a mod pack using Mekanism, if they
+                play a pack without it in the future, the first thought would be "Man, I wish I had Mekanism!". This
+                seemingly simple mod has so much to offer to anybody willing to play, with minimal (but necessary grind)
+                and ample rewards for the player's efforts.
+            </p>
+            <p space="8">Mekanism uses a tier-based system when organizing several of its core features (for instance:
+                <link ref="machines:energy_cube">Energy Cubes</link> and <link ref="machines:factories">Factories</link>).
+            </p>
+            <p space="8">There are four tiers: basic (green), advanced (red), elite (cyan), and ultimate
+                (purple), with each tier ordered respectively in increasing order in terms of energy consumption and
+                processing slots.
+            </p>
+            <p space="8">Mekanism does not directly increase processing speed every tier, instead it adds extra
+                processing slots which all process the inputted materials at the same time. Basic is 3 slots, advanced
+                is 5 slots, elite is 7 slots, and ultimate has not been implemented.
+            </p>
+            <p space="8">You can upgrade tiers by placing the component in a crafting grid and surrounding it with the
+                necessary resources for the next upgrade,
+                or using a tier installer (basically an upgrade kit).
+            </p>
+            <p space="8">By the time the player has gotten used to using Mekanism, they will have unlimited sand and
+                gravel just from a cobblestone generator, will have a simplistic sorting systems for all of their items,
+                will be obtaining five ingots for each ore they mine, and will be boasting their powerful, heavily
+                equipped, and very protective Mekasuit alongside with their even more powerful Mekatool, which combines
+                the power of Vein miners, Tree Fellers, Axes, Swords, Pickaxes, Shovels, and Hoes.
+            </p>
+        </section>
+        <section id="features">
+            <page_title>
+                <title>Main Features</title>
+            </page_title>
+            <p space="4" bold="true">Power Compatibility</p>
+            <p space="8">Unless disabled in the configuration, Mekanism accepts power in and can convert to/from a number of energy formats: Mekanism Joules, Forge Energy, IC2 Energy Units (EU), and Flux Networks. NB: IC2 Classic is not actively supported.</p>
+
+            <p space="4" bold="true">Ore Processing</p>
+            <p space="8">Mekanism features an extremely advanced, extensive ore processing system. From simple machines used to process ores into ingots electronically, to complex chemical-based ore injection used to gain four ingots for every ore mined, Mekanism covers basic smelting, as well as 2x, 3x, and 4x duplication.</p>
+            <p space="8">All machines have configurable input and eject sides, allowing you to have complete control over how you want to manage your machinery.</p>
+
+            <p space="4" bold="true">Factories</p>
+            <p space="8">Mekanism introduces the concept of "<link ref="machines:factories">factories</link>", which are multi-operation machines that can process multiple stacks of ores simultaneously. In a single machine, you can be smelting several stacks of ore into ingots, enriching several stacks of ores into dusts, or crushing several stacks of cobblestone into gravel.</p>
+
+            <p space="4" bold="true">Ores</p>
+            <p space="8">Mekanism is founded on the resource Osmium which generates pretty commonly at any Y level below 60. Osmium can be used to create tools and armor, but it is primarily used in the making of machinery.</p>
+            <p space="8">Tin, Copper, Gold &amp; Bronze are also used in crafting recipes.</p>
+
+            <p space="4" bold="true">Armor and Tools</p>
+            <p space="8">Mekanism brings five new sets of armor and tools to the table, as well as the ever-famed Paxel (an all-in-one tool).</p>
+
+            <p space="8">However, as Mekanism is a "tech mod," it has to have some cool techy gadgets. The Atomic Disassembler is an expensive, electronic multi-tool that can be set to mine at different speeds. Can't forget the Jetpack and Scuba Mask/Tank combination.</p>
+
+            <p space="4" bold="true">Robit</p>
+            <p space="8">The Robit is a cute little electronic robot that will follow you around and collect item drops for you. He also serves as a portable furnace, workbench, anvil, chest, and spirit lifter.</p>
+
+            <p space="4" bold="true">Mining</p>
+            <p space="8">Mekanism introduces the "Digital Miner" - an automated mining machine that can sort through terrain and pick out the resources you specify. It uses a filter-based system, and will then go through the range you specify and mine the blocks it needs to.</p>
+
+            <p space="4" bold="true">Dynamic Tanks</p>
+            <p space="8">These are multiblock tanks that can be shaped as any rectangular prism (capping at 18x18x18).</p>
+
+            <p space="4" bold="true">Transmitters (AKA pipes)</p>
+            <p space="8">Mekanism features multiple ways of transmitting items, fluids, gasses, heat and energy from once place to another, using devices we call "transmitters."</p>
+
+            <p space="4" bold="true">Quantum IO (QIO)</p>
+            <p space="8">QIO is a way of storing large amounts of items that can be stored, searched, and accessed remotely in late game.</p>
+        </section>
+    </chapter>
+    <chapter id="machines">
+        <section id="antiprotonic_nucleosynthesizer">
+            <page_title><title>Antiprotonic Nucleosynthesizer</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:antiprotonic_nucleosynthesizer"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8">A machine which uses bits of antimatter and mass amounts of energy to atomically transmute various resources.</p>
+            <!-- TODO elaborate! -->
+        </section>
+        <section id="chargepad">
+            <page_title><title>Chargepad</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:chargepad"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8">The Chargepad is a wireless electric charging station. Any rechargeable items you have in your inventory will be charged while standing on it.</p>
+            <p space="8">It also functions as the deployment and teleportation point for your <link ref="machines:robit">Robit</link>.</p>
+            <p space="8">The Chargepad requires a source of power to function, which can only be supplied through the bottom of the pad via any compatible energy cable.</p>
+        </section>
+        <section id="chemical_crystallizer">
+            <page_title><title>Chemical Crystallizer</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:chemical_crystallizer"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8">The Chemical Crystallizer turns Clean Slurry into Crystals, Lithium into Lithium Dust and Antimatter into Antimatter Pellet.</p>
+            <p space="8">This is one of the select many machines in Mekanism to have dedicated, unchangeable sides, for input and output, with the exception of Item's config sides.</p>
+            <p space="8">The input is gas/chemical (uses Pressurized Tube) and the output is items</p>
+        </section>
+        <section id="chemical_dissolution_chamber">
+            <page_title><title>Chemical Dissolution Chamber</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:chemical_dissolution_chamber"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8">The Chemical Dissolution Chamber turns raw ores into slurry using Sulfuric Acid. This is part of the 5x ore multiplication pipeline.</p>
+            <p space="8">This slurry then needs washing in the <link ref="machines:chemical_washer">Chemical Washer</link>.</p>
+            <p space="8">Note that unlike most Mekanism machines this one has fixed "in" and "out" sides for the mineral flow. "Out" is on the right (larger connector), gas "in" the left (smaller connector) and minerals "in" the top. It can of course be rotated with the Configurator.</p>
+        </section>
+        <section id="chemical_infuser">
+            <page_title><title>Chemical Infuser</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:chemical_infuser"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8">The Chemical Infuser combines or reacts two gases to create another gas.</p>
+            <p space="8">The gas gauges on the left and right side of its GUI are the input tanks, and correspond to correspond with the left and right sides of the machine.</p>
+            <p space="8">The gauge in the middle is for the resulting gas, which likewise is output through the front of the machine.</p>
+            <p space="8">These recipes do not require the gas to be in a certain tank (i.e. left/right tank doesn't matter).</p>
+            <p space="8">Should you get the wrong gas into either of the tanks, you can use the Gauge Dropper to empty or transfer it.</p>
+        </section>
+        <section id="chemical_injection_chamber">
+            <page_title><title>Chemical Injection Chamber</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:chemical_injection_chamber"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8" align="center">
+                <stack item="mekanism:basic_injecting_factory"/>
+                <stack item="mekanism:advanced_injecting_factory"/>
+                <stack item="mekanism:elite_injecting_factory"/>
+                <stack item="mekanism:ultimate_injecting_factory"/>
+            </p>
+            <p space="8">The Chemical Injection Chamber uses Hydrogen Chloride gas to turn ores into 4 Shards.</p>
+            <p space="8">It is the start of x4 ore processing and requires a steady supply of Hydrogen Chloride.</p>
+            <p space="8">It can also turn Water Vapor and Dirt into Clay.</p>
+        </section>
+        <section id="chemical_oxidizer">
+            <page_title><title>Chemical Oxidizer</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:chemical_oxidizer"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8">The Chemical Oxidizer is used for making gases from materials.</p>
+            <p space="8">Its left side accepts incoming materials, while it's right side dispenses the gas created from those materials.</p>
+            <p space="8">This machine is part of the 5x ore multiplication pipeline.</p>
+        </section>
+        <section id="chemical_washer">
+            <page_title><title>Chemical Washer</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:chemical_washer"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8">The Chemical Washer turns Slurry into Clean Slurry using Water.</p>
+            <p space="8">The clean slurry then needs to be further refined by pumping it into a Chemical Crystallizer.</p>
+            <p space="8">Note that unlike most Mekanism machines this one has fixed "in" and "out" sides for the mineral flow. "In" will be on the left when first placed and "out" is on the right.</p>
+            <p space="8">Water is piped in through the top of the machine.</p>
+        </section>
+        <section id="combiner">
+            <page_title><title>Combiner</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:combiner"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8" align="center">
+                <stack item="mekanism:basic_combining_factory"/>
+                <stack item="mekanism:advanced_combining_factory"/>
+                <stack item="mekanism:elite_combining_factory"/>
+                <stack item="mekanism:ultimate_combining_factory"/>
+            </p>
+            <p space="8">The Combiner allows the player to create an ore block from cobblestone and dust/gems.</p>
+            <p space="8">Recipes are intended to require more input than would be gained from mining a block, it is not an ore multiplication tool</p>
+        </section>
+        <section id="crusher">
+            <page_title><title>Crusher</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:crusher"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8" align="center">
+                <stack item="mekanism:basic_crushing_factory"/>
+                <stack item="mekanism:advanced_crushing_factory"/>
+                <stack item="mekanism:elite_crushing_factory"/>
+                <stack item="mekanism:ultimate_crushing_factory"/>
+            </p>
+            <p space="8">A machine used to crush ingots into their dust counterparts, stones into finer stones, etc.</p>
+            <p space="8">Note that it does <span bold="true">not</span> perform Ore to Dust conversion, which is the job of the <link ref="machines:enrichment_chamber">Enrichment Chamber</link>.</p>
+        </section>
+        <section id="digital_miner">
+            <page_title><title>Digital Miner</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:digital_miner"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8">A highly-advanced, filter-based, auto-miner that can mine just about whatever block you tell it to.</p>
+            <title>Usage</title>
+            <p space="8">To begin, the Digital Miner needs a source of power. It can be powered through its energy slot (green border in the GUI) or by one of its three energy ports (indicated by a green square), which are situated on the sides and bottom.</p>
+            <p space="8">In the main interface, click on the Config button to specify the area and filters for it to use. If you do not wish to leave empty spaces where ore blocks used to be, fill the block replacement slot with any block, turn on the requirement in the filters, and supply the necessary blocks in the machine's inventory.</p>
+            <p space="8">Once powered and your filters made, hit the Start button back in the main interface to start mining. You will need to stop it and press the Reset button to change the configuration.</p>
+            <p space="8">The Digital Miner has two item ports (indicated by a yellowish-tan square) - the one on the back, where output items go (auto-eject or pulled) and the one on the top to insert replacement blocks. Replacement items can be pulled from an inventory attached to the top port when Auto-Pull is turned on.</p>
+            <p space="8">To speed up the miner, use speed upgrades. To increase the energy capacity and efficiency of the miner, install energy upgrades. Up to 8 can be used for a 10x effect for both upgrades.</p>
+            <p space="8">Please note that if the Miner is unable to mine blocks, there may be a protection mod in place which does not allow the Miner to function (i.e. Chunk Protection). The miner will make best efforts to use the owner's permissions but compatibility cannot be guaranteed.</p>
+            <title>Modes/Toggles</title>
+            <p space="4" bold="true">Inverse Mode</p>
+            <p space="8">Inverse mode mines everything that is not in the filter list.</p>
+            <p space="4" bold="true">Silk Touch Mode</p>
+            <p space="8">Emulates the silk touch enchantment. This mode requires 6x the usual amount of energy.</p>
+            <p space="4" bold="true">Auto-Eject</p>
+            <p space="8">When a block is mined, the block will automatically be sent to a connected Logistical Transporter or Inventory connected to the rear item port. If ejection is not possible, the item will remain in the Miner's inventory and be pushed out when possible. Note that space in the Miner's Inventory is always required to mine.</p>
+            <p space="4" bold="true">Auto-Pull</p>
+            <p space="8">Combined with Block Replacement mode, the Auto-Pull function will attempt to pull replacement blocks from an Inventory connected to the top item port. Without this, replacement blocks must be present in the Miner's inventory (which must also have room for mined blocks).</p>
+            <p space="4" bold="true">Block Replacement</p>
+            <p space="8">When a block is mined, you can choose to leave another block in its it by specifying a block in the filter. The replacement can be required (the miner will stop until it can replace the block), or optional (miner will continue without replacement). Using Auto-Pull mode with this feature is highly recommended.</p>
+        </section>
+        <section id="dimensional_stabilizer">
+            <page_title><title>Dimensional Stabilizer</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:dimensional_stabilizer"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="electric_pump">
+            <page_title><title>Electric Pump</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:electric_pump"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="electrolytic_separator">
+            <page_title><title>Electrolytic Separator</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:electrolytic_separator"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="energized_smelter">
+            <page_title><title>Energized Smelter</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:energized_smelter"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="energy_cube">
+            <page_title><title>Energy Cube</title></page_title>
+            <p space="8" align="center"><stack item="mekanism:basic_energy_cube" count="1" />
+            <stack item="mekanism:advanced_energy_cube" count="1" />
+            <stack item="mekanism:elite_energy_cube" count="1" />
+            <stack item="mekanism:ultimate_energy_cube" count="1" /></p>
+        </section>
+        <section id="enrichment_chamber">
+            <page_title><title>Enrichment Chamber</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:enrichment_chamber"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="factories">
+            <page_title><title>Factories</title></page_title>
+
+        </section>
+        <section id="fluidic_plenisher">
+            <page_title><title>Fluidic Plenisher</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:fluidic_plenisher"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="formulaic_assemblicator">
+            <page_title><title>Formulaic Assemblicator</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:formulaic_assemblicator"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="fuelwood_heater">
+            <page_title><title>Fuelwood Heater</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:fuelwood_heater"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="isotopic_centrifuge">
+            <page_title><title>Isotopic Centrifuge</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:isotopic_centrifuge"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="logistical_sorter">
+            <page_title><title>Logistical Sorter</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:logistical_sorter"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="metallurgic_infuser">
+            <page_title><title>Metallurgic Infuser</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:metallurgic_infuser"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="modification_station">
+            <page_title><title>Modification Station</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:modification_station"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="nutritional_liquifier">
+            <page_title><title>Nutritional Liquifier</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:nutritional_liquifier"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="oredictionificator">
+            <page_title><title>Oredictionificator</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:oredictionificator"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="osmium_compressor">
+            <page_title><title>Osmium Compressor</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:osmium_compressor"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="painting_machine">
+            <page_title><title>Painting Machine</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:painting_machine"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="personal_barrel">
+            <page_title><title>Personal Barrel</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:personal_barrel"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="personal_chest">
+            <page_title><title>Personal Chest</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:personal_chest"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="pigment_extractor">
+            <page_title><title>Pigment Extractor</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:pigment_extractor"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="pigment_mixer">
+            <page_title><title>Pigment Mixer</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:pigment_mixer"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="precision_sawmill">
+            <page_title><title>Precision Sawmill</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:precision_sawmill"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="pressurized_reaction_chamber">
+            <page_title><title>Pressurized Reaction Chamber</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:pressurized_reaction_chamber"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="purification_chamber">
+            <page_title><title>Purification Chamber</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:purification_chamber"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="resistive_heater">
+            <page_title><title>Resistive Heater</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:resistive_heater"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="robit">
+            <page_title><title>Robit</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:robit"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="rotary_condensentrator">
+            <page_title><title>Rotary Condensentrator</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:rotary_condensentrator"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="seismic_vibrator">
+            <page_title><title>Seismic Vibrator</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:seismic_vibrator"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+        <section id="solar_neutron_activator">
+            <page_title><title>Solar Neutron Activator</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:solar_neutron_activator"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+        </section>
+    </chapter>
+    <chapter id="gear">
+
+    </chapter>
+    <chapter id="items">
+
+    </chapter>
+</book>
