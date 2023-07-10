@@ -484,7 +484,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         RenderSystem.enableDepthTest();
         int i = getButtonTextureY(isMouseOverCheckWindows(mouseX, mouseY));
         //Note: SliceWidth and sliceHeight are copied from AbstractButton
-        GuiUtils.blitNineSliced(guiGraphics, texture, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), 20, 4, BUTTON_TEX_X,
+        guiGraphics.blitNineSlicedSized(texture, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), 20, 4, BUTTON_TEX_X,
               BUTTON_INDIVIDUAL_TEX_Y, 0, i * 20, BUTTON_TEX_X, BUTTON_TEX_Y);
     }
 
