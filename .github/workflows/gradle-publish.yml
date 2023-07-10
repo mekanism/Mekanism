@@ -33,12 +33,11 @@ jobs:
         distribution: 'temurin'
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
-        cache: 'gradle'
 
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+      uses: gradle/gradle-build-action@v2
       with:
-        arguments: clean build 
+        arguments: clean build outputChangelog
         gradle-version: wrapper
 
     - name: Upload to workflow artifacts
@@ -47,7 +46,7 @@ jobs:
         path: build/libs/
 
 #    - name: Publish
-#      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+#      uses: gradle/gradle-build-action@v2
 #      with:
 #        arguments: curseforge modrinth publish
 #        gradle-version: wrapper
