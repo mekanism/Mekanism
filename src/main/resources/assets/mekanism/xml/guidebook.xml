@@ -288,7 +288,7 @@
             <p space="8">Please note that if the Miner is unable to mine blocks, there may be a protection mod in place which does not allow the Miner to function (i.e. Chunk Protection). The miner will make best efforts to use the owner's permissions but compatibility cannot be guaranteed.</p>
             <title>Modes/Toggles</title>
             <p space="4" bold="true">Inverse Mode</p>
-            <p space="8">Inverse mode mines everything that is not in the filter list.</p>
+            <p space="8">Inverse mode mines everything that is not in the filter list. When Inverse is turned on, the replacement block and required replacement options are configured below the Inverse toggle.</p>
             <p space="4" bold="true">Silk Touch Mode</p>
             <p space="8">Emulates the silk touch enchantment. This mode requires 6x the usual amount of energy.</p>
             <p space="4" bold="true">Auto-Eject</p>
@@ -297,6 +297,25 @@
             <p space="8">Combined with Block Replacement mode, the Auto-Pull function will attempt to pull replacement blocks from an Inventory connected to the top item port. Without this, replacement blocks must be present in the Miner's inventory (which must also have room for mined blocks).</p>
             <p space="4" bold="true">Block Replacement</p>
             <p space="8">When a block is mined, you can choose to leave another block in its it by specifying a block in the filter. The replacement can be required (the miner will stop until it can replace the block), or optional (miner will continue without replacement). Using Auto-Pull mode with this feature is highly recommended.</p>
+            <title>Other Config</title>
+            <p space="8">Remember to click the tick button (or the return key) after entering a number for these settings.</p>
+            <p space="4" bold="true">Radi (Radius)</p>
+            <p space="8">Sets the radius of the area to mine, i.e. this distance in each horizontal direction around the miner.</p>
+            <p space="4" bold="true">Min &amp; Max</p>
+            <p space="8">Sets the minimum and maximum Y-level for the mining area</p>
+            <title>Filter Types</title>
+            <p space="4" bold="true">ItemStack (Item)</p>
+            <p space="8">Searches for this specific Block.</p>
+            <p space="4" bold="true">Tag</p>
+            <p space="8">Uses the tag system to search for Blocks in a group. You can use a Dictionary to find these.</p>
+            <p space="8">Type a name and click the green tick to check your entry.</p>
+            <p space="4">Some examples</p>
+            <p space="8"><span italics="true">forge:ores</span> - All ores</p>
+            <p space="8"><span italics="true">forge:ores/iron</span> - All Iron ore variants</p>
+            <p space="8"><span italics="true">forge:sand</span> - Sand</p>
+            <p space="8"><span italics="true">minecraft:logs</span> - Wood Logs</p>
+            <p space="4" bold="true">Mod ID</p>
+            <p space="8">Searches for any block from a specific mod. Mod IDs are all lowercase and can often be found online on wikis.</p>
         </section>
         <section id="dimensional_stabilizer">
             <page_title><title>Dimensional Stabilizer</title></page_title>
@@ -306,6 +325,9 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">A machine that prevents areas of the world from disappearing when not observed (a chunkloader).</p>
+            <p space="8">In exchange for power, keeps a configured area loaded when a player is not around (max 5x5 chunks).</p>
+            <p space="8">In the GUI, the area can be configured. Note that it is relative to North, but you can use the Show Visuals button to check in-world.</p>
         </section>
         <section id="electric_pump">
             <page_title><title>Electric Pump</title></page_title>
@@ -315,6 +337,9 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">A powered pump to extract fluids from the world. It will extract fluid from source blocks connected to the block directly under it (and removed them).</p>
+            <p space="8">Water blocks will not be removed by default.</p>
+            <p space="8">When a Filter Upgrade is installed, the pump will produce Heavy Water from Water.</p>
         </section>
         <section id="electrolytic_separator">
             <page_title><title>Electrolytic Separator</title></page_title>
