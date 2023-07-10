@@ -17,6 +17,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
     - name: Find last successful build
       id: last_success_build
       uses: SamhammerAG/last-successful-build-action@v4
@@ -42,7 +44,7 @@ jobs:
     - name: Upload to workflow artifacts
       uses: actions/upload-artifact@v3
       with:
-        path: build/
+        path: build/libs/
 
 #    - name: Publish
 #      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
