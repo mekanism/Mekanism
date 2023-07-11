@@ -114,7 +114,7 @@ public class ClientTickHandler {
 
     public static boolean isVisionEnhancementOn(Player player) {
         IModule<ModuleVisionEnhancementUnit> module = MekanismAPI.getModuleHelper().load(player.getItemBySlot(EquipmentSlot.HEAD), MekanismModules.VISION_ENHANCEMENT_UNIT);
-        return module != null && module.isEnabled() && module.getContainerEnergy().greaterOrEqual(MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement.get());
+        return module != null && module.isEnabled() && module.hasEnoughEnergy(MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement);
     }
 
     public static boolean isFlamethrowerOn(Player player) {

@@ -97,6 +97,16 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
 
     @Override
     public boolean canPerformAction(IModule<ModuleFarmingUnit> module, ToolAction action) {
+        if (action == ToolActions.AXE_STRIP || action == ToolActions.AXE_SCRAPE || action == ToolActions.AXE_WAX_OFF) {
+            return module.hasEnoughEnergy(MekanismConfig.gear.mekaToolEnergyUsageAxe);
+        } else if (action == ToolActions.SHOVEL_FLATTEN) {
+            return module.hasEnoughEnergy(MekanismConfig.gear.mekaToolEnergyUsageShovel);
+        } else if (action == ToolActions.HOE_TILL) {
+            return module.hasEnoughEnergy(MekanismConfig.gear.mekaToolEnergyUsageHoe);
+        }
+        //Note: In general when we get here there will be no tool actions known unless mods add more default tool actions
+        // This is because we special case the known vanilla types above and the dig variants are already handled by the Meka-Tool itself before
+        // it even checks the installed modules
         return ToolActions.DEFAULT_AXE_ACTIONS.contains(action) || ToolActions.DEFAULT_SHOVEL_ACTIONS.contains(action) || ToolActions.DEFAULT_HOE_ACTIONS.contains(action);
     }
 
