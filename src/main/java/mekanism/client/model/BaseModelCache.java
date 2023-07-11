@@ -8,6 +8,7 @@ import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.lib.Vertex;
 import mekanism.common.Mekanism;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModel;
@@ -15,6 +16,7 @@ import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -102,7 +104,13 @@ public class BaseModelCache {
         }
 
         public BakedModel bake(IGeometryBakingContext config) {
-            return bakedMap.computeIfAbsent(config, c -> model.bake(c, new MekanismModelBaker(), Material::sprite, BlockModelRotation.X0_Y0, ItemOverrides.EMPTY, rl));
+            return bakedMap.computeIfAbsent(config, c -> {
+                ModelBaker baker = Minecraft.getInstance().getModelManager().getModelBakery().new ModelBakerImpl(
+                      (modelLoc, material) -> material.sprite(),
+                      rl
+                );
+                return model.bake(c, baker, Material::sprite, BlockModelRotation.X0_Y0, ItemOverrides.EMPTY, rl);
+            });
         }
 
         public IUnbakedGeometry<?> getModel() {

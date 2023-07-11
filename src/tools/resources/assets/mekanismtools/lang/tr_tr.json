@@ -11,6 +11,8 @@
   "advancements.mekanismtools.not_enough_shielding.title": "Yetersiz Kalkan",
   "advancements.mekanismtools.paxel.description": "Herhangi bir Kaltek üret (Kazma, Balta, Kürek)",
   "advancements.mekanismtools.paxel.title": "Çoklu-Araç",
+  "constants.mekanismtools.mod_name": "Mekanism: Aletler",
+  "constants.mekanismtools.pack_description": "Mekanism: Aletler için kullanılan kaynaklar",
   "item.mekanismtools.bronze_axe": "Bronz Balta",
   "item.mekanismtools.bronze_boots": "Bronz Bot",
   "item.mekanismtools.bronze_chestplate": "Bronz Göğüslük",

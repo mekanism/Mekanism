@@ -86,15 +86,23 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
     public void load(CompoundTag nbtTags) {
         for (CacheSubstance<?, INBTSerializable<CompoundTag>> type : CacheSubstance.VALUES) {
-            type.prefab(this, nbtTags.getInt(type.getTagKey() + "_stored"));
-            DataHandlerUtils.readContainers(type.getContainerList(this), nbtTags.getList(type.getTagKey(), Tag.TAG_COMPOUND));
+            int stored = nbtTags.getInt(type.getTagKey() + "_stored");
+            if (stored > 0) {
+                type.prefab(this, stored);
+                DataHandlerUtils.readContainers(type.getContainerList(this), nbtTags.getList(type.getTagKey(), Tag.TAG_COMPOUND));
+            }
         }
     }
 
     public void save(CompoundTag nbtTags) {
         for (CacheSubstance<?, INBTSerializable<CompoundTag>> type : CacheSubstance.VALUES) {
-            nbtTags.putInt(type.getTagKey() + "_stored", type.getContainerList(this).size());
-            nbtTags.put(type.getTagKey(), DataHandlerUtils.writeContainers(type.getContainerList(this)));
+            List<INBTSerializable<CompoundTag>> containers = type.getContainerList(this);
+            if (!containers.isEmpty()) {
+                //Note: We can skip putting stored at zero if containers is empty (in addition to skipping actually writing the containers)
+                // because getInt will default to 0 for keys that aren't present
+                nbtTags.putInt(type.getTagKey() + "_stored", containers.size());
+                nbtTags.put(type.getTagKey(), DataHandlerUtils.writeContainers(containers));
+            }
         }
     }
 
@@ -117,15 +125,9 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         // Slurry
         StorageUtils.mergeTanks(getSlurryTanks(null), mergeCache.getSlurryTanks(null), rejectContents.rejectedSlurries);
         // Energy
-        List<IEnergyContainer> cacheContainers = getEnergyContainers(null);
-        for (int i = 0; i < cacheContainers.size(); i++) {
-            StorageUtils.mergeContainers(cacheContainers.get(i), mergeCache.getEnergyContainers(null).get(i));
-        }
+        StorageUtils.mergeEnergyContainers(getEnergyContainers(null), mergeCache.getEnergyContainers(null));
         // Heat
-        List<IHeatCapacitor> cacheCapacitors = getHeatCapacitors(null);
-        for (int i = 0; i < cacheCapacitors.size(); i++) {
-            StorageUtils.mergeContainers(cacheCapacitors.get(i), mergeCache.getHeatCapacitors(null).get(i));
-        }
+        StorageUtils.mergeHeatCapacitors(getHeatCapacitors(null), mergeCache.getHeatCapacitors(null));
     }
 
     @Override

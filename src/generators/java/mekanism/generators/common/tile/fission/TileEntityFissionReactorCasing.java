@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile.fission;
 
-import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
@@ -99,15 +98,15 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     @Override
     public void handleUpdateTag(@NotNull CompoundTag tag) {
         FissionReactorMultiblockData multiblock = getMultiblock();
-        boolean prevFormedMaster = isMaster() && multiblock.isFormed();
-        UUID previousID = multiblock.inventoryID;
+        //boolean prevFormedMaster = isMaster() && multiblock.isFormed();
+        //UUID previousID = multiblock.inventoryID;
         super.handleUpdateTag(tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HANDLE_SOUND, value -> handleSound = value);
-        boolean formedMaster = false;
-        boolean wasBurning = false;
+        //boolean formedMaster = false;
+        //boolean wasBurning = false;
         if (multiblock.isFormed()) {
-            formedMaster = isMaster();
-            wasBurning = multiblock.isBurning();
+            //formedMaster = isMaster();
+            //wasBurning = multiblock.isBurning();
             NBTUtils.setDoubleIfPresent(tag, NBTConstants.BURNING, value -> multiblock.lastBurnRate = value);
         }
         //TODO: At some point make use of this if we are able to use the FuelAssemblyBakedModel?

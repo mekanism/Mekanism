@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:cherry_hanging_sign"
+    }
+  },
+  "mainOutput": {
+    "count": 2,
+    "item": "minecraft:cherry_planks"
+  },
+  "secondaryChance": 0.5,
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  }
+}

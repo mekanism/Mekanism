@@ -34,7 +34,7 @@ import org.lwjgl.glfw.GLFW;
 
 public abstract class GuiElement extends AbstractWidget implements IFancyFontRenderer {
 
-    private static final int BUTTON_TEX_X = 200, BUTTON_TEX_Y = 60;
+    private static final int BUTTON_TEX_X = 200, BUTTON_TEX_Y = 60, BUTTON_INDIVIDUAL_TEX_Y = BUTTON_TEX_Y / 3;
     public static final ResourceLocation WARNING_BACKGROUND_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning_background.png");
     public static final ResourceLocation WARNING_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning.png");
 
@@ -339,8 +339,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
      * Override this to render the button with a different x position than this GuiElement
      */
     protected int getButtonX() {
-        //TODO - 1.20: Re-evaluate usages of this to see which are actually meant to be this/getButtonY/Width/Height and which are meant to be direct
-        // Also maybe we should be overriding this in more places?
+        //TODO: Re-evaluate uses of relativeX and see what would be more logical to have using this/getButtonY/Width/Height and potentially just override this in more locations
         return relativeX;
     }
 
@@ -409,10 +408,6 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         return isHovering;
     }
 
-    //TODO: Convert this stuff into a javadoc
-    //Based off how it is drawn in Widget, except that instead of drawing left half and right half, we draw all four corners individually
-    // The benefit of drawing all four corners instead of just left and right halves, is that we ensure we include the bottom black bar of the texture
-    // Math has also been added to fix rendering odd size buttons.
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (buttonBackground != ButtonBackground.NONE) {
             drawButton(guiGraphics, mouseX, mouseY);
@@ -476,42 +471,21 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         return 1;
     }
 
-    //This method exists so that we don't have to rely on having a path to super.renderWidget if we want to draw a background button
+    /**
+     * Based on the code in AbstractButton#renderWidget
+     */
     protected void drawButton(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (resetColorBeforeRender()) {
-            //TODO: Support alpha like super? Is there a point
             MekanismRenderer.resetColor(guiGraphics);
         }
-        //TODO: Convert this to being two different 16x48 images, one for with border and one for buttons without a black border?
-        // And then make it so that they can stretch out to be any size (make this make use of the renderExtendedTexture method
         ResourceLocation texture = buttonBackground.getTexture();
-        int i = getButtonTextureY(isMouseOverCheckWindows(mouseX, mouseY));
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-
-        int width = getButtonWidth();
-        int height = getButtonHeight();
-        int halfWidthLeft = width / 2;
-        int halfWidthRight = width % 2 == 0 ? halfWidthLeft : halfWidthLeft + 1;
-        int halfHeightTop = height / 2;
-        int halfHeightBottom = height % 2 == 0 ? halfHeightTop : halfHeightTop + 1;
-        int position = i * 20;
-
-        int x = getButtonX();
-        int y = getButtonY();
-        //TODO - 1.20: Can this be replaced with the impl of AbstractButton#renderWidget or more specifically GuiGraphics#blitNineSliced
-        //Left Top Corner
-        guiGraphics.blit(texture, x, y, 0, position, halfWidthLeft, halfHeightTop, BUTTON_TEX_X, BUTTON_TEX_Y);
-        //Left Bottom Corner
-        guiGraphics.blit(texture, x, y + halfHeightTop, 0, position + 20 - halfHeightBottom, halfWidthLeft, halfHeightBottom, BUTTON_TEX_X, BUTTON_TEX_Y);
-        //Right Top Corner
-        guiGraphics.blit(texture, x + halfWidthLeft, y, 200 - halfWidthRight, position, halfWidthRight, halfHeightTop, BUTTON_TEX_X, BUTTON_TEX_Y);
-        //Right Bottom Corner
-        guiGraphics.blit(texture, x + halfWidthLeft, y + halfHeightTop, 200 - halfWidthRight, position + 20 - halfHeightBottom, halfWidthRight, halfHeightBottom, BUTTON_TEX_X, BUTTON_TEX_Y);
-
-        //TODO: Add support for buttons that are larger than 200x20 in either direction (most likely would be in the height direction)
-        // Can use a lot of the same logic as GuiMekanism does for its background, or figure out a way to use GuiGraphics#blitNineSliced
+        int i = getButtonTextureY(isMouseOverCheckWindows(mouseX, mouseY));
+        //Note: SliceWidth and sliceHeight are copied from AbstractButton
+        guiGraphics.blitNineSlicedSized(texture, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), 20, 4, BUTTON_TEX_X,
+              BUTTON_INDIVIDUAL_TEX_Y, 0, i * 20, BUTTON_TEX_X, BUTTON_TEX_Y);
     }
 
     protected void renderExtendedTexture(GuiGraphics guiGraphics, ResourceLocation resource, int sideWidth, int sideHeight) {

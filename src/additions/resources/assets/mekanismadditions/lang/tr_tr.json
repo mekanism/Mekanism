@@ -280,6 +280,8 @@
   "block.mekanismadditions.yellow_plastic_transparent_stairs": "Sarı Saydam Plastik Merdiven",
   "block.mekanismadditions.yellow_reinforced_plastic": "Sarı Güçlendirilmiş Plastik Bloğu",
   "block.mekanismadditions.yellow_slick_plastic": "Sarı Kaygan Plastik Bloğu",
+  "constants.mekanismadditions.mod_name": "Mekanism: Ekler",
+  "constants.mekanismadditions.pack_description": "Mekanism: Ekler için kullanılan kaynaklar",
   "description.mekanismadditions.glow_panel": "Modern, sınırsız bir ışık kaynağı. Şimdi birçok renkte!",
   "description.mekanismadditions.obsidian_tnt": "Son derece güçlü, obsidyenle güçlendirilmiş bir TNT bloğu. Kendi bilincinde kullan.",
   "entity.mekanismadditions.baby_creeper": "Bebek Creeper",

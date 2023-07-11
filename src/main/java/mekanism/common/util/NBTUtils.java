@@ -125,27 +125,15 @@ public class NBTUtils {
         }
     }
 
-    public static boolean hasOldUUID(CompoundTag nbt, String key) {
-        return nbt.contains(key + "Most", Tag.TAG_ANY_NUMERIC) && nbt.contains(key + "Least", Tag.TAG_ANY_NUMERIC);
-    }
-
-    public static UUID getOldUUID(CompoundTag nbt, String key) {
-        return new UUID(nbt.getLong(key + "Most"), nbt.getLong(key + "Least"));
-    }
-
     public static void setUUIDIfPresent(CompoundTag nbt, String key, Consumer<UUID> setter) {
         if (nbt.hasUUID(key)) {
             setter.accept(nbt.getUUID(key));
-        } else if (hasOldUUID(nbt, key)) {
-            setter.accept(getOldUUID(nbt, key));
         }
     }
 
     public static void setUUIDIfPresentElse(CompoundTag nbt, String key, Consumer<UUID> setter, Runnable notPresent) {
         if (nbt.hasUUID(key)) {
             setter.accept(nbt.getUUID(key));
-        } else if (hasOldUUID(nbt, key)) {
-            setter.accept(getOldUUID(nbt, key));
         } else {
             notPresent.run();
         }

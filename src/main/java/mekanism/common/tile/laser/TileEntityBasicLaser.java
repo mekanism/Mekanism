@@ -20,11 +20,11 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
+import mekanism.common.item.gear.ItemAtomicDisassembler;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.network.to_client.PacketLaserHitBlock;
 import mekanism.common.particle.LaserParticleData;
 import mekanism.common.registries.MekanismDamageTypes;
-import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.NBTUtils;
@@ -309,7 +309,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                                             level.removeBlock(hitPos, false);
                                         } else {
                                             //Use the disassembler as the item to break the block with as that is marked as being the correct tool for drops
-                                            handleBreakBlock(hitState, hitPos, dummy, MekanismItems.ATOMIC_DISASSEMBLER.getItemStack());
+                                            handleBreakBlock(hitState, hitPos, dummy, ItemAtomicDisassembler.fullyChargedStack());
                                         }
                                     }
                                     return null;

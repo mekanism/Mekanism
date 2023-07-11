@@ -20,8 +20,8 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     protected int barX;
     protected int barY;
 
-    protected GuiScrollableElement(ResourceLocation resource, IGuiWrapper gui, int x, int y, int width, int height,
-          int barXShift, int barYShift, int barWidth, int barHeight, int maxBarHeight) {
+    protected GuiScrollableElement(ResourceLocation resource, IGuiWrapper gui, int x, int y, int width, int height, int barXShift, int barYShift, int barWidth,
+          int barHeight, int maxBarHeight) {
         super(resource, gui, x, y, width, height);
         this.barXShift = barXShift;
         this.barX = relativeX + barXShift;
@@ -29,20 +29,6 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
         this.barWidth = barWidth;
         this.barHeight = barHeight;
         this.maxBarHeight = maxBarHeight;
-    }
-
-    @Override
-    public void resize(int prevLeft, int prevTop, int left, int top) {
-        super.resize(prevLeft, prevTop, left, top);
-        barX = barX - prevLeft + left;
-        barY = barY - prevTop + top;
-    }
-
-    @Override
-    public void move(int changeX, int changeY) {
-        super.move(changeX, changeY);
-        barX += changeX;
-        barY += changeY;
     }
 
     protected abstract int getMaxElements();
@@ -131,7 +117,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
         //Top border
         guiGraphics.blit(texture, barX - 1, barY - 1, 0, 0, textureWidth, 1, textureWidth, textureHeight);
         //Middle border
-        guiGraphics.blit(texture, barX - 1, barY, 6, maxBarHeight, 0, 1, textureWidth, 1, textureWidth, textureHeight);
+        guiGraphics.blit(texture, barX - 1, barY, textureWidth, maxBarHeight, 0, 1, textureWidth, 1, textureWidth, textureHeight);
         //Bottom border
         guiGraphics.blit(texture, barX - 1, relativeY + maxBarHeight + 2, 0, 0, textureWidth, 1, textureWidth, textureHeight);
         //Scroll bar

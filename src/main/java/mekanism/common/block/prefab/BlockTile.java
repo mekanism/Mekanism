@@ -28,7 +28,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -36,13 +35,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockBase<TYPE> implements IHasTileEntity<TILE> {
 
-    public BlockTile(TYPE type) {
-        this(type, UnaryOperator.identity());
-    }
-
     public BlockTile(TYPE type, UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
-        this(type, propertiesModifier.apply(BlockBehaviour.Properties.of().strength(3.5F, 16).requiresCorrectToolForDrops()
-              .mapColor(MapColor.METAL)));
+        this(type, propertiesModifier.apply(BlockBehaviour.Properties.of().strength(3.5F, 16).requiresCorrectToolForDrops()));
         //TODO - 1.18: Figure out what the resistance should be (it used to be different in 1.12)
     }
 
@@ -139,8 +133,8 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
 
     public static class BlockTileModel<TILE extends TileEntityMekanism, BLOCK extends BlockTypeTile<TILE>> extends BlockTile<TILE, BLOCK> implements IStateFluidLoggable {
 
-        public BlockTileModel(BLOCK type) {
-            super(type);
+        public BlockTileModel(BLOCK type, UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
+            super(type, propertiesModifier);
         }
 
         public BlockTileModel(BLOCK type, BlockBehaviour.Properties properties) {

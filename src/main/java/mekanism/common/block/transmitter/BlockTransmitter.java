@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.shorts.Short2ObjectMaps;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.UnaryOperator;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.content.network.transmitter.Transmitter;
@@ -30,7 +31,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
@@ -47,8 +47,8 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     //Max retained size packing it like this 163,987B
     private static final Short2ObjectMap<VoxelShape> cachedShapes = Short2ObjectMaps.synchronize(new Short2ObjectOpenHashMap<>());
 
-    protected BlockTransmitter() {
-        super(BlockBehaviour.Properties.of().strength(1, 6).mapColor(MapColor.STONE).pushReaction(PushReaction.BLOCK));
+    protected BlockTransmitter(UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
+        super(propertiesModifier.apply(BlockBehaviour.Properties.of().strength(1, 6).pushReaction(PushReaction.BLOCK)));
     }
 
     @NotNull

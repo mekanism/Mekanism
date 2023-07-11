@@ -36,6 +36,7 @@ import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.common.lib.radial.IRadialEnumModeItem;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -71,6 +72,15 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     private static final Lazy<RadialData<DisassemblerMode>> LAZY_RADIAL_DATA = Lazy.of(() ->
           MekanismAPI.getRadialDataHelper().dataForEnum(Mekanism.rl("disassembler_mode"), DisassemblerMode.NORMAL));
 
+    /**
+     * @apiNote For use in calculating drops of given blocks. Given mods may do checks relating to tool actions we need to make sure that this stack is full energy.
+     */
+    public static ItemStack fullyChargedStack() {
+        ItemAtomicDisassembler disassembler = MekanismItems.ATOMIC_DISASSEMBLER.get();
+        ItemStack stack = new ItemStack(disassembler);
+        return StorageUtils.getFilledEnergyVariant(stack, disassembler.getMaxEnergy(stack));
+    }
+
     private final AttributeCache attributeCache;
 
     public ItemAtomicDisassembler(Properties properties) {
@@ -99,7 +109,18 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     @Override
     public boolean canPerformAction(ItemStack stack, ToolAction action) {
-        return ALWAYS_SUPPORTED_ACTIONS.contains(action);
+        if (ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
+            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+            if (energyContainer != null) {
+                //Note: We use a hardness of zero here as that will get the minimum potential destroy energy required
+                // as that is the best guess we can currently give whether the corresponding dig action is supported
+                FloatingLong energyRequired = getDestroyEnergy(stack, 0);
+                FloatingLong energyAvailable = energyContainer.getEnergy();
+                //If we don't have enough energy to break at full speed check if the reduced speed could actually mine
+                return energyRequired.smallerOrEqual(energyAvailable) || !energyAvailable.divide(energyRequired).isZero();
+            }
+        }
+        return false;
     }
 
     @Override

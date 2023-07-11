@@ -18,6 +18,7 @@ import mekanism.api.gear.config.ModuleBooleanData;
 import mekanism.api.gear.config.ModuleConfigData;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
 import mekanism.api.radial.mode.NestedRadialMode;
@@ -161,6 +162,16 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     public FloatingLong getContainerEnergy() {
         IEnergyContainer energyContainer = getEnergyContainer();
         return energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
+    }
+
+    @Override
+    public boolean hasEnoughEnergy(FloatingLongSupplier energySupplier) {
+        return hasEnoughEnergy(energySupplier.get());
+    }
+
+    @Override
+    public boolean hasEnoughEnergy(FloatingLong cost) {
+        return cost.isZero() || getContainerEnergy().greaterOrEqual(cost);
     }
 
     @Override

@@ -39,6 +39,6 @@ public class ModuleHydrostaticRepulsorUnit extends EnchantmentBasedModule<Module
 
     public boolean isSwimBoost(IModule<ModuleHydrostaticRepulsorUnit> module, Player player) {
         return swimBoost.get() && module.getInstalledCount() >= BOOST_STACKS && !player.getMaxHeightFluidType().isAir() &&
-               module.getContainerEnergy().greaterOrEqual(MekanismConfig.gear.mekaSuitEnergyUsageHydrostaticRepulsion.get());
+               module.hasEnoughEnergy(MekanismConfig.gear.mekaSuitEnergyUsageHydrostaticRepulsion);
     }
 }

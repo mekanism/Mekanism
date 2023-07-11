@@ -115,13 +115,26 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     @Override
     public boolean canPerformAction(ItemStack stack, ToolAction action) {
         if (ItemAtomicDisassembler.ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
-            return true;
+            return hasEnergyForDigAction(stack);
         }
         return getModules(stack).stream().anyMatch(module -> module.isEnabled() && canPerformAction(module, action));
     }
 
     private <MODULE extends ICustomModule<MODULE>> boolean canPerformAction(IModule<MODULE> module, ToolAction action) {
         return module.getCustomInstance().canPerformAction(module, action);
+    }
+
+    public boolean hasEnergyForDigAction(ItemStack stack) {
+        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+        if (energyContainer != null) {
+            //Note: We use a hardness of zero here as that will get the minimum potential destroy energy required
+            // as that is the best guess we can currently give whether the corresponding dig action is supported
+            FloatingLong energyRequired = getDestroyEnergy(stack, 0, isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT));
+            FloatingLong energyAvailable = energyContainer.getEnergy();
+            //If we don't have enough energy to break at full speed check if the reduced speed could actually mine
+            return energyRequired.smallerOrEqual(energyAvailable) || !energyAvailable.divide(energyRequired).isZero();
+        }
+        return false;
     }
 
     @Override

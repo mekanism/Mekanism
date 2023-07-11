@@ -35,6 +35,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.network.to_client.PacketRadiationData;
 import mekanism.common.registries.MekanismDamageTypes;
@@ -61,8 +62,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -452,13 +451,8 @@ public class RadiationManager implements IRadiationManager {
      */
     public void createOrLoad() {
         if (dataHandler == null) {
-            //Always associate the world with the over world as the frequencies are global
-            DimensionDataStorage savedData = ServerLifecycleHooks.getCurrentServer().overworld().getDataStorage();
-            dataHandler = savedData.computeIfAbsent(tag -> {
-                RadiationDataHandler handler = new RadiationDataHandler();
-                handler.load(tag);
-                return handler;
-            }, RadiationDataHandler::new, DATA_HANDLER_NAME);
+            //Always associate the world with the over world as the radiation manager keeps track of which dimension has which radiation
+            dataHandler = MekanismSavedData.createSavedData(RadiationDataHandler::new, DATA_HANDLER_NAME);
             dataHandler.setManagerAndSync(this);
             dataHandler.clearCached();
         }
@@ -599,7 +593,7 @@ public class RadiationManager implements IRadiationManager {
         }
     }
 
-    public static class RadiationDataHandler extends SavedData {
+    public static class RadiationDataHandler extends MekanismSavedData {
 
         private Map<ResourceLocation, List<Meltdown>> savedMeltdowns = Collections.emptyMap();
         public List<RadiationSource> loadedSources = Collections.emptyList();
@@ -627,6 +621,7 @@ public class RadiationManager implements IRadiationManager {
             savedMeltdowns = Collections.emptyMap();
         }
 
+        @Override
         public void load(@NotNull CompoundTag nbtTags) {
             if (nbtTags.contains(NBTConstants.RADIATION_LIST, Tag.TAG_LIST)) {
                 ListTag list = nbtTags.getList(NBTConstants.RADIATION_LIST, Tag.TAG_COMPOUND);

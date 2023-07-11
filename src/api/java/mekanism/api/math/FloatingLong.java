@@ -874,7 +874,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Helper method to check if a given {@link FloatingLong} is smaller than this {@link FloatingLong}
+     * Helper method to check if this {@link FloatingLong} is smaller than the given {@link FloatingLong}.
      *
      * @param toCompare The {@link FloatingLong} to compare to
      *
@@ -885,7 +885,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Helper method to check if a given {@link FloatingLong} is smaller than or equal to this {@link FloatingLong}
+     * Helper method to check if this {@link FloatingLong} is smaller than or equal to the given {@link FloatingLong}
      *
      * @param toCompare The {@link FloatingLong} to compare to
      *
@@ -896,7 +896,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Helper method to check if a given {@link FloatingLong} is greater than this {@link FloatingLong}
+     * Helper method to check if this {@link FloatingLong} is greater than the given {@link FloatingLong}
      *
      * @param toCompare The {@link FloatingLong} to compare to
      *
@@ -907,7 +907,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     /**
-     * Helper method to check if a given {@link FloatingLong} is greater than or equal to this {@link FloatingLong}
+     * Helper method to check if this {@link FloatingLong} is greater than or equal to the given {@link FloatingLong}
      *
      * @param toCompare The {@link FloatingLong} to compare to
      *

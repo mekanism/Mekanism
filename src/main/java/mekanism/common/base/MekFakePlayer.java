@@ -9,7 +9,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.common.util.FakePlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -78,8 +77,8 @@ public class MekFakePlayer extends FakePlayer {
         player.setServerLevel(world);
         R result = fakePlayerConsumer.apply(player);
         player.emulatingUUID = null;
-        //TODO - 1.20: Re-evaluate if this should be set to null or changed to say the overworld as I think level may be nonnull
-        player.setServerLevel(null);//don't keep reference to the World
+        //don't keep reference to the World, note we set it to the overworld to avoid any potential null pointers
+        player.setServerLevel(world.getServer().overworld());
         return result;
     }
 
@@ -103,13 +102,13 @@ public class MekFakePlayer extends FakePlayer {
         });
     }
 
-    public static void releaseInstance(LevelAccessor world) {
+    public static void releaseInstance(ServerLevel world) {
         // If the fake player has a reference to the world getting unloaded,
         // null out the fake player so that the world can unload
         MekFakePlayer actual = INSTANCE == null ? null : INSTANCE.get();
-        if (actual != null && actual.level() == world) {
-            //TODO - 1.20: Re-evaluate if this should be set to null or changed to say the overworld as I think level may be nonnull
-            actual.setServerLevel(null);
+        if (actual != null && actual.serverLevel() == world) {
+            //don't keep reference to the World, note we set it to the overworld to avoid any potential null pointers
+            actual.setServerLevel(world.getServer().overworld());
         }
     }
 

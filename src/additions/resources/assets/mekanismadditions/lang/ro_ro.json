@@ -241,6 +241,8 @@
   "block.mekanismadditions.yellow_plastic_transparent_stairs": "Scară de plastic galben transparentă",
   "block.mekanismadditions.yellow_reinforced_plastic": "Bloc de plastic ranforsat galben",
   "block.mekanismadditions.yellow_slick_plastic": "Bloc galben de plastic",
+  "constants.mekanismadditions.mod_name": "Mekanism: Adiționale",
+  "constants.mekanismadditions.pack_description": "Resurse necesare pentru Mekanism: Adiționale",
   "description.mekanismadditions.glow_panel": "O sursă de lumină modernă, permanentă. Acum în multe culori!",
   "description.mekanismadditions.obsidian_tnt": "Un bloc de TNT extrem de puternic, infuzat de obsidian. Foloseşte pe propriul pericol.",
   "entity.mekanismadditions.baby_creeper": "Creeper de bebeluşi",

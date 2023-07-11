@@ -14,6 +14,7 @@ public class BlockUniversalCable extends BlockSmallTransmitter implements ITypeB
     private final CableTier tier;
 
     public BlockUniversalCable(CableTier tier) {
+        super(properties -> properties.mapColor(tier.getBaseTier().getColor().getMapColor()));
         this.tier = tier;
     }
 

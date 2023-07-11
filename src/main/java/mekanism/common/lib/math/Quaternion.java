@@ -110,7 +110,7 @@ public class Quaternion {
     public Quaternion normalize() {
         double mag = magnitude();
         if (mag > 1.0E-6F) {
-            multiply(Mth.fastInvSqrt(mag));
+            multiply(Mth.invSqrt(mag));
         } else {
             multiply(0);
         }

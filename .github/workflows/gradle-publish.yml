@@ -3,19 +3,37 @@
 name: Build & Publish
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - 'release/**'
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: write
+      #to create releases
+      contents: write
+      #for github maven? packages: write
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Find last successful build
+      id: last_success_build
+      uses: SamhammerAG/last-successful-build-action@v4
+      with:
+        workflow: ${{github.workflow}}
+        token: ${{github.token}}
+        #verify ensures that it's reachable on the current branch
+        verify: true
+    - uses: madhead/read-java-properties@latest
+      id: gradle_props
+      with:
+        file: gradle.properties
+        all: true
+
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
@@ -23,16 +41,34 @@ jobs:
         distribution: 'temurin'
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
-        cache: 'gradle'
 
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+      uses: gradle/gradle-build-action@v2
       with:
-        arguments: clean build 
+        arguments: clean build outputChangelog
         gradle-version: wrapper
+      env:
+        BUILD_NUMBER: ${{ github.run_number }}
+        GIT_COMMIT: ${{ github.sha }}
+        GIT_PREVIOUS_SUCCESSFUL_COMMIT: ${{ steps.last_success_build.outputs.sha }}
+
+    - name: Upload to workflow artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        path: |
+          build/libs/
+          build/changelog.html
+
+    - name: GH Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: build/libs/*.jar
+        body_path: build/changelog.html
+        tag_name: v${{ steps.gradle_props.outputs.minecraft_version }}-${{ steps.gradle_props.outputs.mod_version }}.${{ github.run_number }}
+        target_commitish: ${{ github.sha }}
 
     - name: Publish
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+      uses: gradle/gradle-build-action@v2
       with:
         arguments: curseforge modrinth publish
         gradle-version: wrapper
@@ -40,4 +76,6 @@ jobs:
         CURSEFORGE_KEY: ${{ secrets.CURSEFORGE_KEY }}
         MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
         MEK_MAVEN_PW: ${{ secrets.MEK_MAVEN_PW }}
-        BUILD_NUMBER: ${{ github.run_id }}
+        BUILD_NUMBER: ${{ github.run_number }}
+        GIT_COMMIT: ${{ github.sha }}
+        GIT_PREVIOUS_SUCCESSFUL_COMMIT: ${{ steps.last_success_build.outputs.sha }}

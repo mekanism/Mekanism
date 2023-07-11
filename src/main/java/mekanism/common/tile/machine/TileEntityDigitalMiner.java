@@ -56,13 +56,13 @@ import mekanism.common.inventory.container.sync.SyncableRegistryEntry;
 import mekanism.common.inventory.container.tile.DigitalMinerConfigContainer;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
+import mekanism.common.item.gear.ItemAtomicDisassembler;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
@@ -1248,7 +1248,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         if (state.isAir()) {
             return Collections.emptyList();
         }
-        ItemStack stack = MekanismItems.ATOMIC_DISASSEMBLER.getItemStack();
+        ItemStack stack = ItemAtomicDisassembler.fullyChargedStack();
         if (getSilkTouch()) {
             stack.enchant(Enchantments.SILK_TOUCH, 1);
         }

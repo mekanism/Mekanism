@@ -326,7 +326,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             return Arrays.stream(res).map(CCArgumentWrapper::wrapReturnType).toArray();
         }
         //If the object has a registry name, return the object's registry name
-        ResourceLocation name = RegistryUtils.getName(result);
+        ResourceLocation name = RegistryUtils.getNameGeneric(result);
         if (name != null) {
             return name.toString();
         }

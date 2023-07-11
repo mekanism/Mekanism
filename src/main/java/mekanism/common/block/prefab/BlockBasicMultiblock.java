@@ -1,5 +1,6 @@
 package mekanism.common.block.prefab;
 
+import java.util.function.UnaryOperator;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -13,14 +14,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends BlockTile<TILE, BlockTypeTile<TILE>> {
 
-    public BlockBasicMultiblock(BlockTypeTile<TILE> type) {
-        this(type, BlockBehaviour.Properties.of().strength(5, 9).requiresCorrectToolForDrops().mapColor(MapColor.METAL));
+    public BlockBasicMultiblock(BlockTypeTile<TILE> type, UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
+        this(type, propertiesModifier.apply(BlockBehaviour.Properties.of().strength(5, 9).requiresCorrectToolForDrops()));
     }
 
     public BlockBasicMultiblock(BlockTypeTile<TILE> type, BlockBehaviour.Properties properties) {

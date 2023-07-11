@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -18,7 +19,7 @@ public class BlockChargepad extends BlockTileModel<TileEntityChargepad, BlockTyp
     private static final VoxelShape BASE = box(0, 0, 0, 16, 1, 16);
 
     public BlockChargepad() {
-        super(MekanismBlockTypes.CHARGEPAD);
+        super(MekanismBlockTypes.CHARGEPAD, properties -> properties.mapColor(MapColor.COLOR_GRAY));
     }
 
     @NotNull

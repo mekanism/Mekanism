@@ -6,6 +6,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.Machine;
+import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.FluidUtils;
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<TileEntityFluidTank>> implements IColoredBlock {
 
     public BlockFluidTank(Machine<TileEntityFluidTank> type) {
-        super(type);
+        super(type, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor()));
     }
 
     @Override

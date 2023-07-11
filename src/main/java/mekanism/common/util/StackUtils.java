@@ -36,9 +36,7 @@ public final class StackUtils {
     }
 
     public static void merge(@NotNull List<IInventorySlot> orig, @NotNull List<IInventorySlot> toAdd, List<ItemStack> rejects) {
-        if (orig.size() != toAdd.size()) {
-            throw new IllegalArgumentException("Mismatched slot count");
-        }
+        StorageUtils.validateSizeMatches(orig, toAdd, "slot");
         for (int i = 0; i < toAdd.size(); i++) {
             IInventorySlot toAddSlot = toAdd.get(i);
             if (!toAddSlot.isEmpty()) {

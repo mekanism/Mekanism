@@ -25,6 +25,8 @@
   "block.mekanismgenerators.turbine_valve": "Supapă turbină",
   "block.mekanismgenerators.turbine_vent": "Orificiu turbină",
   "block.mekanismgenerators.wind_generator": "Generator de vânt",
+  "constants.mekanismgenerators.mod_name": "Mekanism: Generatoare",
+  "constants.mekanismgenerators.pack_description": "Resurse necesare pentru Mekanism: Generatoare",
   "container.mekanismgenerators.advanced_solar_generator": "Generator solar avansat",
   "container.mekanismgenerators.fission_reactor_logic_adapter": "Adaptor Logic Reactor Fisiune",
   "container.mekanismgenerators.fusion_reactor_logic_adapter": "Adaptor Logic Reactor Fuziune",

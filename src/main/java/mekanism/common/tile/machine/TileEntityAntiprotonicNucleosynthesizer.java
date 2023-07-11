@@ -158,7 +158,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         gasInputSlot.fillTankOrConvert();
-        clientEnergyUsed = ((NucleosynthesizerRecipeCacheLookupMonitor) recipeCacheLookupMonitor).updateAndProcess(energyContainer);
+        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
     }
 
     @Nullable

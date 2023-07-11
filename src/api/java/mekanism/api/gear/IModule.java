@@ -3,6 +3,7 @@ package mekanism.api.gear;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
@@ -102,6 +103,28 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      * @return Energy stored, or {@link FloatingLong#ZERO} if the energy container is {@code null}.
      */
     FloatingLong getContainerEnergy();
+
+    /**
+     * Helper to check if there is at least a certain amount of energy stored in {@link #getEnergyContainer()}.
+     *
+     * @param energySupplier Supplier that provides the minimum amount of required energy to check.
+     *
+     * @return {@code true} if there is no energy cost or there is at least that amount of energy stored in the {@link #getEnergyContainer()}.
+     *
+     * @since 10.4.0
+     */
+    boolean hasEnoughEnergy(FloatingLongSupplier energySupplier);
+
+    /**
+     * Helper to check if there is at least a certain amount of energy stored in {@link #getEnergyContainer()}.
+     *
+     * @param energy Minimum amount of required energy to check.
+     *
+     * @return {@code true} if there is no energy cost or there is at least that amount of energy stored in the {@link #getEnergyContainer()}.
+     *
+     * @since 10.4.0
+     */
+    boolean hasEnoughEnergy(FloatingLong energy);
 
     /**
      * Helper to check if the item this module is installed on can provide the given amount of energy.

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.NBTConstants;
+import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.util.NBTUtils;
@@ -15,9 +16,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.storage.DimensionDataStorage;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -117,12 +115,7 @@ public class FrequencyManager<FREQ extends Frequency> {
         if (dataHandler == null) {
             String name = getName();
             //Always associate the world with the over world as the frequencies are global
-            DimensionDataStorage savedData = ServerLifecycleHooks.getCurrentServer().overworld().getDataStorage();
-            dataHandler = savedData.computeIfAbsent(nbt -> {
-                FrequencyDataHandler handler = new FrequencyDataHandler();
-                handler.load(nbt);
-                return handler;
-            }, FrequencyDataHandler::new, name);
+            dataHandler = MekanismSavedData.createSavedData(FrequencyDataHandler::new, name);
             dataHandler.syncManager();
         }
     }
@@ -174,7 +167,7 @@ public class FrequencyManager<FREQ extends Frequency> {
         return owner + frequencyType.getName() + "FrequencyHandler";
     }
 
-    public class FrequencyDataHandler extends SavedData {
+    public class FrequencyDataHandler extends MekanismSavedData {
 
         public List<FREQ> loadedFrequencies;
         public UUID loadedOwner;
@@ -186,6 +179,7 @@ public class FrequencyManager<FREQ extends Frequency> {
             }
         }
 
+        @Override
         public void load(@NotNull CompoundTag nbtTags) {
             NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> loadedOwner = uuid);
             ListTag list = nbtTags.getList(NBTConstants.FREQUENCY_LIST, Tag.TAG_COMPOUND);

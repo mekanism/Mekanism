@@ -103,14 +103,11 @@ public interface IFancyFontRenderer {
 
     default void drawTextScaledBound(GuiGraphics guiGraphics, Component component, float x, float y, int color, float maxLength) {
         int length = getStringWidth(component);
-
         if (length <= maxLength) {
             drawTextExact(guiGraphics, component, x, y, color);
         } else {
             drawTextWithScale(guiGraphics, component, x, y, color, maxLength / length);
         }
-        //Make sure the color does not leak from having drawn the string
-        MekanismRenderer.resetColor(guiGraphics);
     }
 
     default void drawScaledTextScaledBound(GuiGraphics guiGraphics, Component text, float x, float y, int color, float maxX, float textScale) {
@@ -131,7 +128,6 @@ public interface IFancyFontRenderer {
         pose.scale(scale, scale, scale);
         runnable.accept(guiGraphics);
         pose.popPose();
-        MekanismRenderer.resetColor(guiGraphics);
     }
 
     /**

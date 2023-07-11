@@ -11,6 +11,8 @@
   "advancements.mekanismtools.not_enough_shielding.title": "Nicht genug Schutz",
   "advancements.mekanismtools.paxel.description": "Stelle eine Paxel her (Spitzhacke, Axt, Schaufel)",
   "advancements.mekanismtools.paxel.title": "Mehrfachwerkzeug",
+  "constants.mekanismtools.mod_name": "Mekanism: Tools",
+  "constants.mekanismtools.pack_description": "Für Mekanism: Tools verwendete Ressourcen",
   "item.mekanismtools.bronze_axe": "Bronzeaxt",
   "item.mekanismtools.bronze_boots": "Bronzestiefel",
   "item.mekanismtools.bronze_chestplate": "Bronzebrustpanzer",

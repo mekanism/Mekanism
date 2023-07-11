@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.client.model.MekanismModelBaker;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.Quad;
@@ -23,11 +22,13 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BlockModelRotation;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -54,9 +55,13 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
 
     private static List<BakedQuad> getBakedQuads(List<String> visible, TextureAtlasSprite icon, Level world) {
         return contentModelCache.computeIfAbsent(new ContentsModelData(visible, icon), modelData -> {
+            ModelBaker baker = Minecraft.getInstance().getModelManager().getModelBakery().new ModelBakerImpl(
+                  (modelLoc, material) -> material.sprite(),
+                  MODEL_LOCATION
+            );
             //Note: We get model and then bake as we use different parameters and are caching after modifying
             List<BakedQuad> bakedQuads = MekanismModelCache.INSTANCE.TRANSMITTER_CONTENTS.getModel()
-                  .bake(new VisibleModelConfiguration(contentsConfiguration, modelData.visible), new MekanismModelBaker(), material -> modelData.icon,
+                  .bake(new VisibleModelConfiguration(contentsConfiguration, modelData.visible), baker, material -> modelData.icon,
                         BlockModelRotation.X0_Y0, ItemOverrides.EMPTY, MODEL_LOCATION)
                   .getQuads(null, null, world.getRandom(), ModelData.EMPTY, null);
             List<Quad> unpackedQuads = QuadUtils.unpack(bakedQuads);

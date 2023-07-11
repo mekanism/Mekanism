@@ -17,7 +17,6 @@ import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.INestedRadialMode;
 import mekanism.api.radial.mode.IRadialMode;
 import mekanism.api.text.EnumColor;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.ScrollIncrementer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -164,8 +163,6 @@ public class GuiRadialSelector extends Screen {
             overBackButton = false;
         }
 
-        MekanismRenderer.resetColor(guiGraphics);
-
         // Icons
         int position = 0;
         for (MODE mode : modes) {
@@ -193,7 +190,6 @@ public class GuiRadialSelector extends Screen {
             pose.popPose();
         }
 
-        MekanismRenderer.resetColor(guiGraphics);
         pose.popPose();
     }
 

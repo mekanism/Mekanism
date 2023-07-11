@@ -15,6 +15,7 @@ public class BlockLogisticalTransporter extends BlockLargeTransmitter implements
     private final TransporterTier tier;
 
     public BlockLogisticalTransporter(TransporterTier tier) {
+        super(properties -> properties.mapColor(tier.getBaseTier().getColor().getMapColor()));
         this.tier = tier;
     }
 

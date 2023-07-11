@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:jungle_hanging_sign"
+    }
+  },
+  "mainOutput": {
+    "count": 2,
+    "item": "minecraft:jungle_planks"
+  },
+  "secondaryChance": 0.5,
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  }
+}

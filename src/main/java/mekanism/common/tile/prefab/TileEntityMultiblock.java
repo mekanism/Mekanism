@@ -23,7 +23,6 @@ import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
-import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.SubstanceType;
@@ -64,15 +63,10 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     private boolean isMaster;
 
     /**
-     * This multiblock segment's cached data
-     */
-    protected MultiblockCache<T> cachedData;
-
-    /**
      * This multiblock segment's cached inventory ID
      */
     @Nullable
-    protected UUID cachedID = null;
+    private UUID cachedID = null;
 
     // start at 100 to make sure we run the animation
     private long unformedTicks = 100;
@@ -134,23 +128,15 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             }
             if (multiblock.inventoryID != null) {
                 cachedID = multiblock.inventoryID;
-                getManager().updateCache(this, multiblock);
                 if (isMaster()) {
                     if (multiblock.tick(level)) {
                         needsPacket = true;
                     }
-                    if (multiblock.isDirty()) {
-                        //If the multiblock is dirty mark the chunk as dirty to ensure that we save and then reset the fact the multiblock is dirty
-                        markForSave();
-                        multiblock.resetDirty();
-                    }
+                    getManager().handleDirtyMultiblock(multiblock);
                 }
             }
         } else {
             playersUsing.forEach(Player::closeContainer);
-            if (cachedID != null) {
-                getManager().updateCache(this, multiblock);
-            }
             if (prevStructure) {
                 structureChanged(multiblock);
                 prevStructure = false;
@@ -232,9 +218,6 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         super.setRemoved();
         if (!isRemote()) {
             structure.invalidate(level);
-            if (cachedID != null) {
-                getManager().invalidate(this);
-            }
         }
     }
 
@@ -247,22 +230,12 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public void resetCache() {
         cachedID = null;
-        cachedData = null;
     }
 
+    @Nullable
     @Override
     public UUID getCacheID() {
         return cachedID;
-    }
-
-    @Override
-    public MultiblockCache<T> getCache() {
-        return cachedData;
-    }
-
-    @Override
-    public void setCache(MultiblockCache<T> cache) {
-        this.cachedData = cache;
     }
 
     @Override
@@ -307,10 +280,10 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     private void doMultiblockSparkle(T multiblock) {
         if (isRemote() && multiblock.renderLocation != null && !prevStructure && unformedTicks >= 5) {
             //If player is within 40 blocks (1,600 = 40^2), show the status message/sparkles
-            //Note: Do not change this from ClientPlayerEntity to PlayerEntity, or it will cause class loading issues on the server
-            // due to trying to validate if the value is actually a PlayerEntity
+            //Note: Do not change this from LocalPlayer to Player, or it will cause class loading issues on the server
+            // due to trying to validate if the value is actually a Player
             LocalPlayer player = Minecraft.getInstance().player;
-            if (worldPosition.distSqr(player.blockPosition()) <= 1_600) {
+            if (player != null && worldPosition.distSqr(player.blockPosition()) <= 1_600) {
                 if (MekanismConfig.client.enableMultiblockFormationParticles.get()) {
                     new SparkleAnimation(this, multiblock.renderLocation, multiblock.length() - 1, multiblock.width() - 1, multiblock.height() - 1).run();
                 } else {
@@ -324,13 +297,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         if (!getMultiblock().isFormed()) {
-            NBTUtils.setUUIDIfPresent(nbt, NBTConstants.INVENTORY_ID, id -> {
-                cachedID = id;
-                NBTUtils.setCompoundIfPresent(nbt, NBTConstants.CACHE, cache -> {
-                    cachedData = getManager().createCache();
-                    cachedData.load(cache);
-                });
-            });
+            NBTUtils.setUUIDIfPresent(nbt, NBTConstants.INVENTORY_ID, id -> cachedID = id);
         }
     }
 
@@ -338,17 +305,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     public void saveAdditional(@NotNull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
         if (cachedID != null) {
+            //Note: We don't bother validating here the cache still exists as it is irrelevant and unused until attempting to form the multiblock
+            // at which point it will gracefully handle multiblock tiles with stale ids and clear them
             nbtTags.putUUID(NBTConstants.INVENTORY_ID, cachedID);
-            if (cachedData != null) {
-                // sync one last time if this is the master
-                T multiblock = getMultiblock();
-                if (multiblock.isFormed()) {
-                    cachedData.sync(multiblock);
-                }
-                CompoundTag cacheTags = new CompoundTag();
-                cachedData.save(cacheTags);
-                nbtTags.put(NBTConstants.CACHE, cacheTags);
-            }
         }
     }
 

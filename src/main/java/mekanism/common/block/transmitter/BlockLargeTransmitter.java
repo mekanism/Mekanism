@@ -1,9 +1,11 @@
 package mekanism.common.block.transmitter;
 
+import java.util.function.UnaryOperator;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public abstract class BlockLargeTransmitter extends BlockTransmitter {
@@ -35,6 +37,10 @@ public abstract class BlockLargeTransmitter extends BlockTransmitter {
             return SIDES_PULL[side.ordinal()];
         } //else normal
         return SIDES[side.ordinal()];
+    }
+
+    protected BlockLargeTransmitter(UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
+        super(propertiesModifier);
     }
 
     @Override

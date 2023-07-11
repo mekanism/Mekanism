@@ -349,9 +349,7 @@ public class StorageUtils {
     }
 
     public static void mergeFluidTanks(List<IExtendedFluidTank> tanks, List<IExtendedFluidTank> toAdd, List<FluidStack> rejects) {
-        if (tanks.size() != toAdd.size()) {
-            throw new IllegalArgumentException("Mismatched tank count");
-        }
+        validateSizeMatches(tanks, toAdd, "tank");
         for (int i = 0; i < toAdd.size(); i++) {
             IExtendedFluidTank mergeTank = toAdd.get(i);
             if (!mergeTank.isEmpty()) {
@@ -383,9 +381,7 @@ public class StorageUtils {
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> void mergeTanks(
           List<TANK> tanks, List<TANK> toAdd, List<STACK> rejects) {
-        if (tanks.size() != toAdd.size()) {
-            throw new IllegalArgumentException("Mismatched tank count");
-        }
+        validateSizeMatches(tanks, toAdd, "tank");
         for (int i = 0; i < toAdd.size(); i++) {
             TANK mergeTank = toAdd.get(i);
             if (!mergeTank.isEmpty()) {
@@ -415,14 +411,30 @@ public class StorageUtils {
         }
     }
 
-    public static void mergeContainers(IEnergyContainer container, IEnergyContainer mergeContainer) {
-        container.setEnergy(container.getEnergy().add(mergeContainer.getEnergy()));
+    public static void mergeEnergyContainers(List<IEnergyContainer> containers, List<IEnergyContainer> toAdd) {
+        validateSizeMatches(containers, toAdd, "energy container");
+        for (int i = 0; i < toAdd.size(); i++) {
+            IEnergyContainer container = containers.get(i);
+            IEnergyContainer mergeContainer = toAdd.get(i);
+            container.setEnergy(container.getEnergy().add(mergeContainer.getEnergy()));
+        }
     }
 
-    public static void mergeContainers(IHeatCapacitor capacitor, IHeatCapacitor mergeCapacitor) {
-        capacitor.setHeat(capacitor.getHeat() + mergeCapacitor.getHeat());
-        if (capacitor instanceof BasicHeatCapacitor heatCapacitor) {
-            heatCapacitor.setHeatCapacity(capacitor.getHeatCapacity() + mergeCapacitor.getHeatCapacity(), false);
+    public static void mergeHeatCapacitors(List<IHeatCapacitor> capacitors, List<IHeatCapacitor> toAdd) {
+        validateSizeMatches(capacitors, toAdd, "heat capacitor");
+        for (int i = 0; i < toAdd.size(); i++) {
+            IHeatCapacitor capacitor = capacitors.get(i);
+            IHeatCapacitor mergeCapacitor = toAdd.get(i);
+            capacitor.setHeat(capacitor.getHeat() + mergeCapacitor.getHeat());
+            if (capacitor instanceof BasicHeatCapacitor heatCapacitor) {
+                heatCapacitor.setHeatCapacity(capacitor.getHeatCapacity() + mergeCapacitor.getHeatCapacity(), false);
+            }
+        }
+    }
+
+    public static <T> void validateSizeMatches(List<T> base, List<T> toAdd, String type) {
+        if (base.size() != toAdd.size()) {
+            throw new IllegalArgumentException("Mismatched " + type + " count, orig: " + base.size() + ", toAdd: " + toAdd.size());
         }
     }
 }

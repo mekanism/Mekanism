@@ -5,6 +5,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.registries.MekanismBlockTypes;
+import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSorter, Machine<TileEntityLogisticalSorter>> {
 
     public BlockLogisticalSorter() {
-        super(MekanismBlockTypes.LOGISTICAL_SORTER);
+        super(MekanismBlockTypes.LOGISTICAL_SORTER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor()));
     }
 
     @Nullable

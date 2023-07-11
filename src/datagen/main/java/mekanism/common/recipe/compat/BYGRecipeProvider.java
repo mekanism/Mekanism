@@ -51,7 +51,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
             RegistryObject<BYGBoatItem> chestBoat = woodType.chestBoat();
             RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, woodType.planks(), boat == null ? null : boat.get(),
                   chestBoat == null ? null : chestBoat.get(), woodType.door(), woodType.fenceGate(), woodType.logTag().item(), woodType.pressurePlate(),
-                  woodType.trapdoor(), woodType.toString(), modLoaded);
+                  woodType.trapdoor(), null, woodType.toString(), modLoaded);
         }
     }
 

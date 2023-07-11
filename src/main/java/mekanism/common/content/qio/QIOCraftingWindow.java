@@ -1,6 +1,7 @@
 package mekanism.common.content.qio;
 
 import com.blamejared.recipestages.RecipeStagesUtil;
+import com.blamejared.recipestages.recipes.IStagedRecipe;
 import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
@@ -179,13 +180,12 @@ public class QIOCraftingWindow implements IContentsListener {
     }
 
     private ItemStack assembleRecipe(CraftingRecipe recipe, RegistryAccess registryAccess) {
-        //TODO - 1.20: Re-enable when RecipeStages updates as this likely will gain registryAccess as a param
-        /*if (Mekanism.hooks.RecipeStagesLoaded) {
+        if (Mekanism.hooks.RecipeStagesLoaded) {
             if (recipe instanceof IStagedRecipe stagedRecipe) {
                 //Force assemble it as we handle validating if specific players can see/grab the output ourselves
-                return stagedRecipe.forceAssemble(craftingInventory);
+                return stagedRecipe.forceAssemble(craftingInventory, registryAccess);
             }
-        }*/
+        }
         return recipe.assemble(craftingInventory, registryAccess);
     }
 

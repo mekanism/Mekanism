@@ -14,6 +14,7 @@ public class BlockMechanicalPipe extends BlockLargeTransmitter implements ITypeB
     private final PipeTier tier;
 
     public BlockMechanicalPipe(PipeTier tier) {
+        super(properties -> properties.mapColor(tier.getBaseTier().getColor().getMapColor()));
         this.tier = tier;
     }
 

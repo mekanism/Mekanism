@@ -22,7 +22,7 @@ public class LRU<T> extends AbstractCollection<T> {
         tail.prev = head;
     }
 
-    private void remove(LRUEntry<T> entry) {
+    private void removeEntry(LRUEntry<T> entry) {
         entry.next.prev = entry.prev;
         entry.prev.next = entry.next;
         size--;
@@ -49,7 +49,7 @@ public class LRU<T> extends AbstractCollection<T> {
         if (entry == null) {
             return;
         }
-        remove(entry);
+        removeEntry(entry);
         addFirst(entry);
     }
 
@@ -59,7 +59,7 @@ public class LRU<T> extends AbstractCollection<T> {
         if (entry == null) {
             return false;
         }
-        remove(entry);
+        removeEntry(entry);
         return true;
     }
 

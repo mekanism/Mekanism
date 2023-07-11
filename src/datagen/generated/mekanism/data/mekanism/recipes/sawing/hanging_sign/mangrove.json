@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:mangrove_hanging_sign"
+    }
+  },
+  "mainOutput": {
+    "count": 2,
+    "item": "minecraft:mangrove_planks"
+  },
+  "secondaryChance": 0.5,
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  }
+}

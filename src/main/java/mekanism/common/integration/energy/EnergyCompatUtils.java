@@ -1,8 +1,13 @@
 package mekanism.common.integration.energy;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
+import java.util.function.Supplier;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.config.listener.ConfigBasedCachedSupplier;
+import mekanism.common.config.value.CachedValue;
 import mekanism.common.integration.energy.fluxnetworks.FNEnergyCompat;
 import mekanism.common.integration.energy.forgeenergy.ForgeEnergyCompat;
 import net.minecraft.core.Direction;
@@ -27,6 +32,24 @@ public class EnergyCompatUtils {
           new ForgeEnergyCompat()
     );
 
+    //Default the list of enabled caps to our own energy capability
+    private static Supplier<List<Capability<?>>> ENABLED_ENERGY_CAPS = () -> List.of(Capabilities.STRICT_ENERGY);
+
+    /**
+     * @apiNote For internal uses, only call this after mods have loaded so that we can properly assume all {@link IEnergyCompat#isUsable()} checks only depend on config
+     * settings.
+     */
+    public static void initLoadedCache() {
+        Set<CachedValue<?>> configs = new HashSet<>();
+        for (IEnergyCompat energyCompat : energyCompats) {
+            configs.addAll(energyCompat.getBackingConfigs());
+        }
+        ENABLED_ENERGY_CAPS = new ConfigBasedCachedSupplier<>(
+              () -> energyCompats.stream().filter(IEnergyCompat::isUsable).<Capability<?>>map(IEnergyCompat::getCapability).toList(),
+              configs.toArray(new CachedValue[0])
+        );
+    }
+
     public static List<IEnergyCompat> getCompats() {
         return energyCompats;
     }
@@ -39,6 +62,7 @@ public class EnergyCompatUtils {
         // short circuit and not check if
         if (capability.isRegistered()) {
             for (IEnergyCompat energyCompat : energyCompats) {
+                //Note: We don't need to check if it is usable before checking if the capability matches as it is instance equality
                 if (energyCompat.isMatchingCapability(capability)) {
                     return energyCompat.isUsable();
                 }
@@ -51,7 +75,7 @@ public class EnergyCompatUtils {
      * Gets all enabled energy capability integrations.
      */
     public static List<Capability<?>> getEnabledEnergyCapabilities() {
-        return energyCompats.stream().filter(IEnergyCompat::isUsable).map(IEnergyCompat::getCapability).collect(Collectors.toList());
+        return ENABLED_ENERGY_CAPS.get();
     }
 
     private static boolean isTileValid(@Nullable BlockEntity tile) {
@@ -76,7 +100,7 @@ public class EnergyCompatUtils {
         return false;
     }
 
-    @Nullable//TODO: Transition usages of this to getLazyStrictEnergyHandler?
+    @Nullable
     public static IStrictEnergyHandler getStrictEnergyHandler(@NotNull ItemStack stack) {
         return getLazyStrictEnergyHandler(stack).resolve().orElse(null);
     }

@@ -64,15 +64,7 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
 
     private void draw(@NotNull GuiGraphics guiGraphics) {
         colorTab(guiGraphics);
-        //Top
-        guiGraphics.blit(getResource(), relativeX, relativeY, 0, 0, width, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-        //Middle
-        int middleHeight = height - 8;
-        if (middleHeight > 0) {
-            guiGraphics.blit(getResource(), relativeX, relativeY + 4, width, middleHeight, 0, 4, width, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-        }
-        //Bottom
-        guiGraphics.blit(getResource(), relativeX, relativeY + 4 + middleHeight, 0, 5, width, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        guiGraphics.blitNineSlicedSized(getResource(), relativeX, relativeY, width, height, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         MekanismRenderer.resetColor(guiGraphics);
     }
 }

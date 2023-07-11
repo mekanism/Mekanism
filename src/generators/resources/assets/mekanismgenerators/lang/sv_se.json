@@ -35,6 +35,8 @@
   "block.mekanismgenerators.turbine_valve": "Turbinventil",
   "block.mekanismgenerators.turbine_vent": "Turbinluftintag",
   "block.mekanismgenerators.wind_generator": "Vindgenerator",
+  "constants.mekanismgenerators.mod_name": "Mekanism: Generators",
+  "constants.mekanismgenerators.pack_description": "Resurser som används för Mekanism: Generators",
   "container.mekanismgenerators.advanced_solar_generator": "Avancerad solgenerator",
   "container.mekanismgenerators.bio_generator": "Biogenerator",
   "container.mekanismgenerators.fission_reactor_logic_adapter": "Logisk adapter för fissionsreaktor",

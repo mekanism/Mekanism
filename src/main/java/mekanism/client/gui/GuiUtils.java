@@ -34,113 +34,19 @@ public class GuiUtils {
     // Note: Does not validate that the passed in dimensions are valid
     // this strategy starts with a small texture and will expand it (by scaling) to meet the size requirements. good for small widgets
     // where the background texture is a single color
-    //TODO - 1.20: Compare against GuiGraphics#blitNineSliced
-    // Maybe something along the lines of guiGraphics.blitNineSliced(resource, left, top, width, height, , , , , );
     public static void renderExtendedTexture(GuiGraphics guiGraphics, ResourceLocation resource, int sideWidth, int sideHeight, int left, int top, int width, int height) {
         int textureWidth = 2 * sideWidth + 1;
         int textureHeight = 2 * sideHeight + 1;
-        int centerWidth = width - 2 * sideWidth;
-        int centerHeight = height - 2 * sideHeight;
-        int leftEdgeEnd = left + sideWidth;
-        int rightEdgeStart = leftEdgeEnd + centerWidth;
-        int topEdgeEnd = top + sideHeight;
-        int bottomEdgeStart = topEdgeEnd + centerHeight;
-        //Left Side
-        //Top Left Corner
-        guiGraphics.blit(resource, left, top, 0, 0, sideWidth, sideHeight, textureWidth, textureHeight);
-        //Left Middle
-        if (centerHeight > 0) {
-            guiGraphics.blit(resource, left, topEdgeEnd, sideWidth, centerHeight, 0, sideHeight, sideWidth, 1, textureWidth, textureHeight);
-        }
-        //Bottom Left Corner
-        guiGraphics.blit(resource, left, bottomEdgeStart, 0, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
-
-        //Middle
-        if (centerWidth > 0) {
-            //Top Middle
-            guiGraphics.blit(resource, leftEdgeEnd, top, centerWidth, sideHeight, sideWidth, 0, 1, sideHeight, textureWidth, textureHeight);
-            if (centerHeight > 0) {
-                //Center
-                guiGraphics.blit(resource, leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, sideWidth, sideHeight, 1, 1, textureWidth, textureHeight);
-            }
-            //Bottom Middle
-            guiGraphics.blit(resource, leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, sideWidth, sideHeight + 1, 1, sideHeight, textureWidth, textureHeight);
-        }
-
-        //Right side
-        //Top Right Corner
-        guiGraphics.blit(resource, rightEdgeStart, top, sideWidth + 1, 0, sideWidth, sideHeight, textureWidth, textureHeight);
-        //Right Middle
-        if (centerHeight > 0) {
-            guiGraphics.blit(resource, rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, sideWidth + 1, sideHeight, sideWidth, 1, textureWidth, textureHeight);
-        }
-        //Bottom Right Corner
-        guiGraphics.blit(resource, rightEdgeStart, bottomEdgeStart, sideWidth + 1, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
+        guiGraphics.blitNineSlicedSized(resource, left, top, width, height, sideWidth, sideHeight, textureWidth, textureHeight, 0, 0, textureWidth,
+              textureHeight);
     }
 
-    // this strategy starts with a large texture and will scale it down or tile it if necessary. good for larger widgets, but requires a large texture; small textures will tank FPS due
-    // to tiling
-    public static void renderBackgroundTexture(GuiGraphics guiGraphics, ResourceLocation resource, int texSideWidth, int texSideHeight, int left, int top, int width, int height, int textureWidth, int textureHeight) {
-        // render as much side as we can, based on element dimensions
-        int sideWidth = Math.min(texSideWidth, width / 2);
-        int sideHeight = Math.min(texSideHeight, height / 2);
-
-        // Adjustment for small odd-height and odd-width GUIs
-        int leftWidth = sideWidth < texSideWidth ? sideWidth + (width % 2) : sideWidth;
-        int topHeight = sideHeight < texSideHeight ? sideHeight + (height % 2) : sideHeight;
-
-        int texCenterWidth = textureWidth - texSideWidth * 2, texCenterHeight = textureHeight - texSideHeight * 2;
-        int centerWidth = width - leftWidth - sideWidth, centerHeight = height - topHeight - sideHeight;
-
-        int leftEdgeEnd = left + leftWidth;
-        int rightEdgeStart = leftEdgeEnd + centerWidth;
-        int topEdgeEnd = top + topHeight;
-        int bottomEdgeStart = topEdgeEnd + centerHeight;
-
-        //Top Left Corner
-        guiGraphics.blit(resource, left, top, 0, 0, leftWidth, topHeight, textureWidth, textureHeight);
-        //Bottom Left Corner
-        guiGraphics.blit(resource, left, bottomEdgeStart, 0, textureHeight - sideHeight, leftWidth, sideHeight, textureWidth, textureHeight);
-
-        //Middle
-        if (centerWidth > 0) {
-            //Top Middle
-            blitTiled(guiGraphics, resource, leftEdgeEnd, top, centerWidth, topHeight, texSideWidth, 0, texCenterWidth, texSideHeight, textureWidth, textureHeight);
-            if (centerHeight > 0) {
-                //Center
-                blitTiled(guiGraphics, resource, leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, texSideWidth, texSideHeight, texCenterWidth, texCenterHeight, textureWidth, textureHeight);
-            }
-            //Bottom Middle
-            blitTiled(guiGraphics, resource, leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, texSideWidth, textureHeight - sideHeight, texCenterWidth, texSideHeight, textureWidth, textureHeight);
-        }
-
-        if (centerHeight > 0) {
-            //Left Middle
-            blitTiled(guiGraphics, resource, left, topEdgeEnd, leftWidth, centerHeight, 0, texSideHeight, texSideWidth, texCenterHeight, textureWidth, textureHeight);
-            //Right Middle
-            blitTiled(guiGraphics, resource, rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, textureWidth - sideWidth, texSideHeight, texSideWidth, texCenterHeight, textureWidth, textureHeight);
-        }
-
-        //Top Right Corner
-        guiGraphics.blit(resource, rightEdgeStart, top, textureWidth - sideWidth, 0, sideWidth, topHeight, textureWidth, textureHeight);
-        //Bottom Right Corner
-        guiGraphics.blit(resource, rightEdgeStart, bottomEdgeStart, textureWidth - sideWidth, textureHeight - sideHeight, sideWidth, sideHeight, textureWidth, textureHeight);
-    }
-
-    public static void blitTiled(GuiGraphics guiGraphics, ResourceLocation resource, int x, int y, int width, int height, int texX, int texY, int texDrawWidth,
-          int texDrawHeight, int textureWidth, int textureHeight) {
-        int xTiles = (int) Math.ceil((float) width / texDrawWidth), yTiles = (int) Math.ceil((float) height / texDrawHeight);
-
-        int drawWidth = width, drawHeight = height;
-        for (int tileX = 0; tileX < xTiles; tileX++) {
-            for (int tileY = 0; tileY < yTiles; tileY++) {
-                guiGraphics.blit(resource, x + texDrawWidth * tileX, y + texDrawHeight * tileY, texX, texY, Math.min(drawWidth, texDrawWidth),
-                      Math.min(drawHeight, texDrawHeight), textureWidth, textureHeight);
-                drawHeight -= texDrawHeight;
-            }
-            drawWidth -= texDrawWidth;
-            drawHeight = height;
-        }
+    // this strategy starts with a large texture and will scale it down or tile it if necessary. good for larger widgets, but requires a large texture;
+    // small textures will tank FPS due to tiling
+    public static void renderBackgroundTexture(GuiGraphics guiGraphics, ResourceLocation resource, int texSideWidth, int texSideHeight, int left, int top, int width,
+          int height, int textureWidth, int textureHeight) {
+        guiGraphics.blitNineSlicedSized(resource, left, top, width, height, texSideWidth, texSideHeight, textureWidth, textureHeight, 0, 0, textureWidth,
+              textureHeight);
     }
 
     public static void drawOutline(GuiGraphics guiGraphics, int x, int y, int width, int height, int color) {
