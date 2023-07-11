@@ -78,12 +78,8 @@
                 processing slots.
             </p>
             <p space="8">Mekanism does not directly increase processing speed every tier, instead it adds extra
-                processing slots which all process the inputted materials at the same time. Basic is 3 slots, advanced
-                is 5 slots, elite is 7 slots, and ultimate has not been implemented.
-            </p>
-            <p space="8">You can upgrade tiers by placing the component in a crafting grid and surrounding it with the
-                necessary resources for the next upgrade,
-                or using a tier installer (basically an upgrade kit).
+                processing slots which all process the inputted materials at the same time. Basic has 3 slots, advanced
+                has 5 slots, elite has 7 slots, and ultimate has 9 slots.
             </p>
             <p space="8">By the time the player has gotten used to using Mekanism, they will have unlimited sand and
                 gravel just from a cobblestone generator, will have a simplistic sorting systems for all of their items,
@@ -349,6 +345,12 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">The Electrolytic Separator performs electrolysis on fluids to create some very useful gases from some rather ordinary fluids.</p>
+            <p space="8">The Electrolytic Separator requires a constant supply of power and must have a source of a suitable liquid in order to produce the gases.</p>
+            <p space="8">As the liquid is electrolyzed, the component gases will be stored in its internal tanks - should either tank fill completely, the Separator will turn off.</p>
+            <p space="8">If you are only using a single gas, selecting "dumping" or "dumping excess" for the unused gas will vent it to the environment, preventing that internal tank from filling completely and stopping processing.</p>
+            <p space="8">Please note that while the Electrolytic Separator does take Energy Upgrades, they don't affect the machine's energy <span underline="true">efficiency</span> (no, you can't break thermodynamics).</p>
+            <p space="8">Burning the Hydrogen from Water in the Gas Burning Generator will produce the exact same amount of energy used to Electrolyse the Water. To achieve energy gain, Ethylene must be used.</p>
         </section>
         <section id="energized_smelter">
             <page_title><title>Energized Smelter</title></page_title>
@@ -358,13 +360,27 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">A furnace that runs off of energy.</p>
+            <p space="8">Processes all furnace recipes, unless your modpack has configured exceptions</p>
         </section>
         <section id="energy_cube">
             <page_title><title>Energy Cube</title></page_title>
-            <p space="8" align="center"><stack item="mekanism:basic_energy_cube" count="1" />
-            <stack item="mekanism:advanced_energy_cube" count="1" />
-            <stack item="mekanism:elite_energy_cube" count="1" />
-            <stack item="mekanism:ultimate_energy_cube" count="1" /></p>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:basic_energy_cube"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8" align="center">
+                <stack item="mekanism:basic_energy_cube" count="1" />
+                <stack item="mekanism:advanced_energy_cube" count="1" />
+                <stack item="mekanism:elite_energy_cube" count="1" />
+                <stack item="mekanism:ultimate_energy_cube" count="1" />
+            </p>
+            <p space="8">An advanced device for storing and distributing energy.</p>
+            <p space="8">Each side can be configured as input or output - make sure you don't create loops!</p>
+            <p space="8">In the GUI, items can be charged or drained of power.</p>
+            <p space="8">Increasing the tier of Energy Cube increases the total capacity and maximum transfer rate</p>
         </section>
         <section id="enrichment_chamber">
             <page_title><title>Enrichment Chamber</title></page_title>
@@ -374,10 +390,15 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">This machine uses energy to extract dusts out of certain blocks and ores, making it essential to producing different kinds of tools. Not to be mistaken with the Crusher, this machine is the pulverizer equivalent in other mods.</p>
+            <p space="8">It can also perform other enriching tasks, such as turning Coal, Charcoal, Redstone, and Obsidian (dust) into their compressed variants.</p>
         </section>
         <section id="factories">
             <page_title><title>Factories</title></page_title>
-
+            <p space="8">Factories are advanced forms of the basic machines aimed to assist in large scale resource processing. They come in 4 tiers: Basic, Advanced, Elite, and Ultimate.</p>
+            <p space="8">Factories can perform multiple processes simultaneously, and can also auto-balance the inputs among the available process slots (toggled by the Auto Sort option). Power usage increases for each simultaneous operation.</p>
+            <!-- TODO link factory installers -->
+            <p space="8">A machine or factory can be upgraded in a crafting grid or with a Factory Installer. Note that it is not possible to skip a tier or otherwise combine Installers to fully upgrade a machine.</p>
         </section>
         <section id="fluidic_plenisher">
             <page_title><title>Fluidic Plenisher</title></page_title>
@@ -387,6 +408,7 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">The Fluidic Plenisher is the exact opposite of the Electric Pump. Instead of pumping fluids out of an area, the Fluidic Plenisher "floods" an area below it until all available open blocks are filled.</p>
         </section>
         <section id="formulaic_assemblicator">
             <page_title><title>Formulaic Assemblicator</title></page_title>
@@ -396,6 +418,25 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">A machine that uses energy to rapidly craft items and blocks from Crafting Formulas.</p>
+            <p space="8">With a crafting formula installed, the recipe is fixed. Can be used as a normal Crafting Table.</p>
+            <p space="8">1. Place a Crafting Formula in the Crafting Formula Slot of the Formulaic Assemblicator.</p>
+            <p space="8">2. Place the items for the recipe you wish to craft in the Crafting Grid, and then click the Encode Formula Button.</p>
+            <p space="8">3. The Formula is now ready for use with the Formulaic Assemblicator.</p>
+            <title>Buttons</title>
+            <p space="4" bold="true">Encode Formula</p>
+            <p space="8">Encodes the current crafting grid recipe to the Crafting Formula in the Formula slot (requires blank Formula).</p>
+            <p space="8">To clear a formula, hold it in your hand and sneak-right click.</p>
+            <p space="4" bold="true">Stock Control</p>
+            <p space="8">Reserves a slot for each required item in the Formula, preventing the inventory from becoming too full of other items.</p>
+            <p space="4" bold="true">Fill/Empty Grid</p>
+            <p space="8">When a Crafting Formula is installed, fills the crafting grid from the internal inventory. Without a Formula, empties the crafting grid to the internal inventory.</p>
+            <p space="4" bold="true">Craft Single Item</p>
+            <p space="8">Just what it sounds like. Does not require power.</p>
+            <p space="4" bold="true">Craft Available Items</p>
+            <p space="8">Crafts as many items as possible from the available items in the inventory. Does not require power.</p>
+            <p space="4" bold="true">Auto Mode</p>
+            <p space="8">Continuously craft the Formula when items are available. Requires power.</p>
         </section>
         <section id="fuelwood_heater">
             <page_title><title>Fuelwood Heater</title></page_title>
@@ -405,6 +446,8 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">A machine that is capable of producing heat energy by burning combustible items.</p>
+            <p space="8">Heat can be transmitted from any side.</p>
         </section>
         <section id="isotopic_centrifuge">
             <page_title><title>Isotopic Centrifuge</title></page_title>
