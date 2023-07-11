@@ -43,7 +43,9 @@ jobs:
     - name: Upload to workflow artifacts
       uses: actions/upload-artifact@v3
       with:
-        path: build/libs/
+        path: |
+          build/libs/
+          build/changelog.html
 
 #    - name: Publish
 #      uses: gradle/gradle-build-action@v2
