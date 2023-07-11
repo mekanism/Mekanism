@@ -15,6 +15,14 @@ public class AttributeParticleFX implements Attribute {
         return particleFunctions;
     }
 
+    public AttributeParticleFX addDense(ParticleOptions type, int density, Function<RandomSource, Pos3D> posSupplier) {
+        Function<RandomSource, Particle> particleFunction = random -> new Particle(type, posSupplier.apply(random));
+        for (int i = 0; i < density; i++) {
+            particleFunctions.add(particleFunction);
+        }
+        return this;
+    }
+
     public AttributeParticleFX add(ParticleOptions type, Function<RandomSource, Pos3D> posSupplier) {
         particleFunctions.add(random -> new Particle(type, posSupplier.apply(random)));
         return this;
