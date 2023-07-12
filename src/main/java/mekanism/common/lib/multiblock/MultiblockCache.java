@@ -117,15 +117,9 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         // Slurry
         StorageUtils.mergeTanks(getSlurryTanks(null), mergeCache.getSlurryTanks(null), rejectContents.rejectedSlurries);
         // Energy
-        List<IEnergyContainer> cacheContainers = getEnergyContainers(null);
-        for (int i = 0; i < cacheContainers.size(); i++) {
-            StorageUtils.mergeContainers(cacheContainers.get(i), mergeCache.getEnergyContainers(null).get(i));
-        }
+        StorageUtils.mergeEnergyContainers(getEnergyContainers(null), mergeCache.getEnergyContainers(null));
         // Heat
-        List<IHeatCapacitor> cacheCapacitors = getHeatCapacitors(null);
-        for (int i = 0; i < cacheCapacitors.size(); i++) {
-            StorageUtils.mergeContainers(cacheCapacitors.get(i), mergeCache.getHeatCapacitors(null).get(i));
-        }
+        StorageUtils.mergeHeatCapacitors(getHeatCapacitors(null), mergeCache.getHeatCapacitors(null));
     }
 
     @Override

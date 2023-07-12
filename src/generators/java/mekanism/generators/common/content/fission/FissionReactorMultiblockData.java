@@ -32,7 +32,6 @@ import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockData;
-import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tags.MekanismTags;
@@ -306,12 +305,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             //Reset the heat to the default of the heat capacitor
             heatCapacitor.setHeat(heatCapacitor.getHeatCapacity() * biomeAmbientTemp);
             //Force sync the update to the cache that corresponds to this multiblock
-            MultiblockManager<FissionReactorMultiblockData>.CacheWrapper cacheWrapper = MekanismGenerators.fissionReactorManager.inventories.get(inventoryID);
-            if (cacheWrapper != null) {
-                MultiblockCache<FissionReactorMultiblockData> cache = cacheWrapper.getCache();
-                if (cache != null) {
-                    cache.sync(this);
-                }
+            MultiblockCache<FissionReactorMultiblockData> cache = MekanismGenerators.fissionReactorManager.getCache(inventoryID);
+            if (cache != null) {
+                cache.sync(this);
             }
         }
     }

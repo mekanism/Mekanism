@@ -3,7 +3,9 @@ package mekanism.common.lib.multiblock;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
@@ -42,7 +44,7 @@ public class FormationProtocol<T extends MultiblockData> {
     public final Set<BlockPos> locations = new ObjectOpenHashSet<>();
     public final Set<BlockPos> internalLocations = new ObjectOpenHashSet<>();
     public final Set<ValveData> valves = new ObjectOpenHashSet<>();
-    public final Set<UUID> idsFound = new ObjectOpenHashSet<>();
+    public final Map<UUID, MultiblockCache<T>> idsFound = new HashMap<>();
 
     public FormationProtocol(IMultiblock<T> tile, Structure structure) {
         pointer = tile;
@@ -87,20 +89,22 @@ public class FormationProtocol<T extends MultiblockData> {
             pointer.setMultiblockData(manager, structureFound);
             structureFound.setFormedForce(true);
             MultiblockCache<T> cache = null;
-            UUID idToUse = null;
+            //Note: We use a new id each time to ensure that any other multiblocks that reference any potentially found id become properly stale
+            // instead of them still having a reference to our newly formed multiblock's cache
+            // In theory we could partially get around this issue by keeping track of all the positions for the multiblock in the cache and only
+            // reuse the id if we contain all elements we previously had, but doing so is not currently worth all the extra checks
+            UUID idToUse = manager.getUniqueInventoryID();
             if (!result.idsFound.isEmpty()) {
                 RejectContents rejectContents = new RejectContents();
-                for (UUID id : result.idsFound) {
-                    MultiblockCache<T> foundCache = manager.pullInventory(world, id);
-                    if (foundCache != null) {
-                        if (idToUse == null) {
-                            cache = foundCache;
-                            idToUse = id;
-                        } else {
-                            cache.merge(foundCache, rejectContents);
-                        }
+                for (Map.Entry<UUID, MultiblockCache<T>> entry : result.idsFound.entrySet()) {
+                    if (cache == null) {
+                        cache = entry.getValue();
+                    } else {
+                        cache.merge(entry.getValue(), rejectContents);
                     }
                 }
+                //Replace the caches for all the old ids with a singular merged cache with our desired id
+                manager.replaceCaches(result.idsFound().keySet(), idToUse, cache);
                 if (!rejectContents.rejectedItems.isEmpty()) {
                     Vec3 dropPosition = Vec3.atCenterOf(pointerPos);
                     //Try to see which player was nearest to multiblocks that have rejected items
@@ -127,14 +131,21 @@ public class FormationProtocol<T extends MultiblockData> {
                     }
                 }
             }
-            if (idToUse == null) {
-                idToUse = manager.getUniqueInventoryID();
+            boolean trackCache = cache == null;
+            if (trackCache) {
                 cache = manager.createCache();
             }
 
             cache.apply(structureFound);
             structureFound.inventoryID = idToUse;
             structureFound.onCreated(world);
+            if (trackCache) {
+                //If it is a new fresh cache we need to make sure to then sync the multiblock back to the cache
+                // so that we don't save it with empty data as otherwise we may end up with crashes in when merging multiblock caches
+                cache.sync(structureFound);
+                // and then we let the manager start tracking the cache so that it gets saved to the manager and can be used by multiblocks
+                manager.trackCache(idToUse, cache);
+            }
             //TODO: Do we want to validate against overfilled tanks here?
             return FormationResult.SUCCESS;
         }
@@ -232,11 +243,11 @@ public class FormationProtocol<T extends MultiblockData> {
         return new StructureResult<>(result, null, null);
     }
 
-    private StructureResult<T> form(T structureFound, Set<UUID> idsFound) {
+    private StructureResult<T> form(T structureFound, Map<UUID, MultiblockCache<T>> idsFound) {
         return new StructureResult<>(FormationResult.SUCCESS, structureFound, idsFound);
     }
 
-    private record StructureResult<T extends MultiblockData>(FormationResult result, T structureFound, Set<UUID> idsFound) {
+    private record StructureResult<T extends MultiblockData>(FormationResult result, T structureFound, Map<UUID, MultiblockCache<T>> idsFound) {
     }
 
     public enum CasingType {

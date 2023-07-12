@@ -117,13 +117,16 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
             // then we are not valid over all
             return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_FRAME, pos);
         }
-        if (tile instanceof IMultiblock) {
-            @SuppressWarnings("unchecked")
-            IMultiblock<T> multiblockTile = (IMultiblock<T>) tile;
+        if (tile instanceof IMultiblock<?> multiblockTile) {
             UUID uuid = multiblockTile.getCacheID();
-            if (uuid != null && multiblockTile.getManager() == manager && multiblockTile.hasCache()) {
-                manager.updateCache(multiblockTile, multiblockTile.getMultiblock());
-                ctx.idsFound.add(uuid);
+            if (uuid != null && multiblockTile.getManager() == manager) {
+                MultiblockCache<T> cache = manager.getCache(uuid);
+                if (cache == null) {
+                    //If there is no cache matching the id the multiblock has reset the id it has cached as it is stale
+                    multiblockTile.resetCache();
+                } else {
+                    ctx.idsFound.put(uuid, cache);
+                }
             }
         }
         //Make sure the position is immutable before we store it

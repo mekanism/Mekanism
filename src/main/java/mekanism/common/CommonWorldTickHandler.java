@@ -15,6 +15,7 @@ import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.content.qio.QIOGlobalItemLookup;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.lib.frequency.FrequencyManager;
+import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.world.GenHandler;
@@ -172,6 +173,7 @@ public class CommonWorldTickHandler {
     public void worldLoadEvent(LevelEvent.Load event) {
         if (!event.getLevel().isClientSide()) {
             FrequencyManager.load();
+            MultiblockManager.createOrLoadAll();
             QIOGlobalItemLookup.INSTANCE.createOrLoad();
             RadiationManager.INSTANCE.createOrLoad();
         }
