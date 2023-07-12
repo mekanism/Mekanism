@@ -29,6 +29,7 @@
   "description.mekanismgenerators.reactor.logic.ready": "Reactor has reached the required heat level to ignite",
   "description.mekanismgenerators.reactor_glass": "Reinforced glass that can be used in the Fusion Reactor multiblock.",
   "item.mekanismgenerators.solar_panel": "Panel Surya",
+  "reactor.mekanismgenerators.configurator.port_eject": "Merubah mode pengeluaran Port Reaktor menjadi: %1$s.",
   "reactor.mekanismgenerators.logic.depleted": "Bahan Bakar Tidak Cukup",
   "reactor.mekanismgenerators.logic.disabled": "Nonaktif",
   "reactor.mekanismgenerators.logic.outputting": "Mengeluarkan",
