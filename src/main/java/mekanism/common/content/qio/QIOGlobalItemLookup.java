@@ -2,17 +2,14 @@ package mekanism.common.content.qio;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import java.io.File;
 import java.util.Map;
 import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
+import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.lib.inventory.HashedItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.storage.DimensionDataStorage;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,12 +73,7 @@ public class QIOGlobalItemLookup {
         //TODO - 1.19: Figure out if we need to call this on tick if it hasn't loaded yet??? I don't think so but the other ones do so maybe?
         if (dataHandler == null) {
             //Always associate the world with the overworld as the items are the same regardless of dimension
-            DimensionDataStorage savedData = ServerLifecycleHooks.getCurrentServer().overworld().getDataStorage();
-            dataHandler = savedData.computeIfAbsent(tag -> {
-                QIOGlobalItemLookupDataHandler handler = new QIOGlobalItemLookupDataHandler();
-                handler.load(tag);
-                return handler;
-            }, QIOGlobalItemLookupDataHandler::new, DATA_HANDLER_NAME);
+            dataHandler = MekanismSavedData.createSavedData(QIOGlobalItemLookupDataHandler::new, DATA_HANDLER_NAME);
         }
     }
 
@@ -92,9 +84,10 @@ public class QIOGlobalItemLookup {
         dataHandler = null;
     }
 
-    private static class QIOGlobalItemLookupDataHandler extends SavedData {
+    private static class QIOGlobalItemLookupDataHandler extends MekanismSavedData {
 
-        private void load(@NotNull CompoundTag nbt) {
+        @Override
+        public void load(@NotNull CompoundTag nbt) {
             //TODO - 1.19: Do we want to clear existing elements
             for (String key : nbt.getAllKeys()) {
                 UUID uuid;
@@ -126,22 +119,6 @@ public class QIOGlobalItemLookup {
                 nbt.put(entry.getKey().toString(), ((SerializedHashedItem) entry.getValue()).getNbtRepresentation());
             }
             return nbt;
-        }
-
-        @Override
-        public void save(@NotNull File file) {
-            if (this.isDirty()) {
-                //This is loosely based on Refined Storage's RSSavedData's system of saving first to a temp file
-                // to reduce the odds of corruption if the user's computer crashes while the file is being written
-                File tempFile = file.toPath().getParent().resolve(file.getName() + ".temp").toFile();
-                super.save(tempFile);
-                if (file.exists() && !file.delete()) {
-                    Mekanism.logger.error("Failed to delete " + file.getName());
-                }
-                if (!tempFile.renameTo(file)) {
-                    Mekanism.logger.error("Failed to rename " + tempFile.getName());
-                }
-            }
         }
     }
 

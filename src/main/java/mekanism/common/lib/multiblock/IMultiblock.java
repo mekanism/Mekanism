@@ -1,6 +1,7 @@
 package mekanism.common.lib.multiblock;
 
 import java.util.UUID;
+import org.jetbrains.annotations.Nullable;
 
 public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
 
@@ -20,13 +21,10 @@ public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
 
     MultiblockManager<T> getManager();
 
+    @Nullable
     UUID getCacheID();
 
-    MultiblockCache<T> getCache();
-
     void resetCache();
-
-    void setCache(MultiblockCache<T> cache);
 
     boolean isMaster();
 
@@ -54,10 +52,6 @@ public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
     @Override
     default boolean hasStructure(Structure structure) {
         return getStructure() == structure;
-    }
-
-    default boolean hasCache() {
-        return getCache() != null;
     }
 
     default FormationProtocol<T> createFormationProtocol() {
