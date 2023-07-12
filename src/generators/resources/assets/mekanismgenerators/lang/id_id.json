@@ -1,5 +1,5 @@
 {
-  "block.mekanismgenerators.advanced_solar_generator": "Generator Surya Tingkat Lanjut",
+  "block.mekanismgenerators.advanced_solar_generator": "Pembangkit Listrik Tenaga Surya Tingkat Lanjut",
   "block.mekanismgenerators.bioethanol": "Bioetanol",
   "block.mekanismgenerators.deuterium": "Deuterium Cair",
   "block.mekanismgenerators.electromagnetic_coil": "Lilitan Elektromagnetik",
@@ -13,12 +13,12 @@
   "block.mekanismgenerators.turbine_valve": "Katup Turbin",
   "block.mekanismgenerators.turbine_vent": "Lubang Angin Turbin",
   "block.mekanismgenerators.wind_generator": "Generator Angin",
-  "container.mekanismgenerators.advanced_solar_generator": "Generator Surya Tingkat Lanjut",
+  "container.mekanismgenerators.advanced_solar_generator": "Pembangkit Listrik Tenaga Surya Tingkat Canggih",
   "container.mekanismgenerators.gas_burning_generator": "Generator Pembakar Gas",
   "container.mekanismgenerators.heat_generator": "Generator Panas",
   "container.mekanismgenerators.solar_generator": "Generator Surya",
   "container.mekanismgenerators.wind_generator": "Generator Angin",
-  "description.mekanismgenerators.advanced_solar_generator": "Generator tingkat lanjut yang menyerap cahaya matahari dengan kerugian minimum untuk menghasilkan energi.",
+  "description.mekanismgenerators.advanced_solar_generator": "Pembangkit listrik tingkat canggih yang menyerap cahaya matahari dengan kerugian minimum untuk menghasilkan energi.",
   "description.mekanismgenerators.bio_generator": "Generator yang membakar bahan organik untuk menghasilkan energi.",
   "description.mekanismgenerators.gas_burning_generator": "Generator yang memanfaatkan gas molekul bervariasi untuk menghasilkan energi.",
   "description.mekanismgenerators.heat_generator": "Generator yang menggunakan panas dari lava atau benda terbakar lain untuk menghasikan energi.",
@@ -28,6 +28,7 @@
   "description.mekanismgenerators.reactor.logic.disabled": "Will not emit a redstone signal",
   "description.mekanismgenerators.reactor.logic.ready": "Reactor has reached the required heat level to ignite",
   "description.mekanismgenerators.reactor_glass": "Reinforced glass that can be used in the Fusion Reactor multiblock.",
+  "fission.mekanismgenerators.invalid_malformed_fuel_assembly": "Tidak dapat membentuk, pemasangan Perakitan Bahan Bakar Fisi pada %1$s tidak valid.",
   "item.mekanismgenerators.solar_panel": "Panel Surya",
   "reactor.mekanismgenerators.configurator.port_eject": "Merubah mode pengeluaran Port Reaktor menjadi: %1$s.",
   "reactor.mekanismgenerators.logic.depleted": "Bahan Bakar Tidak Cukup",
@@ -39,5 +40,7 @@
   "sound_event.mekanismgenerators.tile.machine.fission_reactor": "Suara Reaktor Nuklir",
   "sound_event.mekanismgenerators.tile.machine.fusion_reactor": "Suara Reaktor fusi",
   "tooltip.mekanismgenerators.hohlraum.insufficient_fuel": "Bahan Bakar Tidak Cukup",
-  "turbine.mekanismgenerators.industrial_turbine": "Turbin Industri"
+  "turbine.mekanismgenerators.industrial_turbine": "Turbin Industri",
+  "turbine.mekanismgenerators.invalid_bad_complex": "Tidak dapat membentuk, Kompleks Rotasi ditemukan tidak ditempatkan dengan benar pada %1$s. Kompleks harus dipusatkan diatas Rotor Turbin.",
+  "turbine.mekanismgenerators.invalid_condenser_below_complex": "Tidak dapat membentuk, Kondenser Jenuh ditemukan tidak ditempatkan dengan benar pada %1$s. Kondenser Jenuh harus dipusatkan diatas lapisan Penyebar Tekanan."
 }
