@@ -422,8 +422,7 @@ dependencies {
     datagenMainRuntimeOnly fg.deobf("curse.maven:terrablender-563928:${terrablender_id}")
     //TODO - 1.20: Switch back to datagenMainImplementation
     datagenMainCompileOnly fg.deobf("curse.maven:biomes-youll-go-247560:${byg_id}")
-    //TODO - 1.20: Switch back to datagenMainImplementation
-    datagenMainCompileOnly fg.deobf("curse.maven:farmers-delight-398521:${farmers_delight_id}")
+    datagenMainImplementation fg.deobf("curse.maven:farmers-delight-398521:${farmers_delight_id}")
     //TODO - 1.20: Switch back to datagenMainImplementation
     datagenMainCompileOnly fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
     //TODO - 1.20: Switch back to datagenMainImplementation

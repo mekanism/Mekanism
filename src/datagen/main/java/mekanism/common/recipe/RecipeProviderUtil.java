@@ -46,13 +46,14 @@ public class RecipeProviderUtil {
     }
 
     public static void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, @Nullable ItemLike boat,
-          @Nullable ItemLike chestBoat, ItemLike door, ItemLike fenceGate, @Nullable TagKey<Item> log, ItemLike pressurePlate, ItemLike trapdoor, String name) {
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, chestBoat, door, fenceGate, log, pressurePlate, trapdoor, name, null);
+          @Nullable ItemLike chestBoat, ItemLike door, ItemLike fenceGate, @Nullable TagKey<Item> log, ItemLike pressurePlate, ItemLike trapdoor,
+          @Nullable ItemLike hangingSign, String name) {
+        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, chestBoat, door, fenceGate, log, pressurePlate, trapdoor, hangingSign, name, null);
     }
 
     public static void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, @Nullable ItemLike boat,
-          @Nullable ItemLike chestBoat, ItemLike door, ItemLike fenceGate, @Nullable TagKey<Item> log, ItemLike pressurePlate, ItemLike trapdoor, String name,
-          @Nullable ICondition condition) {
+          @Nullable ItemLike chestBoat, ItemLike door, ItemLike fenceGate, @Nullable TagKey<Item> log, ItemLike pressurePlate, ItemLike trapdoor,
+          @Nullable ItemLike hangingSign, String name, @Nullable ICondition condition) {
         if (boat != null) {
             //Boat
             build(consumer, SawmillRecipeBuilder.sawing(
@@ -90,10 +91,21 @@ public class RecipeProviderUtil {
                   0.25
             ), basePath + "log/" + name, condition);
         }
+        if (hangingSign != null) {
+            //Hanging sign
+            build(consumer, SawmillRecipeBuilder.sawing(
+                  IngredientCreatorAccess.item().from(hangingSign),
+                  new ItemStack(planks, 2),
+                  MekanismItems.SAWDUST.getItemStack(),
+                  0.5
+            ), basePath + "hanging_sign/" + name, condition);
+        }
         //Pressure plate
         build(consumer, SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(pressurePlate),
-              new ItemStack(planks, 2)
+              new ItemStack(planks, 1),
+              MekanismItems.SAWDUST.getItemStack(2),
+              0.25
         ), basePath + "pressure_plate/" + name, condition);
         //Trapdoor
         build(consumer, SawmillRecipeBuilder.sawing(

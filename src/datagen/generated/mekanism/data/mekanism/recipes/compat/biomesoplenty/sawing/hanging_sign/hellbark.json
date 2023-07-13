@@ -8,15 +8,15 @@
   ],
   "input": {
     "ingredient": {
-      "item": "biomesoplenty:dead_pressure_plate"
+      "item": "biomesoplenty:hellbark_hanging_sign"
     }
   },
   "mainOutput": {
-    "item": "biomesoplenty:dead_planks"
-  },
-  "secondaryChance": 0.25,
-  "secondaryOutput": {
     "count": 2,
+    "item": "biomesoplenty:hellbark_planks"
+  },
+  "secondaryChance": 0.5,
+  "secondaryOutput": {
     "item": "mekanism:sawdust"
   }
 }

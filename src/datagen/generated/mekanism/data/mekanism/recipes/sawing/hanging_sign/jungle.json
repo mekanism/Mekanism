@@ -2,15 +2,15 @@
   "type": "mekanism:sawing",
   "input": {
     "ingredient": {
-      "item": "minecraft:acacia_pressure_plate"
+      "item": "minecraft:jungle_hanging_sign"
     }
   },
   "mainOutput": {
-    "item": "minecraft:acacia_planks"
-  },
-  "secondaryChance": 0.25,
-  "secondaryOutput": {
     "count": 2,
+    "item": "minecraft:jungle_planks"
+  },
+  "secondaryChance": 0.5,
+  "secondaryOutput": {
     "item": "mekanism:sawdust"
   }
 }

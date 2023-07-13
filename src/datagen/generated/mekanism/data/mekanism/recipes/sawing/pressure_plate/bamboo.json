@@ -6,7 +6,11 @@
     }
   },
   "mainOutput": {
-    "count": 2,
     "item": "minecraft:bamboo_planks"
+  },
+  "secondaryChance": 0.25,
+  "secondaryOutput": {
+    "count": 2,
+    "item": "mekanism:sawdust"
   }
 }

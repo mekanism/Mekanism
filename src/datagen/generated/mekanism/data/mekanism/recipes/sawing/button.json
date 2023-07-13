@@ -2,15 +2,14 @@
   "type": "mekanism:sawing",
   "input": {
     "ingredient": {
-      "item": "minecraft:acacia_pressure_plate"
+      "tag": "minecraft:wooden_buttons"
     }
   },
   "mainOutput": {
-    "item": "minecraft:acacia_planks"
+    "item": "mekanism:sawdust"
   },
   "secondaryChance": 0.25,
   "secondaryOutput": {
-    "count": 2,
     "item": "mekanism:sawdust"
   }
 }
