@@ -1,4 +1,10 @@
 {
+  "advancements.mekanismgenerators.burn_the_gas.description": "Rakit Pembangkit Listrik Tenaga Gas untuk membakar Etena",
+  "advancements.mekanismgenerators.heat_generator.title": "Pembangkit Listrik Pertamamu",
+  "advancements.mekanismgenerators.solar_generator.description": "Energi siang hari yang dapat diperbarui",
+  "advancements.mekanismgenerators.solar_generator.title": "Kekuatan Matahari",
+  "advancements.mekanismgenerators.wind_generator.description": "Semoga ada angin disekitar",
+  "advancements.mekanismgenerators.wind_generator.title": "Berputar Sayang Berputar",
   "block.mekanismgenerators.advanced_solar_generator": "Pembangkit Listrik Tenaga Surya Tingkat Lanjut",
   "block.mekanismgenerators.bioethanol": "Bioetanol",
   "block.mekanismgenerators.deuterium": "Deuterium Cair",
