@@ -31,31 +31,11 @@ public class TransmitterModel implements IUnbakedGeometry<TransmitterModel> {
         return new TransmitterBakedModel(internal, glass, owner, baker, spriteGetter, modelTransform, overrides, modelLocation);
     }
 
-    /*@Override
-    public Collection<Material> getMaterials(IGeometryBakingContext owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-        IGeometryBakingContext opaqueContext = new OpaqueModelConfiguration(owner);
-        Set<Material> combined = new HashSet<>(internal.getMaterials(owner, modelGetter, missingTextureErrors));
-        //Add the opaque versions of the textures as well
-        combined.addAll(internal.getMaterials(opaqueContext, modelGetter, missingTextureErrors));
-        if (glass != null) {
-            combined.addAll(glass.getMaterials(owner, modelGetter, missingTextureErrors));
-            //Add the opaque versions of the textures as well
-            combined.addAll(glass.getMaterials(opaqueContext, modelGetter, missingTextureErrors));
-        }
-        return combined;
-    }*/
-
     @Override
     public void resolveParents(Function<ResourceLocation, UnbakedModel> modelGetter, IGeometryBakingContext context) {
-        //TODO - 1.20: Evaluate if this is equivalent ot the getMaterials stuff we used to do
-        IGeometryBakingContext opaqueContext = new OpaqueModelConfiguration(context);
         internal.resolveParents(modelGetter, context);
-        //Add the opaque versions of the textures as well
-        internal.resolveParents(modelGetter, opaqueContext);
         if (glass != null) {
             glass.resolveParents(modelGetter, context);
-            //Add the opaque versions of the textures as well
-            glass.resolveParents(modelGetter, opaqueContext);
         }
     }
 }
