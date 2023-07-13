@@ -32,7 +32,7 @@ public class EnergyAcceptorCache extends AcceptorCache<IStrictEnergyHandler> {
                     if (acceptor.isPresent()) {
                         if (energyCompat instanceof StrictEnergyCompat) {
                             //Our lazy optional is already the proper type
-                            updateCachedAcceptorAndListen(side, tile, (LazyOptional<IStrictEnergyHandler>) acceptor);
+                            updateCachedAcceptorAndListen(side, tile, acceptor.cast());
                         } else {
                             //Update the cache with the strict energy lazy optional as that is the one we interact with
                             LazyOptional<IStrictEnergyHandler> wrappedAcceptor = energyCompat.getLazyStrictEnergyHandler(tile, opposite);

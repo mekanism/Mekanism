@@ -3,6 +3,7 @@ package mekanism.common.integration;
 import java.util.List;
 import mekanism.common.integration.computer.computercraft.CCCapabilityHelper;
 import mekanism.common.integration.curios.CuriosIntegration;
+import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.integration.lookingat.theoneprobe.TOPProvider;
 import mekanism.common.integration.projecte.NSSHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -68,6 +69,7 @@ public final class MekanismHooks {
         if (CCLoaded) {
             CCCapabilityHelper.registerCCMathHelper();
         }
+        EnergyCompatUtils.initLoadedCache();
     }
 
     public void sendIMCMessages(InterModEnqueueEvent event) {

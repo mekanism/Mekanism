@@ -1,7 +1,10 @@
 package mekanism.common.integration.energy;
 
+import java.util.Collection;
+import java.util.Collections;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.common.config.value.CachedValue;
 import mekanism.common.util.CapabilityUtils;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -18,6 +21,16 @@ public interface IEnergyCompat {
      * @return if this energy compat is enabled.
      */
     boolean isUsable();
+
+    /**
+     * Gets the configs that back {@link #isUsable()} so that caching for usable and enabled energy types can be done.
+     *
+     * @implNote If this {@link IEnergyCompat} will never be usable due to missing required mods, this should just return an empty collection to allow the enabled caching
+     * to skip listening to the corresponding config settings.
+     */
+    default Collection<CachedValue<?>> getBackingConfigs() {
+        return Collections.emptySet();
+    }
 
     /**
      * Gets the capability this compat integrates with.

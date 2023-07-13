@@ -1,7 +1,11 @@
 package mekanism.common.integration.energy.forgeenergy;
 
+import java.util.Collection;
+import java.util.Set;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.common.config.MekanismConfig;
+import mekanism.common.config.value.CachedValue;
 import mekanism.common.integration.energy.IEnergyCompat;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
@@ -24,6 +28,11 @@ public class ForgeEnergyCompat implements IEnergyCompat {
     @Override
     public boolean isUsable() {
         return EnergyUnit.FORGE_ENERGY.isEnabled();
+    }
+
+    @Override
+    public Collection<CachedValue<?>> getBackingConfigs() {
+        return Set.of(MekanismConfig.general.blacklistForge);
     }
 
     @Override
