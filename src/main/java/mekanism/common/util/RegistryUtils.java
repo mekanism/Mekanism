@@ -72,7 +72,7 @@ public class RegistryUtils {
 
     @Nullable
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static ResourceLocation getName(Object element) {
+    public static ResourceLocation getNameGeneric(Object element) {
         for (Registry<?> registry : BuiltInRegistries.REGISTRY) {
             //Note: We have to use getResourceKey as getKey for defaulted registries returns the default key
             Optional<ResourceKey<?>> resourceKey = ((Registry) registry).getResourceKey(element);

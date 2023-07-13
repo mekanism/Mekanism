@@ -75,7 +75,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
                 } else if (ingredient instanceof ChemicalStack<?> stack) {
                     return !stack.isEmpty();
                 }
-                return RegistryUtils.getName(ingredient) != null;
+                return RegistryUtils.getNameGeneric(ingredient) != null;
             }
 
             @Override
@@ -87,7 +87,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
                 } else if (ingredient instanceof ChemicalStack<?> stack) {
                     setFilterName(stack.getTypeRegistryName());
                 } else {
-                    ResourceLocation registryName = RegistryUtils.getName(ingredient);
+                    ResourceLocation registryName = RegistryUtils.getNameGeneric(ingredient);
                     if (registryName != null) {
                         setFilterName(registryName);
                     }

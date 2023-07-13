@@ -66,17 +66,14 @@ public class Version {
         if (split.length != 3) {
             return null;
         }
-        for (String i : split) {
-            for (char c : i.toCharArray()) {
-                if (!Character.isDigit(c)) {
-                    return null;
-                }
-            }
-        }
 
         int[] digits = new int[3];
-        for (int i = 0; i < 3; i++) {
-            digits[i] = Integer.parseInt(split[i]);
+        for (int i = 0; i < digits.length; i++) {
+            try {
+                digits[i] = Integer.parseInt(split[i]);
+            } catch (NumberFormatException e) {
+                return null;
+            }
         }
         return new Version(digits[0], digits[1], digits[2]);
     }
