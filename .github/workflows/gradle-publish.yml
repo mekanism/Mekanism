@@ -29,7 +29,7 @@ jobs:
         #verify ensures that it's reachable on the current branch
         verify: true
     - uses: madhead/read-java-properties@latest
-      id: version
+      id: gradle_props
       with:
         file: gradle.properties
         all: true
@@ -60,7 +60,7 @@ jobs:
       with:
         files: build/libs/*.jar
         body_path: build/changelog.html
-        tag_name: v${{ steps.all.outputs.minecraft_version }}-${{ steps.all.outputs.mod_version }}.${{ github.run_id }}
+        tag_name: v${{ steps.gradle_props.outputs.minecraft_version }}-${{ steps.gradle_props.outputs.mod_version }}.${{ github.run_id }}
 
 #    - name: Publish
 #      uses: gradle/gradle-build-action@v2
