@@ -23,12 +23,12 @@ public class BlockOre extends Block implements IHasDescription {
     private String descriptionTranslationKey;
 
     public BlockOre(OreType ore) {
-        this(ore, BlockBehaviour.Properties.of().strength(3, 3).requiresCorrectToolForDrops().mapColor(MapColor.STONE)
-              .instrument(NoteBlockInstrument.BASEDRUM));
+        this(ore, BlockStateHelper.applyLightLevelAdjustments(BlockBehaviour.Properties.of().strength(3, 3).requiresCorrectToolForDrops()
+              .mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM)));
     }
 
     public BlockOre(OreType ore, BlockBehaviour.Properties properties) {
-        super(BlockStateHelper.applyLightLevelAdjustments(properties));
+        super(properties);
         this.ore = ore;
     }
 

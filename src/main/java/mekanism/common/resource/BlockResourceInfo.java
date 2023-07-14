@@ -18,7 +18,8 @@ public enum BlockResourceInfo implements IResource {
     CHARCOAL("charcoal", 5, 6, MapColor.COLOR_BLACK, NoteBlockInstrument.BASEDRUM, 16_000),
     FLUORITE("fluorite", 5, 9, MapColor.SNOW),
     BRONZE("bronze", 5, 9, MapColor.COLOR_ORANGE),
-    STEEL("steel", 5, 9, MapColor.STONE),
+    //Note: Deepslate is closer to steel than stone or metal
+    STEEL("steel", 5, 9, MapColor.DEEPSLATE),
     REFINED_OBSIDIAN("refined_obsidian", 50, 2_400, MapColor.COLOR_PURPLE, NoteBlockInstrument.BASEDRUM, -1, 8, false, true, PushReaction.BLOCK),
     REFINED_GLOWSTONE("refined_glowstone", 5, 6, MapColor.COLOR_YELLOW, NoteBlockInstrument.BASEDRUM, -1, 15);
 
@@ -79,6 +80,10 @@ public enum BlockResourceInfo implements IResource {
 
     public boolean burnsInFire() {
         return burnsInFire;
+    }
+
+    public MapColor getMapColor() {
+        return mapColor;
     }
 
     public BlockBehaviour.Properties modifyProperties(BlockBehaviour.Properties properties) {

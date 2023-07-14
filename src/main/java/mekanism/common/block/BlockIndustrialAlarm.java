@@ -15,6 +15,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -29,7 +30,7 @@ public class BlockIndustrialAlarm extends BlockTileModel<TileEntityIndustrialAla
     }
 
     public BlockIndustrialAlarm() {
-        super(MekanismBlockTypes.INDUSTRIAL_ALARM, BlockBehaviour.Properties.of().strength(2, 2.4F));
+        super(MekanismBlockTypes.INDUSTRIAL_ALARM, BlockBehaviour.Properties.of().strength(2, 2.4F).mapColor(MapColor.COLOR_RED));
     }
 
     @NotNull

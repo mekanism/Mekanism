@@ -10,12 +10,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockPersonalBarrel extends BlockTile<TileEntityPersonalBarrel, BlockTypeTile<TileEntityPersonalBarrel>> implements IPersonalStorage {
 
     public BlockPersonalBarrel() {
-        super(MekanismBlockTypes.PERSONAL_BARREL);
+        super(MekanismBlockTypes.PERSONAL_BARREL, properties -> properties.mapColor(MapColor.COLOR_GRAY));
     }
 
     @Override

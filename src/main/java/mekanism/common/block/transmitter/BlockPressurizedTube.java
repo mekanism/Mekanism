@@ -14,6 +14,7 @@ public class BlockPressurizedTube extends BlockSmallTransmitter implements IType
     private final TubeTier tier;
 
     public BlockPressurizedTube(TubeTier tier) {
+        super(properties -> properties.mapColor(tier.getBaseTier().getColor().getMapColor()));
         this.tier = tier;
     }
 

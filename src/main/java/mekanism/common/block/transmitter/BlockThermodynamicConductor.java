@@ -14,6 +14,7 @@ public class BlockThermodynamicConductor extends BlockSmallTransmitter implement
     private final ConductorTier tier;
 
     public BlockThermodynamicConductor(ConductorTier tier) {
+        super(properties -> properties.mapColor(tier.getBaseTier().getColor().getMapColor()));
         this.tier = tier;
     }
 

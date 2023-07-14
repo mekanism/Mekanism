@@ -10,12 +10,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockPersonalChest extends BlockTileModel<TileEntityPersonalChest, BlockTypeTile<TileEntityPersonalChest>> implements IPersonalStorage {
 
     public BlockPersonalChest() {
-        super(MekanismBlockTypes.PERSONAL_CHEST);
+        super(MekanismBlockTypes.PERSONAL_CHEST, properties -> properties.mapColor(MapColor.COLOR_GRAY));
     }
 
     @Override

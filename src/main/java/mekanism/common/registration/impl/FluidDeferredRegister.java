@@ -17,6 +17,7 @@ import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.DispensibleContainerItem;
 import net.minecraft.world.item.Item;
@@ -133,11 +134,49 @@ public class FluidDeferredRegister {
         fluidRegistryObject.updateFlowing(fluidRegister.register(flowingName, () -> new Flowing(fluidProperties)));
         fluidRegistryObject.updateBucket(itemRegister.register(bucketName, () -> bucketCreator.create(fluidRegistryObject::getStillFluid,
               new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET))));
+        MapColor color = getClosestColor(renderProperties.color);
         //Note: The block properties used here is a copy of the ones for water
         fluidRegistryObject.updateBlock(blockRegister.register(name, () -> new LiquidBlock(fluidRegistryObject::getStillFluid, BlockBehaviour.Properties.of()
-              .noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid().mapColor(MapColor.WATER))));
+              .noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid().mapColor(color))));
         allFluids.add(fluidRegistryObject);
         return fluidRegistryObject;
+    }
+
+    private MapColor getClosestColor(int tint) {
+        if (tint == 0xFFFFFFFF) {
+            return MapColor.NONE;
+        }
+        int red = FastColor.ARGB32.red(tint);
+        int green = FastColor.ARGB32.green(tint);
+        int blue = FastColor.ARGB32.blue(tint);
+        MapColor color = MapColor.NONE;
+        double minDistance = Double.MAX_VALUE;
+        for (MapColor toTest : MapColor.MATERIAL_COLORS) {
+            if (toTest != null && toTest != MapColor.NONE) {
+                int testRed = FastColor.ARGB32.red(toTest.col);
+                int testGreen = FastColor.ARGB32.green(toTest.col);
+                int testBlue = FastColor.ARGB32.blue(toTest.col);
+                double distanceSquare = perceptualColorDistanceSquared(red, green, blue, testRed, testGreen, testBlue);
+                if (distanceSquare < minDistance) {
+                    minDistance = distanceSquare;
+                    color = toTest;
+                }
+            }
+        }
+        return color;
+    }
+
+    /**
+     * <a href="http://www.compuphase.com/cmetric.htm">Color Metric</a>
+     * <a href="http://stackoverflow.com/a/6334454">Stack Overflow</a>
+     * Returns 0 for equal colors, nonzero for colors that look different. The return value is farther from 0 the more different the colors look.
+     */
+    private static double perceptualColorDistanceSquared(int red1, int green1, int blue1, int red2, int green2, int blue2) {
+        int redMean = (red1 + red2) >> 1;
+        int r = red1 - red2;
+        int g = green1 - green2;
+        int b = blue1 - blue2;
+        return (((512 + redMean) * r * r) >> 8) + 4 * g * g + (((767 - redMean) * b * b) >> 8);
     }
 
     public void register(IEventBus bus) {
