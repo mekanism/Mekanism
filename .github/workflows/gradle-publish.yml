@@ -65,6 +65,7 @@ jobs:
         files: build/libs/*.jar
         body_path: build/changelog.html
         tag_name: v${{ steps.gradle_props.outputs.minecraft_version }}-${{ steps.gradle_props.outputs.mod_version }}.${{ github.run_number }}
+        target_commitish: ${{ github.sha }}
 
 #    - name: Publish
 #      uses: gradle/gradle-build-action@v2
