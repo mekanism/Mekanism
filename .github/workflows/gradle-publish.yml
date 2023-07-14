@@ -12,8 +12,9 @@ jobs:
 
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: write
+      #to create releases
+      contents: write
+      #for github maven? packages: write
 
     steps:
     - uses: actions/checkout@v3
@@ -45,8 +46,21 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         path: |
-          build/libs/
-          build/changelog.html
+          ${{ github.workspace }}build/libs/
+          ${{ github.workspace }}build/changelog.html
+
+    - uses: madhead/read-java-properties@latest
+      id: version
+      with:
+        file: gradle.properties
+        all: true
+
+    - name: GH Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: ${{ github.workspace }}build/libs/*.jar
+        body_path: ${{ github.workspace }}build/changelog.html
+        tag_name: v${{ steps.all.outputs.mod_version }}.${{ github.run_id }}-${{ steps.all.outputs.minecraft_version }}
 
 #    - name: Publish
 #      uses: gradle/gradle-build-action@v2
