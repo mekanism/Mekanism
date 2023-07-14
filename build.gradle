@@ -752,6 +752,12 @@ def changeLogResolver = { ->
     return generatedChangelog
 }
 
+tasks.register('outputChangelog') {
+    doLast {
+        project.file("build/changelog.html").text = changeLogResolver.call()
+    }
+}
+
 if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKey')) {
     println "Enabling Curseforge config"
     tasks.named('curseforge').configure { dependsOn(jar, additionsJar, generatorsJar, /*defenseJar,*/ toolsJar, apiJar) }
