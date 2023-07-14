@@ -41,13 +41,10 @@ public abstract class MekanismSavedData extends SavedData {
      * Note: This should only be called from the server side
      */
     public static <DATA extends MekanismSavedData> DATA createSavedData(DimensionDataStorage dataStorage, Supplier<DATA> createFunction, String name) {
-        //TODO: Should we always prepend the modid to the name like we are doing for the multiblock managers?
-        // In general our names are probably unique enough but do we want to ensure they should be truly unique?
-        // This is especially prevalent for things like the radiation_manager
         return dataStorage.computeIfAbsent(tag -> {
             DATA handler = createFunction.get();
             handler.load(tag);
             return handler;
-        }, createFunction, name);
+        }, createFunction, Mekanism.MODID + "_" + name);
     }
 }
