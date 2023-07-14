@@ -86,15 +86,23 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
     public void load(CompoundTag nbtTags) {
         for (CacheSubstance<?, INBTSerializable<CompoundTag>> type : CacheSubstance.VALUES) {
-            type.prefab(this, nbtTags.getInt(type.getTagKey() + "_stored"));
-            DataHandlerUtils.readContainers(type.getContainerList(this), nbtTags.getList(type.getTagKey(), Tag.TAG_COMPOUND));
+            int stored = nbtTags.getInt(type.getTagKey() + "_stored");
+            if (stored > 0) {
+                type.prefab(this, stored);
+                DataHandlerUtils.readContainers(type.getContainerList(this), nbtTags.getList(type.getTagKey(), Tag.TAG_COMPOUND));
+            }
         }
     }
 
     public void save(CompoundTag nbtTags) {
         for (CacheSubstance<?, INBTSerializable<CompoundTag>> type : CacheSubstance.VALUES) {
-            nbtTags.putInt(type.getTagKey() + "_stored", type.getContainerList(this).size());
-            nbtTags.put(type.getTagKey(), DataHandlerUtils.writeContainers(type.getContainerList(this)));
+            List<INBTSerializable<CompoundTag>> containers = type.getContainerList(this);
+            if (!containers.isEmpty()) {
+                //Note: We can skip putting stored at zero if containers is empty (in addition to skipping actually writing the containers)
+                // because getInt will default to 0 for keys that aren't present
+                nbtTags.putInt(type.getTagKey() + "_stored", containers.size());
+                nbtTags.put(type.getTagKey(), DataHandlerUtils.writeContainers(containers));
+            }
         }
     }
 
