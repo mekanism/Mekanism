@@ -28,6 +28,12 @@ jobs:
         token: ${{github.token}}
         #verify ensures that it's reachable on the current branch
         verify: true
+    - uses: madhead/read-java-properties@latest
+      id: version
+      with:
+        file: ${{ github.workspace }}/gradle.properties
+        all: true
+
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
@@ -46,20 +52,14 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         path: |
-          ${{ github.workspace }}build/libs/
-          ${{ github.workspace }}build/changelog.html
-
-    - uses: madhead/read-java-properties@latest
-      id: version
-      with:
-        file: gradle.properties
-        all: true
+          ${{ github.workspace }}/build/libs/
+          ${{ github.workspace }}/build/changelog.html
 
     - name: GH Release
       uses: softprops/action-gh-release@v1
       with:
-        files: ${{ github.workspace }}build/libs/*.jar
-        body_path: ${{ github.workspace }}build/changelog.html
+        files: ${{ github.workspace }}/build/libs/*.jar
+        body_path: ${{ github.workspace }}/build/changelog.html
         tag_name: v${{ steps.all.outputs.minecraft_version }}-${{ steps.all.outputs.mod_version }}.${{ github.run_id }}
 
 #    - name: Publish
