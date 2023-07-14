@@ -60,7 +60,7 @@ jobs:
       with:
         files: ${{ github.workspace }}build/libs/*.jar
         body_path: ${{ github.workspace }}build/changelog.html
-        tag_name: v${{ steps.all.outputs.mod_version }}.${{ github.run_id }}-${{ steps.all.outputs.minecraft_version }}
+        tag_name: v${{ steps.all.outputs.minecraft_version }}-${{ steps.all.outputs.mod_version }}.${{ github.run_id }}
 
 #    - name: Publish
 #      uses: gradle/gradle-build-action@v2
