@@ -27,6 +27,7 @@ import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.Con
 import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigSlurryTankHolder;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.core.Direction;
+import net.minecraftforge.common.util.NonNullSupplier;
 import org.jetbrains.annotations.NotNull;
 
 public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
@@ -38,10 +39,10 @@ public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
         this.slotHolder = slotHolder;
     }
 
-    public static BiPredicate<@NotNull Gas, @NotNull AutomationType> radioactiveInputTankPredicate(IGasTank outputTank) {
+    public static BiPredicate<@NotNull Gas, @NotNull AutomationType> radioactiveInputTankPredicate(NonNullSupplier<IGasTank> outputTank) {
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
         //Note: This only is the case if radiation is enabled as otherwise things like gauge droppers can work as the way to remove radioactive contents
-        return (type, automationType) -> automationType != AutomationType.EXTERNAL || (outputTank.isEmpty() && type.has(GasAttributes.Radiation.class) &&
+        return (type, automationType) -> automationType != AutomationType.EXTERNAL || (outputTank.get().isEmpty() && type.has(GasAttributes.Radiation.class) &&
                                                                                        MekanismAPI.getRadiationManager().isRadiationEnabled());
     }
 
