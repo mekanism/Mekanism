@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.api.NBTConstants;
-import mekanism.common.Mekanism;
 import mekanism.common.lib.MekanismSavedData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -149,7 +148,7 @@ public class MultiblockManager<T extends MultiblockData> {
     private void createOrLoad() {
         if (dataHandler == null) {
             //Always associate the world with the overworld as we base it on a manager wide state
-            dataHandler = MekanismSavedData.createSavedData(MultiblockCacheDataHandler::new, Mekanism.MODID + "_" + getNameLower());
+            dataHandler = MekanismSavedData.createSavedData(MultiblockCacheDataHandler::new, getNameLower());
         }
     }
 
