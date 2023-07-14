@@ -47,6 +47,10 @@ jobs:
       with:
         arguments: clean build outputChangelog
         gradle-version: wrapper
+      env:
+        BUILD_NUMBER: ${{ github.run_number }}
+        GIT_COMMIT: ${{ github.sha }}
+        GIT_PREVIOUS_SUCCESSFUL_COMMIT: ${{ steps.last_success_build.outputs.sha }}
 
     - name: Upload to workflow artifacts
       uses: actions/upload-artifact@v3
@@ -60,7 +64,7 @@ jobs:
       with:
         files: build/libs/*.jar
         body_path: build/changelog.html
-        tag_name: v${{ steps.gradle_props.outputs.minecraft_version }}-${{ steps.gradle_props.outputs.mod_version }}.${{ github.run_id }}
+        tag_name: v${{ steps.gradle_props.outputs.minecraft_version }}-${{ steps.gradle_props.outputs.mod_version }}.${{ github.run_number }}
 
 #    - name: Publish
 #      uses: gradle/gradle-build-action@v2
