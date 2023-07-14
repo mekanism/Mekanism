@@ -38,9 +38,20 @@ public class MekanismStatusOverlay implements IGuiOverlay {
                     Color color = Color.rgbad(1, 1, 1, modeSwitchTimer / 100F);
                     Font font = gui.getFont();
                     int componentWidth = font.width(scrollTextComponent);
+                    int targetShift = Math.max(59, Math.max(gui.leftHeight, gui.rightHeight));
+                    if (minecraft.gameMode != null && !minecraft.gameMode.canHurtPlayer()) {
+                        //Same shift as done in Gui#renderSelectedItemName
+                        targetShift -= 14;
+                    } else if (gui.overlayMessageTime > 0) {
+                        //If we are in survival though that means our thing will end up intersecting the subtitle text if there is any,
+                        // so we need to check if there is, and if so shift our target further
+                        targetShift += 14;
+                    }
+                    //Shift the rendering to be above the previous line
+                    targetShift += 13;
                     PoseStack pose = guiGraphics.pose();
                     pose.pushPose();
-                    pose.translate((screenWidth - componentWidth) / 2F, screenHeight - 60, 0);
+                    pose.translate((screenWidth - componentWidth) / 2F, screenHeight - targetShift, 0);
                     GuiUtils.drawBackdrop(guiGraphics, minecraft, 0, 0, componentWidth, color.a());
                     guiGraphics.drawString(font, scrollTextComponent, 0, 0, color.argb());
                     pose.popPose();

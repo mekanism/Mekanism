@@ -298,7 +298,8 @@ public class ClientRegistration {
         //Note: We don't need to include our modid in the id as the active context is grabbed for making an RL inside the event
         event.registerBelowAll("radiation_overlay", RadiationOverlay.INSTANCE);
         event.registerAbove(VanillaGuiOverlay.ARMOR_LEVEL.id(), "energy_level", MekaSuitEnergyLevel.INSTANCE);
-        event.registerAbove(VanillaGuiOverlay.RECORD_OVERLAY.id(), "status_overlay", MekanismStatusOverlay.INSTANCE);
+        //Render status overlay after item name rather than action bar (record_overlay) so that things like the sleep fade will render in front of our overlay
+        event.registerAbove(VanillaGuiOverlay.ITEM_NAME.id(), "status_overlay", MekanismStatusOverlay.INSTANCE);
         event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "hud", MekanismHUD.INSTANCE);
     }
 
