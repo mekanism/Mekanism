@@ -792,6 +792,8 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
         if (System.getenv("MODRINTH_TOKEN") == null) {
             //Defaults to MODRINTH_TOKEN so we only have to check for a token via gradle properties if there isn't a system property
             getToken().value((String) project.findProperty("modrinthToken"))
+        } else {
+            token = System.getenv("MODRINTH_TOKEN")
         }
         projectId = "Ce6I4WUE"
         //Use the full "basic" version number rather than just mod version number so that if multiple releases end up happening due to bugs
