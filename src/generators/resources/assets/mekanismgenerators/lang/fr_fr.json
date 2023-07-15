@@ -190,7 +190,7 @@
   "turbine.mekanismgenerators.stats.limiting": "(Restrictif)",
   "turbine.mekanismgenerators.stats.max_flow": "Débit Max: %1$s mB/t",
   "turbine.mekanismgenerators.stats.max_production": "Production Max: %1$s",
-  "turbine.mekanismgenerators.stats.max_water_output": "Prod. max d'Eau: %1$s mB/t",
+  "turbine.mekanismgenerators.stats.max_water_output": "Prod. max d'eau: %1$s mB/t",
   "turbine.mekanismgenerators.stats.production": "Production",
   "turbine.mekanismgenerators.stats.steam_flow": "Débit de Vapeur",
   "turbine.mekanismgenerators.stats.tank_volume": "Volume du Réservoir: %1$s",
