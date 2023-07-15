@@ -20,7 +20,7 @@ public class MekanismTagBuilder<TYPE, BUILDER extends MekanismTagBuilder<TYPE, B
     }
 
     @SuppressWarnings("unchecked")
-    private BUILDER getThis() {
+    private BUILDER self() {
         return (BUILDER) this;
     }
 
@@ -31,7 +31,7 @@ public class MekanismTagBuilder<TYPE, BUILDER extends MekanismTagBuilder<TYPE, B
 
     public BUILDER add(TagEntry tag) {
         builder.add(tag);
-        return getThis();
+        return self();
     }
 
     @SafeVarargs
@@ -50,7 +50,7 @@ public class MekanismTagBuilder<TYPE, BUILDER extends MekanismTagBuilder<TYPE, B
 
     public BUILDER replace(boolean value) {
         builder.replace(value);
-        return getThis();
+        return self();
     }
 
     public BUILDER addOptional(ResourceLocation... locations) {
@@ -95,7 +95,7 @@ public class MekanismTagBuilder<TYPE, BUILDER extends MekanismTagBuilder<TYPE, B
         for (TagKey<TYPE> tag : tags) {
             builder.removeTag(tag.location(), modID);
         }
-        return getThis();
+        return self();
     }
 
     @SafeVarargs
@@ -103,6 +103,6 @@ public class MekanismTagBuilder<TYPE, BUILDER extends MekanismTagBuilder<TYPE, B
         for (T element : elements) {
             consumer.accept(locationGetter.apply(element));
         }
-        return getThis();
+        return self();
     }
 }

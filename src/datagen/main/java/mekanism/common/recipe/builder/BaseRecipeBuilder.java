@@ -34,18 +34,18 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
     }
 
     @SuppressWarnings("unchecked")
-    private BUILDER getThis() {
+    private BUILDER self() {
         return (BUILDER) this;
     }
 
     public BUILDER group(String group) {
         this.group = group;
-        return getThis();
+        return self();
     }
 
     public BUILDER category(RecipeCategory category) {
         this.category = category;
-        return getThis();
+        return self();
     }
 
     public void build(Consumer<FinishedRecipe> consumer) {

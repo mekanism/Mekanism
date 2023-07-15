@@ -99,7 +99,7 @@ public class BlockType {
         }
 
         @SuppressWarnings("unchecked")
-        public T getThis() {
+        public T self() {
             return (T) this;
         }
 
@@ -112,7 +112,7 @@ public class BlockType {
 
         public final T with(Attribute... attrs) {
             holder.add(attrs);
-            return getThis();
+            return self();
         }
 
         public final T withBounding(TriConsumer<BlockPos, BlockState, Builder<BlockPos>> boundingPositions) {
@@ -122,7 +122,7 @@ public class BlockType {
         @SafeVarargs
         public final T without(Class<? extends Attribute>... attrs) {
             holder.remove(attrs);
-            return getThis();
+            return self();
         }
 
         public T withCustomShape(VoxelShape[] shape) {

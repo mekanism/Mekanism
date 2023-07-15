@@ -66,12 +66,12 @@ public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
         @SafeVarargs
         public final T with(TileAttribute<TILE>... attrs) {
             holder.add(attrs);
-            return getThis();
+            return self();
         }
 
         public T withSupportedUpgrades(Set<Upgrade> upgrades) {
             holder.add(new AttributeUpgradeSupport(upgrades));
-            return getThis();
+            return self();
         }
     }
 }

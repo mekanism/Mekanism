@@ -26,7 +26,7 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
      */
     public BUILDER with(ChemicalAttribute attribute) {
         attributeMap.put(attribute.getClass(), attribute);
-        return getThis();
+        return self();
     }
 
     /**
@@ -50,7 +50,7 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
      */
     public BUILDER color(int color) {
         this.color = color;
-        return getThis();
+        return self();
     }
 
     /**
@@ -58,7 +58,7 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
      */
     public BUILDER hidden() {
         this.hidden = true;
-        return getThis();
+        return self();
     }
 
     /**
@@ -80,7 +80,7 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
     }
 
     @SuppressWarnings("unchecked")
-    protected BUILDER getThis() {
+    private BUILDER self() {
         return (BUILDER) this;
     }
 }

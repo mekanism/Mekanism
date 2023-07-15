@@ -35,7 +35,7 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
     }
 
     @SuppressWarnings("unchecked")
-    private BUILDER_TYPE getThis() {
+    private BUILDER_TYPE self() {
         return (BUILDER_TYPE) this;
     }
 
@@ -45,7 +45,7 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
 
     public BUILDER_TYPE addComponent(ICrTExampleComponent component) {
         contents.add(Objects.requireNonNull(component, "Example component cannot be null."));
-        return getThis();
+        return self();
     }
 
     public BUILDER_TYPE comment(Function<CrTImportsComponent, String> comment) {
@@ -61,7 +61,7 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
     }
 
     public CrTExampleRecipeComponentBuilder<BUILDER_TYPE> recipe(MekanismRecipeManager<?> recipeManager, String... methodNames) {
-        CrTExampleRecipeComponentBuilder<BUILDER_TYPE> recipeComponentBuilder = new CrTExampleRecipeComponentBuilder<>(getThis(), recipeManager, methodNames);
+        CrTExampleRecipeComponentBuilder<BUILDER_TYPE> recipeComponentBuilder = new CrTExampleRecipeComponentBuilder<>(self(), recipeManager, methodNames);
         contents.add(recipeComponentBuilder);
         return recipeComponentBuilder;
     }
@@ -81,7 +81,7 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
     private CrTExampleSnipComponentBuilder<BUILDER_TYPE> snip(String snipType, String data) {
         //Note: We don't really do any extra validation currently about the snip data but there isn't really a generic way to do it
         // We also don't validate the snipType is valid either currently
-        CrTExampleSnipComponentBuilder<BUILDER_TYPE> snipComponentBuilder = new CrTExampleSnipComponentBuilder<>(exampleProvider, getThis(), snipType, data);
+        CrTExampleSnipComponentBuilder<BUILDER_TYPE> snipComponentBuilder = new CrTExampleSnipComponentBuilder<>(exampleProvider, self(), snipType, data);
         contents.add(snipComponentBuilder);
         return snipComponentBuilder;
     }
@@ -97,7 +97,7 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
         for (int line = 0; line < lines; line++) {
             contents.add(null);
         }
-        return getThis();
+        return self();
     }
 
     /**
