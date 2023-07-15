@@ -35,6 +35,47 @@
             <link indent="8" ref="intro:features">Main Features</link>
 
             <link ref="machines">Machines</link>
+            <link ref="machines:antiprotonic_nucleosynthesizer" indent="8">Antiprotonic Nucleosynthesizer</link>
+            <link ref="machines:chargepad" indent="8">Chargepad</link>
+            <link ref="machines:chemical_crystallizer" indent="8">Chemical Crystallizer</link>
+            <link ref="machines:chemical_dissolution_chamber" indent="8">Chemical Dissolution Chamber</link>
+            <link ref="machines:chemical_infuser" indent="8">Chemical Infuser</link>
+            <link ref="machines:chemical_injection_chamber" indent="8">Chemical Injection Chamber</link>
+            <link ref="machines:chemical_oxidizer" indent="8">Chemical Oxidizer</link>
+            <link ref="machines:chemical_washer" indent="8">Chemical Washer</link>
+            <link ref="machines:combiner" indent="8">Combiner</link>
+            <link ref="machines:crusher" indent="8">Crusher</link>
+            <link ref="machines:digital_miner" indent="8">Digital Miner</link>
+            <link ref="machines:dimensional_stabilizer" indent="8">Dimensional Stabilizer</link>
+            <link ref="machines:electric_pump" indent="8">Electric Pump</link>
+            <link ref="machines:electrolytic_separator" indent="8">Electrolytic Separator</link>
+            <link ref="machines:energized_smelter" indent="8">Energized Smelter</link>
+            <link ref="machines:energy_cube" indent="8">Energy Cube</link>
+            <link ref="machines:enrichment_chamber" indent="8">Enrichment Chamber</link>
+            <link ref="machines:factories" indent="8">Factories</link>
+            <link ref="machines:fluidic_plenisher" indent="8">Fluidic Plenisher</link>
+            <link ref="machines:formulaic_assemblicator" indent="8">Formulaic Assemblicator</link>
+            <link ref="machines:fuelwood_heater" indent="8">Fuelwood Heater</link>
+            <link ref="machines:isotopic_centrifuge" indent="8">Isotopic Centrifuge</link>
+            <link ref="machines:logistical_sorter" indent="8">Logistical Sorter</link>
+            <link ref="machines:metallurgic_infuser" indent="8">Metallurgic Infuser</link>
+            <link ref="machines:modification_station" indent="8">Modification Station</link>
+            <link ref="machines:nutritional_liquifier" indent="8">Nutritional Liquifier</link>
+            <link ref="machines:oredictionificator" indent="8">Oredictionificator</link>
+            <link ref="machines:osmium_compressor" indent="8">Osmium Compressor</link>
+            <link ref="machines:painting_machine" indent="8">Painting Machine</link>
+            <link ref="machines:personal_barrel" indent="8">Personal Barrel</link>
+            <link ref="machines:personal_chest" indent="8">Personal Chest</link>
+            <link ref="machines:pigment_extractor" indent="8">Pigment Extractor</link>
+            <link ref="machines:pigment_mixer" indent="8">Pigment Mixer</link>
+            <link ref="machines:precision_sawmill" indent="8">Precision Sawmill</link>
+            <link ref="machines:pressurized_reaction_chamber" indent="8">Pressurized Reaction Chamber</link>
+            <link ref="machines:purification_chamber" indent="8">Purification Chamber</link>
+            <link ref="machines:resistive_heater" indent="8">Resistive Heater</link>
+            <link ref="machines:robit" indent="8">Robit</link>
+            <link ref="machines:rotary_condensentrator" indent="8">Rotary Condensentrator</link>
+            <link ref="machines:seismic_vibrator" indent="8">Seismic Vibrator</link>
+            <link ref="machines:solar_neutron_activator" indent="8">Solar Neutron Activator</link>
 
             <link ref="gear">Gear</link>
 
@@ -457,6 +498,8 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">The Isotopic Centrifuge is used with a Fission Reactor, wither processing Uranium Hexafluoride into Fissile Fuel, OR processing Nuclear Waste into Plutonium.</p>
+            <p space="8">It intakes gas from the bottom only and outputs from the front port only.</p>
         </section>
         <section id="logistical_sorter">
             <page_title><title>Logistical Sorter</title></page_title>
@@ -466,6 +509,47 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">Filter which items you are sending and where they go.</p>
+            <p space="8">Connect the larger side to a block with an inventory and the smaller side with a Logistical Transporter network.</p>
+            <p space="8">Add colours to Logistical Transporter outputs with the Configurator to control where items are routed to.</p>
+            <title>Main options</title>
+            <p space="4" bold="true">Single</p>
+            <p space="8">Sends a single item instead of a whole stack each time (overrides min and max set in ItemStack filters)</p>
+            <p space="4" bold="true">RR (Round Robin)</p>
+            <p space="8">Turning on this mode will make the Sorter cycle through available destinations when sending items. When this option is off, items will be sent to the closest available inventory.</p>
+            <p space="4" bold="true">Auto ( Auto-Eject )</p>
+            <p space="8">Turning on auto-eject will cause all items to be pumped out. Turning off auto-eject will cause only items that match a filter to be pumped.</p>
+            <p space="4" bold="true">Default</p>
+            <p space="8">The default color tag for items. Filtered items that do not have a color tag set will use the default color tag. Left and right click will cycle forwards and backwards through the color list</p>
+            <p space="4" bold="true">Item Filters</p>
+            <p space="8">Any item filters you create will appear in the main section of the GUI. You can edit existing filters by clicking them.</p>
+            <p space="4" bold="true">New Filter</p>
+            <p space="8">Click to create a new item filter.</p>
+
+            <title>Common Filter Configuration</title>
+            <p space="4" bold="true">Color (bottom left slot)</p>
+            <p space="8">Assign a specific color to this filter. Left and right click will cycle forwards and backwards through the color list.</p>
+            <p space="4" bold="true">Allow Default</p>
+            <p space="8">When turned on, the filtered item will use the default color tag instead if no inventory is available. Note that 'Auto-Eject' must be turned on for this to work</p>
+            <p space="4" bold="true">Size Mode, Min, &amp; Max</p>
+            <p space="8">Size mode will force the sorter to send a precise amount of items</p>
+            <p space="4" bold="true">Fuzzy Mode</p>
+            <p space="8">The sorter will ignore if a tool, weapon or armor is damaged or not.</p>
+
+            <title>Filter Types</title>
+            <p space="4" bold="true">ItemStack (Item)</p>
+            <p space="8">Matches specific Item types. Click an item into the top-left slot.</p>
+            <p space="4" bold="true">Tag</p>
+            <p space="8">Uses the tag system to search for Items in a group. You can use a Dictionary to find these.</p>
+            <p space="8">Type a name and click the green tick to check your entry.</p>
+            <p space="4">Some examples</p>
+            <p space="8"><span italics="true">forge:ores</span> - All ores</p>
+            <p space="8"><span italics="true">forge:ores/iron</span> - All Iron ore variants</p>
+            <p space="8"><span italics="true">forge:sand</span> - Sand</p>
+            <p space="8"><span italics="true">minecraft:logs</span> - Wood Logs</p>
+            <p space="8"><span italics="true">minecraft:seeds</span> - Seeds</p>
+            <p space="4" bold="true">Mod ID</p>
+            <p space="8">Searches for any item from a specific mod. Mod IDs are all lowercase and can often be found online on wikis.</p>
         </section>
         <section id="metallurgic_infuser">
             <page_title><title>Metallurgic Infuser</title></page_title>
@@ -475,6 +559,9 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">A machine used to infuse various materials into (generally) metals to create metal alloys and other compounds.</p>
+            <p space="8">Contains an Infusion Material slot and an Input slot.</p>
+            <p space="8">Generally you will want a separate one for each infusion type, though the infusion tank can be Dumped to clear it for another type.</p>
         </section>
         <section id="modification_station">
             <page_title><title>Modification Station</title></page_title>
@@ -484,6 +571,9 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">The Modification Station is used for applying modular upgrades to the Meka-Suit and the Meka-Tool in exchange for energy.</p>
+            <p space="8">A part of the Meka-Suit or the Meka-Tool is inserted into the station along with the upgrade, resulting in the upgrade being applied (if compatible).</p>
+            <p space="8">It functions similarly to an Anvil or a Power Armor Tinker Table from the Modular Powersuits mod.</p>
         </section>
         <section id="nutritional_liquifier">
             <page_title><title>Nutritional Liquifier</title></page_title>
@@ -493,6 +583,9 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">The Nutritional Liquifier turns consumable food items into Nutritional Paste.</p>
+            <p space="8">It can hold a total of 10000mB of paste before it is full and halts production.</p>
+            <p space="8">The nutritional paste is used by the MekaSuit Helmet and the Canteen for feeding the player without having to carry physical individual food items in their inventory.</p>
         </section>
         <section id="oredictionificator">
             <page_title><title>Oredictionificator</title></page_title>
@@ -502,6 +595,10 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">Named after the old Ore Dictionary feature, this block allows conversion between equivalent items/block between mods.</p>
+            <p space="8">For example, Mekanism Tin Ore to another mod's Tin Ore.</p>
+            <p space="8">Generally this process shouldn't be necessary, but sometimes a specific variant is required (or desired).</p>
+            <p space="8">Open the GUI to configure which items/blocks to output, then either place the items in the slot or use pipes.</p>
         </section>
         <section id="osmium_compressor">
             <page_title><title>Osmium Compressor</title></page_title>
@@ -511,6 +608,7 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">Infuses Liquid Osmium into various materials to make things such as Refined Glowstone and Refined Obsidian.</p>
         </section>
         <section id="painting_machine">
             <page_title><title>Painting Machine</title></page_title>
@@ -520,6 +618,7 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">A machine used to color blocks and items via a careful application of a stored pigment.</p>
         </section>
         <section id="personal_barrel">
             <page_title><title>Personal Barrel</title></page_title>
@@ -529,6 +628,10 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">A barrel which can be security controlled by Mekanism's security system.</p>
+            <p space="8">It can be accessed by the Use action, or placed as a block with the sneak-use action.</p>
+            <p space="8">The first use will assign ownership.</p>
+            <p space="8">Note that it must be set to Public security to use item pipes (including Logistical Transporters) with it.</p>
         </section>
         <section id="personal_chest">
             <page_title><title>Personal Chest</title></page_title>
@@ -538,6 +641,10 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">A chest which can be security controlled by Mekanism's security system.</p>
+            <p space="8">It can be accessed by the Use action, or placed as a block with the sneak-use action.</p>
+            <p space="8">The first use will assign ownership.</p>
+            <p space="8">Note that it must be set to Public security to use item pipes (including Logistical Transporters) with it.</p>
         </section>
         <section id="pigment_extractor">
             <page_title><title>Pigment Extractor</title></page_title>
@@ -547,6 +654,7 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">A machine used to extract pigments from blocks and items.</p>
         </section>
         <section id="pigment_mixer">
             <page_title><title>Pigment Mixer</title></page_title>
@@ -556,6 +664,7 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">A sturdy machine capable of mixing two pigments together to produce a new pigment.</p>
         </section>
         <section id="precision_sawmill">
             <page_title><title>Precision Sawmill</title></page_title>
@@ -565,6 +674,8 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">The Precision Sawmill is used for reclaiming wood from wooden items and turning logs into planks with a better yield than a crafting table.</p>
+            <p space="8">Also makes sawdust for use in making Cardboard Box.</p>
         </section>
         <section id="pressurized_reaction_chamber">
             <page_title><title>Pressurized Reaction Chamber</title></page_title>
@@ -574,6 +685,9 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">The Pressurized Reaction Chamber (PRC) is used primarily to create Substrate (to create HDPE Pellets), HDPE Pellets (to create HDPE Sheets), and Ethylene (an efficient source of fuel used in the Gas-Burning Generator).</p>
+            <p space="8">It has a variable speed and energy usage dependent on the materials/gasses it is creating.</p>
+            <p space="8">The PRC can accept a Liquid input, a Gas input and an Item input while outputting an Item and a Liquid. You may need 5 sides available for automation!</p>
         </section>
         <section id="purification_chamber">
             <page_title><title>Purification Chamber</title></page_title>
@@ -583,6 +697,8 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">The Purification Chamber uses oxygen to refine Ores and shards into clumps.</p>
+            <p space="8">The oxygen can be provided externally as gas, internally with an oxygen filled Gas Tank or flint.</p>
         </section>
         <section id="resistive_heater">
             <page_title><title>Resistive Heater</title></page_title>
@@ -592,6 +708,8 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">A condensed, coiled resistor capable of converting electrical energy directly into heat energy.</p>
+            <p space="8">Set the desired energy usage in the GUI, and heat will be produced.</p>
         </section>
         <section id="robit">
             <page_title><title>Robit</title></page_title>
@@ -601,6 +719,10 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">Robit is Mekanism's mechanical companion. He can act as a crafting grid, a furnace, an anvil, a chest, or simply a cute little buddy.</p>
+            <p space="8">To bring your Robit into the world, they must be placed onto a powered Chargepad. This will serve as their home location (which they can teleport to) as well as providing them a way to recharge their battery.</p>
+            <p space="8">Various options can be toggled in your Robit's GUI - Robit's name, follow mode, pickup dropped items, teleport home (Robit only, you cannot come for a ride), change appearance.</p>
+            <p space="8">Robit also has a small inventory, a 9x9 crafting grid, a small smelter, and an Anvil.</p>
         </section>
         <section id="rotary_condensentrator">
             <page_title><title>Rotary Condensentrator</title></page_title>
@@ -610,6 +732,8 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">The Rotary Condensentrator (pronounced "con-DEN-sen-tray-tor") is used for converting substances between liquid and gaseous forms at a rate of 1:1.</p>
+            <p space="8">It has two modes: Decondensentrating, which turns Liquids into Gases, and Condensentrating, which turns Gases into Liquids. Press the T button in the GUI to switch between modes.</p>
         </section>
         <section id="seismic_vibrator">
             <page_title><title>Seismic Vibrator</title></page_title>
@@ -619,6 +743,7 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">The Seismic Vibrator shakes the ground, which allows for the Seismic Reader to function.</p>
         </section>
         <section id="solar_neutron_activator">
             <page_title><title>Solar Neutron Activator</title></page_title>
@@ -628,6 +753,8 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
+            <p space="8">The Solar Neutron Activator is a machine that directs the neutron radiation of the sun into its internal reservoir, allowing for the slow creation of various isotopes.</p>
+            <p space="8">The input is at the bottom, the output is at the front. It does not need energy except for direct sunlight. There must be no blocks between it and the sky.</p>
         </section>
     </chapter>
     <chapter id="gear">
