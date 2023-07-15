@@ -280,6 +280,8 @@
   "block.mekanismadditions.yellow_plastic_transparent_stairs": "黄色透明塑料楼梯",
   "block.mekanismadditions.yellow_reinforced_plastic": "黄色强化塑料方块",
   "block.mekanismadditions.yellow_slick_plastic": "黄色光滑塑料方块",
+  "constants.mekanismadditions.mod_name": "通用机械：附加",
+  "constants.mekanismadditions.pack_description": "给通用机械：附加用的资源",
   "description.mekanismadditions.glow_panel": "永恒的现代光源。现在有多种颜色了！",
   "description.mekanismadditions.obsidian_tnt": "一种非常强大的，塞满黑曜石的TNT。当然，使用风险自负。",
   "entity.mekanismadditions.baby_creeper": "爬行者宝宝",

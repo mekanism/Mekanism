@@ -199,7 +199,6 @@
   "button.mekanism.confirm": "Confirm",
   "button.mekanism.delete": "Delete",
   "button.mekanism.itemstack_filter": "ItemStack",
-  "button.mekanism.material_filter": "Material",
   "button.mekanism.modid_filter": "Mod ID",
   "button.mekanism.new_filter": "New Filter",
   "button.mekanism.options": "Options",

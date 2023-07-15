@@ -35,6 +35,8 @@
   "block.mekanismgenerators.turbine_valve": "Клапан турбіни",
   "block.mekanismgenerators.turbine_vent": "Вентиляційний отвір турбіни",
   "block.mekanismgenerators.wind_generator": "Вітряк",
+  "constants.mekanismgenerators.mod_name": "Mekanism: Генератори",
+  "constants.mekanismgenerators.pack_description": "Ресурси, що використовуються для Mekanism: Генератори",
   "container.mekanismgenerators.advanced_solar_generator": "Розширена сонячна панель",
   "container.mekanismgenerators.bio_generator": "Біо-генератор",
   "container.mekanismgenerators.fission_reactor_logic_adapter": "Адаптер логіки ядерного реактора",

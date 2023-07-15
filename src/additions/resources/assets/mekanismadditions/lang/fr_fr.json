@@ -280,6 +280,8 @@
   "block.mekanismadditions.yellow_plastic_transparent_stairs": "Escalier en Plastique Transparent Jaune",
   "block.mekanismadditions.yellow_reinforced_plastic": "Bloc de Plastique Renforcé Jaune",
   "block.mekanismadditions.yellow_slick_plastic": "Bloc de Plastique Lisse Jaune",
+  "constants.mekanismadditions.mod_name": "Mekanism: Additions",
+  "constants.mekanismadditions.pack_description": "Ressources utilisées pour Mekanism: Additions",
   "description.mekanismadditions.glow_panel": "Une source de lumière, moderne, éternelle. Maintenant en plusieurs couleurs!",
   "description.mekanismadditions.obsidian_tnt": "Un bloc de TNT infusé d'obsidienne extrêmement puissant. Utilisez à vos risques et périls.",
   "entity.mekanismadditions.baby_creeper": "Bébé Creeper",

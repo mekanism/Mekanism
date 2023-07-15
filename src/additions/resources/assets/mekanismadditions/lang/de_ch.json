@@ -280,6 +280,8 @@
   "block.mekanismadditions.yellow_plastic_transparent_stairs": "Gelbe transparente Plastiktreppe",
   "block.mekanismadditions.yellow_reinforced_plastic": "Gelb Verstärkter Plastikblock",
   "block.mekanismadditions.yellow_slick_plastic": "Gelb Glatter Plastikblock",
+  "constants.mekanismadditions.mod_name": "Mekanism: Additions",
+  "constants.mekanismadditions.pack_description": "Für Mekanism: Additions verwendete Ressourcen",
   "description.mekanismadditions.glow_panel": "Eine moderne, beständige Lichtquelle. Jetzt in vielen Farben!",
   "description.mekanismadditions.obsidian_tnt": "Ein extrem mächtiger, mit Obsidian infusierter TNT-Block. Verwendung auf eigene Gefahr.",
   "entity.mekanismadditions.baby_creeper": "Baby Creeper",

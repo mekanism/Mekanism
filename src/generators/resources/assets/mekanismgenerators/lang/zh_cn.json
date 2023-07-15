@@ -35,6 +35,8 @@
   "block.mekanismgenerators.turbine_valve": "涡轮阀门",
   "block.mekanismgenerators.turbine_vent": "涡轮排气口",
   "block.mekanismgenerators.wind_generator": "风力发电机",
+  "constants.mekanismgenerators.mod_name": "通用机械：发电机",
+  "constants.mekanismgenerators.pack_description": "给通用机械：发电机用的资源",
   "container.mekanismgenerators.advanced_solar_generator": "高级太阳能发电机",
   "container.mekanismgenerators.bio_generator": "生物能发电机",
   "container.mekanismgenerators.fission_reactor_logic_adapter": "裂变反应堆逻辑适配器",

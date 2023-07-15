@@ -11,6 +11,8 @@
   "advancements.mekanismtools.not_enough_shielding.title": "Za mało tarcz",
   "advancements.mekanismtools.paxel.description": "Stwórz dowolny łopasiekilof (kilof, siekiera, łopata)",
   "advancements.mekanismtools.paxel.title": "Multinarzędzie",
+  "constants.mekanismtools.mod_name": "Mekanism: Tools",
+  "constants.mekanismtools.pack_description": "Zasoby używane przez Mekanism: Tools",
   "item.mekanismtools.bronze_axe": "Siekiera z brązu",
   "item.mekanismtools.bronze_boots": "Buty z brązu",
   "item.mekanismtools.bronze_chestplate": "Napierśnik z brązu",

@@ -35,6 +35,8 @@
   "block.mekanismgenerators.turbine_valve": "Zawór turbiny",
   "block.mekanismgenerators.turbine_vent": "Wyciąg turbiny",
   "block.mekanismgenerators.wind_generator": "Turbina wiatrowa",
+  "constants.mekanismgenerators.mod_name": "Mekanism: Generators",
+  "constants.mekanismgenerators.pack_description": "Zasoby używane przez Mekanism: Generators",
   "container.mekanismgenerators.advanced_solar_generator": "Zaawansowany generator słoneczny",
   "container.mekanismgenerators.bio_generator": "Biogenerator",
   "container.mekanismgenerators.fission_reactor_logic_adapter": "Adapter logiczny reaktora syntezy rozczepiania atomów",
