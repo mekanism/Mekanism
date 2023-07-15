@@ -3,11 +3,14 @@
   "key": {
     "#": {
       "tag": "forge:nuggets/refined_glowstone"
+    },
+    "P": {
+      "item": "mekanism:nugget_refined_glowstone"
     }
   },
   "pattern": [
     "###",
-    "###",
+    "#P#",
     "###"
   ],
   "result": {

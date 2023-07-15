@@ -151,6 +151,10 @@ public final class NBTConstants {
     public static final String NUM_POWERING = "numPowering";
     public static final String ORIGINAL_LOCATION = "originalLocation";
     public static final String OUTPUT_MODE = "outputMode";
+    /**
+     * @since 10.3.9
+     */
+    public static final String OVERFLOW = "overflow";
     public static final String OVERRIDE = "override";
     public static final String OWNER_UUID = "owner";
     public static final String PARTIAL_WASTE = "partialWaste";

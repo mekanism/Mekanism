@@ -141,8 +141,8 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        super.onClick(mouseX, mouseY);
+    public void onClick(double mouseX, double mouseY, int button) {
+        super.onClick(mouseX, mouseY, button);
         RobitSkin skin = getSkin(mouseX, mouseY);
         if (skin != null) {
             selectedSkin = skin;

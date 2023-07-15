@@ -9,6 +9,7 @@ import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +21,7 @@ public class GuiDumpButton<TILE extends BlockEntity & IHasDumpButton> extends Gu
     public GuiDumpButton(IGuiWrapper gui, TILE tile, int x, int y) {
         super(MekanismUtils.getResource(ResourceType.GUI, "dump.png"), gui, x, y, 21, 10);
         this.tile = tile;
-        playClickSound = true;
+        this.clickSound = SoundEvents.UI_BUTTON_CLICK;
     }
 
     @Override
@@ -31,7 +32,7 @@ public class GuiDumpButton<TILE extends BlockEntity & IHasDumpButton> extends Gu
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY, int button) {
         Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.DUMP_BUTTON, tile));
     }
 }

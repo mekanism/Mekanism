@@ -190,6 +190,14 @@ public final class SecurityUtils implements ISecurityUtils {
         });
     }
 
+    public void decrementSecurityMode(Player player, ICapabilityProvider provider) {
+        provider.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> {
+            if (security.ownerMatches(player)) {
+                security.setSecurityMode(security.getSecurityMode().getPrevious());
+            }
+        });
+    }
+
     public InteractionResultHolder<ItemStack> claimOrOpenGui(Level level, Player player, InteractionHand hand,
           TriConsumer<ServerPlayer, InteractionHand, ItemStack> openGui) {
         ItemStack stack = player.getItemInHand(hand);

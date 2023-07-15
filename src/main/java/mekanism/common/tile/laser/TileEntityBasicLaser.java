@@ -24,6 +24,7 @@ import mekanism.common.lib.math.Pos3D;
 import mekanism.common.network.to_client.PacketLaserHitBlock;
 import mekanism.common.particle.LaserParticleData;
 import mekanism.common.registries.MekanismDamageSource;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.NBTUtils;
@@ -47,10 +48,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
@@ -309,10 +310,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                                             hitState.onCaughtFire(level, hitPos, result.getDirection(), null);
                                             level.removeBlock(hitPos, false);
                                         } else {
-                                            handleBreakBlock(hitState, hitPos);
-                                            hitState.onRemove(level, hitPos, Blocks.AIR.defaultBlockState(), false);
-                                            level.removeBlock(hitPos, false);
-                                            level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, hitPos, Block.getId(hitState));
+                                            //Use the disassembler as the item to break the block with as that is marked as being the correct tool for drops
+                                            handleBreakBlock(hitState, hitPos, dummy, MekanismItems.ATOMIC_DISASSEMBLER.getItemStack());
                                         }
                                     }
                                     return null;
@@ -402,8 +401,16 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         return false;
     }
 
-    protected void handleBreakBlock(BlockState state, BlockPos hitPos) {
-        Block.dropResources(state, level, hitPos, WorldUtils.getTileEntity(level, hitPos));
+    protected void handleBreakBlock(BlockState state, BlockPos hitPos, Player player, ItemStack tool) {
+        Block.dropResources(state, level, hitPos, WorldUtils.getTileEntity(level, hitPos), player, tool);
+        breakBlock(state, hitPos);
+    }
+
+    protected final void breakBlock(BlockState state, BlockPos hitPos) {
+        level.removeBlock(hitPos, false);
+        //TODO: We may want to evaluate at some point doing this with our fake player so that it is fired as the "cause"?
+        level.gameEvent(GameEvent.BLOCK_DESTROY, hitPos, GameEvent.Context.of(null, state));
+        level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, hitPos, Block.getId(state));
     }
 
     protected FloatingLong toFire() {

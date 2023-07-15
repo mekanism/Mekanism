@@ -11,6 +11,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.StackUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,18 +47,22 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>
     @Nullable
     @Override
     protected IGhostItemConsumer getGhostHandler() {
-        return ingredient -> setFilterStack(StackUtils.size((ItemStack) ingredient, 1));
+        return ingredient -> setFilterStackWithSound(StackUtils.size((ItemStack) ingredient, 1));
     }
 
+    @Nullable
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return mouseClickSlot(gui(), button, mouseX, mouseY, relativeX + 8, relativeY + getSlotOffset() + 1, NOT_EMPTY, this::setFilterStack) ||
-               super.mouseClicked(mouseX, mouseY, button);
+    protected IClickable getSlotClickHandler() {
+        return getHandleClickSlot(gui(), NOT_EMPTY, this::setFilterStack);
     }
 
-    protected void setFilterStack(@NotNull ItemStack stack) {
+    private void setFilterStack(@NotNull ItemStack stack) {
         filter.setItemStack(stack);
         slotDisplay.updateStackList();
-        playClickSound();
+    }
+
+    protected void setFilterStackWithSound(@NotNull ItemStack stack) {
+        setFilterStack(stack);
+        playClickSound(SoundEvents.UI_BUTTON_CLICK);
     }
 }

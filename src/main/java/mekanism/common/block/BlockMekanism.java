@@ -151,8 +151,8 @@ public abstract class BlockMekanism extends Block {
     @Deprecated
     public List<ItemStack> getDrops(@NotNull BlockState state, @NotNull LootContext.Builder builder) {
         List<ItemStack> drops = super.getDrops(state, builder);
-        //Check if we need to clear any radioactive materials from the stored tanks as those will be dumped via the tile being removed
-        if (state.getBlock() instanceof IHasTileEntity<?> hasTileEntity) {
+        //If radiation is enabled, check if we need to clear any radioactive materials from the stored tanks as those will be dumped via the tile being removed
+        if (MekanismAPI.getRadiationManager().isRadiationEnabled() && state.getBlock() instanceof IHasTileEntity<?> hasTileEntity) {
             BlockEntity tile = hasTileEntity.createDummyBlockEntity(state);
             if (tile instanceof TileEntityMekanism mekTile) {
                 //Skip tiles that have no tanks and skip chemical creative tanks
@@ -401,8 +401,10 @@ public abstract class BlockMekanism extends Block {
           @Nullable BlockEntity tile) {
         //Call super variant of player relative hardness to get default
         float speed = super.getDestroyProgress(state, player, world, pos);
-        if (tile instanceof ITileRadioactive radioactiveTile && radioactiveTile.getRadiationScale() > 0) {
+        if (MekanismAPI.getRadiationManager().isRadiationEnabled() && tile instanceof ITileRadioactive radioactiveTile && radioactiveTile.getRadiationScale() > 0) {
             //Our tile has some radioactive substance in it; slow down breaking it
+            //Note: Technically our getRadiationScale impls validate that radiation is enabled, but we do so here as well
+            // to make intentions clearer
             return speed / 5F;
         }
         return speed;
@@ -411,17 +413,19 @@ public abstract class BlockMekanism extends Block {
     @Override
     public void animateTick(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull RandomSource random) {
         super.animateTick(state, world, pos, random);
-        BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-        if (tile instanceof ITileRadioactive radioactiveTile) {
-            int count = radioactiveTile.getRadiationParticleCount();
-            if (count > 0) {
-                //Update count to be randomized but store it instead of calculating our max number each time we loop
-                count = random.nextInt(count);
-                for (int i = 0; i < count; i++) {
-                    double randX = pos.getX() - 0.1 + random.nextDouble() * 1.2;
-                    double randY = pos.getY() - 0.1 + random.nextDouble() * 1.2;
-                    double randZ = pos.getZ() - 0.1 + random.nextDouble() * 1.2;
-                    world.addParticle(MekanismParticleTypes.RADIATION.get(), randX, randY, randZ, 0, 0, 0);
+        if (MekanismAPI.getRadiationManager().isRadiationEnabled()) {//Skip getting the tile if radiation is disabled in the config
+            BlockEntity tile = WorldUtils.getTileEntity(world, pos);
+            if (tile instanceof ITileRadioactive radioactiveTile) {
+                int count = radioactiveTile.getRadiationParticleCount();
+                if (count > 0) {
+                    //Update count to be randomized but store it instead of calculating our max number each time we loop
+                    count = random.nextInt(count);
+                    for (int i = 0; i < count; i++) {
+                        double randX = pos.getX() - 0.1 + random.nextDouble() * 1.2;
+                        double randY = pos.getY() - 0.1 + random.nextDouble() * 1.2;
+                        double randZ = pos.getZ() - 0.1 + random.nextDouble() * 1.2;
+                        world.addParticle(MekanismParticleTypes.RADIATION.get(), randX, randY, randZ, 0, 0, 0);
+                    }
                 }
             }
         }

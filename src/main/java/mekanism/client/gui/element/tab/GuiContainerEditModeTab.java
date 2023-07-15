@@ -10,11 +10,11 @@ import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IFluidContainerManager;
-import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 
 public class GuiContainerEditModeTab<TILE extends TileEntityMekanism & IFluidContainerManager> extends GuiInsetElement<TILE> {
 
@@ -28,13 +28,11 @@ public class GuiContainerEditModeTab<TILE extends TileEntityMekanism & IFluidCon
 
     @Override
     protected ResourceLocation getOverlay() {
-        ContainerEditMode containerEditMode = dataSource.getContainerEditMode();
-        if (containerEditMode == ContainerEditMode.FILL) {
-            return FILL;
-        } else if (containerEditMode == ContainerEditMode.EMPTY) {
-            return EMPTY;
-        }
-        return super.getOverlay();
+        return switch (dataSource.getContainerEditMode()) {
+            case FILL -> FILL;
+            case EMPTY -> EMPTY;
+            default -> super.getOverlay();
+        };
     }
 
     @Override
@@ -44,8 +42,13 @@ public class GuiContainerEditModeTab<TILE extends TileEntityMekanism & IFluidCon
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, dataSource));
+    public void onClick(double mouseX, double mouseY, int button) {
+        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_1 ? GuiInteraction.NEXT_MODE : GuiInteraction.PREVIOUS_MODE, dataSource));
+    }
+
+    @Override
+    public boolean isValidClickButton(int button) {
+        return button == GLFW.GLFW_MOUSE_BUTTON_1 || button == GLFW.GLFW_MOUSE_BUTTON_2;
     }
 
     @Override

@@ -3,11 +3,14 @@
   "key": {
     "#": {
       "tag": "forge:raw_materials/uranium"
+    },
+    "P": {
+      "item": "mekanism:raw_uranium"
     }
   },
   "pattern": [
     "###",
-    "###",
+    "#P#",
     "###"
   ],
   "result": {

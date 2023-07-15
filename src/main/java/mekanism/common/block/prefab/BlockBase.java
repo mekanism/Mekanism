@@ -57,8 +57,8 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
 
     @Override
     public float getExplosionResistance(BlockState state, BlockGetter world, BlockPos pos, Explosion explosion) {
-        return type.has(AttributeCustomResistance.class) ? type.get(AttributeCustomResistance.class).resistance()
-                                                         : super.getExplosionResistance(state, world, pos, explosion);
+        AttributeCustomResistance customResistance = type.get(AttributeCustomResistance.class);
+        return customResistance == null ? super.getExplosionResistance(state, world, pos, explosion) : customResistance.resistance();
     }
 
     @Override
@@ -73,8 +73,9 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     @Override
     @Deprecated
     public VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        if (type.has(AttributeCustomShape.class)) {
-            VoxelShape[] bounds = type.get(AttributeCustomShape.class).bounds();
+        AttributeCustomShape customShape = type.get(AttributeCustomShape.class);
+        if (customShape != null) {
+            VoxelShape[] bounds = customShape.bounds();
             if (bounds.length == 1) {
                 //If there is only one voxel shape for this model use it directly regardless of the direction it is facing
                 return bounds[0];

@@ -47,10 +47,8 @@ public class GuiEntityPreview extends GuiElement {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        if (clicked(mouseX, mouseY)) {
-            isDragging = true;
-        }
+    public void onClick(double mouseX, double mouseY, int button) {
+        isDragging = true;
     }
 
     @Override

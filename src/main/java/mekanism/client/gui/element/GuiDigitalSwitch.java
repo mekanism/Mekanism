@@ -8,8 +8,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +31,7 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
         this.stateSupplier = stateSupplier;
         this.tooltip = tooltip;
         this.onToggle = onToggle;
+        this.clickSound = MekanismSounds.BEEP.get();
     }
 
     @Override
@@ -61,8 +60,7 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
+    public void onClick(double mouseX, double mouseY, int button) {
         onToggle.run();
     }
 

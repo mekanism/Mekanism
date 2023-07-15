@@ -1,10 +1,12 @@
 package mekanism.common.tile.laser;
 
+import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -15,13 +17,17 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
@@ -50,21 +56,27 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
     }
 
     @Override
-    protected void handleBreakBlock(BlockState state, BlockPos hitPos) {
-        List<ItemStack> drops = Block.getDrops(state, (ServerLevel) level, hitPos, WorldUtils.getTileEntity(level, hitPos));
+    protected void handleBreakBlock(BlockState state, BlockPos hitPos, Player player, ItemStack tool) {
+        List<ItemStack> drops = new ArrayList<>(Block.getDrops(state, (ServerLevel) level, hitPos, WorldUtils.getTileEntity(level, hitPos), player, tool));
+        //Collect any extra drops that might have happened due to say breaking the top part of a door or flower and try to add them
+        //Note: Technically we should just always return true rather than relying on the return result of the add method,
+        // but as array lists always will return true as they are modified we don't have to worry about that
+        CommonWorldTickHandler.fallbackItemCollector = drops::add;
+        breakBlock(state, hitPos);
+        CommonWorldTickHandler.fallbackItemCollector = null;
         if (!drops.isEmpty()) {
+            Lazy<Direction> direction = Lazy.of(this::getDirection);
+            Lazy<BlockPos> dropPos = Lazy.of(() -> worldPosition.relative(direction.get(), 2));
+            Lazy<Direction> opposite = Lazy.of(() -> direction.get().getOpposite());
             List<IInventorySlot> inventorySlots = getInventorySlots(null);
             for (ItemStack drop : drops) {
-                for (IInventorySlot slot : inventorySlots) {
-                    drop = slot.insertItem(drop, Action.EXECUTE, AutomationType.INTERNAL);
-                    if (drop.isEmpty()) {
-                        //If we inserted it all, then break otherwise try to insert the remainder into another slot
-                        break;
-                    }
-                }
+                //Try inserting it first where it can stack and then into empty slots
+                drop = InventoryUtils.insertItem(inventorySlots, drop, Action.EXECUTE, AutomationType.INTERNAL);
                 if (!drop.isEmpty()) {
                     //If we have some drop left over that we couldn't fit, then spawn it into the world
-                    Block.popResource(level, worldPosition, drop);
+                    // Note: We use an adjusted position and an opposite direction to provide the item with momentum towards the tractor beam
+                    // so that even though we couldn't fit the items into our inventory we can still have them appear to be "pulled" to the tractor beam
+                    Block.popResourceFromFace(level, dropPos.get(), opposite.get(), drop);
                 }
             }
         }
@@ -73,13 +85,8 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
     @Override
     protected boolean handleHitItem(ItemEntity entity) {
         ItemStack stack = entity.getItem();
-        for (IInventorySlot slot : getInventorySlots(null)) {
-            stack = slot.insertItem(stack, Action.EXECUTE, AutomationType.INTERNAL);
-            if (stack.isEmpty()) {
-                //If we inserted it all, then break otherwise try to insert the remainder into another slot
-                break;
-            }
-        }
+        //Try inserting it first where it can stack and then into empty slots
+        stack = InventoryUtils.insertItem(getInventorySlots(null), stack, Action.EXECUTE, AutomationType.INTERNAL);
         if (stack.isEmpty()) {
             //If we have finished grabbing it all then remove the entity
             entity.discard();

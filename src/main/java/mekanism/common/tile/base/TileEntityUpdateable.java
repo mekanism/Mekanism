@@ -131,7 +131,10 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         if (isRemote() && net.getDirection() == PacketFlow.CLIENTBOUND) {
             //Handle the update tag when we are on the client
-            handleUpdatePacket(pkt.getTag());
+            CompoundTag tag = pkt.getTag();
+            if (tag != null) {
+                handleUpdatePacket(tag);
+            }
         }
     }
 

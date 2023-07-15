@@ -1,8 +1,8 @@
 package mekanism.client.gui.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.text.TextComponentUtil;
@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
     private final List<BlockState> blockList = new ArrayList<>();
-    private final Object2IntMap<Block> frequencies = new Object2IntOpenHashMap<>();
+    private final Reference2IntMap<Block> frequencies = new Reference2IntOpenHashMap<>();
     private final int minHeight;
     private MekanismButton upButton;
     private MekanismButton downButton;

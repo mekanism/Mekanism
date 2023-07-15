@@ -6,6 +6,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
+import mekanism.api.chemical.attribute.IChemicalAttributeContainer;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.core.Holder;
@@ -17,7 +18,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> implements IHasTextComponent, IHasTranslationKey {
+public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> implements IHasTextComponent, IHasTranslationKey, IChemicalAttributeContainer<ChemicalStack<CHEMICAL>> {
 
     private boolean isEmpty;
     private long amount;
@@ -176,43 +177,23 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         setAmount(this.amount - amount);
     }
 
-    /**
-     * Whether this stack's chemical has an attribute of a certain type.
-     *
-     * @param type attribute type to check
-     *
-     * @return if this chemical has the attribute
-     */
+    @Override
     public boolean has(Class<? extends ChemicalAttribute> type) {
         return getType().has(type);
     }
 
-    /**
-     * Gets the attribute instance of a certain type, or null if it doesn't exist.
-     *
-     * @param type attribute type to get
-     *
-     * @return attribute instance
-     */
     @Nullable
-    public <T extends ChemicalAttribute> T get(Class<T> type) {
+    @Override
+    public <ATTRIBUTE extends ChemicalAttribute> ATTRIBUTE get(Class<ATTRIBUTE> type) {
         return getType().get(type);
     }
 
-    /**
-     * Gets all attribute instances associated with this chemical's type.
-     *
-     * @return collection of attribute instances
-     */
+    @Override
     public Collection<ChemicalAttribute> getAttributes() {
         return getType().getAttributes();
     }
 
-    /**
-     * Gets all attribute types associated with this chemical's type.
-     *
-     * @return collection of attribute types
-     */
+    @Override
     public Collection<Class<? extends ChemicalAttribute>> getAttributeTypes() {
         return getType().getAttributeTypes();
     }

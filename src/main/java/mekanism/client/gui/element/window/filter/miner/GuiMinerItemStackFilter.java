@@ -47,13 +47,8 @@ public class GuiMinerItemStackFilter extends GuiItemStackFilter<MinerItemStackFi
 
             @Override
             public void accept(Object ingredient) {
-                setFilterStack(StackUtils.size((ItemStack) ingredient, 1));
+                setFilterStackWithSound(StackUtils.size((ItemStack) ingredient, 1));
             }
         };
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return tryClickReplaceStack(gui(), mouseX, mouseY, button, getSlotOffset(), filter) || super.mouseClicked(mouseX, mouseY, button);
     }
 }

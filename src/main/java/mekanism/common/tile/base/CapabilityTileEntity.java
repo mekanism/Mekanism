@@ -84,9 +84,19 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
         capabilityCache.invalidate(capability, side);
     }
 
+    public void invalidateCapability(@NotNull Capability<?> capability, Direction... sides) {
+        capabilityCache.invalidateSides(capability, sides);
+    }
+
     public void invalidateCapabilities(@NotNull Collection<Capability<?>> capabilities, @Nullable Direction side) {
         for (Capability<?> capability : capabilities) {
             invalidateCapability(capability, side);
+        }
+    }
+
+    public void invalidateCapabilities(@NotNull Collection<Capability<?>> capabilities, Direction... sides) {
+        for (Capability<?> capability : capabilities) {
+            invalidateCapability(capability, sides);
         }
     }
 }

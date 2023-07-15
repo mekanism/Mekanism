@@ -47,3 +47,9 @@ license="MIT"
     versionRange="${recipe_stages_version}"
     ordering="AFTER"
     side="BOTH"
+[[dependencies.mekanism]]
+    modId="darkmodeeverywhere"
+    mandatory=false
+    versionRange="${dme_version}"
+    ordering="AFTER"
+    side="CLIENT"

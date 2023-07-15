@@ -110,7 +110,10 @@ public class BlockStateHelper {
         return state;
     }
 
-    public static BlockState copyStateData(BlockState oldState, IBlockProvider newBlockProvider) {
+    public static BlockState copyStateData(BlockState oldState, @Nullable IBlockProvider newBlockProvider) {
+        if (newBlockProvider == null) {
+            return oldState;
+        }
         return copyStateData(oldState, newBlockProvider.getBlock().defaultBlockState());
     }
 

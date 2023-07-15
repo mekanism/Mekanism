@@ -32,11 +32,14 @@ import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.lib.radial.IRadialEnumModeItem;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.tier.BinTier;
+import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StorageUtils;
@@ -141,6 +144,15 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
                         return InteractionResult.FAIL;
                     }
                     boolean creative = player.isCreative();
+                    if (tile instanceof TileEntityBin bin && bin.getTier() == BinTier.CREATIVE) {
+                        //If the tile is a creative bin only allow clearing it if the player is in creative
+                        // and don't bother popping the stack out
+                        if (creative) {
+                            bin.getBinSlot().setEmpty();
+                            return InteractionResult.SUCCESS;
+                        }
+                        return InteractionResult.FAIL;
+                    }
                     IEnergyContainer energyContainer = creative ? null : StorageUtils.getEnergyContainer(stack, 0);
                     if (!creative && energyContainer == null) {
                         return InteractionResult.FAIL;
@@ -155,7 +167,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
                                 }
                                 energyContainer.extract(energyPerItemDump, Action.EXECUTE, AutomationType.MANUAL);
                             }
-                            Block.popResource(world, pos, inventorySlot.getStack().copy());
+                            InventoryUtils.dropStack(inventorySlot.getStack().copy(), slotStack -> Block.popResourceFromFace(world, pos, side, slotStack));
                             inventorySlot.setEmpty();
                         }
                     }
@@ -167,7 +179,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
                         return InteractionResult.PASS;
                     } else if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
                         return InteractionResult.FAIL;
-                    } else if (Attribute.get(tileMekanism.getBlockType(), AttributeStateFacing.class).canRotate()) {
+                    } else if (Attribute.matches(tileMekanism.getBlockType(), AttributeStateFacing.class, AttributeStateFacing::canRotate)) {
                         if (!player.isShiftKeyDown()) {
                             tileMekanism.setFacing(side);
                         } else if (player.isShiftKeyDown()) {

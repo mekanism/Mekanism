@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
+import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.inventory.TileTransitRequest;
 import mekanism.common.recipe.upgrade.ItemRecipeData;
@@ -23,6 +25,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class InventoryUtils {
@@ -49,28 +52,38 @@ public final class InventoryUtils {
                 ListTag storedContents = sustainedInventory.getInventory(stack);
                 for (IInventorySlot slot : ItemRecipeData.readContents(storedContents)) {
                     if (!slot.isEmpty()) {
-                        ItemStack slotStack = slot.getStack();
-                        int count = slotStack.getCount();
-                        int max = slotStack.getMaxStackSize();
-                        if (count > max) {
-                            //If we have more than a stack of the item (such as we are a bin) or some other thing that allows for compressing
-                            // stack counts, drop as many stacks as we need at their max size
-                            while (count > max) {
-                                entity.level.addFreshEntity(new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), StackUtils.size(slotStack, max)));
-                                count -= max;
-                            }
-                            if (count > 0) {
-                                //If we have anything left to drop afterward, do so
-                                entity.level.addFreshEntity(new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), StackUtils.size(slotStack, count)));
-                            }
-                        } else {
-                            //If we have a valid stack, we can just directly drop that instead without requiring any copies
-                            // as while IInventorySlot#getStack says to not mutate the stack, our slot is a dummy slot
-                            entity.level.addFreshEntity(new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), slotStack));
-                        }
+                        //Pass the stack directly as while IInventorySlot#getStack says to not mutate the stack, our slot is a dummy slot
+                        // so even if we end up adding the entity using the source stack it is fine
+                        dropStack(slot.getStack(), slotStack -> entity.level.addFreshEntity(new ItemEntity(entity.level, entity.getX(), entity.getY(), entity.getZ(), slotStack)));
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Helper to drop a stack that may potentially be oversized.
+     *
+     * @param stack   Item Stack to drop, may be passed directly to the dropper.
+     * @param dropper Called to drop the item.
+     */
+    public static void dropStack(ItemStack stack, Consumer<ItemStack> dropper) {
+        int count = stack.getCount();
+        int max = stack.getMaxStackSize();
+        if (count > max) {
+            //If we have more than a stack of the item (such as we are a bin) or some other thing that allows for compressing
+            // stack counts, drop as many stacks as we need at their max size
+            while (count > max) {
+                dropper.accept(StackUtils.size(stack, max));
+                count -= max;
+            }
+            if (count > 0) {
+                //If we have anything left to drop afterward, do so
+                dropper.accept(StackUtils.size(stack, count));
+            }
+        } else {
+            //If we have a valid stack, we can just directly drop that instead without requiring any copies
+            dropper.accept(stack);
         }
     }
 
@@ -125,5 +138,57 @@ public final class InventoryUtils {
             }
         }
         return request;
+    }
+
+    /**
+     * Helper to first try inserting ignoring empty slots, and then insert not ignoring empty slots
+     *
+     * @param slots          Slots to insert into
+     * @param stack          Stack to insert (do not modify).
+     * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
+     * @param automationType The method that this slot is being interacted from.
+     *
+     * @return Remainder
+     *
+     * @see ItemHandlerHelper#insertItemStacked(IItemHandler, ItemStack, boolean)
+     */
+    public static ItemStack insertItem(List<? extends IInventorySlot> slots, @NotNull ItemStack stack, Action action, AutomationType automationType) {
+        stack = insertItem(slots, stack, true, false, action, automationType);
+        return insertItem(slots, stack, false, false, action, automationType);
+    }
+
+    /**
+     * Helper to try inserting a stack into a list of inventory slots only inserting into either empty slots or inserting into non-empty slots.
+     *
+     * @param slots          Slots to insert into
+     * @param stack          Stack to insert (do not modify).
+     * @param ignoreEmpty    {@code true} to ignore/skip empty slots, {@code false} to ignore/skip non-empty slots.
+     * @param checkAll       {@code true} to check all slots regardless of empty state. When this is {@code true}, {@code ignoreEmpty} is ignored.
+     * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
+     * @param automationType The method that this slot is being interacted from.
+     *
+     * @return Remainder
+     *
+     * @see mekanism.common.inventory.container.MekanismContainer#insertItem(List, ItemStack, boolean, boolean, SelectedWindowData, Action)
+     */
+    @NotNull
+    public static ItemStack insertItem(List<? extends IInventorySlot> slots, @NotNull ItemStack stack, boolean ignoreEmpty, boolean checkAll, Action action,
+          AutomationType automationType) {
+        if (stack.isEmpty()) {
+            //Skip doing anything if the stack is already empty.
+            // Makes it easier to chain calls, rather than having to check if the stack is empty after our previous call
+            return stack;
+        }
+        for (IInventorySlot slot : slots) {
+            if (!checkAll && ignoreEmpty == slot.isEmpty()) {
+                //Skip checking empty stacks if we want to ignore them, and skip non-empty stacks if we don't want ot ignore them
+                continue;
+            }
+            stack = slot.insertItem(stack, action, automationType);
+            if (stack.isEmpty()) {
+                break;
+            }
+        }
+        return stack;
     }
 }

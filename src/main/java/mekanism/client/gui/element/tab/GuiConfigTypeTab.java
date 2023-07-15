@@ -53,7 +53,7 @@ public class GuiConfigTypeTab extends GuiInsetElement<Void> {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY, int button) {
         config.setCurrentType(transmission);
         config.updateTabs();
     }

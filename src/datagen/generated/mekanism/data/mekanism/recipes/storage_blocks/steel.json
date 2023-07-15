@@ -3,11 +3,14 @@
   "key": {
     "#": {
       "tag": "forge:ingots/steel"
+    },
+    "P": {
+      "item": "mekanism:ingot_steel"
     }
   },
   "pattern": [
     "###",
-    "###",
+    "#P#",
     "###"
   ],
   "result": {

@@ -24,7 +24,8 @@ public interface GuiMinerFilterHelper extends GuiFilterHelper<TileEntityDigitalM
 
     default void addMinerDefaults(IGuiWrapper gui, MinerFilter<?> filter, int slotOffset, UnaryOperator<GuiElement> childAdder) {
         childAdder.apply(new GuiSlot(SlotType.NORMAL, gui, getRelativeX() + 148, getRelativeY() + slotOffset).setRenderHover(true)
-              .stored(() -> new ItemStack(filter.replaceTarget)).setGhostHandler((IGhostBlockItemConsumer) ingredient -> {
+              .stored(() -> new ItemStack(filter.replaceTarget)).click(GuiFilter.getHandleClickSlot(gui, GuiFilter.NOT_EMPTY_BLOCK, stack -> filter.replaceTarget = stack.getItem()))
+              .setGhostHandler((IGhostBlockItemConsumer) ingredient -> {
                   filter.replaceTarget = ((ItemStack) ingredient).getItem();
                   Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
               }));
@@ -36,12 +37,5 @@ public interface GuiMinerFilterHelper extends GuiFilterHelper<TileEntityDigitalM
     @Override
     default GuiMinerFilerSelect getFilterSelect(IGuiWrapper gui, TileEntityDigitalMiner tile) {
         return new GuiMinerFilerSelect(gui, tile);
-    }
-
-    default boolean tryClickReplaceStack(IGuiWrapper gui, double mouseX, double mouseY, int button, int slotOffset, MinerFilter<?> filter) {
-        return GuiFilter.mouseClickSlot(gui, button, mouseX, mouseY, getRelativeX() + 149, getRelativeY() + slotOffset + 1, GuiFilter.NOT_EMPTY_BLOCK, stack -> {
-            filter.replaceTarget = stack.getItem();
-            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-        });
     }
 }

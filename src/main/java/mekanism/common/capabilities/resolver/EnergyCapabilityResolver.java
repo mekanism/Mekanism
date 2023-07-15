@@ -1,7 +1,7 @@
 package mekanism.common.capabilities.resolver;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class EnergyCapabilityResolver implements ICapabilityResolver {
 
-    private final Map<Capability<?>, LazyOptional<?>> cachedCapabilities = new HashMap<>();
+    private final Map<Capability<?>, LazyOptional<?>> cachedCapabilities = new IdentityHashMap<>();
     private final IStrictEnergyHandler handler;
 
     public EnergyCapabilityResolver(ISidedStrictEnergyHandler handler) {

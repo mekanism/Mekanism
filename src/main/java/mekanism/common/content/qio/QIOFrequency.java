@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -60,7 +61,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     // efficiently keep track of the modids utilized by the items stored
     private final Map<String, Set<HashedItem>> modIDLookupMap = new HashMap<>();
     // efficiently keep track of the items for use in fuzzy lookup utilized by the items stored
-    private final Map<Item, Set<HashedItem>> fuzzyItemLookupMap = new HashMap<>();
+    private final Map<Item, Set<HashedItem>> fuzzyItemLookupMap = new IdentityHashMap<>();
     // a sensitive cache for wildcard tag lookups (wildcard -> [matching tags])
     private final SetMultimap<String, String> tagWildcardCache = HashMultimap.create();
     private final Set<String> failedWildcardTags = new HashSet<>();

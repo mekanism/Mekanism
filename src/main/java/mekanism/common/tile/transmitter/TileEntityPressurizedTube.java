@@ -1,7 +1,9 @@
 package mekanism.common.tile.transmitter;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
@@ -37,15 +39,24 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.ITileRadioactive;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityPressurizedTube extends TileEntityTransmitter implements IComputerTile, ITileRadioactive {
+
+    private static final Collection<Capability<?>> CAPABILITIES = Set.of(
+          Capabilities.GAS_HANDLER,
+          Capabilities.INFUSION_HANDLER,
+          Capabilities.PIGMENT_HANDLER,
+          Capabilities.SLURRY_HANDLER
+    );
 
     private final GasHandlerManager gasHandlerManager;
     private final InfusionHandlerManager infusionHandlerManager;
@@ -91,13 +102,13 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
     @NotNull
     @Override
     protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
-        return switch (tier) {
-            case BASIC -> BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_PRESSURIZED_TUBE);
-            case ADVANCED -> BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_PRESSURIZED_TUBE);
-            case ELITE -> BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_PRESSURIZED_TUBE);
-            case ULTIMATE -> BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE);
-            default -> current;
-        };
+        return BlockStateHelper.copyStateData(current, switch (tier) {
+            case BASIC -> MekanismBlocks.BASIC_PRESSURIZED_TUBE;
+            case ADVANCED -> MekanismBlocks.ADVANCED_PRESSURIZED_TUBE;
+            case ELITE -> MekanismBlocks.ELITE_PRESSURIZED_TUBE;
+            case ULTIMATE -> MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE;
+            default -> null;
+        });
     }
 
     @NotNull
@@ -115,10 +126,11 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
     IChemicalTankHolder<CHEMICAL, STACK, TANK> getHolder(BiFunction<BoxedPressurizedTube, Direction, List<TANK>> tankFunction) {
-        BoxedPressurizedTube tube = getTransmitter();
         return direction -> {
-            if (direction != null && tube.getConnectionTypeRaw(direction) == ConnectionType.NONE) {
-                //If we actually have a side, and our connection type on that side is none, then return that we have no tanks
+            BoxedPressurizedTube tube = getTransmitter();
+            if (direction != null && (tube.getConnectionTypeRaw(direction) == ConnectionType.NONE) || tube.isRedstoneActivated()) {
+                //If we actually have a side, and our connection type on that side is none, or we are currently activated by redstone,
+                // then return that we have no tanks
                 return Collections.emptyList();
             }
             return tankFunction.apply(tube, direction);
@@ -173,16 +185,25 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
     public void sideChanged(@NotNull Direction side, @NotNull ConnectionType old, @NotNull ConnectionType type) {
         super.sideChanged(side, old, type);
         if (type == ConnectionType.NONE) {
-            invalidateCapability(Capabilities.GAS_HANDLER, side);
-            invalidateCapability(Capabilities.INFUSION_HANDLER, side);
-            invalidateCapability(Capabilities.PIGMENT_HANDLER, side);
-            invalidateCapability(Capabilities.SLURRY_HANDLER, side);
+            invalidateCapabilities(CAPABILITIES, side);
             //Notify the neighbor on that side our state changed and we no longer have a capability
             WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         } else if (old == ConnectionType.NONE) {
             //Notify the neighbor on that side our state changed, and we now do have a capability
             WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         }
+    }
+
+    @Override
+    public void redstoneChanged(boolean powered) {
+        super.redstoneChanged(powered);
+        if (powered) {
+            //The transmitter now is powered by redstone and previously was not
+            //Note: While at first glance the below invalidation may seem over aggressive, it is not actually that aggressive as
+            // if a cap has not been initialized yet on a side then invalidating it will just NO-OP
+            invalidateCapabilities(CAPABILITIES, EnumUtils.DIRECTIONS);
+        }
+        //Note: We do not have to invalidate any caps if we are going from powered to unpowered as all the caps would already be "empty"
     }
 
     //Methods relating to IComputerTile

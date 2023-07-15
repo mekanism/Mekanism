@@ -1,4 +1,4 @@
-// 1.19.2	2023-01-22T11:34:53.814105	Tags: mekanism
+// 1.19.2	2023-06-12T14:13:17.2338723	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluids/no_infinite_draining.json
 b6ed3f4920042490a8f14b25e1284bb270aafaea data/forge/tags/blocks/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/forge/tags/blocks/barrels/personal.json
@@ -16,7 +16,7 @@ bdef9393495153de01627733023e68ba7926b8ca data/forge/tags/blocks/ores_in_ground/d
 71e00f3a8275cb4686baa73f9769b8d3edd3c9ab data/forge/tags/blocks/ores_in_ground/stone.json
 2c28a9632e9fa332edbee490f2af9c692116e762 data/forge/tags/blocks/ore_rates/dense.json
 08e34b68e9bf00dd897e558c3d9c6fae627e3df9 data/forge/tags/blocks/ore_rates/singular.json
-ee00801b53537cb20f528ed1c67b7b82ad457d09 data/forge/tags/blocks/relocation_not_supported.json
+69b9b29ba2cb5d30f82adc05ee8405568c6065ee data/forge/tags/blocks/relocation_not_supported.json
 706868327253ddafa426092e953fea9e2a7d25f3 data/forge/tags/blocks/storage_blocks.json
 7e24e57065c2a7f28a9aeba722eb014549505c86 data/forge/tags/blocks/storage_blocks/bronze.json
 4ec1accbc8394730982006a33945f05b701572d6 data/forge/tags/blocks/storage_blocks/charcoal.json
@@ -32,8 +32,8 @@ a2316de7395edfd30bb8271ff596240f453f2986 data/forge/tags/blocks/storage_blocks/r
 f5cef9314ee390feebf4b2036219d1c3df23e351 data/forge/tags/blocks/storage_blocks/steel.json
 65a28a53b7a60e660859cecfa32ce0c8f7771b30 data/forge/tags/blocks/storage_blocks/tin.json
 8e745c5f7a6a8b0bc07f373181a241c6c2ea9a01 data/forge/tags/blocks/storage_blocks/uranium.json
-ee00801b53537cb20f528ed1c67b7b82ad457d09 data/forge/tags/block_entity_type/immovable.json
-ee00801b53537cb20f528ed1c67b7b82ad457d09 data/forge/tags/block_entity_type/relocation_not_supported.json
+69b9b29ba2cb5d30f82adc05ee8405568c6065ee data/forge/tags/block_entity_type/immovable.json
+69b9b29ba2cb5d30f82adc05ee8405568c6065ee data/forge/tags/block_entity_type/relocation_not_supported.json
 88a67aad1e1becece2f0fa1763e5491173a9a577 data/forge/tags/fluids/brine.json
 f84e9ea02956bff6cb8a6f42a996f4fd76b5b6e9 data/forge/tags/fluids/chlorine.json
 f8df38beb1c963a31c812b4be0d083f39613ae41 data/forge/tags/fluids/ethene.json
@@ -233,6 +233,7 @@ b52afb060e54f9fa521b82346af5cb3cd4378697 data/mekanism/tags/mekanism/infuse_type
 4911fa51ae365a17ba0c00b3bed313f1d43f20a6 data/mekanism/tags/mekanism/infuse_type/tin.json
 3825830b29d051492a06a5aa0de89f95cd6ac79d data/mekanism/tags/mekanism/slurry/clean.json
 61af0ea7c8d297d714e770d36434a317500d15e9 data/mekanism/tags/mekanism/slurry/dirty.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanism/tags/mob_effect/speed_up_blacklist.json
 b79a9a1e0ddcf1344df98002024bc070480b51d7 data/minecraft/tags/blocks/axolotls_spawnable_on.json
 8702bbea19451a114725d603fecfd2359f3fcb5b data/minecraft/tags/blocks/beacon_base_blocks.json
 76c3b1172e0f737e9f67a7801456e83390a59a66 data/minecraft/tags/blocks/guarded_by_piglins.json

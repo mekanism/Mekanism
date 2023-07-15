@@ -13,7 +13,8 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
-import net.minecraft.client.Minecraft;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -74,6 +75,12 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISup
     }
 
     public GuiSlot click(IClickable onClick) {
+        //Use default click sound
+        return click(onClick, SoundEvents.UI_BUTTON_CLICK);
+    }
+
+    public GuiSlot click(IClickable onClick, @Nullable SoundEvent clickSound) {
+        this.clickSound = clickSound;
         this.onClick = onClick;
         return this;
     }
@@ -192,9 +199,11 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISup
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (onClick != null && isValidClickButton(button)) {
             if (mouseX >= x + borderSize() && mouseY >= y + borderSize() && mouseX < x + width - borderSize() && mouseY < y + height - borderSize()) {
-                onClick.onClick(this, (int) mouseX, (int) mouseY);
-                playDownSound(Minecraft.getInstance().getSoundManager());
-                return true;
+                if (onClick.onClick(this, (int) mouseX, (int) mouseY)) {
+                    playDownSound(minecraft.getSoundManager());
+                    return true;
+                }
+                //If clicking the slot fails check super as maybe it has children that can handle clicks
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);

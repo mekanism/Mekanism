@@ -1,7 +1,6 @@
 package mekanism.common.block;
 
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.registries.MekanismBlockTypes;
@@ -39,7 +38,7 @@ public class BlockIndustrialAlarm extends BlockTile<TileEntityIndustrialAlarm, B
     @Deprecated
     public BlockState updateShape(BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world,
           @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
-        if (facing.getOpposite() == Attribute.get(state, AttributeStateFacing.class).getDirection(state) && !state.canSurvive(world, currentPos)) {
+        if (facing.getOpposite() == Attribute.getFacing(state) && !state.canSurvive(world, currentPos)) {
             return Blocks.AIR.defaultBlockState();
         }
         return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
@@ -48,7 +47,7 @@ public class BlockIndustrialAlarm extends BlockTile<TileEntityIndustrialAlarm, B
     @Override
     @Deprecated
     public boolean canSurvive(@NotNull BlockState state, @NotNull LevelReader world, @NotNull BlockPos pos) {
-        Direction side = Attribute.get(state, AttributeStateFacing.class).getDirection(state);
+        Direction side = Attribute.getFacing(state);
         Direction sideOn = side.getOpposite();
         BlockPos offsetPos = pos.relative(sideOn);
         VoxelShape projected = world.getBlockState(offsetPos).getBlockSupportShape(world, offsetPos).getFaceShape(side);

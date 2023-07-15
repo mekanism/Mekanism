@@ -213,8 +213,13 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         QIOFrequency freq = getFrequency();
         if (freq != null) {
             Consumer<InsertableSlot> slotConsumer = slot -> {
-                if (slot.hasItem() && slot.mayPickup(player) && InventoryUtils.areItemsStackable(lastStack, slot.getItem())) {
-                    updateSlot(player, slot, freq.addItem(slot.getItem()));
+                if (slot.hasItem() && slot.mayPickup(player)) {
+                    //Note: We don't need to sanitize the slot's items as these are just InsertableSlots which have no restrictions on them on how much
+                    // can be extracted at once so even if they somehow have an oversized stack it will be fine
+                    ItemStack slotItem = slot.getItem();
+                    if (InventoryUtils.areItemsStackable(lastStack, slotItem)) {
+                        transferSuccess(slot, player, slotItem, freq.addItem(slotItem));
+                    }
                 }
             };
             mainInventorySlots.forEach(slotConsumer);
@@ -257,6 +262,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         }
         // special handling for shift-clicking into GUI
         if (!player.level.isClientSide()) {
+            //Note: We don't need to sanitize the slot's items as these are just InsertableSlots which have no restrictions on them on how much
+            // can be extracted at once so even if they somehow have an oversized stack it will be fine
             ItemStack slotStack = currentSlot.getItem();
             byte selectedCraftingGrid = getSelectedCraftingGrid(player.getUUID());
             if (selectedCraftingGrid != -1) {
@@ -281,15 +288,15 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             }
             QIOFrequency frequency = getFrequency();
             if (frequency != null) {
-                if (currentSlot.hasItem()) {
-                    //Make sure that we copy it so that we aren't just pointing to the reference of it
-                    slotStack = slotStack.copy();
+                if (!slotStack.isEmpty()) {
+                    //There is an item in the slot
                     ItemStack ret = frequency.addItem(slotStack);
                     if (slotStack.getCount() == ret.getCount()) {
                         return ItemStack.EMPTY;
                     }
-                    setTransferTracker(slotStack, slotID);
-                    return updateSlot(player, currentSlot, ret);
+                    //Make sure that we copy it so that we aren't just pointing to the reference of it
+                    setTransferTracker(slotStack.copy(), slotID);
+                    return transferSuccess(currentSlot, player, slotStack, ret);
                 } else {
                     if (slotID == lastSlot && !lastStack.isEmpty()) {
                         doDoubleClickTransfer(player);
@@ -300,10 +307,6 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             }
         }
         return ItemStack.EMPTY;
-    }
-
-    private ItemStack updateSlot(Player player, Slot currentSlot, ItemStack ret) {
-        return transferSuccess(currentSlot, player, currentSlot.getItem(), ret);
     }
 
     public void handleBatchUpdate(Object2LongMap<UUIDAwareHashedItem> itemMap, long countCapacity, int typeCapacity) {

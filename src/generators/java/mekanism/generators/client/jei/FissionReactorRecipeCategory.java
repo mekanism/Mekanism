@@ -92,14 +92,13 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIR
               MekanismGases.STEAM.getStack(coolantAmount), MekanismGases.NUCLEAR_WASTE.getStack(1)));
         //Go through all gases and add each coolant
         for (Gas gas : MekanismAPI.gasRegistry()) {
-            CooledCoolant cooledCoolant = gas.get(CooledCoolant.class);
-            if (cooledCoolant != null) {
+            gas.ifAttributePresent(CooledCoolant.class, cooledCoolant -> {
                 //If it is a cooled coolant add a recipe for it
                 Gas heatedCoolant = cooledCoolant.getHeatedGas();
-                coolantAmount = Math.round(energyPerFuel / cooledCoolant.getThermalEnthalpy());
-                recipes.add(new FissionJEIRecipe(IngredientCreatorAccess.gas().from(gas, coolantAmount), IngredientCreatorAccess.gas().from(MekanismGases.FISSILE_FUEL, 1),
-                      heatedCoolant.getStack(coolantAmount), MekanismGases.NUCLEAR_WASTE.getStack(1)));
-            }
+                long amount = Math.round(energyPerFuel / cooledCoolant.getThermalEnthalpy());
+                recipes.add(new FissionJEIRecipe(IngredientCreatorAccess.gas().from(gas, amount), IngredientCreatorAccess.gas().from(MekanismGases.FISSILE_FUEL, 1),
+                      heatedCoolant.getStack(amount), MekanismGases.NUCLEAR_WASTE.getStack(1)));
+            });
         }
         return recipes;
     }

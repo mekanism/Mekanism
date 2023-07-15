@@ -210,6 +210,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         setChanged();
     }
 
+    @Override
+    public void previousMode() {
+        //We only have two modes just flip it
+        nextMode();
+    }
+
     @NotNull
     @ComputerMethod(nameOverride = "getEnergyUsage")
     public FloatingLong getEnergyUsed() {

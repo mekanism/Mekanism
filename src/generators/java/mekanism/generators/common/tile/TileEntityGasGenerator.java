@@ -84,11 +84,12 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
         if (!fuelTank.isEmpty() && MekanismUtils.canFunction(this) && getEnergyContainer().insert(generationRate, Action.SIMULATE, AutomationType.INTERNAL).isZero()) {
             setActive(true);
-            if (!fuelTank.isEmpty() && fuelTank.getType().has(Fuel.class)) {
-                Fuel fuel = fuelTank.getType().get(Fuel.class);
-                //Ensure valid data
-                maxBurnTicks = Math.max(1, fuel.getBurnTicks());
-                generationRate = fuel.getEnergyPerTick();
+            if (!fuelTank.isEmpty()) {
+                fuelTank.getType().ifAttributePresent(Fuel.class, fuel -> {
+                    //Ensure valid data
+                    maxBurnTicks = Math.max(1, fuel.getBurnTicks());
+                    generationRate = fuel.getEnergyPerTick();
+                });
             }
 
             long toUse = getToUse();
@@ -193,9 +194,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
         private void recheckOutput(@NotNull GasStack stack, boolean wasEmpty) {
             if (wasEmpty && !stack.isEmpty()) {
-                if (getType().has(Fuel.class)) {
-                    updateMaxOutputRaw(getType().get(Fuel.class).getEnergyPerTick());
-                }
+                getType().ifAttributePresent(Fuel.class, fuel -> updateMaxOutputRaw(fuel.getEnergyPerTick()));
             }
         }
     }

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
-import mekanism.client.MekanismClient;
 import mekanism.client.render.HUDRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -31,7 +30,7 @@ public class MekanismHUD implements IGuiOverlay {
     @Override
     public void render(ForgeGui gui, PoseStack poseStack, float partialTicks, int screenWidth, int screenHeight) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (!minecraft.options.hideGui && !minecraft.player.isSpectator() && MekanismConfig.client.enableHUD.get() && MekanismClient.renderHUD) {
+        if (!minecraft.options.hideGui && !minecraft.player.isSpectator() && MekanismConfig.client.enableHUD.get()) {
             int count = 0;
             List<List<Component>> renderStrings = new ArrayList<>();
             for (EquipmentSlot slotType : EQUIPMENT_ORDER) {

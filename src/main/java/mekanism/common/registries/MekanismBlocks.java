@@ -16,7 +16,6 @@ import mekanism.common.block.BlockOre;
 import mekanism.common.block.BlockPersonalBarrel;
 import mekanism.common.block.BlockPersonalChest;
 import mekanism.common.block.BlockRadioactiveWasteBarrel;
-import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.block.basic.BlockChargepad;
@@ -363,23 +362,23 @@ public class MekanismBlocks {
     }
 
     private static BlockRegistryObject<BlockBin, ItemBlockBin> registerBin(BlockTypeTile<TileEntityBin> type) {
-        return registerTieredBlock(type.get(AttributeTier.class).tier(), "_bin", () -> new BlockBin(type), ItemBlockBin::new);
+        return registerTieredBlock(type, "_bin", () -> new BlockBin(type), ItemBlockBin::new);
     }
 
     private static BlockRegistryObject<BlockTile<TileEntityInductionCell, BlockTypeTile<TileEntityInductionCell>>, ItemBlockInductionCell> registerInductionCell(BlockTypeTile<TileEntityInductionCell> type) {
-        return registerTieredBlock(type.get(AttributeTier.class).tier(), "_induction_cell", () -> new BlockTile<>(type), ItemBlockInductionCell::new);
+        return registerTieredBlock(type, "_induction_cell", () -> new BlockTile<>(type), ItemBlockInductionCell::new);
     }
 
     private static BlockRegistryObject<BlockTile<TileEntityInductionProvider, BlockTypeTile<TileEntityInductionProvider>>, ItemBlockInductionProvider> registerInductionProvider(BlockTypeTile<TileEntityInductionProvider> type) {
-        return registerTieredBlock(type.get(AttributeTier.class).tier(), "_induction_provider", () -> new BlockTile<>(type), ItemBlockInductionProvider::new);
+        return registerTieredBlock(type, "_induction_provider", () -> new BlockTile<>(type), ItemBlockInductionProvider::new);
     }
 
     private static BlockRegistryObject<BlockFluidTank, ItemBlockFluidTank> registerFluidTank(Machine<TileEntityFluidTank> type) {
-        return registerTieredBlock(type.get(AttributeTier.class).tier(), "_fluid_tank", () -> new BlockFluidTank(type), ItemBlockFluidTank::new);
+        return registerTieredBlock(type, "_fluid_tank", () -> new BlockFluidTank(type), ItemBlockFluidTank::new);
     }
 
     private static BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> registerEnergyCube(Machine<TileEntityEnergyCube> type) {
-        return registerTieredBlock(type.get(AttributeTier.class).tier(), "_energy_cube", () -> new BlockEnergyCube(type), ItemBlockEnergyCube::new);
+        return registerTieredBlock(type, "_energy_cube", () -> new BlockEnergyCube(type), ItemBlockEnergyCube::new);
     }
 
     private static BlockRegistryObject<BlockUniversalCable, ItemBlockUniversalCable> registerUniversalCable(CableTier tier) {
@@ -404,11 +403,16 @@ public class MekanismBlocks {
 
     private static BlockRegistryObject<BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>>, ItemBlockChemicalTank> registerChemicalTank(
           Machine<TileEntityChemicalTank> type) {
-        return registerTieredBlock(type.get(AttributeTier.class).tier(), "_chemical_tank", () -> new BlockTileModel<>(type), ItemBlockChemicalTank::new);
+        return registerTieredBlock(type, "_chemical_tank", () -> new BlockTileModel<>(type), ItemBlockChemicalTank::new);
     }
 
     private static <TILE extends TileEntityFactory<?>> BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> registerFactory(Factory<TILE> type) {
-        return registerTieredBlock(type.get(AttributeTier.class).tier(), "_" + type.get(AttributeFactoryType.class).getFactoryType().getRegistryNameComponent() + "_factory", () -> new BlockFactory<>(type), ItemBlockFactory::new);
+        return registerTieredBlock(type, "_" + type.getFactoryType().getRegistryNameComponent() + "_factory", () -> new BlockFactory<>(type), ItemBlockFactory::new);
+    }
+
+    private static <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> registerTieredBlock(BlockType type, String suffix,
+          Supplier<? extends BLOCK> blockSupplier, Function<BLOCK, ITEM> itemCreator) {
+        return registerTieredBlock(type.get(AttributeTier.class).tier(), suffix, blockSupplier, itemCreator);
     }
 
     private static <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> registerTieredBlock(ITier tier, String suffix,

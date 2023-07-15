@@ -68,20 +68,17 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     }
 
     @Override
-    protected void drawForegroundText(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.drawForegroundText(matrix, mouseX, mouseY);
+    protected void renderTooltip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
+        super.renderTooltip(matrix, mouseX, mouseY);
         if (tile instanceof ISideConfiguration) {
-            ItemStack stack = getMinecraft().player.containerMenu.getCarried();
+            ItemStack stack = getCarriedItem();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
-                for (int i = 0; i < menu.slots.size(); i++) {
-                    Slot slot = menu.slots.get(i);
-                    if (isMouseOverSlot(slot, mouseX, mouseY)) {
-                        DataType data = getFromSlot(slot);
-                        if (data != null) {
-                            EnumColor color = data.getColor();
-                            displayTooltips(matrix, mouseX - leftPos, mouseY - topPos, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, data, color.getName()));
-                        }
-                        break;
+                Slot slot = getSlotUnderMouse();
+                if (slot != null) {
+                    DataType data = getFromSlot(slot);
+                    if (data != null) {
+                        EnumColor color = data.getColor();
+                        displayTooltips(matrix, mouseX, mouseY, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, data, color.getName()));
                     }
                 }
             }

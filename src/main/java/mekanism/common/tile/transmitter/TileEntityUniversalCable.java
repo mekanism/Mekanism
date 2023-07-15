@@ -19,6 +19,7 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,8 +36,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
         super(blockProvider, pos, state);
         addCapabilityResolver(energyHandlerManager = new EnergyHandlerManager(direction -> {
             UniversalCable cable = getTransmitter();
-            if (direction != null && cable.getConnectionTypeRaw(direction) == ConnectionType.NONE) {
-                //If we actually have a side, and our connection type on that side is none, then return that we have no containers
+            if (direction != null && (cable.getConnectionTypeRaw(direction) == ConnectionType.NONE) || cable.isRedstoneActivated()) {
+                //If we actually have a side, and our connection type on that side is none, or we are currently activated by redstone,
+                // then return that we have no containers
                 return Collections.emptyList();
             }
             return cable.getEnergyContainers(direction);
@@ -68,13 +70,13 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
     @NotNull
     @Override
     protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
-        return switch (tier) {
-            case BASIC -> BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_UNIVERSAL_CABLE);
-            case ADVANCED -> BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_UNIVERSAL_CABLE);
-            case ELITE -> BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_UNIVERSAL_CABLE);
-            case ULTIMATE -> BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE);
-            default -> current;
-        };
+        return BlockStateHelper.copyStateData(current, switch (tier) {
+            case BASIC -> MekanismBlocks.BASIC_UNIVERSAL_CABLE;
+            case ADVANCED -> MekanismBlocks.ADVANCED_UNIVERSAL_CABLE;
+            case ELITE -> MekanismBlocks.ELITE_UNIVERSAL_CABLE;
+            case ULTIMATE -> MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE;
+            default -> null;
+        });
     }
 
     @NotNull
@@ -105,6 +107,18 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
             //Notify the neighbor on that side our state changed, and we now do have a capability
             WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         }
+    }
+
+    @Override
+    public void redstoneChanged(boolean powered) {
+        super.redstoneChanged(powered);
+        if (powered) {
+            //The transmitter now is powered by redstone and previously was not
+            //Note: While at first glance the below invalidation may seem over aggressive, it is not actually that aggressive as
+            // if a cap has not been initialized yet on a side then invalidating it will just NO-OP
+            invalidateCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities(), EnumUtils.DIRECTIONS);
+        }
+        //Note: We do not have to invalidate any caps if we are going from powered to unpowered as all the caps would already be "empty"
     }
 
     //Methods relating to IComputerTile

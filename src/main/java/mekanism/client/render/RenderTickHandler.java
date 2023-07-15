@@ -261,7 +261,9 @@ public class RenderTickHandler {
     @SubscribeEvent
     public void tickEnd(RenderTickEvent event) {
         if (event.phase == Phase.END) {
-            if (minecraft.player != null && minecraft.player.level != null && !minecraft.isPaused()) {
+            //Note: We check that the game mode is not null as if it is that means the world is unloading, and we don't actually want to be rendering
+            // as our data may be out of date or invalid. For example configs could unload while it is still unloading
+            if (minecraft.player != null && minecraft.player.level != null && !minecraft.isPaused() && minecraft.gameMode != null) {
                 Player player = minecraft.player;
                 Level world = minecraft.player.level;
                 //TODO: Check if we have another matrix stack we should use
@@ -274,7 +276,7 @@ public class RenderTickHandler {
                         Pos3D playerPos = new Pos3D(p).translate(0, p.getEyeHeight(), 0);
                         Vec3 playerMotion = p.getDeltaMovement();
                         float random = (world.random.nextFloat() - 0.5F) * 0.1F;
-                        //This positioning code is somewhat cursed but it seems to be mostly working and entity pose code seems cursed in general
+                        //This positioning code is somewhat cursed, but it seems to be mostly working and entity pose code seems cursed in general
                         float xRot;
                         if (p.isCrouching()) {
                             xRot = 20;

@@ -341,7 +341,7 @@ public class Mekanism {
     }
 
     private void imcHandle(InterModProcessEvent event) {
-        ModuleHelper.INSTANCE.processIMC();
+        ModuleHelper.INSTANCE.processIMC(event);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

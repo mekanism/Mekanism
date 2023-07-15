@@ -3,11 +3,14 @@
   "key": {
     "#": {
       "tag": "forge:raw_materials/lead"
+    },
+    "P": {
+      "item": "mekanism:raw_lead"
     }
   },
   "pattern": [
     "###",
-    "###",
+    "#P#",
     "###"
   ],
   "result": {

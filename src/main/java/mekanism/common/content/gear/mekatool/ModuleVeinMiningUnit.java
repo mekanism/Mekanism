@@ -1,8 +1,8 @@
 package mekanism.common.content.gear.mekatool;
 
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -127,7 +127,7 @@ public class ModuleVeinMiningUnit implements ICustomModule<ModuleVeinMiningUnit>
         return !(state.getBlock() instanceof BlockBounding);
     }
 
-    public static Object2IntMap<BlockPos> findPositions(Level world, Map<BlockPos, BlockState> initial, int extendedRange, Object2BooleanMap<Block> oreTracker) {
+    public static Object2IntMap<BlockPos> findPositions(Level world, Map<BlockPos, BlockState> initial, int extendedRange, Reference2BooleanMap<Block> oreTracker) {
         Object2IntMap<BlockPos> found = new Object2IntLinkedOpenHashMap<>();
 
         int maxVein = MekanismConfig.gear.disassemblerMiningCount.get();

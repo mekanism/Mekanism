@@ -1,4 +1,4 @@
-// 1.19.2	2022-08-27T08:07:56.7635451	LootTables: mekanism
+// 1.19.2	2023-04-18T10:15:23.8348068	LootTables: mekanism
 a587e31a0d1bc81ccedfa330e48e114ffbccbe24 data/mekanism/loot_tables/blocks/advanced_bin.json
 20960dd0b8d8e463b270ee157f354df9081656f7 data/mekanism/loot_tables/blocks/advanced_chemical_tank.json
 2db5d1f3ea049b9e987b32e01aadbf2bfb075f44 data/mekanism/loot_tables/blocks/advanced_combining_factory.json
@@ -76,7 +76,7 @@ d5d98b2457002794f1d0bdf8b76446f23d899393 data/mekanism/loot_tables/blocks/deepsl
 e0351e26c1d30f25009961b47096fde2f4ba258a data/mekanism/loot_tables/blocks/deepslate_osmium_ore.json
 f419a801493d695b93314025e5e7ca15c1c292c9 data/mekanism/loot_tables/blocks/deepslate_tin_ore.json
 8849cc6d8062f1b9bdf118db6d0aa7a87d79ef2b data/mekanism/loot_tables/blocks/deepslate_uranium_ore.json
-0261d90b21694387a850fa960c857d5b6af86120 data/mekanism/loot_tables/blocks/digital_miner.json
+c948b33f3c83cb5411fe3b8aaf86668825a5c035 data/mekanism/loot_tables/blocks/digital_miner.json
 acd5f897838437da2efe0ed7fb6ae1187a0511d1 data/mekanism/loot_tables/blocks/dimensional_stabilizer.json
 ffb7692185e91e4fb6fd03dfac91025e9bb5adc8 data/mekanism/loot_tables/blocks/diversion_transporter.json
 fcecd301461efe2677e49b32ef524664d1cc0e82 data/mekanism/loot_tables/blocks/dynamic_tank.json

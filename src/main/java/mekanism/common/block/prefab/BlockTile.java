@@ -79,20 +79,23 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     @Override
     public void animateTick(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull RandomSource random) {
         super.animateTick(state, world, pos, random);
-        if (MekanismConfig.client.machineEffects.get() && type.has(AttributeParticleFX.class) && Attribute.isActive(state)) {
-            Direction facing = Attribute.getFacing(state);
-            for (Function<RandomSource, Particle> particleFunction : type.get(AttributeParticleFX.class).getParticleFunctions()) {
-                Particle particle = particleFunction.apply(random);
-                Vec3 particlePos = particle.getPos();
-                if (facing == Direction.WEST) {
-                    particlePos = particlePos.yRot(90);
-                } else if (facing == Direction.EAST) {
-                    particlePos = particlePos.yRot(270);
-                } else if (facing == Direction.NORTH) {
-                    particlePos = particlePos.yRot(180);
+        if (MekanismConfig.client.machineEffects.get()) {
+            AttributeParticleFX particleFX = type.get(AttributeParticleFX.class);
+            if (particleFX != null && Attribute.isActive(state)) {
+                Direction facing = Attribute.getFacing(state);
+                for (Function<RandomSource, Particle> particleFunction : particleFX.getParticleFunctions()) {
+                    Particle particle = particleFunction.apply(random);
+                    Vec3 particlePos = particle.getPos();
+                    if (facing == Direction.WEST) {
+                        particlePos = particlePos.yRot(90);
+                    } else if (facing == Direction.EAST) {
+                        particlePos = particlePos.yRot(270);
+                    } else if (facing == Direction.NORTH) {
+                        particlePos = particlePos.yRot(180);
+                    }
+                    particlePos = particlePos.add(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+                    world.addParticle(particle.getType(), particlePos.x, particlePos.y, particlePos.z, 0.0D, 0.0D, 0.0D);
                 }
-                particlePos = particlePos.add(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-                world.addParticle(particle.getType(), particlePos.x, particlePos.y, particlePos.z, 0.0D, 0.0D, 0.0D);
             }
         }
     }

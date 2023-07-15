@@ -49,9 +49,4 @@ public class GuiMinerModIDFilter extends GuiModIDFilter<MinerModIDFilter, TileEn
     protected boolean hasMatchingTargets(String name) {
         return TagCache.getBlockModIDStacks(name).hasMatch();
     }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return tryClickReplaceStack(gui(), mouseX, mouseY, button, getSlotOffset(), filter) || super.mouseClicked(mouseX, mouseY, button);
-    }
 }

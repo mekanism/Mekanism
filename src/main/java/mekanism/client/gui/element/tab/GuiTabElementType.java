@@ -17,7 +17,7 @@ public abstract class GuiTabElementType<TILE extends BlockEntity, TAB extends En
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
+    public void onClick(double mouseX, double mouseY, int button) {
         tabType.onClick(dataSource);
     }
 

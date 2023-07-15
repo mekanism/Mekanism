@@ -64,8 +64,8 @@ public class ItemTierInstaller extends Item {
         BlockPos pos = context.getClickedPos();
         BlockState state = world.getBlockState(pos);
         Block block = state.getBlock();
-        if (Attribute.has(block, AttributeUpgradeable.class)) {
-            AttributeUpgradeable upgradeableBlock = Attribute.get(block, AttributeUpgradeable.class);
+        AttributeUpgradeable upgradeableBlock = Attribute.get(block, AttributeUpgradeable.class);
+        if (upgradeableBlock != null) {
             BaseTier baseTier = Attribute.getBaseTier(block);
             if (baseTier == fromTier && baseTier != toTier) {
                 BlockState upgradeState = upgradeableBlock.upgradeResult(state, toTier);

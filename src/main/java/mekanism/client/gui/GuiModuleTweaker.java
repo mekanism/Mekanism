@@ -23,6 +23,7 @@ import mekanism.common.inventory.container.ModuleTweakerContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.network.to_server.PacketUpdateModuleSettings;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -80,7 +81,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 select(index);
             }
             addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, slot.x - 1, slot.y - 1)
-                  .click((e, x, y) -> select(index))
+                  .click((e, x, y) -> select(index), MekanismSounds.BEEP.get())
                   .overlayColor(isValidItem(index) ? null : () -> 0xCC333333)
                   .with(() -> index == selected ? SlotOverlay.SELECT : null));
         }
@@ -143,7 +144,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
-    private void select(int index) {
+    private boolean select(int index) {
         if (isValidItem(index)) {
             selected = index;
             ItemStack stack = getStack(index);
@@ -151,7 +152,9 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
             scrollList.updateItemAndList(stack);
             scrollList.clearSelection();
             optionsButton.active = stack.getItem() == MekanismItems.MEKASUIT_HELMET.get();
+            return true;
         }
+        return false;
     }
 
     private boolean isValidItem(int index) {

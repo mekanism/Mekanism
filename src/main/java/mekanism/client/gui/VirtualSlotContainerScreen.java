@@ -15,6 +15,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 //TODO - 1.20: Heavily re-evaluate this class/make sure nothing has gotten broken
 public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
@@ -96,7 +97,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         ItemStack currentStack = slot.getItem();
         boolean shouldDrawOverlay = false;
         boolean skipStackRendering = slot == this.clickedSlot && !this.draggingItem.isEmpty() && !this.isSplittingStack;
-        ItemStack heldStack = minecraft.player.containerMenu.getCarried();
+        ItemStack heldStack = menu.getCarried();
         String s = null;
         if (slot == this.clickedSlot && !this.draggingItem.isEmpty() && this.isSplittingStack && !currentStack.isEmpty()) {
             currentStack = currentStack.copy();
@@ -137,12 +138,12 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
                 if (slot.hasItem()) {
                     this.clickedSlot = slot;
                     this.draggingItem = ItemStack.EMPTY;
-                    this.isSplittingStack = button == 1;
+                    this.isSplittingStack = button == GLFW.GLFW_MOUSE_BUTTON_2;
                 } else {
                     this.clickedSlot = null;
                 }
             } else if (!this.isQuickCrafting) {
-                if (minecraft.player.containerMenu.getCarried().isEmpty()) {
+                if (menu.getCarried().isEmpty()) {
                     if (pickBlockButton) {
                         this.slotClicked(slot, slot.index, button, ClickType.CLONE);
                     } else {
@@ -158,9 +159,9 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
                     this.isQuickCrafting = true;
                     this.quickCraftingButton = button;
                     this.quickCraftSlots.clear();
-                    if (button == 0) {
+                    if (button == GLFW.GLFW_MOUSE_BUTTON_1) {
                         this.quickCraftingType = 0;
-                    } else if (button == 1) {
+                    } else if (button == GLFW.GLFW_MOUSE_BUTTON_2) {
                         this.quickCraftingType = 1;
                     } else if (pickBlockButton) {
                         this.quickCraftingType = 2;

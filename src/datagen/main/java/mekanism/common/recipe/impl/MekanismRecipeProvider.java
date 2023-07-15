@@ -17,6 +17,7 @@ import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.recipe.compat.AE2RecipeProvider;
 import mekanism.common.recipe.compat.BYGRecipeProvider;
 import mekanism.common.recipe.compat.BiomesOPlentyRecipeProvider;
+import mekanism.common.recipe.compat.FarmersDelightRecipeProvider;
 import mekanism.common.recipe.compat.ILikeWoodBOPRecipeProvider;
 import mekanism.common.recipe.compat.ILikeWoodBYGRecipeProvider;
 import mekanism.common.recipe.compat.ILikeWoodRecipeProvider;
@@ -58,6 +59,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     static final RecipePattern STORAGE_PATTERN = RecipePattern.createPattern(
           TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT),
           TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT),
+          TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT));
+    static final RecipePattern TYPED_STORAGE_PATTERN = RecipePattern.createPattern(
+          TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT),
+          TripleLine.of(Pattern.CONSTANT, Pattern.PREVIOUS, Pattern.CONSTANT),
           TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT));
     public static final RecipePattern BASIC_MODULE = RecipePattern.createPattern(
           TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
@@ -115,6 +120,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               new AE2RecipeProvider(),
               new BiomesOPlentyRecipeProvider(),
               new BYGRecipeProvider(),
+              new FarmersDelightRecipeProvider(),
               new ILikeWoodRecipeProvider(),
               new ILikeWoodBOPRecipeProvider(),
               new ILikeWoodBYGRecipeProvider()

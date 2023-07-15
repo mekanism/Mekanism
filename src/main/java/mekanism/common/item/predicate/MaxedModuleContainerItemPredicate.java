@@ -2,7 +2,7 @@ package mekanism.common.item.predicate;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import java.util.Set;
 import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
@@ -38,9 +38,9 @@ public class MaxedModuleContainerItemPredicate<ITEM extends Item & IModuleContai
     @Override
     public boolean matches(@NotNull ItemStack stack) {
         if (stack.getItem() == item) {
-            Object2IntMap<ModuleData<?>> installedCounts = ModuleHelper.INSTANCE.loadAllCounts(stack);
+            Reference2IntMap<ModuleData<?>> installedCounts = ModuleHelper.INSTANCE.loadAllCounts(stack);
             if (installedCounts.keySet().containsAll(supportedModules)) {
-                for (Object2IntMap.Entry<ModuleData<?>> entry : installedCounts.object2IntEntrySet()) {
+                for (Reference2IntMap.Entry<ModuleData<?>> entry : installedCounts.reference2IntEntrySet()) {
                     if (entry.getIntValue() != entry.getKey().getMaxStackSize()) {
                         return false;
                     }

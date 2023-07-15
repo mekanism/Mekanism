@@ -111,6 +111,12 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         setChanged();
     }
 
+    @Override
+    public void previousMode() {
+        outputMode = outputMode.getPrevious();
+        setChanged();
+    }
+
     public void setMinThresholdFromPacket(FloatingLong target) {
         if (updateMinThreshold(target)) {
             markForSave();

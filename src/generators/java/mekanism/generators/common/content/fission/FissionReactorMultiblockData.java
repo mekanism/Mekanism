@@ -17,6 +17,7 @@ import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
+import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
@@ -283,13 +284,15 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     public void meltdownHappened(Level world) {
         if (isFormed()) {
             IRadiationManager radiationManager = MekanismAPI.getRadiationManager();
-            //Calculate radiation level and clear any tanks that had radioactive substances and are contributing to the
-            // amount of radiation released
-            double radiation = getTankRadioactivityAndDump(fuelTank) + getWasteTankRadioactivity(true) +
-                               getTankRadioactivityAndDump(gasCoolantTank) + getTankRadioactivityAndDump(heatedCoolantTank);
-            radiation *= MekanismGeneratorsConfig.generators.fissionMeltdownRadiationMultiplier.get();
-            //When the meltdown actually happens, release radiation into the atmosphere
-            radiationManager.radiate(new Coord4D(getBounds().getCenter(), world), radiation);
+            if (radiationManager.isRadiationEnabled()) {
+                //Calculate radiation level and clear any tanks that had radioactive substances and are contributing to the
+                // amount of radiation released
+                double radiation = getTankRadioactivityAndDump(fuelTank) + getWasteTankRadioactivity(true) +
+                                   getTankRadioactivityAndDump(gasCoolantTank) + getTankRadioactivityAndDump(heatedCoolantTank);
+                radiation *= MekanismGeneratorsConfig.generators.fissionMeltdownRadiationMultiplier.get();
+                //When the meltdown actually happens, release radiation into the atmosphere
+                radiationManager.radiate(new Coord4D(getBounds().getCenter(), world), radiation);
+            }
             //Dump the heated coolant as "loss" that didn't survive the meltdown
             heatedCoolantTank.setEmpty();
             //Disable the reactor so that if the person rebuilds it, it isn't on by default (QoL)
@@ -313,29 +316,32 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         }
     }
 
+    /**
+     * @apiNote Assumes radiation is enabled instead of checking and returning zero if it is not.
+     */
     private double getWasteTankRadioactivity(boolean dump) {
         if (wasteTank.isEmpty()) {
-            return partialWaste * MekanismGases.NUCLEAR_WASTE.get().get(GasAttributes.Radiation.class).getRadioactivity();
+            return MekanismGases.NUCLEAR_WASTE.get().mapAttributeToDouble(GasAttributes.Radiation.class, attribute -> partialWaste * attribute.getRadioactivity());
         }
-        GasStack stored = wasteTank.getStack();
-        if (stored.has(GasAttributes.Radiation.class)) {
+        return wasteTank.getStack().mapAttributeToDouble(GasAttributes.Radiation.class, (stored, attribute) -> {
             if (dump) {
                 //If we want to dump if we have a radioactive substance, then we need to set the tank to empty
                 wasteTank.setEmpty();
             }
-            return (stored.getAmount() + partialWaste) * stored.get(GasAttributes.Radiation.class).getRadioactivity();
-        }
-        return 0;
+            return (stored.getAmount() + partialWaste) * attribute.getRadioactivity();
+        });
     }
 
+    /**
+     * @apiNote Assumes radiation is enabled instead of checking and returning zero if it is not.
+     */
     private double getTankRadioactivityAndDump(IGasTank tank) {
         if (!tank.isEmpty()) {
-            GasStack stored = tank.getStack();
-            if (stored.has(GasAttributes.Radiation.class)) {
+            return tank.getStack().mapAttributeToDouble(GasAttributes.Radiation.class, (stored, attribute) -> {
                 //If we have a radioactive substance, then we need to set the tank to empty
                 tank.setEmpty();
-                return stored.getAmount() * stored.get(GasAttributes.Radiation.class).getRadioactivity();
-            }
+                return stored.getAmount() * attribute.getRadioactivity();
+            });
         }
         return 0;
     }
@@ -343,34 +349,34 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     private void handleCoolant() {
         double temp = heatCapacitor.getTemperature();
         double heat = getBoilEfficiency() * (temp - HeatUtils.BASE_BOIL_TEMP) * heatCapacitor.getHeatCapacity();
-        long coolantHeated = 0;
 
         if (!fluidCoolantTank.isEmpty()) {
             double caseCoolantHeat = heat * waterConductivity;
-            coolantHeated = (int) (HeatUtils.getSteamEnergyEfficiency() * caseCoolantHeat / HeatUtils.getWaterThermalEnthalpy());
-            coolantHeated = Mth.clamp(coolantHeated, 0, fluidCoolantTank.getFluidAmount());
-            if (coolantHeated > 0) {
-                MekanismUtils.logMismatchedStackSize(fluidCoolantTank.shrinkStack((int) coolantHeated, Action.EXECUTE), coolantHeated);
+            lastBoilRate = clampCoolantHeated(HeatUtils.getSteamEnergyEfficiency() * caseCoolantHeat / HeatUtils.getWaterThermalEnthalpy(),
+                  fluidCoolantTank.getFluidAmount());
+            if (lastBoilRate > 0) {
+                MekanismUtils.logMismatchedStackSize(fluidCoolantTank.shrinkStack((int) lastBoilRate, Action.EXECUTE), lastBoilRate);
                 // extra steam is dumped
-                heatedCoolantTank.insert(MekanismGases.STEAM.getStack(coolantHeated), Action.EXECUTE, AutomationType.INTERNAL);
-                caseCoolantHeat = coolantHeated * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
+                heatedCoolantTank.insert(MekanismGases.STEAM.getStack(lastBoilRate), Action.EXECUTE, AutomationType.INTERNAL);
+                caseCoolantHeat = lastBoilRate * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
                 heatCapacitor.handleHeat(-caseCoolantHeat);
             }
         } else if (!gasCoolantTank.isEmpty()) {
-            CooledCoolant coolantType = gasCoolantTank.getStack().get(CooledCoolant.class);
-            if (coolantType != null) {
+            gasCoolantTank.getStack().ifAttributePresent(CooledCoolant.class, coolantType -> {
                 double caseCoolantHeat = heat * coolantType.getConductivity();
-                coolantHeated = (int) (caseCoolantHeat / coolantType.getThermalEnthalpy());
-                coolantHeated = Mth.clamp(coolantHeated, 0, gasCoolantTank.getStored());
-                if (coolantHeated > 0) {
-                    MekanismUtils.logMismatchedStackSize(gasCoolantTank.shrinkStack((int) coolantHeated, Action.EXECUTE), coolantHeated);
-                    heatedCoolantTank.insert(coolantType.getHeatedGas().getStack(coolantHeated), Action.EXECUTE, AutomationType.INTERNAL);
-                    caseCoolantHeat = coolantHeated * coolantType.getThermalEnthalpy();
+                lastBoilRate = clampCoolantHeated(caseCoolantHeat / coolantType.getThermalEnthalpy(), gasCoolantTank.getStored());
+                if (lastBoilRate > 0) {
+                    MekanismUtils.logMismatchedStackSize(gasCoolantTank.shrinkStack(lastBoilRate, Action.EXECUTE), lastBoilRate);
+                    heatedCoolantTank.insert(coolantType.getHeatedGas().getStack(lastBoilRate), Action.EXECUTE, AutomationType.INTERNAL);
+                    caseCoolantHeat = lastBoilRate * coolantType.getThermalEnthalpy();
                     heatCapacitor.handleHeat(-caseCoolantHeat);
                 }
-            }
+            });
         }
-        lastBoilRate = coolantHeated;
+    }
+
+    private long clampCoolantHeated(double heated, long stored) {
+        return Mth.clamp(MathUtils.clampToLong(heated), 0, stored);
     }
 
     private void burnFuel(Level world) {
@@ -390,9 +396,10 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             long leftoverWaste = Math.max(0, newWaste - wasteTank.getNeeded());
             GasStack wasteToAdd = MekanismGases.NUCLEAR_WASTE.getStack(newWaste);
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
-            if (leftoverWaste > 0) {
-                double radioactivity = wasteToAdd.getType().get(GasAttributes.Radiation.class).getRadioactivity();
-                MekanismAPI.getRadiationManager().radiate(new Coord4D(getBounds().getCenter(), world), leftoverWaste * radioactivity);
+            if (leftoverWaste > 0 && MekanismAPI.getRadiationManager().isRadiationEnabled()) {
+                //Check if radiation is enabled in order to allow for short-circuiting when it will NO-OP further down the line anyway
+                wasteToAdd.ifAttributePresent(GasAttributes.Radiation.class, attribute ->
+                      MekanismAPI.getRadiationManager().radiate(new Coord4D(getBounds().getCenter(), world), leftoverWaste * attribute.getRadioactivity()));
             }
         }
         // update previous burn

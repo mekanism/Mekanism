@@ -7,17 +7,19 @@ import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TranslationButton extends MekanismButton {
 
+    @Nullable
     private final Supplier<EnumColor> colorSupplier;
 
-    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, Runnable onPress) {
+    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, @NotNull Runnable onPress) {
         this(gui, x, y, width, height, translationHelper, onPress, null, null);
     }
 
-    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, Runnable onPress, IHoverable onHover,
-          Supplier<EnumColor> colorSupplier) {
+    public TranslationButton(IGuiWrapper gui, int x, int y, int width, int height, ILangEntry translationHelper, @NotNull Runnable onPress, @Nullable IHoverable onHover,
+          @Nullable Supplier<EnumColor> colorSupplier) {
         super(gui, x, y, width, height, translationHelper.translate(), onPress, onHover);
         this.colorSupplier = colorSupplier;
     }

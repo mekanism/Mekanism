@@ -78,7 +78,6 @@ import mekanism.client.gui.robit.GuiRobitMain;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.gui.robit.GuiRobitSmelting;
 import mekanism.client.key.MekanismKeyHandler;
-import mekanism.client.model.CustomRotationModel;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.model.ModelArmoredFreeRunners;
 import mekanism.client.model.ModelArmoredJetpack;
@@ -253,11 +252,11 @@ public class ClientRegistration {
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("invalid"), (stack, world, entity, seed) -> {
                 ItemCraftingFormula formula = (ItemCraftingFormula) stack.getItem();
-                return formula.getInventory(stack) != null && formula.isInvalid(stack) ? 1 : 0;
+                return formula.hasInventory(stack) && formula.isInvalid(stack) ? 1 : 0;
             });
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("encoded"), (stack, world, entity, seed) -> {
                 ItemCraftingFormula formula = (ItemCraftingFormula) stack.getItem();
-                return formula.getInventory(stack) != null && !formula.isInvalid(stack) ? 1 : 0;
+                return formula.hasInventory(stack) && !formula.isInvalid(stack) ? 1 : 0;
             });
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.CONFIGURATION_CARD, Mekanism.rl("encoded"),
                   (stack, world, entity, seed) -> ((ItemConfigurationCard) stack.getItem()).hasData(stack) ? 1 : 0);
@@ -275,7 +274,7 @@ public class ClientRegistration {
             });
             //Note: Our implementation allows for a null entity so don't worry about it and pass it
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.HDPE_REINFORCED_ELYTRA, Mekanism.rl("broken"),
-                  (stack, world, entity, seed) -> MekanismItems.HDPE_REINFORCED_ELYTRA.get().canElytraFly(stack, entity) ? 0.0F : 1.0F);
+                  (stack, world, entity, seed) -> entity != null && MekanismItems.HDPE_REINFORCED_ELYTRA.get().canElytraFly(stack, entity) ? 0.0F : 1.0F);
         });
 
         addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig));
@@ -453,7 +452,6 @@ public class ClientRegistration {
     public static void registerModelLoaders(RegisterGeometryLoaders event) {
         event.register("robit", RobitModel.Loader.INSTANCE);
         event.register("energy_cube", EnergyCubeModelLoader.INSTANCE);
-        event.register("rotated", CustomRotationModel.Loader.INSTANCE);
         event.register("transmitter", TransmitterLoader.INSTANCE);
     }
 

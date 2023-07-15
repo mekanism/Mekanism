@@ -69,6 +69,7 @@ public class WarningTracker implements IWarningTracker {
         //TODO - 1.18: Should this be renamed to not enough input? We don't really have a no matching recipe
         NO_MATCHING_RECIPE(MekanismLang.ISSUE_NO_MATCHING_RECIPE),
         NO_SPACE_IN_OUTPUT(MekanismLang.ISSUE_NO_SPACE_IN_OUTPUT),
+        NO_SPACE_IN_OUTPUT_OVERFLOW(MekanismLang.ISSUE_NO_SPACE_IN_OUTPUT_OVERFLOW),
         NOT_ENOUGH_ENERGY(MekanismLang.ISSUE_NOT_ENOUGH_ENERGY),
         NOT_ENOUGH_ENERGY_REDUCED_RATE(MekanismLang.ISSUE_NOT_ENOUGH_ENERGY_REDUCED_RATE),
         INVALID_OREDICTIONIFICATOR_FILTER(MekanismLang.ISSUE_INVALID_OREDICTIONIFICATOR_FILTER, 4),

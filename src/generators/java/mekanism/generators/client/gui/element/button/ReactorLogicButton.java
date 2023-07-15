@@ -17,66 +17,58 @@ import mekanism.generators.common.base.IReactorLogicMode;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE>> extends MekanismButton {
 
     private static final ResourceLocation TEXTURE = MekanismGenerators.rl(ResourceType.GUI_BUTTON.getPrefix() + "reactor_logic.png");
     @NotNull
     private final IReactorLogic<TYPE> tile;
-    private final int index;
-    private final IntSupplier indexSupplier;
-    private final Supplier<TYPE[]> modeList;
-    private final Consumer<TYPE> onPress;
+    private final int typeOffset;
+    private final Supplier<@Nullable TYPE> modeSupplier;
 
-    public ReactorLogicButton(IGuiWrapper gui, int x, int y, int index, @NotNull IReactorLogic<TYPE> tile, IntSupplier indexSupplier,
-          Supplier<TYPE[]> listSupplier, Consumer<TYPE> onPress) {
-        super(gui, x, y, 128, 22, Component.empty(), null, null);
-        this.index = index;
-        this.indexSupplier = indexSupplier;
-        this.modeList = listSupplier;
+
+    public ReactorLogicButton(IGuiWrapper gui, int x, int y, int index, @NotNull IReactorLogic<TYPE> tile, IntSupplier indexSupplier, Supplier<TYPE[]> modeList,
+          Consumer<TYPE> onPress) {
+        this(gui, x, y, index, tile, onPress, () -> {
+            int i = indexSupplier.getAsInt() + index;
+            TYPE[] modes = modeList.get();
+            return i >= 0 && i < modes.length ? modes[i] : null;
+        });
+    }
+
+    private ReactorLogicButton(IGuiWrapper gui, int x, int y, int index, @NotNull IReactorLogic<TYPE> tile, Consumer<TYPE> onPress, Supplier<@Nullable TYPE> modeSupplier) {
+        super(gui, x, y, 128, 22, Component.empty(), () -> {
+            TYPE mode = modeSupplier.get();
+            if (mode != null) {
+                onPress.accept(mode);
+            }
+        }, (onHover, matrix, mouseX, mouseY) -> {
+            TYPE mode = modeSupplier.get();
+            if (mode != null) {
+                gui.displayTooltips(matrix, mouseX, mouseY, mode.getDescription());
+            }
+        });
+        this.typeOffset = 22 * index;
+        this.modeSupplier = modeSupplier;
         this.tile = tile;
-        this.onPress = onPress;
-    }
-
-    @Override
-    public void onClick(double mouseX, double mouseY) {
-        TYPE mode = getMode();
-        if (mode != null) {
-            onPress.accept(mode);
-        }
-    }
-
-    @Override
-    public void renderToolTip(@NotNull PoseStack matrix, int mouseX, int mouseY) {
-        super.renderToolTip(matrix, mouseX, mouseY);
-        TYPE mode = getMode();
-        if (mode != null) {
-            displayTooltips(matrix, mouseX, mouseY, mode.getDescription());
-        }
     }
 
     @Override
     public void drawBackground(@NotNull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        TYPE mode = getMode();
-        if (mode == null) {
-            return;
+        TYPE mode = modeSupplier.get();
+        if (mode != null) {
+            RenderSystem.setShaderTexture(0, TEXTURE);
+            MekanismRenderer.color(mode.getColor());
+            blit(matrix, x, y, 0, mode == tile.getMode() ? 22 : 0, width, height, 128, 44);
+            MekanismRenderer.resetColor();
         }
-        RenderSystem.setShaderTexture(0, TEXTURE);
-        MekanismRenderer.color(mode.getColor());
-        blit(matrix, x, y, 0, mode == tile.getMode() ? 22 : 0, width, height, 128, 44);
-        MekanismRenderer.resetColor();
-    }
-
-    private TYPE getMode() {
-        int i = indexSupplier.getAsInt() + index;
-        return i >= 0 && i < modeList.get().length ? modeList.get()[i] : null;
     }
 
     @Override
     public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
-        TYPE mode = getMode();
+        TYPE mode = modeSupplier.get();
         if (mode != null) {
-            int typeOffset = 22 * index;
             gui().renderItem(matrix, mode.getRenderStack(), 20, 35 + typeOffset);
             drawString(matrix, TextComponentUtil.build(EnumColor.WHITE, mode), 39, 34 + typeOffset, titleTextColor());
             super.renderForeground(matrix, mouseX, mouseY);

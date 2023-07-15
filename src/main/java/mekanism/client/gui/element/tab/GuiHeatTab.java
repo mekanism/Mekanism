@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.function.UnaryOperator;
 import mekanism.api.IIncrementalEnum;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
@@ -17,8 +18,9 @@ import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 
-public class GuiHeatTab extends GuiBiDirectionalTab {
+public class GuiHeatTab extends GuiTexturedElement {
 
     private static final Map<TemperatureUnit, ResourceLocation> ICONS = new EnumMap<>(TemperatureUnit.class);
     private final IInfoHandler infoHandler;
@@ -50,14 +52,17 @@ public class GuiHeatTab extends GuiBiDirectionalTab {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        updateTemperatureUnit(IIncrementalEnum::getNext);
+    public void onClick(double mouseX, double mouseY, int button) {
+        if (button == GLFW.GLFW_MOUSE_BUTTON_1) {
+            updateTemperatureUnit(IIncrementalEnum::getNext);
+        } else if (button == GLFW.GLFW_MOUSE_BUTTON_2) {
+            updateTemperatureUnit(IIncrementalEnum::getPrevious);
+        }
     }
 
-
     @Override
-    protected void onRightClick(double mouseX, double mouseY) {
-        updateTemperatureUnit(IIncrementalEnum::getPrevious);
+    public boolean isValidClickButton(int button) {
+        return button == GLFW.GLFW_MOUSE_BUTTON_1 || button == GLFW.GLFW_MOUSE_BUTTON_2;
     }
 
     private void updateTemperatureUnit(UnaryOperator<TemperatureUnit> converter) {

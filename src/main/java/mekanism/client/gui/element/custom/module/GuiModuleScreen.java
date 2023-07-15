@@ -142,8 +142,8 @@ public class GuiModuleScreen extends GuiScrollableElement {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        super.onClick(mouseX, mouseY);
+    public void onClick(double mouseX, double mouseY, int button) {
+        super.onClick(mouseX, mouseY, button);
         //Shift the mouse y by the proper amount so that we click the correct spots
         mouseY += getCurrentSelection();
         for (MiniElement element : miniElements) {

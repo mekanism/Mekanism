@@ -60,8 +60,14 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
             return switch (logicType) {
                 case READY -> multiblock.getLastPlasmaTemp() >= multiblock.getIgnitionTemperature(activeCooled);
                 case CAPACITY -> multiblock.getLastPlasmaTemp() >= multiblock.getMaxPlasmaTemperature(activeCooled);
-                case DEPLETED -> (multiblock.deuteriumTank.getStored() < multiblock.getInjectionRate() / 2) ||
-                                 (multiblock.tritiumTank.getStored() < multiblock.getInjectionRate() / 2);
+                case DEPLETED -> {
+                    if (multiblock.fuelTank.isEmpty()) {
+                        int injectionPortion = multiblock.getInjectionRate() / 2;
+                        //No fuel and no injection rate set, or no fuel and not enough of at least one component
+                        yield injectionPortion == 0 || multiblock.deuteriumTank.getStored() < injectionPortion || multiblock.tritiumTank.getStored() < injectionPortion;
+                    }
+                    yield false;
+                }
                 case DISABLED -> false;
             };
         }
@@ -91,6 +97,12 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     public void nextMode() {
         activeCooled = !activeCooled;
         markForSave();
+    }
+
+    @Override
+    public void previousMode() {
+        //We only have two modes just flip it
+        nextMode();
     }
 
     @ComputerMethod(nameOverride = "isActiveCooledLogic")

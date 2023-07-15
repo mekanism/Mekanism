@@ -52,7 +52,7 @@
   "description.mekanismgenerators.fission_reactor_logic_adapter": "Блок, который может использоваться для мониторинга или управления Ядерным Реактором с помощью редстоуна.",
   "description.mekanismgenerators.fission_reactor_port": "Порт, который может быть размещен на ядерном реакторе для передачи охлаждающей жидкости, топлива и отходов.",
   "description.mekanismgenerators.fusion_reactor_controller": "Блок управления всего термоядерного реактора.",
-  "description.mekanismgenerators.fusion_reactor_frame": "Укреплённый каркас, который используется при строительстве термоядерного реактора.",
+  "description.mekanismgenerators.fusion_reactor_frame": "Укреплённый каркас, может быть использован при строительстве термоядерного реактора.",
   "description.mekanismgenerators.fusion_reactor_logic_adapter": "Блок, который может использоваться для мониторинга реактора с помощью редстоуна.",
   "description.mekanismgenerators.fusion_reactor_port": "Блок укреплённого каркаса, который способен управлять передачей газа и энергии термоядерного реактора.",
   "description.mekanismgenerators.gas_burning_generator": "Генератор, который использует различные молекулярные газы для производства энергии.",

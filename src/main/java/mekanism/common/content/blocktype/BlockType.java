@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BlockType {
 
@@ -35,9 +36,10 @@ public class BlockType {
         return attributeMap.containsKey(type);
     }
 
+    @Nullable
     @SuppressWarnings("unchecked")
-    public <T extends Attribute> T get(Class<T> type) {
-        return (T) attributeMap.get(type);
+    public <ATTRIBUTE extends Attribute> ATTRIBUTE get(Class<ATTRIBUTE> type) {
+        return (ATTRIBUTE) attributeMap.get(type);
     }
 
     @SafeVarargs

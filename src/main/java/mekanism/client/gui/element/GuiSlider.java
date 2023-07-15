@@ -48,12 +48,10 @@ public class GuiSlider extends GuiElement {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        super.onClick(mouseX, mouseY);
-        if (clicked(mouseX, mouseY)) {
-            set(mouseX, mouseY);
-            isDragging = true;
-        }
+    public void onClick(double mouseX, double mouseY, int button) {
+        super.onClick(mouseX, mouseY, button);
+        set(mouseX, mouseY);
+        isDragging = true;
     }
 
     @Override

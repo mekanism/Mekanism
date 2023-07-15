@@ -2,8 +2,8 @@ package mekanism.common.content.miner;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
 import java.util.BitSet;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
@@ -19,8 +19,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.PathNavigationRegion;
+import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BedPart;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 public class ThreadMinerSearch extends Thread {
 
@@ -45,7 +51,7 @@ public class ThreadMinerSearch extends Thread {
             state = State.FINISHED;
             return;
         }
-        Object2BooleanMap<Block> acceptedItems = new Object2BooleanOpenHashMap<>();
+        Reference2BooleanMap<Block> acceptedItems = new Reference2BooleanOpenHashMap<>();
         BlockPos pos = tile.getStartingPos();
         int diameter = tile.getDiameter();
         int size = tile.getTotalSize();
@@ -62,8 +68,8 @@ public class ThreadMinerSearch extends Thread {
                 continue;
             }
             BlockState state = chunkCache.getBlockState(testPos);
-            if (state.isAir() || state.is(MekanismTags.Blocks.MINER_BLACKLIST) || state.getDestroySpeed(chunkCache, testPos) < 0) {
-                //Skip air, blacklisted blocks, and unbreakable blocks
+            if (state.isAir() || state.is(MekanismTags.Blocks.MINER_BLACKLIST) || shouldSkipState(state) || state.getDestroySpeed(chunkCache, testPos) < 0) {
+                //Skip air, blacklisted blocks, special cased block states, and unbreakable blocks
                 continue;
             }
             info = state.getBlock();
@@ -91,6 +97,20 @@ public class ThreadMinerSearch extends Thread {
             //Only update search if we are still valid and didn't get replaced due to a reset call
             tile.updateFromSearch(oresToMine, found);
         }
+    }
+
+    /**
+     * Special cased vanilla blocks that only have one state actually have the drop and the other one just causes it to break. This includes things like two tall flowers,
+     * beds, and doors. If a data pack modifies the loot table so that the "secondary" block also provides drops those will then be handled by the fallback we have for
+     * collecting any drops that happen from breaking the block.
+     */
+    private boolean shouldSkipState(BlockState state) {
+        if (state.getBlock() instanceof BedBlock) {
+            return state.getValue(BlockStateProperties.BED_PART) == BedPart.FOOT;
+        } else if (state.getBlock() instanceof DoorBlock || state.getBlock() instanceof DoublePlantBlock) {
+            return state.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.UPPER;
+        }
+        return false;
     }
 
     @NothingNullByDefault

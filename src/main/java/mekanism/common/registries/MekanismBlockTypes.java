@@ -401,6 +401,7 @@ public class MekanismBlockTypes {
           .withCustomShape(BlockShapes.RESISTIVE_HEATER)
           .withSound(MekanismSounds.RESISTIVE_HEATER)
           .withComputerSupport("resistiveHeater")
+          .replace(Attributes.ACTIVE_MELT_LIGHT)
           .build();
     // Seismic Vibrator
     public static final Machine<TileEntitySeismicVibrator> SEISMIC_VIBRATOR = MachineBuilder
@@ -432,7 +433,7 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityFuelwoodHeater> FUELWOOD_HEATER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.FUELWOOD_HEATER, MekanismLang.DESCRIPTION_FUELWOOD_HEATER)
           .withGui(() -> MekanismContainerTypes.FUELWOOD_HEATER)
-          .with(Attributes.SECURITY, Attributes.INVENTORY, Attributes.ACTIVE_LIGHT, new AttributeStateFacing(), new AttributeParticleFX()
+          .with(Attributes.SECURITY, Attributes.INVENTORY, Attributes.ACTIVE_MELT_LIGHT, new AttributeStateFacing(), new AttributeParticleFX()
                 .add(ParticleTypes.SMOKE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52))
                 .add(DustParticleOptions.REDSTONE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)))
           .withComputerSupport("fuelwoodHeater")

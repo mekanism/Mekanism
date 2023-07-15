@@ -6,6 +6,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.KeySync;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.inventory.container.ModuleTweakerContainer;
 import mekanism.common.item.interfaces.IGasItem;
@@ -59,7 +60,11 @@ public class MekanismKeyHandler {
     public static final KeyMapping boostKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_BOOST).conflictInGame().keyCode(GLFW.GLFW_KEY_LEFT_CONTROL)
           .onKeyDown((kb, isRepeat) -> MekanismClient.updateKey(kb, KeySync.BOOST)).onKeyUp(kb -> MekanismClient.updateKey(kb, KeySync.BOOST)).build();
     public static final KeyMapping hudKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_HUD).conflictInGame().keyCode(GLFW.GLFW_KEY_H)
-          .onKeyDown((kb, isRepeat) -> MekanismClient.renderHUD = !MekanismClient.renderHUD).build();
+          .onKeyDown((kb, isRepeat) -> {
+              MekanismConfig.client.enableHUD.set(!MekanismConfig.client.enableHUD.get());
+              // save the updated config info
+              MekanismConfig.client.save();
+          }).build();
 
     public static void registerKeybindings(RegisterKeyMappingsEvent event) {
         ClientRegistrationUtil.registerKeyBindings(event, handModeSwitchKey, headModeSwitchKey, chestModeSwitchKey, legsModeSwitchKey, feetModeSwitchKey,

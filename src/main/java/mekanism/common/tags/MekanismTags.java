@@ -21,6 +21,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -38,6 +39,7 @@ public class MekanismTags {
         Fluids.init();
         Gases.init();
         InfuseTypes.init();
+        MobEffects.init();
         Slurries.init();
         TileEntityTypes.init();
     }
@@ -333,6 +335,22 @@ public class MekanismTags {
 
         private static TagKey<Slurry> tag(String name) {
             return ChemicalTags.SLURRY.tag(Mekanism.rl(name));
+        }
+    }
+
+    public static class MobEffects {
+
+        private static void init() {
+        }
+
+        private MobEffects() {
+        }
+
+        public static final TagKey<MobEffect> SPEED_UP_BLACKLIST = tag("speed_up_blacklist");
+        public static final LazyTagLookup<MobEffect> SPEED_UP_BLACKLIST_LOOKUP = LazyTagLookup.create(ForgeRegistries.MOB_EFFECTS, SPEED_UP_BLACKLIST);
+
+        private static TagKey<MobEffect> tag(String name) {
+            return TagUtils.createKey(ForgeRegistries.MOB_EFFECTS, Mekanism.rl(name));
         }
     }
 

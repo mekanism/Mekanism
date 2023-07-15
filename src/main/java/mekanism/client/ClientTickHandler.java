@@ -1,6 +1,5 @@
 package mekanism.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -52,6 +51,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.FogType;
 import net.minecraftforge.client.event.InputEvent.MouseScrollingEvent;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -204,15 +204,17 @@ public class ClientTickHandler {
                     JetpackMode mode = IJetpackItem.getPlayerJetpackMode(minecraft.player, primaryMode, () -> minecraft.player.input.jumping);
                     MekanismClient.updateKey(minecraft.player.input.jumping, KeySync.ASCEND);
                     if (jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, () -> minecraft.player.input.jumping)) {
-                        minecraft.player.fallDistance = 0.0F;
+                        minecraft.player.resetFallDistance();
                     }
                 }
             }
 
             if (isScubaMaskOn(minecraft.player) && minecraft.player.getAirSupply() == minecraft.player.getMaxAirSupply()) {
                 for (MobEffectInstance effect : minecraft.player.getActiveEffects()) {
-                    for (int i = 0; i < 9; i++) {
-                        MekanismUtils.speedUpEffectSafely(minecraft.player, effect);
+                    if (MekanismUtils.shouldSpeedUpEffect(effect)) {
+                        for (int i = 0; i < 9; i++) {
+                            MekanismUtils.speedUpEffectSafely(minecraft.player, effect);
+                        }
                     }
                 }
             }
@@ -289,22 +291,43 @@ public class ClientTickHandler {
     @SubscribeEvent
     public void onFogLighting(ViewportEvent.ComputeFogColor event) {
         if (visionEnhancement) {
-            event.setBlue(0.4F);
-            event.setRed(0.4F);
-            event.setGreen(0.8F);
+            float oldRatio = 0.1F;
+            float newRatio = 1 - oldRatio;
+            float red = oldRatio * event.getRed();
+            float green = oldRatio * event.getGreen();
+            float blue = oldRatio * event.getBlue();
+            event.setRed(red + newRatio * 0.4F);
+            event.setGreen(green + newRatio * 0.8F);
+            event.setBlue(blue + newRatio * 0.4F);
         }
     }
 
     @SubscribeEvent
     public void onFog(ViewportEvent.RenderFog event) {
-        if (visionEnhancement) {
-            float fog = 384;
-            IModule<ModuleVisionEnhancementUnit> module = MekanismAPI.getModuleHelper().load(minecraft.player.getItemBySlot(EquipmentSlot.HEAD), MekanismModules.VISION_ENHANCEMENT_UNIT);
+        if (visionEnhancement && event.getCamera().getEntity() instanceof Player player) {
+            IModule<ModuleVisionEnhancementUnit> module = MekanismAPI.getModuleHelper().load(player.getItemBySlot(EquipmentSlot.HEAD), MekanismModules.VISION_ENHANCEMENT_UNIT);
+            //Double-check the module is present before doing any calculations. This should always be true here, but better safe than sorry
             if (module != null) {
-                fog *= ((float) Math.pow(module.getInstalledCount(), 1.25)) / MekanismModules.VISION_ENHANCEMENT_UNIT.getModuleData().getMaxStackSize();
+                //This near plane is the same as spectators have set for lava and powdered snow
+                event.setNearPlaneDistance(-8.0F);
+                if (event.getFarPlaneDistance() < 20) {
+                    float scalar;
+                    if (event.getType() == FogType.LAVA) {
+                        //Special handling for lava which is usually either at 1 or 3
+                        scalar = 24 * event.getFarPlaneDistance();
+                    } else {
+                        //Shortly before 27 this ends up being 192, but we want to get it beforehand, so we just allow numbers below 20
+                        scalar = 5 + 2.5F * (float) Math.pow(Math.E, 0.16F * event.getFarPlaneDistance());
+                    }
+                    //192 is roughly equivalent to what spectators have lava, powdered snow, and a couple other bounds for fog are,
+                    // so we want to make sure we don't go above that
+                    event.setFarPlaneDistance(Math.min(192, scalar));
+                }
+                //Scale the distance based on the number of installed modules
+                event.scaleFarPlaneDistance(((float) Math.pow(module.getInstalledCount(), 1.25)) / module.getData().getMaxStackSize());
+                //Cancel the event to ensure our changes are applied
+                event.setCanceled(true);
             }
-            RenderSystem.setShaderFogStart(-8.0F);
-            RenderSystem.setShaderFogEnd(fog * 0.5F);
         }
     }
 

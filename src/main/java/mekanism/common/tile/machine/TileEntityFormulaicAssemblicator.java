@@ -52,6 +52,7 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.UpgradeUtils;
@@ -337,6 +338,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             tryMoveToOutput(output, Action.EXECUTE);
             //TODO: Fix this as I believe if things overlap there is a chance it won't work properly.
             // For example if there are multiple stacks of dirt in remaining and we have room for one stack, but given we only check one stack at a time...)
+            // Basically simulating fitting the last remaining items doesn't do enough validation about intermediary state
             for (ItemStack remainingItem : lastRemainingItems) {
                 if (!remainingItem.isEmpty()) {
                     //TODO: Check if it matters that we are not actually updating the list of remaining items?
@@ -448,6 +450,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             autoMode = true;
             markForSave();
         }
+    }
+
+    @Override
+    public void previousMode() {
+        //We only have two modes just flip it
+        nextMode();
     }
 
     @ComputerMethod
@@ -602,34 +610,22 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     private ItemStack tryMoveToInput(ItemStack stack) {
-        for (IInventorySlot stockSlot : inputSlots) {
-            stack = stockSlot.insertItem(stack, Action.EXECUTE, AutomationType.INTERNAL);
-            if (stack.isEmpty()) {
-                //We fit it all, just break and return that we have no remainder
-                break;
-            }
-        }
-        return stack;
+        return InventoryUtils.insertItem(inputSlots, stack, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
     private boolean tryMoveToOutput(ItemStack stack, Action action) {
-        for (IInventorySlot outputSlot : outputSlots) {
-            //Try to insert the item (simulating as needed), and overwrite our local reference to point ot the remainder
-            // We can then continue on to the next slot if we did not fit it all and try to insert it.
-            // The logic is relatively simple due to only having one stack we are trying to insert, so we don't have to worry
-            // about the fact the slot doesn't actually get updated if we simulated, and then is invalid for the next simulation
-            stack = outputSlot.insertItem(stack, action, AutomationType.INTERNAL);
-            if (stack.isEmpty()) {
-                break;
-            }
-        }
+        //Try to insert the item (simulating as needed), and overwrite our local reference to point to the remainder
+        // We can then continue on to the next slot if we did not fit it all and try to insert it.
+        // The logic is relatively simple due to only having one stack we are trying to insert, so we don't have to worry
+        // about the fact the slot doesn't actually get updated if we simulated, and then is invalid for the next simulation
+        stack = InventoryUtils.insertItem(outputSlots, stack, action, AutomationType.INTERNAL);
         return stack.isEmpty();
     }
 
     public void encodeFormula() {
         if (!formulaSlot.isEmpty()) {
             ItemStack formulaStack = formulaSlot.getStack();
-            if (formulaStack.getItem() instanceof ItemCraftingFormula item && item.getInventory(formulaStack) == null) {
+            if (formulaStack.getItem() instanceof ItemCraftingFormula item && !item.hasInventory(formulaStack)) {
                 RecipeFormula formula = new RecipeFormula(level, craftingGridSlots);
                 if (formula.isValidFormula()) {
                     item.setInventory(formulaStack, formula.input);
@@ -767,7 +763,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         ItemStack formulaStack = formulaSlot.getStack();
         if (formulaStack.isEmpty() || !(formulaStack.getItem() instanceof ItemCraftingFormula craftingFormula)) {
             throw new ComputerException("No formula found.");
-        } else if (formula != null && formula.isValidFormula() || craftingFormula.getInventory(formulaStack) != null) {
+        } else if (formula != null && formula.isValidFormula() || craftingFormula.hasInventory(formulaStack)) {
             throw new ComputerException("Formula has already been encoded.");
         } else if (!hasRecipe()) {
             throw new ComputerException("Encoding formulas require that there is a valid recipe to actually encode.");

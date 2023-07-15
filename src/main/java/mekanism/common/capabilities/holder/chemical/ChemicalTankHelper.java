@@ -1,6 +1,9 @@
 package mekanism.common.capabilities.holder.chemical;
 
+import java.util.function.BiPredicate;
 import java.util.function.Supplier;
+import mekanism.api.AutomationType;
+import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -8,6 +11,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
@@ -23,6 +27,7 @@ import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.Con
 import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigSlurryTankHolder;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.core.Direction;
+import net.minecraftforge.common.util.NonNullSupplier;
 import org.jetbrains.annotations.NotNull;
 
 public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
@@ -32,6 +37,13 @@ public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
 
     private ChemicalTankHelper(IChemicalTankHolder<CHEMICAL, STACK, TANK> slotHolder) {
         this.slotHolder = slotHolder;
+    }
+
+    public static BiPredicate<@NotNull Gas, @NotNull AutomationType> radioactiveInputTankPredicate(NonNullSupplier<IGasTank> outputTank) {
+        //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
+        //Note: This only is the case if radiation is enabled as otherwise things like gauge droppers can work as the way to remove radioactive contents
+        return (type, automationType) -> automationType != AutomationType.EXTERNAL || (outputTank.get().isEmpty() && type.has(GasAttributes.Radiation.class) &&
+                                                                                       MekanismAPI.getRadiationManager().isRadiationEnabled());
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>

@@ -3,11 +3,14 @@
   "key": {
     "#": {
       "tag": "forge:nuggets/bronze"
+    },
+    "P": {
+      "item": "mekanism:nugget_bronze"
     }
   },
   "pattern": [
     "###",
-    "###",
+    "#P#",
     "###"
   ],
   "result": {

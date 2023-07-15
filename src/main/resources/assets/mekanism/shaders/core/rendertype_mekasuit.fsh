@@ -41,7 +41,7 @@ bool shouldTint(float red, float green, float blue) {
     float max = max(max(red, green), blue);
     float delta = max - min;
     //Calculate Saturation and Value components of HSV
-    float saturation = max == 0 ? 0 : delta / max;
+    float saturation = max == 0.0 ? 0.0 : delta / max;
     float value = max;
     return value >= 0.48 && saturation <= 0.15;
 }

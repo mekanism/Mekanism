@@ -56,11 +56,13 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         for (int i = 0; i < FILTER_COUNT; i++) {
             addFilterButton(new MovableFilterButton(this, 56, 18 + i * 29, i, scrollBar::getCurrentSelection, filterManager, index -> {
                 if (index > 0) {
-                    Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_UP, tile, index));
+                    GuiInteraction interaction = hasShiftDown() ? GuiInteraction.MOVE_FILTER_TO_TOP : GuiInteraction.MOVE_FILTER_UP;
+                    Mekanism.packetHandler().sendToServer(new PacketGuiInteract(interaction, tile, index));
                 }
             }, index -> {
                 if (index < filterManager.count() - 1) {
-                    Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_DOWN, tile, index));
+                    GuiInteraction interaction = hasShiftDown() ? GuiInteraction.MOVE_FILTER_TO_BOTTOM : GuiInteraction.MOVE_FILTER_DOWN;
+                    Mekanism.packetHandler().sendToServer(new PacketGuiInteract(interaction, tile, index));
                 }
             }, this::onClick, index -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_FILTER_STATE, tile, index)), filter -> {
                 List<ItemStack> list = new ArrayList<>();

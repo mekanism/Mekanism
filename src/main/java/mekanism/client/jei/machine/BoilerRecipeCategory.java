@@ -110,14 +110,13 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
               MekanismGases.STEAM.getStack(waterAmount), GasStack.EMPTY, temperature));
         //Go through all gases and add each coolant
         for (Gas gas : MekanismAPI.gasRegistry()) {
-            HeatedCoolant heatedCoolant = gas.get(HeatedCoolant.class);
-            if (heatedCoolant != null) {
+            gas.ifAttributePresent(HeatedCoolant.class, heatedCoolant -> {
                 //If it is a cooled coolant add a recipe for it
                 Gas cooledCoolant = heatedCoolant.getCooledGas();
                 long coolantAmount = Math.round(waterAmount * waterToSteamEfficiency / heatedCoolant.getThermalEnthalpy());
                 recipes.add(new BoilerJEIRecipe(IngredientCreatorAccess.gas().from(gas, coolantAmount), IngredientCreatorAccess.fluid().from(FluidTags.WATER, waterAmount),
                       MekanismGases.STEAM.getStack(waterAmount), cooledCoolant.getStack(coolantAmount), HeatUtils.BASE_BOIL_TEMP));
-            }
+            });
         }
         return recipes;
     }

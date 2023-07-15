@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
+import mekanism.api.chemical.attribute.IChemicalAttributeContainer;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.nbt.CompoundTag;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements IChemicalProvider<CHEMICAL> {
+public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements IChemicalProvider<CHEMICAL>, IChemicalAttributeContainer<CHEMICAL> {
 
     private final ChemicalTags<CHEMICAL> chemicalTags;
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
@@ -54,28 +55,16 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
         return translationKey;
     }
 
-    /**
-     * Whether this chemical has an attribute of a certain type.
-     *
-     * @param type attribute type to check
-     *
-     * @return if this chemical has the attribute
-     */
+    @Override
     public boolean has(Class<? extends ChemicalAttribute> type) {
         return attributeMap.containsKey(type);
     }
 
-    /**
-     * Gets the attribute instance of a certain type, or null if it doesn't exist.
-     *
-     * @param type attribute type to get
-     *
-     * @return attribute instance
-     */
     @Nullable
+    @Override
     @SuppressWarnings("unchecked")
-    public <T extends ChemicalAttribute> T get(Class<T> type) {
-        return (T) attributeMap.get(type);
+    public <ATTRIBUTE extends ChemicalAttribute> ATTRIBUTE get(Class<ATTRIBUTE> type) {
+        return (ATTRIBUTE) attributeMap.get(type);
     }
 
     /**
@@ -87,20 +76,12 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
         attributeMap.put(attribute.getClass(), attribute);
     }
 
-    /**
-     * Gets all attribute instances associated with this chemical type.
-     *
-     * @return collection of attribute instances
-     */
+    @Override
     public Collection<ChemicalAttribute> getAttributes() {
         return attributeMap.values();
     }
 
-    /**
-     * Gets all attribute types associated with this chemical type.
-     *
-     * @return collection of attribute types
-     */
+    @Override
     public Collection<Class<? extends ChemicalAttribute>> getAttributeTypes() {
         return attributeMap.keySet();
     }

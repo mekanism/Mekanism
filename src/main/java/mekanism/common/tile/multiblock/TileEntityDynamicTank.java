@@ -66,6 +66,12 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
         multiblock.setContainerEditMode(multiblock.editMode.getNext());
     }
 
+    @Override
+    public void previousMode() {
+        TankMultiblockData multiblock = getMultiblock();
+        multiblock.setContainerEditMode(multiblock.editMode.getPrevious());
+    }
+
     private boolean manageInventory(TankMultiblockData multiblock, Player player, InteractionHand hand, ItemStack itemStack) {
         if (multiblock.isFormed()) {
             return FluidUtils.handleTankInteraction(player, hand, itemStack, multiblock.getFluidTank());

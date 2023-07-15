@@ -37,7 +37,7 @@ public class CatalystRegistryHelper {
     public static void registerRecipeItem(IRecipeCatalystRegistration registry, IItemProvider mekanismItem, RecipeType<?>... categories) {
         registry.addRecipeCatalyst(mekanismItem.getItemStack(), categories);
         if (mekanismItem instanceof IBlockProvider mekanismBlock) {
-            Attribute.ifHas(mekanismBlock.getBlock(), AttributeFactoryType.class, attr -> {
+            Attribute.ifPresent(mekanismBlock.getBlock(), AttributeFactoryType.class, attr -> {
                 for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
                     registry.addRecipeCatalyst(MekanismBlocks.getFactory(tier, attr.getFactoryType()).getItemStack(), categories);
                 }

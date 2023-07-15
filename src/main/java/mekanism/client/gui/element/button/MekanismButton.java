@@ -1,12 +1,14 @@
 package mekanism.client.gui.element.button;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.Objects;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * Extends our "Widget" class (GuiElement) instead of Button so that we can easier utilize common code
@@ -15,44 +17,50 @@ public class MekanismButton extends GuiElement {
 
     @Nullable
     private final IHoverable onHover;
-    @Nullable
+    @NotNull
     private final Runnable onLeftClick;
     @Nullable
     private final Runnable onRightClick;
 
-    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, Component text, @Nullable Runnable onLeftClick, @Nullable IHoverable onHover) {
+    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, Component text, @NotNull Runnable onLeftClick, @Nullable IHoverable onHover) {
         this(gui, x, y, width, height, text, onLeftClick, onLeftClick, onHover);
         //TODO: Decide if default implementation for right clicking should be do nothing, or act as left click
     }
 
-    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, Component text, @Nullable Runnable onLeftClick, @Nullable Runnable onRightClick,
+    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, Component text, @NotNull Runnable onLeftClick, @Nullable Runnable onRightClick,
           @Nullable IHoverable onHover) {
         super(gui, x, y, width, height, text);
         this.onHover = onHover;
-        this.onLeftClick = onLeftClick;
+        this.onLeftClick = Objects.requireNonNull(onLeftClick, "Buttons must have a left click behavior");
         this.onRightClick = onRightClick;
-        playClickSound = true;
+        this.clickSound = SoundEvents.UI_BUTTON_CLICK;
         setButtonBackground(ButtonBackground.DEFAULT);
     }
 
-    private void onLeftClick() {
-        if (onLeftClick != null) {
+    @Override
+    public void onClick(double mouseX, double mouseY, int button) {
+        if (button == GLFW.GLFW_MOUSE_BUTTON_1) {
             onLeftClick.run();
+        } else if (button == GLFW.GLFW_MOUSE_BUTTON_2) {
+            if (onRightClick != null) {
+                onRightClick.run();
+            }
         }
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        onLeftClick();
+    public boolean isValidClickButton(int button) {
+        //Only allow right-clicking if we have a right click behavior/action
+        return button == GLFW.GLFW_MOUSE_BUTTON_1 || button == GLFW.GLFW_MOUSE_BUTTON_2 && onRightClick != null;
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        //From AbstractButton
+        //From AbstractButton with an additional check of validating that it is focused
         if (this.active && this.visible && this.isFocused()) {
-            if (keyCode == 257 || keyCode == 32 || keyCode == 335) {
-                playDownSound(Minecraft.getInstance().getSoundManager());
-                onLeftClick();
+            if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_SPACE || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
+                playDownSound(minecraft.getSoundManager());
+                onLeftClick.run();
                 return true;
             }
         }
@@ -64,29 +72,6 @@ public class MekanismButton extends GuiElement {
         super.renderToolTip(matrix, mouseX, mouseY);
         if (onHover != null) {
             onHover.onHover(this, matrix, mouseX, mouseY);
-        }
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (super.mouseClicked(mouseX, mouseY, button)) {
-            return true;
-        }
-        if (this.active && this.visible && isHoveredOrFocused()) {
-            if (button == 1) {
-                //Right-clicked
-                playDownSound(Minecraft.getInstance().getSoundManager());
-                onRightClick();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //TODO: Add right click support to GuiElement
-    protected void onRightClick() {
-        if (onRightClick != null) {
-            onRightClick.run();
         }
     }
 }

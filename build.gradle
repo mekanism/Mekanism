@@ -4,24 +4,28 @@ import com.modrinth.minotaur.dependencies.VersionDependency
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import mekanism.MergeJars
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+import net.darkhax.curseforgegradle.UploadArtifact
 import net.minecraftforge.gradle.common.util.RunConfig
 import net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace
 
+import java.util.function.Consumer
+
 plugins {
-    id 'org.ajoberstar.grgit' version '5.0.0'
-    id "com.matthewprenger.cursegradle" version '1.4.0'
+    id 'org.ajoberstar.grgit.service' version '5.2.0'
+    id 'net.darkhax.curseforgegradle' version '1.0.14'
     id "com.modrinth.minotaur" version "2.+"
     id 'java'
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
 tasks.named('wrapper', Wrapper).configure {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '7.6'
+    gradleVersion = '8.1.1'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -39,7 +43,7 @@ idea {
 ext {
     versionProperties = ["version"       : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
                          "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range, "jei_version": jei_version_range,
-                         "curios_version": curios_version_range, "recipe_stages_version": recipe_stages_version_range]
+                         "curios_version": curios_version_range, "recipe_stages_version": recipe_stages_version_range, "dme_version": dme_version_range]
     //Fallback pack format is the larger of the resource and data pack formats
     packProperties = ["pack_format"         : Math.max(Integer.parseInt(resource_pack_format), Integer.parseInt(data_pack_format)),
                       "resource_pack_format": resource_pack_format, "data_pack_format": data_pack_format]
@@ -310,8 +314,6 @@ minecraft {
 
 def setupRunConfig(RunConfig runConfig, boolean supportsGameTests, String directory = "run") {
     runConfig.workingDirectory(file(directory))
-    //We aren't a multi-project config so we can disable the forced exit to allow gradle run tasks to stop gracefully
-    runConfig.forceExit = false
     //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
     runConfig.property 'mixin.env.remapRefMap', 'true'
     runConfig.property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
@@ -340,74 +342,35 @@ def setupRunConfig(RunConfig runConfig, boolean supportsGameTests, String direct
     }
 }
 
-repositories {
-    maven {
-        name 'CraftTweaker'
-        url "https://maven.blamejared.com"
-        content {
-            includeGroupByRegex 'com\\.blamejared.*'
-            includeGroup 'mezz.jei'
+void exclusiveRepo(RepositoryHandler handler, String url, String... groups) {
+    exclusiveRepo(handler, url, filter -> {
+        for (def group : groups) {
+            filter.includeGroup(group)
         }
-    }
-    maven {
-        name 'curios'
-        url "https://maven.theillusivec4.top/"
-        content {
-            includeGroup 'top.theillusivec4.curios'
-        }
-    }
-    maven {
-        name 'tterrag'
-        url 'https://maven.tterrag.com/'
-        content {
-            includeGroup 'team.chisel.ctm'
-        }
-    }
-    maven {
-        name 'ComputerCraft'
-        url "https://squiddev.cc/maven/"
-        content {
-            includeGroup 'org.squiddev'
-        }
-    }
-    maven {
-        name 'CurseMaven'
-        url 'https://www.cursemaven.com'
-        content {
-            includeGroup 'curse.maven'
-        }
-    }
-    maven {
-        name 'Modmaven'
-        url 'https://modmaven.dev/'
-        content {
-            includeGroup 'appeng'
-            includeGroup 'mcjty.theoneprobe'
-        }
-    }
+    })
+}
 
-    configureEach {//ForgeGradle adds these in an afterEvaluate, so we need to catch them as they're added and exclude mod artifacts/groups
-        if (it instanceof MavenArtifactRepository) {
-            def url = it.url.toString()
-            if (url == 'https://maven.minecraftforge.net/' || url == 'https://libraries.minecraft.net/' || url == 'https://repo.maven.apache.org/maven2/') {
-                try {
-                    it.content {
-                        excludeGroup 'curse.maven'
-                        excludeGroup 'mezz.jei'
-                        excludeGroup 'mcjty.theoneprobe'
-                        excludeGroup 'team.chisel.ctm'
-                        excludeGroup 'appeng'
-                        excludeGroupByRegex 'com\\.blamejared.*'
-                        excludeGroup 'org.squiddev'
-                        excludeGroup 'top.theillusivec4.curios'
-                    }
-                    println("Adding exclusions to ${url}")
-                } catch (Exception ignored) {
-                    //oh well
-                }
-            }
-        }
+//Note: This cannot be static so that fg.repository can be properly accessed
+@SuppressWarnings('GrMethodMayBeStatic')
+void exclusiveRepo(RepositoryHandler handler, String url, Consumer<InclusiveRepositoryContentDescriptor> filterSetup) {
+    handler.exclusiveContent {
+        it.forRepositories(handler.maven {
+            setUrl(url)
+        }, fg.repository)//Add FG's repo so we make sure we are able to then find the mapped deps
+        it.filter { f -> filterSetup.accept(f) }
     }
+}
+
+repositories { RepositoryHandler handler ->
+    exclusiveRepo(handler, 'https://maven.blamejared.com', filter -> {
+        filter.includeGroupByRegex 'com\\.blamejared.*'
+        filter.includeGroup 'mezz.jei'
+    })
+    exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
+    exclusiveRepo(handler, 'https://maven.tterrag.com/', 'team.chisel.ctm')
+    exclusiveRepo(handler, 'https://squiddev.cc/maven/', 'org.squiddev')
+    exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
+    exclusiveRepo(handler, 'https://modmaven.dev/', 'appeng', 'mcjty.theoneprobe')
 }
 
 test {
@@ -428,7 +391,7 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
-    //TODO - 1.19: Re-enable once this is updated
+    //TODO - 1.19: Re-enable once https://github.com/Chisel-Team/ConnectedTexturesMod/pull/204 is merged
     //runtimeOnly fg.deobf("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
 
     //TODO: Remove having to specify these as non transitive once https://github.com/McJtyMods/TheOneProbe/issues/548 is fixed
@@ -443,8 +406,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:wthit-455982:${wthit_id}")
 
     implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
-    //TODO - 1.19: Switch back to implementation once this updates
-    compileOnly fg.deobf("com.blamejared.jeitweaker:JEITweaker-${previous_minecraft_version}:${jeitweaker_version}")
+    implementation fg.deobf("com.blamejared.jeitweaker:JeiTweaker-forge-${minecraft_version}:${jeitweaker_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
@@ -464,6 +426,7 @@ dependencies {
     datagenMainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
     datagenMainRuntimeOnly fg.deobf("curse.maven:terrablender-563928:${terrablender_id}")
     datagenMainImplementation fg.deobf("curse.maven:biomes-youll-go-247560:${byg_id}")
+    datagenMainImplementation fg.deobf("curse.maven:farmers-delight-398521:${farmers_delight_id}")
     datagenMainImplementation fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
     datagenMainImplementation fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
     datagenMainImplementation fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
@@ -583,7 +546,7 @@ def reobfAllJar = createReobf('allJar')
 
 def createReobf(SourceSet sourceSet) {
     def reobfTask = createReobf(sourceSet.getJarTaskName())
-    reobfTask.configure { classpath.from(sourceSet.compileClasspath) }
+    reobfTask.configure { libraries.from(sourceSet.compileClasspath) }
     tasks.named(sourceSet.getJarTaskName()).configure(task -> task.finalizedBy(reobfTask))
     return reobfTask
 }
@@ -713,7 +676,9 @@ def changeLogResolver = { ->
 
     if (currentCommit != null && prevCommit != null) {
         generatedChangelog = ""
-        grgit.log {
+        //Use the service to avoid eagerly instantiating the grgit instance, and only do so when we actually need it
+        // for usage in generating the changelog for either CF or Modrinth
+        grgitService.service.get().grgit.log {
             range(prevCommit, currentCommit)
         }.reverse().each { commit ->
             //Use full message rather than short message to get any new lines, and trim it so that any trailing new lines
@@ -760,105 +725,55 @@ tasks.register('outputChangelog') {
 
 if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKey')) {
     println "Enabling Curseforge config"
-    tasks.named('curseforge').configure { dependsOn(jar, additionsJar, generatorsJar, /*defenseJar,*/ toolsJar, apiJar) }
-    curseforge {
-        apiKey = System.getenv("CURSEFORGE_KEY") ?: project.findProperty("curseforgeKey")
+    tasks.register("curseforge", TaskPublishCurseForge, { task ->
+        setGroup("publishing")
+        setDescription("Upload Mekanism to CurseForge")
 
-        //Main
-        project {
-            id = '268560'
-            changelogType = "html"
-            changelog = changeLogResolver
-            releaseType = "${release_type}"
-            mainArtifact(jar) {
-                relations {
-                    optionalDependency "applied-energistics-2"
-                    optionalDependency "biomes-o-plenty"
-                    optionalDependency "cc-tweaked"
-                    optionalDependency "crafttweaker"
-                    optionalDependency "ctm"
-                    optionalDependency "curios"
-                    optionalDependency "female-gender-forge"
-                    optionalDependency "flux-networks"
-                    optionalDependency "i-like-wood"
-                    optionalDependency "i-like-wood-biomes-o-plenty-plugin"
-                    optionalDependency "i-like-wood-oh-the-biomes-youll-go-plugin"
-                    optionalDependency "jade"
-                    optionalDependency "jei"
-                    optionalDependency "jeitweaker"
-                    optionalDependency "oc2"
-                    optionalDependency "oh-the-biomes-youll-go"
-                    optionalDependency "perviaminvenire"
-                    optionalDependency "projecte"
-                    optionalDependency "recipe-stages"
-                    optionalDependency "the-one-probe"
-                    optionalDependency "wthit-forge"
-                }
-            }
-            addArtifact apiJar.get()
-            addGameVersion "Java ${java_version}"
-            addGameVersion "${minecraft_version}"
+        apiToken = System.getenv("CURSEFORGE_KEY") ?: project.findProperty("curseforgeKey")
+
+        def changelog = changeLogResolver.call()
+
+        //Main Mekanism Project
+        task.upload(268560, jar) { main ->
+            setGenericCurseArtifactData(main, changelog)
+            //Include the API jar as a secondary file to the main file
+            withAdditionalFile(apiJar)
+            //Add optional deps
+            addOptional(
+                    //Computers
+                    'cc-tweaked', 'oc2',
+                    //Looking at mods
+                    'jade', 'the-one-probe', 'wthit-forge',
+                    //Tweakers
+                    'crafttweaker', 'jeitweaker',
+                    //World gen
+                    'biomes-o-plenty', 'oh-the-biomes-youll-go',
+                    //Wood types
+                    'i-like-wood', 'i-like-wood-biomes-o-plenty-plugin', 'i-like-wood-oh-the-biomes-youll-go-plugin',
+                    //Misc
+                    'applied-energistics-2', 'ctm', 'curios', 'dark-mode-everywhere', 'farmers-delight', 'female-gender-forge', 'flux-networks',
+                    'jei', 'perviaminvenire', 'projecte', 'recipe-stages'
+            )
         }
 
-        //Additions
-        project {
-            id = '345425'
-            changelogType = "html"
-            changelog = changeLogResolver
-            releaseType = "${release_type}"
-            mainArtifact(additionsJar.get()) {
-                relations {
-                    requiredDependency "mekanism"
-                }
-            }
-            addGameVersion "Java ${java_version}"
-            addGameVersion "${minecraft_version}"
-        }
+        //Secondary modules/projects
+        uploadSecondaryCurseProject(task, 345425, changelog, additionsJar)
+        //uploadSecondaryCurseProject(task, 376939, changelog, defenseJar)
+        uploadSecondaryCurseProject(task, 268566, changelog, generatorsJar)
+        uploadSecondaryCurseProject(task, 268567, changelog, toolsJar)
+    })
+}
 
-        //Defense
-        /*project {
-            id = '376939'
-            changelogType = "html"
-            changelog = changeLogResolver
-            releaseType = "${release_type}"
-            mainArtifact(defenseJar.get()) {
-                relations {
-                    requiredDependency "mekanism"
-                }
-            }
-            addGameVersion "Java ${java_version}"
-            addGameVersion "${minecraft_version}"
-        }*/
+void setGenericCurseArtifactData(UploadArtifact artifact, String changelog) {
+    artifact.changelog = changelog
+    artifact.changelogType = 'html'
+    artifact.releaseType = "${release_type}"
+}
 
-        //Generators
-        project {
-            id = '268566'
-            changelogType = "html"
-            changelog = changeLogResolver
-            releaseType = "${release_type}"
-            mainArtifact(generatorsJar.get()) {
-                relations {
-                    requiredDependency "mekanism"
-                }
-            }
-            addGameVersion "Java ${java_version}"
-            addGameVersion "${minecraft_version}"
-        }
-
-        //Tools
-        project {
-            id = '268567'
-            changelogType = "html"
-            changelog = changeLogResolver
-            releaseType = "${release_type}"
-            mainArtifact(toolsJar.get()) {
-                relations {
-                    requiredDependency "mekanism"
-                }
-            }
-            addGameVersion "Java ${java_version}"
-            addGameVersion "${minecraft_version}"
-        }
+void uploadSecondaryCurseProject(TaskPublishCurseForge task, long projectId, String changelog, TaskProvider<Jar> sourceSetJar) {
+    task.upload(projectId, sourceSetJar) { artifact ->
+        setGenericCurseArtifactData(artifact, changelog)
+        addRequirement('mekanism')
     }
 }
 
@@ -874,7 +789,10 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
     }
 
     modrinth {
-        token = System.getenv("MODRINTH_TOKEN") ?: project.findProperty("modrinthToken")
+        if (System.getenv("MODRINTH_TOKEN") == null) {
+            //Defaults to MODRINTH_TOKEN so we only have to check for a token via gradle properties if there isn't a system property
+            getToken().value((String) project.findProperty("modrinthToken"))
+        }
         projectId = "Ce6I4WUE"
         //Use the full "basic" version number rather than just mod version number so that if multiple releases end up happening due to bugs
         // then we don't run into conflicts in uploading
@@ -883,17 +801,22 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
         versionType = "${release_type}"
         changelog = changeLogResolver.call()
         uploadFile = jar
-        additionalFiles = [apiJar.get()]
-        gameVersions = ["${minecraft_version}"]
+        getAdditionalFiles().value([apiJar.get()])
         //Note: Can't use nested dependency configuration as we have no way to clear it for the secondary uploads
-        dependencies = [
+        getDependencies().value([
                 new ModDependency("XxWD5pD3", "optional"),//AE2
                 new ModDependency("gu7yAYhd", "optional"),//CC: Tweaked
+                new ModDependency("Xg35A4rS", "optional"),//CraftTweaker
+                new ModDependency("vvuO3ImH", "optional"),//Curios
+                new ModDependency("R2OftAxM", "optional"),//Farmer's Delight
                 new ModDependency("nvQzSEkH", "optional"),//Jade
+                new ModDependency("EiEOyeoL", "optional"),//JEI Tweaker
                 new ModDependency("uE1WpIAk", "optional"),//Oh the Biomes You'll Go
+                new ModDependency("qXkLFB0L", "optional"),//Recipe Stages
+                new ModDependency("Eyw0UxEx", "optional"),//The One Probe
                 new ModDependency("bcOsQHnC", "optional"),//Wildfire's Female Gender Mod
                 new ModDependency("6AQIaxuO", "optional"),//WTHIT
-        ]
+        ])
     }
 }
 
@@ -908,13 +831,13 @@ def createSecondaryModrinthUpload(String output, String targetProjectId, TaskPro
                 projectId = targetProjectId
                 uploadFile = sourceSetJar.get()
                 //Clear additional upload files as this is a modification of what things are set to from before
-                additionalFiles = []
+                getAdditionalFiles().empty()
                 //Mark that the addon requires the build of Mekanism that we just uploaded (and override it to clear all optional dependencies)
-                if (tasks.modrinth.uploadInfo == null || tasks.modrinth.uploadInfo.id == null) {
+                if (tasks.modrinth.newVersion == null || tasks.modrinth.newVersion.getId() == null) {
                     //If we failed to find the upload version just set it to Mekanism in general
-                    dependencies = [new ModDependency("Ce6I4WUE", "required")]
+                    getDependencies().value([new ModDependency("Ce6I4WUE", "required")])
                 } else {
-                    dependencies = [new VersionDependency(tasks.modrinth.uploadInfo.id, "required")]
+                    getDependencies().value([new VersionDependency(tasks.modrinth.newVersion.getId(), "required")])
                 }
             }
             println "Updated Modrinth extension"

@@ -12,6 +12,7 @@ import mekanism.api.IIncrementalEnum;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.config.MekanismConfig;
@@ -22,8 +23,9 @@ import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 
-public class GuiEnergyTab extends GuiBiDirectionalTab {
+public class GuiEnergyTab extends GuiTexturedElement {
 
     private static final Map<EnergyUnit, ResourceLocation> ICONS = new EnumMap<>(EnergyUnit.class);
     private final IInfoHandler infoHandler;
@@ -72,13 +74,17 @@ public class GuiEnergyTab extends GuiBiDirectionalTab {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY) {
-        updateEnergyUnit(IIncrementalEnum::getNext);
+    public void onClick(double mouseX, double mouseY, int button) {
+        if (button == GLFW.GLFW_MOUSE_BUTTON_1) {
+            updateEnergyUnit(IIncrementalEnum::getNext);
+        } else if (button == GLFW.GLFW_MOUSE_BUTTON_2) {
+            updateEnergyUnit(IIncrementalEnum::getPrevious);
+        }
     }
 
     @Override
-    protected void onRightClick(double mouseX, double mouseY) {
-        updateEnergyUnit(IIncrementalEnum::getPrevious);
+    public boolean isValidClickButton(int button) {
+        return button == GLFW.GLFW_MOUSE_BUTTON_1 || button == GLFW.GLFW_MOUSE_BUTTON_2;
     }
 
     private void updateEnergyUnit(UnaryOperator<EnergyUnit> converter) {

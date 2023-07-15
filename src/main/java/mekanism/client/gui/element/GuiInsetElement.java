@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder {
@@ -22,7 +23,7 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder {
         this.innerHeight = innerSize;
         //TODO: decide what to do if this doesn't divide nicely
         this.border = (width - innerWidth) / 2;
-        playClickSound = true;
+        this.clickSound = SoundEvents.UI_BUTTON_CLICK;
         active = true;
     }
 

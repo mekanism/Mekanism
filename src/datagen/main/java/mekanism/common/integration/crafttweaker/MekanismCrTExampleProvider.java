@@ -76,7 +76,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
 
-    private static final String EXPANSION_TARGET_JEITWEAKER = "mods.jei.JEI";
+    private static final String EXPANSION_TARGET_JEITWEAKER = "mods.jeitweaker.Jei";
 
     public MekanismCrTExampleProvider(DataGenerator gen, ExistingFileHelper existingFileHelper) {
         super(gen, existingFileHelper, Mekanism.MODID);
@@ -137,7 +137,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment(imports -> descriptionSignature(imports, ICrTPigmentStack.class))
               .comment(imports -> descriptionSignature(imports, ICrTSlurryStack.class))
               .blankLine()
-              .addComponent(imports -> () -> imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".addDescription(" +
+              .addComponent(imports -> () -> imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".addIngredientInformation(" +
                                              new CrTGasStack(MekanismGases.HYDROGEN.getStack(FluidType.BUCKET_VOLUME)).getCommandString() +
                                              ", \"Hydrogen is a basic gas that is produced in an electrolytic separator\");")
         ;
@@ -509,7 +509,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
     }
 
     private String descriptionSignature(CrTImportsComponent imports, Class<?> clazz) {
-        return imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".addDescription(stack as " + getCrTClassName(clazz) + ", " + getCrTClassName(Component.class) + "...)";
+        return imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".addIngredientInformation(stack as " + getCrTClassName(clazz) + ", " + getCrTClassName(Component.class) + "...)";
     }
 
     private record JEIHidingComponent<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>>(

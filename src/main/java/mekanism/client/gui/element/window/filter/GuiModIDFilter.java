@@ -14,9 +14,12 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
+import mekanism.common.util.StackUtils;
 import mekanism.common.util.text.InputValidator;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -79,7 +82,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
             @Override
             public void accept(Object ingredient) {
                 if (ingredient instanceof ItemStack stack) {
-                    setFilterName(stack);
+                    setFilterName(stack, true);
                 } else if (ingredient instanceof FluidStack stack) {
                     setFilterName(RegistryUtils.getName(stack.getFluid()));
                 } else if (ingredient instanceof ChemicalStack<?> stack) {
@@ -94,14 +97,23 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
         };
     }
 
+    @Nullable
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return mouseClickSlot(gui(), button, mouseX, mouseY, relativeX + 8, relativeY + getSlotOffset() + 1, NOT_EMPTY, this::setFilterName) ||
-               super.mouseClicked(mouseX, mouseY, button);
+    protected IClickable getSlotClickHandler() {
+        return (element, mouseX, mouseY) -> {
+            if (!Screen.hasShiftDown()) {
+                ItemStack stack = gui().getCarriedItem();
+                if (!stack.isEmpty()) {
+                    setFilterName(StackUtils.size(stack, 1), false);
+                    return true;
+                }
+            }
+            return false;
+        };
     }
 
-    private void setFilterName(ItemStack stack) {
-        setFilterName(MekanismUtils.getModId(stack), true);
+    private void setFilterName(ItemStack stack, boolean click) {
+        setFilterName(MekanismUtils.getModId(stack), click);
     }
 
     private void setFilterName(ResourceLocation registryName) {
@@ -126,7 +138,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
             success = true;
         }
         if (click) {
-            playClickSound();
+            playClickSound(SoundEvents.UI_BUTTON_CLICK);
         }
         return success;
     }

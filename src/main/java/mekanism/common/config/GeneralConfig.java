@@ -99,6 +99,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     //Pump
     public final CachedIntValue maxPumpRange;
     public final CachedBooleanValue pumpWaterSources;
+    public final CachedIntValue pumpHeavyWaterAmount;
     public final CachedIntValue maxPlenisherNodes;
     //Quantum Entangloporter
     public final CachedFloatingLongValue entangloporterEnergyBuffer;
@@ -252,7 +253,7 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         builder.comment("Oredictionificator Settings").push(OREDICTIONIFICATOR_CATEGORY);
         validOredictionificatorFilters = CachedOredictionificatorConfigValue.define(this, builder.comment("The list of valid tag prefixes for the Oredictionificator. Note: It is highly recommended to only include well known/defined tag prefixes otherwise it is very easy to potentially add in accidental conversions of things that are not actually equivalent."),
-              "validItemFilters", () -> Collections.singletonMap("forge", List.of("ingots/", "ores/", "dusts/", "nuggets/", "storage_blocks/")));
+              "validItemFilters", () -> Collections.singletonMap("forge", List.of("ingots/", "ores/", "dusts/", "nuggets/", "storage_blocks/", "raw_materials/")));
         builder.pop();
 
         builder.comment("Pump Settings").push(PUMP_CATEGORY);
@@ -260,6 +261,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("maxPumpRange", 80, 1, 512));
         pumpWaterSources = CachedBooleanValue.wrap(this, builder.comment("If enabled makes Water and Heavy Water blocks be removed from the world on pump.")
               .define("pumpWaterSources", false));
+        pumpHeavyWaterAmount = CachedIntValue.wrap(this, builder.comment("mB of Heavy Water that is extracted per block of Water by the Electric Pump with a Filter Upgrade.")
+              .defineInRange("pumpHeavyWaterAmount", FluidType.BUCKET_VOLUME / 100, 1, FluidType.BUCKET_VOLUME));
         maxPlenisherNodes = CachedIntValue.wrap(this, builder.comment("Fluidic Plenisher stops after this many blocks.")
               .defineInRange("maxPlenisherNodes", 4_000, 1, 1_000_000));
         builder.pop();

@@ -4,6 +4,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -26,6 +28,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MinerEnergyContainer;
@@ -55,6 +58,7 @@ import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.inventory.Finder;
+import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.registries.MekanismBlocks;
@@ -78,6 +82,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -94,10 +100,7 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -128,6 +131,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     private boolean doEject = false;
     private boolean doPull = false;
     public ItemStack missingStack = ItemStack.EMPTY;
+
+    private final Predicate<ItemStack> overflowCollector = this::trackOverflow;
+    //Note: Linked map to ensure each call to save is in the same order so that there is more uniformity
+    private final Object2IntMap<HashedItem> overflow = new Object2IntLinkedOpenHashMap<>();
+    private boolean hasOverflow;
+    private boolean recheckOverflow;
+
     private int delay;
     private int delayLength = MekanismConfig.general.minerTicksPerMine.get();
     private int cachedToMine;
@@ -167,14 +177,20 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         mainSlots = new ArrayList<>();
+        IContentsListener mainSlotListener = () -> {
+            listener.onContentsChanged();
+            //Ensure we recheck if our overflow can fit anywhere
+            recheckOverflow = true;
+        };
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection, side -> side == RelativeSide.TOP, side -> side == RelativeSide.BACK);
         //Allow insertion manually or internally, or if it is a replace stack
         BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert = (stack, automationType) -> automationType != AutomationType.EXTERNAL || isReplaceTarget(stack.getItem());
-        //Allow extraction if it is manual or if it is a replace stack
-        BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract = (stack, automationType) -> automationType == AutomationType.MANUAL || !isReplaceTarget(stack.getItem());
+        //Allow extraction if it is manual or for internal usage, or if it is not a replace stack
+        //Note: We don't currently use internal for extraction anywhere here as we just shrink replace stacks directly
+        BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract = (stack, automationType) -> automationType != AutomationType.EXTERNAL || !isReplaceTarget(stack.getItem());
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                BasicInventorySlot slot = BasicInventorySlot.at(canExtract, canInsert, listener, 8 + slotX * 18, 92 + slotY * 18);
+                BasicInventorySlot slot = BasicInventorySlot.at(canExtract, canInsert, mainSlotListener, 8 + slotX * 18, 92 + slotY * 18);
                 builder.addSlot(slot, RelativeSide.BACK, RelativeSide.TOP);
                 mainSlots.add(slot);
             }
@@ -217,13 +233,24 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
         energySlot.fillContainerOrConvert();
 
-        if (MekanismUtils.canFunction(this) && running && searcher.state == State.FINISHED && !oresToMine.isEmpty()) {
+        if (recheckOverflow) {
+            //Try adding any overflow stacks we have before we actually try to process as if we have some overflow we can't add
+            // then we will skip functioning and avoid draining energy.
+            // Note: We may not have any overflow stacks, in which case this will effectively NO-OP
+            // We also mark needing to recheck if the overflow can fit as false as we will know if we can or can't currently add it all
+            tryAddOverflow();
+        }
+
+        //Note: If we have any overflow don't function or use any energy until the overflow has been dealt with
+        if (!hasOverflow && MekanismUtils.canFunction(this) && running && searcher.state == State.FINISHED && !oresToMine.isEmpty()) {
             FloatingLong energyPerTick = energyContainer.getEnergyPerTick();
             if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL).equals(energyPerTick)) {
                 setActive(true);
                 if (delay > 0) {
                     delay--;
                 }
+                //TODO: Eventually we may want to avoid draining energy if we can't function due to a missing replace stack or the normal drops
+                // being too much to fit
                 energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                 if (delay == 0) {
                     tryMineBlock();
@@ -455,23 +482,31 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                         //If our hasFilter state matches our inversion state, that means we should try to mine
                         // the block, so we check if we can mine it
                         if (inverse == (matchingFilter == null) && canMine(state, pos)) {
-                            //If we can, then
+                            //If we can, then validate we can fit the drops and try to see if we can replace it properly as well
                             List<ItemStack> drops = getDrops(state, pos);
-                            if (canInsert(drops) && setReplace(state, pos, matchingFilter)) {
-                                add(drops);
-                                missingStack = ItemStack.EMPTY;
-                                level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
-                                //Remove the block from our list of blocks to mine, and reduce the number of blocks we have to mine
-                                cachedToMine--;
-                                chunkToMine.clear(index);
-                                if (chunkToMine.isEmpty()) {
-                                    // if we are out of stored elements then we remove this chunk and continue to check other chunks
-                                    // remove it so that we don't have to check the chunk next time around
-                                    it.remove();
-                                    // we no longer have a chunk we are targeting, so remove it. We might get a new chunk to target
-                                    // next time we try to mine but there is no reason to keep the old chunk in memory in the meantime
-                                    updateTargetChunk(null);
+                            if (canInsert(drops)) {
+                                CommonWorldTickHandler.fallbackItemCollector = overflowCollector;
+                                if (setReplace(state, pos, matchingFilter)) {
+                                    add(drops);
+                                    //Try to add any drops that might have been caused by breaking the block but didn't show up in the loot table.
+                                    // This mainly will be the case for some single block multiblocks and also for storage containers like chests
+                                    tryAddOverflow();
+                                    missingStack = ItemStack.EMPTY;
+                                    level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
+                                    //Remove the block from our list of blocks to mine, and reduce the number of blocks we have to mine
+                                    cachedToMine--;
+                                    chunkToMine.clear(index);
+                                    if (chunkToMine.isEmpty()) {
+                                        // if we are out of stored elements then we remove this chunk and continue to check other chunks
+                                        // remove it so that we don't have to check the chunk next time around
+                                        it.remove();
+                                        // we no longer have a chunk we are targeting, so remove it. We might get a new chunk to target
+                                        // next time we try to mine but there is no reason to keep the old chunk in memory in the meantime
+                                        updateTargetChunk(null);
+                                    }
                                 }
+                                //Reset the global fallback collector to null as we are done collecting for this miner and block
+                                CommonWorldTickHandler.fallbackItemCollector = null;
                             }
                             //Exit out. We either mined the block or don't have room so there is no reason to continue checking
                             return;
@@ -584,57 +619,16 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             return true;
         }
         int slots = mainSlots.size();
-        Int2ObjectMap<ItemCount> cachedStacks = new Int2ObjectOpenHashMap<>();
+        Int2ObjectMap<ItemCount> cachedStacks = new Int2ObjectOpenHashMap<>(slots);
+        for (int i = 0; i < slots; i++) {
+            IInventorySlot slot = mainSlots.get(i);
+            if (!slot.isEmpty()) {
+                //Note: We skip caching the current stack of any empty slots
+                cachedStacks.put(i, new ItemCount(slot.getStack(), slot.getCount()));
+            }
+        }
         for (ItemStack stackToInsert : toInsert) {
-            if (stackToInsert.isEmpty()) {
-                continue;
-            }
-            ItemStack stack = stackToInsert.copy();
-            for (int i = 0; i < slots; i++) {
-                IInventorySlot slot = mainSlots.get(i);
-                //Try to insert the item across all slots until we inserted as much as we want to
-                // We update our copies reference, to the remainder of what fit, so that we can
-                // continue trying the next slots
-                boolean wasEmpty = slot.isEmpty();
-                if (wasEmpty && cachedStacks.containsKey(i)) {
-                    //If we have cached information about the slot and our slot is currently empty, so we can't simulate
-                    ItemCount cachedItem = cachedStacks.get(i);
-                    if (ItemHandlerHelper.canItemStacksStack(stack, cachedItem.stack)) {
-                        //If our stack can stack with the item we already put there
-                        // Increase how much we inserted up to the slot's limit for that stack type
-                        // and then replace the reference to our stack with one that is of the adjusted size
-                        int limit = slot.getLimit(stack);
-                        int stackSize = stack.getCount();
-                        int total = stackSize + cachedItem.count;
-                        if (total <= limit) {
-                            //It can all fit, increase the cached amount and break
-                            cachedItem.count = total;
-                            stack = ItemStack.EMPTY;
-                            break;
-                        }
-                        int toAdd = total - limit;
-                        if (toAdd > 0) {
-                            //Otherwise, add what can fit and update the stack to be a reference of that
-                            // stack with the proper size
-                            cachedItem.count += toAdd;
-                            stack = StackUtils.size(stack, stackSize - toAdd);
-                        }
-                    }
-                } else {
-                    int stackSize = stack.getCount();
-                    stack = slot.insertItem(stack, Action.SIMULATE, AutomationType.INTERNAL);
-                    int remainderSize = stack.getCount();
-                    if (wasEmpty && remainderSize < stackSize) {
-                        //If the slot was empty, and accepted at least some item we are inserting
-                        // then cache the item type that we put into that slot
-                        cachedStacks.put(i, new ItemCount(stackToInsert, stackSize - remainderSize));
-                    }
-                    if (stack.isEmpty()) {
-                        //Once we finished inserting this item, break and move on to the next item
-                        break;
-                    }
-                }
-            }
+            ItemStack stack = simulateInsert(cachedStacks, slots, stackToInsert);
             if (!stack.isEmpty()) {
                 //If our stack is not empty that means we could not fit it all inside of our inventory,
                 // so we return false to being able to insert all the items.
@@ -644,23 +638,124 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return true;
     }
 
+    /**
+     * Prioritizes "inserting" into slots that have a matching item and then tries to insert into empty slots. This allows for more accurate simulations regarding if it
+     * is possible to fit everything in the inventory.
+     */
+    private ItemStack simulateInsert(Int2ObjectMap<ItemCount> cachedStacks, int slots, ItemStack stackToInsert) {
+        if (stackToInsert.isEmpty()) {
+            //If the stack is already empty for some reason just return it (aka no remainder)
+            return stackToInsert;
+        }
+        ItemStack stack = stackToInsert.copy();
+        //Try to simulate inserting into slots that are not currently empty
+        for (int i = 0; i < slots; i++) {
+            ItemCount cachedItem = cachedStacks.get(i);
+            if (cachedItem != null && ItemHandlerHelper.canItemStacksStack(stack, cachedItem.stack)) {
+                //Ensure that our stack can stack with the item that is already in the slot
+                IInventorySlot slot = mainSlots.get(i);
+                int limit = slot.getLimit(stack);
+                if (cachedItem.count < limit) {
+                    //If we still have space left before this slot is full, try adding the stacks together
+                    cachedItem.count += stack.getCount();
+                    if (cachedItem.count <= limit) {
+                        //If we can fit it all, return we have no remainder
+                        return ItemStack.EMPTY;
+                    }
+                    //Otherwise, we tried to store more than can fit, update stack to represent the remainder that didn't fit
+                    stack = StackUtils.size(stack, cachedItem.count - limit);
+                    // and update the actual amount stored to the limit of the slot
+                    cachedItem.count = limit;
+                }
+            }
+        }
+        //Try to simulate inserting into slots that are currently empty
+        for (int i = 0; i < slots; i++) {
+            if (!cachedStacks.containsKey(i)) {
+                //We have no cache of this slot, which means that it is currently empty
+                IInventorySlot slot = mainSlots.get(i);
+                int stackSize = stack.getCount();
+                //Attempt to insert the stack into the slot, the expected outcome given our slots' restrictions is that
+                // this will succeed and insert the entire stack
+                stack = slot.insertItem(stack, Action.SIMULATE, AutomationType.INTERNAL);
+                int remainderSize = stack.getCount();
+                if (remainderSize < stackSize) {
+                    //If the slot accepted at least some item we are inserting, then cache the item type that we put into that slot
+                    // Given the slot is empty the expected result is that we will always end up inserting into the first empty slot
+                    // and end up inserting the entire stack
+                    cachedStacks.put(i, new ItemCount(stackToInsert, stackSize - remainderSize));
+                    if (stack.isEmpty()) {
+                        //Stack was fully accepted, return that we have no remainder
+                        return ItemStack.EMPTY;
+                    }
+                }
+            }
+        }
+        return stack;
+    }
+
     private BlockEntity getPullInv() {
         return WorldUtils.getTileEntity(getLevel(), getBlockPos().above(2));
     }
 
     private void add(List<ItemStack> stacks) {
-        //TODO: Improve this and the simulated insertion, to try to first complete stacks
-        // before inserting into empty stacks, as this will give better results for various
-        // edge cases that currently fail
         for (ItemStack stack : stacks) {
-            for (IInventorySlot slot : mainSlots) {
-                //Try to insert the item across all slots until we inserted it all
-                stack = slot.insertItem(stack, Action.EXECUTE, AutomationType.INTERNAL);
-                if (stack.isEmpty()) {
-                    break;
-                }
+            //Try inserting it first where it can stack and then into empty slots
+            stack = InventoryUtils.insertItem(mainSlots, stack, Action.EXECUTE, AutomationType.INTERNAL);
+            if (!stack.isEmpty()) {
+                //Because of the simulated insertion the stack should never be able to be empty here,
+                // but in case it is keep track of any excess as overflow
+                trackOverflow(stack);
             }
         }
+    }
+
+    private boolean trackOverflow(ItemStack stack) {
+        //Note: We never expect the stack to be empty but in case it is just don't handle the stack
+        if (!stack.isEmpty()) {
+            //Note: While we probably could get away by using a raw hashed item given we are removing the item entity for the stack
+            // we don't bother in case any other mods are doing weird things with it as this is just an edge case handler so shouldn't
+            // be a hotspot in regard to copying stacks
+            overflow.mergeInt(HashedItem.create(stack), stack.getCount(), Integer::sum);
+            //If we add something to the overflow map, mark that we have overflow
+            hasOverflow = true;
+            //Mark that we need to recheck if we can insert the overflow as we now have some
+            recheckOverflow = true;
+            markForSave();
+            return true;
+        }
+        return false;
+    }
+
+    private void tryAddOverflow() {
+        if (hasOverflow) {
+            //Try to add any existing overflow to our inventory
+            boolean recheck = false;
+            for (ObjectIterator<Object2IntMap.Entry<HashedItem>> iter = overflow.object2IntEntrySet().iterator(); iter.hasNext(); ) {
+                Object2IntMap.Entry<HashedItem> entry = iter.next();
+                int amount = entry.getIntValue();
+                ItemStack stack = entry.getKey().createStack(amount);
+                //Note: Inserting properly handles oversized stacks, so we don't have to handle the case that amount might be greater than
+                // the max stack size here as the different slots will only accept up to the item's max stack size
+                stack = InventoryUtils.insertItem(mainSlots, stack, Action.EXECUTE, AutomationType.INTERNAL);
+                //Note: We do not need to mark the miner for saving if something gets moved from overflow to a slot as the slot will do so
+                // when it accepts the item, so we can skip marking that we need to save because overflow changed
+                if (stack.isEmpty()) {
+                    //We were able to fully fit the stack, so we can remove it from our list of overflow
+                    iter.remove();
+                    recheck = true;
+                } else if (stack.getCount() != amount) {
+                    //Some was able to fit, update the amount that is actually still part of the overflow
+                    entry.setValue(stack.getCount());
+                }
+            }
+            if (recheck) {
+                //Update if we still have an overflow as at least one stack was able to fit
+                hasOverflow = !overflow.isEmpty();
+            }
+        }
+        //Mark it as not needing to recheck the overflow as we just tried to add it, so we fit whatever we could or didn't even have any overflow
+        recheckOverflow = false;
     }
 
     public void start() {
@@ -755,6 +850,17 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         nbtTags.putInt(NBTConstants.DELAY, delay);
         nbtTags.putInt(NBTConstants.NUM_POWERING, numPowering);
         NBTUtils.writeEnum(nbtTags, NBTConstants.STATE, searcher.state);
+        if (!overflow.isEmpty()) {
+            //Persist any items that are stored as overflow
+            ListTag overflowTag = new ListTag();
+            for (Object2IntMap.Entry<HashedItem> entry : overflow.object2IntEntrySet()) {
+                CompoundTag overflowComponent = new CompoundTag();
+                overflowComponent.put(NBTConstants.TYPE, entry.getKey().internalToNBT());
+                overflowComponent.putInt(NBTConstants.COUNT, entry.getIntValue());
+                overflowTag.add(overflowComponent);
+            }
+            nbtTags.put(NBTConstants.OVERFLOW, overflowTag);
+        }
     }
 
     public int getTotalSize() {
@@ -904,6 +1010,32 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         inverseReplaceTarget = NBTUtils.readRegistryEntry(dataMap, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, Items.AIR);
         NBTUtils.setBooleanIfPresent(dataMap, NBTConstants.INVERSE_REQUIRES_REPLACE, requiresReplace -> inverseRequiresReplacement = requiresReplace);
         filterManager.readFromNBT(dataMap);
+        //Note: We read the overflow information if it is present in sustained data in order to grab the information from the digital miner item
+        // when it is placed or when the BE is loaded from NBT, but the corresponding writing of the data is done in the saveAdditional method
+        // as opposed to the writeSustainedData method to ensure that configuration cards do not copy overflow data from one miner to another
+        NBTUtils.setListIfPresent(dataMap, NBTConstants.OVERFLOW, Tag.TAG_COMPOUND, overflowTag -> {
+            //Clear any existing overflow and read what is the actual overflow from NBT
+            overflow.clear();
+            for (int i = 0, size = overflowTag.size(); i < size; i++) {
+                CompoundTag overflowComponent = overflowTag.getCompound(i);
+                int count = overflowComponent.getInt(NBTConstants.COUNT);
+                if (count > 0) {
+                    //The count should always be greater than zero, but validate it just in case before trying to read the item
+                    CompoundTag type = overflowComponent.getCompound(NBTConstants.TYPE);
+                    ItemStack stack = ItemStack.of(type);
+                    //Only add the item if the item could be read. If it can't that means the mod adding the item was probably removed
+                    if (!stack.isEmpty()) {
+                        //Note: We can use a raw stack as we just created a new stack from NBT
+                        overflow.put(HashedItem.raw(stack), count);
+                    }
+                }
+            }
+            hasOverflow = !overflow.isEmpty();
+            //Note: Marking rechecking if any of the overflow can fit probably isn't strictly necessary here as in theory it already tried
+            // to insert anything before when it was saving, but it doesn't really hurt and then if the last tick had it get overflow or
+            // had the inventory change which caused a save, but the next tick never happened the overflow may actually need to be updated
+            recheckOverflow = hasOverflow;
+        });
     }
 
     @Override
@@ -919,6 +1051,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         remap.put(NBTConstants.REPLACE_STACK, NBTConstants.REPLACE_STACK);
         remap.put(NBTConstants.INVERSE_REQUIRES_REPLACE, NBTConstants.INVERSE_REQUIRES_REPLACE);
         remap.put(NBTConstants.FILTERS, NBTConstants.FILTERS);
+        remap.put(NBTConstants.OVERFLOW, NBTConstants.OVERFLOW);
         return remap;
     }
 
@@ -1065,6 +1198,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return doPull;
     }
 
+    public boolean hasOverflow() {
+        return hasOverflow;
+    }
+
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
@@ -1076,6 +1213,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         container.track(SyncableEnum.create(State::byIndexStatic, State.IDLE, () -> searcher.state, value -> searcher.state = value));
         container.track(SyncableInt.create(this::getToMine, value -> cachedToMine = value));
         container.track(SyncableItemStack.create(() -> missingStack, value -> missingStack = value));
+        container.track(SyncableBoolean.create(this::hasOverflow, value -> hasOverflow = value));
     }
 
     public void addConfigContainerTrackers(MekanismContainer container) {
@@ -1114,12 +1252,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         if (getSilkTouch()) {
             stack.enchant(Enchantments.SILK_TOUCH, 1);
         }
-        return withFakePlayer(fakePlayer -> state.getDrops(new LootContext.Builder((ServerLevel) getWorldNN())
-              .withRandom(getWorldNN().random)
-              .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
-              .withParameter(LootContextParams.TOOL, stack)
-              .withOptionalParameter(LootContextParams.THIS_ENTITY, fakePlayer)
-              .withOptionalParameter(LootContextParams.BLOCK_ENTITY, WorldUtils.getTileEntity(getWorldNN(), pos))));
+        ServerLevel level = (ServerLevel) getWorldNN();
+        return withFakePlayer(fakePlayer -> Block.getDrops(state, level, pos, WorldUtils.getTileEntity(level, pos), fakePlayer, stack));
     }
 
     //Methods relating to IComputerTile

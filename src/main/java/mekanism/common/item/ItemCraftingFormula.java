@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemCraftingFormula extends Item {
 
@@ -70,19 +71,19 @@ public class ItemCraftingFormula extends Item {
 
     @Override
     public int getMaxStackSize(ItemStack stack) {
-        return getInventory(stack) == null ? 64 : 1;
+        return hasInventory(stack) ? 1 : 64;
     }
 
     @NotNull
     @Override
     public Component getName(@NotNull ItemStack stack) {
-        if (getInventory(stack) == null) {
-            return super.getName(stack);
+        if (hasInventory(stack)) {
+            if (isInvalid(stack)) {
+                return TextComponentUtil.build(super.getName(stack), " ", EnumColor.DARK_RED, MekanismLang.INVALID);
+            }
+            return TextComponentUtil.build(super.getName(stack), " ", EnumColor.DARK_GREEN, MekanismLang.ENCODED);
         }
-        if (isInvalid(stack)) {
-            return TextComponentUtil.build(super.getName(stack), " ", EnumColor.DARK_RED, MekanismLang.INVALID);
-        }
-        return TextComponentUtil.build(super.getName(stack), " ", EnumColor.DARK_GREEN, MekanismLang.ENCODED);
+        return super.getName(stack);
     }
 
     public boolean isInvalid(ItemStack stack) {
@@ -93,8 +94,13 @@ public class ItemCraftingFormula extends Item {
         ItemDataUtils.setBoolean(stack, NBTConstants.INVALID, invalid);
     }
 
+    public boolean hasInventory(ItemStack stack) {
+        return ItemDataUtils.hasData(stack, NBTConstants.ITEMS, Tag.TAG_LIST);
+    }
+
+    @Nullable
     public NonNullList<ItemStack> getInventory(ItemStack stack) {
-        if (!ItemDataUtils.hasData(stack, NBTConstants.ITEMS, Tag.TAG_LIST)) {
+        if (!hasInventory(stack)) {
             return null;
         }
         ListTag tagList = ItemDataUtils.getList(stack, NBTConstants.ITEMS);
@@ -109,7 +115,7 @@ public class ItemCraftingFormula extends Item {
         return inventory;
     }
 
-    public void setInventory(ItemStack stack, NonNullList<ItemStack> inv) {
+    public void setInventory(ItemStack stack, @Nullable NonNullList<ItemStack> inv) {
         if (inv == null) {
             ItemDataUtils.removeData(stack, NBTConstants.ITEMS);
             return;

@@ -13,6 +13,7 @@ import mekanism.common.capabilities.resolver.manager.HeatHandlerManager;
 import mekanism.common.content.network.transmitter.ThermodynamicConductor;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,8 +29,9 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
         super(blockProvider, pos, state);
         addCapabilityResolver(heatHandlerManager = new HeatHandlerManager(direction -> {
             ThermodynamicConductor conductor = getTransmitter();
-            if (direction != null && conductor.getConnectionTypeRaw(direction) == ConnectionType.NONE) {
-                //If we actually have a side, and our connection type on that side is none, then return that we have no capacitors
+            if (direction != null && (conductor.getConnectionTypeRaw(direction) == ConnectionType.NONE) || conductor.isRedstoneActivated()) {
+                //If we actually have a side, and our connection type on that side is none, or we are currently activated by redstone,
+                // then return that we have no capacitors
                 return Collections.emptyList();
             }
             return conductor.getHeatCapacitors(direction);
@@ -64,13 +66,13 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
     @NotNull
     @Override
     protected BlockState upgradeResult(@NotNull BlockState current, @NotNull BaseTier tier) {
-        return switch (tier) {
-            case BASIC -> BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR);
-            case ADVANCED -> BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR);
-            case ELITE -> BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR);
-            case ULTIMATE -> BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
-            default -> current;
-        };
+        return BlockStateHelper.copyStateData(current, switch (tier) {
+            case BASIC -> MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR;
+            case ADVANCED -> MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR;
+            case ELITE -> MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR;
+            case ULTIMATE -> MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR;
+            default -> null;
+        });
     }
 
     @Override
@@ -84,5 +86,17 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
             //Notify the neighbor on that side our state changed, and we now do have a capability
             WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         }
+    }
+
+    @Override
+    public void redstoneChanged(boolean powered) {
+        super.redstoneChanged(powered);
+        if (powered) {
+            //The transmitter now is powered by redstone and previously was not
+            //Note: While at first glance the below invalidation may seem over aggressive, it is not actually that aggressive as
+            // if a cap has not been initialized yet on a side then invalidating it will just NO-OP
+            invalidateCapability(Capabilities.HEAT_HANDLER, EnumUtils.DIRECTIONS);
+        }
+        //Note: We do not have to invalidate any caps if we are going from powered to unpowered as all the caps would already be "empty"
     }
 }

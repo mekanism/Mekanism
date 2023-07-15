@@ -11,13 +11,14 @@ import mekanism.common.network.to_server.PacketConfigurationUpdate.Configuration
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 public class SideDataButton extends BasicColorButton {
 
     private final Supplier<DataType> dataTypeSupplier;
 
     public SideDataButton(IGuiWrapper gui, int x, int y, RelativeSide slotPos, Supplier<DataType> dataTypeSupplier, Supplier<EnumColor> colorSupplier,
-          BlockEntity tile, Supplier<TransmissionType> transmissionType, ConfigurationPacket packetType, IHoverable onHover) {
+          BlockEntity tile, Supplier<TransmissionType> transmissionType, ConfigurationPacket packetType, @Nullable IHoverable onHover) {
         super(gui, x, y, 14, () -> {
                   DataType dataType = dataTypeSupplier.get();
                   return dataType == null ? null : colorSupplier.get();

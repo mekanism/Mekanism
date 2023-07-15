@@ -288,11 +288,9 @@ public class GuiColorWindow extends GuiWindow {
         protected abstract void set(double mouseX, double mouseY);
 
         @Override
-        public void onClick(double mouseX, double mouseY) {
-            if (clicked(mouseX, mouseY)) {
-                set(mouseX, mouseY);
-                isDragging = true;
-            }
+        public void onClick(double mouseX, double mouseY, int button) {
+            set(mouseX, mouseY);
+            isDragging = true;
         }
 
         @Override

@@ -217,6 +217,12 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
+    public void previousMode() {
+        editMode = editMode.getPrevious();
+        setChanged();
+    }
+
+    @Override
     public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof FluidTankUpgradeData data) {
             redstone = data.redstone;
@@ -290,8 +296,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @ComputerMethod
     private void decrementContainerEditMode() throws ComputerException {
         validateSecurityIsPublic();
-        editMode = editMode.getPrevious();
-        markForSave();
+        previousMode();
     }
     //End methods IComputerTile
 }

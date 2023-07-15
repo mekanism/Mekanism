@@ -3,8 +3,6 @@ package mekanism.common.inventory.container.slot;
 import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.Action;
-import mekanism.api.AutomationType;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -57,17 +55,17 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         if (amount == 0) {
             return ItemStack.EMPTY;
         }
-        //Simulate extraction to not actually modify the slot
+        //"Simulate" extraction to not actually modify the slot by just taking a copy of the slot's stack.
+        // This is done rather than simulating to ensure that we properly return the correct stack if it
+        // is for a recipe that creates an "over" stacked item. We also ignore the passed in amount so that
+        // we ensure we properly craft everything from the output stack instead of only producing part of the output
         // Note: In theory even though we are "simulating" here instead of actually changing how much is
         // in the slot, this shouldn't be a problem or be a risk of duplication, as there are slots like
         // the MerchantResultSlot which effectively do the same thing. They do it slightly differently
         // by taking it and then just setting the contents again, but effectively it is just returning
         // a copy so if mods cause any duplication glitches because of how we handle this, then in theory
         // they probably also cause duplication glitches with some of vanilla's slots as well.
-        // Note: We use the slot's actual amount instead of the passed in one, so that we ensure we properly
-        // craft everything from the output stack instead of only producing part of the output
-        IInventorySlot slot = getInventorySlot();
-        ItemStack extracted = slot.extractItem(slot.getCount(), Action.SIMULATE, AutomationType.MANUAL);
+        ItemStack extracted = getInventorySlot().getStack().copy();
         //Adjust amount crafted by the amount that would have actually been extracted
         amountCrafted += extracted.getCount();
         return extracted;

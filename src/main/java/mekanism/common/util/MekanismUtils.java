@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -74,6 +75,7 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ChunkPos;
@@ -112,6 +114,7 @@ import org.jetbrains.annotations.Nullable;
 public final class MekanismUtils {
 
     public static final float ONE_OVER_ROOT_TWO = (float) (1 / Math.sqrt(2));
+    private static final ItemStack MILK = new ItemStack(Items.MILK_BUCKET);
 
     private static final List<UUID> warnedFails = new ArrayList<>();
 
@@ -592,6 +595,11 @@ public final class MekanismUtils {
         }
     }
 
+    public static boolean shouldSpeedUpEffect(MobEffectInstance effectInstance) {
+        //Only allow speeding up effects that can be sped up by milk. Also validate it isn't blacklisted by the modpack
+        return effectInstance.isCurativeItem(MILK) && !MekanismTags.MobEffects.SPEED_UP_BLACKLIST_LOOKUP.contains(effectInstance.getEffect());
+    }
+
     /**
      * Copy of LivingEntity#onChangedPotionEffect(EffectInstance, boolean) due to not being able to AT the method as it is protected.
      */
@@ -609,18 +617,16 @@ public final class MekanismUtils {
     }
 
     public static boolean isSameTypeFactory(Block block, BlockEntityType<?> factoryTileType) {
-        AttributeFactoryType attribute = Attribute.get(block, AttributeFactoryType.class);
-        if (attribute == null) {
-            return false;
-        }
-        FactoryType factoryType = attribute.getFactoryType();
-        //Check all factory types
-        for (FactoryTier factoryTier : EnumUtils.FACTORY_TIERS) {
-            if (MekanismTileEntityTypes.getFactoryTile(factoryTier, factoryType).get() == factoryTileType) {
-                return true;
+        return Attribute.matches(block, AttributeFactoryType.class, attribute -> {
+            FactoryType factoryType = attribute.getFactoryType();
+            //Check all factory types
+            for (FactoryTier factoryTier : EnumUtils.FACTORY_TIERS) {
+                if (MekanismTileEntityTypes.getFactoryTile(factoryTier, factoryType).get() == factoryTileType) {
+                    return true;
+                }
             }
-        }
-        return false;
+            return false;
+        });
     }
 
     /**
@@ -748,7 +754,7 @@ public final class MekanismUtils {
             //If the position isn't actually loaded, just return there isn't any fluids
             return Collections.emptyMap();
         }
-        Map<FluidType, FluidInDetails> fluidsIn = new HashMap<>();
+        Map<FluidType, FluidInDetails> fluidsIn = new IdentityHashMap<>();
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
         for (int x = xMin; x < xMax; ++x) {
             for (int y = yMin; y < yMax; ++y) {

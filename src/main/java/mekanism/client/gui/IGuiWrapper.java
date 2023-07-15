@@ -14,6 +14,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,6 +37,16 @@ public interface IGuiWrapper {
             }
         }
         screen.renderComponentTooltip(matrix, components, mouseX, mouseY);
+    }
+
+    @NotNull
+    default ItemStack getCarriedItem() {
+        if (this instanceof AbstractContainerScreen<?> screen) {
+            return screen.getMenu().getCarried();
+        }
+        //General fallback to just get it from the player's container menu
+        Player player = Minecraft.getInstance().player;
+        return player == null ? ItemStack.EMPTY : player.containerMenu.getCarried();
     }
 
     default int getLeft() {
