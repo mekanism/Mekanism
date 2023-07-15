@@ -598,6 +598,7 @@ tasks.withType(GenerateModuleMetadata).configureEach {
 
 //properties to put in $HOME/.gradle/gradle.properties
 def MAVEN_PASSWORD_PROPERTY_NAME = 'mekanismMavenPassword'
+def MODMAVEN_PW = System.getenv('MEK_MAVEN_PW') ?: (String)project.findProperty(MAVEN_PASSWORD_PROPERTY_NAME)
 
 publishing {
     publications { PublicationContainer publicationContainer ->
@@ -652,10 +653,10 @@ publishing {
     repositories {
         maven {
             url = 'https://modmaven.dev/artifactory/local-releases/'
-            if (project.findProperty(MAVEN_PASSWORD_PROPERTY_NAME) != null) {
+            if (MODMAVEN_PW != null) {
                 credentials {
                     username = "mekanism"
-                    password = project.findProperty(MAVEN_PASSWORD_PROPERTY_NAME)
+                    password = MODMAVEN_PW
                 }
             }
         }
