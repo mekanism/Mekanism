@@ -28,6 +28,12 @@ jobs:
         token: ${{github.token}}
         #verify ensures that it's reachable on the current branch
         verify: true
+    - uses: madhead/read-java-properties@latest
+      id: gradle_props
+      with:
+        file: gradle.properties
+        all: true
+
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
@@ -41,36 +47,35 @@ jobs:
       with:
         arguments: clean build outputChangelog
         gradle-version: wrapper
+      env:
+        BUILD_NUMBER: ${{ github.run_number }}
+        GIT_COMMIT: ${{ github.sha }}
+        GIT_PREVIOUS_SUCCESSFUL_COMMIT: ${{ steps.last_success_build.outputs.sha }}
 
     - name: Upload to workflow artifacts
       uses: actions/upload-artifact@v3
       with:
         path: |
-          ${{ github.workspace }}build/libs/
-          ${{ github.workspace }}build/changelog.html
-
-    - uses: madhead/read-java-properties@latest
-      id: version
-      with:
-        file: gradle.properties
-        all: true
+          build/libs/
+          build/changelog.html
 
     - name: GH Release
       uses: softprops/action-gh-release@v1
       with:
-        files: ${{ github.workspace }}build/libs/*.jar
-        body_path: ${{ github.workspace }}build/changelog.html
-        tag_name: v${{ steps.all.outputs.minecraft_version }}-${{ steps.all.outputs.mod_version }}.${{ github.run_id }}
+        files: build/libs/*.jar
+        body_path: build/changelog.html
+        tag_name: v${{ steps.gradle_props.outputs.minecraft_version }}-${{ steps.gradle_props.outputs.mod_version }}.${{ github.run_number }}
+        target_commitish: ${{ github.sha }}
 
-#    - name: Publish
-#      uses: gradle/gradle-build-action@v2
-#      with:
-#        arguments: curseforge modrinth publish
-#        gradle-version: wrapper
-#      env:
-#        CURSEFORGE_KEY: ${{ secrets.CURSEFORGE_KEY }}
-#        MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-#        MEK_MAVEN_PW: ${{ secrets.MEK_MAVEN_PW }}
-#        BUILD_NUMBER: ${{ github.run_id }}
-#        GIT_COMMIT: ${{ github.sha }}
-#        GIT_PREVIOUS_SUCCESSFUL_COMMIT: ${{ steps.last_success_build.outputs.sha }}
+    - name: Publish
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: curseforge modrinth publish
+        gradle-version: wrapper
+      env:
+        CURSEFORGE_KEY: ${{ secrets.CURSEFORGE_KEY }}
+        MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+        MEK_MAVEN_PW: ${{ secrets.MEK_MAVEN_PW }}
+        BUILD_NUMBER: ${{ github.run_number }}
+        GIT_COMMIT: ${{ github.sha }}
+        GIT_PREVIOUS_SUCCESSFUL_COMMIT: ${{ steps.last_success_build.outputs.sha }}

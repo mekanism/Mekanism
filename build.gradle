@@ -598,6 +598,7 @@ tasks.withType(GenerateModuleMetadata).configureEach {
 
 //properties to put in $HOME/.gradle/gradle.properties
 def MAVEN_PASSWORD_PROPERTY_NAME = 'mekanismMavenPassword'
+def MODMAVEN_PW = System.getenv('MEK_MAVEN_PW') ?: (String)project.findProperty(MAVEN_PASSWORD_PROPERTY_NAME)
 
 publishing {
     publications { PublicationContainer publicationContainer ->
@@ -652,10 +653,10 @@ publishing {
     repositories {
         maven {
             url = 'https://modmaven.dev/artifactory/local-releases/'
-            if (project.findProperty(MAVEN_PASSWORD_PROPERTY_NAME) != null) {
+            if (MODMAVEN_PW != null) {
                 credentials {
                     username = "mekanism"
-                    password = project.findProperty(MAVEN_PASSWORD_PROPERTY_NAME)
+                    password = MODMAVEN_PW
                 }
             }
         }
@@ -792,6 +793,8 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
         if (System.getenv("MODRINTH_TOKEN") == null) {
             //Defaults to MODRINTH_TOKEN so we only have to check for a token via gradle properties if there isn't a system property
             getToken().value((String) project.findProperty("modrinthToken"))
+        } else {
+            token = System.getenv("MODRINTH_TOKEN")
         }
         projectId = "Ce6I4WUE"
         //Use the full "basic" version number rather than just mod version number so that if multiple releases end up happening due to bugs
