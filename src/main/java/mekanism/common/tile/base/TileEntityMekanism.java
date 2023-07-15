@@ -72,7 +72,7 @@ import mekanism.common.integration.computer.BoundComputerMethod;
 import mekanism.common.integration.computer.ComputerCapabilityHelper;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.ComputerMethodMapper;
-import mekanism.common.integration.computer.ComputerMethodMapper.MethodRestriction;
+import mekanism.common.integration.computer.MethodRestriction;
 import mekanism.common.integration.computer.IComputerTile;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.ITrackableContainer;
