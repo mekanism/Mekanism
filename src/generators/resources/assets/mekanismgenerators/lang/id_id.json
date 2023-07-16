@@ -1,5 +1,7 @@
 {
   "advancements.mekanismgenerators.burn_the_gas.description": "Rakit Pembangkit Listrik Tenaga Gas untuk membakar Etena",
+  "advancements.mekanismgenerators.burn_the_gas.title": "Bakar Gas",
+  "advancements.mekanismgenerators.heat_generator.description": "Rakit Pembangkit Listrik Tenaga Panas untuk mulai menghasilkan daya",
   "advancements.mekanismgenerators.heat_generator.title": "Pembangkit Listrik Pertamamu",
   "advancements.mekanismgenerators.solar_generator.description": "Energi siang hari yang dapat diperbarui",
   "advancements.mekanismgenerators.solar_generator.title": "Kekuatan Matahari",
@@ -41,6 +43,7 @@
   "description.mekanismgenerators.reactor_glass": "Kaca diperkokoh yang dapat digunakan pada struktur Reaktor Fisi dan Reaktor Fusi (dan juga yang lainnya!).",
   "description.mekanismgenerators.rotational_complex": "Konektor yang ditempatkan pada Rotor Turbin tertinggi dari Turbin Industrial untuk membawa energi kinetik ke dalam Kumparan Elektromagnetik.",
   "description.mekanismgenerators.saturating_condenser": "Balok yang mengembunkan uap yang diproses oleh Turbin Industrial menjadi air yang dapat digunakan kembali. Balok ini dapat ditempatkan dalam susunan di mana pun di atas kompleks rotasi Anda.",
+  "description.mekanismgenerators.solar_recharging_unit": "Manfaatkan kekuatan matahari untuk mengisi daya MekaSuit Anda. Pasang beberapa untuk pengisian daya yang lebih cepat.",
   "description.mekanismgenerators.turbine_casing": "Kerangka tahan tekanan yang digunakan dalam pembuatan Turbin Industrial.",
   "description.mekanismgenerators.turbine_rotor": "Batang baja yang digunakan untuk menampung Bilah Turbin di dalam Turbin Industrial.",
   "fission.mekanismgenerators.burn_rate": "Kecepatan Pembakaran Saat Ini:",
