@@ -2,19 +2,27 @@ package mekanism.common.util.test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.UnaryOperator;
 import mekanism.common.Mekanism;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.GameTestSequence;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.DistanceManager;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.Nullable;
 
@@ -203,6 +211,40 @@ public class GameTestUtils {
     @Nullable
     public static <T extends BlockEntity> T getBlockEntity(GameTestHelper helper, Class<T> clazz, BlockPos relativePos) {
         return WorldUtils.getTileEntity(clazz, helper.getLevel(), helper.absolutePos(relativePos));
+    }
+
+    public static <CAPABILITY> CAPABILITY getCapability(GameTestHelper helper, BlockPos relativePos, Capability<CAPABILITY> cap) {
+        return getCapability(helper, relativePos, cap, null);
+    }
+
+    public static <CAPABILITY> CAPABILITY getCapability(GameTestHelper helper, BlockPos relativePos, Capability<CAPABILITY> cap, @Nullable Direction side) {
+        BlockEntity blockEntity = getBlockEntity(helper, relativePos);
+        if (blockEntity == null) {
+            helper.fail("Failed to get block entity", relativePos);
+        } else {
+            Optional<CAPABILITY> capability = CapabilityUtils.getCapability(blockEntity, cap, side).resolve();
+            if (capability.isPresent()) {
+                return capability.get();
+            }
+            helper.fail("Failed to get " + cap.getName() + " capability on side '" + side + "'", relativePos);
+        }
+        throw new GameTestAssertException("Invalid code path, this should not be possible");
+    }
+
+    public static void validateContainerEmpty(GameTestHelper helper, BlockPos relativePos, int slot) {
+        validateContainerHas(helper, relativePos, slot, ItemStack.EMPTY);
+    }
+
+    public static void validateContainerHas(GameTestHelper helper, BlockPos relativePos, int slot, ItemStack stack) {
+        IItemHandler handler = getCapability(helper, relativePos, ForgeCapabilities.ITEM_HANDLER);
+        if (!stack.equals(handler.getStackInSlot(slot), false)) {
+            if (stack.isEmpty()) {
+                //If the expected stack is empty if a better message
+                helper.fail("Slot " + slot + " in container should be empty", relativePos);
+            } else {
+                helper.fail("Slot " + slot + " in container should contain " + stack.getCount() + " " + stack.getItem(), relativePos);
+            }
+        }
     }
 
     public static void fail(GameTestHelper helper, String message, ChunkPos relativePos) {

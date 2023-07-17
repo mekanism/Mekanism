@@ -44,6 +44,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     protected final Int2ObjectMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
     protected final Int2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
     public final TransporterTier tier;
+    private long lastRenderUpdate;
     protected int nextId = 0;
     protected int delay = 0;
     protected int delayCount = 0;
@@ -74,19 +75,11 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     public boolean canEmitTo(Direction side) {
-        if (canConnect(side)) {
-            ConnectionType connectionType = getConnectionType(side);
-            return connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PUSH;
-        }
-        return false;
+        return canConnect(side) && getConnectionType(side).canEmit();
     }
 
     public boolean canReceiveFrom(Direction side) {
-        if (canConnect(side)) {
-            ConnectionType connectionType = getConnectionType(side);
-            return connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PULL;
-        }
-        return false;
+        return canConnect(side) && getConnectionType(side).canReceive();
     }
 
     @Override
@@ -105,8 +98,16 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     public void onUpdateClient() {
-        for (TransporterStack stack : transit.values()) {
-            stack.progress = Math.min(100, stack.progress + tier.getSpeed());
+        //TODO: For this to actually appear smooth, this assumes that packets with updates won't be delayed
+        // even though they may be by at least one tick. Which then can cause it to jitter especially at high speeds
+        long time = getTileWorld().getGameTime();
+        //TODO: Compare against game time and if game time hasn't progressed then don't actually increment this. TEST THIS
+        if (lastRenderUpdate != time) {
+            //TODO: If it has been more than one tick do we want to progress multiple pieces at once?
+            lastRenderUpdate = time;
+            for (TransporterStack stack : transit.values()) {
+                stack.progress = Math.min(100, stack.progress + tier.getSpeed());
+            }
         }
     }
 
@@ -151,7 +152,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 for (Int2ObjectMap.Entry<TransporterStack> entry : transit.int2ObjectEntrySet()) {
                     int stackId = entry.getIntKey();
                     TransporterStack stack = entry.getValue();
-                    if (!stack.initiatedPath) {
+                    if (!stack.initiatedPath) {//Initiate any paths and remove things that can't go places
                         if (stack.itemStack.isEmpty() || !recalculate(stackId, stack, null)) {
                             deletes.add(stackId);
                             continue;
@@ -163,14 +164,26 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                     if (stack.progress >= 100) {
                         BlockPos prevSet = null;
                         if (stack.hasPath()) {
+                            //TODO: In theory we could and potentially replace this with stack#getNext, but we could also
+                            // instead take advantage of having the index to skip a lookup check for calculating stack#isFinal
                             int currentIndex = stack.getPath().indexOf(getTilePos());
                             if (currentIndex == 0) { //Necessary for transition reasons, not sure why
+                                //TODO: Potential reason for why is so it removes it when inserting it into a block?
+                                // as it seems to only be index 0 when it is length zero OR actually also potentially
+                                // when it is just the first transmitter it was in.
+                                //TODO: Which realistically means that this is only really needed to add explicitly to deletes
+                                // if there is no next
+                                //TODO: Wait actually current index == 0 means that this tile is the destination, but can transporters
+                                // be the destination of a path? Maybe especially for when it is idling
                                 deletes.add(stackId);
                                 continue;
                             }
+                            //TODO: If speed is configured in such a way that progress might be >= 200 we should potentially try to make it
+                            // skip over the intermediary transporters
                             BlockPos next = stack.getPath().get(currentIndex - 1);
                             if (next != null) {
                                 if (!stack.isFinal(this)) {
+                                    //If this is not the final transporter try transferring it to the next one
                                     LogisticalTransporterBase transmitter = network.getTransmitter(next);
                                     if (stack.canInsertToTransporter(transmitter, stack.getSide(this), this)) {
                                         transmitter.entityEntering(stack, stack.progress % 100);
@@ -178,11 +191,12 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                         continue;
                                     }
                                     prevSet = next;
-                                } else if (stack.getPathType() != Path.NONE) {
+                                } else if (stack.getPathType().hasTarget()) {
+                                    //Otherwise, try to insert it into the destination inventory
                                     BlockEntity tile = WorldUtils.getTileEntity(getTileWorld(), next);
                                     if (tile != null) {
                                         TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(tile, stack.getSide(this), 0,
-                                              stack.getPathType() == Path.HOME);
+                                              stack.getPathType().isHome());
                                         if (!response.isEmpty()) {
                                             //We were able to add at least part of the stack to the inventory
                                             ItemStack rejected = response.getRejected();
@@ -194,7 +208,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                                 continue;
                                             }
                                             //Some portion of the stack got rejected; save the remainder and
-                                            // let the recalculate below sort out what to do next
+                                            // recalculate below to sort out what to do next
                                             stack.itemStack = rejected;
                                         }//else the entire stack got rejected (Note: we don't need to update the stack to point to itself)
                                         prevSet = next;
@@ -202,6 +216,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                 }
                             }
                         }
+                        //TODO: Re-evaluate prevSet being set to next in places? I think it potentially should be our position rather than the next one???
                         if (!recalculate(stackId, stack, prevSet)) {
                             deletes.add(stackId);
                         } else if (prevSet == null) {
@@ -210,28 +225,37 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                             stack.progress = 0;
                         }
                     } else if (prevProgress < 50 && stack.progress >= 50) {
+                        //If the stack has transitioned past the halfway point
+                        //TODO: Finish above comment
                         boolean tryRecalculate;
                         if (stack.isFinal(this)) {
+                            //TODO: If this is the final transporter: ??
                             Path pathType = stack.getPathType();
-                            if (pathType == Path.DEST || pathType == Path.HOME) {
+                            if (pathType.hasTarget()) {
                                 Direction side = stack.getSide(this);
                                 ConnectionType connectionType = getConnectionType(side);
-                                tryRecalculate = connectionType != ConnectionType.NORMAL && connectionType != ConnectionType.PUSH ||
-                                                 !TransporterUtils.canInsert(WorldUtils.getTileEntity(getTileWorld(), stack.getDest()), stack.color, stack.itemStack,
-                                                       side, pathType == Path.HOME);
+                                tryRecalculate = !connectionType.canEmit() || !TransporterUtils.canInsert(WorldUtils.getTileEntity(getTileWorld(), stack.getDest()),
+                                      stack.color, stack.itemStack, side, pathType.isHome());
                             } else {
-                                tryRecalculate = pathType == Path.NONE;
+                                //Try to recalculate idles once they reach their destination
+                                tryRecalculate = true;
                             }
                         } else {
-                            LogisticalTransporterBase nextTransmitter = network.getTransmitter(stack.getNext(this));
-                            if (nextTransmitter == null && stack.getPathType() == Path.NONE && stack.getPath().size() == 2) {
+                            BlockPos nextPos = stack.getNext(this);
+                            Direction nextSide = WorldUtils.sideDifference(nextPos, getTilePos());
+                            if (nextSide == null) {//TODO: RE-EVALUATE in theory only would happen if they aren't actually sequential or if the next pos is this pos?
+                                nextSide = Direction.DOWN;
+                            }
+                            LogisticalTransporterBase nextTransmitter = network.getTransmitter(nextPos);
+                            //TODO: In theory because we already have next and know which side of progress it is on we could simplify the getSide logic
+                            // which is what we now are doing a few lines above
+                            if (nextTransmitter == null && !stack.getPathType().hasTarget() && stack.getPath().size() == 2) {
                                 //If there is no next transmitter, and it was an idle path, assume that we are idling
                                 // in a single length transmitter, in which case we only recalculate it at 50 if it won't
                                 // be able to go into that connection type
-                                ConnectionType connectionType = getConnectionType(stack.getSide(this));
-                                tryRecalculate = connectionType != ConnectionType.NORMAL && connectionType != ConnectionType.PUSH;
+                                tryRecalculate = !getConnectionType(nextSide).canEmit();
                             } else {
-                                tryRecalculate = !stack.canInsertToTransporter(nextTransmitter, stack.getSide(this), this);
+                                tryRecalculate = !stack.canInsertToTransporter(nextTransmitter, nextSide, this);
                             }
                         }
                         if (tryRecalculate && !recalculate(stackId, stack, null)) {
@@ -240,6 +264,9 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                     }
                 }
 
+                //TODO: Needs sync gets set on neighboring ones not on this, so re-evaluate how exactly we want to handle this
+                // also should we remove any entries in delete from needs sync potentially
+                // (aka see if there are cases when there may be overlap)
                 if (!deletes.isEmpty() || !needsSync.isEmpty()) {
                     //Notify clients, so that we send the information before we start clearing our lists
                     Mekanism.packetHandler().sendToAllTracking(new PacketTransporterUpdate(this, needsSync, deletes), getTransmitterTile());
@@ -364,7 +391,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     private boolean recalculate(int stackId, TransporterStack stack, BlockPos from) {
-        boolean noPath = stack.getPathType() == Path.NONE || stack.recalculatePath(TransitRequest.simple(stack.itemStack), this, 0).isEmpty();
+        boolean noPath = !stack.getPathType().hasTarget() || stack.recalculatePath(TransitRequest.simple(stack.itemStack), this, 0).isEmpty();
         if (noPath && !stack.calculateIdle(this)) {
             TransporterUtils.drop(this, stack);
             return false;
