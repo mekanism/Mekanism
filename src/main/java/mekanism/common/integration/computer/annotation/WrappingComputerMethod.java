@@ -33,7 +33,7 @@ public @interface WrappingComputerMethod {
     /**
      * Array of modids that are required for if the method wrappers should be generated and applied to a handler.
      */
-    String[] requiredMods() default "";
+    String[] requiredMods() default {};
 
     /**
      * Whether the generated wrapped methods are thread-safe or needs to be queued to run on the main thread.

@@ -18,7 +18,7 @@ public @interface SyntheticComputerMethod {
     /**
      * Array of modids that are required for synthetic methods to be generated and applied to a handler.
      */
-    String[] requiredMods() default "";
+    String[] requiredMods() default {};
 
     /**
      * Name to use for the synthetic getter.
