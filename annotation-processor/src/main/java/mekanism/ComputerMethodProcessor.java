@@ -45,7 +45,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
             annotatedElementsByParent.computeIfAbsent((TypeElement) element.getEnclosingElement(), i -> new ArrayList<>()).add(element);
         }
 
-        ClassName fancyComputerHandleRaw = ClassName.get("mekanism.common.integration.computer", "FancyComputerHandler");
+        ClassName computerMethodFactoryRaw = ClassName.get("mekanism.common.integration.computer", "ComputerMethodFactory");
         filterInterface = typeUtils.erasure(elementUtils.getTypeElement("mekanism.common.content.filter.IFilter").asType());
 
         for (Map.Entry<TypeElement, List<Element>> entry : annotatedElementsByParent.entrySet()) {
@@ -54,7 +54,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
             ClassName containingClassName = ClassName.get(containingType);
 
             TypeSpec.Builder typeSpec = TypeSpec.classBuilder(handlerClassName)
-                    .superclass(ParameterizedTypeName.get(fancyComputerHandleRaw, containingClassName))
+                    .superclass(ParameterizedTypeName.get(computerMethodFactoryRaw, containingClassName))
                     .addOriginatingElement(containingType);
             ParameterSpec subjectParam = ParameterSpec.builder(containingClassName, "subject").build();
 
@@ -90,6 +90,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                         boolean isPublic = annotatedElement.getModifiers().contains(Modifier.PUBLIC);
                         boolean isStatic = annotatedElement.getModifiers().contains(Modifier.STATIC);
                         CodeBlock.Builder codeBuilder = CodeBlock.builder();
+                        TypeMirror returnType = executableElement.getReturnType();
                         if (isPublic) {
                             if (isStatic) {
                                 codeBuilder.add("$T.$L(", containingClassName, annotatedName);
@@ -117,7 +118,10 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                                             .build())
                                     .build();
                             typeSpec.addField(myMethodField);
-                            codeBuilder.add("$N.get().invoke(", myMethodField);
+                            if (returnType.getKind() != TypeKind.VOID) {
+                                codeBuilder.add("($T)", TypeName.get(returnType));
+                            }
+                            codeBuilder.add("$N.get().invokeExact(", myMethodField);
                             if (!isStatic) {
                                 codeBuilder.add("$N", subjectParam);
                                 if (!parameters.isEmpty()) {
@@ -133,7 +137,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
 
                         //determine the return method, value or no value
                         CodeBlock valueReturner;
-                        if (executableElement.getReturnType().getKind() == TypeKind.VOID) {
+                        if (returnType.getKind() == TypeKind.VOID) {
                             valueReturner = CodeBlock.builder()
                                     .addStatement(methodCaller)
                                     .addStatement("return $N.voidResult()", helperParam).build();

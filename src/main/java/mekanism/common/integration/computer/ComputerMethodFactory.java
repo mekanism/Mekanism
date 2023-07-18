@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Created by Thiakil on 15/07/2023.
  */
-public class FancyComputerHandler<T>{
+public class ComputerMethodFactory<T>{
     protected static Object[] EMPTY_ARRAY = new Object[0];
     @SuppressWarnings("unchecked")
     protected static <O> O[] emptyArray() {
