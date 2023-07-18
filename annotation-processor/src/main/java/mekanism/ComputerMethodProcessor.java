@@ -196,7 +196,28 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                 throw new RuntimeException(e);
             }
 
-            registryInit.addStatement("$T.register($T.class, $T::new)", factoryRegistry, containingClassName, ClassName.get(factoryFile.packageName, factoryFile.typeSpec.name));
+
+            List<ClassName> superClasses = new ArrayList<>();
+            TypeMirror superClass = containingType.getSuperclass();
+            TypeElement superTypeElement;
+            do  {
+                superTypeElement = (TypeElement) typeUtils.asElement(superClass);
+                if (superTypeElement == null) {
+                    break;
+                }
+                ClassName clazz = ClassName.get(superTypeElement);
+                if (clazz.canonicalName().startsWith("mekanism")) {
+                    superClasses.add(0, clazz);
+                }
+            } while ((superClass = superTypeElement.getSuperclass()).getKind() != TypeKind.NONE);
+
+            CodeBlock.Builder registerStatement = CodeBlock.builder()
+                            .add("$T.register($T.class, $T::new", factoryRegistry, containingClassName, ClassName.get(factoryFile.packageName, factoryFile.typeSpec.name));
+            for (ClassName cls : superClasses) {
+                registerStatement.add(", $T.class", cls);
+            }
+            registerStatement.add(")");
+            registryInit.addStatement(registerStatement.build());
         }
 
         if (annotatedElementsByParent.size() > 0) {
