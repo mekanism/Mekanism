@@ -2,10 +2,7 @@ package mekanism;
 
 import com.squareup.javapoet.*;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
+import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
 import javax.lang.model.type.*;
@@ -25,6 +22,8 @@ import java.util.*;
         "mekanism.common.integration.computer.annotation.WrappingComputerMethod"
 })
 public class ComputerMethodProcessor extends AbstractProcessor {
+    private static final String MODULE_OPTION = "mekanismModule";
+
     TypeMirror filterInterface;
     private ClassName fancyComputerHelper = ClassName.get("mekanism.common.integration.computer", "FancyComputerHelper");
     private ClassName computerException = ClassName.get("mekanism.common.integration.computer", "ComputerException");
@@ -32,6 +31,13 @@ public class ComputerMethodProcessor extends AbstractProcessor {
     private ParameterizedTypeName lazyMethodHandleType = ParameterizedTypeName.get(lazyInterfaceRaw, ClassName.get(MethodHandle.class));
     private ParameterSpec helperParam = ParameterSpec.builder(fancyComputerHelper, "helper").build();
     private ParamToHelperMapper paramToHelperMapper = new ParamToHelperMapper();
+    private String mekModule;
+
+    @Override
+    public synchronized void init(ProcessingEnvironment processingEnv) {
+        super.init(processingEnv);
+        mekModule = processingEnv.getOptions().getOrDefault(MODULE_OPTION, "value_not_supplied");
+    }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotatedTypes, RoundEnvironment roundEnvironment) {
@@ -45,6 +51,10 @@ public class ComputerMethodProcessor extends AbstractProcessor {
             annotatedElementsByParent.computeIfAbsent((TypeElement) element.getEnclosingElement(), i -> new ArrayList<>()).add(element);
         }
 
+        TypeSpec.Builder registryType = TypeSpec.classBuilder("ComputerMethodRegistry_"+mekModule).addModifiers(Modifier.PUBLIC);
+        MethodSpec.Builder registryInit = MethodSpec.methodBuilder("init").addModifiers(Modifier.STATIC, Modifier.PUBLIC);
+        ClassName factoryRegistry = ClassName.get("mekanism.common.integration.computer", "FactoryRegistry");
+
         ClassName computerMethodFactoryRaw = ClassName.get("mekanism.common.integration.computer", "ComputerMethodFactory");
         filterInterface = typeUtils.erasure(elementUtils.getTypeElement("mekanism.common.content.filter.IFilter").asType());
 
@@ -55,14 +65,17 @@ public class ComputerMethodProcessor extends AbstractProcessor {
 
             TypeSpec.Builder typeSpec = TypeSpec.classBuilder(handlerClassName)
                     .superclass(ParameterizedTypeName.get(computerMethodFactoryRaw, containingClassName))
-                    .addOriginatingElement(containingType);
+                    .addOriginatingElement(containingType)
+                    .addModifiers(Modifier.PUBLIC);
             ParameterSpec subjectParam = ParameterSpec.builder(containingClassName, "subject").build();
+            registryType.addOriginatingElement(containingType);
 
             MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
 
             for (Element annotatedElement : entry.getValue()) {
                 String annotatedName = annotatedElement.getSimpleName().toString();
                 typeSpec.addOriginatingElement(annotatedElement);
+                registryType.addOriginatingElement(annotatedElement);
                 annotatedElement.getAnnotationMirrors().stream().filter(it -> it.getAnnotationType().equals(computerMethodAnnotationType.asType())).findFirst().ifPresent(regularComputerMethodAnnotation -> {
                     AnnotationHelper values = new AnnotationHelper(elementUtils, regularComputerMethodAnnotation);
                     MethodSpec.Builder myMethodBuilder = MethodSpec.methodBuilder(annotatedName)
@@ -98,7 +111,6 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                                 codeBuilder.add("$N.$L(", subjectParam, annotatedName);
                             }
                         } else {
-                            myMethodBuilder.addComment("TODO: non public method");
                             //MethodSpec handleSupplierMethod = MethodSpec.methodBuilder("methodHandleSupplier_"+annotatedName)
                             //        .addModifiers(Modifier.STATIC, Modifier.PRIVATE)
                             //        .returns(MethodHandle.class)
@@ -174,15 +186,30 @@ public class ComputerMethodProcessor extends AbstractProcessor {
             }
 
             typeSpec.addMethod(constructorBuilder.build());
+            TypeSpec factorySpec = typeSpec.build();
+
+            JavaFile factoryFile = JavaFile.builder("mekanism.computer", factorySpec).build();
 
             try {
-                JavaFile.builder("mekanism.computer", typeSpec.build()).build().writeTo(processingEnv.getFiler());
+                factoryFile.writeTo(processingEnv.getFiler());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            registryInit.addStatement("$T.register($T.class, $T::new)", factoryRegistry, containingClassName, ClassName.get(factoryFile.packageName, factoryFile.typeSpec.name));
+        }
+
+        if (annotatedElementsByParent.size() > 0) {
+            registryType.addMethod(registryInit.build());
+            TypeSpec registrySpec = registryType.build();
+            try {
+                JavaFile.builder("mekanism.computer", registrySpec).build().writeTo(processingEnv.getFiler());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        return false;
+        return true;
     }
 
     private static Map<String, AnnotationValue> getAnnotationValueMapWithDefaults(Elements elementUtils, AnnotationMirror annotationMirror) {
