@@ -280,6 +280,8 @@
   "block.mekanismadditions.yellow_plastic_transparent_stairs": "Escadas de Plástico Amarelas Transparentes",
   "block.mekanismadditions.yellow_reinforced_plastic": "Amarelo Bloco de Plástico Reforçado",
   "block.mekanismadditions.yellow_slick_plastic": "Amarelo Bloco de Plástico Liso",
+  "constants.mekanismadditions.mod_name": "Mekanismo: Adições",
+  "constants.mekanismadditions.pack_description": "Recursos usados para o Mekanism: Adições",
   "description.mekanismadditions.glow_panel": "Uma fonte de luz moderna e duradoura. Agora com muitas cores!",
   "description.mekanismadditions.obsidian_tnt": "Um bloco de TNT extremamente poderoso, infundido por obsidiana. Use por sua conta e risco.",
   "entity.mekanismadditions.baby_creeper": "Creeper bebê",
