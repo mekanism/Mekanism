@@ -28,9 +28,6 @@ public class ComputerMethodFactory<T>{
             throw new RuntimeException(t.getMessage(), t);
         }
     }
-    protected interface MHUser<RETURN> {
-        RETURN supply() throws Throwable;
-    }
 
     private Map<String, MethodData<T>> methods = new HashMap<>();
 
@@ -49,5 +46,10 @@ public class ComputerMethodFactory<T>{
          */
         R apply(T t, U u) throws ComputerException;
     }
-    record MethodData<T>(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] arguments, ComputerFunctionCaller<T, FancyComputerHelper, Object> handler){}
+
+    public record MethodData<T>(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] arguments, ComputerFunctionCaller<T, FancyComputerHelper, Object> handler){}
+
+    protected interface MHUser<RETURN> {
+        RETURN supply() throws Throwable;
+    }
 }
