@@ -1,6 +1,7 @@
 package mekanism.common.integration.computer;
 
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.WrongMethodTypeException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,11 +16,16 @@ public class ComputerMethodFactory<T>{
     }
     protected static MethodHandles.Lookup lookup = MethodHandles.lookup();
 
-    protected static <RETURN> RETURN catchingMethodHandle(MHUser<RETURN> supplier) {
+    protected static <RETURN> RETURN catchingMethodHandle(MHUser<RETURN> supplier) throws ComputerException {
         try {
             return supplier.supply();
+        } catch (WrongMethodTypeException wmte) {
+            throw new RuntimeException("Method not bound correctly: "+wmte.getMessage(), wmte);
         } catch (Throwable t) {
-            throw new RuntimeException(t.getMessage(), t);//todo better method handle exception checking?
+            if (t.getCause() instanceof ComputerException cause){
+                throw cause;
+            }
+            throw new RuntimeException(t.getMessage(), t);
         }
     }
     protected interface MHUser<RETURN> {
