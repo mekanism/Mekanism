@@ -1,15 +1,22 @@
 package mekanism.common.integration;
 
 import java.util.List;
+import java.util.Optional;
 import mekanism.common.integration.computer.computercraft.CCCapabilityHelper;
+import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.integration.energy.EnergyCompatUtils;
+import mekanism.common.integration.jsonthings.JsonThingsIntegration;
 import mekanism.common.integration.lookingat.theoneprobe.TOPProvider;
 import mekanism.common.integration.projecte.NSSHelper;
+import net.minecraftforge.data.loading.DatagenModLoader;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.
@@ -26,6 +33,7 @@ public final class MekanismHooks {
     public static final String IC2_MOD_ID = "ic2";
     public static final String JEI_MOD_ID = "jei";
     public static final String JEITWEAKER_MOD_ID = "jeitweaker";
+    public static final String JSON_THINGS_MOD_ID = "jsonthings";
     public static final String OC2_MOD_ID = "oc2";
     public static final String PROJECTE_MOD_ID = "projecte";
     public static final String RECIPE_STAGES_MOD_ID = "recipestages";
@@ -39,6 +47,7 @@ public final class MekanismHooks {
     public boolean FluxNetworksLoaded;
     public boolean IC2Loaded;
     public boolean JEILoaded;
+    public boolean JsonThingsLoaded;
     public boolean OC2Loaded;
     public boolean ProjectELoaded;
     public boolean RecipeStagesLoaded;
@@ -49,8 +58,28 @@ public final class MekanismHooks {
         ModList modList = ModList.get();
         CraftTweakerLoaded = modList.isLoaded(CRAFTTWEAKER_MOD_ID);
         CuriosLoaded = modList.isLoaded(CURIOS_MODID);
+        JsonThingsLoaded = modList.isLoaded(JSON_THINGS_MOD_ID);
         if (CuriosLoaded) {
             CuriosIntegration.addListeners(bus);
+        }
+        if (CraftTweakerLoaded && !DatagenModLoader.isRunningDataGen()) {
+            //Attempt to grab the mod event bus for CraftTweaker so that we can register our custom content in their namespace
+            // to make it clearer which chemicals were added by CraftTweaker, and which are added by actual mods.
+            // Gracefully fallback to our event bus if something goes wrong with getting CrT's and just then have the log have
+            // warnings about us registering things in their namespace.
+            IEventBus crtModEventBus = bus;
+            Optional<? extends ModContainer> crtModContainer = ModList.get().getModContainerById(MekanismHooks.CRAFTTWEAKER_MOD_ID);
+            if (crtModContainer.isPresent()) {
+                ModContainer container = crtModContainer.get();
+                if (container instanceof FMLModContainer modContainer) {
+                    crtModEventBus = modContainer.getEventBus();
+                }
+            }
+            //Register our CrT listener at lowest priority to try and ensure they get later ids than our normal registries
+            crtModEventBus.addListener(EventPriority.LOWEST, CrTContentUtils::registerCrTContent);
+        }
+        if (JsonThingsLoaded) {
+            JsonThingsIntegration.hook(bus);
         }
     }
 

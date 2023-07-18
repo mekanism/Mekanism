@@ -5,6 +5,7 @@ import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfuseTypeBuilder;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
+import mekanism.common.util.ChemicalUtil;
 import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -34,18 +35,7 @@ public class CrTInfuseTypeBuilder extends CrTChemicalBuilder<InfuseType, InfuseT
 
     @Override
     protected void build(ResourceLocation registryName) {
-        InfuseType infuseType;
-        if (colorRepresentation == null) {
-            infuseType = new InfuseType(getInternal());
-        } else {
-            int color = colorRepresentation;
-            infuseType = new InfuseType(getInternal()) {
-                @Override
-                public int getColorRepresentation() {
-                    return color;
-                }
-            };
-        }
+        InfuseType infuseType = ChemicalUtil.infuseType(getInternal(), colorRepresentation);
         CrTContentUtils.queueInfuseTypeForRegistration(registryName, infuseType);
     }
 }

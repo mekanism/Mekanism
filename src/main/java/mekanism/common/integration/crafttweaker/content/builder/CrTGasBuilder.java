@@ -5,6 +5,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
+import mekanism.common.util.ChemicalUtil;
 import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -34,18 +35,7 @@ public class CrTGasBuilder extends CrTChemicalBuilder<Gas, GasBuilder, CrTGasBui
 
     @Override
     protected void build(ResourceLocation registryName) {
-        Gas gas;
-        if (colorRepresentation == null) {
-            gas = new Gas(getInternal());
-        } else {
-            int color = colorRepresentation;
-            gas = new Gas(getInternal()) {
-                @Override
-                public int getColorRepresentation() {
-                    return color;
-                }
-            };
-        }
+        Gas gas = ChemicalUtil.gas(getInternal(), colorRepresentation);
         CrTContentUtils.queueGasForRegistration(registryName, gas);
     }
 }

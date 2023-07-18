@@ -166,6 +166,22 @@ public class GasAttributes {
         private final IntSupplier burnTicks;
         private final FloatingLongSupplier energyDensity;
 
+        /**
+         * @param burnTicks     The number of ticks one mB of fuel can be burned for before being depleted; must be greater than zero.
+         * @param energyDensity The energy density in one mB of fuel; must be greater than zero.
+         *
+         * @since 10.4.0
+         */
+        public Fuel(int burnTicks, FloatingLong energyDensity) {
+            if (burnTicks <= 0) {
+                throw new IllegalArgumentException("Fuel attributes must burn for at least one tick! Burn Ticks: " + burnTicks);
+            } else if (energyDensity.isZero()) {
+                throw new IllegalArgumentException("Fuel attributes must have an energy density greater than zero!");
+            }
+            this.burnTicks = () -> burnTicks;
+            this.energyDensity = () -> energyDensity;
+        }
+
         public Fuel(IntSupplier burnTicks, FloatingLongSupplier energyDensity) {
             this.burnTicks = burnTicks;
             this.energyDensity = energyDensity;
