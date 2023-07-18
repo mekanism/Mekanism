@@ -1158,6 +1158,7 @@
   "module.mekanism.blast_radius": "Radius Ledakan",
   "module.mekanism.blasting_enabled": "Radius Ledakan: %1$s",
   "module.mekanism.blasting_unit": "Unit Peledak",
+  "module.mekanism.bonus_attack_damage": "Bonus Damage Serangan",
   "module.mekanism.breathing.held": "Isi Dipegang",
   "module.mekanism.charge_inventory": "Isi Daya Penyimpanan",
   "module.mekanism.charge_suit": "Isi Daya Suit",
