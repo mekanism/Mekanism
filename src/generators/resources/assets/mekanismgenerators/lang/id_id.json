@@ -54,6 +54,7 @@
   "description.mekanismgenerators.turbine_casing": "Kerangka tahan tekanan yang digunakan dalam pembuatan Turbin Industrial.",
   "description.mekanismgenerators.turbine_rotor": "Batang baja yang digunakan untuk menampung Bilah Turbin di dalam Turbin Industrial.",
   "fission.mekanismgenerators.burn_rate": "Kecepatan Pembakaran Saat Ini:",
+  "fission.mekanismgenerators.damage": "Kerusakan: %1$s",
   "fission.mekanismgenerators.heating_rate": "Kecepatan Pemanasan: %1$s mB/t",
   "fission.mekanismgenerators.invalid_bad_control_rod": "Tidak dapat membentuk, pemasangan tidak tepat untuk Rakitan Tongkat Pengendali di %1$s.",
   "fission.mekanismgenerators.invalid_bad_fuel_assembly": "Tidak dapat membentuk, dibutuhkan tabung bahan bakar untuk tongkat pengedali di %1$s.",
