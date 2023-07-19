@@ -6,13 +6,9 @@ import java.util.Map;
 public abstract class BoundMethodHolder {
     private final Map<String, MethodData> methods = new HashMap<>();
 
-    public void register(String name, boolean threadSafe, String[] arguments, BoundCaller handler) {
-        this.methods.put(name, new MethodData(name, threadSafe, arguments, handler));
+    public <T> void register(String name, boolean threadSafe, String[] arguments, T subject, ComputerMethodFactory.ComputerFunctionCaller<T> handler) {
+        this.methods.put(name, new MethodData(name, threadSafe, arguments, subject, handler));
     }
 
-    public interface BoundCaller {
-        Object apply(FancyComputerHelper u) throws ComputerException;
-    }
-
-    public record MethodData(String name, boolean threadSafe, String[] arguments, BoundCaller handler){}
+    public record MethodData(String name, boolean threadSafe, String[] arguments, Object subject, ComputerMethodFactory.ComputerFunctionCaller<?> handler){}
 }

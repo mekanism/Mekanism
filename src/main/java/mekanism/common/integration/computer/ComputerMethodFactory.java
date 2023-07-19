@@ -43,7 +43,7 @@ public class ComputerMethodFactory<T>{
         for (Map.Entry<String, MethodData<T>> entry : this.methods.entrySet()) {
             MethodData<T> methodData = entry.getValue();
             if (methodData.restriction.test(subject) && modsLoaded(methodData.requiredMods)) {
-                holder.register(entry.getKey(), methodData.threadSafe, methodData.arguments, (helper)->methodData.handler.apply(subject, helper));
+                holder.register(entry.getKey(), methodData.threadSafe, methodData.arguments, subject, methodData.handler);
             }
         }
     }
