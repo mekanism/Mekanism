@@ -63,7 +63,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
             String handlerClassName = "Handler" + containingType.getSimpleName();
             ClassName containingClassName = ClassName.get(containingType);
 
-            TypeSpec.Builder typeSpec = TypeSpec.classBuilder(handlerClassName)
+            TypeSpec.Builder handlerTypeSpec = TypeSpec.classBuilder(handlerClassName)
                     .superclass(ParameterizedTypeName.get(computerMethodFactoryRaw, containingClassName))
                     .addOriginatingElement(containingType)
                     .addModifiers(Modifier.PUBLIC);
@@ -74,11 +74,11 @@ public class ComputerMethodProcessor extends AbstractProcessor {
 
             for (Element annotatedElement : entry.getValue()) {
                 String annotatedName = annotatedElement.getSimpleName().toString();
-                typeSpec.addOriginatingElement(annotatedElement);
+                handlerTypeSpec.addOriginatingElement(annotatedElement);
                 registryType.addOriginatingElement(annotatedElement);
                 annotatedElement.getAnnotationMirrors().stream().filter(it -> it.getAnnotationType().equals(computerMethodAnnotationType.asType())).findFirst().ifPresent(regularComputerMethodAnnotation -> {
                     AnnotationHelper values = new AnnotationHelper(elementUtils, regularComputerMethodAnnotation);
-                    MethodSpec.Builder myMethodBuilder = MethodSpec.methodBuilder(annotatedName)
+                    MethodSpec.Builder handlerMethodBuilder = MethodSpec.methodBuilder(annotatedName)
                             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                             .returns(Object.class)
                             .addException(computerException)
@@ -102,23 +102,16 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                         }
                         boolean isPublic = annotatedElement.getModifiers().contains(Modifier.PUBLIC);
                         boolean isStatic = annotatedElement.getModifiers().contains(Modifier.STATIC);
-                        CodeBlock.Builder codeBuilder = CodeBlock.builder();
+                        CodeBlock.Builder targetMethodCodeBuilder = CodeBlock.builder();
                         TypeMirror returnType = executableElement.getReturnType();
                         if (isPublic) {
                             if (isStatic) {
-                                codeBuilder.add("$T.$L(", containingClassName, annotatedName);
+                                targetMethodCodeBuilder.add("$T.$L(", containingClassName, annotatedName);
                             } else {
-                                codeBuilder.add("$N.$L(", subjectParam, annotatedName);
+                                targetMethodCodeBuilder.add("$N.$L(", subjectParam, annotatedName);
                             }
                         } else {
-                            //MethodSpec handleSupplierMethod = MethodSpec.methodBuilder("methodHandleSupplier_"+annotatedName)
-                            //        .addModifiers(Modifier.STATIC, Modifier.PRIVATE)
-                            //        .returns(MethodHandle.class)
-                            //        .addCode(
-                            //        )
-                            //        .build();
-                            //typeSpec.addMethod(handleSupplierMethod);
-                            FieldSpec myMethodField = FieldSpec.builder(lazyMethodHandleType, "handle_" + annotatedName, Modifier.PRIVATE, Modifier.STATIC)
+                            FieldSpec methodHandleField = FieldSpec.builder(lazyMethodHandleType, "handle_" + annotatedName, Modifier.PRIVATE, Modifier.STATIC)
                                     .initializer("$T.of(()->{\n$>$L\n$<})", lazyInterfaceRaw, CodeBlock.builder()
                                             .beginControlFlow("try")
                                             .addStatement("$T method = $T.class.getDeclaredMethod($S$L)", Method.class, containingClassName, annotatedName, paramTypes.build())
@@ -129,64 +122,72 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                                             .endControlFlow()
                                             .build())
                                     .build();
-                            typeSpec.addField(myMethodField);
+                            handlerTypeSpec.addField(methodHandleField);
                             if (returnType.getKind() != TypeKind.VOID) {
-                                codeBuilder.add("($T)", TypeName.get(returnType));
+                                targetMethodCodeBuilder.add("($T)", TypeName.get(returnType));
                             }
-                            codeBuilder.add("$N.get().invokeExact(", myMethodField);
+                            targetMethodCodeBuilder.add("$N.get().invokeExact(", methodHandleField);
                             if (!isStatic) {
-                                codeBuilder.add("$N", subjectParam);
+                                targetMethodCodeBuilder.add("$N", subjectParam);
                                 if (!parameters.isEmpty()) {
-                                    codeBuilder.add(", ");//no need to add comma on static methods
+                                    targetMethodCodeBuilder.add(", ");//no need to add comma on static methods
                                 }
                             }
                         }
 
-                        codeBuilder.add(methodCallArguments.build());
+                        targetMethodCodeBuilder.add(methodCallArguments.build());
 
-                        codeBuilder.add(")");
-                        CodeBlock methodCaller = codeBuilder.build();
+                        targetMethodCodeBuilder.add(")");
+                        CodeBlock targetMethodCode = targetMethodCodeBuilder.build();
 
                         //determine the return method, value or no value
+                        //wrap the target method code, or call it and return void
                         CodeBlock.Builder valueReturner = CodeBlock.builder();
                         if (returnType.getKind() == TypeKind.VOID) {
-                            valueReturner.addStatement(methodCaller)
+                            valueReturner.addStatement(targetMethodCode)
                                     .addStatement("return $N.voidResult()", helperParam)
                                     .build();
                         } else {
-                           valueReturner.addStatement("return $N.result($L)", helperParam, methodCaller);
+                           valueReturner.addStatement("return $N.result($L)", helperParam, targetMethodCode);
                         }
 
                         if (!isPublic) {
-                            myMethodBuilder.addCode(wrapMethodHandle(valueReturner.build()));
+                            //wrap in MethodHandle try/catch
+                            handlerMethodBuilder.addCode(wrapMethodHandle(valueReturner.build()));
                         } else {
-                            myMethodBuilder.addCode(valueReturner.build());
+                            handlerMethodBuilder.addCode(valueReturner.build());
                         }
                     }
 
                     {
-                        MethodSpec myMethod = myMethodBuilder.build();
-                        typeSpec.addMethod(myMethod);
-                        //register(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] arguments, BiConsumer<T, FancyComputerHelper> handler)
-                        CodeBlock.Builder codeBuilder = CodeBlock.builder();
-                        codeBuilder.add("register($L, ", values.getLiteral("nameOverride", annotatedName));
-                        codeBuilder.add("$L, ", values.getLiteral("restriction", null));
-                        codeBuilder.add("$L, ", values.getLiteral("requiredMods", "emptyArray()"));
-                        codeBuilder.add("$L, ", values.getLiteral("threadSafe", false));
+                        //add a call to register() in the handler class's constructor
+                        MethodSpec handlerMethod = handlerMethodBuilder.build();
+                        handlerTypeSpec.addMethod(handlerMethod);
+                        CodeBlock.Builder registerMethodBuilder = CodeBlock.builder();
+                        //Computer exposed method name
+                        registerMethodBuilder.add("register($L, ", values.getLiteral("nameOverride", annotatedName));
+                        //restriction
+                        registerMethodBuilder.add("$L, ", values.getLiteral("restriction", null));
+                        //mods required
+                        registerMethodBuilder.add("$L, ", values.getLiteral("requiredMods", "emptyArray()"));
+                        //threadsafe
+                        registerMethodBuilder.add("$L, ", values.getLiteral("threadSafe", false));
+                        //param names
                         if (parameters.isEmpty()) {
-                            codeBuilder.add("emptyArray(), ");
+                            registerMethodBuilder.add("emptyArray(), ");
                         } else {
-                            codeBuilder.add("new String[]{$L}, ", parameters.stream().map(param -> CodeBlock.of("$S", param.getSimpleName())).collect(CodeBlock.joining(",")));
+                            registerMethodBuilder.add("new String[]{$L}, ", parameters.stream().map(param -> CodeBlock.of("$S", param.getSimpleName())).collect(CodeBlock.joining(",")));
                         }
-                        codeBuilder.add("$N::$N", handlerClassName, myMethod);
-                        codeBuilder.add(")");
-                        constructorBuilder.addStatement(codeBuilder.build());
+                        //method reference to handler method
+                        registerMethodBuilder.add("$N::$N", handlerClassName, handlerMethod);
+                        registerMethodBuilder.add(")");
+                        constructorBuilder.addStatement(registerMethodBuilder.build());
                     }
                 });
             }
 
-            typeSpec.addMethod(constructorBuilder.build());
-            TypeSpec factorySpec = typeSpec.build();
+            handlerTypeSpec.addMethod(constructorBuilder.build());
+            TypeSpec factorySpec = handlerTypeSpec.build();
 
             JavaFile factoryFile = JavaFile.builder("mekanism.computer", factorySpec).build();
 
