@@ -9,7 +9,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 public interface FancyComputerHelper {
-    <T extends Enum<T>> Enum<T> getEnum(int param, Class<T> enumClazz) throws ComputerException;
+    <T extends Enum<T>> T getEnum(int param, Class<T> enumClazz) throws ComputerException;
 
     boolean getBool(int param) throws ComputerException;
 
@@ -31,7 +31,7 @@ public interface FancyComputerHelper {
 
     String getString(int param) throws ComputerException;
 
-    <FILTER extends IFilter<FILTER>> IFilter<FILTER> getFilter(int param, Class<FILTER> expectedType) throws ComputerException;
+    <FILTER extends IFilter<FILTER>> FILTER getFilter(int param, Class<FILTER> expectedType) throws ComputerException;
 
     default ResourceLocation getResourceLocation(int param) throws ComputerException {
         return ResourceLocation.tryParse(getString(param));
@@ -54,15 +54,5 @@ public interface FancyComputerHelper {
 
     default Object result(@Nullable FloatingLong result) {
         return result(result == null ? 0 : result.doubleValue());
-    }
-
-    @SuppressWarnings("unchecked")
-    static <T extends Enum<T>> T getEnum(FancyComputerHelper helper, int param, Class<T> enumClass) throws ComputerException {
-        return (T) helper.getEnum(param, enumClass);
-    }
-
-    @SuppressWarnings("unchecked")
-    static <T extends IFilter<T>> T getFilter(FancyComputerHelper helper, int param, Class<T> expectedType) throws ComputerException {
-        return (T) helper.getFilter(param, expectedType);
     }
 }

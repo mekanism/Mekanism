@@ -19,7 +19,7 @@ public class CCComputerHelper implements FancyComputerHelper {
     }
 
     @Override
-    public Enum getEnum(int param, Class enumClazz) throws ComputerException {
+    public <T extends Enum<T>> T getEnum(int param, Class<T> enumClazz) throws ComputerException {
         try {
             return arguments.getEnum(param, enumClazz);
         } catch (LuaException e) {
@@ -116,9 +116,8 @@ public class CCComputerHelper implements FancyComputerHelper {
         }
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
-    public IFilter getFilter(int param, Class expectedType) throws ComputerException {
+    public <FILTER extends IFilter<FILTER>> FILTER getFilter(int param, Class<FILTER> expectedType) throws ComputerException {
         try {
             return SpecialConverters.convertMapToFilter(expectedType, arguments.getTable(param));
         } catch (LuaException e) {
