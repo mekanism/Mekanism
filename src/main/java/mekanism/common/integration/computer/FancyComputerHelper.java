@@ -4,39 +4,49 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.content.filter.IFilter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Created by Thiakil on 15/07/2023.
- */
 public interface FancyComputerHelper {
-    Enum<?> getEnum(int param, Class<? extends Enum<?>> enumClazz);
+    <T extends Enum<T>> Enum<T> getEnum(int param, Class<T> enumClazz) throws ComputerException;
 
-    boolean getBool(int param);
+    boolean getBool(int param) throws ComputerException;
 
-    byte getByte(int param);
+    byte getByte(int param) throws ComputerException;
 
-    short getShort(int param);
+    short getShort(int param) throws ComputerException;
 
-    int getInt(int param);
+    int getInt(int param) throws ComputerException;
 
-    long getLong(int param);
+    long getLong(int param) throws ComputerException;
 
-    char getChar(int param);
+    char getChar(int param) throws ComputerException;
 
-    float getFloat(int param);
+    float getFloat(int param) throws ComputerException;
 
-    double getDouble(int param);
+    double getDouble(int param) throws ComputerException;
 
-    FloatingLong getFloatingLong(int param);
+    FloatingLong getFloatingLong(int param) throws ComputerException;
 
-    ResourceLocation getResourceLocation(int param);
+    String getString(int param) throws ComputerException;
 
-    String getString(int param);
+    <FILTER extends IFilter<FILTER>> IFilter<FILTER> getFilter(int param, Class<FILTER> expectedType) throws ComputerException;
 
-    Item getItem(int param);
+    default ResourceLocation getResourceLocation(int param) throws ComputerException {
+        return ResourceLocation.tryParse(getString(param));
+    }
 
-    IFilter<?> getFilter(int param, Class<? extends IFilter<?>> expectedType);
+    default Item getItem(int param) throws ComputerException {
+        ResourceLocation itemName = getResourceLocation(param);
+        if (itemName != null) {
+            Item item = ForgeRegistries.ITEMS.getValue(itemName);
+            if (item != null) {
+                return item;
+            }
+        }
+        return Items.AIR;
+    }
 
     Object voidResult();
 
@@ -47,12 +57,12 @@ public interface FancyComputerHelper {
     }
 
     @SuppressWarnings("unchecked")
-    static <T extends Enum<T>> T getEnum(FancyComputerHelper helper, int param, Class<T> enumClass) {
+    static <T extends Enum<T>> T getEnum(FancyComputerHelper helper, int param, Class<T> enumClass) throws ComputerException {
         return (T) helper.getEnum(param, enumClass);
     }
 
     @SuppressWarnings("unchecked")
-    static <T extends IFilter<T>> T getFilter(FancyComputerHelper helper, int param, Class<T> expectedType) {
+    static <T extends IFilter<T>> T getFilter(FancyComputerHelper helper, int param, Class<T> expectedType) throws ComputerException {
         return (T) helper.getFilter(param, expectedType);
     }
 }

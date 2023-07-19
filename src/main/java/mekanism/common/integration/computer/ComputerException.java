@@ -15,6 +15,10 @@ public class ComputerException extends Exception {
         this(String.format(Locale.ROOT, messageFormat, args));
     }
 
+    public ComputerException(Exception e) {
+        super(e);
+    }
+
     @Override
     public synchronized Throwable fillInStackTrace() {
         return this;
