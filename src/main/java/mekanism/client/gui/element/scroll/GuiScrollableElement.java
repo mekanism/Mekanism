@@ -31,6 +31,15 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
         this.maxBarHeight = maxBarHeight;
     }
 
+    @Override
+    public void move(int changeX, int changeY) {
+        super.move(changeX, changeY);
+        //Note: When moving we need to adjust our relative position but when resizing, we don't as we are relative to the
+        // positions changing when resizing, instead of moving where we are in relation to
+        barX += changeX;
+        barY += changeY;
+    }
+
     protected abstract int getMaxElements();
 
     protected abstract int getFocusedElements();
