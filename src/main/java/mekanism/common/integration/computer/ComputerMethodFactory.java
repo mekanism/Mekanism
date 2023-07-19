@@ -20,17 +20,13 @@ public class ComputerMethodFactory<T>{
     }
     protected static MethodHandles.Lookup lookup = MethodHandles.lookup();
 
-    protected static <RETURN> RETURN catchingMethodHandle(MHUser<RETURN> supplier) throws ComputerException {
-        try {
-            return supplier.supply();
-        } catch (WrongMethodTypeException wmte) {
+    protected static void unwrapException(Throwable t) throws ComputerException {
+        if (t instanceof WrongMethodTypeException wmte) {
             throw new RuntimeException("Method not bound correctly: "+wmte.getMessage(), wmte);
-        } catch (Throwable t) {
-            if (t.getCause() instanceof ComputerException cause){
-                throw cause;
-            }
-            throw new RuntimeException(t.getMessage(), t);
+        } else if (t.getCause() instanceof ComputerException cause){
+            throw cause;
         }
+        throw new RuntimeException(t.getMessage(), t);
     }
 
     private Map<String, MethodData<T>> methods = new HashMap<>();

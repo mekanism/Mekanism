@@ -148,19 +148,19 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                         CodeBlock methodCaller = codeBuilder.build();
 
                         //determine the return method, value or no value
-                        CodeBlock valueReturner;
+                        CodeBlock.Builder valueReturner = CodeBlock.builder();
                         if (returnType.getKind() == TypeKind.VOID) {
-                            valueReturner = CodeBlock.builder()
-                                    .addStatement(methodCaller)
-                                    .addStatement("return $N.voidResult()", helperParam).build();
+                            valueReturner.addStatement(methodCaller)
+                                    .addStatement("return $N.voidResult()", helperParam)
+                                    .build();
                         } else {
-                            valueReturner = CodeBlock.of("return $N.result($L);", helperParam, methodCaller);
+                           valueReturner.addStatement("return $N.result($L)", helperParam, methodCaller);
                         }
 
                         if (!isPublic) {
-                            myMethodBuilder.addCode("return catchingMethodHandle(()->{\n$>$L\n$<});", valueReturner);
+                            myMethodBuilder.addCode(wrapMethodHandle(valueReturner.build()));
                         } else {
-                            myMethodBuilder.addCode(valueReturner);
+                            myMethodBuilder.addCode(valueReturner.build());
                         }
                     }
 
@@ -231,6 +231,17 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         }
 
         return true;
+    }
+
+    private CodeBlock wrapMethodHandle(CodeBlock inner) {
+        return CodeBlock.builder()
+                .beginControlFlow("try")
+                .add(inner)
+                .nextControlFlow("catch ($T t)", Throwable.class)
+                .addStatement("unwrapException(t)")
+                .addStatement("return null;//unreachable")
+                .endControlFlow()
+                .build();
     }
 
     private static Map<String, AnnotationValue> getAnnotationValueMapWithDefaults(Elements elementUtils, AnnotationMirror annotationMirror) {
@@ -372,9 +383,9 @@ public class ComputerMethodProcessor extends AbstractProcessor {
             ClassName className = ClassName.get((TypeElement) t.asElement());
             TypeElement typeElement = (TypeElement) t.asElement();
             if (typeElement.getKind() == ElementKind.ENUM) {
-                return CodeBlock.of("FancyComputerHelper.getEnum($N, $L, $T.class)", helperParam, paramNum, className);
+                return CodeBlock.of("$N.getEnum($L, $T.class)", helperParam, paramNum, className);
             } else if (processingEnv.getTypeUtils().isAssignable(t, filterInterface)) {
-                return CodeBlock.of("FancyComputerHelper.getFilter($N, $L, $T.class)", helperParam, paramNum, className);
+                return CodeBlock.of("$N.getFilter($L, $T.class)", helperParam, paramNum, className);
             }
             switch (className.canonicalName()) {
                 case "java.util.List" -> {
