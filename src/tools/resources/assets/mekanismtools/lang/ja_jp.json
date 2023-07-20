@@ -12,7 +12,7 @@
   "advancements.mekanismtools.paxel.description": "任意のパクセルをクラフトする(ツルハシ、斧、シャベル)",
   "advancements.mekanismtools.paxel.title": "マルチツール",
   "constants.mekanismtools.mod_name": "Mekanism: Tools",
-  "constants.mekanismtools.pack_description": "Mekanism: Toolsのリソース",
+  "constants.mekanismtools.pack_description": "Mekanism: Toolsに使用されるリソース",
   "item.mekanismtools.bronze_axe": "青銅の斧",
   "item.mekanismtools.bronze_boots": "青銅のブーツ",
   "item.mekanismtools.bronze_chestplate": "青銅のチェストプレート",
