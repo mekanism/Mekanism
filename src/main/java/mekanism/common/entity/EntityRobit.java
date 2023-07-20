@@ -24,7 +24,6 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -35,7 +34,6 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.robit.IRobit;
 import mekanism.api.robit.RobitSkin;
-import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -69,6 +67,7 @@ import mekanism.common.registries.MekanismDataSerializers;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismRobitSkins;
+import mekanism.common.registries.MekanismRobitSkins.SkinLookup;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
@@ -78,6 +77,7 @@ import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -85,6 +85,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -128,7 +129,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 //TODO: When Galacticraft gets ported make it so the robit can "breath" without a mask
-public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInventory, ISustainedInventory, ISecurityObject, IMekanismStrictEnergyHandler,
+public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInventory, ISustainedInventory, IMekanismStrictEnergyHandler,
       ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
     public static AttributeSupplier.Builder getDefaultAttributes() {
@@ -147,7 +148,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     private static final EntityDataAccessor<SecurityMode> SECURITY = define(MekanismDataSerializers.SECURITY.get());
     private static final EntityDataAccessor<Boolean> FOLLOW = define(EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DROP_PICKUP = define(EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<RobitSkin> SKIN = define(MekanismDataSerializers.ROBIT_SKIN.get());
+    private static final EntityDataAccessor<ResourceKey<RobitSkin>> SKIN = define(MekanismDataSerializers.ROBIT_SKIN.get());
 
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
@@ -267,7 +268,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         entityData.define(SECURITY, SecurityMode.PUBLIC);
         entityData.define(FOLLOW, false);
         entityData.define(DROP_PICKUP, false);
-        entityData.define(SKIN, MekanismRobitSkins.BASE.get());
+        entityData.define(SKIN, MekanismRobitSkins.BASE);
     }
 
     private FloatingLong getRoundedTravelEnergy() {
@@ -478,7 +479,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getInventorySlots(null)));
         nbtTags.put(NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(getEnergyContainers(null)));
         nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
-        NBTUtils.writeRegistryEntry(nbtTags, NBTConstants.SKIN, MekanismAPI.robitSkinRegistry(), getSkin());
+        NBTUtils.writeResourceKey(nbtTags, NBTConstants.SKIN, getSkin());
     }
 
     @Override
@@ -492,7 +493,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, Tag.TAG_COMPOUND));
         DataHandlerUtils.readContainers(getEnergyContainers(null), nbtTags.getList(NBTConstants.ENERGY_CONTAINERS, Tag.TAG_COMPOUND));
         progress = nbtTags.getInt(NBTConstants.PROGRESS);
-        NBTUtils.setRegistryEntryIfPresentElse(nbtTags, NBTConstants.SKIN, MekanismAPI.robitSkinRegistry(), skin -> setSkin(skin, null),
+        NBTUtils.setResourceKeyIfPresentElse(nbtTags, NBTConstants.SKIN, MekanismAPI.robitSkinRegistryName(), skin -> setSkin(skin, null),
               () -> setSkin(MekanismRobitSkins.BASE, null));
     }
 
@@ -716,27 +717,34 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     @NotNull
     @Override
-    public RobitSkin getSkin() {
+    public ResourceKey<RobitSkin> getSkin() {
         return entityData.get(SKIN);
     }
 
     @Override
-    public boolean setSkin(@NotNull IRobitSkinProvider skinProvider, @Nullable Player player) {
-        Objects.requireNonNull(skinProvider, "Robit skin cannot be null.");
-        RobitSkin skin = skinProvider.getSkin();
-        if (getSkin() == skin) {
+    public boolean setSkin(@NotNull ResourceKey<RobitSkin> skinKey, @Nullable Player player) {
+        Objects.requireNonNull(skinKey, "Robit skin cannot be null.");
+        if (getSkin() == skinKey) {
             //Don't do anything if the robit already has that skin selected
             return true;
         }
         if (player != null) {
-            if (!MekanismAPI.getSecurityUtils().canAccess(player, this) || !skin.isUnlocked(player)) {
+            if (!MekanismAPI.getSecurityUtils().canAccess(player, this)) {
                 return false;
             }
-            if (player instanceof ServerPlayer serverPlayer) {
-                MekanismCriteriaTriggers.CHANGE_ROBIT_SKIN.trigger(serverPlayer, skin);
+            SkinLookup skinLookup = MekanismRobitSkins.lookup(level().registryAccess(), skinKey);
+            skinKey = skinLookup.name();
+            if (getSkin() == skinKey) {
+                //Don't do anything if the robit already has that skin selected
+                //Note: We double-check this in case we ended up being changed to the default skin due to it not existing
+                return true;
+            } else if (!skinLookup.skin().isUnlocked(player)) {
+                return false;
+            } else if (player instanceof ServerPlayer serverPlayer) {
+                MekanismCriteriaTriggers.CHANGE_ROBIT_SKIN.trigger(serverPlayer, skinKey);
             }
         }
-        entityData.set(SKIN, skin);
+        entityData.set(SKIN, skinKey);
         return true;
     }
 
@@ -752,13 +760,24 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
      * @apiNote Only call on the client.
      */
     private ResourceLocation getModelTexture() {
-        RobitSkin skin = getSkin();
-        List<ResourceLocation> textures = skin.getTextures();
+        Registry<RobitSkin> robitSkins = level().registryAccess().registryOrThrow(MekanismAPI.robitSkinRegistryName());
+        ResourceKey<RobitSkin> skinKey = getSkin();
+        RobitSkin skin = robitSkins.get(skinKey);
+        if (skin == null) {
+            Mekanism.logger.error("Unknown Robit Skin: {}; resetting skin to base.", skinKey.location());
+            setSkin(skinKey = MekanismRobitSkins.BASE, null);
+            skin = robitSkins.getOrThrow(skinKey);
+        }
+        List<ResourceLocation> textures = skin.textures();
         if (textures.isEmpty()) {
+            //Note: Should not really happen but in case a custom impl has no textures handle it
             textureIndex = 0;
-            Mekanism.logger.error("Robit Skin: {}, has no textures; resetting skin to base.", skin.getRegistryName());
-            setSkin(MekanismRobitSkins.BASE, null);
-            if (getSkin().getTextures().isEmpty()) {
+            if (skinKey != MekanismRobitSkins.BASE) {
+                Mekanism.logger.error("Robit Skin: {}, has no textures; resetting skin to base.", skinKey.location());
+                setSkin(skinKey = MekanismRobitSkins.BASE, null);
+                skin = robitSkins.getOrThrow(skinKey);
+            }
+            if (skin.textures().isEmpty()) {
                 //This should not happen but if it does throw a cleaner error than a stack overflow
                 throw new IllegalStateException("Base robit skin has no textures defined.");
             }

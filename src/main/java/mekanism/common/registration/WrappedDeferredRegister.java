@@ -42,22 +42,23 @@ public class WrappedDeferredRegister<T> {
     /**
      * Only call this from mekanism and for custom registries
      */
-    public void createAndRegister(IEventBus bus) {
-        createAndRegister(bus, UnaryOperator.identity());
+    public Supplier<IForgeRegistry<T>> createAndRegister(IEventBus bus) {
+        return createAndRegister(bus, UnaryOperator.identity());
     }
 
     /**
      * Only call this from mekanism and for custom chemical registries
      */
-    public void createAndRegisterChemical(IEventBus bus) {
-        createAndRegister(bus, builder -> builder.hasTags().setDefaultKey(Mekanism.rl("empty")));
+    public Supplier<IForgeRegistry<T>> createAndRegisterChemical(IEventBus bus) {
+        return createAndRegister(bus, builder -> builder.hasTags().setDefaultKey(Mekanism.rl("empty")));
     }
 
     /**
      * Only call this from mekanism and for custom registries
      */
-    public void createAndRegister(IEventBus bus, UnaryOperator<RegistryBuilder<T>> builder) {
-        internal.makeRegistry(() -> builder.apply(new RegistryBuilder<>()));
+    public Supplier<IForgeRegistry<T>> createAndRegister(IEventBus bus, UnaryOperator<RegistryBuilder<T>> builder) {
+        Supplier<IForgeRegistry<T>> registry = internal.makeRegistry(() -> builder.apply(new RegistryBuilder<>()));
         register(bus);
+        return registry;
     }
 }

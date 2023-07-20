@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:basic",
+  "textures": [
+    "mekanism:bi",
+    "mekanism:bi2",
+    "mekanism:bi3",
+    "mekanism:bi4",
+    "mekanism:bi5"
+  ]
+}

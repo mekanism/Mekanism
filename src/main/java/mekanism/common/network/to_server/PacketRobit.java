@@ -6,7 +6,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
-import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.entity.EntityRobit;
@@ -15,6 +14,7 @@ import mekanism.common.network.BasePacketHandler;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.registries.MekanismRobitSkins;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent;
 import org.jetbrains.annotations.NotNull;
@@ -22,18 +22,18 @@ import org.jetbrains.annotations.Nullable;
 
 public class PacketRobit implements IMekanismPacket {
 
-    private static final Map<String, List<IRobitSkinProvider>> EASTER_EGGS = Map.of(
+    private static final Map<String, List<ResourceKey<RobitSkin>>> EASTER_EGGS = Map.of(
           "sara", getPrideSkins(RobitPrideSkinData.TRANS, RobitPrideSkinData.LESBIAN)
     );
 
-    private static List<IRobitSkinProvider> getPrideSkins(RobitPrideSkinData... prideSkinData) {
-        return Stream.of(prideSkinData).<IRobitSkinProvider>map(MekanismRobitSkins.PRIDE_SKINS::get).toList();
+    private static List<ResourceKey<RobitSkin>> getPrideSkins(RobitPrideSkinData... prideSkinData) {
+        return Stream.of(prideSkinData).map(MekanismRobitSkins.PRIDE_SKINS::get).toList();
     }
 
     private final RobitPacketType activeType;
     private final int entityId;
     private final String name;
-    private final RobitSkin skin;
+    private final ResourceKey<RobitSkin> skin;
 
     public PacketRobit(RobitPacketType type, EntityRobit robit) {
         this(type, robit.getId(), null, null);
@@ -43,16 +43,16 @@ public class PacketRobit implements IMekanismPacket {
         this(RobitPacketType.NAME, robit, name, null);
     }
 
-    public PacketRobit(EntityRobit robit, @NotNull RobitSkin skin) {
+    public PacketRobit(EntityRobit robit, @NotNull ResourceKey<RobitSkin> skin) {
         this(RobitPacketType.SKIN, robit, null, skin);
     }
 
-    private PacketRobit(RobitPacketType type, EntityRobit robit, @Nullable String name, @Nullable RobitSkin skin) {
+    private PacketRobit(RobitPacketType type, EntityRobit robit, @Nullable String name, @Nullable ResourceKey<RobitSkin> skin) {
         this(type, robit.getId(), name, skin);
     }
 
-    private PacketRobit(RobitPacketType type, int entityId, @Nullable String name, @Nullable RobitSkin skin) {
-        activeType = type;
+    private PacketRobit(RobitPacketType type, int entityId, @Nullable String name, @Nullable ResourceKey<RobitSkin> skin) {
+        this.activeType = type;
         this.entityId = entityId;
         this.name = name;
         this.skin = skin;
@@ -72,9 +72,9 @@ public class PacketRobit implements IMekanismPacket {
                     robit.setDropPickup(!robit.getDropPickup());
                 } else if (activeType == RobitPacketType.NAME) {
                     robit.setCustomName(TextComponentUtil.getString(name));
-                    if (robit.getSkin() == MekanismRobitSkins.BASE.get()) {
+                    if (robit.getSkin() == MekanismRobitSkins.BASE) {
                         //If the robit has the base skin currently equipped
-                        List<IRobitSkinProvider> skins = EASTER_EGGS.getOrDefault(name.toLowerCase(Locale.ROOT), Collections.emptyList());
+                        List<ResourceKey<RobitSkin>> skins = EASTER_EGGS.getOrDefault(name.toLowerCase(Locale.ROOT), Collections.emptyList());
                         // check if there are any skins paired with the name that got set as an Easter egg
                         if (!skins.isEmpty()) {
                             // if there are, then pick a random one and set it
@@ -99,7 +99,7 @@ public class PacketRobit implements IMekanismPacket {
         if (activeType == RobitPacketType.NAME) {
             buffer.writeUtf(name);
         } else if (activeType == RobitPacketType.SKIN) {
-            buffer.writeRegistryId(MekanismAPI.robitSkinRegistry(), skin);
+            buffer.writeResourceKey(skin);
         }
     }
 
@@ -107,11 +107,11 @@ public class PacketRobit implements IMekanismPacket {
         RobitPacketType activeType = buffer.readEnum(RobitPacketType.class);
         int entityId = buffer.readVarInt();
         String name = null;
-        RobitSkin skin = null;
+        ResourceKey<RobitSkin> skin = null;
         if (activeType == RobitPacketType.NAME) {
             name = BasePacketHandler.readString(buffer).trim();
         } else if (activeType == RobitPacketType.SKIN) {
-            skin = buffer.readRegistryIdSafe(RobitSkin.class);
+            skin = buffer.readResourceKey(MekanismAPI.robitSkinRegistryName());
         }
         return new PacketRobit(activeType, entityId, name, skin);
     }

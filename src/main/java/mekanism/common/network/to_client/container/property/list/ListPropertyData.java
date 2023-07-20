@@ -27,6 +27,7 @@ public abstract class ListPropertyData<TYPE> extends PropertyData {
             case FILTER -> FilterListPropertyData.read(property, buffer::readList);
             case FREQUENCY -> FrequencyListPropertyData.read(property, buffer::readList);
             case REGISTRY_ENTRY -> RegistryEntryListPropertyData.read(property, buffer);
+            case RESOURCE_KEY -> ResourceKeyListPropertyData.read(property, buffer);
         };
     }
 

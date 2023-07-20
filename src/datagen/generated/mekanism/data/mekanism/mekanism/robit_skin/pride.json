@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:basic",
+  "textures": [
+    "mekanism:pride",
+    "mekanism:pride2",
+    "mekanism:pride3",
+    "mekanism:pride4",
+    "mekanism:pride5",
+    "mekanism:pride6"
+  ]
+}

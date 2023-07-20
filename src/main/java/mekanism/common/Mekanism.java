@@ -218,7 +218,7 @@ public class Mekanism {
         MekanismInfuseTypes.INFUSE_TYPES.createAndRegisterChemical(modEventBus);
         MekanismPigments.PIGMENTS.createAndRegisterChemical(modEventBus);
         MekanismSlurries.SLURRIES.createAndRegisterChemical(modEventBus);
-        MekanismRobitSkins.ROBIT_SKINS.createAndRegister(modEventBus, builder -> builder.setDefaultKey(rl("robit")));
+        MekanismRobitSkins.createAndRegisterDatapack(modEventBus);
         MekanismModules.MODULES.createAndRegister(modEventBus);
         modEventBus.addListener(this::registerEventListener);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle

@@ -24,10 +24,12 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongConsumer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -266,6 +268,11 @@ public class NBTUtils {
         }, notPresent);
     }
 
+    public static <REG> void setResourceKeyIfPresentElse(CompoundTag nbt, String key, ResourceKey<? extends Registry<REG>> registryName, Consumer<ResourceKey<REG>> setter,
+          Runnable notPresent) {
+        setResourceLocationIfPresentElse(nbt, key, rl -> setter.accept(ResourceKey.create(registryName, rl)), notPresent);
+    }
+
     public static <ENUM extends Enum<ENUM>> void setEnumIfPresent(CompoundTag nbt, String key, Int2ObjectFunction<ENUM> indexLookup, Consumer<ENUM> setter) {
         if (nbt.contains(key, Tag.TAG_INT)) {
             setter.accept(indexLookup.apply(nbt.getInt(key)));
@@ -294,5 +301,9 @@ public class NBTUtils {
         if (registryName != null) {//Should not be null but validate it
             nbt.putString(key, registryName.toString());
         }
+    }
+
+    public static void writeResourceKey(CompoundTag nbt, String key, ResourceKey<?> entry) {
+        nbt.putString(key, entry.location().toString());
     }
 }

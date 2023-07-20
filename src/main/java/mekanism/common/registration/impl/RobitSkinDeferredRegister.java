@@ -1,41 +1,18 @@
 package mekanism.common.registration.impl;
 
+import com.mojang.serialization.Codec;
 import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.robit.RobitSkin;
-import mekanism.common.registration.WrappedDeferredRegister;
-import net.minecraft.resources.ResourceLocation;
+import mekanism.common.registration.WrappedDatapackDeferredRegister;
 
-public class RobitSkinDeferredRegister extends WrappedDeferredRegister<RobitSkin> {
-
-    private final String modid;
+public class RobitSkinDeferredRegister extends WrappedDatapackDeferredRegister<RobitSkin> {
 
     public RobitSkinDeferredRegister(String modid) {
-        super(modid, MekanismAPI.robitSkinRegistryName());
-        this.modid = modid;
+        super(modid, MekanismAPI.robitSkinSerializerRegistryName(), MekanismAPI.robitSkinRegistryName());
     }
 
-    public RobitSkinRegistryObject<RobitSkin> register(String name) {
-        return register(name, 2);
-    }
-
-    public RobitSkinRegistryObject<RobitSkin> register(String name, int variants) {
-        ResourceLocation[] textures = new ResourceLocation[variants];
-        for (int variant = 0; variant < variants; variant++) {
-            if (variant == 0) {
-                textures[variant] = new ResourceLocation(modid, name);
-            } else {
-                textures[variant] = new ResourceLocation(modid, name + (variant + 1));
-            }
-        }
-        return register(name, textures);
-    }
-
-    public RobitSkinRegistryObject<RobitSkin> register(String name, ResourceLocation... textures) {
-        return register(name, () -> new RobitSkin(textures));
-    }
-
-    public <ROBIT_SKIN extends RobitSkin> RobitSkinRegistryObject<ROBIT_SKIN> register(String name, Supplier<? extends ROBIT_SKIN> sup) {
-        return register(name, sup, RobitSkinRegistryObject::new);
+    public <ROBIT_SKIN extends RobitSkin> RobitSkinSerializerRegistryObject<ROBIT_SKIN> registerSerializer(String name, Supplier<Codec<ROBIT_SKIN>> sup) {
+        return register(name, sup, RobitSkinSerializerRegistryObject::new);
     }
 }

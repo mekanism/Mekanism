@@ -15,6 +15,5 @@ public class JsonThingsIntegration {
         resourceManager.registerParser(new JsonInfuseTypeParser(bus));
         resourceManager.registerParser(new JsonPigmentParser(bus));
         resourceManager.registerParser(new JsonSlurryParser(bus));
-        //TODO - 1.20: Robit skins?? Or do we want to try and move them to being a datapack registry
     }
 }

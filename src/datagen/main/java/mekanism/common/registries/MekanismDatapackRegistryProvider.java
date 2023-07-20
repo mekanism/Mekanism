@@ -5,9 +5,14 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import mekanism.api.MekanismAPI;
+import mekanism.api.robit.AdvancementBasedRobitSkin;
+import mekanism.api.robit.BasicRobitSkin;
+import mekanism.api.robit.RobitSkin;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.WorldConfig.OreVeinConfig;
+import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.registration.impl.FeatureRegistryObject;
 import mekanism.common.registries.MekanismDamageTypes.MekanismDamageType;
 import mekanism.common.resource.ore.OreBlockType;
@@ -29,6 +34,7 @@ import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageType;
@@ -132,5 +138,31 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
                   context.register(damageType.key(), new DamageType(damageType.getMsgId(), damageType.exhaustion()));
               }
           })
-          ;
+          .add(MekanismAPI.robitSkinRegistryName(), context -> {
+              context.register(MekanismRobitSkins.BASE, makeRobitSkin(Mekanism.rl("robit"), 2));
+              context.register(MekanismRobitSkins.ALLAY, new AdvancementBasedRobitSkin(
+                    List.of(
+                          Mekanism.rl("allay"),
+                          Mekanism.rl("allay2")
+                    ),
+                    Mekanism.rl("item/robit_allay"),
+                    new ResourceLocation("husbandry/allay_deliver_item_to_player")
+              ));
+              for (Map.Entry<RobitPrideSkinData, ResourceKey<RobitSkin>> entry : MekanismRobitSkins.PRIDE_SKINS.entrySet()) {
+                  ResourceKey<RobitSkin> key = entry.getValue();
+                  context.register(key, makeRobitSkin(key.location(), entry.getKey().getColor().length));
+              }
+          });
+
+    private static RobitSkin makeRobitSkin(ResourceLocation name, int variants) {
+        List<ResourceLocation> textures = new ArrayList<>(variants);
+        for (int variant = 0; variant < variants; variant++) {
+            if (variant == 0) {
+                textures.add(name);
+            } else {
+                textures.add(name.withSuffix(Integer.toString(variant + 1)));
+            }
+        }
+        return new BasicRobitSkin(textures);
+    }
 }

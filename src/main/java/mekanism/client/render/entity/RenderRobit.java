@@ -3,12 +3,13 @@ package mekanism.client.render.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import mekanism.api.robit.RobitSkin;
 import mekanism.client.RobitSpriteUploader;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.entity.RenderRobit.RobitModelWrapper;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
+import mekanism.common.registries.MekanismRobitSkins;
+import mekanism.common.registries.MekanismRobitSkins.SkinLookup;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -50,11 +51,11 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitModelWrapper> {
                 //Setup didn't happen right
                 return;
             }
-            RobitSkin skin = robit.getSkin();
-            BakedModel model = MekanismModelCache.INSTANCE.getRobitSkin(skin);
+            SkinLookup skinLookup = MekanismRobitSkins.lookup(robit.level().registryAccess(), robit.getSkin());
+            BakedModel model = MekanismModelCache.INSTANCE.getRobitSkin(skinLookup);
             if (model == null) {
                 //No model means we can't render (this shouldn't happen as we try to fall back to the default skin)
-                Mekanism.logger.warn("Robit with skin: {} does not have a model. If this happened during a resource reload this can be ignored.", skin.getRegistryName());
+                Mekanism.logger.warn("Robit with skin: {} does not have a model. If this happened during a resource reload this can be ignored.", skinLookup.location());
             } else {
                 matrix.pushPose();
                 matrix.mulPose(Axis.XP.rotationDegrees(180));

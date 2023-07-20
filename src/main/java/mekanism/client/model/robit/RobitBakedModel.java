@@ -12,10 +12,15 @@ import mekanism.client.render.lib.QuadTransformation.TextureFilteredTransformati
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.item.ItemRobit;
+import mekanism.common.registries.MekanismRobitSkins;
+import mekanism.common.registries.MekanismRobitSkins.SkinLookup;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -71,16 +76,31 @@ public class RobitBakedModel extends ExtensionOverrideBakedModel<ResourceLocatio
         @Override
         public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemRobit robit) {
-                RobitSkin skin = robit.getRobitSkin(stack).getSkin();
-                if (skin.getCustomModel() != null) {
+                RegistryAccess registryAccess;
+                if (world != null) {
+                    registryAccess = world.registryAccess();
+                } else if (entity != null) {
+                    registryAccess = entity.level().registryAccess();
+                } else {
+                    ClientLevel level = Minecraft.getInstance().level;
+                    if (level == null) {
+                        //Failed to lookup the skin so don't do any overrides
+                        return original.resolve(model, stack, null, null, seed);
+                    }
+                    registryAccess = level.registryAccess();
+                }
+                ResourceKey<RobitSkin> skinKey = robit.getRobitSkin(stack);
+                SkinLookup skinLookup = MekanismRobitSkins.lookup(registryAccess, skinKey);
+                RobitSkin skin = skinLookup.skin();
+                if (skin.customModel() != null) {
                     //If the skin has a custom model look it up and if it isn't the model we are currently resolving for
                     // (to avoid stack overflow and recursion), then lookup the overrides of that model
-                    BakedModel customModel = MekanismModelCache.INSTANCE.getRobitSkin(skin);
+                    BakedModel customModel = MekanismModelCache.INSTANCE.getRobitSkin(skinLookup);
                     if (customModel != null && customModel != model) {
                         return customModel.getOverrides().resolve(customModel, stack, world, entity, seed);
                     }
                 }
-                List<ResourceLocation> textures = skin.getTextures();
+                List<ResourceLocation> textures = skin.textures();
                 if (!textures.isEmpty()) {
                     //Assuming the skin actually has textures (it should), grab the first texture as the model data
                     ModelData modelData = ModelData.builder().with(EntityRobit.SKIN_TEXTURE_PROPERTY, textures.get(0)).build();

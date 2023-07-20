@@ -1,0 +1,9 @@
+{
+  "type": "mekanism:basic",
+  "textures": [
+    "mekanism:enby",
+    "mekanism:enby2",
+    "mekanism:enby3",
+    "mekanism:enby4"
+  ]
+}

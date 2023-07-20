@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
-import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
@@ -12,10 +11,10 @@ import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.SerializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,34 +35,30 @@ public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<ChangeRobitSk
     @NotNull
     @Override
     protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull ContextAwarePredicate playerPredicate, @NotNull DeserializationContext context) {
-        RobitSkin skin;
+        ResourceKey<RobitSkin> skin;
         if (json.has(JsonConstants.SKIN)) {
             String name = GsonHelper.getAsString(json, JsonConstants.SKIN);
             ResourceLocation registryName = ResourceLocation.tryParse(name);
             if (registryName == null) {
                 throw new JsonSyntaxException("Expected property '" + JsonConstants.SKIN + "' to be a valid resource location, was: '" + name + "'.");
             }
-            IForgeRegistry<RobitSkin> registry = MekanismAPI.robitSkinRegistry();
-            if (!registry.containsKey(registryName)) {
-                throw new JsonSyntaxException("No robit skin registered for name '" + registryName + "'.");
-            }
-            skin = registry.getValue(registryName);
+            skin = ResourceKey.create(MekanismAPI.robitSkinRegistryName(), registryName);
         } else {
             skin = null;
         }
         return new TriggerInstance(playerPredicate, skin);
     }
 
-    public void trigger(ServerPlayer player, RobitSkin skin) {
+    public void trigger(ServerPlayer player, ResourceKey<RobitSkin> skin) {
         this.trigger(player, instance -> instance.skin == null || instance.skin == skin);
     }
 
     public static class TriggerInstance extends AbstractCriterionTriggerInstance {
 
         @Nullable
-        private final RobitSkin skin;
+        private final ResourceKey<RobitSkin> skin;
 
-        public TriggerInstance(ContextAwarePredicate playerPredicate, @Nullable RobitSkin skin) {
+        public TriggerInstance(ContextAwarePredicate playerPredicate, @Nullable ResourceKey<RobitSkin> skin) {
             super(MekanismCriteriaTriggers.CHANGE_ROBIT_SKIN.getId(), playerPredicate);
             this.skin = skin;
         }
@@ -73,7 +68,7 @@ public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<ChangeRobitSk
         public JsonObject serializeToJson(@NotNull SerializationContext context) {
             JsonObject json = super.serializeToJson(context);
             if (skin != null) {
-                json.addProperty(JsonConstants.SKIN, skin.getRegistryName().toString());
+                json.addProperty(JsonConstants.SKIN, skin.location().toString());
             }
             return json;
         }
@@ -82,8 +77,8 @@ public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<ChangeRobitSk
             return new ChangeRobitSkinTrigger.TriggerInstance(ContextAwarePredicate.ANY, null);
         }
 
-        public static ChangeRobitSkinTrigger.TriggerInstance toSkin(IRobitSkinProvider skinProvider) {
-            return new ChangeRobitSkinTrigger.TriggerInstance(ContextAwarePredicate.ANY, skinProvider.getSkin());
+        public static ChangeRobitSkinTrigger.TriggerInstance toSkin(ResourceKey<RobitSkin> skin) {
+            return new ChangeRobitSkinTrigger.TriggerInstance(ContextAwarePredicate.ANY, skin);
         }
     }
 }

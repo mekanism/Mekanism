@@ -1,6 +1,7 @@
 package mekanism.api;
 
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
 import java.util.function.Consumer;
 import mekanism.api.chemical.gas.EmptyGas;
 import mekanism.api.chemical.gas.Gas;
@@ -46,32 +47,40 @@ public class MekanismAPI {
     public static final Logger logger = LogUtils.getLogger();
 
     @NotNull
-    private static <T> Lazy<ResourceKey<? extends Registry<T>>> registryKey(@SuppressWarnings("unused") @NotNull Class<T> compileTimeTypeValidator, @NotNull String path) {
+    private static <T> Lazy<ResourceKey<Registry<T>>> registryKey(@SuppressWarnings("unused") @NotNull Class<T> compileTimeTypeValidator, @NotNull String path) {
+        return Lazy.of(() -> ResourceKey.createRegistryKey(new ResourceLocation(MEKANISM_MODID, path)));
+    }
+
+    @NotNull
+    private static <T> Lazy<ResourceKey<Registry<Codec<? extends T>>>> codecRegistryKey(@SuppressWarnings("unused") @NotNull Class<T> compileTimeTypeValidator,
+          @NotNull String path) {
         return Lazy.of(() -> ResourceKey.createRegistryKey(new ResourceLocation(MEKANISM_MODID, path)));
     }
 
     //Note: These fields are not directly exposed and are instead exposed via getters as they need to be lazy so that they
     // don't end up causing a crash while running tests due to class loading
     @NotNull
-    private static final Lazy<ResourceKey<? extends Registry<Gas>>> GAS_REGISTRY_NAME = registryKey(Gas.class, "gas");
+    private static final Lazy<ResourceKey<Registry<Gas>>> GAS_REGISTRY_NAME = registryKey(Gas.class, "gas");
     @NotNull
-    private static final Lazy<ResourceKey<? extends Registry<InfuseType>>> INFUSE_TYPE_REGISTRY_NAME = registryKey(InfuseType.class, "infuse_type");
+    private static final Lazy<ResourceKey<Registry<InfuseType>>> INFUSE_TYPE_REGISTRY_NAME = registryKey(InfuseType.class, "infuse_type");
     @NotNull
-    private static final Lazy<ResourceKey<? extends Registry<Pigment>>> PIGMENT_REGISTRY_NAME = registryKey(Pigment.class, "pigment");
+    private static final Lazy<ResourceKey<Registry<Pigment>>> PIGMENT_REGISTRY_NAME = registryKey(Pigment.class, "pigment");
     @NotNull
-    private static final Lazy<ResourceKey<? extends Registry<Slurry>>> SLURRY_REGISTRY_NAME = registryKey(Slurry.class, "slurry");
+    private static final Lazy<ResourceKey<Registry<Slurry>>> SLURRY_REGISTRY_NAME = registryKey(Slurry.class, "slurry");
     @NotNull
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static final Lazy<ResourceKey<? extends Registry<ModuleData<?>>>> MODULE_REGISTRY_NAME = registryKey((Class) ModuleData.class, "module");
+    private static final Lazy<ResourceKey<Registry<ModuleData<?>>>> MODULE_REGISTRY_NAME = registryKey((Class) ModuleData.class, "module");
     @NotNull
-    private static final Lazy<ResourceKey<? extends Registry<RobitSkin>>> ROBIT_SKIN_REGISTRY_NAME = registryKey(RobitSkin.class, "robit_skin");
+    private static final Lazy<ResourceKey<Registry<RobitSkin>>> ROBIT_SKIN_REGISTRY_NAME = registryKey(RobitSkin.class, "robit_skin");
+    @NotNull
+    private static final Lazy<ResourceKey<Registry<Codec<? extends RobitSkin>>>> ROBIT_SKIN_SERIALIZER_REGISTRY_NAME = codecRegistryKey(RobitSkin.class, "robit_skin_serializer");
 
     private static IForgeRegistry<Gas> GAS_REGISTRY;
     private static IForgeRegistry<InfuseType> INFUSE_TYPE_REGISTRY;
     private static IForgeRegistry<Pigment> PIGMENT_REGISTRY;
     private static IForgeRegistry<Slurry> SLURRY_REGISTRY;
     private static IForgeRegistry<ModuleData<?>> MODULE_REGISTRY;
-    private static IForgeRegistry<RobitSkin> ROBIT_SKIN_REGISTRY;
+    private static IForgeRegistry<Codec<? extends RobitSkin>> ROBIT_SKIN_SERIALIZER_REGISTRY;
     private static IMekanismJEIHelper JEI_HELPER;
     private static IModuleHelper MODULE_HELPER;
     private static IRadialDataHelper RADIAL_DATA_HELPER;
@@ -112,7 +121,7 @@ public class MekanismAPI {
      * {@link ResourceKey}.
      */
     @NotNull
-    public static ResourceKey<? extends Registry<Gas>> gasRegistryName() {
+    public static ResourceKey<Registry<Gas>> gasRegistryName() {
         return GAS_REGISTRY_NAME.get();
     }
 
@@ -125,7 +134,7 @@ public class MekanismAPI {
      * to the {@link ResourceKey}.
      */
     @NotNull
-    public static ResourceKey<? extends Registry<InfuseType>> infuseTypeRegistryName() {
+    public static ResourceKey<Registry<InfuseType>> infuseTypeRegistryName() {
         return INFUSE_TYPE_REGISTRY_NAME.get();
     }
 
@@ -138,7 +147,7 @@ public class MekanismAPI {
      * {@link ResourceKey}.
      */
     @NotNull
-    public static ResourceKey<? extends Registry<Pigment>> pigmentRegistryName() {
+    public static ResourceKey<Registry<Pigment>> pigmentRegistryName() {
         return PIGMENT_REGISTRY_NAME.get();
     }
 
@@ -151,7 +160,7 @@ public class MekanismAPI {
      * {@link ResourceKey}.
      */
     @NotNull
-    public static ResourceKey<? extends Registry<Slurry>> slurryRegistryName() {
+    public static ResourceKey<Registry<Slurry>> slurryRegistryName() {
         return SLURRY_REGISTRY_NAME.get();
     }
 
@@ -164,21 +173,30 @@ public class MekanismAPI {
      * {@link ResourceKey}.
      */
     @NotNull
-    public static ResourceKey<? extends Registry<ModuleData<?>>> moduleRegistryName() {
+    public static ResourceKey<Registry<ModuleData<?>>> moduleRegistryName() {
         return MODULE_REGISTRY_NAME.get();
     }
 
     /**
-     * Gets the {@link ResourceKey} representing the name of the Forge Registry for {@link RobitSkin robit skins}.
+     * Gets the {@link ResourceKey} representing the name of the Datapack Registry for {@link RobitSkin robit skins}.
      *
-     * @return Name of the {@link RobitSkin} registry.
-     *
-     * @apiNote When registering {@link RobitSkin robit skins} using {@link net.minecraftforge.registries.DeferredRegister<RobitSkin>}, use this method to get access to
-     * the {@link ResourceKey}.
+     * @return Name of the {@link RobitSkin} datapack registry.
      */
     @NotNull
-    public static ResourceKey<? extends Registry<RobitSkin>> robitSkinRegistryName() {
+    public static ResourceKey<Registry<RobitSkin>> robitSkinRegistryName() {
         return ROBIT_SKIN_REGISTRY_NAME.get();
+    }
+
+    /**
+     * Gets the {@link ResourceKey} representing the name of the Forge Registry for {@link RobitSkin robit skin} serializers.
+     *
+     * @return Name of the {@link RobitSkin} serializer registry.
+     *
+     * @since 10.4.0
+     */
+    @NotNull
+    public static ResourceKey<Registry<Codec<? extends RobitSkin>>> robitSkinSerializerRegistryName() {
+        return ROBIT_SKIN_SERIALIZER_REGISTRY_NAME.get();
     }
 
     /**
@@ -269,21 +287,22 @@ public class MekanismAPI {
     }
 
     /**
-     * Gets the Forge Registry for {@link RobitSkin}.
+     * Gets the Forge Registry for {@link RobitSkin} serializers.
      *
-     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister<RobitSkin>} instead of {@link net.minecraftforge.registries.RegisterEvent} with
-     * the registry name, make sure to use {@link net.minecraftforge.registries.DeferredRegister#create(ResourceKey, String)} rather than passing the result of this
-     * method to the other create method, as this method <strong>CAN</strong> return {@code null} if called before the
-     * {@link net.minecraftforge.registries.NewRegistryEvent} events have been fired. This method is marked as {@link NotNull} just because except for when this is being
-     * called super early it is never {@code null}.
-     * @see #robitSkinRegistryName()
+     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister DeferredRegister< Codec<? extends RobitSkin>>} instead of
+     * {@link net.minecraftforge.registries.RegisterEvent} with the registry name, make sure to use
+     * {@link net.minecraftforge.registries.DeferredRegister#create(ResourceKey, String)} rather than passing the result of this method to the other create method, as
+     * this method <strong>CAN</strong> return {@code null} if called before the {@link net.minecraftforge.registries.NewRegistryEvent} events have been fired. This
+     * method is marked as {@link NotNull} just because except for when this is being called super early it is never {@code null}.
+     * @see #robitSkinSerializerRegistryName()
+     * @since 10.4.0
      */
     @NotNull
-    public static IForgeRegistry<RobitSkin> robitSkinRegistry() {
-        if (ROBIT_SKIN_REGISTRY == null) {
-            ROBIT_SKIN_REGISTRY = RegistryManager.ACTIVE.getRegistry(robitSkinRegistryName());
+    public static IForgeRegistry<Codec<? extends RobitSkin>> robitSkinSerializerRegistry() {
+        if (ROBIT_SKIN_SERIALIZER_REGISTRY == null) {
+            ROBIT_SKIN_SERIALIZER_REGISTRY = RegistryManager.ACTIVE.getRegistry(robitSkinSerializerRegistryName());
         }
-        return ROBIT_SKIN_REGISTRY;
+        return ROBIT_SKIN_SERIALIZER_REGISTRY;
     }
 
     /**

@@ -2,24 +2,27 @@ package mekanism.common.inventory.container.entity.robit;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 import mekanism.api.MekanismAPI;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
 import mekanism.common.inventory.container.sync.ISyncableData;
-import mekanism.common.inventory.container.sync.list.SyncableRegistryEntryList;
+import mekanism.common.inventory.container.sync.list.SyncableResourceKeyList;
 import mekanism.common.registries.MekanismContainerTypes;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Inventory;
 
 public class MainRobitContainer extends RobitContainer implements ISpecificContainerTracker {
 
-    private List<RobitSkin> unlockedSkins = Collections.emptyList();
+    private List<ResourceKey<RobitSkin>> unlockedSkins = Collections.emptyList();
 
     public MainRobitContainer(int id, Inventory inv, EntityRobit robit) {
         super(MekanismContainerTypes.MAIN_ROBIT, id, inv, robit);
     }
 
-    public List<RobitSkin> getUnlockedSkins() {
+    public List<ResourceKey<RobitSkin>> getUnlockedSkins() {
         return unlockedSkins;
     }
 
@@ -28,14 +31,21 @@ public class MainRobitContainer extends RobitContainer implements ISpecificConta
         ISyncableData data;
         if (isRemote()) {
             //Client side sync handling
-            data = SyncableRegistryEntryList.create(MekanismAPI.robitSkinRegistry(), () -> unlockedSkins, value -> unlockedSkins = value);
+            data = SyncableResourceKeyList.create(MekanismAPI.robitSkinRegistryName(), () -> unlockedSkins, value -> unlockedSkins = value);
         } else {
             //Server side sync handling
             //Note: It is important these are in the same order as the client side trackers
             //TODO: Improve how unlock handling is done to have some sort of per player cache and maybe move the unlocked check away
             // from the skin and into the handler system
-            data = SyncableRegistryEntryList.create(MekanismAPI.robitSkinRegistry(), () -> MekanismAPI.robitSkinRegistry().getValues().stream().filter(skin ->
-                  skin.isUnlocked(inv.player)).toList(), value -> unlockedSkins = value);
+            //Note: We can cache a reference to the specific registry so that we don't have to lookup the robit skin registry each time
+            Registry<RobitSkin> registry = inv.player.level().registryAccess()
+                  .registryOrThrow(MekanismAPI.robitSkinRegistryName());
+            data = SyncableResourceKeyList.create(MekanismAPI.robitSkinRegistryName(), () -> registry.entrySet().stream()
+                        .filter(entry -> entry.getValue().isUnlocked(inv.player))
+                        .map(Entry::getKey)
+                        .toList(),
+                  value -> unlockedSkins = value
+            );
         }
         return Collections.singletonList(data);
     }

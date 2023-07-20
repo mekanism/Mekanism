@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:basic",
+  "textures": [
+    "mekanism:agender",
+    "mekanism:agender2",
+    "mekanism:agender3",
+    "mekanism:agender4",
+    "mekanism:agender5",
+    "mekanism:agender6"
+  ]
+}

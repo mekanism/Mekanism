@@ -1,51 +1,46 @@
 package mekanism.api.robit;
 
-import java.util.Collections;
+import com.mojang.serialization.Codec;
 import java.util.List;
-import java.util.Objects;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Represents a skin for a robit. Register these during datagen using {@link net.minecraftforge.common.data.DatapackBuiltinEntriesProvider}.
+ * <br>
+ * See also the <a href="https://github.com/mekanism/Mekanism/wiki/Robit-Skins">Mekanism GitHub wiki</a> for the syntax of creating these manually.
+ */
 @NothingNullByDefault
-public class RobitSkin implements IRobitSkinProvider {
-
-    private final List<ResourceLocation> textures;
-    @Nullable
-    private String translationKey;
+public interface RobitSkin {
 
     /**
-     * Creates a new Robit skin that makes use of the given textures when the Robit moves in the given order.
+     * @return the codec which serializes and deserializes this {@link RobitSkin}.
      *
-     * @param textures Textures to use for the skin. If this is an empty array then {@link #getTextures()} must be overridden.
+     * @implNote The returned codec should be registered in the {@link MekanismAPI#robitSkinSerializerRegistry() robit skin serializer registry}.
+     * @since 10.4.0
      */
-    public RobitSkin(ResourceLocation... textures) {
-        Objects.requireNonNull(textures, "Textures cannot be null.");
-        if (textures.length == 0) {
-            this.textures = Collections.emptyList();
-        } else {
-            this.textures = List.of(textures);
-        }
-    }
+    Codec<? extends RobitSkin> codec();
+
 
     /**
-     * Gets the location of the custom json model for this skin. In general, it is probably a good idea to base it off the existing robit model's json except with any
-     * small changes this skin requires. For an example of the syntax the default model's location would be {@code mekanism:item/robit}.
+     * Gets the location of the custom json model for this skin relative to the base "models" directory. In general, it is probably a good idea to base it off the
+     * existing robit model's json except with any small changes this skin requires. For an example of the syntax the default model's location would be
+     * {@code mekanism:item/robit}.
      *
      * @return Custom model or {@code null} if the default model should be used.
      *
      * @apiNote This is mostly untested currently so if you run into issues please report them.
      */
     @Nullable
-    public ResourceLocation getCustomModel() {
+    default ResourceLocation customModel() {
         return null;
     }
 
@@ -60,9 +55,7 @@ public class RobitSkin implements IRobitSkinProvider {
      *
      * @return Unmodifiable list of textures for this skin.
      */
-    public List<ResourceLocation> getTextures() {
-        return textures;
-    }
+    List<ResourceLocation> textures();
 
     /**
      * Checks if the given player has access to select this skin.
@@ -70,35 +63,33 @@ public class RobitSkin implements IRobitSkinProvider {
      * @param player Player to check.
      *
      * @return {@code true} if the player has access.
+     *
+     * @apiNote Only called on the server
      */
-    public boolean isUnlocked(@NotNull Player player) {
+    default boolean isUnlocked(@NotNull Player player) {
         //TODO: Have some skins that are potentially locked as patreon rewards?
         return true;
     }
 
-    @Override
-    public final RobitSkin getSkin() {
-        return this;
+    /**
+     * Helper to get the proper translation key path for a given {@link RobitSkin}.
+     *
+     * @param key {@link RobitSkin} name.
+     *
+     * @since 10.4.0
+     */
+    static String getTranslationKey(ResourceKey<? extends RobitSkin> key) {
+        return Util.makeDescriptionId("robit_skin", key.location());
     }
 
-    @Override
-    public String getTranslationKey() {
-        if (translationKey == null) {
-            translationKey = Util.makeDescriptionId("robit_skin", getRegistryName());
-        }
-        return translationKey;
-    }
-
-    @Override
-    public Component getTextComponent() {
-        return TextComponentUtil.translate(getTranslationKey());
-    }
-
-    @Override
-    @SuppressWarnings("ConstantConditions")
-    public final ResourceLocation getRegistryName() {
-        //May be null if called before the object is registered
-        IForgeRegistry<RobitSkin> registry = MekanismAPI.robitSkinRegistry();
-        return registry == null ? null : registry.getKey(this);
+    /**
+     * Helper to get a translation component representing the display name of a given {@link RobitSkin}.
+     *
+     * @param key {@link RobitSkin} name.
+     *
+     * @since 10.4.0
+     */
+    static Component getTranslatedName(ResourceKey<? extends RobitSkin> key) {
+        return TextComponentUtil.translate(getTranslationKey(key));
     }
 }

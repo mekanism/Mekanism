@@ -37,7 +37,6 @@ public class MekanismSpriteSourceProvider extends BaseSpriteSourceProvider {
         addChemicalSprites(atlas);
         addFluids(atlas, MekanismFluids.FLUIDS);
 
-        //TODO - 1.20: Mention in RobitSkin docs about adding to atlas if using a different path
         SourceList robitAtlas = atlas(Mekanism.rl("entity/robit"));
         addDirectory(robitAtlas, "entity/robit", "");
     }

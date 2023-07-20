@@ -10,7 +10,6 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.robit.RobitSkin;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.RegisterEvent;
@@ -26,7 +25,6 @@ public class CrTContentUtils {
     private static Map<ResourceLocation, InfuseType> queuedInfuseTypes = new HashMap<>();
     private static Map<ResourceLocation, Pigment> queuedPigments = new HashMap<>();
     private static Map<ResourceLocation, Slurry> queuedSlurries = new HashMap<>();
-    private static Map<ResourceLocation, RobitSkin> queuedRobitSkins = new HashMap<>();
 
     /**
      * Queues a {@link Gas} to be registered with the given registry name.
@@ -68,16 +66,6 @@ public class CrTContentUtils {
         queueForRegistration("Slurry", queuedSlurries, registryName, slurry);
     }
 
-    /**
-     * Queues a {@link RobitSkin} to be registered with the given registry name.
-     *
-     * @param registryName Registry name to give the {@link RobitSkin}.
-     * @param skin         {@link RobitSkin} to queue for registration.
-     */
-    public static void queueRobitSkinForRegistration(ResourceLocation registryName, RobitSkin skin) {
-        queueForRegistration("Robit Skin", queuedRobitSkins, registryName, skin);
-    }
-
     private static <V> void queueForRegistration(String type, @Nullable Map<ResourceLocation, V> queued, ResourceLocation registryName, V element) {
         //Only queue our chemicals for registration on the first run of our loader
         if (queued != null) {
@@ -108,7 +96,6 @@ public class CrTContentUtils {
         event.register(MekanismAPI.infuseTypeRegistryName(), helper -> registerQueued(helper, queuedInfuseTypes, () -> queuedInfuseTypes = null, "Infuse Type", "infuse types"));
         event.register(MekanismAPI.pigmentRegistryName(), helper -> registerQueued(helper, queuedPigments, () -> queuedPigments = null, "Pigment", "pigments"));
         event.register(MekanismAPI.slurryRegistryName(), helper -> registerQueued(helper, queuedSlurries, () -> queuedSlurries = null, "Slurry", "slurries"));
-        event.register(MekanismAPI.robitSkinRegistryName(), helper -> registerQueued(helper, queuedRobitSkins, () -> queuedRobitSkins = null, "Robit Skin", "robit skins"));
     }
 
     private static <V> void registerQueued(RegisterHelper<V> helper, Map<ResourceLocation, V> queued, Runnable setNull, String type, String plural) {

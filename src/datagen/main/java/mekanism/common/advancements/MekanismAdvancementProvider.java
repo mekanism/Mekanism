@@ -286,7 +286,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .addCriterion("summon", SummonedEntityTrigger.TriggerInstance.summonedEntity(EntityPredicate.Builder.entity().of(MekanismEntityTypes.ROBIT.getEntityType())))
               .save(consumer);
         ItemStack skinnedRobit = MekanismItems.ROBIT.getItemStack();
-        MekanismItems.ROBIT.get().setSkin(skinnedRobit, MekanismRobitSkins.PRIDE_SKINS.get(RobitPrideSkinData.TRANS).getSkin());
+        MekanismItems.ROBIT.get().setSkin(skinnedRobit, MekanismRobitSkins.PRIDE_SKINS.get(RobitPrideSkinData.TRANS));
         advancement(MekanismAdvancements.ROBIT_AESTHETICS)
               .display(skinnedRobit, null, FrameType.TASK, true, false, true)
               .addCriterion("change_skin", ChangeRobitSkinTrigger.TriggerInstance.toAny())

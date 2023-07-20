@@ -20,6 +20,8 @@ import mekanism.client.render.lib.QuadUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
+import mekanism.common.registries.MekanismRobitSkins;
+import mekanism.common.registries.MekanismRobitSkins.SkinLookup;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -27,6 +29,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.client.model.data.ModelData;
@@ -40,13 +43,13 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
 
     private final GuiScrollBar scrollBar;
 
-    private final Supplier<List<RobitSkin>> unlockedSkins;
+    private final Supplier<List<ResourceKey<RobitSkin>>> unlockedSkins;
     private final EntityRobit robit;
-    private RobitSkin selectedSkin;
+    private ResourceKey<RobitSkin> selectedSkin;
     private float rotation;
     private int ticks;
 
-    public GuiRobitSkinSelectScroll(IGuiWrapper gui, int x, int y, EntityRobit robit, Supplier<List<RobitSkin>> unlockedSkins) {
+    public GuiRobitSkinSelectScroll(IGuiWrapper gui, int x, int y, EntityRobit robit, Supplier<List<ResourceKey<RobitSkin>>> unlockedSkins) {
         super(gui, x, y, INNER_DIMENSIONS + 12, INNER_DIMENSIONS);
         this.robit = robit;
         this.selectedSkin = this.robit.getSkin();
@@ -55,18 +58,18 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
               () -> getUnlockedSkins() == null ? 0 : (int) Math.ceil((double) getUnlockedSkins().size() / SLOT_COUNT), () -> SLOT_COUNT));
     }
 
-    private List<RobitSkin> getUnlockedSkins() {
+    private List<ResourceKey<RobitSkin>> getUnlockedSkins() {
         return unlockedSkins.get();
     }
 
-    public RobitSkin getSelectedSkin() {
+    public ResourceKey<RobitSkin> getSelectedSkin() {
         return selectedSkin;
     }
 
     @Override
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        List<RobitSkin> skins = getUnlockedSkins();
+        List<ResourceKey<RobitSkin>> skins = getUnlockedSkins();
         if (skins != null) {
             Lighting.setupForFlatItems();
             //Every ten ticks consider the skin to change
@@ -80,7 +83,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
                 int slotX = relativeX + (i % SLOT_COUNT) * SLOT_DIMENSIONS, slotY = relativeY + (i / SLOT_COUNT) * SLOT_DIMENSIONS;
                 int slot = slotStart + i;
                 if (slot < skins.size()) {
-                    RobitSkin skin = skins.get(slot);
+                    ResourceKey<RobitSkin> skin = skins.get(slot);
                     if (skin == selectedSkin) {
                         renderSlotBackground(guiGraphics, slotX, slotY, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE);
                     } else {
@@ -102,7 +105,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
-        List<RobitSkin> skins = getUnlockedSkins();
+        List<ResourceKey<RobitSkin>> skins = getUnlockedSkins();
         if (skins != null) {
             int xAxis = mouseX - getGuiLeft(), yAxis = mouseY - getGuiTop();
             int slotX = (xAxis - relativeX) / SLOT_DIMENSIONS, slotY = (yAxis - relativeY) / SLOT_DIMENSIONS;
@@ -129,9 +132,9 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     @Override
     public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderToolTip(guiGraphics, mouseX, mouseY);
-        RobitSkin skin = getSkin(mouseX, mouseY);
+        ResourceKey<RobitSkin> skin = getSkin(mouseX, mouseY);
         if (skin != null) {
-            displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.ROBIT_SKIN.translate(skin));
+            displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.ROBIT_SKIN.translate(RobitSkin.getTranslatedName(skin)));
         }
     }
 
@@ -143,14 +146,14 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     @Override
     public void onClick(double mouseX, double mouseY, int button) {
         super.onClick(mouseX, mouseY, button);
-        RobitSkin skin = getSkin(mouseX, mouseY);
+        ResourceKey<RobitSkin> skin = getSkin(mouseX, mouseY);
         if (skin != null) {
             selectedSkin = skin;
         }
     }
 
-    private RobitSkin getSkin(double mouseX, double mouseY) {
-        List<RobitSkin> skins = getUnlockedSkins();
+    private ResourceKey<RobitSkin> getSkin(double mouseX, double mouseY) {
+        List<ResourceKey<RobitSkin>> skins = getUnlockedSkins();
         if (skins != null) {
             int slotX = (int) ((mouseX - getX()) / SLOT_DIMENSIONS), slotY = (int) ((mouseY - getY()) / SLOT_DIMENSIONS);
             if (slotX >= 0 && slotY >= 0 && slotX < SLOT_COUNT && slotY < SLOT_COUNT) {
@@ -163,15 +166,16 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         return null;
     }
 
-    private void renderRobit(GuiGraphics guiGraphics, RobitSkin skin, int x, int y, QuadTransformation rotation, int index) {
-        List<ResourceLocation> textures = skin.getTextures();
+    private void renderRobit(GuiGraphics guiGraphics, ResourceKey<RobitSkin> skinKey, int x, int y, QuadTransformation rotation, int index) {
+        SkinLookup skinLookup = MekanismRobitSkins.lookup(robit.level().registryAccess(), skinKey);
+        List<ResourceLocation> textures = skinLookup.skin().textures();
         if (textures.isEmpty()) {
-            Mekanism.logger.error("Failed to render skin: {}, as it has no textures.", skin.getRegistryName());
+            Mekanism.logger.error("Failed to render skin: {}, as it has no textures.", skinLookup.location());
             return;
         }
-        BakedModel model = MekanismModelCache.INSTANCE.getRobitSkin(skin);
+        BakedModel model = MekanismModelCache.INSTANCE.getRobitSkin(skinLookup);
         if (model == null) {
-            Mekanism.logger.warn("Failed to render skin: {} as it does not have a model.", skin.getRegistryName());
+            Mekanism.logger.warn("Failed to render skin: {} as it does not have a model.", skinLookup.location());
             return;
         }
         MultiBufferSource.BufferSource buffer = guiGraphics.bufferSource();

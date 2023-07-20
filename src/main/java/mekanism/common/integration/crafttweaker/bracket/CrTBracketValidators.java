@@ -1,9 +1,14 @@
 package mekanism.common.integration.crafttweaker.bracket;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.BracketValidator;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import java.util.Optional;
+import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -75,7 +80,7 @@ public class CrTBracketValidators {
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_ROBIT_SKIN)
     public static boolean validateRobitSkin(String tokens) {
-        return validate(CrTConstants.BRACKET_ROBIT_SKIN, tokens, MekanismAPI.robitSkinRegistry());
+        return validate(CrTConstants.BRACKET_ROBIT_SKIN, tokens, MekanismAPI.robitSkinRegistryName());
     }
 
     /**
@@ -92,20 +97,33 @@ public class CrTBracketValidators {
     }
 
     private static boolean validate(String bracket, String tokens, IForgeRegistry<?> registry) {
+        return validate(bracket, tokens, registryName -> isRegistryUnlocked(registry) || registry.containsKey(registryName));
+    }
+
+    private static boolean isRegistryUnlocked(IForgeRegistry<?> registry) {
+        return registry instanceof ForgeRegistry<?> forgeRegistry && !forgeRegistry.isLocked();
+    }
+
+    private static boolean validate(String bracket, String tokens, ResourceKey<? extends Registry<?>> registryKey) {
+        return validate(bracket, tokens, registryName -> {
+            Optional<Registry<Object>> registry = CraftTweakerAPI.getAccessibleElementsProvider()
+                  .registryAccess()
+                  .registry(registryKey);
+            return registry.isEmpty() || registry.get().containsKey(registryName);
+        });
+    }
+
+    private static boolean validate(String bracket, String tokens, Predicate<ResourceLocation> unlockedOrHas) {
         ResourceLocation registryName = ResourceLocation.tryParse(tokens);
         if (registryName == null) {
             CrTConstants.CRT_LOGGER.error("Could not get BEP <{}:{}>. Syntax is <{}:modid:{}_name>", bracket, tokens, bracket, bracket);
             return false;
         }
-        if (isRegistryUnlocked(registry) || registry.containsKey(registryName)) {
+        if (unlockedOrHas.test(registryName)) {
             return true;
         }
         String typeName = bracket.replace("_", " ");
         CrTConstants.CRT_LOGGER.error("Could not get {} for <{}:{}>, {} does not appear to exist!", typeName, bracket, tokens, typeName);
         return false;
-    }
-
-    private static boolean isRegistryUnlocked(IForgeRegistry<?> registry) {
-        return registry instanceof ForgeRegistry<?> forgeRegistry && !forgeRegistry.isLocked();
     }
 }
