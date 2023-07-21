@@ -159,7 +159,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                         }
                     }
 
-                    MethodSpec handlerMethod = buildHandlerMethod(subjectParam, annotatedName, !isPrivateOrProtected, valueReturner.build());
+                    MethodSpec handlerMethod = buildHandlerMethod(subjectParam, annotationValues.getStringValue("nameOverride", annotatedName), !isPrivateOrProtected, valueReturner.build());
                     handlerTypeSpec.addMethod(handlerMethod);
                     //add a call to register() in the handler class's constructor
                     CodeBlock registerMethodBuilder = buildRegisterMethodCall(handlerClassName, annotatedName, annotationValues, parameters, handlerMethod);
@@ -325,6 +325,13 @@ public class ComputerMethodProcessor extends AbstractProcessor {
             return value.accept(new AnnotationValueToLiteral(
                     defaultValue instanceof String ? CodeBlock.of("$S", defaultValue) : defaultValue
             ), nameToElement.get(key).getReturnType());
+        }
+
+        String getStringValue(String key, String defaultValue) {
+            AnnotationValue value = annotationValueMap.get(nameToElement.get(key));
+            if (value != null && value.getValue() instanceof String s && !s.isBlank())
+                return s;
+            return defaultValue;
         }
     }
 
