@@ -280,6 +280,8 @@
   "block.mekanismadditions.yellow_plastic_transparent_stairs": "Escaleras de Plástico Transparente Amarillo",
   "block.mekanismadditions.yellow_reinforced_plastic": "Bloque de Plástico Reforzado Amarillo",
   "block.mekanismadditions.yellow_slick_plastic": "Bloque de Plástico Resbaladizo Amarillo",
+  "constants.mekanismadditions.mod_name": "Mekanism: Extras",
+  "constants.mekanismadditions.pack_description": "Recursos usados por Mekanism: Extras",
   "description.mekanismadditions.glow_panel": "Una fuente de luz moderna e infinita. ¡Ahora en muchos colores!",
   "description.mekanismadditions.obsidian_tnt": "Un bloque de dinamita extremadamente poderosa, infundida con obsidiana. Úsalo bajo tu propia responsabilidad.",
   "entity.mekanismadditions.baby_creeper": "Bebé Creeper",
