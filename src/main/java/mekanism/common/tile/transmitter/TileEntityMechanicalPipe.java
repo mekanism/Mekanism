@@ -128,23 +128,23 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
     }
 
     @ComputerMethod
-    private FluidStack getBuffer() {
+    FluidStack getBuffer() {
         return getTransmitter().getBufferWithFallback();
     }
 
     @ComputerMethod
-    private long getCapacity() {
+    long getCapacity() {
         MechanicalPipe pipe = getTransmitter();
         return pipe.hasTransmitterNetwork() ? pipe.getTransmitterNetwork().getCapacity() : pipe.getCapacity();
     }
 
     @ComputerMethod
-    private long getNeeded() {
+    long getNeeded() {
         return getCapacity() - getBuffer().getAmount();
     }
 
     @ComputerMethod
-    private double getFilledPercentage() {
+    double getFilledPercentage() {
         return getBuffer().getAmount() / (double) getCapacity();
     }
     //End methods IComputerTile

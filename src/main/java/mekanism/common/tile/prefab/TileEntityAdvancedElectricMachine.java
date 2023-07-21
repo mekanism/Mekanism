@@ -233,12 +233,12 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private FloatingLong getEnergyUsage() {
+    FloatingLong getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
     }
 
     @ComputerMethod
-    private void dumpChemical() throws ComputerException {
+    void dumpChemical() throws ComputerException {
         validateSecurityIsPublic();
         gasTank.setEmpty();
     }

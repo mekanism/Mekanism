@@ -269,7 +269,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     @ComputerMethod
-    private int getActiveSolars() {
+    int getActiveSolars() {
         int ret = 0;
         for (LazyOptional<IEvaporationSolar> capability : cachedSolar.values()) {
             if (capability.map(IEvaporationSolar::canSeeSun).orElse(false)) {

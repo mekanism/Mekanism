@@ -513,7 +513,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     //Computer related methods
     @ComputerMethod
-    private void activate() throws ComputerException {
+    void activate() throws ComputerException {
         if (isActive()) {
             throw new ComputerException("Reactor is already active.");
         } else if (isForceDisabled()) {
@@ -523,7 +523,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @ComputerMethod
-    private void scram() throws ComputerException {
+    void scram() throws ComputerException {
         if (!isActive()) {
             throw new ComputerException("Scram requires the reactor to be active.");
         }
@@ -531,7 +531,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @ComputerMethod
-    private void setBurnRate(double rate) throws ComputerException {
+    void setBurnRate(double rate) throws ComputerException {
         //Round to two decimal places
         rate = UnitDisplayUtils.roundDecimals(rate);
         long max = getMaxBurnRate();
@@ -543,7 +543,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @ComputerMethod
-    private Object getCoolant() {
+    Object getCoolant() {
         if (fluidCoolantTank.isEmpty() && !gasCoolantTank.isEmpty()) {
             return gasCoolantTank.getStack();
         }
@@ -551,7 +551,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @ComputerMethod
-    private long getCoolantCapacity() {
+    long getCoolantCapacity() {
         if (fluidCoolantTank.isEmpty() && !gasCoolantTank.isEmpty()) {
             return gasCoolantTank.getCapacity();
         }
@@ -559,7 +559,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @ComputerMethod
-    private long getCoolantNeeded() {
+    long getCoolantNeeded() {
         if (fluidCoolantTank.isEmpty() && !gasCoolantTank.isEmpty()) {
             return gasCoolantTank.getNeeded();
         }
@@ -567,7 +567,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @ComputerMethod
-    private double getCoolantFilledPercentage() {
+    double getCoolantFilledPercentage() {
         if (fluidCoolantTank.isEmpty() && !gasCoolantTank.isEmpty()) {
             return gasCoolantTank.getStored() / (double) gasCoolantTank.getCapacity();
         }
@@ -575,7 +575,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @ComputerMethod
-    private double getHeatCapacity() {
+    double getHeatCapacity() {
         return heatCapacitor.getHeatCapacity();
     }
     //End computer related methods

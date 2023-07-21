@@ -461,7 +461,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     //Computer related methods
     @ComputerMethod(nameOverride = "setInjectionRate")
-    private void computerSetInjectionRate(int rate) throws ComputerException {
+    void computerSetInjectionRate(int rate) throws ComputerException {
         if (rate < 0 || rate > MAX_INJECTION) {
             //Validate bounds even though we can clamp
             throw new ComputerException("Injection Rate '%d' is out of range must be an even number between 0 and %d. (Inclusive)", rate, MAX_INJECTION);
@@ -473,12 +473,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     @ComputerMethod
-    private FloatingLong getPassiveGeneration(boolean active) {
+    FloatingLong getPassiveGeneration(boolean active) {
         return getPassiveGeneration(active, false);
     }
 
     @ComputerMethod
-    private FloatingLong getProductionRate() {
+    FloatingLong getProductionRate() {
         return getPassiveGeneration(false, true);
     }
     //End computer related methods

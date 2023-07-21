@@ -172,12 +172,12 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private FloatingLong getEnergyUsage() {
+    FloatingLong getEnergyUsage() {
         return energyContainer.getEnergyPerTick();
     }
 
     @ComputerMethod
-    private void setEnergyUsage(FloatingLong usage) throws ComputerException {
+    void setEnergyUsage(FloatingLong usage) throws ComputerException {
         validateSecurityIsPublic();
         setEnergyUsageFromPacket(usage);
     }

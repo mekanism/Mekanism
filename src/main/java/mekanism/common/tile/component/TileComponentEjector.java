@@ -316,7 +316,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     //Computer related methods
     @ComputerMethod(nameOverride = "setStrictInput")
-    private void computerSetStrictInput(boolean strict) throws ComputerException {
+    void computerSetStrictInput(boolean strict) throws ComputerException {
         tile.validateSecurityIsPublic();
         setStrictInput(strict);
     }
@@ -328,14 +328,14 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @ComputerMethod
-    private void clearInputColor(RelativeSide side) throws ComputerException {
+    void clearInputColor(RelativeSide side) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateInputSide(side);
         setInputColor(side, null);
     }
 
     @ComputerMethod
-    private void incrementInputColor(RelativeSide side) throws ComputerException {
+    void incrementInputColor(RelativeSide side) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateInputSide(side);
         int ordinal = side.ordinal();
@@ -344,7 +344,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @ComputerMethod
-    private void decrementInputColor(RelativeSide side) throws ComputerException {
+    void decrementInputColor(RelativeSide side) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateInputSide(side);
         int ordinal = side.ordinal();
@@ -353,7 +353,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @ComputerMethod(nameOverride = "setInputColor")
-    private void computerSetInputColor(RelativeSide side, EnumColor color) throws ComputerException {
+    void computerSetInputColor(RelativeSide side, EnumColor color) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateInputSide(side);
         if (!TransporterUtils.colors.contains(color)) {
@@ -363,27 +363,27 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @ComputerMethod
-    private void clearOutputColor() throws ComputerException {
+    void clearOutputColor() throws ComputerException {
         tile.validateSecurityIsPublic();
         setOutputColor(null);
     }
 
     @ComputerMethod
-    private void incrementOutputColor() throws ComputerException {
+    void incrementOutputColor() throws ComputerException {
         tile.validateSecurityIsPublic();
         outputColor = TransporterUtils.increment(outputColor);
         tile.markForSave();
     }
 
     @ComputerMethod
-    private void decrementOutputColor() throws ComputerException {
+    void decrementOutputColor() throws ComputerException {
         tile.validateSecurityIsPublic();
         outputColor = TransporterUtils.decrement(outputColor);
         tile.markForSave();
     }
 
     @ComputerMethod(nameOverride = "setOutputColor")
-    private void computerSetOutputColor(EnumColor color) throws ComputerException {
+    void computerSetOutputColor(EnumColor color) throws ComputerException {
         tile.validateSecurityIsPublic();
         if (!TransporterUtils.colors.contains(color)) {
             throw new ComputerException("Color '%s' is not a supported transporter color.", color);

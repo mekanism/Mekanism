@@ -271,7 +271,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private void setSingle(boolean value) throws ComputerException {
+    void setSingle(boolean value) throws ComputerException {
         validateSecurityIsPublic();
         if (singleItem != value) {
             toggleSingleItem();
@@ -279,7 +279,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @ComputerMethod
-    private void setRoundRobin(boolean value) throws ComputerException {
+    void setRoundRobin(boolean value) throws ComputerException {
         validateSecurityIsPublic();
         if (roundRobin != value) {
             toggleRoundRobin();
@@ -287,7 +287,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @ComputerMethod
-    private void setAutoMode(boolean value) throws ComputerException {
+    void setAutoMode(boolean value) throws ComputerException {
         validateSecurityIsPublic();
         if (autoEject != value) {
             toggleAutoEject();
@@ -295,27 +295,27 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @ComputerMethod
-    private void clearDefaultColor() throws ComputerException {
+    void clearDefaultColor() throws ComputerException {
         validateSecurityIsPublic();
         changeColor(null);
     }
 
     @ComputerMethod
-    private void incrementDefaultColor() throws ComputerException {
+    void incrementDefaultColor() throws ComputerException {
         validateSecurityIsPublic();
         color = TransporterUtils.increment(color);
         markForSave();
     }
 
     @ComputerMethod
-    private void decrementDefaultColor() throws ComputerException {
+    void decrementDefaultColor() throws ComputerException {
         validateSecurityIsPublic();
         color = TransporterUtils.decrement(color);
         markForSave();
     }
 
     @ComputerMethod
-    private void setDefaultColor(EnumColor color) throws ComputerException {
+    void setDefaultColor(EnumColor color) throws ComputerException {
         validateSecurityIsPublic();
         if (!TransporterUtils.colors.contains(color)) {
             throw new ComputerException("Color '%s' is not a supported transporter color.", color);
@@ -324,18 +324,18 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @ComputerMethod
-    private List<SorterFilter<?>> getFilters() {
+    List<SorterFilter<?>> getFilters() {
         return filterManager.getFilters();
     }
 
     @ComputerMethod
-    private boolean addFilter(SorterFilter<?> filter) throws ComputerException {
+    boolean addFilter(SorterFilter<?> filter) throws ComputerException {
         validateSecurityIsPublic();
         return filterManager.addFilter(filter);
     }
 
     @ComputerMethod
-    private boolean removeFilter(SorterFilter<?> filter) throws ComputerException {
+    boolean removeFilter(SorterFilter<?> filter) throws ComputerException {
         validateSecurityIsPublic();
         return filterManager.removeFilter(filter);
     }

@@ -96,12 +96,12 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private int getSlotCount() {
+    int getSlotCount() {
         return getSlots();
     }
 
     @ComputerMethod
-    private ItemStack getItemInSlot(int slot) throws ComputerException {
+    ItemStack getItemInSlot(int slot) throws ComputerException {
         int slots = getSlotCount();
         if (slot < 0 || slot >= slots) {
             throw new ComputerException("Slot: '%d' is out of bounds, as this laser amplifier only has '%d' slots (zero indexed).", slot, slots);

@@ -159,7 +159,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private ItemStack getSecondaryOutput(int process) throws ComputerException {
+    ItemStack getSecondaryOutput(int process) throws ComputerException {
         validateValidProcess(process);
         IInventorySlot secondaryOutputSlot = processInfoSlots[process].secondaryOutputSlot();
         //This should never be null, but in case it is, handle it

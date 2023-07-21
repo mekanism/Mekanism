@@ -274,7 +274,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private void setDumpingMode(GasMode mode) throws ComputerException {
+    void setDumpingMode(GasMode mode) throws ComputerException {
         validateSecurityIsPublic();
         if (dumping != mode) {
             dumping = mode;
@@ -283,13 +283,13 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     }
 
     @ComputerMethod
-    private void incrementDumpingMode() throws ComputerException {
+    void incrementDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         nextMode(0);
     }
 
     @ComputerMethod
-    private void decrementDumpingMode() throws ComputerException {
+    void decrementDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         dumping = dumping.getPrevious();
         markForSave();

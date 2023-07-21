@@ -82,12 +82,12 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IMu
     }
 
     @ComputerMethod
-    private BoilerValveMode getMode() {
+    BoilerValveMode getMode() {
         return getBlockState().getValue(AttributeStateBoilerValveMode.modeProperty);
     }
 
     @ComputerMethod
-    private void setMode(BoilerValveMode mode) {
+    void setMode(BoilerValveMode mode) {
         if (mode != getMode()) {
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(AttributeStateBoilerValveMode.modeProperty, mode));
         }
@@ -135,12 +135,12 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IMu
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private void incrementMode() {
+    void incrementMode() {
         setMode(getMode().getNext());
     }
 
     @ComputerMethod
-    private void decrementMode() {
+    void decrementMode() {
         setMode(getMode().getPrevious());
     }
     //End methods IComputerTile

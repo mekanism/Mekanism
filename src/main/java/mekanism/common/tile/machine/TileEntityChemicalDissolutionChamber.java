@@ -235,7 +235,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private FloatingLong getEnergyUsage() {
+    FloatingLong getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
     }
 

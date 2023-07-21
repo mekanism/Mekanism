@@ -213,7 +213,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
     //Computer related methods
     @ComputerMethod
-    private int getCoils() {
+    int getCoils() {
         return coilData.coilMap.size();
     }
     //End computer related methods

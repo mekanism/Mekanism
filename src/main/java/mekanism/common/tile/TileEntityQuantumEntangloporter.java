@@ -263,12 +263,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private Collection<InventoryFrequency> getFrequencies() {
+    Collection<InventoryFrequency> getFrequencies() {
         return FrequencyType.INVENTORY.getManagerWrapper().getPublicManager().getFrequencies();
     }
 
     @ComputerMethod
-    private InventoryFrequency getFrequency() throws ComputerException {
+    InventoryFrequency getFrequency() throws ComputerException {
         InventoryFrequency frequency = getFreq();
         if (frequency == null || !frequency.isValid() || frequency.isRemoved()) {
             throw new ComputerException("No frequency is currently selected.");
@@ -277,7 +277,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     }
 
     @ComputerMethod
-    private void setFrequency(String name) throws ComputerException {
+    void setFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         InventoryFrequency frequency = FrequencyType.INVENTORY.getManagerWrapper().getPublicManager().getFrequency(name);
         if (frequency == null) {
@@ -287,7 +287,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     }
 
     @ComputerMethod
-    private void createFrequency(String name) throws ComputerException {
+    void createFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         InventoryFrequency frequency = FrequencyType.INVENTORY.getManagerWrapper().getPublicManager().getFrequency(name);
         if (frequency != null) {
@@ -299,7 +299,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     //Note: A bunch of the below buffer getters are rather "hardcoded", but they should be fine unless we decide to add support for more buffers at some point
     // in which case we can just add some overloads while we deprecate these
     @ComputerMethod
-    private ItemStack getBufferItem() throws ComputerException {
+    ItemStack getBufferItem() throws ComputerException {
         return getFrequency().getInventorySlots(null).get(0).getStack();
     }
 
@@ -334,7 +334,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     }
 
     @ComputerMethod
-    private double getTemperature() throws ComputerException {
+    double getTemperature() throws ComputerException {
         return getFrequency().getTotalTemperature();
     }
     //End methods IComputerTile

@@ -182,13 +182,13 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private void clearTargetItem() throws ComputerException {
+    void clearTargetItem() throws ComputerException {
         validateSecurityIsPublic();
         handleStackChange(ItemStack.EMPTY);
     }
 
     @ComputerMethod
-    private void setTargetItem(ResourceLocation itemName) throws ComputerException {
+    void setTargetItem(ResourceLocation itemName) throws ComputerException {
         validateSecurityIsPublic();
         Item item = ForgeRegistries.ITEMS.getValue(itemName);
         if (item == null || item == Items.AIR) {
@@ -198,7 +198,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @ComputerMethod
-    private void setTriggerAmount(long amount) throws ComputerException {
+    void setTriggerAmount(long amount) throws ComputerException {
         validateSecurityIsPublic();
         if (amount < 0) {
             throw new ComputerException("Trigger amount cannot be negative. Received: %d", amount);
@@ -207,13 +207,13 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @ComputerMethod(nameOverride = "toggleFuzzyMode")
-    private void computerToggleFuzzyMode() throws ComputerException {
+    void computerToggleFuzzyMode() throws ComputerException {
         validateSecurityIsPublic();
         toggleFuzzyMode();
     }
 
     @ComputerMethod(nameOverride = "setFuzzyMode")
-    private void computerSetFuzzyMode(boolean fuzzy) throws ComputerException {
+    void computerSetFuzzyMode(boolean fuzzy) throws ComputerException {
         validateSecurityIsPublic();
         setFuzzyMode(fuzzy);
     }

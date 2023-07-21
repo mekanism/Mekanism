@@ -299,18 +299,18 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     }
 
     @ComputerMethod(nameOverride = "isChunkLoadingAt")
-    private boolean computerIsChunkloadingAt(int x, int z) throws ComputerException {
+    boolean computerIsChunkloadingAt(int x, int z) throws ComputerException {
         return isChunkLoadingAt(validateDimension(x, true), validateDimension(z, false));
     }
 
     @ComputerMethod(nameOverride = "toggleChunkLoadingAt")
-    private void computerToggleChunkLoadingAt(int x, int z) throws ComputerException {
+    void computerToggleChunkLoadingAt(int x, int z) throws ComputerException {
         validateSecurityIsPublic();
         toggleChunkLoadingAt(validateDimension(x, true), validateDimension(z, false));
     }
 
     @ComputerMethod(nameOverride = "setChunkLoadingAt")
-    private void computerSetChunkLoadingAt(int x, int z, boolean load) throws ComputerException {
+    void computerSetChunkLoadingAt(int x, int z, boolean load) throws ComputerException {
         validateSecurityIsPublic();
         if (setChunkLoadingAt(validateDimension(x, true), validateDimension(z, false), load)) {
             //If it changed we need to mark it as such and update various things
@@ -328,14 +328,14 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     }
 
     @ComputerMethod
-    private void enableChunkLoadingFor(int radius) throws ComputerException {
+    void enableChunkLoadingFor(int radius) throws ComputerException {
         validateSecurityIsPublic();
         validateRadius(radius);
         adjustChunkLoadingRadius(radius, true);
     }
 
     @ComputerMethod
-    private void disableChunkLoadingFor(int radius) throws ComputerException {
+    void disableChunkLoadingFor(int radius) throws ComputerException {
         validateSecurityIsPublic();
         validateRadius(radius);
         adjustChunkLoadingRadius(radius, false);

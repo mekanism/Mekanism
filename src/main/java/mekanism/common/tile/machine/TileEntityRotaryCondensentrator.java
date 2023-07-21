@@ -293,12 +293,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private boolean isCondensentrating() {
+    boolean isCondensentrating() {
         return !mode;
     }
 
     @ComputerMethod
-    private void setCondensentrating(boolean value) throws ComputerException {
+    void setCondensentrating(boolean value) throws ComputerException {
         validateSecurityIsPublic();
         if (mode != value) {
             mode = value;

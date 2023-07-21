@@ -406,7 +406,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @ComputerMethod(restriction = MethodRestriction.MULTIBLOCK)
-    private boolean isFormed() {
+    boolean isFormed() {
         return getMultiblock().isFormed();
     }
     //End methods IComputerTile

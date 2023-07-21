@@ -184,12 +184,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private FloatingLong getEnergyUsage() {
+    FloatingLong getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
     }
 
     @ComputerMethod
-    private void dumpInfuseType() throws ComputerException {
+    void dumpInfuseType() throws ComputerException {
         validateSecurityIsPublic();
         dump();
     }

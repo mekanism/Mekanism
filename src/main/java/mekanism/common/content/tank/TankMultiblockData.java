@@ -196,17 +196,17 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
 
     //Computer related methods
     @ComputerMethod
-    private void incrementContainerEditMode() {
+    void incrementContainerEditMode() {
         setContainerEditMode(editMode.getNext());
     }
 
     @ComputerMethod
-    private void decrementContainerEditMode() {
+    void decrementContainerEditMode() {
         setContainerEditMode(editMode.getPrevious());
     }
 
     @ComputerMethod
-    private Object getStored() {
+    Object getStored() {
         return switch (mergedTank.getCurrentType()) {
             case FLUID -> getFluidTank().getFluid();
             case GAS -> getGasTank().getStack();
@@ -218,7 +218,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     @ComputerMethod
-    private double getFilledPercentage() {
+    double getFilledPercentage() {
         long capacity = mergedTank.getCurrentType() == CurrentType.FLUID ? getTankCapacity() : getChemicalTankCapacity();
         return getStoredAmount() / (double) capacity;
     }

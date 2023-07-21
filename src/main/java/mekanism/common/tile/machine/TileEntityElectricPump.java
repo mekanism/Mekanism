@@ -376,7 +376,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     //Methods relating to IComputerTile
     @ComputerMethod(nameOverride = "reset")
-    private void resetPump() throws ComputerException {
+    void resetPump() throws ComputerException {
         validateSecurityIsPublic();
         reset();
     }

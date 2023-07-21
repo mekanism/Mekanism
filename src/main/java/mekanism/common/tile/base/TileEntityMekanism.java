@@ -1312,17 +1312,17 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     // probably make use of our synthetic computer method wrapper to just add extra methods so then have it basically create
     // getEnergy, getEnergyFE for us with us only having to define getEnergy
     @ComputerMethod(nameOverride = "getEnergy", restriction = MethodRestriction.ENERGY)
-    private FloatingLong getTotalEnergy() {
+    FloatingLong getTotalEnergy() {
         return getTotalEnergy(IEnergyContainer::getEnergy);
     }
 
     @ComputerMethod(nameOverride = "getMaxEnergy", restriction = MethodRestriction.ENERGY)
-    private FloatingLong getTotalMaxEnergy() {
+    FloatingLong getTotalMaxEnergy() {
         return getTotalEnergy(IEnergyContainer::getMaxEnergy);
     }
 
     @ComputerMethod(nameOverride = "getEnergyNeeded", restriction = MethodRestriction.ENERGY)
-    private FloatingLong getTotalEnergyNeeded() {
+    FloatingLong getTotalEnergyNeeded() {
         return getTotalEnergy(IEnergyContainer::getNeeded);
     }
 
@@ -1336,7 +1336,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @ComputerMethod(nameOverride = "getEnergyFilledPercentage", restriction = MethodRestriction.ENERGY)
-    private double getTotalEnergyFilledPercentage() {
+    double getTotalEnergyFilledPercentage() {
         FloatingLong stored = FloatingLong.ZERO;
         FloatingLong max = FloatingLong.ZERO;
         List<IEnergyContainer> energyContainers = getEnergyContainers(null);
@@ -1348,7 +1348,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @ComputerMethod(restriction = MethodRestriction.REDSTONE_CONTROL)
-    private void setRedstoneMode(RedstoneControl type) throws ComputerException {
+    void setRedstoneMode(RedstoneControl type) throws ComputerException {
         validateSecurityIsPublic();
         if (type == RedstoneControl.PULSE && !canPulse()) {
             throw new ComputerException("Unsupported redstone control mode: %s", RedstoneControl.PULSE);

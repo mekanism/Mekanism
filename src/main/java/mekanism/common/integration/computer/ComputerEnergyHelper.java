@@ -19,22 +19,22 @@ public class ComputerEnergyHelper {
     }
 
     @ComputerMethod
-    private static FloatingLong joulesToFE(FloatingLong joules) throws ComputerException {
+    public static FloatingLong joulesToFE(FloatingLong joules) throws ComputerException {
         return convert(EnergyUnit.FORGE_ENERGY, joules, true);
     }
 
     @ComputerMethod
-    private static FloatingLong feToJoules(FloatingLong fe) throws ComputerException {
+    public static FloatingLong feToJoules(FloatingLong fe) throws ComputerException {
         return convert(EnergyUnit.FORGE_ENERGY, fe, false);
     }
 
     @ComputerMethod(requiredMods = MekanismHooks.IC2_MOD_ID)
-    private static FloatingLong joulesToEU(FloatingLong joules) throws ComputerException {
+    public static FloatingLong joulesToEU(FloatingLong joules) throws ComputerException {
         return convert(EnergyUnit.ELECTRICAL_UNITS, joules, true);
     }
 
     @ComputerMethod(requiredMods = MekanismHooks.IC2_MOD_ID)
-    private static FloatingLong euToJoules(FloatingLong eu) throws ComputerException {
+    public static FloatingLong euToJoules(FloatingLong eu) throws ComputerException {
         return convert(EnergyUnit.ELECTRICAL_UNITS, eu, false);
     }
 
