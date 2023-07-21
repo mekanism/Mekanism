@@ -105,7 +105,7 @@ public class SpecialConverters {
     }
 
     private static boolean getBooleanFromRaw(@Nullable Object raw) {
-        return raw instanceof Boolean bool ? bool : Boolean.valueOf(false);
+        return raw instanceof Boolean bool ? bool : false;
     }
 
     private static int getIntFromRaw(@Nullable Object raw) {
@@ -408,6 +408,50 @@ public class SpecialConverters {
         //Note: We don't need to validate that all our values have been set as if there is an issue
         // we exit early, and we can only get to here if each of our entries have been iterated
         return true;
+    }
+
+    static Map<String, Object> wrapStack(ResourceLocation name, String sizeKey, int amount, @Nullable CompoundTag tag) {
+        boolean hasTag = tag != null && !tag.isEmpty() && amount > 0;
+        Map<String, Object> wrapped = new HashMap<>(hasTag ? 3 : 2);
+        wrapped.put("name", name == null ? "unknown" : name.toString());
+        wrapped.put(sizeKey, amount);
+        if (hasTag) {
+            wrapped.put("nbt", wrapNBT(tag));
+        }
+        return wrapped;
+    }
+
+    @Nullable
+    static Object wrapNBT(@Nullable Tag nbt) {
+        if (nbt == null) {
+            return null;
+        }
+        return switch (nbt.getId()) {
+            case Tag.TAG_BYTE, Tag.TAG_SHORT, Tag.TAG_INT, Tag.TAG_LONG, Tag.TAG_FLOAT, Tag.TAG_DOUBLE, Tag.TAG_ANY_NUMERIC -> ((NumericTag) nbt).getAsNumber();
+            //Tag End is highly unlikely to ever be used outside of networking but handle it anyway
+            case Tag.TAG_STRING, Tag.TAG_END -> nbt.getAsString();
+            case Tag.TAG_BYTE_ARRAY, Tag.TAG_INT_ARRAY, Tag.TAG_LONG_ARRAY, Tag.TAG_LIST -> {
+                CollectionTag<?> collectionNBT = (CollectionTag<?>) nbt;
+                int size = collectionNBT.size();
+                Map<Integer, Object> wrappedCollection = new HashMap<>(size);
+                for (int i = 0; i < size; i++) {
+                    wrappedCollection.put(i, wrapNBT(collectionNBT.get(i)));
+                }
+                yield wrappedCollection;
+            }
+            case Tag.TAG_COMPOUND -> {
+                CompoundTag compound = (CompoundTag) nbt;
+                Map<String, Object> wrappedCompound = new HashMap<>(compound.size());
+                for (String key : compound.getAllKeys()) {
+                    Object value = wrapNBT(compound.get(key));
+                    if (value != null) {
+                        wrappedCompound.put(key, value);
+                    }
+                }
+                yield wrappedCompound;
+            }
+            default -> null;
+        };
     }
 
     private record ArrayElementValidator(DoublePredicate rangeValidator, BiConsumer<Integer, Double> consumeValue, int expectedType) implements

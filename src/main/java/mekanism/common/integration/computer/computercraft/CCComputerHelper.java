@@ -4,13 +4,12 @@ import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.content.filter.IFilter;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.FancyComputerHelper;
-import mekanism.common.integration.computer.SpecialConverters;
-import org.jetbrains.annotations.Nullable;
 
-public class CCComputerHelper implements FancyComputerHelper {
+import java.util.Map;
+
+public class CCComputerHelper extends FancyComputerHelper {
 
     private final IArguments arguments;
 
@@ -117,9 +116,9 @@ public class CCComputerHelper implements FancyComputerHelper {
     }
 
     @Override
-    public <FILTER extends IFilter<FILTER>> FILTER getFilter(int param, Class<FILTER> expectedType) throws ComputerException {
+    public Map<?, ?> getMap(int param) throws ComputerException {
         try {
-            return SpecialConverters.convertMapToFilter(expectedType, arguments.getTable(param));
+            return arguments.getTable(param);
         } catch (LuaException e) {
             throw new ComputerException(e);
         }
@@ -137,15 +136,5 @@ public class CCComputerHelper implements FancyComputerHelper {
     @Override
     public Object voidResult() {
         return MethodResult.of();
-    }
-
-    @Override
-    public Object result(Object rawResult) {
-        return null;
-    }
-
-    @Override
-    public Object result(@Nullable FloatingLong result) {
-        return FancyComputerHelper.super.result(result);
     }
 }

@@ -7,6 +7,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
 import javax.lang.model.type.*;
 import javax.lang.model.util.*;
+import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
@@ -34,6 +35,8 @@ public class ComputerMethodProcessor extends AbstractProcessor {
     private ClassName factoryRegistry = ClassName.get("mekanism.common.integration.computer", "FactoryRegistry");
     private ClassName computerMethodFactoryRaw = ClassName.get("mekanism.common.integration.computer", "ComputerMethodFactory");
     private TypeMirror computerMethodAnnotationType;
+    private TypeMirror collectionType;
+    private TypeMirror mapType;
     private String mekModule;
 
     @Override
@@ -41,6 +44,8 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         super.init(processingEnv);
         mekModule = processingEnv.getOptions().getOrDefault(MODULE_OPTION, "value_not_supplied");
         computerMethodAnnotationType = Objects.requireNonNull(elementUtils().getTypeElement("mekanism.common.integration.computer.annotation.ComputerMethod")).asType();
+        collectionType = Objects.requireNonNull(elementUtils().getTypeElement("java.util.Collection")).asType();
+        mapType = Objects.requireNonNull(elementUtils().getTypeElement("java.util.Map")).asType();
     }
 
     @Override
@@ -75,7 +80,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
 
     private void processTypeWithAnnotations(TypeSpec.Builder registryType, MethodSpec.Builder registryInit, Map.Entry<TypeElement, List<Element>> entry) {
         TypeElement containingType = entry.getKey();
-        String handlerClassName = "Handler" + containingType.getSimpleName();
+        String handlerClassName = containingType.getSimpleName()+"$ComputerHandler";
         ClassName containingClassName = ClassName.get(containingType);
 
         TypeSpec.Builder handlerTypeSpec = TypeSpec.classBuilder(handlerClassName)
@@ -108,19 +113,22 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                         }
                         methodCallArguments.add(CodeBlock.join(paramGetters, ", "));
                     }
-                    boolean isPublic = annotatedElement.getModifiers().contains(Modifier.PUBLIC);
-                    boolean isStatic = annotatedElement.getModifiers().contains(Modifier.STATIC);
+                    Set<Modifier> modifiers = annotatedElement.getModifiers();
+                    boolean isPublic = modifiers.contains(Modifier.PUBLIC);
+                    boolean isPrivateOrProtected = modifiers.contains(Modifier.PRIVATE) || modifiers.contains(Modifier.PROTECTED);
+                    boolean isStatic = modifiers.contains(Modifier.STATIC);
                     TypeMirror returnType = executableElement.getReturnType();
 
                     CodeBlock.Builder targetMethodCodeBuilder = CodeBlock.builder();
-                    if (isPublic) {
+                    if (!isPrivateOrProtected) {
                         if (isStatic) {
                             targetMethodCodeBuilder.add("$T.$L(", containingClassName, annotatedName);
                         } else {
                             targetMethodCodeBuilder.add("$N.$L(", subjectParam, annotatedName);
                         }
                     } else {
-                        getMethodHandleCall(containingClassName, handlerTypeSpec, subjectParam, annotatedName, parameters, isStatic, returnType, targetMethodCodeBuilder);
+                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "ComputerMethod should be public or package private", annotatedElement);
+                        //getMethodHandleCall(containingClassName, handlerTypeSpec, subjectParam, annotatedName, parameters, isStatic, returnType, targetMethodCodeBuilder);
                     }
 
                     targetMethodCodeBuilder.add(methodCallArguments.build());
@@ -136,10 +144,22 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                                 .addStatement("return $N.voidResult()", helperParam)
                                 .build();
                     } else {
-                        valueReturner.addStatement("return $N.result($L)", helperParam, targetMethodCode);
+                        TypeKind returnTypeKind = returnType.getKind();
+                        if (returnTypeKind == TypeKind.DECLARED && (returnType).toString().equals("java.lang.Object")) {
+                            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Raw Object returned for computer method, use a concrete type or Convertable instead", annotatedElement);
+                        }
+                        /*if (returnTypeKind.isPrimitive() || (returnTypeKind == TypeKind.DECLARED && (returnType).toString().equals("java.lang.String"))) {
+                            valueReturner.addStatement("return $L", targetMethodCode);
+                        } else */if (typeUtils().isAssignable(typeUtils().erasure(returnType), collectionType)) {
+                            valueReturner.addStatement("return $N.convert($L, $N::convert)", helperParam, targetMethodCode, helperParam);
+                        } else if (typeUtils().isAssignable(typeUtils().erasure(returnType), mapType)) {
+                            valueReturner.addStatement("return $N.convert($L, $N::convert, $N::convert)", helperParam, targetMethodCode, helperParam, helperParam);
+                        } else {
+                            valueReturner.addStatement("return $N.convert($L)", helperParam, targetMethodCode);
+                        }
                     }
 
-                    MethodSpec handlerMethod = buildHandlerMethod(subjectParam, annotatedName, isPublic, valueReturner.build());
+                    MethodSpec handlerMethod = buildHandlerMethod(subjectParam, annotatedName, !isPrivateOrProtected, valueReturner.build());
                     handlerTypeSpec.addMethod(handlerMethod);
                     //add a call to register() in the handler class's constructor
                     CodeBlock registerMethodBuilder = buildRegisterMethodCall(handlerClassName, annotatedName, annotationValues, parameters, handlerMethod);
@@ -151,7 +171,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         handlerTypeSpec.addMethod(constructorBuilder.build());
         TypeSpec factorySpec = handlerTypeSpec.build();
 
-        JavaFile factoryFile = JavaFile.builder("mekanism.computer", factorySpec).build();
+        JavaFile factoryFile = JavaFile.builder(containingClassName.packageName(), factorySpec).build();
 
         try {
             factoryFile.writeTo(processingEnv.getFiler());
