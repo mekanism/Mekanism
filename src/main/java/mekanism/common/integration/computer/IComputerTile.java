@@ -27,5 +27,9 @@ public interface IComputerTile {
         ComputerMethodMapper.INSTANCE.getAndBindToHandler(this, methods);
     }
 
+    default void getComputerMethodsV2(BoundMethodHolder holder) {
+        FactoryRegistry.bindTo(holder, this);
+    }
+
     String getComputerName();
 }

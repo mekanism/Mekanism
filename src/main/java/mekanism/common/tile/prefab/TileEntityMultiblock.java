@@ -14,9 +14,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.computer.BoundComputerMethod;
-import mekanism.common.integration.computer.ComputerMethodMapper;
-import mekanism.common.integration.computer.MethodRestriction;
+import mekanism.common.integration.computer.*;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
@@ -401,6 +399,21 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 // the various computer integration mods, and allow us to only expose the multiblock's methods
                 // as even existing if the multiblock is complete
                 ComputerMethodMapper.INSTANCE.getAndBindToHandler(multiblock, methods);
+            }
+        }
+    }
+
+    @Override
+    public void getComputerMethodsV2(BoundMethodHolder holder) {
+        super.getComputerMethodsV2(holder);
+        if (exposesMultiblockToComputer()) {
+            T multiblock = getMultiblock();
+            if (multiblock.isFormed()) {
+                //Only expose the multiblock's methods if we are formed, when the formation state changes
+                // our capabilities are invalidated, so should end up getting rechecked and this called by
+                // the various computer integration mods, and allow us to only expose the multiblock's methods
+                // as even existing if the multiblock is complete
+                FactoryRegistry.bindTo(holder, multiblock);
             }
         }
     }

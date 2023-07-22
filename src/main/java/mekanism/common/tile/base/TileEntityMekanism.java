@@ -68,12 +68,7 @@ import mekanism.common.capabilities.resolver.manager.HeatHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ItemHandlerManager;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.computer.BoundComputerMethod;
-import mekanism.common.integration.computer.ComputerCapabilityHelper;
-import mekanism.common.integration.computer.ComputerException;
-import mekanism.common.integration.computer.ComputerMethodMapper;
-import mekanism.common.integration.computer.MethodRestriction;
-import mekanism.common.integration.computer.IComputerTile;
+import mekanism.common.integration.computer.*;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -1303,6 +1298,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             //Allow any supported components to add their computer methods as well
             // For example side config, ejector, and upgrade components
             ComputerMethodMapper.INSTANCE.getAndBindToHandler(component, methods);
+        }
+    }
+
+    @Override
+    public void getComputerMethodsV2(BoundMethodHolder holder) {
+        IComputerTile.super.getComputerMethodsV2(holder);
+        for (ITileComponent component : components) {
+            //Allow any supported components to add their computer methods as well
+            // For example side config, ejector, and upgrade components
+            FactoryRegistry.bindTo(holder, component);
         }
     }
 
