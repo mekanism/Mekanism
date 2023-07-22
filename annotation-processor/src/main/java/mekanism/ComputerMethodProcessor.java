@@ -159,7 +159,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                         }
                     }
 
-                    MethodSpec handlerMethod = buildHandlerMethod(subjectParam, annotationValues.getStringValue("nameOverride", annotatedName), !isPrivateOrProtected, valueReturner.build());
+                    MethodSpec handlerMethod = buildHandlerMethod(subjectParam, annotationValues.getStringValue("nameOverride", annotatedName)+"_"+parameters.size(), !isPrivateOrProtected, valueReturner.build());
                     handlerTypeSpec.addMethod(handlerMethod);
                     //add a call to register() in the handler class's constructor
                     CodeBlock registerMethodBuilder = buildRegisterMethodCall(handlerClassName, annotatedName, annotationValues, parameters, handlerMethod);
