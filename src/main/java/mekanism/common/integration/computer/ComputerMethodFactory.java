@@ -1,16 +1,14 @@
 package mekanism.common.integration.computer;
 
+import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
+import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import net.minecraftforge.fml.ModList;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.WrongMethodTypeException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-/**
- * Created by Thiakil on 15/07/2023.
- */
 @ParametersAreNotNullByDefault
 public class ComputerMethodFactory<T>{
     protected static Object[] EMPTY_ARRAY = new Object[0];
@@ -29,17 +27,23 @@ public class ComputerMethodFactory<T>{
         throw new RuntimeException(t.getMessage(), t);
     }
 
-    private Map<String, MethodData<T>> methods = new HashMap<>();
+    private final List<MethodData<T>> methods = new ArrayList<>();
+    /**
+     * Method + arg count pairs to make sure methods are unique
+     */
+    private final Set<ObjectIntPair<String>> methodsKnown = new HashSet<>();
 
     protected void register(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] arguments, ComputerFunctionCaller<T> handler) {
-        this.methods.put(name, new MethodData<>(name, restriction, requiredMods, threadSafe, arguments, handler));
+        if (!methodsKnown.add(new ObjectIntImmutablePair<>(name, arguments.length))) {
+            throw new RuntimeException("Duplicate method name "+name+"_"+arguments.length);
+        }
+        this.methods.add(new MethodData<>(name, restriction, requiredMods, threadSafe, arguments, handler));
     }
 
     void bindTo(T subject, BoundMethodHolder holder) {
-        for (Map.Entry<String, MethodData<T>> entry : this.methods.entrySet()) {
-            MethodData<T> methodData = entry.getValue();
+        for (MethodData<T> methodData : this.methods) {
             if (methodData.restriction.test(subject) && modsLoaded(methodData.requiredMods)) {
-                holder.register(entry.getKey(), methodData.threadSafe, methodData.arguments, subject, methodData.handler);
+                holder.register(methodData.name, methodData.threadSafe, methodData.arguments, subject, methodData.handler);
             }
         }
     }
