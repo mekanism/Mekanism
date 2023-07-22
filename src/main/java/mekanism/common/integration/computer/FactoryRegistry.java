@@ -20,9 +20,13 @@ public class FactoryRegistry {
         }
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public static void bindTo(BoundMethodHolder holder, Object subject) {
-        List<ComputerMethodFactory<?>> factoriesToBind = getHandlersForHierarchy(subject.getClass());
+        bindTo(holder, subject, subject.getClass());
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static void bindTo(BoundMethodHolder holder, Object subject, Class<?> subjectClass) {
+        List<ComputerMethodFactory<?>> factoriesToBind = getHandlersForHierarchy(subjectClass);
         for (ComputerMethodFactory computerMethodFactory : factoriesToBind) {
             computerMethodFactory.bindTo(subject, holder);
         }
