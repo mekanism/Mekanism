@@ -12,6 +12,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 public class JsonPigmentParser extends SimpleJsonChemicalParser<Pigment, PigmentBuilder, JsonPigmentBuilder> {
 
     public JsonPigmentParser(IEventBus bus) {
-        super(bus, ChemicalType.PIGMENT, "Pigment", MekanismAPI.pigmentRegistryName(), JsonPigmentBuilder::new);
+        super(bus, ChemicalType.PIGMENT, "Pigment", MekanismAPI.PIGMENT_REGISTRY_NAME, JsonPigmentBuilder::new);
     }
 }

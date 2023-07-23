@@ -8,8 +8,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.function.Predicate;
-import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.content.qio.QIOGlobalItemLookup;
@@ -108,7 +108,7 @@ public class CommonWorldTickHandler {
         if (state != null && !state.isAir() && state.hasBlockEntity()) {
             //If the block might have a block entity, look it up from the world and see if the player has access to destroy it
             BlockEntity blockEntity = WorldUtils.getTileEntity(event.getLevel(), event.getPos());
-            if (!MekanismAPI.getSecurityUtils().canAccess(event.getPlayer(), blockEntity)) {
+            if (!ISecurityUtils.INSTANCE.canAccess(event.getPlayer(), blockEntity)) {
                 //If they don't because it is something that is locked, then cancel the event
                 event.setCanceled(true);
             }
@@ -175,7 +175,7 @@ public class CommonWorldTickHandler {
             FrequencyManager.load();
             MultiblockManager.createOrLoadAll();
             QIOGlobalItemLookup.INSTANCE.createOrLoad();
-            RadiationManager.INSTANCE.createOrLoad();
+            RadiationManager.get().createOrLoad();
         }
     }
 
@@ -195,12 +195,12 @@ public class CommonWorldTickHandler {
 
     private void serverTick() {
         FrequencyManager.tick();
-        RadiationManager.INSTANCE.tickServer();
+        RadiationManager.get().tickServer();
     }
 
     private void tickEnd(ServerLevel world) {
         if (!world.isClientSide) {
-            RadiationManager.INSTANCE.tickServerWorld(world);
+            RadiationManager.get().tickServerWorld(world);
             if (flushTagAndRecipeCaches) {
                 //Loop all open containers and if it is a portable qio dashboard force refresh the window's recipes
                 for (ServerPlayer player : world.players()) {

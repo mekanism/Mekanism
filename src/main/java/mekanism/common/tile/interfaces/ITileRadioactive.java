@@ -1,15 +1,15 @@
 package mekanism.common.tile.interfaces;
 
 import java.util.List;
-import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
 import mekanism.api.math.MathUtils;
+import mekanism.api.radiation.IRadiationManager;
 
 public interface ITileRadioactive {
 
     static float calculateRadiationScale(List<IGasTank> tanks) {
-        if (MekanismAPI.getRadiationManager().isRadiationEnabled() && !tanks.isEmpty()) {
+        if (IRadiationManager.INSTANCE.isRadiationEnabled() && !tanks.isEmpty()) {
             float summedScale = 0;
             for (IGasTank tank : tanks) {
                 if (!tank.isEmpty() && tank.getStack().has(Radiation.class)) {

@@ -12,6 +12,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 public class JsonInfuseTypeParser extends SimpleJsonChemicalParser<InfuseType, InfuseTypeBuilder, JsonInfuseTypeBuilder> {
 
     public JsonInfuseTypeParser(IEventBus bus) {
-        super(bus, ChemicalType.INFUSION, "Infuse Type", MekanismAPI.infuseTypeRegistryName(), JsonInfuseTypeBuilder::new);
+        super(bus, ChemicalType.INFUSION, "Infuse Type", MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, JsonInfuseTypeBuilder::new);
     }
 }

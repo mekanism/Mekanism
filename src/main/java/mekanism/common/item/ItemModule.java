@@ -2,7 +2,6 @@ package mekanism.common.item;
 
 import java.util.List;
 import java.util.Set;
-import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IModuleDataProvider;
@@ -49,7 +48,7 @@ public class ItemModule extends Item implements IModuleItem {
     public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             tooltip.add(MekanismLang.MODULE_SUPPORTED.translateColored(EnumColor.BRIGHT_GREEN));
-            IModuleHelper moduleHelper = MekanismAPI.getModuleHelper();
+            IModuleHelper moduleHelper = IModuleHelper.INSTANCE;
             for (Item item : moduleHelper.getSupported(getModuleData())) {
                 tooltip.add(MekanismLang.GENERIC_LIST.translate(item.getName(new ItemStack(item))));
             }

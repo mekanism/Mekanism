@@ -52,8 +52,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
 
     public ItemRegistryObject<ItemModule> registerModule(ModuleRegistryObject<?> moduleDataSupplier) {
         //Note: We use the internal helper just in case we end up needing to know it is an ItemModule instead of just an Item somewhere
-        return register("module_" + moduleDataSupplier.getInternalRegistryName(),
-              () -> ModuleHelper.INSTANCE.createModuleItem(moduleDataSupplier, new Item.Properties()));
+        return register("module_" + moduleDataSupplier.getInternalRegistryName(), () -> ModuleHelper.get().createModuleItem(moduleDataSupplier, new Item.Properties()));
     }
 
     public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Function<Item.Properties, ITEM> sup) {

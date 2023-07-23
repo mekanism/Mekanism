@@ -1,8 +1,8 @@
 package mekanism.common.tile.component;
 
 import java.util.UUID;
-import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -117,7 +117,7 @@ public class TileComponentSecurity implements ITileComponent {
     @ComputerMethod(nameOverride = "getSecurityMode")
     private SecurityMode getComputerSecurityMode() {
         //Get the effective security mode
-        return MekanismAPI.getSecurityUtils().getSecurityMode(tile, tile.isRemote());
+        return ISecurityUtils.INSTANCE.getSecurityMode(tile, tile.isRemote());
     }
     //End computer related methods
 }

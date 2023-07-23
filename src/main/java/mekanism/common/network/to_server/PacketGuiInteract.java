@@ -324,8 +324,8 @@ public class PacketGuiInteract implements IMekanismPacket {
             }
         }),
 
-        NEXT_SECURITY_MODE((tile, player, extra) -> SecurityUtils.INSTANCE.incrementSecurityMode(player, tile)),
-        PREVIOUS_SECURITY_MODE((tile, player, extra) -> SecurityUtils.INSTANCE.decrementSecurityMode(player, tile)),
+        NEXT_SECURITY_MODE((tile, player, extra) -> SecurityUtils.get().incrementSecurityMode(player, tile)),
+        PREVIOUS_SECURITY_MODE((tile, player, extra) -> SecurityUtils.get().decrementSecurityMode(player, tile)),
 
         SECURITY_DESK_MODE((tile, player, extra) -> {
             if (tile instanceof TileEntitySecurityDesk desk) {
@@ -432,8 +432,8 @@ public class PacketGuiInteract implements IMekanismPacket {
     }
 
     public enum GuiInteractionEntity {
-        NEXT_SECURITY_MODE((entity, player, extra) -> SecurityUtils.INSTANCE.incrementSecurityMode(player, entity)),
-        PREVIOUS_SECURITY_MODE((entity, player, extra) -> SecurityUtils.INSTANCE.decrementSecurityMode(player, entity)),
+        NEXT_SECURITY_MODE((entity, player, extra) -> SecurityUtils.get().incrementSecurityMode(player, entity)),
+        PREVIOUS_SECURITY_MODE((entity, player, extra) -> SecurityUtils.get().decrementSecurityMode(player, entity)),
         CONTAINER_STOP_TRACKING((entity, player, extra) -> {
             if (player.containerMenu instanceof MekanismContainer container) {
                 container.stopTracking(extra);

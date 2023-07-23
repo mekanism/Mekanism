@@ -1,7 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
-import mekanism.api.MekanismAPI;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.security.item.ItemStackOwnerObject;
 import mekanism.common.config.MekanismConfig;
@@ -31,7 +31,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        MekanismAPI.getSecurityUtils().addSecurityTooltip(stack, tooltip);
+        ISecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
         MekanismUtils.addFrequencyItemTooltip(stack, tooltip);
         super.appendHoverText(stack, world, tooltip, flag);
     }
@@ -44,7 +44,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
     @NotNull
     @Override
     public InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
-        return SecurityUtils.INSTANCE.claimOrOpenGui(world, player, hand, getContainerType()::tryOpenGui);
+        return SecurityUtils.get().claimOrOpenGui(world, player, hand, getContainerType()::tryOpenGui);
     }
 
     @Override

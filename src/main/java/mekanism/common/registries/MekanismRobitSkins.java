@@ -33,6 +33,10 @@ public class MekanismRobitSkins {
         DIRECT_CODEC = MekanismRobitSkins.ROBIT_SKINS.createAndRegisterDatapack(modEventBus, RobitSkin::codec, RobitSkinSerializationHelper.NETWORK_CODEC);
     }
 
+    public static Codec<RobitSkin> getDirectCodec() {
+        return DIRECT_CODEC;
+    }
+
     public static final RobitSkinSerializerRegistryObject<RobitSkin> BASIC_SERIALIZER = ROBIT_SKINS.registerSerializer("basic", () -> RobitSkinSerializationHelper.NETWORK_CODEC);
     public static final RobitSkinSerializerRegistryObject<AdvancementBasedRobitSkin> ADVANCEMENT_BASED_SERIALIZER = ROBIT_SKINS.registerSerializer("advancement_based", () -> RobitSkinSerializationHelper.ADVANCEMENT_BASED_ROBIT_SKIN_CODEC);
 
@@ -48,7 +52,7 @@ public class MekanismRobitSkins {
     });
 
     public static SkinLookup lookup(RegistryAccess registryAccess, ResourceKey<RobitSkin> key) {
-        Registry<RobitSkin> robitSkins = registryAccess.registryOrThrow(MekanismAPI.robitSkinRegistryName());
+        Registry<RobitSkin> robitSkins = registryAccess.registryOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
         RobitSkin skin = robitSkins.get(key);
         if (skin == null) {
             return new SkinLookup(BASE, robitSkins.getOrThrow(BASE));

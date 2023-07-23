@@ -61,7 +61,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
         super.appendHoverText(stack, world, tooltip, flag);
         tooltip.add(MekanismLang.ROBIT_NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getRobitName(stack)));
         tooltip.add(MekanismLang.ROBIT_SKIN.translateColored(EnumColor.INDIGO, EnumColor.GRAY, RobitSkin.getTranslatedName(getRobitSkin(stack))));
-        MekanismAPI.getSecurityUtils().addSecurityTooltip(stack, tooltip);
+        ISecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
     }
 
@@ -87,7 +87,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
                 if (energyContainer != null) {
                     robit.getEnergyContainer().setEnergy(energyContainer.getEnergy());
                 }
-                ISecurityUtils securityUtils = MekanismAPI.getSecurityUtils();
+                ISecurityUtils securityUtils = ISecurityUtils.INSTANCE;
                 UUID ownerUUID = securityUtils.getOwnerUUID(stack);
                 if (ownerUUID == null) {
                     robit.setOwnerUUID(player.getUUID());
@@ -128,7 +128,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
         if (!skin.isEmpty()) {
             ResourceLocation rl = ResourceLocation.tryParse(skin);
             if (rl != null) {
-                return ResourceKey.create(MekanismAPI.robitSkinRegistryName(), rl);
+                return ResourceKey.create(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, rl);
             }
         }
         return MekanismRobitSkins.BASE;

@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
-import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.security.ISecurityObject;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
@@ -145,7 +145,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 yield inventory == null || !inventory.getBinSlot().isLocked() ? null : new LockRecipeData(inventory);
             }
             case SECURITY -> {
-                UUID ownerUUID = MekanismAPI.getSecurityUtils().getOwnerUUID(stack);
+                UUID ownerUUID = ISecurityUtils.INSTANCE.getOwnerUUID(stack);
                 if (ownerUUID == null) {
                     yield null;
                 }

@@ -2,7 +2,7 @@ package mekanism.common.block.prefab;
 
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
-import mekanism.api.MekanismAPI;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeParticleFX;
@@ -68,7 +68,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     @Override
     protected float getDestroyProgress(@NotNull BlockState state, @NotNull Player player, @NotNull BlockGetter world, @NotNull BlockPos pos,
           @Nullable BlockEntity tile) {
-        return MekanismAPI.getSecurityUtils().canAccess(player, tile) ? super.getDestroyProgress(state, player, world, pos, tile) : 0.0F;
+        return ISecurityUtils.INSTANCE.canAccess(player, tile) ? super.getDestroyProgress(state, player, world, pos, tile) : 0.0F;
     }
 
     @Override

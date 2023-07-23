@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
-import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.radial.RadialData;
 import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.key.MekKeyHandler;
@@ -113,7 +113,7 @@ public class ClientTickHandler {
     }
 
     public static boolean isVisionEnhancementOn(Player player) {
-        IModule<ModuleVisionEnhancementUnit> module = MekanismAPI.getModuleHelper().load(player.getItemBySlot(EquipmentSlot.HEAD), MekanismModules.VISION_ENHANCEMENT_UNIT);
+        IModule<ModuleVisionEnhancementUnit> module = IModuleHelper.INSTANCE.load(player.getItemBySlot(EquipmentSlot.HEAD), MekanismModules.VISION_ENHANCEMENT_UNIT);
         return module != null && module.isEnabled() && module.hasEnoughEnergy(MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement);
     }
 
@@ -169,7 +169,7 @@ public class ClientTickHandler {
             //Reboot player sounds if needed
             SoundHandler.restartSounds();
 
-            RadiationManager.INSTANCE.tickClient(minecraft.player);
+            RadiationManager.get().tickClient(minecraft.player);
 
             UUID playerUUID = minecraft.player.getUUID();
             // Update player's state for various items; this also automatically notifies server if something changed and
@@ -242,7 +242,7 @@ public class ClientTickHandler {
             }
 
             if (MekanismConfig.client.enablePlayerSounds.get()) {
-                RadiationScale scale = RadiationManager.INSTANCE.getClientScale();
+                RadiationScale scale = RadiationManager.get().getClientScale();
                 if (scale != RadiationScale.NONE && !SoundHandler.radiationSoundMap.containsKey(scale)) {
                     GeigerSound sound = GeigerSound.create(minecraft.player, scale);
                     SoundHandler.radiationSoundMap.put(scale, sound);
@@ -305,7 +305,7 @@ public class ClientTickHandler {
     @SubscribeEvent
     public void onFog(ViewportEvent.RenderFog event) {
         if (visionEnhancement && event.getCamera().getEntity() instanceof Player player) {
-            IModule<ModuleVisionEnhancementUnit> module = MekanismAPI.getModuleHelper().load(player.getItemBySlot(EquipmentSlot.HEAD), MekanismModules.VISION_ENHANCEMENT_UNIT);
+            IModule<ModuleVisionEnhancementUnit> module = IModuleHelper.INSTANCE.load(player.getItemBySlot(EquipmentSlot.HEAD), MekanismModules.VISION_ENHANCEMENT_UNIT);
             //Double-check the module is present before doing any calculations. This should always be true here, but better safe than sorry
             if (module != null) {
                 //This near plane is the same as spectators have set for lava and powdered snow

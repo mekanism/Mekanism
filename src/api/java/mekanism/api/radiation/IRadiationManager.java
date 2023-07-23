@@ -2,6 +2,7 @@ package mekanism.api.radiation;
 
 import com.google.common.collect.Table;
 import java.util.List;
+import java.util.ServiceLoader;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -18,7 +19,7 @@ import net.minecraft.world.entity.LivingEntity;
 
 /**
  * The RadiationManager handles radiation across all in-game dimensions. Radiation exposure levels are provided in _sieverts, defining a rate of accumulation of
- * equivalent dose. Get an instance from {@link mekanism.api.MekanismAPI#getRadiationManager()}.
+ * equivalent dose.
  *
  * <br><br>
  * For reference, here are examples of equivalent dose (credit: wikipedia)
@@ -39,9 +40,18 @@ import net.minecraft.world.entity.LivingEntity;
  * <li>190 mSv/h: highest reading from fallout of Trinity (Manhattan project test) bomb, _20 miles away_, 3 hours after detonation</li>
  * <li>~500 Sv/h: irradiation inside primary containment vessel of Fukushima power station (at this rate, it takes 30 seconds to accumulate a median lethal dose)</li>
  * </ul>
+ *
+ * @see IRadiationManager#INSTANCE
  */
 @NothingNullByDefault
 public interface IRadiationManager {
+
+    /**
+     * Provides access to Mekanism's implementation of {@link IRadiationManager}.
+     *
+     * @since 10.4.0
+     */
+    IRadiationManager INSTANCE = ServiceLoader.load(IRadiationManager.class).findFirst().orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for IRadiationManager found"));
 
     /**
      * Helper to expose the ability to check if Mekanism's radiation system is enabled in the config.

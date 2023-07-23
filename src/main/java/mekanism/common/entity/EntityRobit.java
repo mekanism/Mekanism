@@ -34,6 +34,7 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.robit.IRobit;
 import mekanism.api.robit.RobitSkin;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -402,7 +403,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     @NotNull
     @Override
     public InteractionResult interactAt(@NotNull Player player, @NotNull Vec3 vec, @NotNull InteractionHand hand) {
-        if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, this)) {
+        if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, this)) {
             return InteractionResult.FAIL;
         } else if (player.isShiftKeyDown()) {
             ItemStack stack = player.getItemInHand(hand);
@@ -493,7 +494,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, Tag.TAG_COMPOUND));
         DataHandlerUtils.readContainers(getEnergyContainers(null), nbtTags.getList(NBTConstants.ENERGY_CONTAINERS, Tag.TAG_COMPOUND));
         progress = nbtTags.getInt(NBTConstants.PROGRESS);
-        NBTUtils.setResourceKeyIfPresentElse(nbtTags, NBTConstants.SKIN, MekanismAPI.robitSkinRegistryName(), skin -> setSkin(skin, null),
+        NBTUtils.setResourceKeyIfPresentElse(nbtTags, NBTConstants.SKIN, MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, skin -> setSkin(skin, null),
               () -> setSkin(MekanismRobitSkins.BASE, null));
     }
 
@@ -565,7 +566,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     @Override
     public void onSecurityChanged(@NotNull SecurityMode old, @NotNull SecurityMode mode) {
         if (!level().isClientSide) {
-            SecurityUtils.INSTANCE.securityChanged(playersUsing, this, old, mode);
+            SecurityUtils.get().securityChanged(playersUsing, this, old, mode);
         }
     }
 
@@ -729,7 +730,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             return true;
         }
         if (player != null) {
-            if (!MekanismAPI.getSecurityUtils().canAccess(player, this)) {
+            if (!ISecurityUtils.INSTANCE.canAccess(player, this)) {
                 return false;
             }
             SkinLookup skinLookup = MekanismRobitSkins.lookup(level().registryAccess(), skinKey);
@@ -760,7 +761,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
      * @apiNote Only call on the client.
      */
     private ResourceLocation getModelTexture() {
-        Registry<RobitSkin> robitSkins = level().registryAccess().registryOrThrow(MekanismAPI.robitSkinRegistryName());
+        Registry<RobitSkin> robitSkins = level().registryAccess().registryOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
         ResourceKey<RobitSkin> skinKey = getSkin();
         RobitSkin skin = robitSkins.get(skinKey);
         if (skin == null) {

@@ -8,7 +8,6 @@ import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.GasStack;
@@ -275,14 +274,14 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     private void createMeltdown(Level world) {
-        RadiationManager.INSTANCE.createMeltdown(world, getMinPos(), getMaxPos(), heatCapacitor.getHeat(), EXPLOSION_CHANCE,
+        RadiationManager.get().createMeltdown(world, getMinPos(), getMaxPos(), heatCapacitor.getHeat(), EXPLOSION_CHANCE,
               MekanismGeneratorsConfig.generators.fissionMeltdownRadius.get(), inventoryID);
     }
 
     @Override
     public void meltdownHappened(Level world) {
         if (isFormed()) {
-            IRadiationManager radiationManager = MekanismAPI.getRadiationManager();
+            IRadiationManager radiationManager = IRadiationManager.INSTANCE;
             if (radiationManager.isRadiationEnabled()) {
                 //Calculate radiation level and clear any tanks that had radioactive substances and are contributing to the
                 // amount of radiation released
@@ -398,10 +397,10 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             long leftoverWaste = Math.max(0, newWaste - wasteTank.getNeeded());
             GasStack wasteToAdd = MekanismGases.NUCLEAR_WASTE.getStack(newWaste);
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
-            if (leftoverWaste > 0 && MekanismAPI.getRadiationManager().isRadiationEnabled()) {
+            if (leftoverWaste > 0 && IRadiationManager.INSTANCE.isRadiationEnabled()) {
                 //Check if radiation is enabled in order to allow for short-circuiting when it will NO-OP further down the line anyway
                 wasteToAdd.ifAttributePresent(GasAttributes.Radiation.class, attribute ->
-                      MekanismAPI.getRadiationManager().radiate(new Coord4D(getBounds().getCenter(), world), leftoverWaste * attribute.getRadioactivity()));
+                      IRadiationManager.INSTANCE.radiate(new Coord4D(getBounds().getCenter(), world), leftoverWaste * attribute.getRadioactivity()));
             }
         }
         // update previous burn
@@ -412,7 +411,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     private void radiateEntities(Level world) {
-        IRadiationManager radiationManager = MekanismAPI.getRadiationManager();
+        IRadiationManager radiationManager = IRadiationManager.INSTANCE;
         if (radiationManager.isRadiationEnabled() && isBurning() && world.getRandom().nextInt() % 20 == 0) {
             List<LivingEntity> entitiesToRadiate = getWorld().getEntitiesOfClass(LivingEntity.class, hotZone);
             if (!entitiesToRadiate.isEmpty()) {

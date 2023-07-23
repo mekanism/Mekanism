@@ -11,7 +11,7 @@ import mekanism.common.registration.WrappedDeferredRegister;
 public class GasDeferredRegister extends WrappedDeferredRegister<Gas> {
 
     public GasDeferredRegister(String modid) {
-        super(modid, MekanismAPI.gasRegistryName());
+        super(modid, MekanismAPI.GAS_REGISTRY_NAME);
     }
 
     public GasRegistryObject<Gas> register(IChemicalConstant constants, ChemicalAttribute... attributes) {

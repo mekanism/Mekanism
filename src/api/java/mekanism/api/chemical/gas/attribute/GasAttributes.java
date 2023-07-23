@@ -8,6 +8,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.providers.IGasProvider;
+import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
@@ -47,7 +48,7 @@ public class GasAttributes {
         @Override
         public boolean needsValidation() {
             //This attribute only actually needs validation if radiation is enabled
-            return MekanismAPI.getRadiationManager().isRadiationEnabled();
+            return IRadiationManager.INSTANCE.isRadiationEnabled();
         }
 
         @Override
@@ -55,7 +56,7 @@ public class GasAttributes {
             super.addTooltipText(list);
             if (needsValidation()) {
                 //Only show the radioactive tooltip information if radiation is actually enabled
-                ITooltipHelper tooltipHelper = MekanismAPI.getTooltipHelper();
+                ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
                 list.add(APILang.CHEMICAL_ATTRIBUTE_RADIATION.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getRadioactivityDisplayShort(getRadioactivity())));
             }
             return list;
@@ -103,7 +104,7 @@ public class GasAttributes {
         @Override
         public List<Component> addTooltipText(List<Component> list) {
             super.addTooltipText(list);
-            ITooltipHelper tooltipHelper = MekanismAPI.getTooltipHelper();
+            ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
             list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getPercent(conductivity)));
             list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                   tooltipHelper.getEnergyPerMBDisplayShort(FloatingLong.createConst(thermalEnthalpy))));
@@ -213,7 +214,7 @@ public class GasAttributes {
         @Override
         public List<Component> addTooltipText(List<Component> list) {
             super.addTooltipText(list);
-            ITooltipHelper tooltipHelper = MekanismAPI.getTooltipHelper();
+            ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
             list.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getFormattedNumber(getBurnTicks())));
             list.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                   tooltipHelper.getEnergyPerMBDisplayShort(energyDensity.get())));

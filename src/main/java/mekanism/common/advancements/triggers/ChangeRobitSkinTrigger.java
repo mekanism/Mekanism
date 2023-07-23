@@ -42,7 +42,7 @@ public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<ChangeRobitSk
             if (registryName == null) {
                 throw new JsonSyntaxException("Expected property '" + JsonConstants.SKIN + "' to be a valid resource location, was: '" + name + "'.");
             }
-            skin = ResourceKey.create(MekanismAPI.robitSkinRegistryName(), registryName);
+            skin = ResourceKey.create(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, registryName);
         } else {
             skin = null;
         }

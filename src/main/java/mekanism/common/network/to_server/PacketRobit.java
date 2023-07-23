@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.robit.RobitSkin;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.entity.RobitPrideSkinData;
@@ -63,7 +64,7 @@ public class PacketRobit implements IMekanismPacket {
         Player player = context.getSender();
         if (player != null) {
             EntityRobit robit = (EntityRobit) player.level().getEntity(entityId);
-            if (robit != null && MekanismAPI.getSecurityUtils().canAccess(player, robit)) {
+            if (robit != null && ISecurityUtils.INSTANCE.canAccess(player, robit)) {
                 if (activeType == RobitPacketType.GO_HOME) {
                     robit.goHome();
                 } else if (activeType == RobitPacketType.FOLLOW) {
@@ -111,7 +112,7 @@ public class PacketRobit implements IMekanismPacket {
         if (activeType == RobitPacketType.NAME) {
             name = BasePacketHandler.readString(buffer).trim();
         } else if (activeType == RobitPacketType.SKIN) {
-            skin = buffer.readResourceKey(MekanismAPI.robitSkinRegistryName());
+            skin = buffer.readResourceKey(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
         }
         return new PacketRobit(activeType, entityId, name, skin);
     }

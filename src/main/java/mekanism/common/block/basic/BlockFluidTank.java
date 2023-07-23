@@ -1,6 +1,6 @@
 package mekanism.common.block.basic;
 
-import mekanism.api.MekanismAPI;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.interfaces.IColoredBlock;
@@ -61,7 +61,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
         }
         //Handle filling fluid tank
         if (!player.isShiftKeyDown()) {
-            if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
+            if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
                 return InteractionResult.FAIL;
             }
             ItemStack stack = player.getItemInHand(hand);

@@ -15,7 +15,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 public class JsonSlurryParser extends JsonChemicalParser<Slurry, SlurryBuilder, JsonSlurryBuilder> {
 
     public JsonSlurryParser(IEventBus bus) {
-        super(bus, ChemicalType.SLURRY, "Slurry", MekanismAPI.slurryRegistryName());
+        super(bus, ChemicalType.SLURRY, "Slurry", MekanismAPI.SLURRY_REGISTRY_NAME);
     }
 
     @Override

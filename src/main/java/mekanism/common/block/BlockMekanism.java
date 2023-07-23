@@ -5,11 +5,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import mekanism.api.DataHandlerUtils;
-import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
+import mekanism.api.radiation.IRadiationManager;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
@@ -151,7 +152,7 @@ public abstract class BlockMekanism extends Block {
     public List<ItemStack> getDrops(@NotNull BlockState state, @NotNull LootParams.Builder builder) {
         List<ItemStack> drops = super.getDrops(state, builder);
         //If radiation is enabled, check if we need to clear any radioactive materials from the stored tanks as those will be dumped via the tile being removed
-        if (MekanismAPI.getRadiationManager().isRadiationEnabled() && state.getBlock() instanceof IHasTileEntity<?> hasTileEntity) {
+        if (IRadiationManager.INSTANCE.isRadiationEnabled() && state.getBlock() instanceof IHasTileEntity<?> hasTileEntity) {
             BlockEntity tile = hasTileEntity.createDummyBlockEntity(state);
             if (tile instanceof TileEntityMekanism mekTile) {
                 //Skip tiles that have no tanks and skip chemical creative tanks
@@ -286,7 +287,7 @@ public abstract class BlockMekanism extends Block {
         }
         if (tile.hasSecurity()) {
             stack.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> tile.setSecurityMode(security.getSecurityMode()));
-            UUID ownerUUID = MekanismAPI.getSecurityUtils().getOwnerUUID(stack);
+            UUID ownerUUID = ISecurityUtils.INSTANCE.getOwnerUUID(stack);
             if (ownerUUID != null) {
                 tile.setOwnerUUID(ownerUUID);
             } else if (placer != null) {
@@ -400,7 +401,7 @@ public abstract class BlockMekanism extends Block {
           @Nullable BlockEntity tile) {
         //Call super variant of player relative hardness to get default
         float speed = super.getDestroyProgress(state, player, world, pos);
-        if (MekanismAPI.getRadiationManager().isRadiationEnabled() && tile instanceof ITileRadioactive radioactiveTile && radioactiveTile.getRadiationScale() > 0) {
+        if (IRadiationManager.INSTANCE.isRadiationEnabled() && tile instanceof ITileRadioactive radioactiveTile && radioactiveTile.getRadiationScale() > 0) {
             //Our tile has some radioactive substance in it; slow down breaking it
             //Note: Technically our getRadiationScale impls validate that radiation is enabled, but we do so here as well
             // to make intentions clearer
@@ -412,7 +413,7 @@ public abstract class BlockMekanism extends Block {
     @Override
     public void animateTick(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull RandomSource random) {
         super.animateTick(state, world, pos, random);
-        if (MekanismAPI.getRadiationManager().isRadiationEnabled()) {//Skip getting the tile if radiation is disabled in the config
+        if (IRadiationManager.INSTANCE.isRadiationEnabled()) {//Skip getting the tile if radiation is disabled in the config
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile instanceof ITileRadioactive radioactiveTile) {
                 int count = radioactiveTile.getRadiationParticleCount();

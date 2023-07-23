@@ -56,7 +56,7 @@ public class PacketUpdateModuleSettings implements IMekanismPacket {
         if (player != null && dataIndex >= 0 && value != null) {
             ItemStack stack = player.getInventory().getItem(slotId);
             if (!stack.isEmpty() && stack.getItem() instanceof IModuleContainerItem) {
-                Module<?> module = ModuleHelper.INSTANCE.load(stack, moduleType);
+                Module<?> module = ModuleHelper.get().load(stack, moduleType);
                 if (module != null) {
                     List<ModuleConfigItem<?>> configItems = module.getConfigItems();
                     if (dataIndex < configItems.size()) {

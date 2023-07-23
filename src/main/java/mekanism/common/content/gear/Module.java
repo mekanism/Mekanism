@@ -89,7 +89,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
                 //If enabled state of the module changes, recheck about mode changes and exclusivity flags
                 // but only if this module can handle mode changes or has any exclusive flags set
                 if (value && (handlesModeChange() || data.getExclusiveFlags() != 0)) {
-                    for (Module<?> m : ModuleHelper.INSTANCE.loadAll(getContainer())) {
+                    for (Module<?> m : ModuleHelper.get().loadAll(getContainer())) {
                         if (data != m.getData()) {
                             // disable other exclusive modules
                             if (m.getData().isExclusive(data.getExclusiveFlags())) {
@@ -111,7 +111,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
                 protected void checkValidity(@NotNull Boolean value, @Nullable Runnable callback) {
                     //If the mode change is being enabled, and we handle mode changes
                     if (value && handlesModeChange()) {
-                        for (Module<?> m : ModuleHelper.INSTANCE.loadAll(getContainer())) {
+                        for (Module<?> m : ModuleHelper.get().loadAll(getContainer())) {
                             // turn off mode change handling for other modules
                             if (data != m.getData() && m.handlesModeChange()) {
                                 m.setModeHandlingDisabledForce();
@@ -349,7 +349,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     public void onAdded(boolean first) {
-        for (Module<?> module : ModuleHelper.INSTANCE.loadAll(getContainer())) {
+        for (Module<?> module : ModuleHelper.get().loadAll(getContainer())) {
             if (module.getData() != getData()) {
                 // disable other exclusive modules if this is an exclusive module, as this one will now be active
                 if (getData().isExclusive(module.getData().getExclusiveFlags())) {

@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
-import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.ModuleData.ExclusiveFlag;
 import mekanism.api.text.EnumColor;
@@ -49,7 +49,7 @@ public class GuiModuleScrollList extends GuiScrollList {
     public void updateItemAndList(ItemStack stack) {
         currentItem = stack;
         currentList.clear();
-        currentList.addAll(MekanismAPI.getModuleHelper().loadAllTypes(currentItem));
+        currentList.addAll(IModuleHelper.INSTANCE.loadAllTypes(currentItem));
     }
 
     private void recheckItem() {
@@ -97,7 +97,7 @@ public class GuiModuleScrollList extends GuiScrollList {
         if (selected == null) {
             callback.accept(null);
         } else {
-            callback.accept(ModuleHelper.INSTANCE.load(currentItem, selected));
+            callback.accept(ModuleHelper.get().load(currentItem, selected));
         }
     }
 
@@ -116,7 +116,7 @@ public class GuiModuleScrollList extends GuiScrollList {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         recheckItem();
         forEachModule((module, multipliedElement) -> {
-            IModule<?> instance = MekanismAPI.getModuleHelper().load(currentItem, module);
+            IModule<?> instance = IModuleHelper.INSTANCE.load(currentItem, module);
             if (instance != null) {
                 int color = module.isExclusive(ExclusiveFlag.ANY) ? (instance.isEnabled() ? 0x635BD4 : 0x2E2A69) : (instance.isEnabled() ? titleTextColor() : 0x5E1D1D);
                 drawScaledTextScaledBound(guiGraphics, TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, color, 86, 0.7F);
@@ -129,7 +129,7 @@ public class GuiModuleScrollList extends GuiScrollList {
         super.renderToolTip(guiGraphics, mouseX, mouseY);
         if (mouseX >= getX() + 1 && mouseX < getX() + barXShift - 1) {
             forEachModule((module, multipliedElement) -> {
-                IModule<?> instance = MekanismAPI.getModuleHelper().load(currentItem, module);
+                IModule<?> instance = IModuleHelper.INSTANCE.load(currentItem, module);
                 if (instance != null && mouseY >= getY() + 1 + multipliedElement && mouseY < getY() + 1 + multipliedElement + elementHeight) {
                     Component t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, instance.getInstalledCount(), module.getMaxStackSize());
                     displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.MODULE_INSTALLED.translate(t));

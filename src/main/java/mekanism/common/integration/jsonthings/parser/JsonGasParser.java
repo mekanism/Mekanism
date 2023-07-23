@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 public class JsonGasParser extends SimpleJsonChemicalParser<Gas, GasBuilder, JsonGasBuilder> {
 
     public JsonGasParser(IEventBus bus) {
-        super(bus, ChemicalType.GAS, "Gas", MekanismAPI.gasRegistryName(), JsonGasBuilder::new);
+        super(bus, ChemicalType.GAS, "Gas", MekanismAPI.GAS_REGISTRY_NAME, JsonGasBuilder::new);
     }
 
     @Override

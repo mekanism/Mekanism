@@ -88,7 +88,7 @@ public class CrTBracketHandlers {
     @ZenCodeType.Method
     @BracketResolver(CrTConstants.BRACKET_ROBIT_SKIN)
     public static RobitSkin getRobitSkin(String tokens) {
-        return getValue(CrTConstants.BRACKET_ROBIT_SKIN, tokens, MekanismAPI.robitSkinRegistryName());
+        return getValue(CrTConstants.BRACKET_ROBIT_SKIN, tokens, MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
     }
 
     /**

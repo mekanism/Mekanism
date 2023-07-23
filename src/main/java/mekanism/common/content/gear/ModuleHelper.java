@@ -44,12 +44,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IModuleHelper#INSTANCE}
+ */
 @NothingNullByDefault
 public class ModuleHelper implements IModuleHelper {
 
-    public static final ModuleHelper INSTANCE = new ModuleHelper();
-
-    private ModuleHelper() {
+    public static ModuleHelper get() {
+        return (ModuleHelper) INSTANCE;
     }
 
     private final Map<Item, Set<ModuleData<?>>> supportedModules = new Reference2ObjectArrayMap<>(5);

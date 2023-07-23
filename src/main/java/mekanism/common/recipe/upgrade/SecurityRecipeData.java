@@ -1,8 +1,8 @@
 package mekanism.common.recipe.upgrade;
 
 import java.util.UUID;
-import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +24,7 @@ public class SecurityRecipeData implements RecipeUpgradeData<SecurityRecipeData>
     public SecurityRecipeData merge(SecurityRecipeData other) {
         if (owner.equals(other.owner)) {
             //Pick the most restrictive security mode
-            return MekanismAPI.getSecurityUtils().moreRestrictive(mode, other.mode) ? other : this;
+            return ISecurityUtils.INSTANCE.moreRestrictive(mode, other.mode) ? other : this;
         }
         //If the owners don't match fail
         return null;

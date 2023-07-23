@@ -3,6 +3,7 @@ package mekanism.api.robit;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
+import mekanism.api.IMekanismAccess;
 import mekanism.api.MekanismAPI;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -10,7 +11,6 @@ import net.minecraft.core.RegistryCodecs;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 /**
  * Helper class for dealing with {@link RobitSkin Robit Skin} (de)serialization.
@@ -25,24 +25,17 @@ public class RobitSkinSerializationHelper {
     /**
      * Codec for (de)serializing robit skins inline.
      */
-    public static final Codec<RobitSkin> DIRECT_CODEC = ExtraCodecs.lazyInitializedCodec(() -> {
-        try {
-            Class<?> clazz = Class.forName("mekanism.common.registries.MekanismRobitSkins");
-            return ObfuscationReflectionHelper.getPrivateValue(clazz, null, "DIRECT_CODEC");
-        } catch (ReflectiveOperationException ex) {
-            throw new IllegalStateException(ex);
-        }
-    });
+    public static final Codec<RobitSkin> DIRECT_CODEC = ExtraCodecs.lazyInitializedCodec(IMekanismAccess.INSTANCE::robitSkinCodec);
 
     /**
      * Codec for referring to robit skins by id in other datapack registry files. Can only be used with {@link net.minecraft.resources.RegistryOps}.
      */
-    public static final Codec<Holder<RobitSkin>> REFERENCE_CODEC = RegistryFileCodec.create(MekanismAPI.robitSkinRegistryName(), DIRECT_CODEC);
+    public static final Codec<Holder<RobitSkin>> REFERENCE_CODEC = RegistryFileCodec.create(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, DIRECT_CODEC);
 
     /**
      * Codec for referring to robit skins by id, list of id, or tags. Can only be used with {@link net.minecraft.resources.RegistryOps}.
      */
-    public static final Codec<HolderSet<RobitSkin>> LIST_CODEC = RegistryCodecs.homogeneousList(MekanismAPI.robitSkinRegistryName(), DIRECT_CODEC);
+    public static final Codec<HolderSet<RobitSkin>> LIST_CODEC = RegistryCodecs.homogeneousList(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, DIRECT_CODEC);
 
     /**
      * Codec for sending {@link RobitSkin}'s over the network.

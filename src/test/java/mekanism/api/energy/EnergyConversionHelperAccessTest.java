@@ -1,6 +1,6 @@
 package mekanism.api.energy;
 
-import mekanism.api.energy.EnergyConversionHelper.EnergyConversions;
+import mekanism.common.service.EnergyConversionHelper;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -10,21 +10,19 @@ import org.junit.jupiter.api.Test;
 class EnergyConversionHelperAccessTest {
 
     @Test
-    @DisplayName("Test looking up energy conversions")
-    void testGetEnergyUnits() {
-        Assertions.assertArrayEquals(EnergyUnit.values(), EnergyConversionHelper.getEnergyConversions());
+    @DisplayName("Test getting access to the energy conversion helper")
+    void testEnergyConversionHelper() {
+        Assertions.assertInstanceOf(EnergyConversionHelper.class, IEnergyConversionHelper.INSTANCE);
     }
 
     @Test
     @DisplayName("Test that all conversions have a getter and a validation test")
     void testConversions() {
         int energyUnitCount = EnergyUnit.values().length;
-        //Validate we have the same number of conversion holders
-        Assertions.assertEquals(energyUnitCount, EnergyConversions.values().length);
         //Validate everything references the correct one
-        int types = assertEquals(EnergyUnit.JOULES, EnergyConversionHelper.jouleConversion());
-        types += assertEquals(EnergyUnit.FORGE_ENERGY, EnergyConversionHelper.feConversion());
-        types += assertEquals(EnergyUnit.ELECTRICAL_UNITS, EnergyConversionHelper.euConversion());
+        int types = assertEquals(EnergyUnit.JOULES, IEnergyConversionHelper.INSTANCE.jouleConversion());
+        types += assertEquals(EnergyUnit.FORGE_ENERGY, IEnergyConversionHelper.INSTANCE.feConversion());
+        types += assertEquals(EnergyUnit.ELECTRICAL_UNITS, IEnergyConversionHelper.INSTANCE.euConversion());
         //And finally validate that we actually have a test for every type
         Assertions.assertEquals(energyUnitCount, types);
     }

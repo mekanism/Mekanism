@@ -80,7 +80,7 @@ public class CrTBracketValidators {
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_ROBIT_SKIN)
     public static boolean validateRobitSkin(String tokens) {
-        return validate(CrTConstants.BRACKET_ROBIT_SKIN, tokens, MekanismAPI.robitSkinRegistryName());
+        return validate(CrTConstants.BRACKET_ROBIT_SKIN, tokens, MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
     }
 
     /**

@@ -56,7 +56,7 @@ public class CrTBracketDumpers {
      */
     @BracketDumper(value = CrTConstants.BRACKET_ROBIT_SKIN, subCommandName = "robitSkins")
     public static Collection<String> getRobitSkinDump() {
-        return getDump(MekanismAPI.robitSkinRegistryName(), CrTConstants.BRACKET_ROBIT_SKIN);
+        return getDump(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, CrTConstants.BRACKET_ROBIT_SKIN);
     }
 
     /**

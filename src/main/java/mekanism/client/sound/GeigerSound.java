@@ -37,7 +37,7 @@ public class GeigerSound extends PlayerSound {
 
     @Override
     public boolean shouldPlaySound(@NotNull Player player) {
-        return scale == RadiationManager.INSTANCE.getClientScale();
+        return scale == RadiationManager.get().getClientScale();
     }
 
     @Override

@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 public class PigmentDeferredRegister extends WrappedDeferredRegister<Pigment> {
 
     public PigmentDeferredRegister(String modid) {
-        super(modid, MekanismAPI.pigmentRegistryName());
+        super(modid, MekanismAPI.PIGMENT_REGISTRY_NAME);
     }
 
     public PigmentRegistryObject<Pigment> register(String name, int tint) {

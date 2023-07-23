@@ -530,6 +530,14 @@ tasks.withType(JavaCompile).configureEach({
     options.compilerArgs.addAll(["-Xmaxerrs", "100000"])
 })
 
+tasks.withType(Javadoc).configureEach({
+    options.tags = [
+            'apiNote:a:<em>API Note:</em>',
+            'implSpec:a:<em>Implementation Requirements:</em>',
+            'implNote:a:<em>Implementation Note:</em>'
+    ]
+})
+
 artifacts {
     archives apiJar
     archives jar

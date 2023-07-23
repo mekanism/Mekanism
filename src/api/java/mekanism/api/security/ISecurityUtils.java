@@ -1,6 +1,7 @@
 package mekanism.api.security;
 
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.chat.Component;
@@ -11,12 +12,20 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Utility class for interacting with Mekanism's security system. Get an instance from {@link mekanism.api.MekanismAPI#getSecurityUtils()}.
+ * Utility class for interacting with Mekanism's security system.
  *
+ * @see ISecurityUtils#INSTANCE
  * @since 10.2.1
  */
 @NothingNullByDefault
 public interface ISecurityUtils {
+
+    /**
+     * Provides access to Mekanism's implementation of {@link ISecurityUtils}.
+     *
+     * @since 10.4.0
+     */
+    ISecurityUtils INSTANCE = ServiceLoader.load(ISecurityUtils.class).findFirst().orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for ISecurityUtils found"));
 
     /**
      * Checks if a player can access the given capability provider; validating that protection is enabled in the config. Additionally, this method also checks to see if

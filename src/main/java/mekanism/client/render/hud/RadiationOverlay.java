@@ -1,6 +1,6 @@
 package mekanism.client.render.hud;
 
-import mekanism.api.MekanismAPI;
+import mekanism.api.radiation.IRadiationManager;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -28,7 +28,7 @@ public class RadiationOverlay implements IGuiOverlay {
     @Override
     public void render(ForgeGui gui, GuiGraphics guiGraphics, float partialTicks, int screenWidth, int screenHeight) {
         Player player = gui.getMinecraft().player;
-        if (player != null && MekanismAPI.getRadiationManager().isRadiationEnabled() && MekanismUtils.isPlayingMode(player)) {
+        if (player != null && IRadiationManager.INSTANCE.isRadiationEnabled() && MekanismUtils.isPlayingMode(player)) {
             player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
                 double radiation = c.getRadiation();
                 double severity = RadiationScale.getScaledDoseSeverity(radiation) * 0.8;

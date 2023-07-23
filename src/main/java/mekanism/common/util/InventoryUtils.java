@@ -7,8 +7,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.MekanismAPI;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
@@ -43,10 +43,10 @@ public final class InventoryUtils {
             boolean shouldDrop;
             if (source.getEntity() instanceof Player player) {
                 //If the destroyer is a player use security utils to properly check for access
-                shouldDrop = MekanismAPI.getSecurityUtils().canAccess(player, stack);
+                shouldDrop = ISecurityUtils.INSTANCE.canAccess(player, stack);
             } else {
                 // otherwise, just check against there being no known player
-                shouldDrop = MekanismAPI.getSecurityUtils().canAccess(null, stack, entity.level().isClientSide);
+                shouldDrop = ISecurityUtils.INSTANCE.canAccess(null, stack, entity.level().isClientSide);
             }
             if (shouldDrop) {
                 ListTag storedContents = sustainedInventory.getInventory(stack);

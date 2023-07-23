@@ -4,8 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import java.util.function.Predicate;
-import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IHUDElement;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiUtils;
 import mekanism.common.MekanismLang;
@@ -108,7 +108,7 @@ public class HUDRenderer {
           Predicate<Item> showPercent) {
         ItemStack stack = player.getItemBySlot(slot);
         if (showPercent.test(stack.getItem())) {
-            renderHUDElement(font, guiGraphics, posX, 0, MekanismAPI.getModuleHelper().hudElementPercent(icon, StorageUtils.getEnergyRatio(stack)), color, false);
+            renderHUDElement(font, guiGraphics, posX, 0, IModuleHelper.INSTANCE.hudElementPercent(icon, StorageUtils.getEnergyRatio(stack)), color, false);
             return 48;
         }
         return 0;

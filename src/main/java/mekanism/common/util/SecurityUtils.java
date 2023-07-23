@@ -36,12 +36,14 @@ import net.minecraftforge.server.permission.PermissionAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link ISecurityUtils#INSTANCE}
+ */
 @NothingNullByDefault
 public final class SecurityUtils implements ISecurityUtils {
 
-    public static final SecurityUtils INSTANCE = new SecurityUtils();
-
-    private SecurityUtils() {
+    public static SecurityUtils get() {
+        return (SecurityUtils) INSTANCE;
     }
 
     /**

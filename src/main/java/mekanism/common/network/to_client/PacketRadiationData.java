@@ -32,7 +32,7 @@ public class PacketRadiationData implements IMekanismPacket {
     @Override
     public void handle(NetworkEvent.Context context) {
         if (type == RadiationPacketType.ENVIRONMENTAL) {
-            RadiationManager.INSTANCE.setClientEnvironmentalRadiation(radiation, maxMagnitude);
+            RadiationManager.get().setClientEnvironmentalRadiation(radiation, maxMagnitude);
         } else if (type == RadiationPacketType.PLAYER) {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null) {

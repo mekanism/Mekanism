@@ -78,7 +78,7 @@ public class CrTContentUtils {
     }
 
     public static void registerCrTContent(RegisterEvent event) {
-        event.register(MekanismAPI.gasRegistryName(), helper -> {
+        event.register(MekanismAPI.GAS_REGISTRY_NAME, helper -> {
             //We load our content scripts here in the first registry event of ours for our types of content
             // to make sure that the new registry events have fired and that the registries exist and the bracket handler
             // validators won't choke
@@ -93,9 +93,9 @@ public class CrTContentUtils {
             }
             registerQueued(helper, queuedGases, () -> queuedGases = null, "Gas", "gases");
         });
-        event.register(MekanismAPI.infuseTypeRegistryName(), helper -> registerQueued(helper, queuedInfuseTypes, () -> queuedInfuseTypes = null, "Infuse Type", "infuse types"));
-        event.register(MekanismAPI.pigmentRegistryName(), helper -> registerQueued(helper, queuedPigments, () -> queuedPigments = null, "Pigment", "pigments"));
-        event.register(MekanismAPI.slurryRegistryName(), helper -> registerQueued(helper, queuedSlurries, () -> queuedSlurries = null, "Slurry", "slurries"));
+        event.register(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, helper -> registerQueued(helper, queuedInfuseTypes, () -> queuedInfuseTypes = null, "Infuse Type", "infuse types"));
+        event.register(MekanismAPI.PIGMENT_REGISTRY_NAME, helper -> registerQueued(helper, queuedPigments, () -> queuedPigments = null, "Pigment", "pigments"));
+        event.register(MekanismAPI.SLURRY_REGISTRY_NAME, helper -> registerQueued(helper, queuedSlurries, () -> queuedSlurries = null, "Slurry", "slurries"));
     }
 
     private static <V> void registerQueued(RegisterHelper<V> helper, Map<ResourceLocation, V> queued, Runnable setNull, String type, String plural) {

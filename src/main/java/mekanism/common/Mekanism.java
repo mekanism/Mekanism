@@ -239,10 +239,10 @@ public class Mekanism {
     private void registerEventListener(RegisterEvent event) {
         //Register the empty chemicals
         ResourceLocation emptyName = rl("empty");
-        event.register(MekanismAPI.gasRegistryName(), emptyName, () -> MekanismAPI.EMPTY_GAS);
-        event.register(MekanismAPI.infuseTypeRegistryName(), emptyName, () -> MekanismAPI.EMPTY_INFUSE_TYPE);
-        event.register(MekanismAPI.pigmentRegistryName(), emptyName, () -> MekanismAPI.EMPTY_PIGMENT);
-        event.register(MekanismAPI.slurryRegistryName(), emptyName, () -> MekanismAPI.EMPTY_SLURRY);
+        event.register(MekanismAPI.GAS_REGISTRY_NAME, emptyName, () -> MekanismAPI.EMPTY_GAS);
+        event.register(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, emptyName, () -> MekanismAPI.EMPTY_INFUSE_TYPE);
+        event.register(MekanismAPI.PIGMENT_REGISTRY_NAME, emptyName, () -> MekanismAPI.EMPTY_PIGMENT);
+        event.register(MekanismAPI.SLURRY_REGISTRY_NAME, emptyName, () -> MekanismAPI.EMPTY_SLURRY);
         //Register our custom serializer condition
         if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS)) {
             CraftingHelper.register(ModVersionLoadedCondition.Serializer.INSTANCE);
@@ -293,7 +293,7 @@ public class Mekanism {
 
         //Reset consistent managers
         QIOGlobalItemLookup.INSTANCE.reset();
-        RadiationManager.INSTANCE.reset();
+        RadiationManager.get().reset();
         MultiblockManager.reset();
         FrequencyManager.reset();
         TransporterManager.reset();
@@ -320,7 +320,7 @@ public class Mekanism {
     }
 
     private void imcHandle(InterModProcessEvent event) {
-        ModuleHelper.INSTANCE.processIMC(event);
+        ModuleHelper.get().processIMC(event);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -357,7 +357,7 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.register(new CommonPlayerTickHandler());
         MinecraftForge.EVENT_BUS.register(Mekanism.worldTickHandler);
 
-        MinecraftForge.EVENT_BUS.register(RadiationManager.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(RadiationManager.get());
 
         //Register with TransmitterNetworkRegistry
         TransmitterNetworkRegistry.initiate();

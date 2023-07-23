@@ -138,7 +138,7 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
                   context.register(damageType.key(), new DamageType(damageType.getMsgId(), damageType.exhaustion()));
               }
           })
-          .add(MekanismAPI.robitSkinRegistryName(), context -> {
+          .add(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, context -> {
               context.register(MekanismRobitSkins.BASE, makeRobitSkin(Mekanism.rl("robit"), 2));
               context.register(MekanismRobitSkins.ALLAY, new AdvancementBasedRobitSkin(
                     List.of(

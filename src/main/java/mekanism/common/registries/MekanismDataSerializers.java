@@ -18,7 +18,7 @@ public class MekanismDataSerializers {
 
     public static final DataSerializerDeferredRegister DATA_SERIALIZERS = new DataSerializerDeferredRegister(Mekanism.MODID);
 
-    public static final DataSerializerRegistryObject<ResourceKey<RobitSkin>> ROBIT_SKIN = registerResourceKey("robit_skin", MekanismAPI.robitSkinRegistryName());
+    public static final DataSerializerRegistryObject<ResourceKey<RobitSkin>> ROBIT_SKIN = registerResourceKey("robit_skin", MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
     public static final DataSerializerRegistryObject<SecurityMode> SECURITY = DATA_SERIALIZERS.registerEnum("security", SecurityMode.class);
     public static final DataSerializerRegistryObject<UUID> UUID = DATA_SERIALIZERS.registerSimple("uuid", FriendlyByteBuf::writeUUID, FriendlyByteBuf::readUUID);
 

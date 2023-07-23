@@ -5,7 +5,6 @@ import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
@@ -14,6 +13,7 @@ import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.advancements.triggers.UseGaugeDropperTrigger.UseDropperAction;
@@ -118,7 +118,7 @@ public class PacketDropperUse implements IMekanismPacket {
             if (!tank.isEmpty()) {
                 if (tank instanceof IGasTank gasTank) {
                     //If the tank is a gas tank and has radioactive substances in it make sure we properly emit the radiation to the environment
-                    MekanismAPI.getRadiationManager().dumpRadiation(coord, gasTank.getStack());
+                    IRadiationManager.INSTANCE.dumpRadiation(coord, gasTank.getStack());
                 }
                 tank.setEmpty();
                 MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.DUMP);
