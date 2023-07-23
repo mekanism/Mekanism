@@ -33,17 +33,17 @@ public class ComputerMethodFactory<T>{
      */
     private final Set<ObjectIntPair<String>> methodsKnown = new HashSet<>();
 
-    protected void register(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] arguments, ComputerFunctionCaller<T> handler) {
-        if (!methodsKnown.add(new ObjectIntImmutablePair<>(name, arguments.length))) {
-            throw new RuntimeException("Duplicate method name "+name+"_"+arguments.length);
+    protected void register(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses, ComputerFunctionCaller<T> handler) {
+        if (!methodsKnown.add(new ObjectIntImmutablePair<>(name, argumentNames.length))) {
+            throw new RuntimeException("Duplicate method name "+name+"_"+argumentNames.length);
         }
-        this.methods.add(new MethodData<>(name, restriction, requiredMods, threadSafe, arguments, handler));
+        this.methods.add(new MethodData<>(name, restriction, requiredMods, threadSafe, argumentNames, argClasses, handler));
     }
 
     void bindTo(T subject, BoundMethodHolder holder) {
         for (MethodData<T> methodData : this.methods) {
             if (methodData.restriction.test(subject) && modsLoaded(methodData.requiredMods)) {
-                holder.register(methodData.name, methodData.threadSafe, methodData.arguments, subject, methodData.handler);
+                holder.register(methodData.name(), methodData.threadSafe(), methodData.argumentNames(), methodData.argClasses(), subject, methodData.handler());
             }
         }
     }
@@ -72,7 +72,7 @@ public class ComputerMethodFactory<T>{
         Object apply(T t, FancyComputerHelper u) throws ComputerException;
     }
 
-    public record MethodData<T>(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] arguments, ComputerFunctionCaller<T> handler){}
+    public record MethodData<T>(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses, ComputerFunctionCaller<T> handler){}
 
     protected interface MHUser<RETURN> {
         RETURN supply() throws Throwable;

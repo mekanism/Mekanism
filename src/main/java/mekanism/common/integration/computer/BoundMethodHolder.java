@@ -6,9 +6,7 @@ import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraftforge.common.util.Lazy;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public abstract class BoundMethodHolder {
@@ -20,13 +18,13 @@ public abstract class BoundMethodHolder {
 
     protected Lazy<String[]> methodNames = Lazy.of(()->this.methods.keys().toArray(new String[0]));
 
-    public <T> void register(String name, boolean threadSafe, String[] arguments, T subject, ComputerMethodFactory.ComputerFunctionCaller<T> handler) {
-        if (!methodsKnown.add(new ObjectIntImmutablePair<>(name, arguments.length))) {
-            throw new RuntimeException("Duplicate method name "+name+"_"+arguments.length);
+    public <T> void register(String name, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses, T subject, ComputerMethodFactory.ComputerFunctionCaller<T> handler) {
+        if (!methodsKnown.add(new ObjectIntImmutablePair<>(name, argumentNames.length))) {
+            throw new RuntimeException("Duplicate method name "+name+"_"+argumentNames.length);
         }
         //noinspection unchecked
-        this.methods.put(name, new MethodData(name, threadSafe, arguments, subject, (ComputerMethodFactory.ComputerFunctionCaller<Object>) handler));
+        this.methods.put(name, new MethodData(name, threadSafe, argumentNames, argClasses, subject, (ComputerMethodFactory.ComputerFunctionCaller<Object>) handler));
     }
 
-    public record MethodData(String name, boolean threadSafe, String[] arguments, Object subject, ComputerMethodFactory.ComputerFunctionCaller<Object> handler){}
+    public record MethodData(String name, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses, Object subject, ComputerMethodFactory.ComputerFunctionCaller<Object> handler){}
 }

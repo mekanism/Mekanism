@@ -242,7 +242,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
     }
 
     //for @ComputerMethod
-    private static CodeBlock buildRegisterMethodCall(String handlerClassName, String annotatedName, AnnotationHelper annotationValues, List<VariableElement> parameters, MethodSpec handlerMethod) {
+    private CodeBlock buildRegisterMethodCall(String handlerClassName, String annotatedName, AnnotationHelper annotationValues, List<VariableElement> parameters, MethodSpec handlerMethod) {
         CodeBlock.Builder registerMethodBuilder = CodeBlock.builder();
         //Computer exposed method name
         registerMethodBuilder.add("register($L, ", annotationValues.getLiteral("nameOverride", annotatedName));
@@ -254,9 +254,11 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         registerMethodBuilder.add("$L, ", annotationValues.getLiteral("threadSafe", false));
         //param names
         if (parameters.isEmpty()) {
-            registerMethodBuilder.add("emptyArray(), ");
+            registerMethodBuilder.add("emptyArray(), ");//names
+            registerMethodBuilder.add("emptyArray(), ");//classes
         } else {
             registerMethodBuilder.add("new String[]{$L}, ", parameters.stream().map(param -> CodeBlock.of("$S", param.getSimpleName())).collect(CodeBlock.joining(",")));
+            registerMethodBuilder.add("new Class[]{$L}, ", parameters.stream().map(param -> CodeBlock.of("$T.class", typeUtils().erasure(param.asType()))).collect(CodeBlock.joining(",")));
         }
         //method reference to handler method
         registerMethodBuilder.add("$N::$N", handlerClassName, handlerMethod);

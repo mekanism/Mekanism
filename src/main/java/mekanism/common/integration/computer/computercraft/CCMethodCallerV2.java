@@ -24,12 +24,12 @@ public class CCMethodCallerV2 extends BoundMethodHolder {
         }
         Collection<MethodData> methodDataCollection = this.methods.get(methodNames[methodIdx]);
         int argCount = arguments.count();
-        MethodData methodToCall = methodDataCollection.stream().filter(md -> md.arguments().length == argCount)
+        MethodData methodToCall = methodDataCollection.stream().filter(md -> md.argumentNames().length == argCount)
                 .findAny()
                 .orElseThrow(() -> new LuaException(String.format(Locale.ROOT,
                         "Found %d arguments, expected %s",
                         argCount,
-                        methodDataCollection.stream().map(it -> String.valueOf(it.arguments().length)).collect(Collectors.joining(" or "))
+                        methodDataCollection.stream().map(it -> String.valueOf(it.argumentNames().length)).collect(Collectors.joining(" or "))
                 )));
         if (methodToCall.threadSafe()) {
             return callHandler(arguments, methodToCall);
