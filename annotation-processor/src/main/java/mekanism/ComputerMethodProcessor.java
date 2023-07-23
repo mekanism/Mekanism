@@ -97,9 +97,9 @@ public class ComputerMethodProcessor extends AbstractProcessor {
             handlerTypeSpec.addOriginatingElement(annotatedElement);
             registryType.addOriginatingElement(annotatedElement);
             for (AnnotationMirror annotationMirror : annotatedElement.getAnnotationMirrors()) {
+                AnnotationHelper annotationValues = new AnnotationHelper(elementUtils(), annotationMirror);
                 //process @ComputerMethod
                 if (typeUtils().isSameType(annotationMirror.getAnnotationType(), computerMethodAnnotationType)) {
-                    AnnotationHelper annotationValues = new AnnotationHelper(elementUtils(), annotationMirror);
                     ExecutableElement executableElement = (ExecutableElement) annotatedElement;
                     @SuppressWarnings("unchecked")
                     List<VariableElement> parameters = (List<VariableElement>) executableElement.getParameters();
