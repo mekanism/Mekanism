@@ -26,14 +26,14 @@ public class ComputerMethodProcessor extends AbstractProcessor {
     private static final String MODULE_OPTION = "mekanismModule";
 
     TypeMirror filterInterface;
-    private ClassName fancyComputerHelper = ClassName.get("mekanism.common.integration.computer", "FancyComputerHelper");
-    private ClassName computerException = ClassName.get("mekanism.common.integration.computer", "ComputerException");
-    private ClassName lazyInterfaceRaw = ClassName.get("net.minecraftforge.common.util", "Lazy");
-    private ParameterizedTypeName lazyMethodHandleType = ParameterizedTypeName.get(lazyInterfaceRaw, ClassName.get(MethodHandle.class));
-    private ParameterSpec helperParam = ParameterSpec.builder(fancyComputerHelper, "helper").build();
-    private ParamToHelperMapper paramToHelperMapper = new ParamToHelperMapper();
-    private ClassName factoryRegistry = ClassName.get("mekanism.common.integration.computer", "FactoryRegistry");
-    private ClassName computerMethodFactoryRaw = ClassName.get("mekanism.common.integration.computer", "ComputerMethodFactory");
+    private final ClassName fancyComputerHelper = ClassName.get("mekanism.common.integration.computer", "FancyComputerHelper");
+    private final ClassName computerException = ClassName.get("mekanism.common.integration.computer", "ComputerException");
+    private final ClassName lazyInterfaceRaw = ClassName.get("net.minecraftforge.common.util", "Lazy");
+    private final ParameterizedTypeName lazyMethodHandleType = ParameterizedTypeName.get(lazyInterfaceRaw, ClassName.get(MethodHandle.class));
+    private final ParameterSpec helperParam = ParameterSpec.builder(fancyComputerHelper, "helper").build();
+    private final ParamToHelperMapper paramToHelperMapper = new ParamToHelperMapper();
+    private final ClassName factoryRegistry = ClassName.get("mekanism.common.integration.computer", "FactoryRegistry");
+    private final ClassName computerMethodFactoryRaw = ClassName.get("mekanism.common.integration.computer", "ComputerMethodFactory");
     private TypeMirror computerMethodAnnotationType;
     private TypeMirror collectionType;
     private TypeMirror mapType;
@@ -96,73 +96,36 @@ public class ComputerMethodProcessor extends AbstractProcessor {
             String annotatedName = annotatedElement.getSimpleName().toString();
             handlerTypeSpec.addOriginatingElement(annotatedElement);
             registryType.addOriginatingElement(annotatedElement);
+            Set<Modifier> modifiers = annotatedElement.getModifiers();
+            boolean isPublic = modifiers.contains(Modifier.PUBLIC);
+            boolean isPrivateOrProtected = modifiers.contains(Modifier.PRIVATE) || modifiers.contains(Modifier.PROTECTED);
+            boolean isStatic = modifiers.contains(Modifier.STATIC);
+
+            if (isPrivateOrProtected) {
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Target for computer processing should be public or package private", annotatedElement);
+                continue;
+            }
+
             for (AnnotationMirror annotationMirror : annotatedElement.getAnnotationMirrors()) {
                 AnnotationHelper annotationValues = new AnnotationHelper(elementUtils(), annotationMirror);
                 //process @ComputerMethod
                 if (typeUtils().isSameType(annotationMirror.getAnnotationType(), computerMethodAnnotationType)) {
                     ExecutableElement executableElement = (ExecutableElement) annotatedElement;
+                    TypeMirror returnType = executableElement.getReturnType();
                     @SuppressWarnings("unchecked")
                     List<VariableElement> parameters = (List<VariableElement>) executableElement.getParameters();
 
-                    CodeBlock.Builder methodCallArguments = CodeBlock.builder();
-                    if (!parameters.isEmpty()) {
-                        List<CodeBlock> paramGetters = new ArrayList<>();
-                        for (int i = 0; i < parameters.size(); i++) {
-                            TypeMirror paramType = parameters.get(i).asType();
-                            paramGetters.add(paramType.accept(paramToHelperMapper, i));
-                        }
-                        methodCallArguments.add(CodeBlock.join(paramGetters, ", "));
-                    }
-                    Set<Modifier> modifiers = annotatedElement.getModifiers();
-                    boolean isPublic = modifiers.contains(Modifier.PUBLIC);
-                    boolean isPrivateOrProtected = modifiers.contains(Modifier.PRIVATE) || modifiers.contains(Modifier.PROTECTED);
-                    boolean isStatic = modifiers.contains(Modifier.STATIC);
-                    TypeMirror returnType = executableElement.getReturnType();
-
-                    CodeBlock.Builder targetMethodCodeBuilder = CodeBlock.builder();
-                    if (!isPrivateOrProtected) {
-                        if (isStatic) {
-                            targetMethodCodeBuilder.add("$T.$L(", containingClassName, annotatedName);
-                        } else {
-                            targetMethodCodeBuilder.add("$N.$L(", subjectParam, annotatedName);
-                        }
-                    } else {
-                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "ComputerMethod should be public or package private", annotatedElement);
-                        //getMethodHandleCall(containingClassName, handlerTypeSpec, subjectParam, annotatedName, parameters, isStatic, returnType, targetMethodCodeBuilder);
-                    }
-
-                    targetMethodCodeBuilder.add(methodCallArguments.build());
-
-                    targetMethodCodeBuilder.add(")");
-                    CodeBlock targetMethodCode = targetMethodCodeBuilder.build();
+                    CodeBlock targetInvoker = callTargetMethod(containingClassName, subjectParam, annotatedName, isStatic, parameters);
 
                     //determine the return method, value or no value
                     //wrap the target method code, or call it and return void
-                    CodeBlock.Builder valueReturner = CodeBlock.builder();
-                    if (returnType.getKind() == TypeKind.VOID) {
-                        valueReturner.addStatement(targetMethodCode)
-                                .addStatement("return $N.voidResult()", helperParam)
-                                .build();
-                    } else {
-                        TypeKind returnTypeKind = returnType.getKind();
-                        if (returnTypeKind == TypeKind.DECLARED && (returnType).toString().equals("java.lang.Object")) {
-                            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Raw Object returned for computer method, use a concrete type or Convertable instead", annotatedElement);
-                        }
-                        /*if (returnTypeKind.isPrimitive() || (returnTypeKind == TypeKind.DECLARED && (returnType).toString().equals("java.lang.String"))) {
-                            valueReturner.addStatement("return $L", targetMethodCode);
-                        } else */if (typeUtils().isAssignable(typeUtils().erasure(returnType), collectionType)) {
-                            valueReturner.addStatement("return $N.convert($L, $N::convert)", helperParam, targetMethodCode, helperParam);
-                        } else if (typeUtils().isAssignable(typeUtils().erasure(returnType), mapType)) {
-                            valueReturner.addStatement("return $N.convert($L, $N::convert, $N::convert)", helperParam, targetMethodCode, helperParam, helperParam);
-                        } else {
-                            valueReturner.addStatement("return $N.convert($L)", helperParam, targetMethodCode);
-                        }
-                    }
+                    CodeBlock valueReturner = convertValueToReturn(annotatedElement, returnType, targetInvoker);
 
-                    MethodSpec handlerMethod = buildHandlerMethod(subjectParam, annotationValues.getStringValue("nameOverride", annotatedName)+"_"+parameters.size(), !isPrivateOrProtected, valueReturner.build());
+                    MethodSpec handlerMethod = buildHandlerMethod(subjectParam, annotationValues.getStringValue("nameOverride", annotatedName)+"_"+parameters.size(), true, valueReturner);
                     handlerTypeSpec.addMethod(handlerMethod);
+
                     //add a call to register() in the handler class's constructor
-                    CodeBlock registerMethodBuilder = buildRegisterMethodCall(handlerClassName, annotatedName, annotationValues, parameters, handlerMethod);
+                    CodeBlock registerMethodBuilder = buildRegisterMethodCall(handlerClassName, annotationValues, parameters, handlerMethod, annotationValues.getLiteral("nameOverride", annotatedName), annotationValues.getLiteral("threadSafe", false));
                     constructorBuilder.addStatement(registerMethodBuilder);
                 }
             }
@@ -180,6 +143,57 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         }
 
         addHandlerToRegistry(registryInit, factoryRegistry, containingType, containingClassName, factoryFile);
+    }
+
+    private CodeBlock convertValueToReturn(Element annotatedElement, TypeMirror returnType, CodeBlock targetInvoker) {
+        CodeBlock.Builder valueReturner = CodeBlock.builder();
+        if (returnType.getKind() == TypeKind.VOID) {
+            valueReturner.addStatement(targetInvoker)
+                    .addStatement("return $N.voidResult()", helperParam)
+                    .build();
+        } else {
+            TypeKind returnTypeKind = returnType.getKind();
+            if (returnTypeKind == TypeKind.DECLARED && returnType.toString().equals("java.lang.Object")) {
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Raw Object returned for computer method, use a concrete type or Convertable instead", annotatedElement);
+            }
+            /*if (returnTypeKind.isPrimitive() || (returnTypeKind == TypeKind.DECLARED && (returnType).toString().equals("java.lang.String"))) {
+                valueReturner.addStatement("return $L", targetInvoker);
+            } else */
+            TypeMirror erasedType = typeUtils().erasure(returnType);
+            if (typeUtils().isAssignable(erasedType, collectionType)) {
+                valueReturner.addStatement("return $N.convert($L, $N::convert)", helperParam, targetInvoker, helperParam);
+            } else if (typeUtils().isAssignable(erasedType, mapType)) {
+                valueReturner.addStatement("return $N.convert($L, $N::convert, $N::convert)", helperParam, targetInvoker, helperParam, helperParam);
+            } else {
+                valueReturner.addStatement("return $N.convert($L)", helperParam, targetInvoker);
+            }
+        }
+        return valueReturner.build();
+    }
+
+    private CodeBlock callTargetMethod(ClassName containingClassName, ParameterSpec subjectParam, String annotatedName, boolean isStatic, List<VariableElement> parameters) {
+        CodeBlock.Builder methodCallArguments = CodeBlock.builder();
+        if (!parameters.isEmpty()) {
+            List<CodeBlock> paramGetters = new ArrayList<>();
+            for (int i = 0; i < parameters.size(); i++) {
+                TypeMirror paramType = parameters.get(i).asType();
+                paramGetters.add(paramType.accept(paramToHelperMapper, i));
+            }
+            methodCallArguments.add(CodeBlock.join(paramGetters, ", "));
+        }
+
+        CodeBlock.Builder targetMethodCodeBuilder = CodeBlock.builder();
+        if (isStatic) {
+            targetMethodCodeBuilder.add("$T.$L(", containingClassName, annotatedName);
+        } else {
+            targetMethodCodeBuilder.add("$N.$L(", subjectParam, annotatedName);
+        }
+        //getMethodHandleCall was here
+
+        targetMethodCodeBuilder.add(methodCallArguments.build());
+
+        targetMethodCodeBuilder.add(")");
+        return targetMethodCodeBuilder.build();
     }
 
     private void getMethodHandleCall(ClassName containingClassName, TypeSpec.Builder handlerTypeSpec, ParameterSpec subjectParam, String annotatedName, List<VariableElement> parameters, boolean isStatic, TypeMirror returnType, CodeBlock.Builder targetMethodCodeBuilder) {
@@ -242,16 +256,16 @@ public class ComputerMethodProcessor extends AbstractProcessor {
     }
 
     //for @ComputerMethod
-    private CodeBlock buildRegisterMethodCall(String handlerClassName, String annotatedName, AnnotationHelper annotationValues, List<VariableElement> parameters, MethodSpec handlerMethod) {
+    private CodeBlock buildRegisterMethodCall(String handlerClassName, AnnotationHelper annotationValues, List<VariableElement> parameters, MethodSpec handlerMethod, Object computerExposedName, Object threadSafeLiteral) {
         CodeBlock.Builder registerMethodBuilder = CodeBlock.builder();
         //Computer exposed method name
-        registerMethodBuilder.add("register($L, ", annotationValues.getLiteral("nameOverride", annotatedName));
+        registerMethodBuilder.add("register($L, ", computerExposedName);
         //restriction
         registerMethodBuilder.add("$L, ", annotationValues.getLiteral("restriction", null));
         //mods required
         registerMethodBuilder.add("$L, ", annotationValues.getLiteral("requiredMods", "emptyArray()"));
         //threadsafe
-        registerMethodBuilder.add("$L, ", annotationValues.getLiteral("threadSafe", false));
+        registerMethodBuilder.add("$L, ", threadSafeLiteral);
         //param names
         if (parameters.isEmpty()) {
             registerMethodBuilder.add("emptyArray(), ");//names
@@ -266,8 +280,8 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         return registerMethodBuilder.build();
     }
 
-    private MethodSpec buildHandlerMethod(ParameterSpec subjectParam, String annotatedName, boolean isPublic, CodeBlock valueReturner) {
-        MethodSpec.Builder handlerMethodBuilder = MethodSpec.methodBuilder(annotatedName)
+    private MethodSpec buildHandlerMethod(ParameterSpec subjectParam, String methodName, boolean isPublic, CodeBlock valueReturner) {
+        MethodSpec.Builder handlerMethodBuilder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(Object.class)
                 .addException(computerException)
