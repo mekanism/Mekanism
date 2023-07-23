@@ -35,6 +35,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
     private final ClassName factoryRegistry = ClassName.get("mekanism.common.integration.computer", "FactoryRegistry");
     private final ClassName computerMethodFactoryRaw = ClassName.get("mekanism.common.integration.computer", "ComputerMethodFactory");
     private TypeMirror computerMethodAnnotationType;
+    private TypeMirror syntheticComputerMethodAnnotationType;
     private TypeMirror collectionType;
     private TypeMirror mapType;
     private String mekModule;
@@ -44,6 +45,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         super.init(processingEnv);
         mekModule = processingEnv.getOptions().getOrDefault(MODULE_OPTION, "value_not_supplied");
         computerMethodAnnotationType = Objects.requireNonNull(elementUtils().getTypeElement("mekanism.common.integration.computer.annotation.ComputerMethod")).asType();
+        syntheticComputerMethodAnnotationType = Objects.requireNonNull(elementUtils().getTypeElement("mekanism.common.integration.computer.annotation.SyntheticComputerMethod")).asType();
         collectionType = Objects.requireNonNull(elementUtils().getTypeElement("java.util.Collection")).asType();
         mapType = Objects.requireNonNull(elementUtils().getTypeElement("java.util.Map")).asType();
     }
@@ -102,15 +104,14 @@ public class ComputerMethodProcessor extends AbstractProcessor {
             boolean isStatic = modifiers.contains(Modifier.STATIC);
 
             if (isPrivateOrProtected) {
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Target for computer processing should be public or package private", annotatedElement);
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, "Target for computer processing should be public or package private", annotatedElement);
                 continue;
             }
 
             for (AnnotationMirror annotationMirror : annotatedElement.getAnnotationMirrors()) {
                 AnnotationHelper annotationValues = new AnnotationHelper(elementUtils(), annotationMirror);
                 //process @ComputerMethod
-                if (typeUtils().isSameType(annotationMirror.getAnnotationType(), computerMethodAnnotationType)) {
-                    ExecutableElement executableElement = (ExecutableElement) annotatedElement;
+                if (typeUtils().isSameType(annotationMirror.getAnnotationType(), computerMethodAnnotationType) && annotatedElement instanceof ExecutableElement executableElement) {
                     TypeMirror returnType = executableElement.getReturnType();
                     @SuppressWarnings("unchecked")
                     List<VariableElement> parameters = (List<VariableElement>) executableElement.getParameters();
@@ -127,6 +128,38 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                     //add a call to register() in the handler class's constructor
                     CodeBlock registerMethodBuilder = buildRegisterMethodCall(handlerClassName, annotationValues, parameters, handlerMethod, annotationValues.getLiteral("nameOverride", annotatedName), annotationValues.getLiteral("threadSafe", false));
                     constructorBuilder.addStatement(registerMethodBuilder);
+                } else if (typeUtils().isSameType(annotationMirror.getAnnotationType(), syntheticComputerMethodAnnotationType) && annotatedElement instanceof VariableElement fieldElement) {
+                    CodeBlock.Builder targetFieldBuilder = CodeBlock.builder();
+                    if (isStatic) {
+                        targetFieldBuilder.add("$T.$L", containingClassName, annotatedName);
+                    } else {
+                        targetFieldBuilder.add("$N.$L", subjectParam, annotatedName);
+                    }
+                    CodeBlock targetReference = targetFieldBuilder.build();
+
+                    TypeMirror fieldType = fieldElement.asType();
+
+                    String getterName = annotationValues.getStringValue("getter", null);
+                    if (getterName != null) {
+                        CodeBlock valueReturner = convertValueToReturn(annotatedElement, fieldType, targetReference);
+                        MethodSpec handlerMethod = buildHandlerMethod(subjectParam, getterName+"_0", true, valueReturner);
+                        handlerTypeSpec.addMethod(handlerMethod);
+
+                        CodeBlock getterRegistration = buildRegisterMethodCall(handlerClassName, annotationValues, Collections.emptyList(), handlerMethod, getterName, annotationValues.getLiteral("threadSafeGetter", false));
+                        constructorBuilder.addStatement(getterRegistration);
+                    }
+                    String setterName = annotationValues.getStringValue("setter", null);
+                    if (setterName != null) {
+                        CodeBlock setterBody = CodeBlock.builder()
+                                .addStatement("$L = $L", targetReference, fieldType.accept(paramToHelperMapper, 0))
+                                .addStatement("return $N.voidResult()", helperParam)
+                                .build();
+                        MethodSpec handlerMethod = buildHandlerMethod(subjectParam, setterName+"_1", true, setterBody);
+                        handlerTypeSpec.addMethod(handlerMethod);
+
+                        CodeBlock setterRegistration = buildRegisterMethodCall(handlerClassName, annotationValues, Collections.singletonList(new FakeParameter(fieldType,"value")), handlerMethod, setterName, annotationValues.getLiteral("threadSafeSetter", false));
+                        constructorBuilder.addStatement(setterRegistration);
+                    }
                 }
             }
         }
@@ -255,7 +288,10 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         registryInit.addStatement(registerStatement.build());
     }
 
-    //for @ComputerMethod
+    private CodeBlock buildRegisterMethodCall(String handlerClassName, AnnotationHelper annotationValues, List<VariableElement> parameters, MethodSpec handlerMethod, String computerExposedName, Object threadSafeLiteral) {
+        return buildRegisterMethodCall(handlerClassName, annotationValues, parameters, handlerMethod, CodeBlock.of("$S", computerExposedName),threadSafeLiteral);
+    }
+
     private CodeBlock buildRegisterMethodCall(String handlerClassName, AnnotationHelper annotationValues, List<VariableElement> parameters, MethodSpec handlerMethod, Object computerExposedName, Object threadSafeLiteral) {
         CodeBlock.Builder registerMethodBuilder = CodeBlock.builder();
         //Computer exposed method name
@@ -280,7 +316,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         return registerMethodBuilder.build();
     }
 
-    private MethodSpec buildHandlerMethod(ParameterSpec subjectParam, String methodName, boolean isPublic, CodeBlock valueReturner) {
+    private MethodSpec buildHandlerMethod(ParameterSpec subjectParam, String methodName, boolean isPublic, CodeBlock methodBody) {
         MethodSpec.Builder handlerMethodBuilder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(Object.class)
@@ -289,9 +325,9 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                 .addParameter(helperParam);
         if (!isPublic) {
             //wrap in MethodHandle try/catch
-            handlerMethodBuilder.addCode(wrapMethodHandle(valueReturner));
+            handlerMethodBuilder.addCode(wrapMethodHandle(methodBody));
         } else {
-            handlerMethodBuilder.addCode(valueReturner);
+            handlerMethodBuilder.addCode(methodBody);
         }
 
         return handlerMethodBuilder.build();
