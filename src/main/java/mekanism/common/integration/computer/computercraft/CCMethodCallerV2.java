@@ -6,6 +6,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import mekanism.common.integration.computer.BoundMethodHolder;
 import mekanism.common.integration.computer.ComputerException;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Locale;
@@ -30,6 +31,15 @@ public class CCMethodCallerV2 extends BoundMethodHolder {
                         argCount,
                         methodDataCollection.stream().map(it -> String.valueOf(it.arguments().length)).collect(Collectors.joining(" or "))
                 )));
+        if (methodToCall.threadSafe()) {
+            return callHandler(arguments, methodToCall);
+        } else {
+            return context.executeMainThreadTask(()->callHandler(arguments, methodToCall).getResult());
+        }
+    }
+
+    @NotNull
+    private static MethodResult callHandler(IArguments arguments, MethodData methodToCall) throws LuaException {
         Object result;
         try {
             result = methodToCall.handler().apply(methodToCall.subject(), new CCComputerHelper(arguments));
