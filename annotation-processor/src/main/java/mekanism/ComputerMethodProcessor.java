@@ -10,8 +10,11 @@ import javax.lang.model.util.*;
 import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.lang.invoke.MethodHandle;
+import java.lang.invoke.VarHandle;
+import java.lang.invoke.WrongMethodTypeException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Thiakil on 15/07/2023.
@@ -94,6 +97,9 @@ public class ComputerMethodProcessor extends AbstractProcessor {
 
         MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
 
+        Map<Element, FieldSpec> varHandles = new HashMap<>();
+        Map<Element, MethodSpec> fieldGetters = new HashMap<>();
+
         for (Element annotatedElement : entry.getValue()) {
             String annotatedName = annotatedElement.getSimpleName().toString();
             handlerTypeSpec.addOriginatingElement(annotatedElement);
@@ -104,14 +110,18 @@ public class ComputerMethodProcessor extends AbstractProcessor {
             boolean isStatic = modifiers.contains(Modifier.STATIC);
 
             if (isPrivateOrProtected) {
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, "Target for computer processing should be public or package private", annotatedElement);
-                continue;
+                //processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, "Target for computer processing should be public or package private", annotatedElement);
+                //continue;
             }
 
             for (AnnotationMirror annotationMirror : annotatedElement.getAnnotationMirrors()) {
                 AnnotationHelper annotationValues = new AnnotationHelper(elementUtils(), annotationMirror);
                 //process @ComputerMethod
                 if (typeUtils().isSameType(annotationMirror.getAnnotationType(), computerMethodAnnotationType) && annotatedElement instanceof ExecutableElement executableElement) {
+                    if (isPrivateOrProtected) {
+                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Target for @ComputerMethod should be public or package private", annotatedElement);
+                        continue;
+                    }
                     TypeMirror returnType = executableElement.getReturnType();
                     @SuppressWarnings("unchecked")
                     List<VariableElement> parameters = (List<VariableElement>) executableElement.getParameters();
@@ -130,10 +140,19 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                     constructorBuilder.addStatement(registerMethodBuilder);
                 } else if (typeUtils().isSameType(annotationMirror.getAnnotationType(), syntheticComputerMethodAnnotationType) && annotatedElement instanceof VariableElement fieldElement) {
                     CodeBlock.Builder targetFieldBuilder = CodeBlock.builder();
-                    if (isStatic) {
-                        targetFieldBuilder.add("$T.$L", containingClassName, annotatedName);
+                    if (isPrivateOrProtected) {
+                        MethodSpec getterMethod = fieldGetters.computeIfAbsent(fieldElement, el -> getFieldGetter(containingClassName, handlerTypeSpec, subjectParam, varHandles, annotatedName, fieldElement));
+                        if (isStatic) {
+                            targetFieldBuilder.add("$N()", getterMethod);
+                        } else {
+                            targetFieldBuilder.add("$N($N)", getterMethod, subjectParam);
+                        }
                     } else {
-                        targetFieldBuilder.add("$N.$L", subjectParam, annotatedName);
+                        if (isStatic) {
+                            targetFieldBuilder.add("$T.$L", containingClassName, annotatedName);
+                        } else {
+                            targetFieldBuilder.add("$N.$L", subjectParam, annotatedName);
+                        }
                     }
                     CodeBlock targetReference = targetFieldBuilder.build();
 
@@ -150,6 +169,10 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                     }
                     String setterName = annotationValues.getStringValue("setter", null);
                     if (setterName != null) {
+                        if (isPrivateOrProtected) {
+                            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Setter not implemented for private/protected fields");
+                            continue;
+                        }
                         CodeBlock setterBody = CodeBlock.builder()
                                 .addStatement("$L = $L", targetReference, fieldType.accept(paramToHelperMapper, 0))
                                 .addStatement("return $N.voidResult()", helperParam)
@@ -176,6 +199,73 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         }
 
         addHandlerToRegistry(registryInit, factoryRegistry, containingType, containingClassName, factoryFile);
+    }
+
+    private MethodSpec getMethodProxy(ClassName containingClassName, TypeSpec.Builder handlerTypeSpec, ParameterSpec subjectParam, String annotatedName, ExecutableElement executableElement) {
+        CodeBlock.Builder paramTypes = CodeBlock.builder();
+        //List<CharSequence> paramInvocations = new ArrayList<>();
+        List<ParameterSpec> proxyParams = new ArrayList<>();
+        if (!executableElement.getModifiers().contains(Modifier.STATIC)) {
+            proxyParams.add(subjectParam);
+        }
+        for (VariableElement parameter : executableElement.getParameters()) {
+            TypeMirror paramType = parameter.asType();
+            paramTypes.add(", $T.class", typeUtils().erasure(paramType));
+            //paramInvocations.add(parameter.getSimpleName());
+            proxyParams.add(ParameterSpec.get(parameter));
+        }
+        CodeBlock builtParamTypes = paramTypes.build();
+        FieldSpec methodHandleField = FieldSpec.builder(MethodHandle.class, "method$" + annotatedName, Modifier.STATIC, Modifier.PRIVATE)
+                .initializer(CodeBlock.of("getMethodHandle($T.class, $S$L)", containingClassName, annotatedName, builtParamTypes))
+                .build();
+        handlerTypeSpec.addField(methodHandleField);
+        TypeName returnType = TypeName.get(executableElement.getReturnType());
+        MethodSpec proxyMethod = MethodSpec.methodBuilder("proxy$"+ annotatedName)
+                .addParameters(proxyParams)
+                .addException(computerException)
+                .returns(returnType)
+                .beginControlFlow("try")
+                .addStatement("return ($T)$N.invokeExact($L)", returnType, methodHandleField, proxyParams.stream().map(param->param.name).collect(Collectors.joining(", ")))
+                .nextControlFlow("catch ($T wmte)", WrongMethodTypeException.class)
+                .addStatement("throw new $T($S, wmte)", RuntimeException.class, "Method not bound correctly")
+                .nextControlFlow("catch ($T cex)", computerException)
+                .addStatement("throw cex")
+                .nextControlFlow("catch ($T t)", Throwable.class)
+                .addStatement("throw new $T(t.getMessage(), t)", RuntimeException.class)
+                .endControlFlow()
+                .build();
+        handlerTypeSpec.addMethod(proxyMethod);
+        return proxyMethod;
+    }
+
+    private static MethodSpec getFieldGetter(ClassName containingClassName, TypeSpec.Builder handlerTypeSpec, ParameterSpec subjectParam, Map<Element, FieldSpec> varHandles, String annotatedName, VariableElement fieldElement) {
+        FieldSpec varHandleField = varHandles.computeIfAbsent(fieldElement, el->getVarHandleField(containingClassName, handlerTypeSpec, annotatedName));
+
+        TypeName fieldType = TypeName.get(fieldElement.asType());
+
+        MethodSpec.Builder getterMethodBuilder = MethodSpec.methodBuilder("getter$"+ annotatedName)
+                .addModifiers(Modifier.STATIC, Modifier.PRIVATE)
+                .returns(fieldType);
+        if (fieldElement.getModifiers().contains(Modifier.STATIC)) {
+            getterMethodBuilder
+                    .addStatement("return ($T)$N.get()", fieldType, varHandleField);
+        } else {
+            getterMethodBuilder
+                    .addParameter(subjectParam)
+                    .addStatement("return ($T)$N.get($N)", fieldType, varHandleField, subjectParam);
+        }
+
+        MethodSpec getterMethod = getterMethodBuilder.build();
+        handlerTypeSpec.addMethod(getterMethod);
+        return getterMethod;
+    }
+
+    private static FieldSpec getVarHandleField(ClassName containingClassName, TypeSpec.Builder handlerTypeSpec, String annotatedName) {
+        FieldSpec varHandleField = FieldSpec.builder(VarHandle.class, "field$" + annotatedName, Modifier.STATIC, Modifier.PRIVATE)
+                .initializer(CodeBlock.of("getVarHandle($T.class, $S)", containingClassName, annotatedName))
+                .build();
+        handlerTypeSpec.addField(varHandleField);
+        return varHandleField;
     }
 
     private CodeBlock convertValueToReturn(Element annotatedElement, TypeMirror returnType, CodeBlock targetInvoker) {

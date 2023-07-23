@@ -5,8 +5,12 @@ import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import net.minecraftforge.fml.ModList;
 
+import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.lang.invoke.WrongMethodTypeException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 
 @ParametersAreNotNullByDefault
@@ -17,6 +21,26 @@ public class ComputerMethodFactory<T>{
         return (O[]) EMPTY_ARRAY;
     }
     protected static MethodHandles.Lookup lookup = MethodHandles.lookup();
+
+    protected static MethodHandle getMethodHandle(Class<?> containingClass, String methodName, Class<?>... params) {
+        try {
+            Method method = containingClass.getDeclaredMethod(methodName, params);
+            method.setAccessible(true);
+            return lookup.unreflect(method);
+        } catch (ReflectiveOperationException roe) {
+            throw new RuntimeException("Couldn't get method handle for "+methodName, roe);
+        }
+    }
+
+    protected static VarHandle getVarHandle(Class<?> containingClass, String fieldName) {
+        try {
+            Field field = containingClass.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return lookup.unreflectVarHandle(field);
+        } catch (ReflectiveOperationException roe) {
+            throw new RuntimeException("Couldn't get var handle for "+fieldName, roe);
+        }
+    }
 
     protected static void unwrapException(Throwable t) throws ComputerException {
         if (t instanceof WrongMethodTypeException wmte) {
