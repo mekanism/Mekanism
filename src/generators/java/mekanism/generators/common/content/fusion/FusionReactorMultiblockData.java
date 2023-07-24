@@ -89,10 +89,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     private double biomeAmbientTemp;
     @ContainerSync(tags = HEAT_TAB)
-    @SyntheticComputerMethod(getter = "getPlasmaTemperature")
     private double lastPlasmaTemperature;
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getCaseTemperature")
     private double lastCaseTemperature;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getEnvironmentalLoss")
@@ -339,10 +337,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
         lastPlasmaTemperature = temp;
     }
 
+    @ComputerMethod(nameOverride = "getPlasmaTemperature")
     public double getLastPlasmaTemp() {
         return lastPlasmaTemperature;
     }
 
+    @ComputerMethod(nameOverride = "getCaseTemperature")
     public double getLastCaseTemp() {
         return lastCaseTemperature;
     }
