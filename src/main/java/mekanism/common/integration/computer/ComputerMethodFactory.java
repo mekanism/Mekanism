@@ -15,11 +15,9 @@ import java.util.*;
 
 @ParametersAreNotNullByDefault
 public class ComputerMethodFactory<T>{
-    protected static Object[] EMPTY_ARRAY = new Object[0];
-    @SuppressWarnings("unchecked")
-    protected static <O> O[] emptyArray() {
-        return (O[]) EMPTY_ARRAY;
-    }
+    protected static String[] NO_STRINGS = new String[0];
+    protected static Class<?>[] NO_CLASSES = new Class[0];
+
     protected static MethodHandles.Lookup lookup = MethodHandles.lookup();
 
     protected static MethodHandle getMethodHandle(Class<?> containingClass, String methodName, Class<?>... params) {
@@ -32,13 +30,13 @@ public class ComputerMethodFactory<T>{
         }
     }
 
-    protected static VarHandle getVarHandle(Class<?> containingClass, String fieldName) {
+    protected static MethodHandle getGetterHandle(Class<?> containingClass, String fieldName) {
         try {
             Field field = containingClass.getDeclaredField(fieldName);
             field.setAccessible(true);
-            return lookup.unreflectVarHandle(field);
+            return lookup.unreflectGetter(field);
         } catch (ReflectiveOperationException roe) {
-            throw new RuntimeException("Couldn't get var handle for "+fieldName, roe);
+            throw new RuntimeException("Couldn't get getter methodhandle for "+fieldName, roe);
         }
     }
 

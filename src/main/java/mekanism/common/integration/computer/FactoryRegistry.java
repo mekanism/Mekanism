@@ -3,15 +3,16 @@ package mekanism.common.integration.computer;
 import net.minecraftforge.common.util.Lazy;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class FactoryRegistry {
     private static final Map<Class<?>, Lazy<ComputerMethodFactory<?>>> factories = new HashMap<>();
     private static final Map<Class<?>, List<Class<?>>> superClasses = new HashMap<>();
-    private static final Map<Class<?>, List<ComputerMethodFactory<?>>> hierarchyHandlers = new HashMap<>();
+    private static final Map<Class<?>, List<ComputerMethodFactory<?>>> hierarchyHandlers = new ConcurrentHashMap<>();
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static <T> void register(Class<T> subject, Supplier<ComputerMethodFactory<T>> factorySupplier, Class<?>... parents) {
+    public synchronized static <T> void register(Class<T> subject, Supplier<ComputerMethodFactory<T>> factorySupplier, Class<?>... parents) {
         factories.put(subject, (Lazy) Lazy.of(factorySupplier));
         if (parents != null && parents.length > 0) {
             superClasses.put(subject, Arrays.asList(parents));
@@ -33,7 +34,13 @@ public class FactoryRegistry {
     }
 
     private static List<ComputerMethodFactory<?>> getHandlersForHierarchy(Class<?> target) {
-        return hierarchyHandlers.computeIfAbsent(target, FactoryRegistry::buildHandlersForHierarchy);
+        List<ComputerMethodFactory<?>> handlers = hierarchyHandlers.get(target);
+        if (handlers != null) {
+            return handlers;
+        }
+        handlers = buildHandlersForHierarchy(target);
+        hierarchyHandlers.put(target, handlers);
+        return handlers;
     }
 
     /**

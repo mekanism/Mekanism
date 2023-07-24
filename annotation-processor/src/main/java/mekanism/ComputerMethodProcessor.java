@@ -76,7 +76,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
             registryType.addMethod(registryInit.build());
             TypeSpec registrySpec = registryType.build();
             try {
-                JavaFile.builder("mekanism.computer", registrySpec).build().writeTo(processingEnv.getFiler());
+                JavaFile.builder("mekanism.generated."+mekModule, registrySpec).build().writeTo(processingEnv.getFiler());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -250,7 +250,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         addHandlerToRegistry(registryInit, factoryRegistry, containingType, containingClassName, factoryFile);
     }
 
-    private static CodeBlock getReadTargetReferenceForField(ClassName containingClassName, TypeSpec.Builder handlerTypeSpec, ParameterSpec subjectParam, Map<Element, FieldSpec> varHandles, Map<Element, MethodSpec> fieldGetters, String annotatedName, boolean isPrivateOrProtected, boolean isStatic, VariableElement fieldElement) {
+    private CodeBlock getReadTargetReferenceForField(ClassName containingClassName, TypeSpec.Builder handlerTypeSpec, ParameterSpec subjectParam, Map<Element, FieldSpec> varHandles, Map<Element, MethodSpec> fieldGetters, String annotatedName, boolean isPrivateOrProtected, boolean isStatic, VariableElement fieldElement) {
         CodeBlock.Builder targetFieldBuilder = CodeBlock.builder();
         if (isPrivateOrProtected) {
             MethodSpec getterMethod = fieldGetters.computeIfAbsent(fieldElement, el -> getFieldGetter(containingClassName, handlerTypeSpec, subjectParam, varHandles, annotatedName, fieldElement));
@@ -307,22 +307,29 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         return proxyMethod;
     }
 
-    private static MethodSpec getFieldGetter(ClassName containingClassName, TypeSpec.Builder handlerTypeSpec, ParameterSpec subjectParam, Map<Element, FieldSpec> varHandles, String annotatedName, VariableElement fieldElement) {
+    private MethodSpec getFieldGetter(ClassName containingClassName, TypeSpec.Builder handlerTypeSpec, ParameterSpec subjectParam, Map<Element, FieldSpec> varHandles, String annotatedName, VariableElement fieldElement) {
         FieldSpec varHandleField = varHandles.computeIfAbsent(fieldElement, el->getVarHandleField(containingClassName, handlerTypeSpec, annotatedName));
 
         TypeName fieldType = TypeName.get(fieldElement.asType());
 
         MethodSpec.Builder getterMethodBuilder = MethodSpec.methodBuilder("getter$"+ annotatedName)
                 .addModifiers(Modifier.STATIC, Modifier.PRIVATE)
-                .returns(fieldType);
+                .returns(fieldType)
+                //.addException(computerException)
+                .beginControlFlow("try");
         if (fieldElement.getModifiers().contains(Modifier.STATIC)) {
             getterMethodBuilder
-                    .addStatement("return ($T)$N.get()", fieldType, varHandleField);
+                    .addStatement("return ($T)$N.invokeExact()", fieldType, varHandleField);
         } else {
             getterMethodBuilder
                     .addParameter(subjectParam)
-                    .addStatement("return ($T)$N.get($N)", fieldType, varHandleField, subjectParam);
+                    .addStatement("return ($T)$N.invokeExact($N)", fieldType, varHandleField, subjectParam);
         }
+        getterMethodBuilder.nextControlFlow("catch ($T wmte)", WrongMethodTypeException.class)
+                .addStatement("throw new $T($S, wmte)", RuntimeException.class, "Getter not bound correctly")
+                .nextControlFlow("catch ($T t)", Throwable.class)
+                .addStatement("throw new $T(t.getMessage(), t)", RuntimeException.class)
+                .endControlFlow();
 
         MethodSpec getterMethod = getterMethodBuilder.build();
         handlerTypeSpec.addMethod(getterMethod);
@@ -330,8 +337,8 @@ public class ComputerMethodProcessor extends AbstractProcessor {
     }
 
     private static FieldSpec getVarHandleField(ClassName containingClassName, TypeSpec.Builder handlerTypeSpec, String annotatedName) {
-        FieldSpec varHandleField = FieldSpec.builder(VarHandle.class, "field$" + annotatedName, Modifier.STATIC, Modifier.PRIVATE)
-                .initializer(CodeBlock.of("getVarHandle($T.class, $S)", containingClassName, annotatedName))
+        FieldSpec varHandleField = FieldSpec.builder(MethodHandle.class, "fieldGetter$" + annotatedName, Modifier.STATIC, Modifier.PRIVATE)
+                .initializer(CodeBlock.of("getGetterHandle($T.class, $S)", containingClassName, annotatedName))
                 .build();
         handlerTypeSpec.addField(varHandleField);
         return varHandleField;
@@ -458,13 +465,13 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         //restriction
         registerMethodBuilder.add("$L, ", annotationValues.getLiteral("restriction", null));
         //mods required
-        registerMethodBuilder.add("$L, ", annotationValues.getLiteral("requiredMods", "emptyArray()"));
+        registerMethodBuilder.add("$L, ", annotationValues.getLiteral("requiredMods", "NO_STRINGS"));
         //threadsafe
         registerMethodBuilder.add("$L, ", threadSafeLiteral);
         //param names
         if (parameters.isEmpty()) {
-            registerMethodBuilder.add("emptyArray(), ");//names
-            registerMethodBuilder.add("emptyArray(), ");//classes
+            registerMethodBuilder.add("NO_STRINGS, ");//names
+            registerMethodBuilder.add("NO_CLASSES, ");//classes
         } else {
             registerMethodBuilder.add("new String[]{$L}, ", parameters.stream().map(param -> CodeBlock.of("$S", param.getSimpleName())).collect(CodeBlock.joining(",")));
             registerMethodBuilder.add("new Class[]{$L}, ", parameters.stream().map(param -> CodeBlock.of("$T.class", typeUtils().erasure(param.asType()))).collect(CodeBlock.joining(",")));
@@ -597,10 +604,10 @@ public class ComputerMethodProcessor extends AbstractProcessor {
 
         @Override
         public Object visitArray(List<? extends AnnotationValue> vals, TypeMirror valueType) {
+            TypeMirror componentType = ((ArrayType) valueType).getComponentType();
             if (vals == null || vals.isEmpty()) {
-                return "emptyArray()";
+                return CodeBlock.of("new $T[0]", ClassName.get(componentType));
             } else {
-                TypeMirror componentType = ((ArrayType) valueType).getComponentType();
                 AnnotationValueToLiteral elementVisitor = new AnnotationValueToLiteral();
                 CodeBlock elements = vals.stream().map(value -> {
                     Object mappedValue = value.accept(elementVisitor, componentType);
