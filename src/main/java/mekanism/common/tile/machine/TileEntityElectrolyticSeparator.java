@@ -125,13 +125,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
     private FixedUsageEnergyContainer<TileEntityElectrolyticSeparator> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private FluidInventorySlot fluidSlot;
+    FluidInventorySlot fluidSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getLeftOutputItem")
-    private GasInventorySlot leftOutputSlot;
+    GasInventorySlot leftOutputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getRightOutputItem")
-    private GasInventorySlot rightOutputSlot;
+    GasInventorySlot rightOutputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityElectrolyticSeparator(BlockPos pos, BlockState state) {
         super(MekanismBlocks.ELECTROLYTIC_SEPARATOR, pos, state, TRACKED_ERROR_TYPES);

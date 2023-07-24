@@ -83,13 +83,13 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
 
     private MachineEnergyContainer<TileEntityChemicalInfuser> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getLeftInputItem")
-    private GasInventorySlot leftInputSlot;
+    GasInventorySlot leftInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private GasInventorySlot outputSlot;
+    GasInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getRightInputItem")
-    private GasInventorySlot rightInputSlot;
+    GasInventorySlot rightInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityChemicalInfuser(BlockPos pos, BlockState state) {
         super(MekanismBlocks.CHEMICAL_INFUSER, pos, state, TRACKED_ERROR_TYPES);

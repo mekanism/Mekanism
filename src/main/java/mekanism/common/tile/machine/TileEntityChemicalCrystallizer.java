@@ -74,11 +74,11 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
 
     private MachineEnergyContainer<TileEntityChemicalCrystallizer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private MergedChemicalInventorySlot<MergedChemicalTank> inputSlot;
+    MergedChemicalInventorySlot<MergedChemicalTank> inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput")
-    private OutputInventorySlot outputSlot;
+    OutputInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityChemicalCrystallizer(BlockPos pos, BlockState state) {
         super(MekanismBlocks.CHEMICAL_CRYSTALLIZER, pos, state, TRACKED_ERROR_TYPES, 200);

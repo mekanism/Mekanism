@@ -47,7 +47,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     private BinTier tier;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getStored")
-    private BinInventorySlot binSlot;
+    BinInventorySlot binSlot;
 
     public TileEntityBin(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);

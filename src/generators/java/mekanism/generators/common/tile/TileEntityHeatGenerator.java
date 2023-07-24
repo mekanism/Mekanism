@@ -71,11 +71,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     private double lastEnvironmentLoss;
 
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
-    private BasicHeatCapacitor heatCapacitor;
+    BasicHeatCapacitor heatCapacitor;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem")
-    private FluidFuelInventorySlot fuelSlot;
+    FluidFuelInventorySlot fuelSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityHeatGenerator(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.HEAT_GENERATOR, pos, state, MAX_PRODUCTION);

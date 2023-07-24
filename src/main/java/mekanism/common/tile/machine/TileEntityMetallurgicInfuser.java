@@ -74,13 +74,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
 
     private MachineEnergyContainer<TileEntityMetallurgicInfuser> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInfuseTypeItem")
-    private InfusionInventorySlot infusionSlot;
+    InfusionInventorySlot infusionSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput")
-    private InputInventorySlot inputSlot;
+    InputInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput")
-    private OutputInventorySlot outputSlot;
+    OutputInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityMetallurgicInfuser(BlockPos pos, BlockState state) {
         super(MekanismBlocks.METALLURGIC_INFUSER, pos, state, TRACKED_ERROR_TYPES, 200);

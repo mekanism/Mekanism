@@ -59,13 +59,13 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
 
     private MachineEnergyContainer<TileEntityPrecisionSawmill> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput")
-    private InputInventorySlot inputSlot;
+    InputInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput")
-    private OutputInventorySlot outputSlot;
+    OutputInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getSecondaryOutput")
-    private OutputInventorySlot secondaryOutputSlot;
+    OutputInventorySlot secondaryOutputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityPrecisionSawmill(BlockPos pos, BlockState state) {
         super(MekanismBlocks.PRECISION_SAWMILL, pos, state, TRACKED_ERROR_TYPES, 200);

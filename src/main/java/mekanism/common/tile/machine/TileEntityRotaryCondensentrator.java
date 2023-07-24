@@ -102,15 +102,15 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
 
     private MachineEnergyContainer<TileEntityRotaryCondensentrator> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getGasItemInput")
-    private GasInventorySlot gasInputSlot;
+    GasInventorySlot gasInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getGasItemOutput")
-    private GasInventorySlot gasOutputSlot;
+    GasInventorySlot gasOutputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFluidItemInput")
-    private FluidInventorySlot fluidInputSlot;
+    FluidInventorySlot fluidInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFluidItemOutput")
-    private OutputInventorySlot fluidOutputSlot;
+    OutputInventorySlot fluidOutputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityRotaryCondensentrator(BlockPos pos, BlockState state) {
         super(MekanismBlocks.ROTARY_CONDENSENTRATOR, pos, state, TRACKED_ERROR_TYPES);

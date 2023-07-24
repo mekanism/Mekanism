@@ -120,7 +120,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public double plasmaTemperature;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getHohlraum")
-    private final ReactorInventorySlot reactorSlot;
+    final ReactorInventorySlot reactorSlot;
 
     private boolean clientBurning;
     private double clientTemp;

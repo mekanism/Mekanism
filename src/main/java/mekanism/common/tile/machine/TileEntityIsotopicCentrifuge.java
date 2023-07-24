@@ -76,11 +76,11 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
 
     private MachineEnergyContainer<TileEntityIsotopicCentrifuge> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private GasInventorySlot inputSlot;
+    GasInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private GasInventorySlot outputSlot;
+    GasInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityIsotopicCentrifuge(BlockPos pos, BlockState state) {
         super(MekanismBlocks.ISOTOPIC_CENTRIFUGE, pos, state, TRACKED_ERROR_TYPES);

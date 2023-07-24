@@ -66,11 +66,11 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
 
     private MachineEnergyContainer<TileEntityChemicalOxidizer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput")
-    private InputInventorySlot inputSlot;
+    InputInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private GasInventorySlot outputSlot;
+    GasInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityChemicalOxidizer(BlockPos pos, BlockState state) {
         super(MekanismBlocks.CHEMICAL_OXIDIZER, pos, state, TRACKED_ERROR_TYPES, 100);

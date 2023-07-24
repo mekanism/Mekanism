@@ -85,13 +85,13 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
 
     private MachineEnergyContainer<TileEntityPigmentMixer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getLeftInputItem")
-    private PigmentInventorySlot leftInputSlot;
+    PigmentInventorySlot leftInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private PigmentInventorySlot outputSlot;
+    PigmentInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getRightInputItem")
-    private PigmentInventorySlot rightInputSlot;
+    PigmentInventorySlot rightInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityPigmentMixer(BlockPos pos, BlockState state) {
         super(MekanismBlocks.PIGMENT_MIXER, pos, state, TRACKED_ERROR_TYPES);

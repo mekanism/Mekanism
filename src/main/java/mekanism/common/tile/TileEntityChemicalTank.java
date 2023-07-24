@@ -75,9 +75,9 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     private ChemicalTankTier tier;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDrainItem")
-    private MergedChemicalInventorySlot<MergedChemicalTank> drainSlot;
+    MergedChemicalInventorySlot<MergedChemicalTank> drainSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFillItem")
-    private MergedChemicalInventorySlot<MergedChemicalTank> fillSlot;
+    MergedChemicalInventorySlot<MergedChemicalTank> fillSlot;
 
     public TileEntityChemicalTank(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);

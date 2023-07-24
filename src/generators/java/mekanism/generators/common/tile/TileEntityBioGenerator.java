@@ -38,9 +38,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
                                                                                      "getBioFuelFilledPercentage"})
     public BasicFluidTank bioFuelTank;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem")
-    private FluidFuelInventorySlot fuelSlot;
+    FluidFuelInventorySlot fuelSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
     private float lastFluidScale;
 
     public TileEntityBioGenerator(BlockPos pos, BlockState state) {

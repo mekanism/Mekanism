@@ -45,9 +45,9 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private HybridInventorySlot inputSlot;
+    HybridInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private HybridInventorySlot outputSlot;
+    HybridInventorySlot outputSlot;
     private int tankCapacity;
     private long chemicalTankCapacity;
     public float prevScale;

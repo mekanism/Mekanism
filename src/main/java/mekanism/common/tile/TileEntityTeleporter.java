@@ -102,7 +102,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     private MachineEnergyContainer<TileEntityTeleporter> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityTeleporter(BlockPos pos, BlockState state) {
         super(MekanismBlocks.TELEPORTER, pos, state);

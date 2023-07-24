@@ -34,7 +34,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     private FloatingLong currentMultiplier = FloatingLong.ZERO;
     private boolean isBlacklistDimension;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityWindGenerator(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.WIND_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.windGenerationMax);

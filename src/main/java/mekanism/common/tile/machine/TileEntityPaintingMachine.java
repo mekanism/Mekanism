@@ -68,13 +68,13 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
 
     private MachineEnergyContainer<TileEntityPaintingMachine> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputPigmentItem")
-    private PigmentInventorySlot pigmentInputSlot;
+    PigmentInventorySlot pigmentInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private InputInventorySlot inputSlot;
+    InputInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput")
-    private OutputInventorySlot outputSlot;
+    OutputInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityPaintingMachine(BlockPos pos, BlockState state) {
         super(MekanismBlocks.PAINTING_MACHINE, pos, state, TRACKED_ERROR_TYPES, 200);

@@ -69,9 +69,9 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     private boolean needsPacket;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private FluidInventorySlot inputSlot;
+    FluidInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private OutputInventorySlot outputSlot;
+    OutputInventorySlot outputSlot;
 
     private boolean updateClientLight = false;
 

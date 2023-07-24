@@ -155,7 +155,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     private MinerEnergyContainer energyContainer;
     private List<IInventorySlot> mainSlots;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityDigitalMiner(BlockPos pos, BlockState state) {
         super(MekanismBlocks.DIGITAL_MINER, pos, state);

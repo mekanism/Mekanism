@@ -76,13 +76,13 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
 
     private MachineEnergyContainer<TileEntityAntiprotonicNucleosynthesizer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputChemicalItem")
-    private GasInventorySlot gasInputSlot;
+    GasInventorySlot gasInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private InputInventorySlot inputSlot;
+    InputInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private OutputInventorySlot outputSlot;
+    OutputInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
