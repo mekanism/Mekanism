@@ -279,7 +279,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     @Override
     public final void onClick(double mouseX, double mouseY) {
         //Redirect any calls of the vanilla on click methods mods may do for some reason to act as if clicked with the left mouse button
-        onClick(mouseX, mouseY, GLFW.GLFW_MOUSE_BUTTON_1);
+        onClick(mouseX, mouseY, GLFW.GLFW_MOUSE_BUTTON_LEFT);
     }
 
     public void onClick(double mouseX, double mouseY, int button) {

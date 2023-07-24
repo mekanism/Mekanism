@@ -138,7 +138,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
                 if (slot.hasItem()) {
                     this.clickedSlot = slot;
                     this.draggingItem = ItemStack.EMPTY;
-                    this.isSplittingStack = button == GLFW.GLFW_MOUSE_BUTTON_2;
+                    this.isSplittingStack = button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
                 } else {
                     this.clickedSlot = null;
                 }
@@ -159,9 +159,9 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
                     this.isQuickCrafting = true;
                     this.quickCraftingButton = button;
                     this.quickCraftSlots.clear();
-                    if (button == GLFW.GLFW_MOUSE_BUTTON_1) {
+                    if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
                         this.quickCraftingType = 0;
-                    } else if (button == GLFW.GLFW_MOUSE_BUTTON_2) {
+                    } else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
                         this.quickCraftingType = 1;
                     } else if (pickBlockButton) {
                         this.quickCraftingType = 2;

@@ -95,12 +95,12 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable ICapabili
             provider.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> {
                 if (security.ownerMatches(minecraft.player)) {
                     if (currentHand != null) {
-                        Mekanism.packetHandler().sendToServer(new PacketSecurityMode(currentHand, button == GLFW.GLFW_MOUSE_BUTTON_1));
+                        Mekanism.packetHandler().sendToServer(new PacketSecurityMode(currentHand, button == GLFW.GLFW_MOUSE_BUTTON_LEFT));
                     } else if (provider instanceof BlockEntity tile) {
-                        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_1 ? GuiInteraction.NEXT_SECURITY_MODE
+                        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteraction.NEXT_SECURITY_MODE
                                                                                                                        : GuiInteraction.PREVIOUS_SECURITY_MODE, tile));
                     } else if (provider instanceof Entity entity) {
-                        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_1 ? GuiInteractionEntity.NEXT_SECURITY_MODE
+                        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteractionEntity.NEXT_SECURITY_MODE
                                                                                                                        : GuiInteractionEntity.PREVIOUS_SECURITY_MODE, entity));
                     }
                 }
@@ -110,6 +110,6 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable ICapabili
 
     @Override
     public boolean isValidClickButton(int button) {
-        return button == GLFW.GLFW_MOUSE_BUTTON_1 || button == GLFW.GLFW_MOUSE_BUTTON_2;
+        return button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
     }
 }
