@@ -1627,6 +1627,7 @@
   "transmitter.mekanism.gases": "- Gases (%1$s)",
   "transmitter.mekanism.heat": "- Calor (%1$s)",
   "transmitter.mekanism.heat_capacity": "Capacidad de Calor: %1$s",
+  "transmitter.mekanism.infuse_types": "Tipos de Infusión: (%1$s)",
   "transmitter.mekanism.insulation": "Aislación: %1$s",
   "transmitter.mekanism.items": "- Objetos (%1$s)",
   "transmitter.mekanism.pigments": "Pigmentos (%1$s)",
