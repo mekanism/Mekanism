@@ -20,10 +20,9 @@ public class MekanismPeripheralV2<TILE extends BlockEntity & IComputerTile> exte
      * Only call this if the given tile actually has computer support as it won't be double-checked.
      */
     public static <TILE extends BlockEntity & IComputerTile> MekanismPeripheralV2<TILE> create(TILE tile) {
-        //Linked map to ensure that the order is persisted
-        Map<String, BoundComputerMethod> boundMethods = new LinkedHashMap<>();
-        tile.getComputerMethods(boundMethods);
-        return new MekanismPeripheralV2<>(tile);
+        MekanismPeripheralV2<TILE> mekanismPeripheral = new MekanismPeripheralV2<>(tile);
+        tile.getComputerMethodsV2(mekanismPeripheral);
+        return mekanismPeripheral;
     }
 
     private final String name;
