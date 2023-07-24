@@ -232,9 +232,10 @@ def setupTasks(SourceSet sourceSet) {
     compileTask.configure {
         setGroup("compile")
         options.annotationProcessorPath = configurations.annotationProcessor
-        options.getGeneratedSourceOutputDirectory().set(file("src/datagen/${output}/"))
+        //todo fix the Crafttweaker datagen
+        //options.getGeneratedSourceOutputDirectory().set(file("src/datagen/${output}/"))
         options.compilerArgs.addAll([
-                "-processor", "mekanism.ParamNameMapper",
+                "-processor", "mekanism.ParamNameMapper,mekanism.ComputerMethodProcessor",
                 "-AmekanismModule=mekanism${sourceSet == sourceSets.main ? "" : output}"
         ])
     }
