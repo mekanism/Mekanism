@@ -19,13 +19,13 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.neoforged.gradle' version '[6.0.18,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
 tasks.named('wrapper', Wrapper).configure {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '8.1.1'
+    gradleVersion = '8.2.1'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -372,7 +372,7 @@ test {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    minecraft "net.neoforged:forge:${minecraft_version}-${forge_version}"
 
     annotationProcessor project(":annotation-processor")
 
@@ -643,11 +643,11 @@ publishing {
 
                     // Remove forge deps
                     allDeps.<Node> findAll() { Node el ->
-                        el.artifactId.text() == 'forge' && el.groupId.text() == 'net.minecraftforge'
+                        el.artifactId.text() == 'forge' && el.groupId.text() == 'net.neoforged'
                     }.forEach() { Node el ->
                         el.parent().remove(el)
                     }
-                    //remove ForgeGradle's mapped suffix from versions & set as optional so anyone else doesn't inherit them
+                    //remove NeoGradle's mapped suffix from versions & set as optional so anyone else doesn't inherit them
                     allDeps.<Node> findAll() { Node el ->
                         el.version.text().contains('_mapped_')
                     }.each { Node el ->

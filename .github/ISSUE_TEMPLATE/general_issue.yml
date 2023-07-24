@@ -24,6 +24,7 @@ body:
       label: Minecraft version
       description: What version of Minecraft are you using?
       options:
+        - 1.20.1 (Not yet released, manually compiled)
         - 1.19.2 (Latest)
         - 1.19.0 or 1.19.1 (No longer being developed)
         - 1.18.x or earlier (No longer being developed)
