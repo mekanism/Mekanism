@@ -34,7 +34,8 @@ public class CCMethodCallerV2 extends BoundMethodHolder {
         if (methodToCall.threadSafe()) {
             return callHandler(arguments, methodToCall);
         } else {
-            return context.executeMainThreadTask(()->callHandler(arguments, methodToCall).getResult());
+            IArguments escaped = arguments.escapes();
+            return context.executeMainThreadTask(()->callHandler(escaped, methodToCall).getResult());
         }
     }
 
