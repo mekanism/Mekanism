@@ -7,18 +7,18 @@ import java.util.function.BiFunction;
  */
 public class Convertable<RAW> {
     private final RAW value;
-    private final BiFunction<FancyComputerHelper, RAW, Object> converter;
+    private final BiFunction<BaseComputerHelper, RAW, Object> converter;
 
-    public Convertable(RAW value, BiFunction<FancyComputerHelper, RAW, Object> converter) {
+    public Convertable(RAW value, BiFunction<BaseComputerHelper, RAW, Object> converter) {
         this.value = value;
         this.converter = converter;
     }
 
-    public Object convert(FancyComputerHelper helper) {
+    public Object convert(BaseComputerHelper helper) {
         return converter.apply(helper, value);
     }
 
-    public static <RAW> Convertable<RAW> of(RAW value, BiFunction<FancyComputerHelper, RAW, Object> converter) {
+    public static <RAW> Convertable<RAW> of(RAW value, BiFunction<BaseComputerHelper, RAW, Object> converter) {
         return new Convertable<>(value, converter);
     }
 }

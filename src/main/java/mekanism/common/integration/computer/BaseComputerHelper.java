@@ -31,11 +31,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public abstract class FancyComputerHelper {
+public abstract class BaseComputerHelper {
     public abstract  <T extends Enum<T>> T getEnum(int param, Class<T> enumClazz) throws ComputerException;
 
     public abstract  boolean getBool(int param) throws ComputerException;

@@ -29,11 +29,11 @@ public class ComputerMethodProcessor extends AbstractProcessor {
     private static final String MODULE_OPTION = "mekanismModule";
 
     TypeMirror filterInterface;
-    private final ClassName fancyComputerHelper = ClassName.get("mekanism.common.integration.computer", "FancyComputerHelper");
+    private final ClassName baseComputerHelper = ClassName.get("mekanism.common.integration.computer", "BaseComputerHelper");
     private final ClassName computerException = ClassName.get("mekanism.common.integration.computer", "ComputerException");
     private final ClassName lazyInterfaceRaw = ClassName.get("net.minecraftforge.common.util", "Lazy");
     private final ParameterizedTypeName lazyMethodHandleType = ParameterizedTypeName.get(lazyInterfaceRaw, ClassName.get(MethodHandle.class));
-    private final ParameterSpec helperParam = ParameterSpec.builder(fancyComputerHelper, "helper").build();
+    private final ParameterSpec helperParam = ParameterSpec.builder(baseComputerHelper, "helper").build();
     private final ParamToHelperMapper paramToHelperMapper = new ParamToHelperMapper();
     private final ClassName factoryRegistry = ClassName.get("mekanism.common.integration.computer", "FactoryRegistry");
     private final ClassName computerMethodFactoryRaw = ClassName.get("mekanism.common.integration.computer", "ComputerMethodFactory");

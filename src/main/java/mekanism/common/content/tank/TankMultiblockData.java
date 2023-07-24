@@ -17,8 +17,8 @@ import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.BaseComputerHelper;
 import mekanism.common.integration.computer.Convertable;
-import mekanism.common.integration.computer.FancyComputerHelper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
@@ -210,12 +210,12 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     @ComputerMethod
     Convertable<?> getStored() {
         return switch (mergedTank.getCurrentType()) {
-            case FLUID -> Convertable.of(getFluidTank().getFluid(), FancyComputerHelper::convert);
-            case GAS -> Convertable.of(getGasTank().getStack(), FancyComputerHelper::convert);
-            case INFUSION -> Convertable.of(getInfusionTank().getStack(), FancyComputerHelper::convert);
-            case PIGMENT -> Convertable.of(getPigmentTank().getStack(), FancyComputerHelper::convert);
-            case SLURRY -> Convertable.of(getSlurryTank().getStack(), FancyComputerHelper::convert);
-            default -> Convertable.of(FluidStack.EMPTY, FancyComputerHelper::convert);
+            case FLUID -> Convertable.of(getFluidTank().getFluid(), BaseComputerHelper::convert);
+            case GAS -> Convertable.of(getGasTank().getStack(), BaseComputerHelper::convert);
+            case INFUSION -> Convertable.of(getInfusionTank().getStack(), BaseComputerHelper::convert);
+            case PIGMENT -> Convertable.of(getPigmentTank().getStack(), BaseComputerHelper::convert);
+            case SLURRY -> Convertable.of(getSlurryTank().getStack(), BaseComputerHelper::convert);
+            default -> Convertable.of(FluidStack.EMPTY, BaseComputerHelper::convert);
         };
     }
 

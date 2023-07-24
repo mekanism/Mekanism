@@ -4,12 +4,12 @@ import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.integration.computer.BaseComputerHelper;
 import mekanism.common.integration.computer.ComputerException;
-import mekanism.common.integration.computer.FancyComputerHelper;
 
 import java.util.Map;
 
-public class CCComputerHelper extends FancyComputerHelper {
+public class CCComputerHelper extends BaseComputerHelper {
 
     private final IArguments arguments;
 

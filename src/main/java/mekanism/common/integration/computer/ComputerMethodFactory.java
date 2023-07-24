@@ -93,7 +93,7 @@ public class ComputerMethodFactory<T>{
          * @param u the second function argument
          * @return the function result
          */
-        Object apply(T t, FancyComputerHelper u) throws ComputerException;
+        Object apply(T t, BaseComputerHelper u) throws ComputerException;
     }
 
     public record MethodData<T>(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses, ComputerFunctionCaller<T> handler){}
