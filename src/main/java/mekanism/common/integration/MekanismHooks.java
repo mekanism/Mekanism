@@ -9,6 +9,7 @@ import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.integration.jsonthings.JsonThingsIntegration;
 import mekanism.common.integration.lookingat.theoneprobe.TOPProvider;
 import mekanism.common.integration.projecte.NSSHelper;
+import mekanism.generated.mekanism.ComputerMethodRegistry_mekanism;
 import net.minecraftforge.data.loading.DatagenModLoader;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -96,6 +97,7 @@ public final class MekanismHooks {
         FluxNetworksLoaded = modList.isLoaded(FLUX_NETWORKS_MOD_ID);
         WildfireGenderModLoaded = modList.isLoaded(WILDFIRE_GENDER_MOD_ID);
         if (CCLoaded) {
+            ComputerMethodRegistry_mekanism.init();
             CCCapabilityHelper.registerCCMathHelper();
         }
         EnergyCompatUtils.initLoadedCache();
