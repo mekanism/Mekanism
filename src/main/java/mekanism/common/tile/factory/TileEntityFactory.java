@@ -112,7 +112,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     protected final List<IInventorySlot> inputSlots;
     protected final List<IInventorySlot> outputSlots;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    protected EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     protected TileEntityFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes, Set<RecipeError> globalErrorTypes) {
         super(blockProvider, pos, state);

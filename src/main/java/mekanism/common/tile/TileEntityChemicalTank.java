@@ -193,7 +193,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     }
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
-    private IChemicalTank<?, ?> getCurrentTank() {
+    IChemicalTank<?, ?> getCurrentTank() {
         Current current = chemicalTank.getCurrent();
         return chemicalTank.getTankFromCurrent(current == Current.EMPTY ? Current.GAS : current);
     }

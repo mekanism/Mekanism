@@ -92,7 +92,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @Nullable
     private CraftingRecipe cachedRecipe = null;
     @SyntheticComputerMethod(getter = "getExcessRemainingItems")
-    private NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
+    NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
 
     private ItemStack lastFormulaStack = ItemStack.EMPTY;
     private ItemStack lastOutputStack = ItemStack.EMPTY;
