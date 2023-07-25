@@ -50,9 +50,11 @@ public class MekanismPeripheralV2<TILE extends BlockEntity & IComputerTile> exte
 
     @Override
     public boolean equals(@Nullable IPeripheral other) {
-        //Note: Check if we are the same object as the other one, otherwise consider us to not be equal as we
-        // only will really be creating a single instance of this, and other instances of the same tile may
-        // be invalid if it is not persistent such as for multiblocks
-        return other == this;
+        return other instanceof MekanismPeripheralV2<?> && getTarget() == other.getTarget();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof MekanismPeripheralV2<?> other && equals(other);
     }
 }
