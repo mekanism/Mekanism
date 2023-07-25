@@ -108,7 +108,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
             handlerTypeSpec.addOriginatingElement(annotatedElement);
             registryType.addOriginatingElement(annotatedElement);
             Set<Modifier> modifiers = annotatedElement.getModifiers();
-            boolean isPublic = modifiers.contains(Modifier.PUBLIC);
+            //boolean isPublic = modifiers.contains(Modifier.PUBLIC);
             boolean isPrivateOrProtected = modifiers.contains(Modifier.PRIVATE) || modifiers.contains(Modifier.PROTECTED);
             boolean isStatic = modifiers.contains(Modifier.STATIC);
 
@@ -207,7 +207,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                         throw new IllegalStateException("Unknown element type: "+annotatedElement.getClass());
                     }
 
-                    TypeName wrappedTypeName = TypeName.get(wrappedType);
+                    //TypeName wrappedTypeName = TypeName.get(wrappedType);
                     //ParameterSpec wrappedSubject = ParameterSpec.builder(wrappedTypeName, "wrappedSubject").build();
                     //CodeBlock getNewSubject = CodeBlock.builder().addStatement("$T $N = $L", wrappedTypeName, wrappedSubject, targetReference).build();
 
@@ -596,7 +596,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
 
         @Override
         public Object visitString(String s, TypeMirror valueType) {
-            return s != null && !"".equals(s) ? CodeBlock.of("$S", s) : super.defaultAction(s, valueType);
+            return s != null && !s.isBlank() ? CodeBlock.of("$S", s) : super.defaultAction(s, valueType);
         }
 
         @Override
