@@ -134,7 +134,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                     handlerTypeSpec.addMethod(handlerMethod);
 
                     //add a call to register() in the handler class's constructor
-                    CodeBlock registerMethodBuilder = buildRegisterMethodCall(handlerClassName, annotationValues, parameters, handlerMethod, annotationValues.getLiteral("nameOverride", annotatedName), annotationValues.getLiteral("threadSafe", false));
+                    CodeBlock registerMethodBuilder = buildRegisterMethodCall(handlerClassName, annotationValues, parameters, returnType, handlerMethod, annotationValues.getLiteral("nameOverride", annotatedName), annotationValues.getLiteral("threadSafe", false));
                     constructorBuilder.addStatement(registerMethodBuilder);
                 } else if (typeUtils().isSameType(annotationMirror.getAnnotationType(), syntheticComputerMethodAnnotationType) && annotatedElement instanceof VariableElement fieldElement) {
                     CodeBlock targetReference = getReadTargetReferenceForField(containingClassName, handlerTypeSpec, subjectParam, varHandles, fieldGetters, annotatedName, isPrivateOrProtected, isStatic, fieldElement);
@@ -147,7 +147,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                         MethodSpec handlerMethod = buildHandlerMethod(subjectParam, getterName+"_0", true, valueReturner);
                         handlerTypeSpec.addMethod(handlerMethod);
 
-                        CodeBlock getterRegistration = buildRegisterMethodCall(handlerClassName, annotationValues, Collections.emptyList(), handlerMethod, getterName, annotationValues.getLiteral("threadSafeGetter", false));
+                        CodeBlock getterRegistration = buildRegisterMethodCall(handlerClassName, annotationValues, Collections.emptyList(), fieldType, handlerMethod, getterName, annotationValues.getLiteral("threadSafeGetter", false));
                         constructorBuilder.addStatement(getterRegistration);
                     }
                     String setterName = annotationValues.getStringValue("setter", null);
@@ -163,7 +163,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                         MethodSpec handlerMethod = buildHandlerMethod(subjectParam, setterName+"_1", true, setterBody);
                         handlerTypeSpec.addMethod(handlerMethod);
 
-                        CodeBlock setterRegistration = buildRegisterMethodCall(handlerClassName, annotationValues, Collections.singletonList(new FakeParameter(fieldType,"value")), handlerMethod, setterName, annotationValues.getLiteral("threadSafeSetter", false));
+                        CodeBlock setterRegistration = buildRegisterMethodCall(handlerClassName, annotationValues, Collections.singletonList(new FakeParameter(fieldType,"value")), typeUtils().getNoType(TypeKind.VOID), handlerMethod, setterName, annotationValues.getLiteral("threadSafeSetter", false));
                         constructorBuilder.addStatement(setterRegistration);
                     }
                 } else if (typeUtils().isSameType(annotationMirror.getAnnotationType(), wrappingComputerMethodAnnotationType)) {
@@ -228,7 +228,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                         handlerTypeSpec.addMethod(handlerMethod);
 
                         //add a call to register() in the handler class's constructor
-                        CodeBlock registerMethodBuilder = buildRegisterMethodCall(handlerClassName, annotationValues, Collections.emptyList(), handlerMethod, targetMethodName, annotationValues.getLiteral("threadSafe", false));
+                        CodeBlock registerMethodBuilder = buildRegisterMethodCall(handlerClassName, annotationValues, Collections.emptyList(), wrapperMethod.getReturnType(), handlerMethod, targetMethodName, annotationValues.getLiteral("threadSafe", false));
                         constructorBuilder.addStatement(registerMethodBuilder);
 
                     }
@@ -454,11 +454,11 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         registryInit.addStatement(registerStatement.build());
     }
 
-    private CodeBlock buildRegisterMethodCall(String handlerClassName, AnnotationHelper annotationValues, List<VariableElement> parameters, MethodSpec handlerMethod, String computerExposedName, Object threadSafeLiteral) {
-        return buildRegisterMethodCall(handlerClassName, annotationValues, parameters, handlerMethod, CodeBlock.of("$S", computerExposedName),threadSafeLiteral);
+    private CodeBlock buildRegisterMethodCall(String handlerClassName, AnnotationHelper annotationValues, List<VariableElement> parameters, TypeMirror returnType, MethodSpec handlerMethod, String computerExposedName, Object threadSafeLiteral) {
+        return buildRegisterMethodCall(handlerClassName, annotationValues, parameters, returnType, handlerMethod, CodeBlock.of("$S", computerExposedName),threadSafeLiteral);
     }
 
-    private CodeBlock buildRegisterMethodCall(String handlerClassName, AnnotationHelper annotationValues, List<VariableElement> parameters, MethodSpec handlerMethod, Object computerExposedName, Object threadSafeLiteral) {
+    private CodeBlock buildRegisterMethodCall(String handlerClassName, AnnotationHelper annotationValues, List<VariableElement> parameters, TypeMirror returnType, MethodSpec handlerMethod, Object computerExposedName, Object threadSafeLiteral) {
         CodeBlock.Builder registerMethodBuilder = CodeBlock.builder();
         //Computer exposed method name
         registerMethodBuilder.add("register($L, ", computerExposedName);
@@ -476,6 +476,8 @@ public class ComputerMethodProcessor extends AbstractProcessor {
             registerMethodBuilder.add("new String[]{$L}, ", parameters.stream().map(param -> CodeBlock.of("$S", param.getSimpleName())).collect(CodeBlock.joining(",")));
             registerMethodBuilder.add("new Class[]{$L}, ", parameters.stream().map(param -> CodeBlock.of("$T.class", typeUtils().erasure(param.asType()))).collect(CodeBlock.joining(",")));
         }
+        //return type
+        registerMethodBuilder.add("$T.class, ", TypeName.get(typeUtils().erasure(returnType)));
         //method reference to handler method
         registerMethodBuilder.add("$N::$N", handlerClassName, handlerMethod);
         registerMethodBuilder.add(")");
