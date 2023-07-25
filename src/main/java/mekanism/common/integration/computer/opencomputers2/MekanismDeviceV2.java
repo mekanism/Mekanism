@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.ref.WeakReference;
 import java.util.*;
 
 @MethodsReturnNonnullByDefault
@@ -25,9 +26,11 @@ public class MekanismDeviceV2<TILE extends BlockEntity & IComputerTile> extends 
     //frozen on first retrieval
     private final Lazy<List<RPCMethodGroup>> methodGroups = Lazy.of(this::buildMethodGroups);
     private final List<String> name;
+    private final WeakReference<TILE> attachedTile;
 
     public MekanismDeviceV2(TILE tile) {
         this.name = Collections.singletonList(tile.getComputerName());
+        this.attachedTile = new WeakReference<>(tile);
     }
 
     @Override
@@ -38,6 +41,11 @@ public class MekanismDeviceV2<TILE extends BlockEntity & IComputerTile> extends 
     @Override
     public List<RPCMethodGroup> getMethodGroups() {
         return methodGroups.get();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof MekanismDeviceV2<?> other && this.attachedTile.get() == other.attachedTile.get();
     }
 
     private List<RPCMethodGroup> buildMethodGroups() {
