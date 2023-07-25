@@ -35,7 +35,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public abstract class BaseComputerHelper {
-    public abstract  <T extends Enum<T>> T getEnum(int param, Class<T> enumClazz) throws ComputerException;
+    public <T extends Enum<T>> T getEnum(int param, Class<T> enumClazz) throws ComputerException {
+        return SpecialConverters.sanitizeStringToEnum(enumClazz, getString(param));
+    }
 
     public abstract  boolean getBool(int param) throws ComputerException;
 
@@ -247,5 +249,27 @@ public abstract class BaseComputerHelper {
 
     public Object convert(Convertable<?> convertable) {
         return convertable.convert(this);
+    }
+
+    /**
+     * Convert a type to the converted version (what is exposed to the computer)
+     *
+     * @param clazz the unconverted type
+     * @return the converted type, or clazz if no conversion needed
+     */
+    public static Class<?> convertType(Class<?> clazz) {
+        if (clazz == UUID.class || clazz == ResourceLocation.class || clazz == Item.class || Enum.class.isAssignableFrom(clazz)) {
+            return String.class;
+        }
+        if (clazz == Frequency.class || clazz == Coord4D.class || clazz == Vec3i.class || clazz == FluidStack.class || clazz == ItemStack.class || clazz == BlockState.class) {
+            return Map.class;
+        }
+        if (ChemicalStack.class.isAssignableFrom(clazz) || IFilter.class.isAssignableFrom(clazz)) {
+            return Map.class;
+        }
+        if (clazz == Convertable.class) {
+            return Map.class;//technically can be anything, but so far only map used
+        }
+        return clazz;
     }
 }

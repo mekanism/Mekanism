@@ -1,7 +1,7 @@
 package mekanism.common.integration.computer;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraftforge.common.util.Lazy;
@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class BoundMethodHolder {
-    protected final Multimap<String, MethodData> methods = HashMultimap.create();
+    protected final ListMultimap<String, MethodData> methods = ArrayListMultimap.create();
     /**
      * Method + arg count pairs to make sure methods are unique
      */
