@@ -235,7 +235,7 @@ def setupTasks(SourceSet sourceSet) {
         //todo fix the Crafttweaker datagen
         //options.getGeneratedSourceOutputDirectory().set(file("src/datagen/${output}/"))
         options.compilerArgs.addAll([
-                "-processor", "mekanism.ParamNameMapper,mekanism.ComputerMethodProcessor",
+                //"-processor", "mekanism.ParamNameMapper,mekanism.ComputerMethodProcessor",
                 "-AmekanismModule=mekanism${sourceSet == sourceSets.main ? "" : output}"
         ])
     }
