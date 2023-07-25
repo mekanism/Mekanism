@@ -465,7 +465,12 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         //restriction
         registerMethodBuilder.add("$L, ", annotationValues.getLiteral("restriction", null));
         //mods required
-        registerMethodBuilder.add("$L, ", annotationValues.getLiteral("requiredMods", "NO_STRINGS"));
+        List<String> modsRequired = annotationValues.getStringArray("requiredMods");
+        if (modsRequired.isEmpty()) {
+            registerMethodBuilder.add("NO_STRINGS, ");
+        } else {
+            registerMethodBuilder.add("$L, ", annotationValues.getLiteral("requiredMods", "NO_STRINGS"));
+        }
         //threadsafe
         registerMethodBuilder.add("$L, ", threadSafeLiteral);
         //param names
