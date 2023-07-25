@@ -8,6 +8,7 @@ import mekanism.common.integration.computer.BoundMethodHolder;
 import mekanism.common.integration.computer.ComputerException;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -43,7 +44,8 @@ public class CCMethodCallerV2 extends BoundMethodHolder {
     private static MethodResult callHandler(IArguments arguments, MethodData methodToCall) throws LuaException {
         Object result;
         try {
-            result = methodToCall.handler().apply(methodToCall.subject(), new CCComputerHelper(arguments));
+            WeakReference<Object> subject = methodToCall.subject();
+            result = methodToCall.handler().apply(subject != null ? subject.get() : null, new CCComputerHelper(arguments));
         } catch (ComputerException ex) {
             if (ex.getCause() instanceof LuaException luaException) {
                 throw luaException;

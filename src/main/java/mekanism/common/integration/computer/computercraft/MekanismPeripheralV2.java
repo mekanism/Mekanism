@@ -12,6 +12,7 @@ import mekanism.common.integration.computer.IComputerTile;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -26,11 +27,11 @@ public class MekanismPeripheralV2<TILE extends BlockEntity & IComputerTile> exte
     }
 
     private final String name;
-    private final TILE tile;
+    private final WeakReference<TILE> tile;
 
     private MekanismPeripheralV2(TILE tile) {
-        this.tile = tile;
-        this.name = this.tile.getComputerName();
+        this.tile = new WeakReference<>(tile);
+        this.name = tile.getComputerName();
     }
 
     @Override
@@ -45,7 +46,7 @@ public class MekanismPeripheralV2<TILE extends BlockEntity & IComputerTile> exte
 
     @Override
     public Object getTarget() {
-        return tile;
+        return tile.get();
     }
 
     @Override

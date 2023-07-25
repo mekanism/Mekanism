@@ -5,7 +5,9 @@ import com.google.common.collect.ListMultimap;
 import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import net.minecraftforge.common.util.Lazy;
+import org.jetbrains.annotations.Nullable;
 
+import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,8 +25,8 @@ public abstract class BoundMethodHolder {
             throw new RuntimeException("Duplicate method name "+name+"_"+argumentNames.length);
         }
         //noinspection unchecked
-        this.methods.put(name, new MethodData(name, threadSafe, argumentNames, argClasses, returnType, subject, (ComputerMethodFactory.ComputerFunctionCaller<Object>) handler));
+        this.methods.put(name, new MethodData(name, threadSafe, argumentNames, argClasses, returnType, subject != null ? new WeakReference<>(subject) : null, (ComputerMethodFactory.ComputerFunctionCaller<Object>) handler));
     }
 
-    public record MethodData(String name, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses, Class<?> returnType, Object subject, ComputerMethodFactory.ComputerFunctionCaller<Object> handler){}
+    public record MethodData(String name, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses, Class<?> returnType, @Nullable WeakReference<Object> subject, ComputerMethodFactory.ComputerFunctionCaller<Object> handler){}
 }

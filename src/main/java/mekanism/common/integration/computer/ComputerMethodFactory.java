@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import net.minecraftforge.fml.ModList;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -91,7 +92,7 @@ public class ComputerMethodFactory<T>{
          * @param u the second function argument
          * @return the function result
          */
-        Object apply(T t, BaseComputerHelper u) throws ComputerException;
+        Object apply(@Nullable T t, BaseComputerHelper u) throws ComputerException;
     }
 
     public record MethodData<T>(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses, Class<?> returnType, ComputerFunctionCaller<T> handler){}
