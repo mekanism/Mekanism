@@ -1,22 +1,13 @@
 package mekanism.common.integration.computer;
 
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 
-public class ComputerEnergyHelper {
+import java.util.Locale;
 
-    public static Map<String, BoundComputerMethod> getMethods() {
-        //Linked map to ensure that the order is persisted
-        Map<String, BoundComputerMethod> boundMethods = new LinkedHashMap<>();
-        //Get all static computer methods of this class
-        ComputerMethodMapper.INSTANCE.getAndBindToHandler(ComputerEnergyHelper.class, null, boundMethods);
-        return boundMethods;
-    }
+public class ComputerEnergyHelper {
 
     @ComputerMethod
     public static FloatingLong joulesToFE(FloatingLong joules) throws ComputerException {

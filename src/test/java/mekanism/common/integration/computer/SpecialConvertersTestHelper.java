@@ -1,7 +1,5 @@
-package mekanism.common.integration.computer.computercraft;
+package mekanism.common.integration.computer;
 
-import java.util.HashMap;
-import java.util.Map;
 import net.minecraft.nbt.CollectionTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NumericTag;
@@ -9,13 +7,10 @@ import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
 
-class CCArgumentWrapperTestHelper {
+import java.util.HashMap;
+import java.util.Map;
 
-    //We just pass null as the arguments as we want to test converting to given types,
-    // so we can just ignore it even though it shouldn't be null, because we don't
-    // call any methods that make use of it
-    private static final CCArgumentWrapper DUMMY_WRAPPER = new CCArgumentWrapper(null);
-
+class SpecialConvertersTestHelper {
     static void assertSame(Tag nbt, @Nullable Class<? extends Tag> targetClass, boolean includeHints) {
         Assertions.assertEquals(nbt, wrapAndSanitize(nbt, targetClass, includeHints));
     }
@@ -31,7 +26,7 @@ class CCArgumentWrapperTestHelper {
     }
 
     static Object sanitize(Class<? extends Tag> expectedType, Object wrapped) {
-        return DUMMY_WRAPPER.sanitizeArgument(expectedType, wrapped.getClass(), wrapped);
+        return SpecialConverters.sanitizeNBT(expectedType, wrapped.getClass(), wrapped);
     }
 
     /**
@@ -77,8 +72,8 @@ class CCArgumentWrapperTestHelper {
     private static Object addTagHint(byte id, Object nbtRepresentation, boolean includeHint) {
         if (includeHint) {
             Map<Object, Object> hint = new HashMap<>(2);
-            hint.put(CCArgumentWrapper.TYPE_HINT_KEY, (double) id);
-            hint.put(CCArgumentWrapper.TYPE_HINT_VALUE_KEY, nbtRepresentation);
+            hint.put(SpecialConverters.TYPE_HINT_KEY, (double) id);
+            hint.put(SpecialConverters.TYPE_HINT_VALUE_KEY, nbtRepresentation);
             return hint;
         }
         return nbtRepresentation;

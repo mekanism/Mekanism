@@ -198,7 +198,8 @@ public class SpecialConverters {
     }
 
     @Nullable
-    private static Tag sanitizeNBT(Class<?> expectedType, Class<?> argumentType, Object argument) {
+    @VisibleForTesting
+    static Tag sanitizeNBT(Class<?> expectedType, Class<?> argumentType, Object argument) {
         if (argumentType == Boolean.class) {
             if (expectedType == ByteTag.class || expectedType == NumericTag.class || expectedType == Tag.class) {
                 return ByteTag.valueOf((boolean) argument);

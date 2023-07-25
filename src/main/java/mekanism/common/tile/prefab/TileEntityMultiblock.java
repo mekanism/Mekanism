@@ -389,21 +389,6 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void getComputerMethods(Map<String, BoundComputerMethod> methods) {
-        super.getComputerMethods(methods);
-        if (exposesMultiblockToComputer()) {
-            T multiblock = getMultiblock();
-            if (multiblock.isFormed()) {
-                //Only expose the multiblock's methods if we are formed, when the formation state changes
-                // our capabilities are invalidated, so should end up getting rechecked and this called by
-                // the various computer integration mods, and allow us to only expose the multiblock's methods
-                // as even existing if the multiblock is complete
-                ComputerMethodMapper.INSTANCE.getAndBindToHandler(multiblock, methods);
-            }
-        }
-    }
-
-    @Override
     public void getComputerMethodsV2(BoundMethodHolder holder) {
         super.getComputerMethodsV2(holder);
         if (exposesMultiblockToComputer()) {

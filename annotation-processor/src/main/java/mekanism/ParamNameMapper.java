@@ -34,8 +34,6 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
-import mekanism.common.integration.computer.annotation.ComputerMethod;
-import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import org.openzen.zencode.java.ZenCodeType;
 
 public class ParamNameMapper extends AbstractProcessor {
@@ -44,10 +42,6 @@ public class ParamNameMapper extends AbstractProcessor {
 
     private static String forDatagen(String path) {
         return "resources/" + path;
-    }
-
-    private static AnnotationParamScanner computer(String module) {
-        return new AnnotationParamScanner("annotation_generated/data/" + module + "/parameter_names/computer", ComputerMethod.class, WrappingComputerMethod.class);
     }
 
     private Set<AnnotationParamScanner> scanners = Collections.emptySet();
@@ -63,11 +57,8 @@ public class ParamNameMapper extends AbstractProcessor {
         String mekModule = processingEnv.getOptions().getOrDefault(MODULE_OPTION, "mekanism");
         if (mekModule.equals("mekanism")) {
             scanners = Set.of(
-                  new AnnotationParamScanner(forDatagen("crafttweaker_parameter_names"), ZenCodeType.Method.class),
-                  computer(mekModule)
+                  new AnnotationParamScanner(forDatagen("crafttweaker_parameter_names"), ZenCodeType.Method.class)
             );
-        } else {
-            scanners = Collections.singleton(computer(mekModule));
         }
     }
 

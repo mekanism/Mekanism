@@ -1,8 +1,9 @@
-package mekanism.common.integration.computer.computercraft;
+package mekanism.common.integration.computer;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CollectionTag;
@@ -26,8 +27,8 @@ import org.quicktheories.WithQuickTheories;
 import org.quicktheories.core.Gen;
 import org.quicktheories.impl.Constraint;
 
-@DisplayName("Test ComputerCraft Argument Wrapper using properties")
-class CCArgumentWrapperPropertyTest implements WithQuickTheories {
+@DisplayName("Test Computer Argument Wrapper using properties")
+class SpecialConvertersPropertyTest implements WithQuickTheories {
 
     @Override
     public QuickTheory qt() {
@@ -77,37 +78,37 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @Test
     @DisplayName("Test serializing and deserializing bytes with ByteTag target and no hints")
     void testBytes() {
-        qt().forAll(allBytes()).as(ByteTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+        qt().forAll(allBytes()).as(ByteTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing bytes with Tag target and no hints")
     void testBytesTag() {
-        qt().forAll(allBytes()).as(ByteTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, Tag.class, false));
+        qt().forAll(allBytes()).as(ByteTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, Tag.class, false));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing bytes with NumericTag target and no hints")
     void testBytesNumericTag() {
-        qt().forAll(allBytes()).as(ByteTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, NumericTag.class, false));
+        qt().forAll(allBytes()).as(ByteTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, NumericTag.class, false));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing bytes with ByteTag target and type hints")
     void testBytesWithHint() {
-        qt().forAll(allBytes()).as(ByteTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, true));
+        qt().forAll(allBytes()).as(ByteTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, true));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing bytes with Tag target and type hints")
     void testBytesTagWithHint() {
-        qt().forAll(allBytes()).as(ByteTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, Tag.class, true));
+        qt().forAll(allBytes()).as(ByteTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, Tag.class, true));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing bytes with NumericTag target and type hints")
     void testBytesNumericTagWithHint() {
-        qt().forAll(allBytes()).as(ByteTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, NumericTag.class, true));
+        qt().forAll(allBytes()).as(ByteTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, NumericTag.class, true));
     }
 
     // ===================
@@ -115,7 +116,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     // ===================
     private boolean checkSameShort(short value, @Nullable Class<? extends Tag> targetClass) {
         ShortTag nbt = ShortTag.valueOf(value);
-        Object sanitized = CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, targetClass, false);
+        Object sanitized = SpecialConvertersTestHelper.wrapAndSanitize(nbt, targetClass, false);
         if (value < Byte.MIN_VALUE || value > Byte.MAX_VALUE) {
             return nbt.equals(sanitized);
         }
@@ -125,7 +126,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @Test
     @DisplayName("Test serializing and deserializing shorts with ShortTag target and no hints")
     void testShorts() {
-        qt().forAll(allShorts()).as(ShortTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+        qt().forAll(allShorts()).as(ShortTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
@@ -143,19 +144,19 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @Test
     @DisplayName("Test serializing and deserializing shorts with ShortTag target and type hints")
     void testShortsWithHint() {
-        qt().forAll(allShorts()).as(ShortTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, true));
+        qt().forAll(allShorts()).as(ShortTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, true));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing shorts with Tag target and type hints")
     void testShortsTagWithHint() {
-        qt().forAll(allShorts()).as(ShortTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, Tag.class, true));
+        qt().forAll(allShorts()).as(ShortTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, Tag.class, true));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing shorts with NumericTag target and type hints")
     void testShortsNumericTagWithHint() {
-        qt().forAll(allShorts()).as(ShortTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, NumericTag.class, true));
+        qt().forAll(allShorts()).as(ShortTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, NumericTag.class, true));
     }
 
     // ===================
@@ -163,7 +164,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     // ===================
     private boolean checkSameInt(int value, @Nullable Class<? extends Tag> targetClass) {
         IntTag nbt = IntTag.valueOf(value);
-        Object sanitized = CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, targetClass, false);
+        Object sanitized = SpecialConvertersTestHelper.wrapAndSanitize(nbt, targetClass, false);
         if (value < Short.MIN_VALUE || value > Short.MAX_VALUE) {
             return nbt.equals(sanitized);
         } else if (value < Byte.MIN_VALUE || value > Byte.MAX_VALUE) {
@@ -175,7 +176,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @Test
     @DisplayName("Test serializing and deserializing ints with IntTag target and no hints")
     void testInts() {
-        qt().forAll(integers().all()).as(IntTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+        qt().forAll(integers().all()).as(IntTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
@@ -193,19 +194,19 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @Test
     @DisplayName("Test serializing and deserializing ints with IntTag target and type hints")
     void testIntsWithHint() {
-        qt().forAll(integers().all()).as(IntTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, true));
+        qt().forAll(integers().all()).as(IntTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, true));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing ints with Tag target and type hints")
     void testIntsTagWithHint() {
-        qt().forAll(integers().all()).as(IntTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, Tag.class, true));
+        qt().forAll(integers().all()).as(IntTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, Tag.class, true));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing ints with NumericTag target and type hints")
     void testIntsNumericTagWithHint() {
-        qt().forAll(integers().all()).as(IntTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, NumericTag.class, true));
+        qt().forAll(integers().all()).as(IntTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, NumericTag.class, true));
     }
 
     // ===================
@@ -221,7 +222,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
 
     private boolean checkSameLong(long value, @Nullable Class<? extends Tag> targetClass) {
         LongTag nbt = LongTag.valueOf(value);
-        Object sanitized = CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, targetClass, false);
+        Object sanitized = SpecialConvertersTestHelper.wrapAndSanitize(nbt, targetClass, false);
         if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
             return getExpected(value).equals(sanitized);
         } else if (value < Short.MIN_VALUE || value > Short.MAX_VALUE) {
@@ -234,7 +235,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
 
     private boolean checkSameLong(long value, @Nullable Class<? extends Tag> targetClass, boolean includeHints) {
         LongTag nbt = LongTag.valueOf(value);
-        Object sanitized = CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, targetClass, includeHints);
+        Object sanitized = SpecialConvertersTestHelper.wrapAndSanitize(nbt, targetClass, includeHints);
         return getExpected(value).equals(sanitized);
     }
 
@@ -279,7 +280,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     // ===================
     private boolean checkSameFloat(float value, @Nullable Class<? extends Tag> targetClass) {
         FloatTag nbt = FloatTag.valueOf(value);
-        Object sanitized = CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, targetClass, false);
+        Object sanitized = SpecialConvertersTestHelper.wrapAndSanitize(nbt, targetClass, false);
         if (value == Math.floor(value) && value >= Long.MIN_VALUE && value <= Long.MAX_VALUE) {
             //If we are an integer float check the proper type
             if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
@@ -297,7 +298,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @Test
     @DisplayName("Test serializing and deserializing floats with FloatTag target and no hints")
     void testFloats() {
-        qt().forAll(anyFloat()).as(FloatTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+        qt().forAll(anyFloat()).as(FloatTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
@@ -315,19 +316,19 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @Test
     @DisplayName("Test serializing and deserializing floats with FloatTag target and type hints")
     void testFloatsWithHint() {
-        qt().forAll(anyFloat()).as(FloatTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, true));
+        qt().forAll(anyFloat()).as(FloatTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, true));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing floats with Tag target and type hints")
     void testFloatsTagWithHint() {
-        qt().forAll(anyFloat()).as(FloatTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, Tag.class, true));
+        qt().forAll(anyFloat()).as(FloatTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, Tag.class, true));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing floats with NumericTag target and type hints")
     void testFloatsNumericTagWithHint() {
-        qt().forAll(anyFloat()).as(FloatTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, NumericTag.class, true));
+        qt().forAll(anyFloat()).as(FloatTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, NumericTag.class, true));
     }
 
     // ===================
@@ -335,7 +336,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     // ===================
     private boolean checkSameDouble(double value, @Nullable Class<? extends Tag> targetClass) {
         DoubleTag nbt = DoubleTag.valueOf(value);
-        Object sanitized = CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, targetClass, false);
+        Object sanitized = SpecialConvertersTestHelper.wrapAndSanitize(nbt, targetClass, false);
         if (value == Math.floor(value) && value >= Long.MIN_VALUE && value <= Long.MAX_VALUE) {
             //If we are an integer double-check the proper type
             if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
@@ -356,7 +357,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @Test
     @DisplayName("Test serializing and deserializing doubles with DoubleTag target and no hints")
     void testDoubles() {
-        qt().forAll(anyDouble()).as(DoubleTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+        qt().forAll(anyDouble()).as(DoubleTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
@@ -374,19 +375,19 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @Test
     @DisplayName("Test serializing and deserializing doubles with DoubleTag target and type hints")
     void testDoublesWithHint() {
-        qt().forAll(anyDouble()).as(DoubleTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, true));
+        qt().forAll(anyDouble()).as(DoubleTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, true));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing doubles with Tag target and type hints")
     void testDoublesTagWithHint() {
-        qt().forAll(anyDouble()).as(DoubleTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, Tag.class, true));
+        qt().forAll(anyDouble()).as(DoubleTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, Tag.class, true));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing doubles with NumericTag target and type hints")
     void testDoublesNumericTagWithHint() {
-        qt().forAll(anyDouble()).as(DoubleTag::valueOf).check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, NumericTag.class, true));
+        qt().forAll(anyDouble()).as(DoubleTag::valueOf).check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, NumericTag.class, true));
     }
 
     // ===================
@@ -396,35 +397,35 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @DisplayName("Test serializing and deserializing strings with StringTag target and no hints")
     void testStrings() {
         qt().forAll(strings().ascii().ofLengthBetween(0, 15)).as(StringTag::valueOf)
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing strings with Tag target and no hints")
     void testStringsTag() {
         qt().forAll(strings().ascii().ofLengthBetween(0, 15)).as(StringTag::valueOf)
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, Tag.class, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, Tag.class, false));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing strings with StringTag target and type hints")
     void testStringsWithHint() {
         qt().forAll(strings().ascii().ofLengthBetween(0, 15)).as(StringTag::valueOf)
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, true));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, true));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing strings with Tag target and type hints")
     void testStringsTagWithHint() {
         qt().forAll(strings().ascii().ofLengthBetween(0, 15)).as(StringTag::valueOf)
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, Tag.class, true));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, Tag.class, true));
     }
 
     // ===================
     // Byte Arrays
     // ===================
     private boolean checkSameByteArray(ByteArrayTag nbt, @Nullable Class<? extends Tag> targetClass) {
-        Object sanitized = CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, targetClass, false);
+        Object sanitized = SpecialConvertersTestHelper.wrapAndSanitize(nbt, targetClass, false);
         if (nbt.isEmpty()) {
             if (targetClass == Tag.class) {
                 return sanitized instanceof CompoundTag compound && compound.isEmpty();
@@ -438,7 +439,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @DisplayName("Test serializing and deserializing byte arrays with ByteArrayTag target and no hints")
     void testByteArrays() {
         qt().forAll(lists().of(allBytes()).ofSizeBetween(0, 15)).as(ByteArrayTag::new)
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
@@ -457,21 +458,21 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @DisplayName("Test serializing and deserializing byte arrays with ByteArrayTag target and type hints")
     void testByteArraysWithHint() {
         qt().forAll(lists().of(allBytes()).ofSizeBetween(0, 15)).as(ByteArrayTag::new)
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, true));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, true));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing byte arrays with Tag target and type hints")
     void testByteArraysTagWithHint() {
         qt().forAll(lists().of(allBytes()).ofSizeBetween(0, 15)).as(ByteArrayTag::new)
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, Tag.class, true));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, Tag.class, true));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing byte arrays with CollectionTag target and type hints")
     void testByteArraysCollectionTagWithHint() {
         qt().forAll(lists().of(allBytes()).ofSizeBetween(0, 15)).as(ByteArrayTag::new)
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, CollectionTag.class, true));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, CollectionTag.class, true));
     }
 
     // ===================
@@ -479,7 +480,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     // ===================
     private boolean checkSameIntArray(List<Integer> ints, @Nullable Class<? extends Tag> targetClass) {
         IntArrayTag nbt = new IntArrayTag(ints);
-        Object sanitized = CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, targetClass, false);
+        Object sanitized = SpecialConvertersTestHelper.wrapAndSanitize(nbt, targetClass, false);
         if (ints.isEmpty()) {
             if (targetClass == Tag.class) {
                 return sanitized instanceof CompoundTag compound && compound.isEmpty();
@@ -499,7 +500,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @DisplayName("Test serializing and deserializing int arrays with IntArrayTag target and no hints")
     void testIntArrays() {
         qt().forAll(lists().of(integers().all()).ofSizeBetween(0, 15)).as(IntArrayTag::new)
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
@@ -518,21 +519,21 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @DisplayName("Test serializing and deserializing int arrays with IntArrayTag target and type hints")
     void testIntArraysWithHint() {
         qt().forAll(lists().of(integers().all()).ofSizeBetween(0, 15)).as(IntArrayTag::new)
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, true));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, true));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing int arrays with Tag target and type hints")
     void testIntArraysTagWithHint() {
         qt().forAll(lists().of(integers().all()).ofSizeBetween(0, 15)).as(IntArrayTag::new)
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, Tag.class, true));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, Tag.class, true));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing int arrays with CollectionTag target and type hints")
     void testIntArraysCollectionTagWithHint() {
         qt().forAll(lists().of(integers().all()).ofSizeBetween(0, 15)).as(IntArrayTag::new)
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, CollectionTag.class, true));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, CollectionTag.class, true));
     }
 
     // ===================
@@ -540,7 +541,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     // ===================
     private boolean checkSameLongArray(List<Long> longs, @Nullable Class<? extends Tag> targetClass) {
         LongArrayTag nbt = new LongArrayTag(longs);
-        Object sanitized = CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, targetClass, false);
+        Object sanitized = SpecialConvertersTestHelper.wrapAndSanitize(nbt, targetClass, false);
         if (longs.isEmpty()) {
             if (targetClass == Tag.class) {
                 return sanitized instanceof CompoundTag compound && compound.isEmpty();
@@ -569,7 +570,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
 
     private boolean checkSameLongArray(List<Long> longs, @Nullable Class<? extends Tag> targetClass, boolean includeHints) {
         LongArrayTag nbt = new LongArrayTag(longs);
-        Object sanitized = CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, targetClass, includeHints);
+        Object sanitized = SpecialConvertersTestHelper.wrapAndSanitize(nbt, targetClass, includeHints);
         return getExpected(longs).equals(sanitized);
     }
 
@@ -642,42 +643,42 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @DisplayName("Test serializing and deserializing string lists with ListTag target and no hints")
     void testStringList() {
         qt().forAll(lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15)).as(this::fromStrings)
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing string lists with Tag target and no hints")
     void testStringListTag() {
         qt().forAll(lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15)).as(this::fromStrings)
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, Tag.class, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, Tag.class, false));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing string lists with CollectionTag target and no hints")
     void testStringListCollectionTag() {
         qt().forAll(lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15)).as(this::fromStrings)
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, CollectionTag.class, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, CollectionTag.class, false));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing string lists with ListTag target and type hints")
     void testStringListWithHint() {
         qt().forAll(lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15)).as(this::fromStrings)
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, true));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, true));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing string lists with Tag target and type hints")
     void testStringListTagWithHint() {
         qt().forAll(lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15)).as(this::fromStrings)
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, Tag.class, true));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, Tag.class, true));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing string lists with CollectionTag target and type hints")
     void testStringListCollectionTagWithHint() {
         qt().forAll(lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15)).as(this::fromStrings)
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, CollectionTag.class, true));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, CollectionTag.class, true));
     }
 
     @Test
@@ -687,7 +688,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
                     allBytes(),
                     onlyShorts()
               ).as((b, s) -> fromArray(ShortTag.valueOf(b), ShortTag.valueOf(s)))
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
@@ -697,7 +698,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
                     allBytes(),
                     onlyInts()
               ).as((b, i) -> fromArray(IntTag.valueOf(b), IntTag.valueOf(i)))
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
@@ -709,7 +710,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         ).check((b, l) -> {
             ListTag nbt = fromArray(LongTag.valueOf(b), LongTag.valueOf(l));
             ListTag expected = fromArray(LongTag.valueOf(b), getExpected(l));
-            return expected.equals(CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, null, false));
+            return expected.equals(SpecialConvertersTestHelper.wrapAndSanitize(nbt, null, false));
         });
     }
 
@@ -717,14 +718,14 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @DisplayName("Test serializing and deserializing lists that would be decoded as a byte plus a float")
     void testListByteToFloat() {
         qt().forAll(allBytes()).as(b -> fromArray(FloatTag.valueOf(b), FloatTag.valueOf(Float.MAX_VALUE)))
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing lists that would be decoded as a byte plus a double")
     void testListByteToDouble() {
         qt().forAll(allBytes()).as(b -> fromArray(DoubleTag.valueOf(b), DoubleTag.valueOf(Double.MAX_VALUE)))
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
@@ -734,7 +735,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
                     onlyShorts(),
                     onlyInts()
               ).as((s, i) -> fromArray(IntTag.valueOf(s), IntTag.valueOf(i)))
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
@@ -746,7 +747,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         ).check((s, l) -> {
             ListTag nbt = fromArray(LongTag.valueOf(s), LongTag.valueOf(l));
             ListTag expected = fromArray(LongTag.valueOf(s), getExpected(l));
-            return expected.equals(CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, null, false));
+            return expected.equals(SpecialConvertersTestHelper.wrapAndSanitize(nbt, null, false));
         });
     }
 
@@ -754,14 +755,14 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @DisplayName("Test serializing and deserializing lists that would be decoded as a short plus a float")
     void testListShortToFloat() {
         qt().forAll(onlyShorts()).as(s -> fromArray(FloatTag.valueOf(s), FloatTag.valueOf(Float.MAX_VALUE)))
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing lists that would be decoded as a short plus a double")
     void testListShortToDouble() {
         qt().forAll(onlyShorts()).as(s -> fromArray(DoubleTag.valueOf(s), DoubleTag.valueOf(Double.MAX_VALUE)))
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
@@ -773,7 +774,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         ).check((i, l) -> {
             ListTag nbt = fromArray(LongTag.valueOf(i), LongTag.valueOf(l));
             ListTag expected = fromArray(LongTag.valueOf(i), getExpected(l));
-            return expected.equals(CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, null, false));
+            return expected.equals(SpecialConvertersTestHelper.wrapAndSanitize(nbt, null, false));
         });
     }
 
@@ -781,35 +782,35 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @DisplayName("Test serializing and deserializing lists that would be decoded as an int plus a float")
     void testListIntToFloat() {
         qt().forAll(onlyInts()).as(i -> fromArray(FloatTag.valueOf(i), FloatTag.valueOf(Float.MAX_VALUE)))
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing lists that would be decoded as an int plus a double")
     void testListIntToDouble() {
         qt().forAll(onlyInts()).as(i -> fromArray(DoubleTag.valueOf(i), DoubleTag.valueOf(Double.MAX_VALUE)))
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing lists that would be decoded as a long plus a float")
     void testListLongToFloat() {
         qt().forAll(onlyLongs()).as(l -> fromArray(FloatTag.valueOf(l), FloatTag.valueOf(Float.MAX_VALUE)))
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing lists that would be decoded as a long plus a double")
     void testListLongToDouble() {
         qt().forAll(onlyLongs()).as(l -> fromArray(DoubleTag.valueOf(l), DoubleTag.valueOf(Double.MAX_VALUE)))
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
     @DisplayName("Test serializing and deserializing lists that would be decoded as a float plus a double")
     void testListFloatToDouble() {
         qt().forAll(floats().between(Long.MAX_VALUE + 1F, Float.MAX_VALUE)).as(f -> fromArray(DoubleTag.valueOf(f), DoubleTag.valueOf(Double.MAX_VALUE)))
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
@@ -819,7 +820,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
                     lists().of(allBytes()).ofSizeBetween(1, 15),
                     lists().of(onlyShorts()).ofSizeBetween(1, 15)
               ).as((bytes, shorts) -> fromArray(fromBytes(bytes), fromShorts(shorts)))
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
@@ -831,7 +832,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         ).check((bytes, ints) -> {
             ListTag nbt = fromArray(fromBytes(bytes), fromInts(ints));
             ListTag expected = fromArray(new IntArrayTag(bytes.stream().mapToInt(Number::intValue).toArray()), new IntArrayTag(ints));
-            return expected.equals(CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, null, false));
+            return expected.equals(SpecialConvertersTestHelper.wrapAndSanitize(nbt, null, false));
         });
     }
 
@@ -844,7 +845,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         ).check((bytes, longs) -> {
             ListTag nbt = fromArray(fromBytes(bytes), fromLongs(longs));
             ListTag expected = fromArray(new LongArrayTag(bytes.stream().mapToLong(Number::longValue).toArray()), getExpected(longs));
-            return expected.equals(CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, null, false));
+            return expected.equals(SpecialConvertersTestHelper.wrapAndSanitize(nbt, null, false));
         });
     }
 
@@ -857,7 +858,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         ).check((shorts, ints) -> {
             ListTag nbt = fromArray(fromShorts(shorts), fromInts(ints));
             ListTag expected = fromArray(new IntArrayTag(shorts.stream().mapToInt(Number::intValue).toArray()), new IntArrayTag(ints));
-            return expected.equals(CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, null, false));
+            return expected.equals(SpecialConvertersTestHelper.wrapAndSanitize(nbt, null, false));
         });
     }
 
@@ -870,7 +871,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         ).check((shorts, longs) -> {
             ListTag nbt = fromArray(fromShorts(shorts), fromLongs(longs));
             ListTag expected = fromArray(new LongArrayTag(shorts.stream().mapToLong(Number::longValue).toArray()), getExpected(longs));
-            return expected.equals(CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, null, false));
+            return expected.equals(SpecialConvertersTestHelper.wrapAndSanitize(nbt, null, false));
         });
     }
 
@@ -883,7 +884,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         ).check((ints, longs) -> {
             ListTag nbt = fromArray(fromInts(ints), fromLongs(longs));
             ListTag expected = fromArray(new LongArrayTag(ints.stream().mapToLong(Number::longValue).toArray()), getExpected(longs));
-            return expected.equals(CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, null, false));
+            return expected.equals(SpecialConvertersTestHelper.wrapAndSanitize(nbt, null, false));
         });
     }
 
@@ -893,7 +894,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         qt().forAll(lists().of(allBytes()).ofSizeBetween(1, 15)).check(bytes -> {
             ListTag nbt = fromArray(fromBytes(bytes), new ListTag());
             ListTag expected = fromArray(new ByteArrayTag(bytes), new ByteArrayTag(new byte[0]));
-            return expected.equals(CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, null, false));
+            return expected.equals(SpecialConvertersTestHelper.wrapAndSanitize(nbt, null, false));
         });
     }
 
@@ -903,7 +904,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         qt().forAll(lists().of(allBytes()).ofSizeBetween(1, 15)).check(bytes -> {
             ListTag nbt = fromArray(new ListTag(), fromBytes(bytes));
             ListTag expected = fromArray(new ByteArrayTag(new byte[0]), new ByteArrayTag(bytes));
-            return expected.equals(CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, null, false));
+            return expected.equals(SpecialConvertersTestHelper.wrapAndSanitize(nbt, null, false));
         });
     }
 
@@ -913,7 +914,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         qt().forAll(lists().of(onlyInts()).ofSizeBetween(1, 15)).check(ints -> {
             ListTag nbt = fromArray(fromInts(ints), new ListTag());
             ListTag expected = fromArray(new IntArrayTag(ints), new IntArrayTag(new int[0]));
-            return expected.equals(CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, null, false));
+            return expected.equals(SpecialConvertersTestHelper.wrapAndSanitize(nbt, null, false));
         });
     }
 
@@ -923,7 +924,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         qt().forAll(lists().of(onlyInts()).ofSizeBetween(1, 15)).check(ints -> {
             ListTag nbt = fromArray(new ListTag(), fromInts(ints));
             ListTag expected = fromArray(new IntArrayTag(new int[0]), new IntArrayTag(ints));
-            return expected.equals(CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, null, false));
+            return expected.equals(SpecialConvertersTestHelper.wrapAndSanitize(nbt, null, false));
         });
     }
 
@@ -933,7 +934,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         qt().forAll(lists().of(onlyLongs()).ofSizeBetween(1, 15)).check(longs -> {
             ListTag nbt = fromArray(fromLongs(longs), new ListTag());
             ListTag expected = fromArray(getExpected(longs), new LongArrayTag(new long[0]));
-            return expected.equals(CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, null, false));
+            return expected.equals(SpecialConvertersTestHelper.wrapAndSanitize(nbt, null, false));
         });
     }
 
@@ -943,7 +944,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         qt().forAll(lists().of(onlyLongs()).ofSizeBetween(1, 15)).check(longs -> {
             ListTag nbt = fromArray(new ListTag(), fromLongs(longs));
             ListTag expected = fromArray(new LongArrayTag(new long[0]), getExpected(longs));
-            return expected.equals(CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, null, false));
+            return expected.equals(SpecialConvertersTestHelper.wrapAndSanitize(nbt, null, false));
         });
     }
 
@@ -952,7 +953,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     void testListEmptyPlusList() {
         qt().forAll(lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15)).check(strings -> {
             ListTag nbt = fromArray(new ListTag(), fromStrings(strings));
-            return CCArgumentWrapperTestHelper.checkSame(nbt, null, false);
+            return SpecialConvertersTestHelper.checkSame(nbt, null, false);
         });
     }
 
@@ -963,7 +964,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
                     lists().of(allBytes()).ofSizeBetween(1, 15),
                     lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15)
               ).as((bytes, strings) -> fromArray(fromBytes(bytes), fromStrings(strings)))
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
@@ -973,7 +974,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
                     lists().of(onlyInts()).ofSizeBetween(1, 15),
                     lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15)
               ).as((ints, strings) -> fromArray(fromInts(ints), fromStrings(strings)))
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
@@ -992,7 +993,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
                 expectedLongs = longs.stream().map(LongTag::valueOf).collect(Collectors.toCollection(ListTag::new));
             }
             ListTag expected = fromArray(expectedLongs, stringListTag);
-            return expected.equals(CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, null, false));
+            return expected.equals(SpecialConvertersTestHelper.wrapAndSanitize(nbt, null, false));
         });
     }
 
@@ -1003,7 +1004,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
                     lists().of(onlyShorts()).ofSizeBetween(1, 15),
                     lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15)
               ).as((shorts, strings) -> fromArray(fromShorts(shorts), fromStrings(strings)))
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 
     @Test
@@ -1013,6 +1014,6 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
                     lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15),
                     lists().of(onlyShorts()).ofSizeBetween(1, 15)
               ).as((strings, shorts) -> fromArray(fromStrings(strings), fromShorts(shorts)))
-              .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
+              .check(nbt -> SpecialConvertersTestHelper.checkSame(nbt, null, false));
     }
 }

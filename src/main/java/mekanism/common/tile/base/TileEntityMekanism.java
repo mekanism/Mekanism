@@ -1292,16 +1292,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void getComputerMethods(Map<String, BoundComputerMethod> methods) {
-        IComputerTile.super.getComputerMethods(methods);
-        for (ITileComponent component : components) {
-            //Allow any supported components to add their computer methods as well
-            // For example side config, ejector, and upgrade components
-            ComputerMethodMapper.INSTANCE.getAndBindToHandler(component, methods);
-        }
-    }
-
-    @Override
     public void getComputerMethodsV2(BoundMethodHolder holder) {
         IComputerTile.super.getComputerMethodsV2(holder);
         for (ITileComponent component : components) {

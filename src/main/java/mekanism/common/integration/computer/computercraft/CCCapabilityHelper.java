@@ -18,14 +18,11 @@ public class CCCapabilityHelper {
     public static <TILE extends BlockEntity & IComputerTile> ICapabilityResolver getComputerCraftCapability(TILE tile) {
         if (tile.isComputerCapabilityPersistent()) {
             return BasicCapabilityResolver.persistent(CAPABILITY, () -> MekanismPeripheralV2.create(tile));
-            //return BasicCapabilityResolver.persistent(CAPABILITY, () -> MekanismPeripheral.create(tile));
         }
         return BasicCapabilityResolver.create(CAPABILITY, () -> MekanismPeripheralV2.create(tile));
-        //return BasicCapabilityResolver.create(CAPABILITY, () -> MekanismPeripheral.create(tile));
     }
 
     public static void registerCCMathHelper() {
-        //ComputerCraftAPI.registerAPIFactory(CCEnergyHelper::create);
         ComputerCraftAPI.registerAPIFactory(CCApiObject.create(ComputerEnergyHelper.class, "mekanismEnergyHelper"));
     }
 }

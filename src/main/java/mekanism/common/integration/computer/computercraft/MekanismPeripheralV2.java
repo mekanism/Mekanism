@@ -7,14 +7,11 @@ import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IDynamicPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import mekanism.common.integration.computer.BoundComputerMethod;
 import mekanism.common.integration.computer.IComputerTile;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class MekanismPeripheralV2<TILE extends BlockEntity & IComputerTile> extends CCMethodCallerV2 implements IDynamicPeripheral {
     /**

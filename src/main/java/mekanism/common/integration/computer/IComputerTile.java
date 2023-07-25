@@ -19,14 +19,10 @@ public interface IComputerTile {
     }
 
     /**
-     * Gathers all computer methods this computer tile supports and adds them to the given map.
+     * Gathers all computer methods this computer tile supports and adds them to the holder.
      *
      * @apiNote Only call this if {@link #hasComputerSupport()} is true.
      */
-    default void getComputerMethods(Map<String, BoundComputerMethod> methods) {
-        ComputerMethodMapper.INSTANCE.getAndBindToHandler(this, methods);
-    }
-
     default void getComputerMethodsV2(BoundMethodHolder holder) {
         FactoryRegistry.bindTo(holder, this);
     }

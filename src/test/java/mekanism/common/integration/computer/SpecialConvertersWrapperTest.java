@@ -1,26 +1,18 @@
-package mekanism.common.integration.computer.computercraft;
+package mekanism.common.integration.computer;
+
+import net.minecraft.nbt.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-import net.minecraft.nbt.ByteArrayTag;
-import net.minecraft.nbt.CollectionTag;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.EndTag;
-import net.minecraft.nbt.IntArrayTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.LongArrayTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
-@DisplayName("Test ComputerCraft Argument Wrapper")
-class CCArgumentWrapperTest {
+@DisplayName("Test Special Converters")
+class SpecialConvertersWrapperTest {
 
     // ===================
     // EndTag
@@ -28,26 +20,26 @@ class CCArgumentWrapperTest {
     @Test
     @DisplayName("Test serializing and deserializing EndTag with EndTag target and no hints")
     void testEnd() {
-        CCArgumentWrapperTestHelper.assertSame(EndTag.INSTANCE, null, false);
+        SpecialConvertersTestHelper.assertSame(EndTag.INSTANCE, null, false);
     }
 
     @Test
     @DisplayName("Test serializing and deserializing EndTag with Tag target and no hints")
     void testEndTag() {
-        Object sanitized = CCArgumentWrapperTestHelper.wrapAndSanitize(EndTag.INSTANCE, Tag.class, false);
+        Object sanitized = SpecialConvertersTestHelper.wrapAndSanitize(EndTag.INSTANCE, Tag.class, false);
         Assertions.assertEquals(StringTag.valueOf(EndTag.INSTANCE.toString()), sanitized);
     }
 
     @Test
     @DisplayName("Test serializing and deserializing EndTag with EndTag target and type hints")
     void testEndWithHint() {
-        CCArgumentWrapperTestHelper.assertSame(EndTag.INSTANCE, null, true);
+        SpecialConvertersTestHelper.assertSame(EndTag.INSTANCE, null, true);
     }
 
     @Test
     @DisplayName("Test serializing and deserializing EndTag with Tag target and type hints")
     void testEndTagWithHint() {
-        CCArgumentWrapperTestHelper.assertSame(EndTag.INSTANCE, Tag.class, true);
+        SpecialConvertersTestHelper.assertSame(EndTag.INSTANCE, Tag.class, true);
     }
 
     // ===================
@@ -56,25 +48,25 @@ class CCArgumentWrapperTest {
     @Test
     @DisplayName("Test serializing and deserializing empty Compounds with CompoundTag target and no hints")
     void testEmptyCompound() {
-        CCArgumentWrapperTestHelper.assertSame(new CompoundTag(), null, false);
+        SpecialConvertersTestHelper.assertSame(new CompoundTag(), null, false);
     }
 
     @Test
     @DisplayName("Test serializing and deserializing empty Compounds with Tag target and no hints")
     void testEmptyCompoundTag() {
-        CCArgumentWrapperTestHelper.assertSame(new CompoundTag(), Tag.class, false);
+        SpecialConvertersTestHelper.assertSame(new CompoundTag(), Tag.class, false);
     }
 
     @Test
     @DisplayName("Test serializing and deserializing empty Compounds with CompoundTag target and type hints")
     void testEmptyCompoundWithHint() {
-        CCArgumentWrapperTestHelper.assertSame(new CompoundTag(), null, true);
+        SpecialConvertersTestHelper.assertSame(new CompoundTag(), null, true);
     }
 
     @Test
     @DisplayName("Test serializing and deserializing empty Compounds with Tag target and type hints")
     void testEmptyCompoundTagWithHint() {
-        CCArgumentWrapperTestHelper.assertSame(new CompoundTag(), Tag.class, true);
+        SpecialConvertersTestHelper.assertSame(new CompoundTag(), Tag.class, true);
     }
 
     @Test
@@ -82,7 +74,7 @@ class CCArgumentWrapperTest {
     void testCompound() {
         CompoundTag nbt = new CompoundTag();
         nbt.putString("test", "value");
-        CCArgumentWrapperTestHelper.assertSame(nbt, null, false);
+        SpecialConvertersTestHelper.assertSame(nbt, null, false);
     }
 
     @Test
@@ -90,7 +82,7 @@ class CCArgumentWrapperTest {
     void testCompoundTag() {
         CompoundTag nbt = new CompoundTag();
         nbt.putString("test", "value");
-        CCArgumentWrapperTestHelper.assertSame(nbt, Tag.class, false);
+        SpecialConvertersTestHelper.assertSame(nbt, Tag.class, false);
     }
 
     @Test
@@ -98,7 +90,7 @@ class CCArgumentWrapperTest {
     void testCompoundWithHint() {
         CompoundTag nbt = new CompoundTag();
         nbt.putString("test", "value");
-        CCArgumentWrapperTestHelper.assertSame(nbt, null, true);
+        SpecialConvertersTestHelper.assertSame(nbt, null, true);
     }
 
     @Test
@@ -106,7 +98,7 @@ class CCArgumentWrapperTest {
     void testCompoundTagWithHint() {
         CompoundTag nbt = new CompoundTag();
         nbt.putString("test", "value");
-        CCArgumentWrapperTestHelper.assertSame(nbt, Tag.class, true);
+        SpecialConvertersTestHelper.assertSame(nbt, Tag.class, true);
     }
 
     @Test
@@ -114,8 +106,8 @@ class CCArgumentWrapperTest {
     void testCompoundWithTypeHintAsKey() {
         CompoundTag nbt = new CompoundTag();
         nbt.putString("test", "value");
-        nbt.putString(CCArgumentWrapper.TYPE_HINT_KEY, "fakeHint");
-        CCArgumentWrapperTestHelper.assertSame(nbt, null, false);
+        nbt.putString(SpecialConverters.TYPE_HINT_KEY, "fakeHint");
+        SpecialConvertersTestHelper.assertSame(nbt, null, false);
     }
 
     // ===================
@@ -124,38 +116,38 @@ class CCArgumentWrapperTest {
     @Test
     @DisplayName("Test serializing and deserializing empty lists with ListTag target and no hints")
     void testEmptyList() {
-        CCArgumentWrapperTestHelper.assertSame(new ListTag(), null, false);
+        SpecialConvertersTestHelper.assertSame(new ListTag(), null, false);
     }
 
     @Test
     @DisplayName("Test serializing and deserializing empty lists with Tag target and no hints")
     void testEmptyListTag() {
-        Object sanitized = CCArgumentWrapperTestHelper.wrapAndSanitize(new ListTag(), Tag.class, false);
+        Object sanitized = SpecialConvertersTestHelper.wrapAndSanitize(new ListTag(), Tag.class, false);
         Assertions.assertEquals(new CompoundTag(), sanitized);
     }
 
     @Test
     @DisplayName("Test serializing and deserializing empty lists with CollectionTag target and no hints")
     void testEmptyListCollectionTag() {
-        CCArgumentWrapperTestHelper.assertSame(new ListTag(), CollectionTag.class, false);
+        SpecialConvertersTestHelper.assertSame(new ListTag(), CollectionTag.class, false);
     }
 
     @Test
     @DisplayName("Test serializing and deserializing empty lists with ListTag target and type hints")
     void testEmptyListWithHint() {
-        CCArgumentWrapperTestHelper.assertSame(new ListTag(), null, true);
+        SpecialConvertersTestHelper.assertSame(new ListTag(), null, true);
     }
 
     @Test
     @DisplayName("Test serializing and deserializing empty lists with Tag target and type hints")
     void testEmptyListTagWithHint() {
-        CCArgumentWrapperTestHelper.assertSame(new ListTag(), Tag.class, true);
+        SpecialConvertersTestHelper.assertSame(new ListTag(), Tag.class, true);
     }
 
     @Test
     @DisplayName("Test serializing and deserializing empty lists with CollectionTag target and type hints")
     void testEmptyListCollectionTagWithHint() {
-        CCArgumentWrapperTestHelper.assertSame(new ListTag(), CollectionTag.class, true);
+        SpecialConvertersTestHelper.assertSame(new ListTag(), CollectionTag.class, true);
     }
 
     // ===================
@@ -165,8 +157,8 @@ class CCArgumentWrapperTest {
         //Validate that we aren't accidentally providing a valid hint
         Assertions.assertNotEquals(nbt.getId(), type);
         Map<Object, Object> hint = new HashMap<>(2);
-        hint.put(CCArgumentWrapper.TYPE_HINT_KEY, (double) type);
-        hint.put(CCArgumentWrapper.TYPE_HINT_VALUE_KEY, CCArgumentWrapperTestHelper.wrapTag(nbt, false));
+        hint.put(SpecialConverters.TYPE_HINT_KEY, (double) type);
+        hint.put(SpecialConverters.TYPE_HINT_VALUE_KEY, SpecialConvertersTestHelper.wrapTag(nbt, false));
         return hint;
     }
 
@@ -175,7 +167,7 @@ class CCArgumentWrapperTest {
     void testInvalidHintNumber() {
         IntTag nbt = IntTag.valueOf(100);
         Object withHint = addInvalidHint(nbt, Tag.TAG_COMPOUND);
-        Assertions.assertNotEquals(nbt, CCArgumentWrapperTestHelper.sanitize(nbt.getClass(), withHint));
+        Assertions.assertNotEquals(nbt, SpecialConvertersTestHelper.sanitize(nbt.getClass(), withHint));
     }
 
     @Test
@@ -183,7 +175,7 @@ class CCArgumentWrapperTest {
     void testInvalidHintCompound() {
         CompoundTag nbt = new CompoundTag();
         Object withHint = addInvalidHint(nbt, Tag.TAG_INT_ARRAY);
-        Assertions.assertNotEquals(nbt, CCArgumentWrapperTestHelper.sanitize(nbt.getClass(), withHint));
+        Assertions.assertNotEquals(nbt, SpecialConvertersTestHelper.sanitize(nbt.getClass(), withHint));
     }
 
     @Test
@@ -191,7 +183,7 @@ class CCArgumentWrapperTest {
     void testInvalidHintCollection() {
         ByteArrayTag nbt = new ByteArrayTag(new byte[0]);
         Object withHint = addInvalidHint(nbt, Tag.TAG_FLOAT);
-        Assertions.assertNotEquals(nbt, CCArgumentWrapperTestHelper.sanitize(nbt.getClass(), withHint));
+        Assertions.assertNotEquals(nbt, SpecialConvertersTestHelper.sanitize(nbt.getClass(), withHint));
     }
 
     // ===================
@@ -206,9 +198,9 @@ class CCArgumentWrapperTest {
         Assertions.assertTrue(mismatchedElements.length > 1);
         Map<Double, Object> wrappedCollection = new HashMap<>(mismatchedElements.length);
         for (int i = 0; i < mismatchedElements.length; i++) {
-            wrappedCollection.put((double) i, CCArgumentWrapperTestHelper.wrapTag(mismatchedElements[i], false));
+            wrappedCollection.put((double) i, SpecialConvertersTestHelper.wrapTag(mismatchedElements[i], false));
         }
-        Assertions.assertFalse(CCArgumentWrapperTestHelper.sanitize(ListTag.class, wrappedCollection) instanceof ListTag);
+        Assertions.assertFalse(SpecialConvertersTestHelper.sanitize(ListTag.class, wrappedCollection) instanceof ListTag);
     }
 
     @Test
