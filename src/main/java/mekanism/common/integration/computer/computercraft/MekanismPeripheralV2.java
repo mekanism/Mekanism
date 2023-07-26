@@ -55,4 +55,12 @@ public class MekanismPeripheralV2<TILE extends BlockEntity & IComputerTile> exte
     public boolean equals(Object obj) {
         return obj instanceof MekanismPeripheralV2<?> other && equals(other);
     }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        TILE tileRef = tile.get();
+        result = 31 * result + (tileRef != null ? tileRef.hashCode() : 0);
+        return result;
+    }
 }

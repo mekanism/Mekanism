@@ -48,6 +48,15 @@ public class MekanismDeviceV2<TILE extends BlockEntity & IComputerTile> extends 
         return obj instanceof MekanismDeviceV2<?> other && this.attachedTile.get() == other.attachedTile.get();
     }
 
+    @Override
+    public int hashCode() {
+        int result = methodGroups.hashCode();
+        result = 31 * result + name.hashCode();
+        TILE tile = attachedTile.get();
+        result = 31 * result + (tile != null ? tile.hashCode() : 0);
+        return result;
+    }
+
     private List<RPCMethodGroup> buildMethodGroups() {
         return this.methods.keySet().stream().map(key->{
             List<MethodData> overloads = this.methods.get(key);
