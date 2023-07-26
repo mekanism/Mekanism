@@ -97,16 +97,15 @@ public class ComputerHandlerBuilder {
 
     private void handleAtWrappingComputerMethod(Element annotatedElement, String annotatedName, boolean isPrivateOrProtected, boolean isStatic, AnnotationHelper annotationValues) {
         //get the wrapper type and find its static methods
-        TypeElement wrapperTypeEl = null;
+        TypeElement wrapperTypeEl;
         TypeMirror wrapperTypeMirror = annotationValues.getClassValue("wrapper");
         if (typeUtils.asElement(wrapperTypeMirror) instanceof TypeElement typeElement){
             wrapperTypeEl = typeElement;
-        }
-        if (wrapperTypeEl == null) {
+        } else {
             messager.printMessage(Diagnostic.Kind.ERROR, "Could not find wrapper Type Element", annotatedElement);
             return;
         }
-        List<ExecutableElement> wrapperMethods = wrapperTypeEl.getEnclosedElements().stream().filter(element -> element instanceof ExecutableElement exec && exec.getModifiers().containsAll(Arrays.asList(Modifier.PUBLIC, Modifier.STATIC))).map(element -> (ExecutableElement)element).toList();
+        List<ExecutableElement> wrapperMethods = gatherWrapperMethods(wrapperTypeEl);
 
         List<String> targetMethodNames = annotationValues.getStringArray("methodNames");
         if (targetMethodNames.size() != wrapperMethods.size()) {
@@ -161,6 +160,19 @@ public class ComputerHandlerBuilder {
             constructorBuilder.addStatement(registerMethodBuilder);
 
         }
+    }
+
+    private static List<ExecutableElement> gatherWrapperMethods(TypeElement wrapperTypeEl) {
+        List<ExecutableElement> wrapperMethods = new ArrayList<>();
+        for (Element element : wrapperTypeEl.getEnclosedElements()) {
+            if (element instanceof ExecutableElement exec) {
+                Set<Modifier> modifiers = exec.getModifiers();
+                if (modifiers.contains(Modifier.PUBLIC) && modifiers.contains(Modifier.STATIC)) {
+                    wrapperMethods.add(exec);
+                }
+            }
+        }
+        return wrapperMethods;
     }
 
     private void handleAtSyntheticMethod(String annotatedName, boolean isPrivateOrProtected, boolean isStatic, AnnotationHelper annotationValues, VariableElement fieldElement) {
