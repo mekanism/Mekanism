@@ -48,10 +48,9 @@ public class OC2ComputerHelper extends BaseComputerHelper {
         return getParam(param).getAsLong();
     }
 
-    @SuppressWarnings("deprecation")//we want that behaviour
     @Override
     public char getChar(int param) throws ComputerException {
-        return getParam(param).getAsCharacter();
+        return getParam(param).getAsString().charAt(0);
     }
 
     @Override
