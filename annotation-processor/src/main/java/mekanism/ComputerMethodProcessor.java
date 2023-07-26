@@ -1,21 +1,17 @@
 package mekanism;
 
 import com.squareup.javapoet.*;
-import mekanism.util.FakeParameter;
-import mekanism.visitors.AnnotationHelper;
-import mekanism.visitors.ParamToHelperMapper;
+import mekanism.builder.ComputerHandlerBuilder;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
-import javax.lang.model.type.*;
-import javax.lang.model.util.*;
-import javax.tools.Diagnostic;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import java.io.IOException;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.WrongMethodTypeException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by Thiakil on 15/07/2023.
@@ -29,33 +25,18 @@ import java.util.stream.Collectors;
 public class ComputerMethodProcessor extends AbstractProcessor {
     private static final String MODULE_OPTION = "mekanismModule";
 
-    TypeMirror filterInterface;
-    private final ClassName baseComputerHelper = ClassName.get("mekanism.common.integration.computer", "BaseComputerHelper");
-    private final ClassName computerException = ClassName.get("mekanism.common.integration.computer", "ComputerException");
-    private final ClassName lazyInterfaceRaw = ClassName.get("net.minecraftforge.common.util", "Lazy");
-    private final ParameterizedTypeName lazyMethodHandleType = ParameterizedTypeName.get(lazyInterfaceRaw, ClassName.get(MethodHandle.class));
-    private final ParameterSpec helperParam = ParameterSpec.builder(baseComputerHelper, "helper").build();
-    private ParamToHelperMapper paramToHelperMapper;
+    //private final ClassName lazyInterfaceRaw = ClassName.get("net.minecraftforge.common.util", "Lazy");
+    //private final ParameterizedTypeName lazyMethodHandleType = ParameterizedTypeName.get(lazyInterfaceRaw, ClassName.get(MethodHandle.class));
+
     private final ClassName factoryRegistry = ClassName.get("mekanism.common.integration.computer", "FactoryRegistry");
-    private final ClassName computerMethodFactoryRaw = ClassName.get("mekanism.common.integration.computer", "ComputerMethodFactory");
-    private TypeMirror computerMethodAnnotationType;
-    private TypeMirror syntheticComputerMethodAnnotationType;
-    private TypeMirror wrappingComputerMethodAnnotationType;
-    private TypeMirror collectionType;
-    private TypeMirror mapType;
+
     private String mekModule;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         mekModule = processingEnv.getOptions().getOrDefault(MODULE_OPTION, "value_not_supplied");
-        computerMethodAnnotationType = Objects.requireNonNull(elementUtils().getTypeElement("mekanism.common.integration.computer.annotation.ComputerMethod")).asType();
-        syntheticComputerMethodAnnotationType = Objects.requireNonNull(elementUtils().getTypeElement("mekanism.common.integration.computer.annotation.SyntheticComputerMethod")).asType();
-        wrappingComputerMethodAnnotationType = Objects.requireNonNull(elementUtils().getTypeElement("mekanism.common.integration.computer.annotation.WrappingComputerMethod")).asType();
-        collectionType = Objects.requireNonNull(elementUtils().getTypeElement("java.util.Collection")).asType();
-        mapType = Objects.requireNonNull(elementUtils().getTypeElement("java.util.Map")).asType();
-        filterInterface = typeUtils().erasure(elementUtils().getTypeElement("mekanism.common.content.filter.IFilter").asType());
-        paramToHelperMapper = new ParamToHelperMapper(helperParam, filterInterface, typeUtils());
+        ComputerHandlerBuilder.init(processingEnv.getElementUtils(), processingEnv.getTypeUtils());
     }
 
     @Override
@@ -70,7 +51,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         MethodSpec.Builder registryInit = MethodSpec.methodBuilder("init").addModifiers(Modifier.STATIC, Modifier.PUBLIC);
 
         for (Map.Entry<TypeElement, List<Element>> entry : annotatedElementsByParent.entrySet()) {
-            processTypeWithAnnotations(registryType, registryInit, entry);
+            processTypeWithAnnotations(registryType, registryInit, entry.getKey(), entry.getValue());
         }
 
         if (annotatedElementsByParent.size() > 0) {
@@ -86,316 +67,26 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         return true;
     }
 
-    private void processTypeWithAnnotations(TypeSpec.Builder registryType, MethodSpec.Builder registryInit, Map.Entry<TypeElement, List<Element>> entry) {
-        TypeElement containingType = entry.getKey();
-        String handlerClassName = containingType.getSimpleName()+"$ComputerHandler";
-        ClassName containingClassName = ClassName.get(containingType);
-
-        TypeSpec.Builder handlerTypeSpec = TypeSpec.classBuilder(handlerClassName)
-                .superclass(ParameterizedTypeName.get(computerMethodFactoryRaw, containingClassName))
-                .addOriginatingElement(containingType)
-                .addModifiers(Modifier.PUBLIC);
-        ParameterSpec subjectParam = ParameterSpec.builder(containingClassName, "subject").build();
+    private void processTypeWithAnnotations(TypeSpec.Builder registryType, MethodSpec.Builder registryInit, TypeElement containingType, List<Element> annotatedElementList) {
+        //todo move registry to separate processor
         registryType.addOriginatingElement(containingType);
-
-        MethodSpec.Builder constructorBuilder = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
-
-        Map<Element, FieldSpec> varHandles = new HashMap<>();
-        Map<Element, MethodSpec> fieldGetters = new HashMap<>();
-        Map<Element, MethodSpec> methodProxies = new HashMap<>();
-
-        for (Element annotatedElement : entry.getValue()) {
-            String annotatedName = annotatedElement.getSimpleName().toString();
-            handlerTypeSpec.addOriginatingElement(annotatedElement);
-            registryType.addOriginatingElement(annotatedElement);
-            Set<Modifier> modifiers = annotatedElement.getModifiers();
-            //boolean isPublic = modifiers.contains(Modifier.PUBLIC);
-            boolean isPrivateOrProtected = modifiers.contains(Modifier.PRIVATE) || modifiers.contains(Modifier.PROTECTED);
-            boolean isStatic = modifiers.contains(Modifier.STATIC);
-
-            for (AnnotationMirror annotationMirror : annotatedElement.getAnnotationMirrors()) {
-                AnnotationHelper annotationValues = new AnnotationHelper(elementUtils(), annotationMirror);
-                //process @ComputerMethod
-                if (typeUtils().isSameType(annotationMirror.getAnnotationType(), computerMethodAnnotationType) && annotatedElement instanceof ExecutableElement executableElement) {
-                    if (isPrivateOrProtected) {
-                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Target for @ComputerMethod should be public or package private", annotatedElement);
-                        continue;
-                    }
-                    TypeMirror returnType = executableElement.getReturnType();
-                    @SuppressWarnings("unchecked")
-                    List<VariableElement> parameters = (List<VariableElement>) executableElement.getParameters();
-
-                    CodeBlock targetInvoker = callTargetMethod(containingClassName, subjectParam, annotatedName, isStatic, parameters);
-
-                    //determine the return method, value or no value
-                    //wrap the target method code, or call it and return void
-                    CodeBlock valueReturner = convertValueToReturn(annotatedElement, returnType, targetInvoker);
-
-                    MethodSpec handlerMethod = buildHandlerMethod(subjectParam, annotationValues.getStringValue("nameOverride", annotatedName)+"_"+parameters.size(), valueReturner);
-                    handlerTypeSpec.addMethod(handlerMethod);
-
-                    //add a call to register() in the handler class's constructor
-                    CodeBlock registerMethodBuilder = buildRegisterMethodCall(handlerClassName, annotationValues, parameters, returnType, handlerMethod, annotationValues.getLiteral("nameOverride", annotatedName), annotationValues.getLiteral("threadSafe", false));
-                    constructorBuilder.addStatement(registerMethodBuilder);
-                } else if (typeUtils().isSameType(annotationMirror.getAnnotationType(), syntheticComputerMethodAnnotationType) && annotatedElement instanceof VariableElement fieldElement) {
-                    CodeBlock targetReference = getReadTargetReferenceForField(containingClassName, handlerTypeSpec, subjectParam, varHandles, fieldGetters, annotatedName, isPrivateOrProtected, isStatic, fieldElement);
-
-                    TypeMirror fieldType = fieldElement.asType();
-
-                    String getterName = annotationValues.getStringValue("getter", null);
-                    if (getterName != null) {
-                        CodeBlock valueReturner = convertValueToReturn(annotatedElement, fieldType, targetReference);
-                        MethodSpec handlerMethod = buildHandlerMethod(subjectParam, getterName+"_0", valueReturner);
-                        handlerTypeSpec.addMethod(handlerMethod);
-
-                        CodeBlock getterRegistration = buildRegisterMethodCall(handlerClassName, annotationValues, Collections.emptyList(), fieldType, handlerMethod, getterName, annotationValues.getLiteral("threadSafeGetter", false));
-                        constructorBuilder.addStatement(getterRegistration);
-                    }
-                    String setterName = annotationValues.getStringValue("setter", null);
-                    if (setterName != null) {
-                        if (isPrivateOrProtected) {
-                            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Setter not implemented for private/protected fields");
-                            continue;
-                        }
-                        CodeBlock setterBody = CodeBlock.builder()
-                                .addStatement("$L = $L", targetReference, fieldType.accept(paramToHelperMapper, 0))
-                                .addStatement("return $N.voidResult()", helperParam)
-                                .build();
-                        MethodSpec handlerMethod = buildHandlerMethod(subjectParam, setterName+"_1", setterBody);
-                        handlerTypeSpec.addMethod(handlerMethod);
-
-                        CodeBlock setterRegistration = buildRegisterMethodCall(handlerClassName, annotationValues, Collections.singletonList(new FakeParameter(fieldType,"value")), typeUtils().getNoType(TypeKind.VOID), handlerMethod, setterName, annotationValues.getLiteral("threadSafeSetter", false));
-                        constructorBuilder.addStatement(setterRegistration);
-                    }
-                } else if (typeUtils().isSameType(annotationMirror.getAnnotationType(), wrappingComputerMethodAnnotationType)) {
-                    //get the wrapper type and find its static methods
-                    TypeElement wrapperTypeEl = null;
-                    TypeMirror wrapperTypeMirror = annotationValues.getClassValue("wrapper");
-                    if (typeUtils().asElement(wrapperTypeMirror) instanceof TypeElement typeElement){
-                        wrapperTypeEl = typeElement;
-                    }
-                    if (wrapperTypeEl == null) {
-                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Could not find wrapper Type Element", annotatedElement);
-                        continue;
-                    }
-                    List<ExecutableElement> wrapperMethods = wrapperTypeEl.getEnclosedElements().stream().filter(element -> element instanceof ExecutableElement exec && exec.getModifiers().containsAll(Arrays.asList(Modifier.PUBLIC, Modifier.STATIC))).map(element -> (ExecutableElement)element).toList();
-
-                    List<String> targetMethodNames = annotationValues.getStringArray("methodNames");
-                    if (targetMethodNames.size() != wrapperMethods.size()) {
-                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Mismatched methodName count. Expected "+wrapperMethods.size()+", found "+targetMethodNames.size(), annotatedElement);
-                        continue;
-                    }
-
-                    //get the value part of the getter
-                    CodeBlock targetReference;
-                    TypeMirror wrappedType;
-                    if (annotatedElement instanceof VariableElement fieldElement) {
-                        targetReference = getReadTargetReferenceForField(containingClassName, handlerTypeSpec, subjectParam, varHandles, fieldGetters, annotatedName, isPrivateOrProtected, isStatic, fieldElement);
-                        wrappedType = fieldElement.asType();
-                    } else if (annotatedElement instanceof ExecutableElement executableElement) {
-                        if (isPrivateOrProtected) {
-                            MethodSpec proxyMethod = methodProxies.computeIfAbsent(executableElement, el->getMethodProxy(containingClassName, handlerTypeSpec, subjectParam, annotatedName, executableElement));
-                            if (isStatic) {
-                                targetReference = CodeBlock.of("$N()", proxyMethod);
-                            } else {
-                                targetReference = CodeBlock.of("$N($N)", proxyMethod, subjectParam);
-                            }
-                        } else {
-                            targetReference = callTargetMethod(containingClassName, subjectParam, annotatedName, isStatic, Collections.emptyList());
-                        }
-                        wrappedType = executableElement.getReturnType();
-                    } else {
-                        throw new IllegalStateException("Unknown element type: "+annotatedElement.getClass());
-                    }
-
-                    //TypeName wrappedTypeName = TypeName.get(wrappedType);
-                    //ParameterSpec wrappedSubject = ParameterSpec.builder(wrappedTypeName, "wrappedSubject").build();
-                    //CodeBlock getNewSubject = CodeBlock.builder().addStatement("$T $N = $L", wrappedTypeName, wrappedSubject, targetReference).build();
-
-                    for (int i = 0; i < targetMethodNames.size(); i++) {
-                        String targetMethodName = targetMethodNames.get(i);
-                        ExecutableElement wrapperMethod = wrapperMethods.get(i);
-
-                        CodeBlock targetInvoker = CodeBlock.of("$T.$L($L)", wrapperTypeMirror, wrapperMethod.getSimpleName(), targetReference);
-
-                        CodeBlock valueReturner = convertValueToReturn(wrapperMethod, wrapperMethod.getReturnType(), targetInvoker);
-
-                        CodeBlock methodBody = CodeBlock.builder()
-                                //.add(getNewSubject)
-                                .add(valueReturner)
-                                .build();
-
-                        MethodSpec handlerMethod = buildHandlerMethod(subjectParam, annotatedName+"$"+targetMethodName, methodBody);
-                        handlerTypeSpec.addMethod(handlerMethod);
-
-                        //add a call to register() in the handler class's constructor
-                        CodeBlock registerMethodBuilder = buildRegisterMethodCall(handlerClassName, annotationValues, Collections.emptyList(), wrapperMethod.getReturnType(), handlerMethod, targetMethodName, annotationValues.getLiteral("threadSafe", false));
-                        constructorBuilder.addStatement(registerMethodBuilder);
-
-                    }
-                }
-            }
+        for (Element element : annotatedElementList) {
+            registryType.addOriginatingElement(element);
         }
 
-        handlerTypeSpec.addMethod(constructorBuilder.build());
-        TypeSpec factorySpec = handlerTypeSpec.build();
+        ClassName containingClassName = ClassName.get(containingType);
 
-        JavaFile factoryFile = JavaFile.builder(containingClassName.packageName(), factorySpec).build();
-
+        JavaFile factoryFile = new ComputerHandlerBuilder(containingType, processingEnv).build(annotatedElementList);
         try {
             factoryFile.writeTo(processingEnv.getFiler());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        addHandlerToRegistry(registryInit, factoryRegistry, containingType, containingClassName, factoryFile);
+        addHandlerToRegistry(registryInit, factoryRegistry, containingType, containingClassName, ClassName.get(factoryFile.packageName, factoryFile.typeSpec.name));
     }
 
-    private CodeBlock getReadTargetReferenceForField(ClassName containingClassName, TypeSpec.Builder handlerTypeSpec, ParameterSpec subjectParam, Map<Element, FieldSpec> varHandles, Map<Element, MethodSpec> fieldGetters, String annotatedName, boolean isPrivateOrProtected, boolean isStatic, VariableElement fieldElement) {
-        CodeBlock.Builder targetFieldBuilder = CodeBlock.builder();
-        if (isPrivateOrProtected) {
-            MethodSpec getterMethod = fieldGetters.computeIfAbsent(fieldElement, el -> getFieldGetter(containingClassName, handlerTypeSpec, subjectParam, varHandles, annotatedName, fieldElement));
-            if (isStatic) {
-                targetFieldBuilder.add("$N()", getterMethod);
-            } else {
-                targetFieldBuilder.add("$N($N)", getterMethod, subjectParam);
-            }
-        } else {
-            if (isStatic) {
-                targetFieldBuilder.add("$T.$L", containingClassName, annotatedName);
-            } else {
-                targetFieldBuilder.add("$N.$L", subjectParam, annotatedName);
-            }
-        }
-        return targetFieldBuilder.build();
-    }
-
-    private MethodSpec getMethodProxy(ClassName containingClassName, TypeSpec.Builder handlerTypeSpec, ParameterSpec subjectParam, String annotatedName, ExecutableElement executableElement) {
-        CodeBlock.Builder paramTypes = CodeBlock.builder();
-        //List<CharSequence> paramInvocations = new ArrayList<>();
-        List<ParameterSpec> proxyParams = new ArrayList<>();
-        if (!executableElement.getModifiers().contains(Modifier.STATIC)) {
-            proxyParams.add(subjectParam);
-        }
-        for (VariableElement parameter : executableElement.getParameters()) {
-            TypeMirror paramType = parameter.asType();
-            paramTypes.add(", $T.class", typeUtils().erasure(paramType));
-            //paramInvocations.add(parameter.getSimpleName());
-            proxyParams.add(ParameterSpec.get(parameter));
-        }
-        CodeBlock builtParamTypes = paramTypes.build();
-        FieldSpec methodHandleField = FieldSpec.builder(MethodHandle.class, "method$" + annotatedName, Modifier.STATIC, Modifier.PRIVATE)
-                .initializer(CodeBlock.of("getMethodHandle($T.class, $S$L)", containingClassName, annotatedName, builtParamTypes))
-                .build();
-        handlerTypeSpec.addField(methodHandleField);
-        TypeName returnType = TypeName.get(executableElement.getReturnType());
-        MethodSpec proxyMethod = MethodSpec.methodBuilder("proxy$"+ annotatedName)
-                .addParameters(proxyParams)
-                .addModifiers(Modifier.STATIC, Modifier.PRIVATE)
-                .addException(computerException)
-                .returns(returnType)
-                .beginControlFlow("try")
-                .addStatement("return ($T)$N.invokeExact($L)", returnType, methodHandleField, proxyParams.stream().map(param->param.name).collect(Collectors.joining(", ")))
-                .nextControlFlow("catch ($T wmte)", WrongMethodTypeException.class)
-                .addStatement("throw new $T($S, wmte)", RuntimeException.class, "Method not bound correctly")
-                .nextControlFlow("catch ($T cex)", computerException)
-                .addStatement("throw cex")
-                .nextControlFlow("catch ($T t)", Throwable.class)
-                .addStatement("throw new $T(t.getMessage(), t)", RuntimeException.class)
-                .endControlFlow()
-                .build();
-        handlerTypeSpec.addMethod(proxyMethod);
-        return proxyMethod;
-    }
-
-    private MethodSpec getFieldGetter(ClassName containingClassName, TypeSpec.Builder handlerTypeSpec, ParameterSpec subjectParam, Map<Element, FieldSpec> varHandles, String annotatedName, VariableElement fieldElement) {
-        FieldSpec varHandleField = varHandles.computeIfAbsent(fieldElement, el->getVarHandleField(containingClassName, handlerTypeSpec, annotatedName));
-
-        TypeName fieldType = TypeName.get(fieldElement.asType());
-
-        MethodSpec.Builder getterMethodBuilder = MethodSpec.methodBuilder("getter$"+ annotatedName)
-                .addModifiers(Modifier.STATIC, Modifier.PRIVATE)
-                .returns(fieldType)
-                //.addException(computerException)
-                .beginControlFlow("try");
-        if (fieldElement.getModifiers().contains(Modifier.STATIC)) {
-            getterMethodBuilder
-                    .addStatement("return ($T)$N.invokeExact()", fieldType, varHandleField);
-        } else {
-            getterMethodBuilder
-                    .addParameter(subjectParam)
-                    .addStatement("return ($T)$N.invokeExact($N)", fieldType, varHandleField, subjectParam);
-        }
-        getterMethodBuilder.nextControlFlow("catch ($T wmte)", WrongMethodTypeException.class)
-                .addStatement("throw new $T($S, wmte)", RuntimeException.class, "Getter not bound correctly")
-                .nextControlFlow("catch ($T t)", Throwable.class)
-                .addStatement("throw new $T(t.getMessage(), t)", RuntimeException.class)
-                .endControlFlow();
-
-        MethodSpec getterMethod = getterMethodBuilder.build();
-        handlerTypeSpec.addMethod(getterMethod);
-        return getterMethod;
-    }
-
-    private static FieldSpec getVarHandleField(ClassName containingClassName, TypeSpec.Builder handlerTypeSpec, String annotatedName) {
-        FieldSpec varHandleField = FieldSpec.builder(MethodHandle.class, "fieldGetter$" + annotatedName, Modifier.STATIC, Modifier.PRIVATE)
-                .initializer(CodeBlock.of("getGetterHandle($T.class, $S)", containingClassName, annotatedName))
-                .build();
-        handlerTypeSpec.addField(varHandleField);
-        return varHandleField;
-    }
-
-    private CodeBlock convertValueToReturn(Element annotatedElement, TypeMirror returnType, CodeBlock targetInvoker) {
-        CodeBlock.Builder valueReturner = CodeBlock.builder();
-        if (returnType.getKind() == TypeKind.VOID) {
-            valueReturner.addStatement(targetInvoker)
-                    .addStatement("return $N.voidResult()", helperParam)
-                    .build();
-        } else {
-            TypeKind returnTypeKind = returnType.getKind();
-            if (returnTypeKind == TypeKind.DECLARED && returnType.toString().equals("java.lang.Object")) {
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Raw Object returned for computer method, use a concrete type or Convertable instead", annotatedElement);
-            }
-            /*if (returnTypeKind.isPrimitive() || (returnTypeKind == TypeKind.DECLARED && (returnType).toString().equals("java.lang.String"))) {
-                valueReturner.addStatement("return $L", targetInvoker);
-            } else */
-            TypeMirror erasedType = typeUtils().erasure(returnType);
-            if (typeUtils().isAssignable(erasedType, collectionType)) {
-                valueReturner.addStatement("return $N.convert($L, $N::convert)", helperParam, targetInvoker, helperParam);
-            } else if (typeUtils().isAssignable(erasedType, mapType)) {
-                valueReturner.addStatement("return $N.convert($L, $N::convert, $N::convert)", helperParam, targetInvoker, helperParam, helperParam);
-            } else {
-                valueReturner.addStatement("return $N.convert($L)", helperParam, targetInvoker);
-            }
-        }
-        return valueReturner.build();
-    }
-
-    private CodeBlock callTargetMethod(ClassName containingClassName, ParameterSpec subjectParam, String annotatedName, boolean isStatic, List<VariableElement> parameters) {
-        CodeBlock.Builder methodCallArguments = CodeBlock.builder();
-        if (!parameters.isEmpty()) {
-            List<CodeBlock> paramGetters = new ArrayList<>();
-            for (int i = 0; i < parameters.size(); i++) {
-                TypeMirror paramType = parameters.get(i).asType();
-                paramGetters.add(paramType.accept(paramToHelperMapper, i));
-            }
-            methodCallArguments.add(CodeBlock.join(paramGetters, ", "));
-        }
-
-        CodeBlock.Builder targetMethodCodeBuilder = CodeBlock.builder();
-        if (isStatic) {
-            targetMethodCodeBuilder.add("$T.$L(", containingClassName, annotatedName);
-        } else {
-            targetMethodCodeBuilder.add("$N.$L(", subjectParam, annotatedName);
-        }
-
-        targetMethodCodeBuilder.add(methodCallArguments.build());
-
-        targetMethodCodeBuilder.add(")");
-        return targetMethodCodeBuilder.build();
-    }
-
-    private void addHandlerToRegistry(MethodSpec.Builder registryInit, ClassName factoryRegistry, TypeElement containingType, ClassName containingClassName, JavaFile factoryFile) {
+    private void addHandlerToRegistry(MethodSpec.Builder registryInit, ClassName factoryRegistry, TypeElement containingType, ClassName containingClassName, ClassName factoryClassName) {
         //gather all superclasses (in mekanism package)
         List<ClassName> superClasses = new ArrayList<>();
         TypeMirror superClass = containingType.getSuperclass();
@@ -413,7 +104,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
 
         //add register call to the factory
         CodeBlock.Builder registerStatement = CodeBlock.builder()
-                .add("$T.register($T.class, $T::new", factoryRegistry, containingClassName, ClassName.get(factoryFile.packageName, factoryFile.typeSpec.name));
+                .add("$T.register($T.class, $T::new", factoryRegistry, containingClassName, factoryClassName);
         //add all super classes, so we don't have to calculate at runtime
         for (ClassName cls : superClasses) {
             registerStatement.add(", $T.class", cls);
@@ -422,50 +113,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         registryInit.addStatement(registerStatement.build());
     }
 
-    private CodeBlock buildRegisterMethodCall(String handlerClassName, AnnotationHelper annotationValues, List<VariableElement> parameters, TypeMirror returnType, MethodSpec handlerMethod, String computerExposedName, Object threadSafeLiteral) {
-        return buildRegisterMethodCall(handlerClassName, annotationValues, parameters, returnType, handlerMethod, CodeBlock.of("$S", computerExposedName),threadSafeLiteral);
-    }
 
-    private CodeBlock buildRegisterMethodCall(String handlerClassName, AnnotationHelper annotationValues, List<VariableElement> parameters, TypeMirror returnType, MethodSpec handlerMethod, Object computerExposedName, Object threadSafeLiteral) {
-        CodeBlock.Builder registerMethodBuilder = CodeBlock.builder();
-        //Computer exposed method name
-        registerMethodBuilder.add("register($L, ", computerExposedName);
-        //restriction
-        registerMethodBuilder.add("$L, ", annotationValues.getLiteral("restriction", null));
-        //mods required
-        List<String> modsRequired = annotationValues.getStringArray("requiredMods");
-        if (modsRequired.isEmpty()) {
-            registerMethodBuilder.add("NO_STRINGS, ");
-        } else {
-            registerMethodBuilder.add("$L, ", annotationValues.getLiteral("requiredMods", "NO_STRINGS"));
-        }
-        //threadsafe
-        registerMethodBuilder.add("$L, ", threadSafeLiteral);
-        //param names
-        if (parameters.isEmpty()) {
-            registerMethodBuilder.add("NO_STRINGS, ");//names
-            registerMethodBuilder.add("NO_CLASSES, ");//classes
-        } else {
-            registerMethodBuilder.add("new String[]{$L}, ", parameters.stream().map(param -> CodeBlock.of("$S", param.getSimpleName())).collect(CodeBlock.joining(",")));
-            registerMethodBuilder.add("new Class[]{$L}, ", parameters.stream().map(param -> CodeBlock.of("$T.class", typeUtils().erasure(param.asType()))).collect(CodeBlock.joining(",")));
-        }
-        //return type
-        registerMethodBuilder.add("$T.class, ", TypeName.get(typeUtils().erasure(returnType)));
-        //method reference to handler method
-        registerMethodBuilder.add("$N::$N", handlerClassName, handlerMethod);
-        registerMethodBuilder.add(")");
-        return registerMethodBuilder.build();
-    }
-
-    private MethodSpec buildHandlerMethod(ParameterSpec subjectParam, String methodName, CodeBlock methodBody) {
-        return MethodSpec.methodBuilder(methodName)
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .returns(Object.class)
-                .addException(computerException)
-                .addParameter(subjectParam)
-                .addParameter(helperParam)
-                .addCode(methodBody).build();
-    }
 
     private Elements elementUtils() {
         return processingEnv.getElementUtils();
