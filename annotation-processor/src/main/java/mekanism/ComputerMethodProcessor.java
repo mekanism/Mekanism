@@ -1,6 +1,9 @@
 package mekanism;
 
 import com.squareup.javapoet.*;
+import mekanism.util.FakeParameter;
+import mekanism.visitors.AnnotationHelper;
+import mekanism.visitors.ParamToHelperMapper;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -10,9 +13,7 @@ import javax.lang.model.util.*;
 import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
 import java.lang.invoke.WrongMethodTypeException;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
     private final ClassName lazyInterfaceRaw = ClassName.get("net.minecraftforge.common.util", "Lazy");
     private final ParameterizedTypeName lazyMethodHandleType = ParameterizedTypeName.get(lazyInterfaceRaw, ClassName.get(MethodHandle.class));
     private final ParameterSpec helperParam = ParameterSpec.builder(baseComputerHelper, "helper").build();
-    private final ParamToHelperMapper paramToHelperMapper = new ParamToHelperMapper();
+    private ParamToHelperMapper paramToHelperMapper;
     private final ClassName factoryRegistry = ClassName.get("mekanism.common.integration.computer", "FactoryRegistry");
     private final ClassName computerMethodFactoryRaw = ClassName.get("mekanism.common.integration.computer", "ComputerMethodFactory");
     private TypeMirror computerMethodAnnotationType;
@@ -53,6 +54,8 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         wrappingComputerMethodAnnotationType = Objects.requireNonNull(elementUtils().getTypeElement("mekanism.common.integration.computer.annotation.WrappingComputerMethod")).asType();
         collectionType = Objects.requireNonNull(elementUtils().getTypeElement("java.util.Collection")).asType();
         mapType = Objects.requireNonNull(elementUtils().getTypeElement("java.util.Map")).asType();
+        filterInterface = typeUtils().erasure(elementUtils().getTypeElement("mekanism.common.content.filter.IFilter").asType());
+        paramToHelperMapper = new ParamToHelperMapper(helperParam, filterInterface, typeUtils());
     }
 
     @Override
@@ -65,8 +68,6 @@ public class ComputerMethodProcessor extends AbstractProcessor {
 
         TypeSpec.Builder registryType = TypeSpec.classBuilder("ComputerMethodRegistry_" + mekModule).addModifiers(Modifier.PUBLIC);
         MethodSpec.Builder registryInit = MethodSpec.methodBuilder("init").addModifiers(Modifier.STATIC, Modifier.PUBLIC);
-
-        filterInterface = typeUtils().erasure(elementUtils().getTypeElement("mekanism.common.content.filter.IFilter").asType());
 
         for (Map.Entry<TypeElement, List<Element>> entry : annotatedElementsByParent.entrySet()) {
             processTypeWithAnnotations(registryType, registryInit, entry);
@@ -130,7 +131,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                     //wrap the target method code, or call it and return void
                     CodeBlock valueReturner = convertValueToReturn(annotatedElement, returnType, targetInvoker);
 
-                    MethodSpec handlerMethod = buildHandlerMethod(subjectParam, annotationValues.getStringValue("nameOverride", annotatedName)+"_"+parameters.size(), true, valueReturner);
+                    MethodSpec handlerMethod = buildHandlerMethod(subjectParam, annotationValues.getStringValue("nameOverride", annotatedName)+"_"+parameters.size(), valueReturner);
                     handlerTypeSpec.addMethod(handlerMethod);
 
                     //add a call to register() in the handler class's constructor
@@ -144,7 +145,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                     String getterName = annotationValues.getStringValue("getter", null);
                     if (getterName != null) {
                         CodeBlock valueReturner = convertValueToReturn(annotatedElement, fieldType, targetReference);
-                        MethodSpec handlerMethod = buildHandlerMethod(subjectParam, getterName+"_0", true, valueReturner);
+                        MethodSpec handlerMethod = buildHandlerMethod(subjectParam, getterName+"_0", valueReturner);
                         handlerTypeSpec.addMethod(handlerMethod);
 
                         CodeBlock getterRegistration = buildRegisterMethodCall(handlerClassName, annotationValues, Collections.emptyList(), fieldType, handlerMethod, getterName, annotationValues.getLiteral("threadSafeGetter", false));
@@ -160,7 +161,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                                 .addStatement("$L = $L", targetReference, fieldType.accept(paramToHelperMapper, 0))
                                 .addStatement("return $N.voidResult()", helperParam)
                                 .build();
-                        MethodSpec handlerMethod = buildHandlerMethod(subjectParam, setterName+"_1", true, setterBody);
+                        MethodSpec handlerMethod = buildHandlerMethod(subjectParam, setterName+"_1", setterBody);
                         handlerTypeSpec.addMethod(handlerMethod);
 
                         CodeBlock setterRegistration = buildRegisterMethodCall(handlerClassName, annotationValues, Collections.singletonList(new FakeParameter(fieldType,"value")), typeUtils().getNoType(TypeKind.VOID), handlerMethod, setterName, annotationValues.getLiteral("threadSafeSetter", false));
@@ -224,7 +225,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
                                 .add(valueReturner)
                                 .build();
 
-                        MethodSpec handlerMethod = buildHandlerMethod(subjectParam, annotatedName+"$"+targetMethodName, true, methodBody);
+                        MethodSpec handlerMethod = buildHandlerMethod(subjectParam, annotatedName+"$"+targetMethodName, methodBody);
                         handlerTypeSpec.addMethod(handlerMethod);
 
                         //add a call to register() in the handler class's constructor
@@ -387,44 +388,11 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         } else {
             targetMethodCodeBuilder.add("$N.$L(", subjectParam, annotatedName);
         }
-        //getMethodHandleCall was here
 
         targetMethodCodeBuilder.add(methodCallArguments.build());
 
         targetMethodCodeBuilder.add(")");
         return targetMethodCodeBuilder.build();
-    }
-
-    private void getMethodHandleCall(ClassName containingClassName, TypeSpec.Builder handlerTypeSpec, ParameterSpec subjectParam, String annotatedName, List<VariableElement> parameters, boolean isStatic, TypeMirror returnType, CodeBlock.Builder targetMethodCodeBuilder) {
-        CodeBlock.Builder paramTypes = CodeBlock.builder();
-        if (!parameters.isEmpty()) {
-            for (VariableElement parameter : parameters) {
-                TypeMirror paramType = parameter.asType();
-                paramTypes.add(", $T.class", typeUtils().erasure(paramType));
-            }
-        }
-        FieldSpec methodHandleField = FieldSpec.builder(lazyMethodHandleType, "handle_" + annotatedName, Modifier.PRIVATE, Modifier.STATIC)
-                .initializer("$T.of(()->{\n$>$L\n$<})", lazyInterfaceRaw, CodeBlock.builder()
-                        .beginControlFlow("try")
-                        .addStatement("$T method = $T.class.getDeclaredMethod($S$L)", Method.class, containingClassName, annotatedName, paramTypes.build())
-                        .addStatement("method.setAccessible(true)")
-                        .addStatement("return lookup.unreflect(method)")
-                        .nextControlFlow("catch ($T e)", ReflectiveOperationException.class)
-                        .addStatement("throw new $T(e)", RuntimeException.class)
-                        .endControlFlow()
-                        .build())
-                .build();
-        handlerTypeSpec.addField(methodHandleField);
-        if (returnType.getKind() != TypeKind.VOID) {
-            targetMethodCodeBuilder.add("($T)", TypeName.get(returnType));
-        }
-        targetMethodCodeBuilder.add("$N.get().invokeExact(", methodHandleField);
-        if (!isStatic) {
-            targetMethodCodeBuilder.add("$N", subjectParam);
-            if (!parameters.isEmpty()) {
-                targetMethodCodeBuilder.add(", ");//no need to add comma on static methods
-            }
-        }
     }
 
     private void addHandlerToRegistry(MethodSpec.Builder registryInit, ClassName factoryRegistry, TypeElement containingType, ClassName containingClassName, JavaFile factoryFile) {
@@ -489,21 +457,14 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         return registerMethodBuilder.build();
     }
 
-    private MethodSpec buildHandlerMethod(ParameterSpec subjectParam, String methodName, boolean isPublic, CodeBlock methodBody) {
-        MethodSpec.Builder handlerMethodBuilder = MethodSpec.methodBuilder(methodName)
+    private MethodSpec buildHandlerMethod(ParameterSpec subjectParam, String methodName, CodeBlock methodBody) {
+        return MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .returns(Object.class)
                 .addException(computerException)
                 .addParameter(subjectParam)
-                .addParameter(helperParam);
-        if (!isPublic) {
-            //wrap in MethodHandle try/catch
-            handlerMethodBuilder.addCode(wrapMethodHandle(methodBody));
-        } else {
-            handlerMethodBuilder.addCode(methodBody);
-        }
-
-        return handlerMethodBuilder.build();
+                .addParameter(helperParam)
+                .addCode(methodBody).build();
     }
 
     private Elements elementUtils() {
@@ -512,211 +473,5 @@ public class ComputerMethodProcessor extends AbstractProcessor {
 
     private Types typeUtils() {
         return processingEnv.getTypeUtils();
-    }
-
-    private CodeBlock wrapMethodHandle(CodeBlock inner) {
-        return CodeBlock.builder()
-                .beginControlFlow("try")
-                .add(inner)
-                .nextControlFlow("catch ($T t)", Throwable.class)
-                .addStatement("unwrapException(t)")
-                .addStatement("return null;//unreachable")
-                .endControlFlow()
-                .build();
-    }
-
-    private static Map<String, AnnotationValue> getAnnotationValueMapWithDefaults(Elements elementUtils, AnnotationMirror annotationMirror) {
-        Map<String, AnnotationValue> values = new HashMap<>();
-        for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> value : elementUtils.getElementValuesWithDefaults(annotationMirror).entrySet()) {
-            values.put(value.getKey().getSimpleName().toString(), value.getValue());
-        }
-        return values;
-    }
-
-    private static class AnnotationHelper {
-        private final Map<? extends ExecutableElement, ? extends AnnotationValue> annotationValueMap;
-        private final Map<String, ExecutableElement> nameToElement = new HashMap<>();
-
-        AnnotationHelper(Elements elementUtils, AnnotationMirror annotationMirror) {
-            this.annotationValueMap = elementUtils.getElementValuesWithDefaults(annotationMirror);
-            for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> value : elementUtils.getElementValuesWithDefaults(annotationMirror).entrySet()) {
-                //annotationValueMap.put(value.getKey().getSimpleName().toString(), value.getValue());
-                nameToElement.put(value.getKey().getSimpleName().toString(), value.getKey());
-            }
-        }
-
-        Object getLiteral(String key, Object defaultValue) {
-            AnnotationValue value = annotationValueMap.get(nameToElement.get(key));
-            return value.accept(new AnnotationValueToLiteral(
-                    defaultValue instanceof String ? CodeBlock.of("$S", defaultValue) : defaultValue
-            ), nameToElement.get(key).getReturnType());
-        }
-
-        String getStringValue(String key, String defaultValue) {
-            AnnotationValue value = annotationValueMap.get(nameToElement.get(key));
-            if (value != null && value.getValue() instanceof String s && !s.isBlank())
-                return s;
-            return defaultValue;
-        }
-
-        TypeMirror getClassValue(String key) {
-            AnnotationValue value = annotationValueMap.get(nameToElement.get(key));
-            if (value.getValue() instanceof TypeMirror tm) {
-                return tm;
-            }
-            return null;
-        }
-
-        List<String> getStringArray(String key) {
-            AnnotationValue value = annotationValueMap.get(nameToElement.get(key));
-            List<String> returnVal = new ArrayList<>();
-            value.accept(new SimpleAnnotationValueVisitor14<Void, Void>(){
-                @Override
-                public Void visitArray(List<? extends AnnotationValue> vals, Void unused) {
-                    for (AnnotationValue annotationValue : vals) {
-                        annotationValue.accept(this, null);
-                    }
-                    return null;
-                }
-
-                @Override
-                public Void visitString(String s, Void unused) {
-                    if (s != null && !s.isBlank()) {
-                        returnVal.add(s);
-                    }
-                    return null;
-                }
-            }, null);
-            return returnVal;
-        }
-    }
-
-    private static class AnnotationValueToLiteral extends SimpleAnnotationValueVisitor14<Object, TypeMirror> {
-        AnnotationValueToLiteral() {
-        }
-
-        AnnotationValueToLiteral(Object defaultValue) {
-            super(defaultValue);
-        }
-
-        @Override
-        public Object visitString(String s, TypeMirror valueType) {
-            return s != null && !s.isBlank() ? CodeBlock.of("$S", s) : super.defaultAction(s, valueType);
-        }
-
-        @Override
-        public Object visitEnumConstant(VariableElement c, TypeMirror valueType) {
-            return CodeBlock.of("$T.$L", ClassName.get(c.asType()), c.getSimpleName());
-        }
-
-        @Override
-        public Object visitArray(List<? extends AnnotationValue> vals, TypeMirror valueType) {
-            TypeMirror componentType = ((ArrayType) valueType).getComponentType();
-            if (vals == null || vals.isEmpty()) {
-                return CodeBlock.of("new $T[0]", ClassName.get(componentType));
-            } else {
-                AnnotationValueToLiteral elementVisitor = new AnnotationValueToLiteral();
-                CodeBlock elements = vals.stream().map(value -> {
-                    Object mappedValue = value.accept(elementVisitor, componentType);
-                    return CodeBlock.of((mappedValue instanceof String ? "$S" : "$L"), mappedValue);
-                }).collect(CodeBlock.joining(", "));
-                return CodeBlock.of("new $T[]{$L}", ClassName.get(componentType), elements);
-            }
-        }
-
-        @Override
-        public Object visitBoolean(boolean b, TypeMirror typeMirror) {
-            return b;
-        }
-
-        @Override
-        public Object visitByte(byte b, TypeMirror typeMirror) {
-            return b;
-        }
-
-        @Override
-        public Object visitChar(char c, TypeMirror typeMirror) {
-            return c;
-        }
-
-        @Override
-        public Object visitDouble(double d, TypeMirror typeMirror) {
-            return d;
-        }
-
-        @Override
-        public Object visitFloat(float f, TypeMirror typeMirror) {
-            return f;
-        }
-
-        @Override
-        public Object visitInt(int i, TypeMirror typeMirror) {
-            return i;
-        }
-
-        @Override
-        public Object visitLong(long i, TypeMirror typeMirror) {
-            return i;
-        }
-
-        @Override
-        public Object visitShort(short s, TypeMirror typeMirror) {
-            return s;
-        }
-
-        @Override
-        public Object visitType(TypeMirror t, TypeMirror typeMirror) {
-            return t;
-        }
-
-        @Override
-        public Object visitAnnotation(AnnotationMirror a, TypeMirror typeMirror) {
-            throw new IllegalStateException("Don't know how to convert annotation to literal");
-        }
-    }
-
-    private class ParamToHelperMapper extends SimpleTypeVisitor14<CodeBlock, Integer> {
-
-        @Override
-        protected CodeBlock defaultAction(TypeMirror e, Integer paramNum) {
-            throw new IllegalStateException("Unhandled type: " + e);
-        }
-
-        @Override
-        public CodeBlock visitPrimitive(PrimitiveType t, Integer paramNum) {
-            return CodeBlock.of("$N.$L($L)", helperParam, "get" + switch (t.getKind()) {
-                case BOOLEAN -> "Bool";
-                case BYTE -> "Byte";
-                case SHORT -> "Short";
-                case INT -> "Int";
-                case LONG -> "Long";
-                case CHAR -> "Char";
-                case FLOAT -> "Float";
-                case DOUBLE -> "Double";
-                default -> throw new IllegalStateException("Unknown primitive: " + t.getKind());
-            }, paramNum);
-        }
-
-        @Override
-        public CodeBlock visitDeclared(DeclaredType t, Integer paramNum) {
-            ClassName className = ClassName.get((TypeElement) t.asElement());
-            TypeElement typeElement = (TypeElement) t.asElement();
-            if (typeElement.getKind() == ElementKind.ENUM) {
-                return CodeBlock.of("$N.getEnum($L, $T.class)", helperParam, paramNum, className);
-            } else if (typeUtils().isAssignable(t, filterInterface)) {
-                return CodeBlock.of("$N.getFilter($L, $T.class)", helperParam, paramNum, className);
-            }
-            switch (className.canonicalName()) {
-                case "java.util.List" -> {
-                    return CodeBlock.of("$N.getList($L /* $L */)", helperParam, paramNum, t.getTypeArguments().get(0).toString());
-                }
-                case "java.util.Map" -> {
-                    return CodeBlock.of("$N.getMap($L)", helperParam, paramNum);
-                }
-                default -> {
-                    return CodeBlock.of("$N.get$L($L)", helperParam, className.simpleName(), paramNum);
-                }
-            }
-        }
     }
 }

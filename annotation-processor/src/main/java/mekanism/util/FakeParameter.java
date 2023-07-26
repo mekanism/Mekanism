@@ -1,4 +1,4 @@
-package mekanism;
+package mekanism.util;
 
 import javax.lang.model.element.*;
 import javax.lang.model.type.TypeMirror;
@@ -7,11 +7,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-class FakeParameter implements VariableElement {
+public class FakeParameter implements VariableElement {
     private final TypeMirror type;
     private final Name name;
 
-    FakeParameter(TypeMirror type, String nameIn) {
+    public FakeParameter(TypeMirror type, String nameIn) {
         this.type = type;
         this.name = new Name() {
             @Override

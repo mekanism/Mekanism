@@ -8,7 +8,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.invoke.WrongMethodTypeException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -20,6 +19,7 @@ public class ComputerMethodFactory<T>{
 
     protected static MethodHandles.Lookup lookup = MethodHandles.lookup();
 
+    @SuppressWarnings("unused")//may be used by annotation processor
     protected static MethodHandle getMethodHandle(Class<?> containingClass, String methodName, Class<?>... params) {
         try {
             Method method = containingClass.getDeclaredMethod(methodName, params);
@@ -30,6 +30,7 @@ public class ComputerMethodFactory<T>{
         }
     }
 
+    @SuppressWarnings("unused")//may be used by annotation processor
     protected static MethodHandle getGetterHandle(Class<?> containingClass, String fieldName) {
         try {
             Field field = containingClass.getDeclaredField(fieldName);
@@ -38,15 +39,6 @@ public class ComputerMethodFactory<T>{
         } catch (ReflectiveOperationException roe) {
             throw new RuntimeException("Couldn't get getter methodhandle for "+fieldName, roe);
         }
-    }
-
-    protected static void unwrapException(Throwable t) throws ComputerException {
-        if (t instanceof WrongMethodTypeException wmte) {
-            throw new RuntimeException("Method not bound correctly: "+wmte.getMessage(), wmte);
-        } else if (t.getCause() instanceof ComputerException cause){
-            throw cause;
-        }
-        throw new RuntimeException(t.getMessage(), t);
     }
 
     private final List<MethodData<T>> methods = new ArrayList<>();
