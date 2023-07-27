@@ -24,6 +24,7 @@ import java.util.*;
 })
 public class ComputerMethodProcessor extends AbstractProcessor {
     private static final String MODULE_OPTION = "mekanismModule";
+    public static final ClassName COMPUTER_METHOD_FACTORY_ANNOTATION = ClassName.get("mekanism.common.integration.computer.annotation","MethodFactory");
 
     //private final ClassName lazyInterfaceRaw = ClassName.get("net.minecraftforge.common.util", "Lazy");
     //private final ParameterizedTypeName lazyMethodHandleType = ParameterizedTypeName.get(lazyInterfaceRaw, ClassName.get(MethodHandle.class));
