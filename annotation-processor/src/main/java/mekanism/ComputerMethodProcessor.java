@@ -22,9 +22,8 @@ import java.util.*;
         "mekanism.common.integration.computer.annotation.SyntheticComputerMethod",
         "mekanism.common.integration.computer.annotation.WrappingComputerMethod"
 })
+@SupportedOptions(MekAnnotationProcessors.MODULE_OPTION)
 public class ComputerMethodProcessor extends AbstractProcessor {
-    private static final String MODULE_OPTION = "mekanismModule";
-    public static final ClassName COMPUTER_METHOD_FACTORY_ANNOTATION = ClassName.get("mekanism.common.integration.computer.annotation","MethodFactory");
 
     //private final ClassName lazyInterfaceRaw = ClassName.get("net.minecraftforge.common.util", "Lazy");
     //private final ParameterizedTypeName lazyMethodHandleType = ParameterizedTypeName.get(lazyInterfaceRaw, ClassName.get(MethodHandle.class));
@@ -36,7 +35,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        mekModule = processingEnv.getOptions().getOrDefault(MODULE_OPTION, "value_not_supplied");
+        mekModule = processingEnv.getOptions().getOrDefault(MekAnnotationProcessors.MODULE_OPTION, "value_not_supplied");
         ComputerHandlerBuilder.init(processingEnv.getElementUtils(), processingEnv.getTypeUtils());
     }
 

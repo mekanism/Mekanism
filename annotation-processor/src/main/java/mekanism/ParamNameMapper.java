@@ -38,8 +38,6 @@ import org.openzen.zencode.java.ZenCodeType;
 
 public class ParamNameMapper extends AbstractProcessor {
 
-    private static final String MODULE_OPTION = "mekanismModule";
-
     private static String forDatagen(String path) {
         return "resources/" + path;
     }
@@ -48,13 +46,13 @@ public class ParamNameMapper extends AbstractProcessor {
 
     @Override
     public Set<String> getSupportedOptions() {
-        return Collections.singleton(MODULE_OPTION);
+        return Collections.singleton(MekAnnotationProcessors.MODULE_OPTION);
     }
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        String mekModule = processingEnv.getOptions().getOrDefault(MODULE_OPTION, "mekanism");
+        String mekModule = processingEnv.getOptions().getOrDefault(MekAnnotationProcessors.MODULE_OPTION, "mekanism");
         if (mekModule.equals("mekanism")) {
             scanners = Set.of(
                   new AnnotationParamScanner(forDatagen("crafttweaker_parameter_names"), ZenCodeType.Method.class)

@@ -1,7 +1,7 @@
 package mekanism.builder;
 
 import com.squareup.javapoet.*;
-import mekanism.ComputerMethodProcessor;
+import mekanism.MekAnnotationProcessors;
 import mekanism.util.FakeParameter;
 import mekanism.visitors.AnnotationHelper;
 import mekanism.visitors.ParamToHelperMapper;
@@ -64,7 +64,7 @@ public class ComputerHandlerBuilder {
                 .superclass(ParameterizedTypeName.get(computerMethodFactoryRaw, containingClassName))
                 .addOriginatingElement(containingType)
                 .addAnnotation(
-                        AnnotationSpec.builder(ComputerMethodProcessor.COMPUTER_METHOD_FACTORY_ANNOTATION)
+                        AnnotationSpec.builder(MekAnnotationProcessors.COMPUTER_METHOD_FACTORY_ANNOTATION)
                                 .addMember("target", CodeBlock.of("$T.class", containingClassName))
                                 .build()
                 )
