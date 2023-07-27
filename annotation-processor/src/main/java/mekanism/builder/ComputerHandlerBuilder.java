@@ -76,7 +76,6 @@ public class ComputerHandlerBuilder {
 
         for (Element annotatedElement : annotatedElementList) {
             String annotatedName = annotatedElement.getSimpleName().toString();
-            handlerTypeSpec.addOriginatingElement(annotatedElement);
 
             Set<Modifier> modifiers = annotatedElement.getModifiers();
             //boolean isPublic = modifiers.contains(Modifier.PUBLIC);
