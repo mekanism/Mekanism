@@ -10,7 +10,7 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper;
 /**
  * Wraps fields as getters and methods with return types into one or more "synthetic" methods, based on the wrapper class.
  */
-@Retention(RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.CLASS)
 @Target({ElementType.METHOD, ElementType.FIELD})
 public @interface WrappingComputerMethod {
 
