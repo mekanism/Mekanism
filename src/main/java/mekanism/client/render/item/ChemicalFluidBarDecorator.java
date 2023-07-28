@@ -73,7 +73,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
     protected static void renderBar(GuiGraphics guiGraphics, int stackXPos, int yPos, long amount, long capacity, int color) {
         int pixelWidth = convertWidth(StorageUtils.getRatio(amount, capacity));
         GuiUtils.fill(guiGraphics, RenderType.guiOverlay(), stackXPos + 2 + pixelWidth, yPos, 13 - pixelWidth, 1, 0xFF000000);
-        GuiUtils.fill(guiGraphics, RenderType.guiOverlay(), stackXPos + 2, yPos, pixelWidth, 1, color);
+        GuiUtils.fill(guiGraphics, RenderType.guiOverlay(), stackXPos + 2, yPos, pixelWidth, 1, color | 0xFF000000);
     }
 
     private static int convertWidth(double width) {

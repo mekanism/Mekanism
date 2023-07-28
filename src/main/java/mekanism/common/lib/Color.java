@@ -224,7 +224,7 @@ public class Color {
     }
 
     public static int packOpaque(int rgb) {
-        return rgb | (0xFF << 24);
+        return rgb | 0xFF000000;
     }
 
     @Override

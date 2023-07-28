@@ -14,8 +14,8 @@ import mods.mekanism.content.builder.SlurryBuilder;
  * 5) Creates an example Clean Slurry that is for the same yellow ore.
 */
 
-GasBuilder.builder().color(0xDF03FC).build("example_gas");
-InfuseTypeBuilder.builder().color(0x3FC0B).build("example_infuse_type");
-PigmentBuilder.builder().color(0xCAFC03).build("example_pigment");
-SlurryBuilder.dirty().color(0xF0FC03).build("example_dirty_slurry");
-SlurryBuilder.clean().color(0xF0FC03).build("example_clean_slurry");
+GasBuilder.builder().tint(0xDF03FC).build("example_gas");
+InfuseTypeBuilder.builder().tint(0x3FC0B).build("example_infuse_type");
+PigmentBuilder.builder().tint(0xCAFC03).build("example_pigment");
+SlurryBuilder.dirty().tint(0xF0FC03).build("example_dirty_slurry");
+SlurryBuilder.clean().tint(0xF0FC03).build("example_clean_slurry");

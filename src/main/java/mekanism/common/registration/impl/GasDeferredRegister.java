@@ -20,7 +20,7 @@ public class GasDeferredRegister extends WrappedDeferredRegister<Gas> {
 
     public GasRegistryObject<Gas> register(String name, int color, ChemicalAttribute... attributes) {
         return register(name, () -> {
-            GasBuilder builder = GasBuilder.builder().color(color);
+            GasBuilder builder = GasBuilder.builder().tint(color);
             for (ChemicalAttribute attribute : attributes) {
                 builder.with(attribute);
             }

@@ -13,7 +13,7 @@ import java.util.function.Consumer
 
 plugins {
     id 'org.ajoberstar.grgit.service' version '5.2.0'
-    id 'net.darkhax.curseforgegradle' version '1.0.14'
+    id 'net.darkhax.curseforgegradle' version '1.1.16'
     id "com.modrinth.minotaur" version "2.+"
     id 'java'
     id 'eclipse'
@@ -42,8 +42,8 @@ idea {
 
 ext {
     versionProperties = ["version"       : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
-                         "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range, "jei_version": jei_version_range,
-                         "curios_version": curios_version_range]
+                         "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range, "curios_version": curios_version_range,
+                         "jei_version": jei_version_range, "json_things_version": json_things_version_range]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
     secondaryModules = ['additions', 'defense', 'generators', 'tools']
     extraTypes = ['datagen', 'gameTest']

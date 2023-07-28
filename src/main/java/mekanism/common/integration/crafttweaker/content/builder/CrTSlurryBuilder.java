@@ -42,7 +42,7 @@ public class CrTSlurryBuilder extends CrTChemicalBuilder<Slurry, SlurryBuilder, 
      *
      * @return A builder for creating a custom {@link Slurry}.
      *
-     * @apiNote It is recommended to override to use {@link #colorRepresentation(int)} if this builder method is not being used in combination with {@link #color(int)}
+     * @apiNote It is recommended to override to use {@link #colorRepresentation(int)} if this builder method is not being used in combination with {@link #tint(int)}
      * due to the texture not needing tinting.
      */
     @ZenCodeType.Method

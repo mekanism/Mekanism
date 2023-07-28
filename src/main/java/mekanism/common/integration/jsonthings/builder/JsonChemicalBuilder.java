@@ -53,7 +53,7 @@ public abstract class JsonChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, B
      * @param tint Color in RRGGBB format
      */
     public THING_BUILDER tint(int tint) {
-        return baseData(builder -> builder.color(tint));
+        return baseData(builder -> builder.tint(tint));
     }
 
     /**

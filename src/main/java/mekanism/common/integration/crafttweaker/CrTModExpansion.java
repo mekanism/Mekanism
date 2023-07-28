@@ -93,7 +93,6 @@ public class CrTModExpansion {
     }
 
     private static <TYPE> Collection<TYPE> getModSpecific(Mod mod, IForgeRegistry<TYPE> registry) {
-        String modid = mod.id();
         return getModSpecific(mod, registry.getEntries());
     }
 

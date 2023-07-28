@@ -37,11 +37,11 @@ public abstract class CrTChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BU
     /**
      * Sets the tint to apply to this chemical when rendering.
      *
-     * @param color Color in RRGGBB format
+     * @param tint Color in RRGGBB format
      */
     @ZenCodeType.Method
-    public CRT_BUILDER color(int color) {
-        getInternal().color(color);
+    public CRT_BUILDER tint(int tint) {
+        getInternal().tint(tint);
         return self();
     }
 
