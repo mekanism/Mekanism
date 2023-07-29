@@ -7,7 +7,6 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
 import mekanism.api.IIncrementalEnum;
-import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -16,8 +15,10 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
+import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
@@ -66,7 +67,7 @@ import org.jetbrains.annotations.Nullable;
 public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeItem<ConfiguratorMode>, IItemHUDProvider {
 
     public static final Lazy<RadialData<ConfiguratorMode>> LAZY_RADIAL_DATA = Lazy.of(() ->
-          MekanismAPI.getRadialDataHelper().dataForEnum(Mekanism.rl("configurator_mode"), ConfiguratorMode.class));
+          IRadialDataHelper.INSTANCE.dataForEnum(Mekanism.rl("configurator_mode"), ConfiguratorMode.class));
 
     public ItemConfigurator(Properties properties) {
         super(MekanismConfig.gear.configuratorChargeRate, MekanismConfig.gear.configuratorMaxEnergy, properties.rarity(Rarity.UNCOMMON));
@@ -105,7 +106,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
                         if (!player.isShiftKeyDown()) {
                             player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURATOR_VIEW_MODE.translate(transmissionType, dataType.getColor(), dataType,
                                   dataType.getColor().getColoredName())));
-                        } else if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
+                        } else if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
                             return InteractionResult.FAIL;
                         } else {
                             if (!player.isCreative()) {
@@ -127,7 +128,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
                     }
                     return InteractionResult.SUCCESS;
                 }
-                if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
+                if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
                     return InteractionResult.FAIL;
                 }
                 Optional<IConfigurable> capability = CapabilityUtils.getCapability(tile, Capabilities.CONFIGURABLE, side).resolve();
@@ -140,7 +141,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
                 }
             } else if (mode == ConfiguratorMode.EMPTY) { //Empty
                 if (tile instanceof IMekanismInventory inv && inv.hasInventory()) {
-                    if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
+                    if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
                         return InteractionResult.FAIL;
                     }
                     boolean creative = player.isCreative();
@@ -177,7 +178,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
                 if (tile instanceof TileEntityMekanism tileMekanism) {
                     if (!tileMekanism.isDirectional()) {
                         return InteractionResult.PASS;
-                    } else if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
+                    } else if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
                         return InteractionResult.FAIL;
                     } else if (Attribute.matches(tileMekanism.getBlockType(), AttributeStateFacing.class, AttributeStateFacing::canRotate)) {
                         if (!player.isShiftKeyDown()) {

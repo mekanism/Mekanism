@@ -6,6 +6,7 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryBuilder;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
+import mekanism.common.util.ChemicalUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import org.openzen.zencode.java.ZenCodeType;
@@ -41,7 +42,7 @@ public class CrTSlurryBuilder extends CrTChemicalBuilder<Slurry, SlurryBuilder, 
      *
      * @return A builder for creating a custom {@link Slurry}.
      *
-     * @apiNote It is recommended to override to use {@link #colorRepresentation(int)} if this builder method is not being used in combination with {@link #color(int)}
+     * @apiNote It is recommended to override to use {@link #colorRepresentation(int)} if this builder method is not being used in combination with {@link #tint(int)}
      * due to the texture not needing tinting.
      */
     @ZenCodeType.Method
@@ -80,18 +81,7 @@ public class CrTSlurryBuilder extends CrTChemicalBuilder<Slurry, SlurryBuilder, 
 
     @Override
     protected void build(ResourceLocation registryName) {
-        Slurry slurry;
-        if (colorRepresentation == null) {
-            slurry = new Slurry(getInternal());
-        } else {
-            int color = colorRepresentation;
-            slurry = new Slurry(getInternal()) {
-                @Override
-                public int getColorRepresentation() {
-                    return color;
-                }
-            };
-        }
+        Slurry slurry = ChemicalUtil.slurry(getInternal(), colorRepresentation);
         CrTContentUtils.queueSlurryForRegistration(registryName, slurry);
     }
 }

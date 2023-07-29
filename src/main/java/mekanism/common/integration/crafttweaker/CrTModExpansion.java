@@ -1,10 +1,13 @@
 package mekanism.common.integration.crafttweaker;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.mod.Mod;
 import com.blamejared.crafttweaker_annotations.annotations.TypedExpansion;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -12,6 +15,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.robit.RobitSkin;
+import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -82,12 +86,19 @@ public class CrTModExpansion {
     @ZenCodeType.Method
     @ZenCodeType.Getter("robitSkins")
     public static Collection<RobitSkin> getRobitSkins(Mod _this) {
-        return getModSpecific(_this, MekanismAPI.robitSkinRegistry());
+        return getModSpecific(_this, CraftTweakerAPI.getAccessibleElementsProvider()
+              .registryAccess()
+              .registryOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME)
+              .entrySet());
     }
 
     private static <TYPE> Collection<TYPE> getModSpecific(Mod mod, IForgeRegistry<TYPE> registry) {
+        return getModSpecific(mod, registry.getEntries());
+    }
+
+    private static <TYPE> Collection<TYPE> getModSpecific(Mod mod, Set<Entry<ResourceKey<TYPE>, TYPE>> allElements) {
         String modid = mod.id();
-        return registry.getEntries().stream()
+        return allElements.stream()
               .filter(entry -> entry.getKey().location().getNamespace().equals(modid))
               .map(Map.Entry::getValue)
               .toList();

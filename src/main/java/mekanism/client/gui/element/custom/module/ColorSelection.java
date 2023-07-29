@@ -83,7 +83,7 @@ class ColorSelection extends MiniElement {
             if (armorPreview != null && data.matches(MekanismModules.COLOR_MODULATION_UNIT, ModuleColorModulationUnit.COLOR_CONFIG_KEY) && currentModule != null) {
                 ItemStack stack = currentModule.getContainer().copy();
                 if (stack.getItem() instanceof ArmorItem armorItem) {
-                    Module<ModuleColorModulationUnit> colorModulation = ModuleHelper.INSTANCE.load(stack, MekanismModules.COLOR_MODULATION_UNIT);
+                    Module<ModuleColorModulationUnit> colorModulation = ModuleHelper.get().load(stack, MekanismModules.COLOR_MODULATION_UNIT);
                     if (colorModulation != null) {
                         Optional<ModuleConfigItem<Integer>> matchedData = colorModulation.getConfigItems().stream()
                               .filter(e -> e.getName().equals(ModuleColorModulationUnit.COLOR_CONFIG_KEY) && e.getData() instanceof ModuleColorData)

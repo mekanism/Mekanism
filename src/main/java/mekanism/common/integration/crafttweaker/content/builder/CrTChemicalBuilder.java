@@ -31,18 +31,18 @@ public abstract class CrTChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BU
     @ZenCodeType.Method
     public CRT_BUILDER with(ChemicalAttribute attribute) {
         getInternal().with(attribute);
-        return getThis();
+        return self();
     }
 
     /**
      * Sets the tint to apply to this chemical when rendering.
      *
-     * @param color Color in RRGGBB format
+     * @param tint Color in RRGGBB format
      */
     @ZenCodeType.Method
-    public CRT_BUILDER color(int color) {
-        getInternal().color(color);
-        return getThis();
+    public CRT_BUILDER tint(int tint) {
+        getInternal().tint(tint);
+        return self();
     }
 
     /**
@@ -54,7 +54,7 @@ public abstract class CrTChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BU
     @ZenCodeType.Method
     public CRT_BUILDER colorRepresentation(int color) {
         colorRepresentation = color;
-        return getThis();
+        return self();
     }
 
     /**
@@ -63,7 +63,7 @@ public abstract class CrTChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BU
     @ZenCodeType.Method
     public CRT_BUILDER hidden() {
         getInternal().hidden();
-        return getThis();
+        return self();
     }
 
     /**
@@ -91,7 +91,7 @@ public abstract class CrTChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BU
     }
 
     @SuppressWarnings("unchecked")
-    protected CRT_BUILDER getThis() {
+    protected CRT_BUILDER self() {
         return (CRT_BUILDER) this;
     }
 }

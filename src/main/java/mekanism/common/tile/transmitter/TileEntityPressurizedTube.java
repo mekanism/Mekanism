@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
-import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -17,6 +16,7 @@ import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
@@ -139,7 +139,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
 
     @Override
     public float getRadiationScale() {
-        if (MekanismAPI.getRadiationManager().isRadiationEnabled()) {
+        if (IRadiationManager.INSTANCE.isRadiationEnabled()) {
             BoxedPressurizedTube tube = getTransmitter();
             if (isRemote()) {
                 if (tube.hasTransmitterNetwork()) {

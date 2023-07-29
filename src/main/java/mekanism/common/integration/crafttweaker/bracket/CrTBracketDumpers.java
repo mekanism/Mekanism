@@ -1,5 +1,6 @@
 package mekanism.common.integration.crafttweaker.bracket;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.BracketDumper;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import java.util.Collection;
@@ -9,6 +10,8 @@ import mekanism.api.chemical.Chemical;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -53,7 +56,7 @@ public class CrTBracketDumpers {
      */
     @BracketDumper(value = CrTConstants.BRACKET_ROBIT_SKIN, subCommandName = "robitSkins")
     public static Collection<String> getRobitSkinDump() {
-        return getDump(MekanismAPI.robitSkinRegistry(), CrTConstants.BRACKET_ROBIT_SKIN);
+        return getDump(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, CrTConstants.BRACKET_ROBIT_SKIN);
     }
 
     /**
@@ -75,5 +78,15 @@ public class CrTBracketDumpers {
 
     private static <V> Collection<String> getDump(IForgeRegistry<V> registry, Function<V, String> getter) {
         return registry.getValues().stream().map(getter).toList();
+    }
+
+    private static Collection<String> getDump(ResourceKey<? extends Registry<?>> registryKey, String bracket) {
+        return CraftTweakerAPI.getAccessibleElementsProvider()
+              .registryAccess()
+              .registry(registryKey)
+              .stream()
+              .flatMap(registry -> registry.keySet().stream())
+              .map(v -> "<" + bracket + ":" + v + ">")
+              .toList();
     }
 }

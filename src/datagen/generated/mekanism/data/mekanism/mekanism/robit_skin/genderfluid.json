@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:basic",
+  "textures": [
+    "mekanism:genderfluid",
+    "mekanism:genderfluid2",
+    "mekanism:genderfluid3",
+    "mekanism:genderfluid4",
+    "mekanism:genderfluid5"
+  ]
+}

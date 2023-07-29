@@ -17,13 +17,17 @@ import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.infuse.InfuseTypeBuilder;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.pigment.PigmentBuilder;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.chemical.slurry.SlurryBuilder;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.providers.IChemicalProvider;
@@ -47,6 +51,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @apiNote This class is called ChemicalUtil instead of ChemicalUtils so that it does not overlap with {@link mekanism.api.chemical.ChemicalUtils}
@@ -328,5 +333,57 @@ public class ChemicalUtil {
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>> boolean canInsert(
           HANDLER handler, @NotNull STACK stack) {
         return handler.insertChemical(stack, Action.SIMULATE).getAmount() < stack.getAmount();
+    }
+
+    public static Gas gas(GasBuilder builder, @Nullable Integer colorRepresentation) {
+        if (colorRepresentation == null) {
+            return new Gas(builder);
+        }
+        int color = colorRepresentation;
+        return new Gas(builder) {
+            @Override
+            public int getColorRepresentation() {
+                return color;
+            }
+        };
+    }
+
+    public static InfuseType infuseType(InfuseTypeBuilder builder, @Nullable Integer colorRepresentation) {
+        if (colorRepresentation == null) {
+            return new InfuseType(builder);
+        }
+        int color = colorRepresentation;
+        return new InfuseType(builder) {
+            @Override
+            public int getColorRepresentation() {
+                return color;
+            }
+        };
+    }
+
+    public static Pigment pigment(PigmentBuilder builder, @Nullable Integer colorRepresentation) {
+        if (colorRepresentation == null) {
+            return new Pigment(builder);
+        }
+        int color = colorRepresentation;
+        return new Pigment(builder) {
+            @Override
+            public int getColorRepresentation() {
+                return color;
+            }
+        };
+    }
+
+    public static Slurry slurry(SlurryBuilder builder, @Nullable Integer colorRepresentation) {
+        if (colorRepresentation == null) {
+            return new Slurry(builder);
+        }
+        int color = colorRepresentation;
+        return new Slurry(builder) {
+            @Override
+            public int getColorRepresentation() {
+                return color;
+            }
+        };
     }
 }

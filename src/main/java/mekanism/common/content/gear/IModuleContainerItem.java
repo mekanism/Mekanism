@@ -2,11 +2,11 @@ package mekanism.common.content.gear;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.EnumColor;
@@ -25,16 +25,16 @@ import org.jetbrains.annotations.Nullable;
 public interface IModuleContainerItem extends IItemHUDProvider {
 
     default List<Module<?>> getModules(ItemStack stack) {
-        return ModuleHelper.INSTANCE.loadAll(stack);
+        return ModuleHelper.get().loadAll(stack);
     }
 
     @Nullable
     default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getModule(ItemStack stack, IModuleDataProvider<MODULE> typeProvider) {
-        return MekanismAPI.getModuleHelper().load(stack, typeProvider);
+        return IModuleHelper.INSTANCE.load(stack, typeProvider);
     }
 
     default boolean supportsModule(ItemStack stack, IModuleDataProvider<?> typeProvider) {
-        return MekanismAPI.getModuleHelper().getSupported(stack).contains(typeProvider.getModuleData());
+        return IModuleHelper.INSTANCE.getSupported(stack).contains(typeProvider.getModuleData());
     }
 
     default void addModuleDetails(ItemStack stack, List<Component> tooltip) {
@@ -60,7 +60,7 @@ public interface IModuleContainerItem extends IItemHUDProvider {
     }
 
     default void removeModule(ItemStack stack, ModuleData<?> type) {
-        Module<?> module = ModuleHelper.INSTANCE.load(stack, type);
+        Module<?> module = ModuleHelper.get().load(stack, type);
         if (module != null) {
             if (module.getInstalledCount() > 1) {
                 module.setInstalledCount(module.getInstalledCount() - 1);
@@ -75,10 +75,10 @@ public interface IModuleContainerItem extends IItemHUDProvider {
     }
 
     default void addModule(ItemStack stack, ModuleData<?> type) {
-        Module<?> module = ModuleHelper.INSTANCE.load(stack, type);
+        Module<?> module = ModuleHelper.get().load(stack, type);
         if (module == null) {
             ItemDataUtils.getOrAddCompound(stack, NBTConstants.MODULES).put(type.getRegistryName().toString(), new CompoundTag());
-            ModuleHelper.INSTANCE.load(stack, type).onAdded(true);
+            ModuleHelper.get().load(stack, type).onAdded(true);
         } else {
             module.setInstalledCount(module.getInstalledCount() + 1);
             module.save(null);

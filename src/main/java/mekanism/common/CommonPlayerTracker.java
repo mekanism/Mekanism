@@ -62,7 +62,7 @@ public class CommonPlayerTracker {
         Mekanism.playerState.clearPlayer(player.getUUID(), false);
         Mekanism.playerState.reapplyServerSideOnly(player);
         player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(c.getRadiation()), player));
-        RadiationManager.INSTANCE.updateClientRadiation(player);
+        RadiationManager.get().updateClientRadiation(player);
     }
 
     @SubscribeEvent
@@ -99,7 +99,7 @@ public class CommonPlayerTracker {
             }
             Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(c.getRadiation()), player);
         });
-        RadiationManager.INSTANCE.updateClientRadiation(player);
+        RadiationManager.get().updateClientRadiation(player);
         Mekanism.packetHandler().sendToAll(new PacketResetPlayerClient(player.getUUID()));
     }
 

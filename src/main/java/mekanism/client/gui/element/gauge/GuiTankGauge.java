@@ -55,9 +55,9 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEII
             int index = infoHandler.getTankIndex();
             if (index != -1) {
                 DropperAction action;
-                if (button == GLFW.GLFW_MOUSE_BUTTON_1) {
+                if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
                     action = Screen.hasShiftDown() ? DropperAction.DUMP_TANK : DropperAction.FILL_DROPPER;
-                } else { //GLFW.GLFW_MOUSE_BUTTON_2
+                } else { //GLFW.GLFW_MOUSE_BUTTON_RIGHT
                     action = DropperAction.DRAIN_DROPPER;
                 }
                 Mekanism.packetHandler().sendToServer(new PacketDropperUse(gui.getTileEntity().getBlockPos(), action, tankType, index));
@@ -67,7 +67,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEII
 
     @Override
     public boolean isValidClickButton(int button) {
-        return button == GLFW.GLFW_MOUSE_BUTTON_1 || button == GLFW.GLFW_MOUSE_BUTTON_2;
+        return button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
     }
 
     public interface ITankInfoHandler<TANK> {

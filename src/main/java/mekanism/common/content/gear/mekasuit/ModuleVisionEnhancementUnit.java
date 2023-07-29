@@ -1,11 +1,11 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.function.Consumer;
-import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
@@ -26,7 +26,7 @@ public class ModuleVisionEnhancementUnit implements ICustomModule<ModuleVisionEn
 
     @Override
     public void addHUDElements(IModule<ModuleVisionEnhancementUnit> module, Player player, Consumer<IHUDElement> hudElementAdder) {
-        hudElementAdder.accept(MekanismAPI.getModuleHelper().hudElementEnabled(icon, module.isEnabled()));
+        hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementEnabled(icon, module.isEnabled()));
     }
 
     @Override

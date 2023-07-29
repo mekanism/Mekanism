@@ -31,7 +31,7 @@ public abstract class ChemicalTagsProvider<CHEMICAL extends Chemical<CHEMICAL>> 
 
         protected GasTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, String modid,
               @Nullable ExistingFileHelper existingFileHelper) {
-            super(packOutput, MekanismAPI.gasRegistryName(), lookupProvider, modid, existingFileHelper);
+            super(packOutput, MekanismAPI.GAS_REGISTRY_NAME, lookupProvider, modid, existingFileHelper);
         }
     }
 
@@ -39,7 +39,7 @@ public abstract class ChemicalTagsProvider<CHEMICAL extends Chemical<CHEMICAL>> 
 
         protected InfuseTypeTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, String modid,
               @Nullable ExistingFileHelper existingFileHelper) {
-            super(packOutput, MekanismAPI.infuseTypeRegistryName(), lookupProvider, modid, existingFileHelper);
+            super(packOutput, MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, lookupProvider, modid, existingFileHelper);
         }
     }
 
@@ -47,7 +47,7 @@ public abstract class ChemicalTagsProvider<CHEMICAL extends Chemical<CHEMICAL>> 
 
         protected PigmentTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, String modid,
               @Nullable ExistingFileHelper existingFileHelper) {
-            super(packOutput, MekanismAPI.pigmentRegistryName(), lookupProvider, modid, existingFileHelper);
+            super(packOutput, MekanismAPI.PIGMENT_REGISTRY_NAME, lookupProvider, modid, existingFileHelper);
         }
     }
 
@@ -55,7 +55,7 @@ public abstract class ChemicalTagsProvider<CHEMICAL extends Chemical<CHEMICAL>> 
 
         protected SlurryTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, String modid,
               @Nullable ExistingFileHelper existingFileHelper) {
-            super(packOutput, MekanismAPI.slurryRegistryName(), lookupProvider, modid, existingFileHelper);
+            super(packOutput, MekanismAPI.SLURRY_REGISTRY_NAME, lookupProvider, modid, existingFileHelper);
         }
     }
 }

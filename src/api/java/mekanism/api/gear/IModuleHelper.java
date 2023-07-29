@@ -1,6 +1,7 @@
 package mekanism.api.gear;
 
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -16,10 +17,19 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Helper class for interacting with and creating custom modules. Get an instance from {@link mekanism.api.MekanismAPI#getModuleHelper()}.
+ * Helper class for interacting with and creating custom modules.
+ *
+ * @see IModuleHelper#INSTANCE
  */
 @NothingNullByDefault
 public interface IModuleHelper {
+
+    /**
+     * Provides access to Mekanism's implementation of {@link IModuleHelper}.
+     *
+     * @since 10.4.0
+     */
+    IModuleHelper INSTANCE = ServiceLoader.load(IModuleHelper.class).findFirst().orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for IModuleHelper found"));
 
     /**
      * Helper method used to create Module items that can then be registered. When Mekanism is not installed a dummy Item should be registered instead of calling this

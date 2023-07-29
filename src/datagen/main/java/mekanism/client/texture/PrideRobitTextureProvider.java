@@ -41,7 +41,7 @@ public class PrideRobitTextureProvider implements DataProvider {
         return CompletableFuture.runAsync(() -> {
             PathProvider pathProvider = output.createPathProvider(Target.RESOURCE_PACK, ROBIT_SKIN_PATH);
             try {
-                Resource resource = helper.getResource(MekanismRobitSkins.BASE.getRegistryName(), PackType.CLIENT_RESOURCES, ".png", ROBIT_SKIN_PATH);
+                Resource resource = helper.getResource(MekanismRobitSkins.BASE.location(), PackType.CLIENT_RESOURCES, ".png", ROBIT_SKIN_PATH);
                 try (InputStream inputStream = resource.open();
                      NativeImage sourceImage = NativeImage.read(inputStream);
                      NativeImage writableImage = new NativeImage(sourceImage.format(), sourceImage.getWidth(), sourceImage.getHeight(), false)) {

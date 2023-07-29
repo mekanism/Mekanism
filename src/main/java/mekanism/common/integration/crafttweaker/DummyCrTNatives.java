@@ -7,7 +7,6 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IModuleDataProvider;
-import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.common.Mekanism;
 
 /**
@@ -59,14 +58,6 @@ public class DummyCrTNatives {
     public static class CrTNativeChemicalProvider {
 
         private CrTNativeChemicalProvider() {
-        }
-    }
-
-    @ZenRegister
-    @NativeTypeRegistration(value = IRobitSkinProvider.class, zenCodeName = "mods." + Mekanism.MODID + ".api.provider.RobitSkinProvider" + DUMMY)
-    public static class CrTNativeRobitSkinProvider {
-
-        private CrTNativeRobitSkinProvider() {
         }
     }
 }

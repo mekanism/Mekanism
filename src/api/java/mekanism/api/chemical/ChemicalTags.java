@@ -17,15 +17,15 @@ import net.minecraftforge.registries.tags.ITagManager;
 
 public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
 
-    public static final ChemicalTags<Gas> GAS = new ChemicalTags<>(MekanismAPI::gasRegistryName, MekanismAPI::gasRegistry);
-    public static final ChemicalTags<InfuseType> INFUSE_TYPE = new ChemicalTags<>(MekanismAPI::infuseTypeRegistryName, MekanismAPI::infuseTypeRegistry);
-    public static final ChemicalTags<Pigment> PIGMENT = new ChemicalTags<>(MekanismAPI::pigmentRegistryName, MekanismAPI::pigmentRegistry);
-    public static final ChemicalTags<Slurry> SLURRY = new ChemicalTags<>(MekanismAPI::slurryRegistryName, MekanismAPI::slurryRegistry);
+    public static final ChemicalTags<Gas> GAS = new ChemicalTags<>(MekanismAPI.GAS_REGISTRY_NAME, MekanismAPI::gasRegistry);
+    public static final ChemicalTags<InfuseType> INFUSE_TYPE = new ChemicalTags<>(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, MekanismAPI::infuseTypeRegistry);
+    public static final ChemicalTags<Pigment> PIGMENT = new ChemicalTags<>(MekanismAPI.PIGMENT_REGISTRY_NAME, MekanismAPI::pigmentRegistry);
+    public static final ChemicalTags<Slurry> SLURRY = new ChemicalTags<>(MekanismAPI.SLURRY_REGISTRY_NAME, MekanismAPI::slurryRegistry);
 
     private final Supplier<IForgeRegistry<CHEMICAL>> registrySupplier;
-    private final Supplier<ResourceKey<? extends Registry<CHEMICAL>>> registryKeySupplier;
+    private final ResourceKey<? extends Registry<CHEMICAL>> registryKeySupplier;
 
-    private ChemicalTags(Supplier<ResourceKey<? extends Registry<CHEMICAL>>> registryKeySupplier, Supplier<IForgeRegistry<CHEMICAL>> registrySupplier) {
+    private ChemicalTags(ResourceKey<? extends Registry<CHEMICAL>> registryKeySupplier, Supplier<IForgeRegistry<CHEMICAL>> registrySupplier) {
         this.registrySupplier = registrySupplier;
         this.registryKeySupplier = registryKeySupplier;
     }
@@ -41,7 +41,7 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
      */
     public TagKey<CHEMICAL> tag(ResourceLocation name) {
         return getManager().map(manager -> manager.createTagKey(name))
-              .orElseGet(() -> TagKey.create(registryKeySupplier.get(), name));
+              .orElseGet(() -> TagKey.create(registryKeySupplier, name));
     }
 
     /**

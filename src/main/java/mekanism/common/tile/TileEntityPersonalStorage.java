@@ -3,8 +3,8 @@ package mekanism.common.tile;
 import java.util.function.BiPredicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.MekanismAPI;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -59,7 +59,7 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
         // and if the security mode changes we then boot any players who can't interact with it anymore out of the GUI
         //Note: We can just directly pass ourselves as a security object as we know we are present and that we aren't just an owner item
         BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInteract = (stack, automationType) ->
-              automationType == AutomationType.MANUAL || MekanismAPI.getSecurityUtils().getEffectiveSecurityMode(this, isRemote()) == SecurityMode.PUBLIC;
+              automationType == AutomationType.MANUAL || ISecurityUtils.INSTANCE.getEffectiveSecurityMode(this, isRemote()) == SecurityMode.PUBLIC;
         for (int slotY = 0; slotY < 6; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 //Note: we allow access to the slots from all sides as long as it is public, unlike in 1.12 where we always denied the bottom face

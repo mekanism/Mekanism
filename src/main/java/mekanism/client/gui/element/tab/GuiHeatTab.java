@@ -51,16 +51,16 @@ public class GuiHeatTab extends GuiTexturedElement {
 
     @Override
     public void onClick(double mouseX, double mouseY, int button) {
-        if (button == GLFW.GLFW_MOUSE_BUTTON_1) {
+        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
             updateTemperatureUnit(IIncrementalEnum::getNext);
-        } else if (button == GLFW.GLFW_MOUSE_BUTTON_2) {
+        } else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
             updateTemperatureUnit(IIncrementalEnum::getPrevious);
         }
     }
 
     @Override
     public boolean isValidClickButton(int button) {
-        return button == GLFW.GLFW_MOUSE_BUTTON_1 || button == GLFW.GLFW_MOUSE_BUTTON_2;
+        return button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
     }
 
     private void updateTemperatureUnit(UnaryOperator<TemperatureUnit> converter) {

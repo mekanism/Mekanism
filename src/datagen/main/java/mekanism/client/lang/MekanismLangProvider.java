@@ -19,7 +19,6 @@ import mekanism.common.integration.lookingat.jade.JadeConstants;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.PigmentRegistryObject;
-import mekanism.common.registration.impl.RobitSkinRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDamageTypes;
@@ -42,6 +41,7 @@ import mekanism.common.resource.ore.OreType;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
@@ -419,16 +419,20 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addRobitSkins() {
-        add(MekanismRobitSkins.BASE, "Default");
-        add(MekanismRobitSkins.ALLAY, "Allay Costume");
-        for (Map.Entry<RobitPrideSkinData, RobitSkinRegistryObject<RobitSkin>> entry : MekanismRobitSkins.PRIDE_SKINS.entrySet()) {
-            RobitSkinRegistryObject<RobitSkin> prideSkin = entry.getValue();
-            String name = formatAndCapitalize(prideSkin.getInternalRegistryName());
+        addRobitSkin(MekanismRobitSkins.BASE, "Default");
+        addRobitSkin(MekanismRobitSkins.ALLAY, "Allay Costume");
+        for (Map.Entry<RobitPrideSkinData, ResourceKey<RobitSkin>> entry : MekanismRobitSkins.PRIDE_SKINS.entrySet()) {
+            ResourceKey<RobitSkin> prideSkin = entry.getValue();
+            String name = formatAndCapitalize(prideSkin.location().getPath());
             if (entry.getKey() != RobitPrideSkinData.PRIDE) {
                 name += " Pride";
             }
-            add(prideSkin, name);
+            addRobitSkin(prideSkin, name);
         }
+    }
+
+    private void addRobitSkin(ResourceKey<RobitSkin> name, String value) {
+        add(RobitSkin.getTranslationKey(name), value);
     }
 
     private void addSubtitles() {

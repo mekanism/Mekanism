@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.providers.IItemProvider;
@@ -240,7 +239,7 @@ public class ClientRegistration {
             MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, RenderTickHandler::guiOpening);
         }
         HolidayManager.init();
-        IModuleHelper moduleHelper = MekanismAPI.getModuleHelper();
+        IModuleHelper moduleHelper = IModuleHelper.INSTANCE;
         moduleHelper.addMekaSuitModuleModels(Mekanism.rl("models/entity/mekasuit_modules.obj"));
         moduleHelper.addMekaSuitModuleModelSpec("jetpack", MekanismModules.JETPACK_UNIT, EquipmentSlot.CHEST);
         moduleHelper.addMekaSuitModuleModelSpec("modulator", MekanismModules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlot.CHEST);
@@ -272,7 +271,7 @@ public class ClientRegistration {
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.GEIGER_COUNTER, Mekanism.rl("radiation"), (stack, world, entity, seed) -> {
                 if (entity instanceof Player) {
-                    return RadiationManager.INSTANCE.getClientScale().ordinal();
+                    return RadiationManager.get().getClientScale().ordinal();
                 }
                 return 0;
             });
@@ -553,7 +552,7 @@ public class ClientRegistration {
 
         ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> {
             if (index == 1) {
-                IModule<ModuleColorModulationUnit> colorModulation = MekanismAPI.getModuleHelper().load(stack, MekanismModules.COLOR_MODULATION_UNIT);
+                IModule<ModuleColorModulationUnit> colorModulation = IModuleHelper.INSTANCE.load(stack, MekanismModules.COLOR_MODULATION_UNIT);
                 if (colorModulation != null) {
                     Color color = colorModulation.getCustomInstance().getColor();
                     //Calculate actual tint from alpha in the same way we do in the shader. Ideally we would expose this somehow for resource packs

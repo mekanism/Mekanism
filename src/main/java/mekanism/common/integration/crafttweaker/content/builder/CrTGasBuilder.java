@@ -5,6 +5,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasBuilder;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
+import mekanism.common.util.ChemicalUtil;
 import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -21,7 +22,7 @@ public class CrTGasBuilder extends CrTChemicalBuilder<Gas, GasBuilder, CrTGasBui
      * @return A builder for creating a custom {@link Gas}.
      *
      * @apiNote If a custom texture is used it is recommended to override to use {@link #colorRepresentation(int)} if this builder method is not being used in combination
-     * with {@link #color(int)} due to the texture not needing tinting.
+     * with {@link #tint(int)} due to the texture not needing tinting.
      */
     @ZenCodeType.Method
     public static CrTGasBuilder builder(@ZenCodeType.Optional ResourceLocation textureLocation) {
@@ -34,18 +35,7 @@ public class CrTGasBuilder extends CrTChemicalBuilder<Gas, GasBuilder, CrTGasBui
 
     @Override
     protected void build(ResourceLocation registryName) {
-        Gas gas;
-        if (colorRepresentation == null) {
-            gas = new Gas(getInternal());
-        } else {
-            int color = colorRepresentation;
-            gas = new Gas(getInternal()) {
-                @Override
-                public int getColorRepresentation() {
-                    return color;
-                }
-            };
-        }
+        Gas gas = ChemicalUtil.gas(getInternal(), colorRepresentation);
         CrTContentUtils.queueGasForRegistration(registryName, gas);
     }
 }

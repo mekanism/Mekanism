@@ -3,12 +3,10 @@ package mekanism.common.integration.crafttweaker.chemical.attribute.gas;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.function.Supplier;
-import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
-import mekanism.api.providers.IGasProvider;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import org.jetbrains.annotations.NotNull;
+import mekanism.common.integration.LazyGasProvider;
 import org.openzen.zencode.java.ZenCodeType;
 
 /**
@@ -36,7 +34,7 @@ public class CrTCoolantAttribute {
      */
     @ZenCodeType.StaticExpansionMethod
     public static GasAttributes.CooledCoolant cooled(Supplier<Gas> heatedGas, double thermalEnthalpy, double conductivity) {
-        return new GasAttributes.CooledCoolant(new CachingCrTGasProvider(heatedGas), thermalEnthalpy, conductivity);
+        return new GasAttributes.CooledCoolant(new LazyGasProvider(heatedGas), thermalEnthalpy, conductivity);
     }
 
     /**
@@ -52,7 +50,7 @@ public class CrTCoolantAttribute {
      */
     @ZenCodeType.StaticExpansionMethod
     public static GasAttributes.HeatedCoolant heated(Supplier<Gas> cooledGas, double thermalEnthalpy, double conductivity) {
-        return new GasAttributes.HeatedCoolant(new CachingCrTGasProvider(cooledGas), thermalEnthalpy, conductivity);
+        return new GasAttributes.HeatedCoolant(new LazyGasProvider(cooledGas), thermalEnthalpy, conductivity);
     }
 
     /**
@@ -75,7 +73,7 @@ public class CrTCoolantAttribute {
     }
 
     /**
-     * Defines the 'cooled' variant of a coolant- the heated variant must be supplied in this class.
+     * Defines the 'cooled' variant of a coolant - the heated variant must be supplied in this class.
      */
     @ZenRegister
     @NativeTypeRegistration(value = GasAttributes.CooledCoolant.class, zenCodeName = CrTConstants.CLASS_ATTRIBUTE_COOLED_COOLANT)
@@ -94,7 +92,7 @@ public class CrTCoolantAttribute {
     }
 
     /**
-     * Defines the 'heated' variant of a coolant- the cooled variant must be supplied in this class.
+     * Defines the 'heated' variant of a coolant - the cooled variant must be supplied in this class.
      */
     @ZenRegister
     @NativeTypeRegistration(value = GasAttributes.HeatedCoolant.class, zenCodeName = CrTConstants.CLASS_ATTRIBUTE_HEATED_COOLANT)
@@ -109,36 +107,6 @@ public class CrTCoolantAttribute {
         @ZenCodeType.Method
         public static Gas getCooledGas(GasAttributes.HeatedCoolant _this) {
             return _this.getCooledGas();
-        }
-    }
-
-    /**
-     * Helper class to cache the result of the {@link Gas} supplier, so that we don't have to do registry lookups once it has properly been added to the registry.
-     */
-    private static class CachingCrTGasProvider implements IGasProvider {
-
-        private Supplier<Gas> gasSupplier;
-        private Gas gas = MekanismAPI.EMPTY_GAS;
-
-        private CachingCrTGasProvider(Supplier<Gas> gasSupplier) {
-            this.gasSupplier = gasSupplier;
-        }
-
-        @NotNull
-        @Override
-        public Gas getChemical() {
-            if (gas.isEmptyType()) {
-                //If our gas hasn't actually been set yet, set it from the gas supplier we have
-                gas = gasSupplier.get().getChemical();
-                if (gas.isEmptyType()) {
-                    //If it is still empty (because the supplier was for an empty gas which we couldn't
-                    // evaluate initially, throw an illegal state exception)
-                    throw new IllegalStateException("Empty gas used for coolant attribute via a CraftTweaker Script.");
-                }
-                //Free memory of the supplier
-                gasSupplier = null;
-            }
-            return gas;
         }
     }
 }

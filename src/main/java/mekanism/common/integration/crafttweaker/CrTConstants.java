@@ -144,8 +144,6 @@ public class CrTConstants {
     public static final String CLASS_BUILDER_PIGMENT = "mods." + Mekanism.MODID + ".content.builder.PigmentBuilder";
     public static final String CLASS_BUILDER_SLURRY = "mods." + Mekanism.MODID + ".content.builder.SlurryBuilder";
 
-    public static final String CLASS_BUILDER_ROBIT_SKIN = "mods." + Mekanism.MODID + ".content.builder.RobitSkinBuilder";
-
     //Expansions, declared below classes we can reference the partial string parts of our other types
     private static final String EXPANSION_TARGET_MANY = "crafttweaker.api.util.Many";
     private static final String EXPANSION_TARGET_TAG = "crafttweaker.api.tag.type.KnownTag";

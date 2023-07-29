@@ -5,8 +5,8 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.IContentsListener;
-import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.security.SecurityFrequency;
@@ -21,14 +21,14 @@ public class SecurityInventorySlot extends BasicInventorySlot {
 
     public static SecurityInventorySlot unlock(Supplier<UUID> ownerSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(ownerSupplier, "Owner supplier cannot be null");
-        return new SecurityInventorySlot(stack -> MekanismAPI.getSecurityUtils().getOwnerUUID(stack) == null, stack -> {
-            UUID ownerUUID = MekanismAPI.getSecurityUtils().getOwnerUUID(stack);
+        return new SecurityInventorySlot(stack -> ISecurityUtils.INSTANCE.getOwnerUUID(stack) == null, stack -> {
+            UUID ownerUUID = ISecurityUtils.INSTANCE.getOwnerUUID(stack);
             return ownerUUID != null && ownerUUID.equals(ownerSupplier.get());
         }, listener, x, y);
     }
 
     public static SecurityInventorySlot lock(@Nullable IContentsListener listener, int x, int y) {
-        Predicate<@NotNull ItemStack> insertPredicate = stack -> MekanismAPI.getSecurityUtils().getOwnerUUID(stack) == null;
+        Predicate<@NotNull ItemStack> insertPredicate = stack -> ISecurityUtils.INSTANCE.getOwnerUUID(stack) == null;
         return new SecurityInventorySlot(insertPredicate.negate(), insertPredicate, listener, x, y);
     }
 

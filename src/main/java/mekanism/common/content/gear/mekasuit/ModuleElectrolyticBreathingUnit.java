@@ -3,12 +3,12 @@ package mekanism.common.content.gear.mekasuit;
 import java.util.Map;
 import java.util.Optional;
 import mekanism.api.Action;
-import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.config.IModuleConfigItem;
 import mekanism.api.gear.config.ModuleBooleanData;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
@@ -96,7 +96,7 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
      */
     private boolean checkChestPlate(ItemStack chestPlate) {
         if (chestPlate.getItem() == MekanismItems.MEKASUIT_BODYARMOR.get()) {
-            return MekanismAPI.getModuleHelper().load(chestPlate, MekanismModules.JETPACK_UNIT) != null;
+            return IModuleHelper.INSTANCE.load(chestPlate, MekanismModules.JETPACK_UNIT) != null;
         }
         return true;
     }

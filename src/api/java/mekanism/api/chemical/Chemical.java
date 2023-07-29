@@ -36,7 +36,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
         //Copy the map to support addAttribute
         this.attributeMap = new HashMap<>(builder.getAttributeMap());
         this.iconLocation = builder.getTexture();
-        this.tint = builder.getColor();
+        this.tint = builder.getTint();
         this.hidden = builder.isHidden();
     }
 
@@ -117,7 +117,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
     /**
      * Get the tint for rendering the chemical
      *
-     * @return int representation of color in 0xRRGGBB format
+     * @return int representation of color in RRGGBB format
      */
     public int getTint() {
         return tint;
@@ -126,7 +126,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
     /**
      * Get the color representation used for displaying in things like durability bars of chemical tanks.
      *
-     * @return int representation of color in 0xRRGGBB format
+     * @return int representation of color in RRGGBB format
      */
     public int getColorRepresentation() {
         return getTint();

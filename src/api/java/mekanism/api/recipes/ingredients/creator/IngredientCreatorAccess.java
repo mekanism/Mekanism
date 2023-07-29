@@ -1,8 +1,6 @@
 package mekanism.api.recipes.ingredients.creator;
 
-import com.mojang.logging.LogUtils;
-import java.util.function.Consumer;
-import mekanism.api.MekanismAPI;
+import mekanism.api.IMekanismAccess;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -25,13 +23,6 @@ public class IngredientCreatorAccess {
     private IngredientCreatorAccess() {
     }
 
-    private static IItemStackIngredientCreator ITEM_STACK_INGREDIENT_CREATOR;
-    private static IFluidStackIngredientCreator FLUID_STACK_INGREDIENT_CREATOR;
-    private static IChemicalStackIngredientCreator<Gas, GasStack, GasStackIngredient> GAS_STACK_INGREDIENT_CREATOR;
-    private static IChemicalStackIngredientCreator<InfuseType, InfusionStack, InfusionStackIngredient> INFUSION_STACK_INGREDIENT_CREATOR;
-    private static IChemicalStackIngredientCreator<Pigment, PigmentStack, PigmentStackIngredient> PIGMENT_STACK_INGREDIENT_CREATOR;
-    private static IChemicalStackIngredientCreator<Slurry, SlurryStack, SlurryStackIngredient> SLURRY_STACK_INGREDIENT_CREATOR;
-
     /**
      * Gets the creator type for a given chemical.
      *
@@ -52,74 +43,41 @@ public class IngredientCreatorAccess {
      * Gets the item stack ingredient creator.
      */
     public static IItemStackIngredientCreator item() {
-        if (ITEM_STACK_INGREDIENT_CREATOR == null) {//Harmless race
-            lookupInstance(IItemStackIngredientCreator.class, "mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator",
-                  helper -> ITEM_STACK_INGREDIENT_CREATOR = helper);
-        }
-        return ITEM_STACK_INGREDIENT_CREATOR;
+        return IMekanismAccess.INSTANCE.itemStackIngredientCreator();
     }
 
     /**
      * Gets the fluid stack ingredient creator.
      */
     public static IFluidStackIngredientCreator fluid() {
-        if (FLUID_STACK_INGREDIENT_CREATOR == null) {//Harmless race
-            lookupInstance(IFluidStackIngredientCreator.class, "mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator",
-                  helper -> FLUID_STACK_INGREDIENT_CREATOR = helper);
-        }
-        return FLUID_STACK_INGREDIENT_CREATOR;
+        return IMekanismAccess.INSTANCE.fluidStackIngredientCreator();
     }
 
     /**
      * Gets the gas stack ingredient creator.
      */
     public static IChemicalStackIngredientCreator<Gas, GasStack, GasStackIngredient> gas() {
-        if (GAS_STACK_INGREDIENT_CREATOR == null) {//Harmless race
-            lookupInstance(IChemicalStackIngredientCreator.class, "mekanism.common.recipe.ingredient.creator.GasStackIngredientCreator",
-                  helper -> GAS_STACK_INGREDIENT_CREATOR = helper);
-        }
-        return GAS_STACK_INGREDIENT_CREATOR;
+        return IMekanismAccess.INSTANCE.gasStackIngredientCreator();
     }
 
     /**
      * Gets the infusion stack ingredient creator.
      */
     public static IChemicalStackIngredientCreator<InfuseType, InfusionStack, InfusionStackIngredient> infusion() {
-        if (INFUSION_STACK_INGREDIENT_CREATOR == null) {//Harmless race
-            lookupInstance(IChemicalStackIngredientCreator.class, "mekanism.common.recipe.ingredient.creator.InfusionStackIngredientCreator",
-                  helper -> INFUSION_STACK_INGREDIENT_CREATOR = helper);
-        }
-        return INFUSION_STACK_INGREDIENT_CREATOR;
+        return IMekanismAccess.INSTANCE.infusionStackIngredientCreator();
     }
 
     /**
      * Gets the pigment stack ingredient creator.
      */
     public static IChemicalStackIngredientCreator<Pigment, PigmentStack, PigmentStackIngredient> pigment() {
-        if (PIGMENT_STACK_INGREDIENT_CREATOR == null) {//Harmless race
-            lookupInstance(IChemicalStackIngredientCreator.class, "mekanism.common.recipe.ingredient.creator.PigmentStackIngredientCreator",
-                  helper -> PIGMENT_STACK_INGREDIENT_CREATOR = helper);
-        }
-        return PIGMENT_STACK_INGREDIENT_CREATOR;
+        return IMekanismAccess.INSTANCE.pigmentStackIngredientCreator();
     }
 
     /**
      * Gets the slurry stack ingredient creator.
      */
     public static IChemicalStackIngredientCreator<Slurry, SlurryStack, SlurryStackIngredient> slurry() {
-        if (SLURRY_STACK_INGREDIENT_CREATOR == null) {//Harmless race
-            lookupInstance(IChemicalStackIngredientCreator.class, "mekanism.common.recipe.ingredient.creator.SlurryStackIngredientCreator",
-                  helper -> SLURRY_STACK_INGREDIENT_CREATOR = helper);
-        }
-        return SLURRY_STACK_INGREDIENT_CREATOR;
-    }
-
-    private static <TYPE extends IIngredientCreator<?, ?, ?>> void lookupInstance(Class<TYPE> type, String className, Consumer<TYPE> setter) {
-        try {
-            Class<?> clazz = Class.forName(className);
-            setter.accept(type.cast(clazz.getField("INSTANCE").get(null)));
-        } catch (ReflectiveOperationException ex) {
-            MekanismAPI.logger.error(LogUtils.FATAL_MARKER, "Error retrieving {}, Mekanism may be absent, damaged, or outdated.", className);
-        }
+        return IMekanismAccess.INSTANCE.slurryStackIngredientCreator();
     }
 }

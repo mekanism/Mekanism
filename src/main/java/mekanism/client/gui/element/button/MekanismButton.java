@@ -39,9 +39,9 @@ public class MekanismButton extends GuiElement {
 
     @Override
     public void onClick(double mouseX, double mouseY, int button) {
-        if (button == GLFW.GLFW_MOUSE_BUTTON_1) {
+        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
             onLeftClick.run();
-        } else if (button == GLFW.GLFW_MOUSE_BUTTON_2) {
+        } else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
             if (onRightClick != null) {
                 onRightClick.run();
             }
@@ -51,7 +51,7 @@ public class MekanismButton extends GuiElement {
     @Override
     public boolean isValidClickButton(int button) {
         //Only allow right-clicking if we have a right click behavior/action
-        return button == GLFW.GLFW_MOUSE_BUTTON_1 || button == GLFW.GLFW_MOUSE_BUTTON_2 && onRightClick != null;
+        return button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT && onRightClick != null;
     }
 
     @Override

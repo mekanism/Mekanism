@@ -286,28 +286,28 @@ public class CrTUtils {
      * Helper to get CraftTweaker's gas tag manager.
      */
     public static KnownTagManager<Gas> gasTags() {
-        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.gasRegistryName());
+        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.GAS_REGISTRY_NAME);
     }
 
     /**
      * Helper to get CraftTweaker's infuse type tag manager.
      */
     public static KnownTagManager<InfuseType> infuseTypeTags() {
-        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.infuseTypeRegistryName());
+        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME);
     }
 
     /**
      * Helper to get CraftTweaker's pigment tag manager.
      */
     public static KnownTagManager<Pigment> pigmentTags() {
-        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.pigmentRegistryName());
+        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.PIGMENT_REGISTRY_NAME);
     }
 
     /**
      * Helper to get CraftTweaker's slurry tag manager.
      */
     public static KnownTagManager<Slurry> slurryTags() {
-        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.slurryRegistryName());
+        return CraftTweakerTagRegistry.INSTANCE.knownTagManager(MekanismAPI.SLURRY_REGISTRY_NAME);
     }
 
     public record UnaryTypePair<TYPE>(TYPE a, TYPE b) {

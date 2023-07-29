@@ -1,8 +1,10 @@
 package mekanism.common.integration.crafttweaker.bracket;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.BracketResolver;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.gear.ModuleData;
@@ -14,6 +16,8 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTG
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.openzen.zencode.java.ZenCodeType;
@@ -84,7 +88,7 @@ public class CrTBracketHandlers {
     @ZenCodeType.Method
     @BracketResolver(CrTConstants.BRACKET_ROBIT_SKIN)
     public static RobitSkin getRobitSkin(String tokens) {
-        return getValue(CrTConstants.BRACKET_ROBIT_SKIN, tokens, MekanismAPI.robitSkinRegistry());
+        return getValue(CrTConstants.BRACKET_ROBIT_SKIN, tokens, MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
     }
 
     /**
@@ -106,14 +110,25 @@ public class CrTBracketHandlers {
     }
 
     private static <V> V getValue(String bracket, String tokens, IForgeRegistry<V> registry) {
+        return getValue(bracket, tokens, registry::containsKey, registry::getValue);
+    }
+
+    private static <V> V getValue(String bracket, String tokens, ResourceKey<? extends Registry<? extends V>> registryKey) {
+        Registry<V> registry = CraftTweakerAPI.getAccessibleElementsProvider()
+              .registryAccess()
+              .registryOrThrow(registryKey);
+        return getValue(bracket, tokens, registry::containsKey, registry::get);
+    }
+
+    private static <V> V getValue(String bracket, String tokens, Predicate<ResourceLocation> hasKey, Function<ResourceLocation, V> getter) {
         ResourceLocation registryName = ResourceLocation.tryParse(tokens);
         if (registryName == null) {
             String typeName = bracket.replace("_", " ");
             throw new IllegalArgumentException("Could not get " + typeName + " for <" + bracket + ":" + tokens + ">. Syntax is <" + bracket + ":modid:" + bracket + "_name>");
-        } else if (!registry.containsKey(registryName)) {
+        } else if (!hasKey.test(registryName)) {
             String typeName = bracket.replace("_", " ");
             throw new IllegalArgumentException("Could not get " + typeName + " for <" + bracket + ":" + tokens + ">, " + typeName + " does not appear to exist!");
         }
-        return registry.getValue(registryName);
+        return getter.apply(registryName);
     }
 }

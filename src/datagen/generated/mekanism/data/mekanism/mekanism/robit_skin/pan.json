@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:basic",
+  "textures": [
+    "mekanism:pan",
+    "mekanism:pan2",
+    "mekanism:pan3",
+    "mekanism:pan4",
+    "mekanism:pan5",
+    "mekanism:pan6"
+  ]
+}

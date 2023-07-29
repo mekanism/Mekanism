@@ -1,6 +1,6 @@
 package mekanism.common.item;
 
-import mekanism.api.MekanismAPI;
+import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
@@ -60,12 +60,12 @@ public class ItemDosimeter extends Item {
     }
 
     private void sendDosimeterLevel(IRadiationEntity cap, Player player, ILangEntry doseLangEntry) {
-        double radiation = MekanismAPI.getRadiationManager().isRadiationEnabled() ? cap.getRadiation() : 0;
+        double radiation = IRadiationManager.INSTANCE.isRadiationEnabled() ? cap.getRadiation() : 0;
         EnumColor severityColor = RadiationScale.getSeverityColor(radiation);
         player.sendSystemMessage(doseLangEntry.translateColored(EnumColor.GRAY, severityColor, UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 3)));
         if (MekanismConfig.common.enableDecayTimers.get() && radiation > RadiationManager.MIN_MAGNITUDE) {
             player.sendSystemMessage(MekanismLang.RADIATION_DECAY_TIME.translateColored(EnumColor.GRAY, severityColor,
-                  TextUtils.getHoursMinutes(RadiationManager.INSTANCE.getDecayTime(radiation, false))));
+                  TextUtils.getHoursMinutes(RadiationManager.get().getDecayTime(radiation, false))));
         }
     }
 }

@@ -3,9 +3,9 @@ package mekanism.common.integration.crafttweaker.module;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import java.util.List;
 import java.util.Set;
-import mekanism.api.MekanismAPI;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.world.item.Item;
@@ -25,7 +25,7 @@ public class CrTModuleHelper {
      */
     @ZenCodeType.Method
     public static Set<ModuleData<?>> getSupported(ItemStack container) {
-        return MekanismAPI.getModuleHelper().getSupported(container);
+        return IModuleHelper.INSTANCE.getSupported(container);
     }
 
     /**
@@ -37,7 +37,7 @@ public class CrTModuleHelper {
      */
     @ZenCodeType.Method
     public static Set<Item> getSupported(ModuleData<?> type) {
-        return MekanismAPI.getModuleHelper().getSupported(type);
+        return IModuleHelper.INSTANCE.getSupported(type);
     }
 
     /**
@@ -50,7 +50,7 @@ public class CrTModuleHelper {
      */
     @ZenCodeType.Method
     public static boolean isEnabled(ItemStack container, ModuleData<?> type) {
-        return MekanismAPI.getModuleHelper().isEnabled(container, type);
+        return IModuleHelper.INSTANCE.isEnabled(container, type);
     }
 
     /**
@@ -64,7 +64,7 @@ public class CrTModuleHelper {
     @ZenCodeType.Nullable
     @ZenCodeType.Method
     public static <MODULE extends ICustomModule<MODULE>> IModule<MODULE> load(ItemStack container, ModuleData<MODULE> type) {
-        return MekanismAPI.getModuleHelper().load(container, type);
+        return IModuleHelper.INSTANCE.load(container, type);
     }
 
     /**
@@ -78,7 +78,7 @@ public class CrTModuleHelper {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static List<IModule> loadAll(ItemStack container) {
         //ZenCode does not like ? extends IModule<?> so we need to just cast it to a type without any generics specified
-        return (List) MekanismAPI.getModuleHelper().loadAll(container);
+        return (List) IModuleHelper.INSTANCE.loadAll(container);
     }
 
     /**
@@ -90,6 +90,6 @@ public class CrTModuleHelper {
      */
     @ZenCodeType.Method
     public static List<ModuleData<?>> loadAllTypes(ItemStack container) {
-        return MekanismAPI.getModuleHelper().loadAllTypes(container);
+        return IModuleHelper.INSTANCE.loadAllTypes(container);
     }
 }

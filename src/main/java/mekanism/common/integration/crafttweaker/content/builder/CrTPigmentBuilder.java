@@ -5,6 +5,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentBuilder;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
+import mekanism.common.util.ChemicalUtil;
 import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -21,7 +22,7 @@ public class CrTPigmentBuilder extends CrTChemicalBuilder<Pigment, PigmentBuilde
      * @return A builder for creating a custom {@link Pigment}.
      *
      * @apiNote If a custom texture is used it is recommended to override to use {@link #colorRepresentation(int)} if this builder method is not being used in combination
-     * with {@link #color(int)} due to the texture not needing tinting.
+     * with {@link #tint(int)} due to the texture not needing tinting.
      */
     @ZenCodeType.Method
     public static CrTPigmentBuilder builder(@ZenCodeType.Optional ResourceLocation textureLocation) {
@@ -34,18 +35,7 @@ public class CrTPigmentBuilder extends CrTChemicalBuilder<Pigment, PigmentBuilde
 
     @Override
     protected void build(ResourceLocation registryName) {
-        Pigment pigment;
-        if (colorRepresentation == null) {
-            pigment = new Pigment(getInternal());
-        } else {
-            int color = colorRepresentation;
-            pigment = new Pigment(getInternal()) {
-                @Override
-                public int getColorRepresentation() {
-                    return color;
-                }
-            };
-        }
+        Pigment pigment = ChemicalUtil.pigment(getInternal(), colorRepresentation);
         CrTContentUtils.queuePigmentForRegistration(registryName, pigment);
     }
 }

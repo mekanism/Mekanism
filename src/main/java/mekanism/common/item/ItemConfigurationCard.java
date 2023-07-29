@@ -3,8 +3,8 @@ package mekanism.common.item;
 import java.util.List;
 import java.util.Optional;
 import mekanism.api.IConfigCardAccess;
-import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
@@ -61,7 +61,7 @@ public class ItemConfigurationCard extends Item {
         BlockEntity tile = WorldUtils.getTileEntity(world, pos);
         Optional<IConfigCardAccess> configCardSupport = CapabilityUtils.getCapability(tile, Capabilities.CONFIG_CARD, side).resolve();
         if (configCardSupport.isPresent()) {
-            if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, tile)) {
+            if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
                 return InteractionResult.FAIL;
             }
             ItemStack stack = context.getItemInHand();

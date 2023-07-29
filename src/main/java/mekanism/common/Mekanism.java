@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Coord4D;
@@ -51,7 +50,6 @@ import mekanism.common.content.tank.TankValidator;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.MekanismHooks;
-import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicCauldronInteraction;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicDrainCauldronInteraction;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankItemDispenseBehavior;
@@ -107,7 +105,6 @@ import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.world.ForgeChunkManager;
-import net.minecraftforge.data.loading.DatagenModLoader;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;
@@ -115,8 +112,6 @@ import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -125,7 +120,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import org.slf4j.Logger;
@@ -224,7 +218,7 @@ public class Mekanism {
         MekanismInfuseTypes.INFUSE_TYPES.createAndRegisterChemical(modEventBus);
         MekanismPigments.PIGMENTS.createAndRegisterChemical(modEventBus);
         MekanismSlurries.SLURRIES.createAndRegisterChemical(modEventBus);
-        MekanismRobitSkins.ROBIT_SKINS.createAndRegister(modEventBus, builder -> builder.setDefaultKey(rl("robit")));
+        MekanismRobitSkins.createAndRegisterDatapack(modEventBus);
         MekanismModules.MODULES.createAndRegister(modEventBus);
         modEventBus.addListener(this::registerEventListener);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
@@ -232,22 +226,6 @@ public class Mekanism {
         packetHandler = new PacketHandler();
         //Super early hooks, only reliable thing is for checking dependencies that we declare we are after
         hooks.hookConstructor(modEventBus);
-        if (hooks.CraftTweakerLoaded && !DatagenModLoader.isRunningDataGen()) {
-            //Attempt to grab the mod event bus for CraftTweaker so that we can register our custom content in their namespace
-            // to make it clearer which chemicals were added by CraftTweaker, and which are added by actual mods.
-            // Gracefully fallback to our event bus if something goes wrong with getting CrT's and just then have the log have
-            // warnings about us registering things in their namespace.
-            IEventBus crtModEventBus = modEventBus;
-            Optional<? extends ModContainer> crtModContainer = ModList.get().getModContainerById(MekanismHooks.CRAFTTWEAKER_MOD_ID);
-            if (crtModContainer.isPresent()) {
-                ModContainer container = crtModContainer.get();
-                if (container instanceof FMLModContainer modContainer) {
-                    crtModEventBus = modContainer.getEventBus();
-                }
-            }
-            //Register our CrT listener at lowest priority to try and ensure they get later ids than our normal registries
-            crtModEventBus.addListener(EventPriority.LOWEST, CrTContentUtils::registerCrTContent);
-        }
     }
 
     public static synchronized void addModule(IModModule modModule) {
@@ -261,10 +239,10 @@ public class Mekanism {
     private void registerEventListener(RegisterEvent event) {
         //Register the empty chemicals
         ResourceLocation emptyName = rl("empty");
-        event.register(MekanismAPI.gasRegistryName(), emptyName, () -> MekanismAPI.EMPTY_GAS);
-        event.register(MekanismAPI.infuseTypeRegistryName(), emptyName, () -> MekanismAPI.EMPTY_INFUSE_TYPE);
-        event.register(MekanismAPI.pigmentRegistryName(), emptyName, () -> MekanismAPI.EMPTY_PIGMENT);
-        event.register(MekanismAPI.slurryRegistryName(), emptyName, () -> MekanismAPI.EMPTY_SLURRY);
+        event.register(MekanismAPI.GAS_REGISTRY_NAME, emptyName, () -> MekanismAPI.EMPTY_GAS);
+        event.register(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, emptyName, () -> MekanismAPI.EMPTY_INFUSE_TYPE);
+        event.register(MekanismAPI.PIGMENT_REGISTRY_NAME, emptyName, () -> MekanismAPI.EMPTY_PIGMENT);
+        event.register(MekanismAPI.SLURRY_REGISTRY_NAME, emptyName, () -> MekanismAPI.EMPTY_SLURRY);
         //Register our custom serializer condition
         if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS)) {
             CraftingHelper.register(ModVersionLoadedCondition.Serializer.INSTANCE);
@@ -315,7 +293,7 @@ public class Mekanism {
 
         //Reset consistent managers
         QIOGlobalItemLookup.INSTANCE.reset();
-        RadiationManager.INSTANCE.reset();
+        RadiationManager.get().reset();
         MultiblockManager.reset();
         FrequencyManager.reset();
         TransporterManager.reset();
@@ -342,7 +320,7 @@ public class Mekanism {
     }
 
     private void imcHandle(InterModProcessEvent event) {
-        ModuleHelper.INSTANCE.processIMC(event);
+        ModuleHelper.get().processIMC(event);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -379,7 +357,7 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.register(new CommonPlayerTickHandler());
         MinecraftForge.EVENT_BUS.register(Mekanism.worldTickHandler);
 
-        MinecraftForge.EVENT_BUS.register(RadiationManager.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(RadiationManager.get());
 
         //Register with TransmitterNetworkRegistry
         TransmitterNetworkRegistry.initiate();

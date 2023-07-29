@@ -5,7 +5,7 @@ import com.google.gson.JsonParseException;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import java.util.Set;
 import mekanism.api.JsonConstants;
-import mekanism.api.MekanismAPI;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.common.Mekanism;
 import mekanism.common.content.gear.IModuleContainerItem;
@@ -27,7 +27,7 @@ public class MaxedModuleContainerItemPredicate<ITEM extends Item & IModuleContai
 
     public MaxedModuleContainerItemPredicate(ITEM item) {
         this.item = item;
-        this.supportedModules = MekanismAPI.getModuleHelper().getSupported(new ItemStack(item));
+        this.supportedModules = IModuleHelper.INSTANCE.getSupported(new ItemStack(item));
     }
 
     @Override
@@ -38,7 +38,7 @@ public class MaxedModuleContainerItemPredicate<ITEM extends Item & IModuleContai
     @Override
     public boolean matches(@NotNull ItemStack stack) {
         if (stack.getItem() == item) {
-            Reference2IntMap<ModuleData<?>> installedCounts = ModuleHelper.INSTANCE.loadAllCounts(stack);
+            Reference2IntMap<ModuleData<?>> installedCounts = ModuleHelper.get().loadAllCounts(stack);
             if (installedCounts.keySet().containsAll(supportedModules)) {
                 for (Reference2IntMap.Entry<ModuleData<?>> entry : installedCounts.reference2IntEntrySet()) {
                     if (entry.getIntValue() != entry.getKey().getMaxStackSize()) {

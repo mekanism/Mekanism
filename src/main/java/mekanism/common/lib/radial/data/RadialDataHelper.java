@@ -7,13 +7,11 @@ import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
 import net.minecraft.resources.ResourceLocation;
 
+/**
+ * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IRadialDataHelper#INSTANCE}
+ */
 @NothingNullByDefault
 public class RadialDataHelper implements IRadialDataHelper {
-
-    public static final RadialDataHelper INSTANCE = new RadialDataHelper();
-
-    private RadialDataHelper() {
-    }
 
     @Override
     public <MODE extends Enum<MODE> & IRadialMode> RadialData<MODE> dataForEnum(ResourceLocation identifier, MODE defaultMode) {

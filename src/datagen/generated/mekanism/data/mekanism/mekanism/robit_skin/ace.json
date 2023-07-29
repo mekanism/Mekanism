@@ -1,0 +1,9 @@
+{
+  "type": "mekanism:basic",
+  "textures": [
+    "mekanism:ace",
+    "mekanism:ace2",
+    "mekanism:ace3",
+    "mekanism:ace4"
+  ]
+}

@@ -10,11 +10,11 @@ import mekanism.common.resource.PrimaryResource;
 public class SlurryDeferredRegister extends WrappedDeferredRegister<Slurry> {
 
     public SlurryDeferredRegister(String modid) {
-        super(modid, MekanismAPI.slurryRegistryName());
+        super(modid, MekanismAPI.SLURRY_REGISTRY_NAME);
     }
 
     public SlurryRegistryObject<Slurry, Slurry> register(PrimaryResource resource) {
-        return register(resource.getRegistrySuffix(), builder -> builder.color(resource.getTint()).ore(resource.getOreTag()));
+        return register(resource.getRegistrySuffix(), builder -> builder.tint(resource.getTint()).ore(resource.getOreTag()));
     }
 
     public SlurryRegistryObject<Slurry, Slurry> register(String baseName, UnaryOperator<SlurryBuilder> builderModifier) {

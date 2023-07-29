@@ -1,17 +1,26 @@
 package mekanism.api.radial;
 
 import java.util.Objects;
+import java.util.ServiceLoader;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radial.mode.IRadialMode;
 import net.minecraft.resources.ResourceLocation;
 
 /**
- * Helper class for creating builtin implementations of {@link RadialData}. Get an instance from {@link mekanism.api.MekanismAPI#getRadialDataHelper()}.
+ * Helper class for creating builtin implementations of {@link RadialData}.
  *
+ * @see IRadialDataHelper#INSTANCE
  * @since 10.3.2
  */
 @NothingNullByDefault
 public interface IRadialDataHelper {
+
+    /**
+     * Provides access to Mekanism's implementation of {@link IRadialDataHelper}.
+     *
+     * @since 10.4.0
+     */
+    IRadialDataHelper INSTANCE = ServiceLoader.load(IRadialDataHelper.class).findFirst().orElseThrow(() -> new IllegalStateException("No valid ServiceImpl for IRadialDataHelper found"));
 
     /**
      * Creates an Enum based Radial Data implementation with the given default mode.

@@ -12,7 +12,7 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
 
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap = new Object2ObjectOpenHashMap<>();
     private final ResourceLocation texture;
-    private int color = 0xFFFFFF;
+    private int tint = 0xFFFFFF;
     private boolean hidden;
 
     protected ChemicalBuilder(ResourceLocation texture) {
@@ -26,7 +26,7 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
      */
     public BUILDER with(ChemicalAttribute attribute) {
         attributeMap.put(attribute.getClass(), attribute);
-        return getThis();
+        return self();
     }
 
     /**
@@ -46,11 +46,11 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
     /**
      * Sets the tint to apply to this chemical when rendering.
      *
-     * @param color Color in RRGGBB format
+     * @param tint Color in RRGGBB format
      */
-    public BUILDER color(int color) {
-        this.color = color;
-        return getThis();
+    public BUILDER tint(int tint) {
+        this.tint = tint;
+        return self();
     }
 
     /**
@@ -58,7 +58,7 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
      */
     public BUILDER hidden() {
         this.hidden = true;
-        return getThis();
+        return self();
     }
 
     /**
@@ -66,8 +66,8 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
      *
      * @return Tint in RRGGBB format.
      */
-    public int getColor() {
-        return color;
+    public int getTint() {
+        return tint;
     }
 
     /**
@@ -80,7 +80,7 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
     }
 
     @SuppressWarnings("unchecked")
-    protected BUILDER getThis() {
+    private BUILDER self() {
         return (BUILDER) this;
     }
 }

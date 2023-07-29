@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.tab;
 
 import java.util.function.Supplier;
-import mekanism.api.MekanismAPI;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
@@ -63,7 +63,7 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable ICapabili
 
     @Override
     protected ResourceLocation getOverlay() {
-        return switch (MekanismAPI.getSecurityUtils().getSecurityMode(dataSource.get(), true)) {
+        return switch (ISecurityUtils.INSTANCE.getSecurityMode(dataSource.get(), true)) {
             case PUBLIC -> super.getOverlay();
             case PRIVATE -> PRIVATE;
             case TRUSTED -> PROTECTED;
@@ -76,7 +76,7 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable ICapabili
         ICapabilityProvider provider = dataSource.get();
         if (provider != null) {
             provider.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> {
-                SecurityData data = SecurityUtils.INSTANCE.getFinalData(security, true);
+                SecurityData data = SecurityUtils.get().getFinalData(security, true);
                 Component securityComponent = MekanismLang.SECURITY.translateColored(EnumColor.GRAY, data.mode());
                 Component ownerComponent = OwnerDisplay.of(minecraft.player, security.getOwnerUUID(), security.getOwnerName()).getTextComponent();
                 if (data.override()) {
@@ -95,12 +95,12 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable ICapabili
             provider.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> {
                 if (security.ownerMatches(minecraft.player)) {
                     if (currentHand != null) {
-                        Mekanism.packetHandler().sendToServer(new PacketSecurityMode(currentHand, button == GLFW.GLFW_MOUSE_BUTTON_1));
+                        Mekanism.packetHandler().sendToServer(new PacketSecurityMode(currentHand, button == GLFW.GLFW_MOUSE_BUTTON_LEFT));
                     } else if (provider instanceof BlockEntity tile) {
-                        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_1 ? GuiInteraction.NEXT_SECURITY_MODE
+                        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteraction.NEXT_SECURITY_MODE
                                                                                                                        : GuiInteraction.PREVIOUS_SECURITY_MODE, tile));
                     } else if (provider instanceof Entity entity) {
-                        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_1 ? GuiInteractionEntity.NEXT_SECURITY_MODE
+                        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteractionEntity.NEXT_SECURITY_MODE
                                                                                                                        : GuiInteractionEntity.PREVIOUS_SECURITY_MODE, entity));
                     }
                 }
@@ -110,6 +110,6 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable ICapabili
 
     @Override
     public boolean isValidClickButton(int button) {
-        return button == GLFW.GLFW_MOUSE_BUTTON_1 || button == GLFW.GLFW_MOUSE_BUTTON_2;
+        return button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
     }
 }

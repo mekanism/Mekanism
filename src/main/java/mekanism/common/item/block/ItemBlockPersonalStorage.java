@@ -36,7 +36,7 @@ public class ItemBlockPersonalStorage<BLOCK extends Block & IHasDescription & IP
     @NotNull
     @Override
     public InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
-        return SecurityUtils.INSTANCE.claimOrOpenGui(world, player, hand, (p, h, s) -> {
+        return SecurityUtils.get().claimOrOpenGui(world, player, hand, (p, h, s) -> {
             getContainerType().tryOpenGui(p, h, s);
             p.awardStat(Stats.CUSTOM.get(openStat));
         });

@@ -13,19 +13,19 @@ import java.util.function.Consumer
 
 plugins {
     id 'org.ajoberstar.grgit.service' version '5.2.0'
-    id 'net.darkhax.curseforgegradle' version '1.0.14'
+    id 'net.darkhax.curseforgegradle' version '1.1.16'
     id "com.modrinth.minotaur" version "2.+"
     id 'java'
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.neoforged.gradle' version '[6.0.18,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
 tasks.named('wrapper', Wrapper).configure {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '8.1.1'
+    gradleVersion = '8.2.1'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -42,8 +42,8 @@ idea {
 
 ext {
     versionProperties = ["version"       : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
-                         "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range, "jei_version": jei_version_range,
-                         "curios_version": curios_version_range]
+                         "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range, "curios_version": curios_version_range,
+                         "jei_version": jei_version_range, "json_things_version": json_things_version_range]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
     secondaryModules = ['additions', 'defense', 'generators', 'tools']
     extraTypes = ['datagen', 'gameTest']
@@ -361,6 +361,7 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
     exclusiveRepo(handler, 'https://maven.tterrag.com/', 'team.chisel.ctm')
     exclusiveRepo(handler, 'https://squiddev.cc/maven/', 'cc.tweaked')
+    exclusiveRepo(handler, 'https://dogforce-games.com/maven/', 'dev.gigaherz.jsonthings')
     exclusiveRepo(handler, 'https://maven2.bai.lol', 'lol.bai', 'mcp.mobius.waila')//WTHIT
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
     exclusiveRepo(handler, 'https://modmaven.dev/', 'appeng', 'mcjty.theoneprobe')
@@ -371,7 +372,7 @@ test {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    minecraft "net.neoforged:forge:${minecraft_version}-${forge_version}"
 
     annotationProcessor project(":annotation-processor")
 
@@ -401,6 +402,8 @@ dependencies {
     implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
     //TODO - 1.20: Switch this back to implementation when it updates
     compileOnly fg.deobf("com.blamejared.jeitweaker:JeiTweaker-forge-${previous_minecraft_version}:${jeitweaker_version}")
+
+    compileOnly fg.deobf("dev.gigaherz.jsonthings:JsonThings-${minecraft_version}:${json_things_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
@@ -529,6 +532,14 @@ tasks.withType(JavaCompile).configureEach({
     options.compilerArgs.addAll(["-Xmaxerrs", "100000"])
 })
 
+tasks.withType(Javadoc).configureEach({
+    options.tags = [
+            'apiNote:a:<em>API Note:</em>',
+            'implSpec:a:<em>Implementation Requirements:</em>',
+            'implNote:a:<em>Implementation Note:</em>'
+    ]
+})
+
 artifacts {
     archives apiJar
     archives jar
@@ -634,11 +645,11 @@ publishing {
 
                     // Remove forge deps
                     allDeps.<Node> findAll() { Node el ->
-                        el.artifactId.text() == 'forge' && el.groupId.text() == 'net.minecraftforge'
+                        el.artifactId.text() == 'forge' && el.groupId.text() == 'net.neoforged'
                     }.forEach() { Node el ->
                         el.parent().remove(el)
                     }
-                    //remove ForgeGradle's mapped suffix from versions & set as optional so anyone else doesn't inherit them
+                    //remove NeoGradle's mapped suffix from versions & set as optional so anyone else doesn't inherit them
                     allDeps.<Node> findAll() { Node el ->
                         el.version.text().contains('_mapped_')
                     }.each { Node el ->
@@ -755,7 +766,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     'i-like-wood', 'i-like-wood-biomes-o-plenty-plugin', 'i-like-wood-oh-the-biomes-youll-go-plugin',
                     //Misc
                     'applied-energistics-2', 'ctm', 'curios', 'dark-mode-everywhere', 'farmers-delight', 'female-gender-forge', 'flux-networks',
-                    'jei', 'perviaminvenire', 'projecte', 'recipe-stages'
+                    'jei', 'json-things', 'perviaminvenire', 'projecte', 'recipe-stages'
             )
         }
 

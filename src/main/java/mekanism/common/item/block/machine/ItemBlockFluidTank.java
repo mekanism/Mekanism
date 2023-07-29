@@ -5,10 +5,10 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
@@ -122,9 +122,9 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
     public InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (getBucketMode(stack)) {
-            if (SecurityUtils.INSTANCE.tryClaimItem(world, player, stack)) {
+            if (SecurityUtils.get().tryClaimItem(world, player, stack)) {
                 return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
-            } else if (!MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, stack)) {
+            } else if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, stack)) {
                 return InteractionResultHolder.fail(stack);
             }
             //TODO: At some point maybe try to reduce the duplicate code between this and the dispense behavior

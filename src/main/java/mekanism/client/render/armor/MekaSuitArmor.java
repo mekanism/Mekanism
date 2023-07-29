@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
-import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
@@ -113,7 +112,7 @@ public class MekaSuitArmor implements ICustomArmor {
 
     private static Color getColor(ItemStack stack) {
         if (!stack.isEmpty()) {
-            IModule<ModuleColorModulationUnit> colorModulation = MekanismAPI.getModuleHelper().load(stack, MekanismModules.COLOR_MODULATION_UNIT);
+            IModule<ModuleColorModulationUnit> colorModulation = IModuleHelper.INSTANCE.load(stack, MekanismModules.COLOR_MODULATION_UNIT);
             if (colorModulation != null) {
                 return colorModulation.getCustomInstance().getColor();
             }
@@ -165,7 +164,7 @@ public class MekaSuitArmor implements ICustomArmor {
 
         if (type == EquipmentSlot.CHEST) {
             BoltRenderer boltRenderer = boltRenderMap.computeIfAbsent(entity.getUUID(), id -> new BoltRenderer());
-            if (MekanismAPI.getModuleHelper().isEnabled(entity.getItemBySlot(EquipmentSlot.CHEST), MekanismModules.GRAVITATIONAL_MODULATING_UNIT)) {
+            if (IModuleHelper.INSTANCE.isEnabled(entity.getItemBySlot(EquipmentSlot.CHEST), MekanismModules.GRAVITATIONAL_MODULATING_UNIT)) {
                 BoltEffect leftBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vec3(-0.01, 0.35, 0.37), new Vec3(-0.01, 0.15, 0.37), 10)
                       .size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
                 BoltEffect rightBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vec3(0.025, 0.35, 0.37), new Vec3(0.025, 0.15, 0.37), 10)
@@ -542,7 +541,7 @@ public class MekaSuitArmor implements ICustomArmor {
     public QuickHash key(LivingEntity player) {
         Object2BooleanMap<ModuleModelSpec> modules = new Object2BooleanOpenHashMap<>();
         Set<EquipmentSlot> wornParts = EnumSet.noneOf(EquipmentSlot.class);
-        IModuleHelper moduleHelper = MekanismAPI.getModuleHelper();
+        IModuleHelper moduleHelper = IModuleHelper.INSTANCE;
         for (EquipmentSlot slotType : EnumUtils.ARMOR_SLOTS) {
             ItemStack wornItem = player.getItemBySlot(slotType);
             if (!wornItem.isEmpty() && wornItem.getItem() instanceof ItemMekaSuitArmor) {

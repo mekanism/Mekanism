@@ -2,11 +2,11 @@ package mekanism.common.content.gear.mekasuit;
 
 import java.util.Optional;
 import java.util.function.Consumer;
-import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
@@ -58,7 +58,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
             }
             FluidStack stored = ((ItemMekaSuitArmor) container.getItem()).getContainedFluid(container, MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(1));
             double ratio = StorageUtils.getRatio(stored.getAmount(), MekanismConfig.gear.mekaSuitNutritionalMaxStorage.get());
-            hudElementAdder.accept(MekanismAPI.getModuleHelper().hudElementPercent(icon, ratio));
+            hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(icon, ratio));
         }
     }
 }

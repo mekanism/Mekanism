@@ -1,7 +1,7 @@
 package mekanism.common.item.block;
 
 import java.util.List;
-import mekanism.api.MekanismAPI;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
@@ -81,7 +81,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
 
     protected void addDetails(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         //Note: Security and owner info gets skipped if the stack doesn't expose them
-        MekanismAPI.getSecurityUtils().addSecurityTooltip(stack, tooltip);
+        ISecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
         addTypeDetails(stack, world, tooltip, flag);
         //TODO: Make this support "multiple" tanks, and probably expose the tank via capabilities
         FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);

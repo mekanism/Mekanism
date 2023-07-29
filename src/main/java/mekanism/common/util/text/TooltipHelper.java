@@ -8,12 +8,10 @@ import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
 import net.minecraft.network.chat.Component;
 
+/**
+ * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link ITooltipHelper#INSTANCE}
+ */
 public class TooltipHelper implements ITooltipHelper {
-
-    public static final TooltipHelper INSTANCE = new TooltipHelper();
-
-    private TooltipHelper() {
-    }
 
     @Override
     public Component getEnergyPerMBDisplayShort(FloatingLong energy) {

@@ -18,7 +18,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
@@ -32,6 +31,7 @@ import mekanism.api.radiation.IRadiationSource;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.radiation.capability.IRadiationShielding;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.ITooltipHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -90,7 +90,7 @@ import org.jetbrains.annotations.Nullable;
  * <li>~500 Sv/h: irradiation inside primary containment vessel of Fukushima power station (at this rate, it takes 30 seconds to accumulate a median lethal dose)</li>
  * </ul>
  *
- * @author aidancbrady
+ * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link ITooltipHelper#INSTANCE}
  */
 @NothingNullByDefault
 public class RadiationManager implements IRadiationManager {
@@ -98,7 +98,10 @@ public class RadiationManager implements IRadiationManager {
     /**
      * RadiationManager for handling radiation across all dimensions
      */
-    public static final RadiationManager INSTANCE = new RadiationManager();
+    public static RadiationManager get() {
+        return (RadiationManager) INSTANCE;
+    }
+
     private static final String DATA_HANDLER_NAME = "radiation_manager";
     private static final IntSupplier MAX_RANGE = () -> MekanismConfig.general.radiationChunkCheckRadius.get() * 16;
     private static final Random RAND = new Random();
@@ -125,9 +128,6 @@ public class RadiationManager implements IRadiationManager {
      */
     @Nullable
     private RadiationDataHandler dataHandler;
-
-    private RadiationManager() {
-    }
 
     @Override
     public boolean isRadiationEnabled() {
@@ -328,7 +328,7 @@ public class RadiationManager implements IRadiationManager {
     }
 
     public void updateClientRadiation(ServerPlayer player) {
-        LevelAndMaxMagnitude levelAndMaxMagnitude = RadiationManager.INSTANCE.getRadiationLevelAndMaxMagnitude(player);
+        LevelAndMaxMagnitude levelAndMaxMagnitude = getRadiationLevelAndMaxMagnitude(player);
         PreviousRadiationData previousRadiationData = playerEnvironmentalExposureMap.get(player.getUUID());
         PreviousRadiationData relevantData = PreviousRadiationData.compareTo(previousRadiationData, levelAndMaxMagnitude.level());
         if (relevantData != null) {
@@ -603,7 +603,7 @@ public class RadiationManager implements IRadiationManager {
         public void setManagerAndSync(RadiationManager m) {
             manager = m;
             // don't sync the manager if radiation has been disabled
-            if (MekanismAPI.getRadiationManager().isRadiationEnabled()) {
+            if (IRadiationManager.INSTANCE.isRadiationEnabled()) {
                 for (RadiationSource source : loadedSources) {
                     manager.radiationTable.put(new Chunk3D(source.getPos()), source.getPos(), source);
                 }

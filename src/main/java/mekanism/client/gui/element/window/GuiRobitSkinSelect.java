@@ -14,6 +14,7 @@ import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteractionEntity;
 import mekanism.common.network.to_server.PacketRobit;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceKey;
 
 public class GuiRobitSkinSelect extends GuiWindow {
 
@@ -26,7 +27,7 @@ public class GuiRobitSkinSelect extends GuiWindow {
         selection = addChild(new GuiRobitSkinSelectScroll(gui(), relativeX + 6, relativeY + 18, this.robit, () -> gui.getMenu().getUnlockedSkins()));
         addChild(new TranslationButton(gui, relativeX + width / 2 - 61, relativeY + 165, 60, 20, MekanismLang.BUTTON_CANCEL, this::close));
         addChild(new TranslationButton(gui, relativeX + width / 2 + 1, relativeY + 165, 60, 20, MekanismLang.BUTTON_CONFIRM, () -> {
-            RobitSkin selectedSkin = selection.getSelectedSkin();
+            ResourceKey<RobitSkin> selectedSkin = selection.getSelectedSkin();
             if (selectedSkin != robit.getSkin()) {
                 Mekanism.packetHandler().sendToServer(new PacketRobit(robit, selectedSkin));
             }

@@ -1,12 +1,13 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.function.Consumer;
-import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleHelper;
+import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -29,10 +30,10 @@ public class ModuleDosimeterUnit implements ICustomModule<ModuleDosimeterUnit> {
     public void addHUDElements(IModule<ModuleDosimeterUnit> module, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
             player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(capability -> {
-                double radiation = MekanismAPI.getRadiationManager().isRadiationEnabled() ? capability.getRadiation() : 0;
+                double radiation = IRadiationManager.INSTANCE.isRadiationEnabled() ? capability.getRadiation() : 0;
                 Component text = UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 2);
                 if (MekanismConfig.common.enableDecayTimers.get() && radiation > RadiationManager.MIN_MAGNITUDE) {
-                    text = MekanismLang.GENERIC_WITH_PARENTHESIS.translate(text, TextUtils.getHoursMinutes(RadiationManager.INSTANCE.getDecayTime(radiation, false)));
+                    text = MekanismLang.GENERIC_WITH_PARENTHESIS.translate(text, TextUtils.getHoursMinutes(RadiationManager.get().getDecayTime(radiation, false)));
                 }
                 HUDColor color;
                 if (radiation < RadiationManager.MIN_MAGNITUDE) {
@@ -40,7 +41,7 @@ public class ModuleDosimeterUnit implements ICustomModule<ModuleDosimeterUnit> {
                 } else {
                     color = radiation < 0.1 ? HUDColor.WARNING : HUDColor.DANGER;
                 }
-                hudElementAdder.accept(MekanismAPI.getModuleHelper().hudElement(icon, text, color));
+                hudElementAdder.accept(IModuleHelper.INSTANCE.hudElement(icon, text, color));
             });
         }
     }

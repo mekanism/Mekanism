@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import java.util.UUID;
 import mekanism.api.IContentsListener;
-import mekanism.api.MekanismAPI;
 import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
@@ -83,9 +82,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         if (hasLevel()) {
             MinecraftServer server = getWorldNN().getServer();
             if (server != null) {
-                ISecurityUtils securityUtils = MekanismAPI.getSecurityUtils();
                 for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                    if (player.containerMenu instanceof ISecurityContainer container && !securityUtils.canAccess(player, container.getSecurityObject())) {
+                    if (player.containerMenu instanceof ISecurityContainer container && !ISecurityUtils.INSTANCE.canAccess(player, container.getSecurityObject())) {
                         //Boot any players out of the container if they no longer have access to viewing it
                         player.closeContainer();
                     }
@@ -104,7 +102,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
                 if (server != null) {
                     Player player = server.getPlayerList().getPlayer(removed);
                     if (player != null && player.containerMenu instanceof ISecurityContainer container &&
-                        !MekanismAPI.getSecurityUtils().canAccess(player, container.getSecurityObject())) {
+                        ISecurityUtils.INSTANCE.canAccess(player, container.getSecurityObject())) {
                         //If the player that got removed from being trusted no longer has access to view the container they were viewing
                         // boot them out of it
                         player.closeContainer();
@@ -123,7 +121,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
                 markForSave();
                 // send the security update to other players; this change will be visible on machine security tabs
                 Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(frequency));
-                if (MekanismAPI.getSecurityUtils().moreRestrictive(old, mode)) {
+                if (ISecurityUtils.INSTANCE.moreRestrictive(old, mode)) {
                     validateAccess();
                 }
             }

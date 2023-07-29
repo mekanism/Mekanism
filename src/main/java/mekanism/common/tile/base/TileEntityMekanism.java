@@ -14,7 +14,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IContentsListener;
-import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.gas.IGasTank;
@@ -31,6 +30,8 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.radiation.IRadiationManager;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.sound.SoundHandler;
@@ -496,7 +497,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public WrenchResult tryWrench(BlockState state, Player player, InteractionHand hand, BlockHitResult rayTrace) {
         ItemStack stack = player.getItemInHand(hand);
         if (MekanismUtils.canUseAsWrench(stack)) {
-            if (hasSecurity() && !MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, this)) {
+            if (hasSecurity() && !ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, this)) {
                 return WrenchResult.NO_SECURITY;
             }
             if (player.isShiftKeyDown()) {
@@ -515,7 +516,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public InteractionResult openGui(Player player) {
         //Everything that calls this has isRemote being false but add the check just in case anyway
         if (hasGui() && !isRemote() && !player.isShiftKeyDown()) {
-            if (hasSecurity() && !MekanismAPI.getSecurityUtils().canAccessOrDisplayError(player, this)) {
+            if (hasSecurity() && !ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, this)) {
                 return InteractionResult.FAIL;
             }
             //Pass on this activation if the player is rotating with a configurator
@@ -618,10 +619,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.removed();
         }
-        if (!isRemote() && MekanismAPI.getRadiationManager().isRadiationEnabled() && shouldDumpRadiation()) {
+        if (!isRemote() && IRadiationManager.INSTANCE.isRadiationEnabled() && shouldDumpRadiation()) {
             //If we are on a server and radiation is enabled dump all gas tanks with radioactive materials
             // Note: we handle clearing radioactive contents later in drop calculation due to when things are written to NBT
-            MekanismAPI.getRadiationManager().dumpRadiation(getTileCoord(), getGasTanks(null), false);
+            IRadiationManager.INSTANCE.dumpRadiation(getTileCoord(), getGasTanks(null), false);
         }
     }
 
@@ -1044,7 +1045,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     public float getRadiationScale() {
-        return MekanismAPI.getRadiationManager().isRadiationEnabled() ? radiationScale : 0;
+        return IRadiationManager.INSTANCE.isRadiationEnabled() ? radiationScale : 0;
     }
     //End methods IGasTile
 
@@ -1191,7 +1192,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public void onSecurityChanged(@NotNull SecurityMode old, @NotNull SecurityMode mode) {
         if (!isRemote() && hasGui()) {
-            SecurityUtils.INSTANCE.securityChanged(playersUsing, this, old, mode);
+            SecurityUtils.get().securityChanged(playersUsing, this, old, mode);
         }
     }
     //End methods ITileSecurity
@@ -1290,7 +1291,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     public void validateSecurityIsPublic() throws ComputerException {
-        if (hasSecurity() && MekanismAPI.getSecurityUtils().getSecurityMode(this, isRemote()) != SecurityMode.PUBLIC) {
+        if (hasSecurity() && ISecurityUtils.INSTANCE.getSecurityMode(this, isRemote()) != SecurityMode.PUBLIC) {
             throw new ComputerException("Setter not available due to machine security not being public.");
         }
     }

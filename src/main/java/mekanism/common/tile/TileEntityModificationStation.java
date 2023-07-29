@@ -3,10 +3,10 @@ package mekanism.common.tile;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.Capabilities;
@@ -94,9 +94,9 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                 ModuleData<?> data = ((IModuleItem) moduleSlot.getStack().getItem()).getModuleData();
                 ItemStack stack = containerSlot.getStack();
                 // make sure the container supports this module
-                if (MekanismAPI.getModuleHelper().getSupported(stack).contains(data)) {
+                if (IModuleHelper.INSTANCE.getSupported(stack).contains(data)) {
                     // make sure we can still install more of this module
-                    IModule<?> module = MekanismAPI.getModuleHelper().load(stack, data);
+                    IModule<?> module = IModuleHelper.INSTANCE.load(stack, data);
                     if (module == null || module.getInstalledCount() < data.getMaxStackSize()) {
                         operated = true;
                         operatingTicks++;

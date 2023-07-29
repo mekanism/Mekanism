@@ -1,5 +1,6 @@
 package mekanism.common.integration.crafttweaker;
 
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.game.Game;
 import com.blamejared.crafttweaker_annotations.annotations.TypedExpansion;
@@ -68,6 +69,10 @@ public class CrTGameExpansion {
     @ZenCodeType.Method
     @ZenCodeType.Getter("robitSkins")
     public static Collection<RobitSkin> getRobitSkins(Game _this) {
-        return MekanismAPI.robitSkinRegistry().getValues();
+        return CraftTweakerAPI.getAccessibleElementsProvider()
+              .registryAccess()
+              .registryOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME)
+              .stream()
+              .toList();
     }
 }

@@ -53,7 +53,7 @@ public class MekanismClient {
 
         Mekanism.playerState.clear(true);
         Mekanism.activeVibrators.clear();
-        RadiationManager.INSTANCE.resetClient();
+        RadiationManager.get().resetClient();
         SoundHandler.radiationSoundMap.clear();
         RenderSPS.clearBoltRenderers();
         TransmitterNetworkRegistry.getInstance().clearClientNetworks();

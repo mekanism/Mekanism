@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public class ModuleDeferredRegister extends WrappedDeferredRegister<ModuleData<?>> {
 
     public ModuleDeferredRegister(String modid) {
-        super(modid, MekanismAPI.moduleRegistryName());
+        super(modid, MekanismAPI.MODULE_REGISTRY_NAME);
     }
 
     public ModuleRegistryObject<?> registerMarker(String name, IItemProvider itemProvider, UnaryOperator<ModuleDataBuilder<?>> builderModifier) {

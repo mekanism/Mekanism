@@ -1,7 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
-import mekanism.api.MekanismAPI;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
@@ -47,7 +47,7 @@ public class ItemPortableQIODashboard extends CapabilityItem implements IFrequen
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        MekanismAPI.getSecurityUtils().addSecurityTooltip(stack, tooltip);
+        ISecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
         MekanismUtils.addFrequencyItemTooltip(stack, tooltip);
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
         super.appendHoverText(stack, world, tooltip, flag);
@@ -56,7 +56,7 @@ public class ItemPortableQIODashboard extends CapabilityItem implements IFrequen
     @NotNull
     @Override
     public InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
-        return SecurityUtils.INSTANCE.claimOrOpenGui(world, player, hand, getContainerType()::tryOpenGui);
+        return SecurityUtils.get().claimOrOpenGui(world, player, hand, getContainerType()::tryOpenGui);
     }
 
     @Override

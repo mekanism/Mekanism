@@ -10,11 +10,11 @@ import net.minecraft.resources.ResourceLocation;
 public class PigmentDeferredRegister extends WrappedDeferredRegister<Pigment> {
 
     public PigmentDeferredRegister(String modid) {
-        super(modid, MekanismAPI.pigmentRegistryName());
+        super(modid, MekanismAPI.PIGMENT_REGISTRY_NAME);
     }
 
     public PigmentRegistryObject<Pigment> register(String name, int tint) {
-        return register(name, () -> new Pigment(PigmentBuilder.builder().color(tint)));
+        return register(name, () -> new Pigment(PigmentBuilder.builder().tint(tint)));
     }
 
     public PigmentRegistryObject<Pigment> register(String name, ResourceLocation texture) {

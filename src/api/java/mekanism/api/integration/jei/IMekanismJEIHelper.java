@@ -7,7 +7,7 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mezz.jei.api.ingredients.IIngredientHelper;
 
 /**
- * Helper for interacting with Mekanism's internals related to JEI. Get an instance via {@link mekanism.api.MekanismAPI#getJeiHelper()} after ensuring that JEI is
+ * Helper for interacting with Mekanism's internals related to JEI. Get an instance via {@link mekanism.api.IMekanismAccess#jeiHelper()} after ensuring that JEI is
  * loaded.
  */
 public interface IMekanismJEIHelper {

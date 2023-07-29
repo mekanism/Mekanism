@@ -8,6 +8,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.providers.IGasProvider;
+import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
@@ -28,6 +29,9 @@ public class GasAttributes {
 
         private final double radioactivity;
 
+        /**
+         * @param radioactivity Radioactivity of the chemical measured in Sv/h, must be greater than zero.
+         */
         public Radiation(double radioactivity) {
             if (radioactivity <= 0) {
                 throw new IllegalArgumentException("Radiation attribute should only be used when there actually is radiation! Radioactivity: " + radioactivity);
@@ -47,7 +51,7 @@ public class GasAttributes {
         @Override
         public boolean needsValidation() {
             //This attribute only actually needs validation if radiation is enabled
-            return MekanismAPI.getRadiationManager().isRadiationEnabled();
+            return IRadiationManager.INSTANCE.isRadiationEnabled();
         }
 
         @Override
@@ -55,7 +59,7 @@ public class GasAttributes {
             super.addTooltipText(list);
             if (needsValidation()) {
                 //Only show the radioactive tooltip information if radiation is actually enabled
-                ITooltipHelper tooltipHelper = MekanismAPI.getTooltipHelper();
+                ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
                 list.add(APILang.CHEMICAL_ATTRIBUTE_RADIATION.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getRadioactivityDisplayShort(getRadioactivity())));
             }
             return list;
@@ -74,6 +78,12 @@ public class GasAttributes {
         private final double thermalEnthalpy;
         private final double conductivity;
 
+        /**
+         * @param thermalEnthalpy Defines how much energy one mB of the chemical can store; lower values will cause reactors to require more of the chemical to stay cool.
+         *                        Must be greater than zero.
+         * @param conductivity    Defines the proportion of a reactor's available heat that can be used at an instant to convert this coolant's cool variant to its heated
+         *                        variant. This value should be greater than zero, and at most one.
+         */
         private Coolant(double thermalEnthalpy, double conductivity) {
             if (thermalEnthalpy <= 0) {
                 throw new IllegalArgumentException("Coolant attributes must have a thermal enthalpy greater than zero! Thermal Enthalpy: " + thermalEnthalpy);
@@ -103,7 +113,7 @@ public class GasAttributes {
         @Override
         public List<Component> addTooltipText(List<Component> list) {
             super.addTooltipText(list);
-            ITooltipHelper tooltipHelper = MekanismAPI.getTooltipHelper();
+            ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
             list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getPercent(conductivity)));
             list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                   tooltipHelper.getEnergyPerMBDisplayShort(FloatingLong.createConst(thermalEnthalpy))));
@@ -120,6 +130,13 @@ public class GasAttributes {
 
         private final IGasProvider heatedGas;
 
+        /**
+         * @param heatedGas       Gas provider for the heated variant of this chemical.
+         * @param thermalEnthalpy Defines how much energy one mB of the chemical can store; lower values will cause reactors to require more of the chemical to stay cool.
+         *                        Must be greater than zero.
+         * @param conductivity    Defines the proportion of a reactor's available heat that can be used at an instant to convert this coolant's cool variant to its heated
+         *                        variant. This value should be greater than zero, and at most one.
+         */
         public CooledCoolant(IGasProvider heatedGas, double thermalEnthalpy, double conductivity) {
             super(thermalEnthalpy, conductivity);
             this.heatedGas = heatedGas;
@@ -142,6 +159,13 @@ public class GasAttributes {
 
         private final IGasProvider cooledGas;
 
+        /**
+         * @param cooledGas       Gas provider for the cooled variant of this chemical.
+         * @param thermalEnthalpy Defines how much energy one mB of the chemical can store; lower values will cause reactors to require more of the chemical to stay cool.
+         *                        Must be greater than zero.
+         * @param conductivity    Defines the proportion of a reactor's available heat that can be used at an instant to convert this coolant's cool variant to its heated
+         *                        variant. This value should be greater than zero, and at most one.
+         */
         public HeatedCoolant(IGasProvider cooledGas, double thermalEnthalpy, double conductivity) {
             super(thermalEnthalpy, conductivity);
             this.cooledGas = cooledGas;
@@ -166,6 +190,27 @@ public class GasAttributes {
         private final IntSupplier burnTicks;
         private final FloatingLongSupplier energyDensity;
 
+        /**
+         * @param burnTicks     The number of ticks one mB of fuel can be burned for before being depleted; must be greater than zero.
+         * @param energyDensity The energy density in one mB of fuel; must be greater than zero.
+         *
+         * @since 10.4.0
+         */
+        public Fuel(int burnTicks, FloatingLong energyDensity) {
+            if (burnTicks <= 0) {
+                throw new IllegalArgumentException("Fuel attributes must burn for at least one tick! Burn Ticks: " + burnTicks);
+            } else if (energyDensity.isZero()) {
+                throw new IllegalArgumentException("Fuel attributes must have an energy density greater than zero!");
+            }
+            this.burnTicks = () -> burnTicks;
+            this.energyDensity = () -> energyDensity;
+        }
+
+        /**
+         * @param burnTicks     Supplier for the number of ticks one mB of fuel can be burned for before being depleted. The supplier should return values greater than
+         *                      zero.
+         * @param energyDensity Supplier for the energy density of one mB of fuel. The supplier should return values be greater than zero.
+         */
         public Fuel(IntSupplier burnTicks, FloatingLongSupplier energyDensity) {
             this.burnTicks = burnTicks;
             this.energyDensity = energyDensity;
@@ -197,7 +242,7 @@ public class GasAttributes {
         @Override
         public List<Component> addTooltipText(List<Component> list) {
             super.addTooltipText(list);
-            ITooltipHelper tooltipHelper = MekanismAPI.getTooltipHelper();
+            ITooltipHelper tooltipHelper = ITooltipHelper.INSTANCE;
             list.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getFormattedNumber(getBurnTicks())));
             list.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                   tooltipHelper.getEnergyPerMBDisplayShort(energyDensity.get())));

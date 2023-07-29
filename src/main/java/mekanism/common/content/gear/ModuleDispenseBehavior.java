@@ -21,7 +21,7 @@ public class ModuleDispenseBehavior extends OptionalDispenseItemBehavior {
             return stack;
         }
         boolean preventDrop = result == ModuleDispenseResult.FAIL_PREVENT_DROP;
-        for (Module<?> module : ModuleHelper.INSTANCE.loadAll(stack)) {
+        for (Module<?> module : ModuleHelper.get().loadAll(stack)) {
             if (module.isEnabled()) {
                 result = onModuleDispense(module, source);
                 if (result == ModuleDispenseResult.HANDLED) {

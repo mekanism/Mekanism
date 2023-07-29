@@ -1,10 +1,10 @@
 # Development
 
-Mekanism is developed for Minecraft 1.20.1 using Minecraft Forge.
+Mekanism is developed for Minecraft 1.20.1 using NeoForge.
 
 ## Prerequisites
 
-* Gradle - Version 8.1.1 is known to work, your mileage with other versions may vary
+* Gradle - Version 8.2.1 is known to work, your mileage with other versions may vary
 * JDK - Version 17 is the target as that is what Mojang ships, but to run gradle you must use a minimum of JDK 11.
 
 ## Directory Structure

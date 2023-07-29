@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
-import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
@@ -18,6 +17,7 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.config.IModuleConfigItem;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.gear.config.ModuleEnumData;
+import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radial.IRadialDataHelper.BooleanRadialModes;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.BasicRadialMode;
@@ -53,7 +53,7 @@ public class ModuleVeinMiningUnit implements ICustomModule<ModuleVeinMiningUnit>
           new BasicRadialMode(MekanismLang.RADIAL_VEIN_NORMAL, DisassemblerMode.VEIN.icon(), EnumColor.AQUA),
           new BasicRadialMode(MekanismLang.RADIAL_VEIN_EXTENDED, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI_RADIAL, "vein_extended.png"), EnumColor.PINK)
     );
-    private static final RadialData<IRadialMode> RADIAL_DATA = MekanismAPI.getRadialDataHelper().booleanBasedData(Mekanism.rl("vein_mining_mode"), RADIAL_MODES);
+    private static final RadialData<IRadialMode> RADIAL_DATA = IRadialDataHelper.INSTANCE.booleanBasedData(Mekanism.rl("vein_mining_mode"), RADIAL_MODES);
     private static final NestedRadialMode NESTED_RADIAL_MODE = new NestedRadialMode(RADIAL_DATA, MekanismLang.RADIAL_VEIN, DisassemblerMode.VEIN.icon(), EnumColor.AQUA);
 
     private IModuleConfigItem<Boolean> extendedMode;

@@ -17,6 +17,8 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -68,6 +70,23 @@ public class BaseModelCache {
 
     protected JSONModelData registerJSON(ResourceLocation rl) {
         return register(rl, JSONModelData::new);
+    }
+
+    protected JSONModelData registerJSONAndBake(ResourceLocation rl) {
+        ModelManager modelManager = Minecraft.getInstance().getModelManager();
+        ModelBakery modelBakery = modelManager.getModelBakery();
+        ModelBaker baker = modelBakery.new ModelBakerImpl(
+              (modelLoc, material) -> material.sprite(),
+              rl
+        );
+        //Register the model
+        JSONModelData data = registerJSON(rl);
+        //Manually run the JsonModelData#reload logic
+        data.bakedModel = baker.bake(rl, BlockModelRotation.X0_Y0, Material::sprite);
+        if (modelBakery.getModel(rl) instanceof BlockModel blockModel) {
+            data.model = blockModel.customData.getCustomGeometry();
+        }
+        return data;
     }
 
     protected <DATA extends MekanismModelData> DATA register(ResourceLocation rl, Function<ResourceLocation, DATA> creator) {
