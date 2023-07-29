@@ -11,6 +11,9 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleAnnotationValueVisitor14;
 import java.util.List;
 
+/**
+ * Converts an annotation value to a format suitable for a CodeBlock's $L formatter
+ */
 public class AnnotationValueToLiteralVisitor extends SimpleAnnotationValueVisitor14<Object, TypeMirror> {
     AnnotationValueToLiteralVisitor() {
     }

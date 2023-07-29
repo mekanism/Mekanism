@@ -16,6 +16,10 @@ import javax.tools.Diagnostic;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Gathering (Gradle) annotation processor which generates a ComputerMethodRegistry for the Factories generated
+ * by the {@link ComputerMethodProcessor} processor.
+ */
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 @SupportedAnnotationTypes(MekAnnotationProcessors.COMPUTER_METHOD_FACTORY_ANNOTATION_CLASSNAME)
 @SupportedOptions(MekAnnotationProcessors.MODULE_OPTION)
@@ -38,6 +42,7 @@ public class MethodFactoryProcessor extends AbstractProcessor {
         //this should only ever be 1 annotation
         for (Element element : roundEnvironment.getElementsAnnotatedWithAny(annotatedTypes.toArray(new TypeElement[0]))) {
             if (element instanceof TypeElement factoryTypeEl) {
+                //get the annotation mirror for @MethodFactory
                 AnnotationMirror annotationMirror = null;
                 for (AnnotationMirror am : factoryTypeEl.getAnnotationMirrors()) {
                     if (typeUtils().isSameType(am.getAnnotationType(), methodFactoryType)) {
@@ -67,6 +72,11 @@ public class MethodFactoryProcessor extends AbstractProcessor {
         return false;
     }
 
+    /**
+     * Gather superclasses for handledType and add a register call
+     * @param handledType the subject type of the handler
+     * @param factoryClassName the factory's class name
+     */
     private void addHandlerToRegistry(TypeElement handledType, ClassName factoryClassName) {
         //gather all superclasses (in mekanism package)
         List<ClassName> superClasses = new ArrayList<>();

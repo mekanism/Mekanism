@@ -13,6 +13,14 @@ import javax.lang.model.util.Types;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Annotation processor to generate ComputerMethodFactory subclasses for computer methods.
+ * Must only produce files directly related to the annotated elements, and not based on other elements.
+ * This is due to being marked as an Isolating processor in Gradle.
+ * <p>
+ * Technically we violate this with the Wrapping methods, but if new methods are added to a wrapper,
+ * a manually triggered full rebuild should catch it.
+ */
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 @SupportedAnnotationTypes({
         "mekanism.common.integration.computer.annotation.ComputerMethod",

@@ -7,6 +7,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Shim type to reuse code which expects an AST parameter where one doesn't actually exist yet.
+ */
 public class FakeParameter implements VariableElement {
     private final TypeMirror type;
     private final Name name;

@@ -13,6 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Helper methods for using an AnnotationMirror and getting elements by name.
+ */
 public class AnnotationHelper {
     private final Map<? extends ExecutableElement, ? extends AnnotationValue> annotationValueMap;
     private final Map<String, ExecutableElement> nameToElement = new HashMap<>();
@@ -25,6 +28,13 @@ public class AnnotationHelper {
         }
     }
 
+    /**
+     * Get a value suitable for use in an $L substitution. May be raw primitive or CodeBlock
+     *
+     * @param key the annotation member name
+     * @param defaultValue a default value to use if no value found or string is empty
+     * @return a raw primitive or CodeBlock representing the value
+     */
     public Object getLiteral(String key, Object defaultValue) {
         AnnotationValue value = annotationValueMap.get(nameToElement.get(key));
         return value.accept(new AnnotationValueToLiteralVisitor(
@@ -32,6 +42,12 @@ public class AnnotationHelper {
         ), nameToElement.get(key).getReturnType());
     }
 
+    /**
+     * Get a string value from the annotation.
+     * @param key the annotation member name
+     * @param defaultValue a value to return if the value found is empty or not a string
+     * @return the string value or the default
+     */
     public String getStringValue(String key, String defaultValue) {
         AnnotationValue value = annotationValueMap.get(nameToElement.get(key));
         if (value != null && value.getValue() instanceof String s && !s.isBlank())
@@ -39,6 +55,11 @@ public class AnnotationHelper {
         return defaultValue;
     }
 
+    /**
+     * Get a Class value from the annotation
+     * @param key the annotation member name
+     * @return a TypeMirror or null if not a class value
+     */
     public TypeMirror getClassValue(String key) {
         AnnotationValue value = annotationValueMap.get(nameToElement.get(key));
         if (value.getValue() instanceof TypeMirror tm) {
@@ -47,6 +68,11 @@ public class AnnotationHelper {
         return null;
     }
 
+    /**
+     * Get a list of String values from the annotation. Non string values will be ignored
+     * @param key the annotation member name
+     * @return a list with any values found
+     */
     public List<String> getStringArray(String key) {
         AnnotationValue value = annotationValueMap.get(nameToElement.get(key));
         List<String> returnVal = new ArrayList<>();
