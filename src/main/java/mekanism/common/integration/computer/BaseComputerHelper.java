@@ -34,28 +34,49 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Provides methods to get parameters from a computer integration and return converted values back.
+ * NB: new conversions should have an entry added to {@link #convertType(Class)}
+ *
+ * getX methods may throw an exception if the param index does not exist or param is the wrong type.
+ * convert methods should not wrap results, as they will be used to convert lists/maps
+ */
 public abstract class BaseComputerHelper {
+    /**
+     * Get an enum by string value
+     *
+     * @param param param index
+     * @param enumClazz Enum class
+     * @return the enum value or null
+     * @throws ComputerException if the param index does not exist or param is the wrong type.
+     */
     public <T extends Enum<T>> T getEnum(int param, Class<T> enumClazz) throws ComputerException {
         return SpecialConverters.sanitizeStringToEnum(enumClazz, getString(param));
     }
 
-    public abstract  boolean getBool(int param) throws ComputerException;
+    public abstract boolean getBool(int param) throws ComputerException;
 
-    public abstract  byte getByte(int param) throws ComputerException;
+    public abstract byte getByte(int param) throws ComputerException;
 
-    public abstract  short getShort(int param) throws ComputerException;
+    public abstract short getShort(int param) throws ComputerException;
 
-    public abstract  int getInt(int param) throws ComputerException;
+    public abstract int getInt(int param) throws ComputerException;
 
-    public abstract  long getLong(int param) throws ComputerException;
+    public abstract long getLong(int param) throws ComputerException;
 
-    public abstract  char getChar(int param) throws ComputerException;
+    public abstract char getChar(int param) throws ComputerException;
 
-    public abstract  float getFloat(int param) throws ComputerException;
+    public abstract float getFloat(int param) throws ComputerException;
 
-    public abstract  double getDouble(int param) throws ComputerException;
+    public abstract double getDouble(int param) throws ComputerException;
 
-    public  FloatingLong getFloatingLong(int param) throws ComputerException {
+    /**
+     * Get a Floating Long from a positive double value (finite if supported by computer platform)
+     * @param param parameter index
+     * @return constant Floating Long or FloatingLong.ZERO
+     * @throws ComputerException if the param index does not exist or param is the wrong type.
+     */
+    public FloatingLong getFloatingLong(int param) throws ComputerException {
         double finiteDouble = getDouble(param);
         if (finiteDouble < 0) {
             return FloatingLong.ZERO;
@@ -63,18 +84,39 @@ public abstract class BaseComputerHelper {
         return FloatingLong.createConst(finiteDouble);
     }
 
-    public abstract  String getString(int param) throws ComputerException;
+    public abstract String getString(int param) throws ComputerException;
 
     public abstract Map<?,?> getMap(int param) throws ComputerException;
 
+    /**
+     * Convert a Map to an IFilter instance of the expected type
+     *
+     * @param param param index
+     * @param expectedType expected filter class (usually parent)
+     * @return the constructed filter, or null if conversion was invalid
+     * @throws ComputerException if the param index does not exist or param is the wrong type. (from getMap)
+     */
+    @Nullable
     public <FILTER extends IFilter<FILTER>> FILTER getFilter(int param, Class<FILTER> expectedType) throws ComputerException {
         return SpecialConverters.convertMapToFilter(expectedType,getMap(param));
     }
 
+    /**
+     * @param param param index
+     * @return ResourceLocation parsed from String or null
+     * @throws ComputerException if the param index does not exist or param is the wrong type.
+     */
+    @Nullable
     public ResourceLocation getResourceLocation(int param) throws ComputerException {
         return ResourceLocation.tryParse(getString(param));
     }
 
+    /**
+     * Get an Item instance from the registry by Resource Location (string)
+     * @param param param index
+     * @return Item instance or {@link Items#AIR} if item not found
+     * @throws ComputerException if the param index does not exist or param is the wrong type.
+     */
     public Item getItem(int param) throws ComputerException {
         ResourceLocation itemName = getResourceLocation(param);
         if (itemName != null) {
@@ -86,6 +128,10 @@ public abstract class BaseComputerHelper {
         return Items.AIR;
     }
 
+    /**
+     * Signals that the method did not return a result (i.e. is void)
+     * @return Computer platform dependent.
+     */
     public Object voidResult() {
         return null;
     }
@@ -252,7 +298,8 @@ public abstract class BaseComputerHelper {
     }
 
     /**
-     * Convert a type to the converted version (what is exposed to the computer)
+     * Convert a type to the converted version (what is exposed to the computer).
+     * Used on OpenComputers2
      *
      * @param clazz the unconverted type
      * @return the converted type, or clazz if no conversion needed
