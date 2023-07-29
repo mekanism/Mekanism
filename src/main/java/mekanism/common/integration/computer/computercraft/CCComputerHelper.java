@@ -6,6 +6,7 @@ import dan200.computercraft.api.lua.MethodResult;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.integration.computer.BaseComputerHelper;
 import mekanism.common.integration.computer.ComputerException;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -18,6 +19,7 @@ public class CCComputerHelper extends BaseComputerHelper {
     }
 
     @Override
+    @NotNull
     public <T extends Enum<T>> T getEnum(int param, Class<T> enumClazz) throws ComputerException {
         try {
             return arguments.getEnum(param, enumClazz);

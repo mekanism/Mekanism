@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -42,16 +43,25 @@ import java.util.stream.Collectors;
  * convert methods should not wrap results, as they will be used to convert lists/maps
  */
 public abstract class BaseComputerHelper {
+    @NotNull
+    private <T> T requireNonNull(int param, @Nullable T value) throws ComputerException {
+        if (value == null) {
+            throw new ComputerException("Invalid parameter at index "+ param);
+        }
+        return value;
+    }
+
     /**
      * Get an enum by string value
      *
      * @param param param index
      * @param enumClazz Enum class
-     * @return the enum value or null
-     * @throws ComputerException if the param index does not exist or param is the wrong type.
+     * @return the enum value
+     * @throws ComputerException if the param index does not exist, enum value doesn't exist or param is the wrong type.
      */
+    @NotNull
     public <T extends Enum<T>> T getEnum(int param, Class<T> enumClazz) throws ComputerException {
-        return SpecialConverters.sanitizeStringToEnum(enumClazz, getString(param));
+        return requireNonNull(param, SpecialConverters.sanitizeStringToEnum(enumClazz, getString(param)));
     }
 
     public abstract boolean getBool(int param) throws ComputerException;
@@ -98,7 +108,7 @@ public abstract class BaseComputerHelper {
      */
     @Nullable
     public <FILTER extends IFilter<FILTER>> FILTER getFilter(int param, Class<FILTER> expectedType) throws ComputerException {
-        return SpecialConverters.convertMapToFilter(expectedType,getMap(param));
+        return requireNonNull(param,SpecialConverters.convertMapToFilter(expectedType,getMap(param)));
     }
 
     /**
@@ -106,9 +116,9 @@ public abstract class BaseComputerHelper {
      * @return ResourceLocation parsed from String or null
      * @throws ComputerException if the param index does not exist or param is the wrong type.
      */
-    @Nullable
+    @NotNull
     public ResourceLocation getResourceLocation(int param) throws ComputerException {
-        return ResourceLocation.tryParse(getString(param));
+        return requireNonNull(param, ResourceLocation.tryParse(getString(param)));
     }
 
     /**
@@ -119,11 +129,9 @@ public abstract class BaseComputerHelper {
      */
     public Item getItem(int param) throws ComputerException {
         ResourceLocation itemName = getResourceLocation(param);
-        if (itemName != null) {
-            Item item = ForgeRegistries.ITEMS.getValue(itemName);
-            if (item != null) {
-                return item;
-            }
+        Item item = ForgeRegistries.ITEMS.getValue(itemName);
+        if (item != null) {
+            return item;
         }
         return Items.AIR;
     }
@@ -234,7 +242,7 @@ public abstract class BaseComputerHelper {
     public Object convert(Frequency frequency) {
         Frequency.FrequencyIdentity identity = frequency.getIdentity();
         Map<String, Object> wrapped = new HashMap<>(2);
-        wrapped.put("key", identity.key().toString());//todo something better here
+        wrapped.put("key", identity.key().toString());
         wrapped.put("public", identity.isPublic());
         return wrapped;
     }
