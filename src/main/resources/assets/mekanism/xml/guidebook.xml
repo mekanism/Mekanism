@@ -43,6 +43,7 @@
             <link ref="functional_blocks:chemical_infuser" indent="8">Chemical Infuser</link>
             <link ref="functional_blocks:chemical_injection_chamber" indent="8">Chemical Injection Chamber</link>
             <link ref="functional_blocks:chemical_oxidizer" indent="8">Chemical Oxidizer</link>
+            <link ref="functional_blocks:chemical_tank" indent="8">Chemical Tanks</link>
             <link ref="functional_blocks:chemical_washer" indent="8">Chemical Washer</link>
             <link ref="functional_blocks:combiner" indent="8">Combiner</link>
             <link ref="functional_blocks:crusher" indent="8">Crusher</link>
@@ -55,6 +56,7 @@
             <link ref="functional_blocks:enrichment_chamber" indent="8">Enrichment Chamber</link>
             <link ref="functional_blocks:factories" indent="8">Factories</link>
             <link ref="functional_blocks:fluidic_plenisher" indent="8">Fluidic Plenisher</link>
+            <link ref="functional_blocks:fluid_tank" indent="8">Fluid Tanks</link>
             <link ref="functional_blocks:formulaic_assemblicator" indent="8">Formulaic Assemblicator</link>
             <link ref="functional_blocks:fuelwood_heater" indent="8">Fuelwood Heater</link>
             <link ref="functional_blocks:isotopic_centrifuge" indent="8">Isotopic Centrifuge</link>
@@ -210,16 +212,16 @@
             <p space="8">Bins are storage blocks that can store a large quantity of a single item; the amount of which depends on its tier. It will retain its inventory when broken with a pickaxe or removed using a Configurator (or other wrench).</p>
             <p space="8">Bins have a single storage slot that ignores normal item stacking limits, allowing a large amount of a single type of item to be stored in them.</p>
             <p space="8">However, bins do not bypass the requirement for every item in the stack to share the same NBT data. As a result, renamed, enchanted, or damaged items can not be stacked in the bin; nor can most other items which don't stack in your inventory.</p>
-            <p space="4" bold="true">Portable Inventory</p>
+            <title>Portable Inventory</title>
             <p space="8">As bins retain their inventory when picked up, they can be used as portable item storage, similar to how Shulker Boxes act in vanilla. Unlike Shulker Boxes, bins permit items to be both inserted and extracted without needing to place it down in the world.</p>
             <p space="8">To insert items, the bin can be placed into a crafting grid along with the items the player desires to add, and then removing the bin from the output slot, as long as the items to be inserted are the same as what is already in the bin. To extract items, the bin can be placed in a crafting grid with no other items; from there items can be extracted one stack at a time from the output slot.</p>
-            <p space="4" bold="true">Comparator Interaction</p>
+            <title>Comparator Interaction</title>
             <p space="8">The amount of items inside a bin can be measured using a redstone comparator. The signal strength is based on a percentage of the total capacity used, with 15 being completely full.</p>
             <p space="8">Note that in the case of the Creative Bin, either 0 or 15 will be outputted depending on whether there is an item in the bin, as the Creative Bin contains an infinite amount of the given item.</p>
-            <p space="4" bold="true">Automation</p>
+            <title>Automation</title>
             <p space="8">Items can be inserted and extracted from any side of the Bin using Hoppers, Logistical Transporters, or any item pipe from another mod.</p>
             <p space="8">By sneak right-clicking a bin with a Configurator set to any Configurate mode, auto-output can be toggled. When enabled, items will automatically be ejected one stack at a time into any inventory or Logistical Transporter on the bottom of the bin, assuming that the destination can accept the item. It will not dump items as entities into the world in the event that the block below is not a suitable inventory. A bin will glow when auto-output is enabled.</p>
-            <p space="4" bold="true">Upgrading Tier</p>
+            <title>Upgrading Tier</title>
             <p space="8">It is possible to upgrade a bin by using it in place of an empty bin in the crafting recipe for the next tier of bin. This will not result in the loss of the contents of the bin used in the upgrade.</p>
             <p space="8">Similar to machines, bins can also be upgraded through the use of tier installers. By holding the installer in the main hand and sneak right-clicking the bin, the current bin will be replaced with the next tier of bin while keeping its current inventory. Note that tiers can not be skipped.</p>
         </section>
@@ -290,6 +292,37 @@
             <p space="8">The Chemical Oxidizer is used for making gases from materials.</p>
             <p space="8">Its left side accepts incoming materials, while it's right side dispenses the gas created from those materials.</p>
             <p space="8">This machine is part of the 5x ore multiplication pipeline.</p>
+        </section>
+        <section id="chemical_tank">
+            <page_title><title>Chemical Tanks</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:basic_chemical_tank"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8" align="center">
+                <stack item="mekanism:basic_chemical_tank"/>
+                <stack item="mekanism:advanced_chemical_tank"/>
+                <stack item="mekanism:elite_chemical_tank"/>
+                <stack item="mekanism:ultimate_chemical_tank"/>
+            </p>
+            <p space="8">Chemical Tanks (previously Gas Tanks) are used to store Gases, Slurries, Pigments, and Infusion elements. They can be placed as a block and can interact with Pressurized Tubes.</p>
+            <p space="8">They come in the four tiers, each tier being double the capacity and output rate of its predecessor.</p>
+            <title>Configurations</title>
+            <p space="8">By default, the chemical tank will be set input on all sides, barring the front which will be set to output, (all substances). Auto eject will also be On by default, so substances will be inserted into connected Pressurized tubes on the output side(s).</p>
+            <title>Dumping</title>
+            <p space="4">Chemical tanks have a dump feature, which can be toggled via the button in the GUI</p>
+            <p space="4">Idle</p>
+            <p space="8">The chemical tank will not dump anything.</p>
+            <p space="4">Dump Excess</p>
+            <p space="8">The chemical tank will limit its storage to only 99.5% of its full capacity while voiding any excess, causing the tank to never be full.</p>
+            <p space="4">Dump</p>
+            <p space="8">The chemical tank will continuously dump (void) its entire inventory, attempting to leave none left. Dumping is not instantaneous.</p>
+            <title>Item Inventory</title>
+            <p space="8">The Chemical Tank, when placed in the world, has two slots in its inventory.</p>
+            <p space="8">The slot with a blue negative sign is the input slot. If you place something that contains a chemical (e.g. a chemical tank containing Oxygen) into this slot, the chemical tank will drain the item of its content as much as possible.</p>
+            <p space="8">The slot with a red positive sign is the output slot. If you place something that can store a chemical (e.g. a chemical tank) into this slot, the chemical tank will fill the item as much as possible.</p>
         </section>
         <section id="chemical_washer">
             <page_title><title>Chemical Washer</title></page_title>
@@ -481,6 +514,31 @@
             </recipe>
             <space height="3"/>
             <p space="8">The Fluidic Plenisher is the exact opposite of the Electric Pump. Instead of pumping fluids out of an area, the Fluidic Plenisher "floods" an area below it until all available open blocks are filled.</p>
+        </section>
+        <section id="fluid_tank">
+            <page_title><title>Fluid Tanks</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:basic_fluid_tank"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8" align="center">
+                <stack item="mekanism:basic_fluid_tank" count="1" />
+                <stack item="mekanism:advanced_fluid_tank" count="1" />
+                <stack item="mekanism:elite_fluid_tank" count="1" />
+                <stack item="mekanism:ultimate_fluid_tank" count="1" />
+            </p>
+            <p space="8">Fluid Tanks are storage blocks to store fluids. The amount of fluid (mB) a fluid tank can store is based on its tier. It will retain its contents when broken.</p>
+            <p space="8">The tanks can fill or empty an item via the GUI. An item containing fluid will be drained (if possible), and an empty one will be filler.</p>
+            <title>Bucket Mode</title>
+            <p space="8">You can hold the sneak key and scroll to change Bucket Mode. If bucket mode is On, the fluid tank will act like a bucket, being able to physically place fluid (sneak right click) and scoop up fluid (right click).</p>
+            <p space="8">However, by setting it to On, it also removes the ability to place the fluid tank. Bucket mode must be set to Off in order to place the fluid tank.</p>
+            <title>Automation</title>
+            <p space="8">Fluid pipes, such as the Mechanical Pipe, can be attached to any face to insert or extract fluid. Given the tank is not a full block, they will look best on the top or bottom faces</p>
+            <p space="8">By sneak right-clicking a tank with a Configurator set to any Configurate mode, auto-output can be toggled. When enabled, fluid will automatically be ejected on the bottom face of the tank, assuming that the destination can accept the fluid. A tank will glow when auto-output is enabled.</p>
+            <title>Fluid towers</title>
+            <p space="8">Tanks stacked vertically will automatically push fluid upwards when full as if it were part of the same tank. To push fluid downwards in the stack, auto-output must be turned on</p>
         </section>
         <section id="formulaic_assemblicator">
             <page_title><title>Formulaic Assemblicator</title></page_title>
