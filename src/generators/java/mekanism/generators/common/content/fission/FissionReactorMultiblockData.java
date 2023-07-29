@@ -21,7 +21,6 @@ import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
-import mekanism.common.integration.computer.BaseComputerHelper;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.Convertable;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
@@ -547,9 +546,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @ComputerMethod
     Convertable<?> getCoolant() {
         if (fluidCoolantTank.isEmpty() && !gasCoolantTank.isEmpty()) {
-            return Convertable.of(gasCoolantTank.getStack(), BaseComputerHelper::convert);
+            return Convertable.of(gasCoolantTank.getStack());
         }
-        return Convertable.of(fluidCoolantTank.getFluid(), BaseComputerHelper::convert);
+        return Convertable.of(fluidCoolantTank.getFluid());
     }
 
     @ComputerMethod

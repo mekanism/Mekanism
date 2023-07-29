@@ -1,5 +1,8 @@
 package mekanism.common.integration.computer;
 
+import mekanism.api.chemical.ChemicalStack;
+import net.minecraftforge.fluids.FluidStack;
+
 import java.util.function.BiFunction;
 
 /**
@@ -21,5 +24,13 @@ public class Convertable<RAW> {
 
     public static <RAW> Convertable<RAW> of(RAW value, BiFunction<BaseComputerHelper, RAW, Object> converter) {
         return new Convertable<>(value, converter);
+    }
+
+    public static Convertable<FluidStack> of(FluidStack value) {
+        return of(value, BaseComputerHelper::convert);
+    }
+
+    public static Convertable<ChemicalStack<?>> of(ChemicalStack<?> value) {
+        return of(value, BaseComputerHelper::convert);
     }
 }

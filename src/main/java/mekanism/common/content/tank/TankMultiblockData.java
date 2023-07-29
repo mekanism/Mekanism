@@ -17,7 +17,6 @@ import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.computer.BaseComputerHelper;
 import mekanism.common.integration.computer.Convertable;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -210,12 +209,12 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     @ComputerMethod
     Convertable<?> getStored() {
         return switch (mergedTank.getCurrentType()) {
-            case FLUID -> Convertable.of(getFluidTank().getFluid(), BaseComputerHelper::convert);
-            case GAS -> Convertable.of(getGasTank().getStack(), BaseComputerHelper::convert);
-            case INFUSION -> Convertable.of(getInfusionTank().getStack(), BaseComputerHelper::convert);
-            case PIGMENT -> Convertable.of(getPigmentTank().getStack(), BaseComputerHelper::convert);
-            case SLURRY -> Convertable.of(getSlurryTank().getStack(), BaseComputerHelper::convert);
-            default -> Convertable.of(FluidStack.EMPTY, BaseComputerHelper::convert);
+            case FLUID -> Convertable.of(getFluidTank().getFluid());
+            case GAS -> Convertable.of(getGasTank().getStack());
+            case INFUSION -> Convertable.of(getInfusionTank().getStack());
+            case PIGMENT -> Convertable.of(getPigmentTank().getStack());
+            case SLURRY -> Convertable.of(getSlurryTank().getStack());
+            default -> Convertable.of(FluidStack.EMPTY);
         };
     }
 
