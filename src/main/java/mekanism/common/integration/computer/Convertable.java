@@ -3,7 +3,8 @@ package mekanism.common.integration.computer;
 import java.util.function.BiFunction;
 
 /**
- * Created by Thiakil on 21/07/2023.
+ * Wrapper type for a method which may return a different static type at runtime.
+ * Ensures that the result can still be converted.
  */
 public class Convertable<RAW> {
     private final RAW value;

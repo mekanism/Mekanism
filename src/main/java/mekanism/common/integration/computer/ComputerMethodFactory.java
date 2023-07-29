@@ -12,6 +12,15 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
+/**
+ * A base class for the annotation generator to extend.
+ * It's constructor will call {@link #register(String, MethodRestriction, String[], boolean, String[], Class[], Class, ComputerFunctionCaller)}
+ * to set up the possible methods.
+ * These will then be tested and, if not restricted, "bound" to the holder in {@link #bindTo(Object, BoundMethodHolder)}
+ * Methods with the same name must have different parameter counts.
+ *
+ * @param <T> the "subject" that this Factory's methods operate on.
+ */
 @ParametersAreNotNullByDefault
 public class ComputerMethodFactory<T>{
     protected static String[] NO_STRINGS = new String[0];
@@ -54,7 +63,7 @@ public class ComputerMethodFactory<T>{
         this.methods.add(new MethodData<>(name, restriction, requiredMods, threadSafe, argumentNames, argClasses, returnType, handler));
     }
 
-    void bindTo(T subject, BoundMethodHolder holder) {
+    void bindTo(@Nullable T subject, BoundMethodHolder holder) {
         for (MethodData<T> methodData : this.methods) {
             if (methodData.restriction.test(subject) && modsLoaded(methodData.requiredMods)) {
                 holder.register(methodData.name(), methodData.threadSafe(), methodData.argumentNames(), methodData.argClasses(), methodData.returnType(), subject, methodData.handler());
@@ -74,14 +83,16 @@ public class ComputerMethodFactory<T>{
         return true;
     }
 
+    @FunctionalInterface
     public interface ComputerFunctionCaller<T> {
 
         /**
          * Applies this function to the given arguments.
          *
-         * @param t the first function argument
-         * @param u the second function argument
-         * @return the function result
+         * @param t the subject
+         * @param u the computer helper for the current integration
+         * @return the (converted) function result
+         * @throws ComputerException if arguments are invalid or other failure happens during processing
          */
         Object apply(@Nullable T t, BaseComputerHelper u) throws ComputerException;
     }
