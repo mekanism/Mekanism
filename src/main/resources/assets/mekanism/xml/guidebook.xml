@@ -60,6 +60,9 @@
             <link ref="functional_blocks:formulaic_assemblicator" indent="8">Formulaic Assemblicator</link>
             <link ref="functional_blocks:fuelwood_heater" indent="8">Fuelwood Heater</link>
             <link ref="functional_blocks:isotopic_centrifuge" indent="8">Isotopic Centrifuge</link>
+            <link ref="functional_blocks:laser" indent="8">Laser</link>
+            <link ref="functional_blocks:laser_amplifier" indent="8">Laser Amplifier</link>
+            <link ref="functional_blocks:laser_tractor_beam" indent="8">Laser Tractor Beam</link>
             <link ref="functional_blocks:logistical_sorter" indent="8">Logistical Sorter</link>
             <link ref="functional_blocks:metallurgic_infuser" indent="8">Metallurgic Infuser</link>
             <link ref="functional_blocks:modification_station" indent="8">Modification Station</link>
@@ -589,6 +592,38 @@
             <space height="3"/>
             <p space="8">The Isotopic Centrifuge is used with a Fission Reactor, either processing Uranium Hexafluoride into Fissile Fuel, OR processing Nuclear Waste into Plutonium.</p>
             <p space="8">It intakes gas from the bottom only and outputs from the front port only.</p>
+        </section>
+        <section id="laser">
+            <page_title><title>Laser</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:laser"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8">An advanced form of linear energy transfer that utilizes an extremely collimated beam of light.</p>
+            <p space="8">The Laser is a machine that is used in the jump starting of a Fusion Reactor power system or to build a charge in the Laser Amplifier.</p>
+        </section>
+        <section id="laser_amplifier">
+            <page_title><title>Laser Amplifier</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:laser_amplifier"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8">This block can condense up to 5 Lasers into one single beam, it can collect the energy of the lasers over time which you can set in the redstone control.</p>
+            <p space="8">It is needed to kickstart the fusion reactor.</p>
+        </section>
+        <section id="laser_tractor_beam">
+            <page_title><title>Laser Tractor Beam</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:laser_tractor_beam"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8">A special variant of the Laser Amplifier which will pull the drops of broken blocks towards it.</p>
         </section>
         <section id="logistical_sorter">
             <page_title><title>Logistical Sorter</title></page_title>
