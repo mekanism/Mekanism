@@ -56,6 +56,7 @@ jobs:
       with:
         arguments: clean build outputChangelog
         gradle-version: wrapper
+        cache-read-only: false
       env:
         BUILD_NUMBER: ${{ github.run_number }}
         GIT_COMMIT: ${{ github.sha }}
@@ -82,6 +83,7 @@ jobs:
       with:
         arguments: curseforge modrinth publish
         gradle-version: wrapper
+        cache-read-only: false
       env:
         CURSEFORGE_KEY: ${{ secrets.CURSEFORGE_KEY }}
         MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
