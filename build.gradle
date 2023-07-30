@@ -696,7 +696,7 @@ def changeLogResolver = { ->
             //Use full message rather than short message to get any new lines, and trim it so that any trailing new lines
             // get removed so that we don't end up with extra spaces
             String message = commit.fullMessage.trim()
-            if (!message.startsWith("Merge branch") && !message.startsWith("Merge pull request")) {
+            if (!message.startsWith("Merge branch") && !message.startsWith("Merge pull request") && !message.contains("[no-changelog]")) {
                 //Ignore Merges and PR Merges
                 message = message.replaceAll("#(\\d+)", { match ->//turn issues/prs into links (github currently supports prs being linked as issues)
                     return "<a href=\"https://github.com/mekanism/Mekanism/issues/${match[1]}\">${match[0]}</a>"
