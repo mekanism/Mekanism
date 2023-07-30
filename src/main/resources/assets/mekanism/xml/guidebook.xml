@@ -77,6 +77,8 @@
             <link ref="functional_blocks:precision_sawmill" indent="8">Precision Sawmill</link>
             <link ref="functional_blocks:pressurized_reaction_chamber" indent="8">Pressurized Reaction Chamber</link>
             <link ref="functional_blocks:purification_chamber" indent="8">Purification Chamber</link>
+            <link ref="functional_blocks:quantum_entangloporter" indent="8">Quantum Entangloporter</link>
+            <link ref="functional_blocks:qio" indent="8">Quantum Item Orchestration (QIO)</link>
             <link ref="functional_blocks:resistive_heater" indent="8">Resistive Heater</link>
             <link ref="functional_blocks:robit" indent="8">Robit</link>
             <link ref="functional_blocks:rotary_condensentrator" indent="8">Rotary Condensentrator</link>
@@ -829,6 +831,31 @@
             <space height="3"/>
             <p space="8">The Purification Chamber uses oxygen to refine Ores and shards into clumps.</p>
             <p space="8">The oxygen can be provided externally as gas, internally with an oxygen filled Gas Tank or flint.</p>
+        </section>
+        <section id="quantum_entangloporter">
+            <page_title><title>Quantum Entangloporter</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:quantum_entangloporter"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8">The Quantum Entangloporter is a configurable, shared buffer for Items, Fluids, Chemicals (e.g. Gas), and Heat.</p>
+            <p space="8">Contents sent to one Quantum Entangloporter can be accessed by another on the same frequency. No power is required.</p>
+            <p space="8">Due to the buffered nature, it is not recommended to send more than one variant per type on the same frequency unless you are certain it can be extracted before another will be inserted. E.g. Sending Lava through will be blocked until all the Water in the buffer is cleared.</p>
+        </section>
+
+        <section id="qio">
+            <page_title><title>Quantum Item Orchestration (QIO)</title></page_title>
+            <p space="8" align="center">
+                <stack item="mekanism:qio_drive_array" count="1" />
+                <stack item="mekanism:qio_dashboard" count="1" />
+                <stack item="mekanism:qio_importer" count="1" />
+                <stack item="mekanism:qio_exporter" count="1" />
+                <stack item="mekanism:qio_redstone_adapter" count="1" />
+            </p>
+            <p space="8">QIO is a way of storing large amounts of items that can be stored, searched, and accessed remotely in late game.</p>
+            <p space="8">It comprises at least one QIO Drive (to store items), a QIO Drive Array (to hold the QIO Drives), and at least one QIO Dashboard (to access items in the QIO Drive Array). Both the drive and drive array must be set to the same frequency in order to work together.</p>
         </section>
         <section id="resistive_heater">
             <page_title><title>Resistive Heater</title></page_title>
