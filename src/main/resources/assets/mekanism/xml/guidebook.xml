@@ -83,6 +83,12 @@
             <link ref="functional_blocks:seismic_vibrator" indent="8">Seismic Vibrator</link>
             <link ref="functional_blocks:solar_neutron_activator" indent="8">Solar Neutron Activator</link>
 
+            <link ref="multiblocks">Multiblocks</link>
+            <link ref="multiblocks:thermal_evaporation" indent="8">Thermal Evaporation Plant</link>
+            <link ref="multiblocks:dynamic_tank" indent="8">Dynamic Tank</link>
+            <link ref="multiblocks:teleported" indent="8">Teleporter</link>
+            <link ref="multiblocks:induction_matrix" indent="8">Induction Matrix</link>
+
             <link ref="gear">Gear</link>
 
             <link ref="items">Items</link>
@@ -879,6 +885,20 @@
             <space height="3"/>
             <p space="8">The Solar Neutron Activator is a machine that directs the neutron radiation of the sun into its internal reservoir, allowing for the slow creation of various isotopes.</p>
             <p space="8">The input is at the bottom, the output is at the front. It does not need energy except for direct sunlight. There must be no blocks between it and the sky.</p>
+        </section>
+    </chapter>
+    <chapter id="multiblocks">
+        <section id="thermal_evaporation">
+            <page_title><title>Thermal Evaporation Plant</title></page_title>
+        </section>
+        <section id="dynamic_tank">
+            <page_title><title>Dynamic Tank</title></page_title>
+        </section>
+        <section id="teleported">
+            <page_title><title>Teleporter</title></page_title>
+        </section>
+        <section id="induction_matrix">
+            <page_title><title>Induction Matrix</title></page_title>
         </section>
     </chapter>
     <chapter id="gear">
