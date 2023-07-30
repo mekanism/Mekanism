@@ -587,7 +587,7 @@
                 </recipe.result>
             </recipe>
             <space height="3"/>
-            <p space="8">The Isotopic Centrifuge is used with a Fission Reactor, wither processing Uranium Hexafluoride into Fissile Fuel, OR processing Nuclear Waste into Plutonium.</p>
+            <p space="8">The Isotopic Centrifuge is used with a Fission Reactor, either processing Uranium Hexafluoride into Fissile Fuel, OR processing Nuclear Waste into Plutonium.</p>
             <p space="8">It intakes gas from the bottom only and outputs from the front port only.</p>
         </section>
         <section id="logistical_sorter">
