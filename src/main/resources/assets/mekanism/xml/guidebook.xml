@@ -30,11 +30,12 @@
             <page_title>
                 <title>Index</title>
             </page_title>
-            <p>Introduction</p>
+            <title>Introduction</title>
             <link indent="8" ref="intro">Introduction</link>
             <link indent="8" ref="intro:features">Main Features</link>
 
-            <link ref="functional_blocks">Functional Blocks</link>
+            <space height="8" />
+            <title>Functional Blocks</title>
             <link ref="functional_blocks:antiprotonic_nucleosynthesizer" indent="8">Antiprotonic Nucleosynthesizer</link>
             <link ref="functional_blocks:bins" indent="8">Bins</link>
             <link ref="functional_blocks:chargepad" indent="8">Chargepad</link>
@@ -90,15 +91,18 @@
             <link ref="functional_blocks:seismic_vibrator" indent="8">Seismic Vibrator</link>
             <link ref="functional_blocks:solar_neutron_activator" indent="8">Solar Neutron Activator</link>
 
-            <link ref="multiblocks">Multiblocks</link>
+            <space height="8" />
+            <title>Multiblocks</title>
             <link ref="multiblocks:thermal_evaporation" indent="8">Thermal Evaporation Plant</link>
             <link ref="multiblocks:dynamic_tank" indent="8">Dynamic Tank</link>
             <link ref="multiblocks:teleported" indent="8">Teleporter</link>
             <link ref="multiblocks:induction_matrix" indent="8">Induction Matrix</link>
 
-            <link ref="gear">Gear</link>
+            <space height="8" />
+            <title>Gear</title>
 
-            <link ref="items">Items</link>
+            <space height="8" />
+            <title>Items</title>
 
             <!--<link ref="API">1. Adding new Books</link>
             <link indent="8" ref="API:respack">1.1. Via Resource Packs</link>
