@@ -11,6 +11,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
@@ -96,7 +97,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
             if (capability.isPresent()) {
                 if (modeSupplier.getAsBoolean()) {
                     //Input tank, so we want to fill it
-                    IFluidHandlerItem fluidHandlerItem = capability.resolve().get();
+                    IFluidHandlerItem fluidHandlerItem = capability.orElseThrow(MekanismUtils.MISSING_CAP_ERROR);
                     for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
                         FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
                         if (!fluidInTank.isEmpty() && fluidTank.isFluidValid(fluidInTank)) {
@@ -158,7 +159,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
                 if (fluidInTank.isEmpty()) {
                     return true;
                 }
-                IFluidHandlerItem itemFluidHandler = cap.resolve().get();
+                IFluidHandlerItem itemFluidHandler = cap.orElseThrow(MekanismUtils.MISSING_CAP_ERROR);
                 //True if the tanks contents are valid, and we can fill the item with any of the contents
                 return itemFluidHandler.fill(fluidInTank, FluidAction.SIMULATE) > 0;
             }

@@ -71,6 +71,11 @@ public abstract class TransitRequest {
         Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).resolve();
         if (capability.isPresent()) {
             IItemHandler inventory = capability.get();
+            int slots = inventory.getSlots();
+            if (slots == 0) {
+                //If the inventory has no slots just exit early with the result that we can't send any items
+                return getEmptyResponse();
+            }
             if (min > 1) {
                 //If we have a minimum amount of items we are trying to send, we need to start by simulating
                 // to see if we actually have enough room to send the minimum amount of our item. We can
@@ -87,15 +92,12 @@ public abstract class TransitRequest {
             for (ItemData data : getItemData()) {
                 ItemStack origInsert = StackUtils.size(data.getStack(), data.getTotalCount());
                 ItemStack toInsert = origInsert.copy();
-                for (int i = 0; i < inventory.getSlots(); i++) {
-                    // Check validation
-                    if (inventory.isItemValid(i, toInsert)) {
-                        // Do insert
-                        toInsert = inventory.insertItem(i, toInsert, false);
-                        // If empty, end
-                        if (toInsert.isEmpty()) {
-                            return createResponse(origInsert, data);
-                        }
+                for (int i = 0; i < slots; i++) {
+                    // Do insert, this will handle validating the item is valid for the inventory
+                    toInsert = inventory.insertItem(i, toInsert, false);
+                    // If empty, end
+                    if (toInsert.isEmpty()) {
+                        return createResponse(origInsert, data);
                     }
                 }
                 if (TransporterManager.didEmit(origInsert, toInsert)) {
