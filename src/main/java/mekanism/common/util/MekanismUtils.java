@@ -93,7 +93,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.fluids.FluidStack;
@@ -427,7 +426,7 @@ public final class MekanismUtils {
     }
 
     public static BlockHitResult rayTrace(Player player, ClipContext.Fluid fluidMode) {
-        return rayTrace(player, player.getAttributeValue(ForgeMod.BLOCK_REACH.get()), fluidMode);
+        return rayTrace(player, player.getBlockReach(), fluidMode);
     }
 
     public static BlockHitResult rayTrace(Player player, double reach) {
