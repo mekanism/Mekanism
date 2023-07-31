@@ -79,6 +79,11 @@
             <link ref="functional_blocks:purification_chamber" indent="8">Purification Chamber</link>
             <link ref="functional_blocks:quantum_entangloporter" indent="8">Quantum Entangloporter</link>
             <link ref="functional_blocks:qio" indent="8">Quantum Item Orchestration (QIO)</link>
+            <link ref="functional_blocks:qio_dashboard" indent="12">Dashboard</link>
+            <link ref="functional_blocks:qio_drive_array" indent="12">Drive Array</link>
+            <link ref="functional_blocks:qio_importer" indent="12">Importer</link>
+            <link ref="functional_blocks:qio_exporter" indent="12">Exporter</link>
+            <link ref="functional_blocks:qio_redstone_adapter" indent="12">Redstone Adapter</link>
             <link ref="functional_blocks:resistive_heater" indent="8">Resistive Heater</link>
             <link ref="functional_blocks:robit" indent="8">Robit</link>
             <link ref="functional_blocks:rotary_condensentrator" indent="8">Rotary Condensentrator</link>
@@ -844,18 +849,87 @@
             <p space="8">Contents sent to one Quantum Entangloporter can be accessed by another on the same frequency. No power is required.</p>
             <p space="8">Due to the buffered nature, it is not recommended to send more than one variant per type on the same frequency unless you are certain it can be extracted before another will be inserted. E.g. Sending Lava through will be blocked until all the Water in the buffer is cleared.</p>
         </section>
-
         <section id="qio">
             <page_title><title>Quantum Item Orchestration (QIO)</title></page_title>
             <p space="8" align="center">
-                <stack item="mekanism:qio_drive_array" count="1" />
                 <stack item="mekanism:qio_dashboard" count="1" />
+                <stack item="mekanism:qio_drive_array" count="1" />
                 <stack item="mekanism:qio_importer" count="1" />
                 <stack item="mekanism:qio_exporter" count="1" />
                 <stack item="mekanism:qio_redstone_adapter" count="1" />
             </p>
-            <p space="8">QIO is a way of storing large amounts of items that can be stored, searched, and accessed remotely in late game.</p>
-            <p space="8">It comprises at least one QIO Drive (to store items), a QIO Drive Array (to hold the QIO Drives), and at least one QIO Dashboard (to access items in the QIO Drive Array). Both the drive and drive array must be set to the same frequency in order to work together.</p>
+            <p space="8">QIO is a way of storing large amounts of items that can be stored, searched, and accessed remotely in late game. No power is required for system operation.</p>
+            <p space="8">It comprises at least one QIO Drive (to store items), a QIO Drive Array (to hold the QIO Drives), and at least one QIO Dashboard (to access items in the QIO Drive Array).</p>
+            <p space="8">Components must be set to the same frequency to work together. Click the Frequency tab on the upper left of the GUIs to access the configuration.</p>
+            <p space="8">QIO Frequencies can be private or public, just like Entangloporters and Teleporters.</p>
+            <p space="8">Please note that the individual blocks have a security setting as well as the frequency itself. This means that you can allow Trusted users to access your Dashboard configured for your private Frequency.</p>
+        </section>
+        <section id="qio_dashboard">
+            <page_title><title>QIO Dashboard</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:qio_dashboard"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8">The main way to interact with your QIO system, allowing browsing, insertion, extraction, and crafting! Thw screen will take on the colour set for your QIO Frequency.</p>
+            <title>Browsing</title>
+            <p space="8">A scrollable &amp; searchable view will show all the items contained in the connected QIO drives.</p>
+            <p space="8">Stacks will be condensed to show a single larger than normal stack.</p>
+            <p space="8">The height can be adjusted with the controls on the left of the window.</p>
+            <title>Insertion and Extraction</title>
+            <p space="8">To insert items, hold them on your cursor and click anywhere in the QIO's slots at the top of the window.</p>
+            <p space="8">To extract a stack, simply click on an item in the QIO's inventory to load it on your cursor.</p>
+            <title>Crafting</title>
+            <p space="8">Up to 3 crafting windows can be opened by clicking the Crafting button on the left of the window</p>
+            <p space="8">The crafting can be completed using items from the QIO system and/or your player inventory.</p>
+        </section>
+        <section id="qio_drive_array">
+            <page_title><title>QIO Drive Array</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:qio_drive_array"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8">Provides space for 12 QIO drives to serve your system. Also provides at a glance visualisation of the used storage capacity of your system in the GUI.</p>
+            <p space="8">Simply set the Frequency and insert your drives!</p>
+        </section>
+        <section id="qio_importer">
+            <page_title><title>QIO Importer</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:qio_importer"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8">Pulls items from an inventory (chest/machine/etc.) into the QIO system. Once activated will show the colour of your QIO system.</p>
+            <p space="8">Can be used with or without filters. Filters are the same as the <link ref="functional_blocks:logistical_sorter">Logistical Sorter</link> minus colours.</p>
+        </section>
+        <section id="qio_exporter">
+            <page_title><title>QIO Exporter</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:qio_exporter"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8">The opposite of the importer, extracts items from the QIO system and inserts them elsewhere. Once activated will show the colour of your QIO system.</p>
+            <p space="8">The exported can export into Logistical Transporters.</p>
+            <p space="8">Can be used with or without filters. Filters are the same as the <link ref="functional_blocks:logistical_sorter">Logistical Sorter</link> minus colours.</p>
+        </section>
+        <section id="qio_redstone_adapter">
+            <page_title><title>QIO Redstone Adapter</title></page_title>
+            <recipe type="crafting">
+                <recipe.result>
+                    <stack item="mekanism:qio_redstone_adapter"/>
+                </recipe.result>
+            </recipe>
+            <space height="3"/>
+            <p space="8">Allows emitting a redstone signal when a configured item has reached a specified count (or greater) in the QIO system.</p>
+            <p space="8">After configuring a frequency, place an item into the configuration slot (will not be consumed), set a count in the text field and click the tick. Click the Fuzzy Mode button if you want to ignore NBT of the item.</p>
+            <p space="8">The adapter will now output a redstone signal when the system has at least this amount of items matching the filter.</p>
+            <p space="8">Combine this with a redstone control setting on a machine, and you can halt automated production when you have enough!</p>
         </section>
         <section id="resistive_heater">
             <page_title><title>Resistive Heater</title></page_title>
