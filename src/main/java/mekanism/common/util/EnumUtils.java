@@ -4,6 +4,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.text.EnumColor;
+import mekanism.api.tier.BaseTier;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.resource.PrimaryResource;
@@ -73,6 +74,11 @@ public class EnumUtils {
      * Cached value of {@link TransmissionType#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final TransmissionType[] TRANSMISSION_TYPES = TransmissionType.values();
+
+    /**
+     * Cached value of {@link BaseTier#values()}. DO NOT MODIFY THIS LIST.
+     */
+    public static final BaseTier[] TIERS = BaseTier.values();
 
     /**
      * Cached value of {@link CableTier#values()}. DO NOT MODIFY THIS LIST.

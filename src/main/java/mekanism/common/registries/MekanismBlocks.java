@@ -407,7 +407,7 @@ public class MekanismBlocks {
     private static <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> registerTieredBlock(BlockType type, String suffix,
           Function<MapColor, ? extends BLOCK> blockSupplier, Function<BLOCK, ITEM> itemCreator) {
         ITier tier = type.get(AttributeTier.class).tier();
-        return registerTieredBlock(tier, suffix, () -> blockSupplier.apply(tier.getBaseTier().getColor().getMapColor()), itemCreator);
+        return registerTieredBlock(tier, suffix, () -> blockSupplier.apply(tier.getBaseTier().getMapColor()), itemCreator);
     }
 
     private static <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> registerTieredBlock(BlockType type, String suffix,

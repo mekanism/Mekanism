@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.text.EnumColor;
+import mekanism.api.tier.BaseTier;
 import mekanism.client.model.ModelEnergyCore;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.RenderTickHandler.LazyRender;
@@ -32,7 +32,7 @@ public class RenderEnergyCube extends ModelTileEntityRenderer<TileEntityEnergyCu
     protected void render(TileEntityEnergyCube tile, float partialTicks, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
         float energyScale = tile.getEnergyScale();
         Vec3 renderPos = Vec3.atCenterOf(tile.getBlockPos());
-        EnumColor color = tile.getTier().getBaseTier().getColor();
+        BaseTier baseTier = tile.getTier().getBaseTier();
         RenderTickHandler.addTransparentRenderer(ModelEnergyCore.BATCHED_RENDER_TYPE, new LazyRender() {
             @Override
             public void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler) {
@@ -44,7 +44,7 @@ public class RenderEnergyCube extends ModelTileEntityRenderer<TileEntityEnergyCu
                 poseStack.translate(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
                 poseStack.mulPose(Axis.YP.rotationDegrees(scaledTicks));
                 poseStack.mulPose(coreVec.rotationDegrees(36F + scaledTicks));
-                model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, overlayLight, color, energyScale);
+                model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, overlayLight, baseTier, energyScale);
                 poseStack.popPose();
             }
 
