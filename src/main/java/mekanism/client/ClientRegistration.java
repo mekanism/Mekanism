@@ -146,13 +146,11 @@ import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.HolidayManager;
-import mekanism.common.block.attribute.Attribute;
 import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.block.ItemBlockCardboardBox;
-import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -170,7 +168,6 @@ import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.resource.IResource;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
-import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.qio.TileEntityQIOComponent;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.util.RegistryUtils;
@@ -527,16 +524,6 @@ public class ClientRegistration {
                 ClientRegistrationUtil.registerBlockColorHandler(event, (state, world, pos, index) -> index == 1 ? tint : -1, entry.getValue());
             }
         }
-        ClientRegistrationUtil.registerBlockColorHandler(event, (state, world, pos, index) -> {
-                  if (index == 1) {
-                      EnergyCubeTier tier = Attribute.getTier(state.getBlock(), EnergyCubeTier.class);
-                      if (tier != null) {
-                          return MekanismRenderer.getColorARGB(tier.getBaseTier().getColor(), 1);
-                      }
-                  }
-                  return -1;
-              }, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE,
-              MekanismBlocks.CREATIVE_ENERGY_CUBE);
     }
 
     @SubscribeEvent
@@ -564,13 +551,6 @@ public class ClientRegistration {
             }
             return -1;
         }, MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS, MekanismItems.MEKASUIT_BOOTS);
-        ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> {
-                  if (index == 1 && stack.getItem() instanceof ItemBlockEnergyCube cube) {
-                      return MekanismRenderer.getColorARGB(cube.getTier().getBaseTier().getColor(), 1);
-                  }
-                  return -1;
-              }, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE,
-              MekanismBlocks.CREATIVE_ENERGY_CUBE);
 
         for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             if (entry.getKey() instanceof PrimaryResource primaryResource) {
