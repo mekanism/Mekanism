@@ -167,7 +167,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISup
 
     @Override
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        boolean hovered = checkWindows(mouseX, mouseY, isHoveredOrFocused());
+        boolean hovered = checkWindows(mouseX, mouseY, isHovered());
         if (renderHover && hovered) {
             int xPos = relativeX + 1;
             int yPos = relativeY + 1;
