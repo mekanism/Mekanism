@@ -74,6 +74,11 @@ public class MekBannerShieldRecipe extends CustomRecipe {
         return width * height >= 2;
     }
 
+    @Override
+    public boolean isIncomplete() {
+        return false;
+    }
+
     @NotNull
     @Override
     public RecipeSerializer<?> getSerializer() {

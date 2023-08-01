@@ -259,17 +259,19 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
      * Helper for getting a recipe from a world's recipe manager.
      */
     public static <C extends Container, RECIPE_TYPE extends Recipe<C>> Optional<RECIPE_TYPE> getRecipeFor(RecipeType<RECIPE_TYPE> recipeType, C inventory, Level level) {
-        //Only allow looking up complete recipes
+        //Only allow looking up complete recipes or special recipes as we only use this method for vanilla recipe types
+        // and special recipes return that they are not complete
         return level.getRecipeManager().getRecipeFor(recipeType, inventory, level)
-              .filter(recipe -> !recipe.isIncomplete());
+              .filter(recipe -> recipe.isSpecial() || !recipe.isIncomplete());
     }
 
     /**
      * Helper for getting a recipe from a world's recipe manager.
      */
     public static Optional<? extends Recipe<?>> byKey(Level level, ResourceLocation id) {
-        //Only allow looking up complete recipes
+        //Only allow looking up complete recipes or special recipes as we only use this method for vanilla recipe types
+        // and special recipes return that they are not complete
         return level.getRecipeManager().byKey(id)
-              .filter(recipe -> !recipe.isIncomplete());
+              .filter(recipe -> recipe.isSpecial() || !recipe.isIncomplete());
     }
 }
