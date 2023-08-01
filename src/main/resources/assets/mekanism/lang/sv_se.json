@@ -189,7 +189,6 @@
   "assemblicator.mekanism.craft_available": "Tillverka tillgängliga föremål",
   "assemblicator.mekanism.craft_single": "Tillverka ett föremål",
   "assemblicator.mekanism.encode_formula": "Koda formel",
-  "assemblicator.mekanism.fill_empty": "Fyll/töm ruta",
   "assemblicator.mekanism.stock_control": "Lagerkontroll: %1$s",
   "auto.mekanism.eject": "Auto-utmatning",
   "auto.mekanism.pull": "Auto-inmatning",
