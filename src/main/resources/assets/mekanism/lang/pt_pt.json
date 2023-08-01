@@ -189,7 +189,6 @@
   "assemblicator.mekanism.craft_available": "Fabricar itens disponíveis",
   "assemblicator.mekanism.craft_single": "Criar Item Único",
   "assemblicator.mekanism.encode_formula": "Codificar Fórmula",
-  "assemblicator.mekanism.fill_empty": "Preenchimento/Vazio Grade",
   "assemblicator.mekanism.stock_control": "Controle de Estoque: %1$s",
   "auto.mekanism.eject": "Auto-Ejetar",
   "auto.mekanism.pull": "Auto-puxar",
