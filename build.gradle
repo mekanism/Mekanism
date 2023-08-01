@@ -780,6 +780,8 @@ void setGenericCurseArtifactData(UploadArtifact artifact, String changelog) {
     artifact.changelog = changelog
     artifact.changelogType = 'html'
     artifact.releaseType = "${release_type}"
+    //Add that we support forge for now as we currently support both Forge and NeoForge. NeoForge is detected automatically from the gradle plugin
+    artifact.addModLoader("Forge")
 }
 
 void uploadSecondaryCurseProject(TaskPublishCurseForge task, long projectId, String changelog, TaskProvider<Jar> sourceSetJar) {
@@ -815,6 +817,11 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
         versionType = "${release_type}"
         changelog = changeLogResolver.call()
         uploadFile = jar
+        //Add that we support forge for now as we currently support both Forge and NeoForge
+        // Note: Once we no longer support forge we can just remove the line as NeoForge will be able to be detected automatically
+        // Currently we can't as Minotaur only detects loaders if none are set
+        loaders.addAll("forge", "neoforge")
+
         getAdditionalFiles().value([apiJar.get()])
         //Note: Can't use nested dependency configuration as we have no way to clear it for the secondary uploads
         getDependencies().value([
