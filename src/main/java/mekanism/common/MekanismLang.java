@@ -477,7 +477,8 @@ public enum MekanismLang implements ILangEntry {
     ENCODE_FORMULA("assemblicator", "encode_formula"),
     CRAFT_SINGLE("assemblicator", "craft_single"),
     CRAFT_AVAILABLE("assemblicator", "craft_available"),
-    FILL_EMPTY("assemblicator", "fill_empty"),
+    EMPTY_ASSEMBLICATOR("assemblicator", "empty"),
+    FILL_ASSEMBLICATOR("assemblicator", "fill"),
     STOCK_CONTROL("assemblicator", "stock_control"),
     AUTO_MODE("assemblicator", "auto_mode_toggle"),
     //Factory Type
