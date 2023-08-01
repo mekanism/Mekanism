@@ -3,7 +3,6 @@
   "assemblicator.mekanism.craft_available": "Valmista Saatavilla Olevat esineet",
   "assemblicator.mekanism.craft_single": "Valmista yksi esine",
   "assemblicator.mekanism.encode_formula": "Tallenna resepti",
-  "assemblicator.mekanism.fill_empty": "Täytä/Tyhjennä Ruudukko",
   "assemblicator.mekanism.stock_control": "Varaston hallinta: %1$s",
   "auto.mekanism.eject": "Automaattinen poisto",
   "auto.mekanism.pull": "Automaattinen vetäminen",
