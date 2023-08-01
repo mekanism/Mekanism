@@ -189,7 +189,6 @@
   "assemblicator.mekanism.craft_available": "合成可用物品",
   "assemblicator.mekanism.craft_single": "合成單個物品",
   "assemblicator.mekanism.encode_formula": "編碼模板",
-  "assemblicator.mekanism.fill_empty": "填滿/清空 網格",
   "assemblicator.mekanism.stock_control": "儲存控制: %1$s",
   "auto.mekanism.eject": "自動彈射",
   "auto.mekanism.pull": "自動推拉",
