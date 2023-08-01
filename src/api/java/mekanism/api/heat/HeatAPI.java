@@ -1,5 +1,6 @@
 package mekanism.api.heat;
 
+import com.mojang.math.Constants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.LevelReader;
@@ -33,6 +34,12 @@ public class HeatAPI {
      * Default inverse insulation coefficient
      */
     public static final double DEFAULT_INVERSE_INSULATION = 0;
+    /**
+     * Represents the value at which changes to heat below this amount will not be taken into account by Mekanism.
+     *
+     * @since 10.4.0
+     */
+    public static final double EPSILON = Constants.EPSILON;
 
     /**
      * Gets the atmospheric temperature at a given spot in the specified world based on the biome's temperature modifier at that position. The baseline temperature
