@@ -189,7 +189,6 @@
   "assemblicator.mekanism.craft_available": "出来るだけ",
   "assemblicator.mekanism.craft_single": "一個だけ",
   "assemblicator.mekanism.encode_formula": "クラフトレシピに登録",
-  "assemblicator.mekanism.fill_empty": "アイテムの配置/除去",
   "assemblicator.mekanism.stock_control": "在庫管理:%1$s",
   "auto.mekanism.eject": "自動搬出",
   "auto.mekanism.pull": "自動搬入",
