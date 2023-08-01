@@ -189,7 +189,6 @@
   "assemblicator.mekanism.craft_available": "가능한 아이템 제작",
   "assemblicator.mekanism.craft_single": "아이템 단일 제작",
   "assemblicator.mekanism.encode_formula": "제작 공식 등록",
-  "assemblicator.mekanism.fill_empty": "그리드 채우기 / 비우기",
   "assemblicator.mekanism.stock_control": "재고 관리: %1$s",
   "auto.mekanism.eject": "자동 배출",
   "auto.mekanism.pull": "자동 투입",
