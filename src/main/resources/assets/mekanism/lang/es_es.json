@@ -189,7 +189,6 @@
   "assemblicator.mekanism.craft_available": "Fabricar Objetos Disponibles",
   "assemblicator.mekanism.craft_single": "Crear un solo objeto",
   "assemblicator.mekanism.encode_formula": "Codificar Fórmula",
-  "assemblicator.mekanism.fill_empty": "Rellenar/Vaciar",
   "assemblicator.mekanism.stock_control": "Control de Stock: %1$s",
   "auto.mekanism.eject": "Auto-Expulsar",
   "auto.mekanism.pull": "Auto-Atraer",
