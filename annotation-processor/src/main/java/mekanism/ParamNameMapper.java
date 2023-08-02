@@ -39,7 +39,7 @@ import org.openzen.zencode.java.ZenCodeType;
 public class ParamNameMapper extends AbstractProcessor {
 
     private static String forDatagen(String path) {
-        return "resources/" + path;
+        return path;
     }
 
     private Set<AnnotationParamScanner> scanners = Collections.emptySet();
@@ -111,7 +111,7 @@ public class ParamNameMapper extends AbstractProcessor {
                 // We also sort the methods to ensure the order is consistent when saved
                 JsonObject allMethods = sortJson(entry.getValue());
                 try {
-                    FileObject resource = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", scanner.targetFile() + ".json");
+                    FileObject resource = filer.createResource(StandardLocation.CLASS_OUTPUT, "", scanner.targetFile() + ".json");
                     try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(resource.openOutputStream(), StandardCharsets.UTF_8))) {
                         writer.write(gson.toJson(allMethods));
                     }
