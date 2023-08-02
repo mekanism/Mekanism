@@ -5,6 +5,7 @@ import mekanism.api.tier.AlloyTier;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
@@ -36,7 +37,7 @@ public class ItemAlloy extends Item {
             LazyOptional<IAlloyInteraction> capability = CapabilityUtils.getCapability(tile, Capabilities.ALLOY_INTERACTION, context.getClickedFace());
             if (capability.isPresent()) {
                 if (!world.isClientSide) {
-                    capability.resolve().get().onAlloyInteraction(player, context.getItemInHand(), tier);
+                    capability.orElseThrow(MekanismUtils.MISSING_CAP_ERROR).onAlloyInteraction(player, context.getItemInHand(), tier);
                 }
                 return InteractionResult.sidedSuccess(world.isClientSide);
             }

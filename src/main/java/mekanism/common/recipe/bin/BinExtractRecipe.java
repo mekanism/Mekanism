@@ -95,6 +95,11 @@ public class BinExtractRecipe extends BinRecipe {
     }
 
     @Override
+    public boolean canCraftInDimensions(int width, int height) {
+        return width * height >= 1;
+    }
+
+    @Override
     public RecipeSerializer<?> getSerializer() {
         return MekanismRecipeSerializers.BIN_EXTRACT.get();
     }

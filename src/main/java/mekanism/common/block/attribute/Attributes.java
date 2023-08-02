@@ -1,6 +1,6 @@
 package mekanism.common.block.attribute;
 
-import java.util.function.ToIntFunction;
+import java.util.function.ToIntBiFunction;
 import mekanism.common.block.attribute.Attribute.TileAttribute;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.lib.multiblock.IInternalMultiblock;
@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockBehaviour.StateArgumentPredicate;
+import org.jetbrains.annotations.NotNull;
 
 public class Attributes {
 
@@ -129,14 +130,14 @@ public class Attributes {
     /** If a block can emit redstone. */
     public static class AttributeRedstoneEmitter<TILE extends TileEntityMekanism> implements TileAttribute<TILE> {
 
-        private final ToIntFunction<TILE> redstoneFunction;
+        private final ToIntBiFunction<TILE, Direction> redstoneFunction;
 
-        public AttributeRedstoneEmitter(ToIntFunction<TILE> redstoneFunction) {
+        public AttributeRedstoneEmitter(ToIntBiFunction<TILE, Direction> redstoneFunction) {//TODO - 1.20: View usages and make some side specific?
             this.redstoneFunction = redstoneFunction;
         }
 
-        public int getRedstoneLevel(TILE tile) {
-            return redstoneFunction.applyAsInt(tile);
+        public int getRedstoneLevel(TILE tile, @NotNull Direction side) {
+            return redstoneFunction.applyAsInt(tile, side);
         }
     }
 

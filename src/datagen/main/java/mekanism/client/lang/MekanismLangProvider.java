@@ -1125,7 +1125,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ENCODE_FORMULA, "Encode Formula");
         add(MekanismLang.CRAFT_SINGLE, "Craft Single Item");
         add(MekanismLang.CRAFT_AVAILABLE, "Craft Available Items");
-        add(MekanismLang.FILL_EMPTY, "Fill/Empty Grid");
+        add(MekanismLang.EMPTY_ASSEMBLICATOR, "Empty Grid");
+        add(MekanismLang.FILL_ASSEMBLICATOR, "Fill Grid");
         add(MekanismLang.STOCK_CONTROL, "Stock Control: %1$s");
         add(MekanismLang.AUTO_MODE, "Auto-Mode: %1$s");
         //Factory Type

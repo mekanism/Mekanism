@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -26,11 +27,12 @@ public class DigitalMinerBakedModel extends ExtensionBakedModel<Void> {
         MAY_4TH = atlas.getSprite(Mekanism.rl("block/models/digital_miner_screen_may4th"));
     }
 
-    private final QuadTransformation APRIL_FOOLS_TRANSFORM = QuadTransformation.list(
+    private final Lazy<QuadTransformation> APRIL_FOOLS_TRANSFORM = Lazy.of(() -> QuadTransformation.list(
           TextureFilteredTransformation.of(QuadTransformation.texture(AFD_SAD), s -> s.getPath().contains("screen_hello") || s.getPath().contains("screen_cmd")),
-          TextureFilteredTransformation.of(QuadTransformation.texture(AFD_TEXT), s -> s.getPath().contains("screen_blank")));
-    private final QuadTransformation MAY_4TH_TRANSFORM = TextureFilteredTransformation.of(QuadTransformation.texture(MAY_4TH),
-          s -> s.getPath().contains("screen_hello"));
+          TextureFilteredTransformation.of(QuadTransformation.texture(AFD_TEXT), s -> s.getPath().contains("screen_blank"))
+    ));
+    private final Lazy<QuadTransformation> MAY_4TH_TRANSFORM = Lazy.of(() -> TextureFilteredTransformation.of(QuadTransformation.texture(MAY_4TH),
+          s -> s.getPath().contains("screen_hello")));
 
     public DigitalMinerBakedModel(BakedModel original) {
         super(original);

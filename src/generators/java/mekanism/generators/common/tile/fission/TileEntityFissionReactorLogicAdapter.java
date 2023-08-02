@@ -1,5 +1,6 @@
 package mekanism.generators.common.tile.fission;
 
+import java.util.EnumSet;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
@@ -18,12 +19,14 @@ import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter.FissionReactorLogic;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReactorCasing implements IReactorLogic<FissionReactorLogic> {
@@ -42,7 +45,13 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         if (status != prevStatus) {
             Level world = getLevel();
             if (world != null) {
-                world.updateNeighborsAt(getBlockPos(), getBlockType());
+                Direction side = multiblock.getOutsideSide(worldPosition);
+                if (side == null) {
+                    //Not formed, just update all sides
+                    world.updateNeighborsAt(getBlockPos(), getBlockType());
+                } else if (!ForgeEventFactory.onNeighborNotify(world, worldPosition, getBlockState(), EnumSet.of(side), false).isCanceled()) {
+                    world.neighborChanged(worldPosition.relative(side), getBlockType(), worldPosition);
+                }
             }
             prevStatus = status;
         }
@@ -58,6 +67,10 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     @Override
     public FissionReactorLogic[] getModes() {
         return FissionReactorLogic.values();
+    }
+
+    public int getRedstoneLevel(Direction side) {
+        return !isRemote() && getMultiblock().isPositionOutsideBounds(worldPosition.relative(side)) && getStatus() == RedstoneStatus.OUTPUTTING ? 15 : 0;
     }
 
     @ComputerMethod(nameOverride = "getRedstoneLogicStatus")

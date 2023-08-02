@@ -1,6 +1,7 @@
 package mekanism.api.text;
 
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.SupportsColorMap;
 import mekanism.api.math.MathUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author AidanBrady
  */
-public enum EnumColor implements IIncrementalEnum<EnumColor> {
+public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap {
     BLACK("§0", APILang.COLOR_BLACK, "Black", "black", new int[]{64, 64, 64}, DyeColor.BLACK),
     DARK_BLUE("§1", APILang.COLOR_DARK_BLUE, "Blue", "blue", new int[]{54, 107, 208}, DyeColor.BLUE),
     DARK_GREEN("§2", APILang.COLOR_DARK_GREEN, "Green", "green", new int[]{89, 193, 95}, DyeColor.GREEN),
@@ -120,17 +121,6 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
     }
 
     /**
-     * Gets the 0-1 of this color's RGB value by dividing by 255 (used for OpenGL coloring).
-     *
-     * @param index - R:0, G:1, B:2
-     *
-     * @return the color value
-     */
-    public float getColor(int index) {
-        return rgbCode[index] / 255F;
-    }
-
-    /**
      * Gets the corresponding text color for this color.
      */
     public TextColor getColor() {
@@ -158,34 +148,23 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
     }
 
     /**
-     * Sets the internal color representation of this color from the color atlas.
-     *
-     * @param color Color data.
+     * {@inheritDoc}
      *
      * @apiNote This method is mostly for <strong>INTERNAL</strong> usage.
      */
+    @Override
     public void setColorFromAtlas(int[] color) {
         rgbCode = color;
         this.color = TextColor.fromRgb(rgbCode[0] << 16 | rgbCode[1] << 8 | rgbCode[2]);
     }
 
     /**
-     * Gets the red, green and blue color value, as an integer(range: 0 - 255).
-     *
-     * @return the color values.
+     * {@inheritDoc}
      *
      * @apiNote Modifying the returned array will result in this color object changing the color it represents, and should not be done.
      */
+    @Override
     public int[] getRgbCode() {
         return rgbCode;
-    }
-
-    /**
-     * Gets the red, green and blue color value, as a float(range: 0 - 1).
-     *
-     * @return the color values.
-     */
-    public float[] getRgbCodeFloat() {
-        return new float[]{getColor(0), getColor(1), getColor(2)};
     }
 }

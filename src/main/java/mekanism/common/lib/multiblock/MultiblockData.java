@@ -350,6 +350,26 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return false;
     }
 
+    /**
+     * Checks if this multiblock is formed and the given position is insides the bounds of this multiblock
+     */
+    public boolean isPositionOutsideBounds(@NotNull BlockPos pos) {
+        return isFormed() && getBounds().getRelativeLocation(pos) == CuboidRelative.OUTSIDE;
+    }
+
+    @Nullable
+    public Direction getOutsideSide(@NotNull BlockPos pos) {
+        if (isFormed()) {
+            VoxelCuboid bounds = getBounds();
+            for (Direction direction : EnumUtils.DIRECTIONS) {
+                if (bounds.getRelativeLocation(pos.relative(direction)) == CuboidRelative.OUTSIDE) {
+                    return direction;
+                }
+            }
+        }
+        return null;
+    }
+
     @NotNull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {

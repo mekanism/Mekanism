@@ -1,9 +1,11 @@
 package mekanism.client.gui.machine;
 
+import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.button.ToggleButton;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -62,8 +64,14 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
         stockControlButton = addRenderableWidget(new MekanismImageButton(this, 26, 75, 16, getButtonLocation("stock_control"),
               () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.STOCK_CONTROL_BUTTON, tile)),
               getOnHover(() -> MekanismLang.STOCK_CONTROL.translate(OnOff.of(tile.getStockControl())))));
-        fillEmptyButton = addRenderableWidget(new MekanismImageButton(this, 44, 75, 16, getButtonLocation("fill_empty"),
-              () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_ITEMS, tile)), getOnHover(MekanismLang.FILL_EMPTY)));
+        fillEmptyButton = addRenderableWidget(new ToggleButton(this, 44, 75, 16, 16, getButtonLocation("empty"),
+              getButtonLocation("fill"), () -> tile.formula == null, () -> {
+            GuiInteraction interaction = tile.formula == null ? GuiInteraction.EMPTY_GRID : GuiInteraction.FILL_GRID;
+            Mekanism.packetHandler().sendToServer(new PacketGuiInteract(interaction, tile));
+        }, getOnHover(() -> {
+            ILangEntry langEntry = tile.formula == null ? MekanismLang.EMPTY_ASSEMBLICATOR : MekanismLang.FILL_ASSEMBLICATOR;
+            return langEntry.translate();
+        })));
         craftSingleButton = addRenderableWidget(new MekanismImageButton(this, 71, 75, 16, getButtonLocation("craft_single"),
               () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.CRAFT_SINGLE, tile)), getOnHover(MekanismLang.CRAFT_SINGLE)));
         craftAvailableButton = addRenderableWidget(new MekanismImageButton(this, 89, 75, 16, getButtonLocation("craft_available"),

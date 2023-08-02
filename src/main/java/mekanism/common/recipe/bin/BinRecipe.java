@@ -22,7 +22,7 @@ public abstract class BinRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width * height >= 1;
+    public boolean isIncomplete() {
+        return false;
     }
 }

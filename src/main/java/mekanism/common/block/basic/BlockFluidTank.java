@@ -1,9 +1,6 @@
 package mekanism.common.block.basic;
 
 import mekanism.api.security.ISecurityUtils;
-import mekanism.api.text.EnumColor;
-import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.resource.BlockResourceInfo;
@@ -23,7 +20,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
-public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<TileEntityFluidTank>> implements IColoredBlock {
+public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<TileEntityFluidTank>> {
 
     public BlockFluidTank(Machine<TileEntityFluidTank> type) {
         super(type, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor()));
@@ -71,10 +68,5 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
             }
         }
         return tile.openGui(player);
-    }
-
-    @Override
-    public EnumColor getColor() {
-        return Attribute.getBaseTier(this).getColor();
     }
 }

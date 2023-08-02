@@ -106,14 +106,11 @@ public final class TransporterUtils {
         Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).resolve();
         if (capability.isPresent()) {
             IItemHandler inventory = capability.get();
-            for (int i = 0; i < inventory.getSlots(); i++) {
-                // Check validation
-                if (inventory.isItemValid(i, itemStack)) {
-                    // Simulate insert
-                    ItemStack rejects = inventory.insertItem(i, itemStack, true);
-                    if (TransporterManager.didEmit(itemStack, rejects)) {
-                        return true;
-                    }
+            for (int i = 0, slots = inventory.getSlots(); i < slots; i++) {
+                // Simulate insert, this will handle validating the item is valid for the inventory
+                ItemStack rejects = inventory.insertItem(i, itemStack, true);
+                if (TransporterManager.didEmit(itemStack, rejects)) {
+                    return true;
                 }
             }
         }

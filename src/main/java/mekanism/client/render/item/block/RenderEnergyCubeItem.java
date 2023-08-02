@@ -73,7 +73,7 @@ public class RenderEnergyCubeItem extends MekanismISTER {
             matrix.translate(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
             matrix.mulPose(Axis.YP.rotationDegrees(scaledTicks));
             matrix.mulPose(RenderEnergyCube.coreVec.rotationDegrees(36F + scaledTicks));
-            core.render(matrix, renderer, LightTexture.FULL_BRIGHT, overlayLight, tier.getBaseTier().getColor(), (float) energyPercentage);
+            core.render(matrix, renderer, LightTexture.FULL_BRIGHT, overlayLight, tier.getBaseTier(), (float) energyPercentage);
             matrix.popPose();
         }
     }

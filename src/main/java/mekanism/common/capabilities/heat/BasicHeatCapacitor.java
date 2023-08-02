@@ -95,7 +95,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     }
 
     public void update() {
-        if (heatToHandle != 0) {
+        if (heatToHandle != 0 && Math.abs(heatToHandle) > HeatAPI.EPSILON) {
             initStoredHeat();
             storedHeat += heatToHandle;
             //notify listeners
