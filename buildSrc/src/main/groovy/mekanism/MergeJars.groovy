@@ -10,17 +10,24 @@ import org.gradle.api.tasks.util.PatternFilterable
 import java.util.function.BinaryOperator
 
 class MergeJars {
+    static Closure atlasFilter = { PatternFilterable pf -> pf.include('**/assets/*/atlases/**/*.json') }
+    static Closure tagFilter = { PatternFilterable pf -> pf.include('**/data/*/tags/**/*.json') }
 
-    static List<String> getGeneralPathsToExclude(Project project) {
+    static List<String> getGeneralPathsToExclude(Project project, List<SourceSet> sourceSets) {
         List<String> toExclude = new ArrayList<>()
         toExclude.add('META-INF/mods.toml')
         toExclude.add('META-INF/accesstransformer.cfg')
-        int baseLength = "$project.buildDir/generated/".length()
-        project.fileTree(dir: "$project.buildDir/generated/assets/").each {
-            File file -> toExclude.add(file.getPath().substring(baseLength))
+        getReverseLookup(project, atlasFilter, sourceSets).each { atlas, atlasPaths ->
+            if (atlasPaths.size() > 1) {
+                //println("adding $atlas")
+                toExclude.add(atlas.substring(1))
+            }
         }
-        project.fileTree(dir: "$project.buildDir/generated/data/").each {
-            File file -> toExclude.add(file.getPath().substring(baseLength))
+        getReverseLookup(project, tagFilter, sourceSets).each { tag, tagPaths ->
+            if (tagPaths.size() > 1) {
+                //println("adding $tag")
+                toExclude.add(tag.substring(1))
+            }
         }
         return toExclude
     }
@@ -35,7 +42,7 @@ class MergeJars {
         }
     }
 
-    static void merge(Project project, SourceSet... sourceSets) {
+    static void merge(Project project, List<SourceSet> sourceSets) {
         //Generate folders, merge the access transformers and mods.toml files
         project.mkdir("$project.buildDir/generated/META-INF")
         (new File("$project.buildDir/generated/META-INF/accesstransformer.cfg")).text = mergeATs(sourceSets)
@@ -62,7 +69,7 @@ class MergeJars {
         return generated
     }
 
-    private static String mergeATs(SourceSet... sourceSets) {
+    private static String mergeATs(List<SourceSet> sourceSets) {
         String text = ""
         for (SourceSet sourceSet : sourceSets) {
             sourceSet.resources.matching { PatternFilterable pf ->
@@ -74,7 +81,7 @@ class MergeJars {
         return text
     }
 
-    private static String mergeModsTOML(SourceSet... sourceSets) {
+    private static String mergeModsTOML(List<SourceSet> sourceSets) {
         String text = ""
         for (SourceSet sourceSet : sourceSets) {
             sourceSet.resources.matching { PatternFilterable pf ->
@@ -95,7 +102,7 @@ class MergeJars {
         return text
     }
 
-    private static Map<String, List<String>> getReverseLookup(Project project, Closure filter, SourceSet... sourceSets) {
+    private static Map<String, List<String>> getReverseLookup(Project project, Closure filter, List<SourceSet> sourceSets) {
         Map<String, List<String>> reverseLookup = new HashMap<>()
         for (SourceSet sourceSet : sourceSets) {
             sourceSet.resources.srcDirs.each { srcDir ->
@@ -114,8 +121,7 @@ class MergeJars {
         return reverseLookup
     }
 
-    private static void mergeAtlases(Project project, SourceSet... sourceSets) {
-        Closure atlasFilter = { PatternFilterable pf -> pf.include('**/assets/*/atlases/**/*.json') }
+    private static void mergeAtlases(Project project, List<SourceSet> sourceSets) {
         Map<String, List<String>> reverseAtlasLookup = getReverseLookup(project, atlasFilter, sourceSets)
         //Go through the reverse atlas lookup and if there are multiple sourceSets that contain the same atlas
         // properly merge that atlas
@@ -129,8 +135,7 @@ class MergeJars {
         }
     }
 
-    private static void mergeTags(Project project, SourceSet... sourceSets) {
-        Closure tagFilter = { PatternFilterable pf -> pf.include('**/data/*/tags/**/*.json') }
+    private static void mergeTags(Project project, List<SourceSet> sourceSets) {
         Map<String, List<String>> reverseTags = getReverseLookup(project, tagFilter, sourceSets)
         //Go through the reverse tag index and if there are multiple sourceSets that contain the same tag
         // properly merge that tag

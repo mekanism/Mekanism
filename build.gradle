@@ -487,11 +487,14 @@ def allJar = tasks.register('allJar', Jar, {
     duplicatesStrategy(DuplicatesStrategy.FAIL)
     archiveClassifier.set("all")
     manifest.attributes(getManifestAttributes("MekanismAll"))
-    //Start by generating the merged data
-    MergeJars.merge(project, sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
+    def combineSets = [sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools]
+    doFirst {
+        //Start by generating the merged data
+        MergeJars.merge(project, combineSets)
+    }
     //Then copy all the files except for ones we are going to include from the merged
     from(sourceSets.api.output)
-    List<String> baseExcludeData = MergeJars.getGeneralPathsToExclude(project)
+    List<String> baseExcludeData = MergeJars.getGeneralPathsToExclude(project, combineSets)
     Closure excludeFromMain = MergeJars.createExcludeClosure(baseExcludeData)
     from(sourceSets.main.output, excludeFromMain)
     Closure excludeFromAll = MergeJars.createExcludeClosure(baseExcludeData, 'logo.png', 'pack.mcmeta')
@@ -511,13 +514,7 @@ clean {
     def filteredDelete = new HashSet<>()
     for (def toDelete : getDelete()) {
         for (def f : file(toDelete).listFiles()) {
-            if (f.getName() == "generated") {
-                for (def generated : file(f).listFiles()) {
-                    if (generated.getName() != "assets" && generated.getName() != "data" && generated.getName() != "META-INF") {
-                        filteredDelete.add(generated)
-                    }
-                }
-            } else if (f.getName() != "fg_cache") {
+            if (f.getName() != "fg_cache") {
                 filteredDelete.add(f)
             }
         }
