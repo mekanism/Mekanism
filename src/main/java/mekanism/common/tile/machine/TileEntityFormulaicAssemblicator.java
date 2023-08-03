@@ -419,11 +419,15 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
-    public void moveItems() {
+    public void fillGrid() {
+        if (formula != null) {
+            moveItemsToGrid();
+        }
+    }
+
+    public void emptyGrid() {
         if (formula == null) {
             moveItemsToInput(true);
-        } else {
-            moveItemsToGrid();
         }
     }
 
@@ -770,13 +774,22 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         encodeFormula();
     }
 
-    @ComputerMethod
-    void fillOrEmptyGrid() throws ComputerException {
+    @ComputerMethod(nameOverride = "emptyGrid")
+    void computerEmptyGrid() throws ComputerException {
         validateSecurityIsPublic();
         if (autoMode) {
-            throw new ComputerException("Filling/Emptying the grid requires Auto-Mode to be disabled.");
+            throw new ComputerException("Emptying the grid requires Auto-Mode to be disabled.");
         }
-        moveItems();
+        emptyGrid();
+    }
+
+    @ComputerMethod(nameOverride = "fillGrid")
+    void computerFillGrid() throws ComputerException {
+        validateSecurityIsPublic();
+        if (autoMode) {
+            throw new ComputerException("Filling the grid requires Auto-Mode to be disabled.");
+        }
+        fillGrid();
     }
 
     private void validateCanCraft() throws ComputerException {

@@ -296,18 +296,22 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private void transferHeat() {
         //Transfer from plasma to casing
         double plasmaCaseHeat = plasmaCaseConductivity * (lastPlasmaTemperature - lastCaseTemperature);
-        setPlasmaTemp(getPlasmaTemp() - plasmaCaseHeat / plasmaHeatCapacity);
-        heatCapacitor.handleHeat(plasmaCaseHeat);
+        if (Math.abs(plasmaCaseHeat) > HeatAPI.EPSILON) {
+            setPlasmaTemp(getPlasmaTemp() - plasmaCaseHeat / plasmaHeatCapacity);
+            heatCapacitor.handleHeat(plasmaCaseHeat);
+        }
 
         //Transfer from casing to water if necessary
         double caseWaterHeat = MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * (lastCaseTemperature - biomeAmbientTemp);
-        int waterToVaporize = (int) (HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
-        waterToVaporize = Math.min(waterToVaporize, Math.min(waterTank.getFluidAmount(), MathUtils.clampToInt(steamTank.getNeeded())));
-        if (waterToVaporize > 0) {
-            MekanismUtils.logMismatchedStackSize(waterTank.shrinkStack(waterToVaporize, Action.EXECUTE), waterToVaporize);
-            steamTank.insert(MekanismGases.STEAM.getStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
-            caseWaterHeat = waterToVaporize * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
-            heatCapacitor.handleHeat(-caseWaterHeat);
+        if (Math.abs(caseWaterHeat) > HeatAPI.EPSILON) {
+            int waterToVaporize = (int) (HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
+            waterToVaporize = Math.min(waterToVaporize, Math.min(waterTank.getFluidAmount(), MathUtils.clampToInt(steamTank.getNeeded())));
+            if (waterToVaporize > 0) {
+                MekanismUtils.logMismatchedStackSize(waterTank.shrinkStack(waterToVaporize, Action.EXECUTE), waterToVaporize);
+                steamTank.insert(MekanismGases.STEAM.getStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
+                caseWaterHeat = waterToVaporize * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
+                heatCapacitor.handleHeat(-caseWaterHeat);
+            }
         }
 
         HeatTransfer heatTransfer = simulate();
@@ -316,8 +320,10 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
         //Passive energy generation
         double caseAirHeat = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * (lastCaseTemperature - biomeAmbientTemp);
-        heatCapacitor.handleHeat(-caseAirHeat);
-        energyContainer.insert(FloatingLong.create(caseAirHeat * MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get()), Action.EXECUTE, AutomationType.INTERNAL);
+        if (Math.abs(caseAirHeat) > HeatAPI.EPSILON) {
+            heatCapacitor.handleHeat(-caseAirHeat);
+            energyContainer.insert(FloatingLong.create(caseAirHeat * MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get()), Action.EXECUTE, AutomationType.INTERNAL);
+        }
     }
 
     @NotNull

@@ -14,7 +14,7 @@ public class PigmentDeferredRegister extends WrappedDeferredRegister<Pigment> {
     }
 
     public PigmentRegistryObject<Pigment> register(String name, int tint) {
-        return register(name, () -> new Pigment(PigmentBuilder.builder().color(tint)));
+        return register(name, () -> new Pigment(PigmentBuilder.builder().tint(tint)));
     }
 
     public PigmentRegistryObject<Pigment> register(String name, ResourceLocation texture) {

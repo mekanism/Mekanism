@@ -62,7 +62,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
         List<IInventorySlot> stackSlots = new ArrayList<>();
         if (capability.isPresent()) {
             IItemHandler itemHandler = capability.get();
-            for (int i = 0; i < itemHandler.getSlots(); i++) {
+            for (int i = 0, slots = itemHandler.getSlots(); i < slots; i++) {
                 int slot = i;
                 stackSlots.add(new DummyInventorySlot(itemHandler.getSlotLimit(slot), itemStack -> itemHandler.isItemValid(slot, itemStack), isBin));
             }
@@ -72,7 +72,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
                 //Something went wrong
                 return false;
             }
-            for (int i = 0; i < tile.getSlots(); i++) {
+            for (int i = 0, slots = tile.getSlots(); i < slots; i++) {
                 int slot = i;
                 stackSlots.add(new DummyInventorySlot(tile.getSlotLimit(slot), itemStack -> tile.isItemValid(slot, itemStack), isBin));
             }

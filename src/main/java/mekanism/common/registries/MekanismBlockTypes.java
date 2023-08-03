@@ -63,7 +63,6 @@ import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.TileEntityTeleporter;
-import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.laser.TileEntityLaser;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.laser.TileEntityLaserTractorBeam;
@@ -379,7 +378,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.LASER_AMPLIFIER)
           .withEnergyConfig(MekanismConfig.storage.laserAmplifier)
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE),
-                new AttributeRedstoneEmitter<>(TileEntityMekanism::getRedstoneLevel), Attributes.REDSTONE, Attributes.COMPARATOR, Attributes.SECURITY)
+                new AttributeRedstoneEmitter<>((tile, side) -> tile.getRedstoneLevel()), Attributes.REDSTONE, Attributes.COMPARATOR, Attributes.SECURITY)
           .withCustomShape(BlockShapes.LASER_AMPLIFIER)
           .withComputerSupport("laserAmplifier")
           .build();
@@ -599,7 +598,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.QIO_REDSTONE_ADAPTER)
           .withCustomShape(BlockShapes.QIO_REDSTONE_ADAPTER)
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.SECURITY, Attributes.ACTIVE)
-          .with(new AttributeRedstoneEmitter<>(tile -> tile.isPowering() ? 15 : 0))
+          .with(new AttributeRedstoneEmitter<>(TileEntityQIORedstoneAdapter::getRedstoneLevel))
           .withComputerSupport("qioRedstoneAdapter")
           .build();
 

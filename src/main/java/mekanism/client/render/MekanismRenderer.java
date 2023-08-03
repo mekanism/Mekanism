@@ -10,10 +10,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import mekanism.api.SupportsColorMap;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.text.EnumColor;
-import mekanism.api.tier.BaseTier;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.model.baked.DigitalMinerBakedModel;
@@ -207,21 +206,17 @@ public class MekanismRenderer {
         }
     }
 
-    public static void color(GuiGraphics guiGraphics, @NotNull BaseTier tier) {
-        color(guiGraphics, tier.getColor());
-    }
-
-    public static void color(GuiGraphics guiGraphics, @Nullable EnumColor color) {
+    public static void color(GuiGraphics guiGraphics, @Nullable SupportsColorMap color) {
         color(guiGraphics, color, 1.0F);
     }
 
-    public static void color(GuiGraphics guiGraphics, @Nullable EnumColor color, float alpha) {
+    public static void color(GuiGraphics guiGraphics, @Nullable SupportsColorMap color, float alpha) {
         if (color != null) {
             guiGraphics.setColor(color.getColor(0), color.getColor(1), color.getColor(2), alpha);
         }
     }
 
-    public static int getColorARGB(EnumColor color, float alpha) {
+    public static int getColorARGB(SupportsColorMap color, float alpha) {
         return getColorARGB(color.getRgbCode()[0], color.getRgbCode()[1], color.getRgbCode()[2], alpha);
     }
 
@@ -292,14 +287,14 @@ public class MekanismRenderer {
         }
     }
 
-    private static void parseColorAtlas(ResourceLocation rl) {
-        List<Color> parsed = ColorAtlas.load(rl, EnumUtils.COLORS.length);
-        if (parsed.size() < EnumUtils.COLORS.length) {
-            Mekanism.logger.error("Failed to parse primary color atlas.");
+    private static <T extends Enum<T> & SupportsColorMap> void parseColorAtlas(ResourceLocation rl, T[] elements) {
+        List<Color> parsed = ColorAtlas.load(rl, elements.length);
+        if (parsed.size() < elements.length) {
+            Mekanism.logger.error("Failed to parse color atlas: {}.", rl);
             return;
         }
-        for (int i = 0; i < EnumUtils.COLORS.length; i++) {
-            EnumUtils.COLORS[i].setColorFromAtlas(parsed.get(i).rgbArray());
+        for (int i = 0; i < elements.length; i++) {
+            elements[i].setColorFromAtlas(parsed.get(i).rgbArray());
         }
     }
 
@@ -338,7 +333,8 @@ public class MekanismRenderer {
         RenderTickHandler.resetCached();
         RenderTeleporter.resetCachedModels();
 
-        parseColorAtlas(Mekanism.rl("textures/colormap/primary.png"));
+        parseColorAtlas(Mekanism.rl("textures/colormap/primary.png"), EnumUtils.COLORS);
+        parseColorAtlas(Mekanism.rl("textures/colormap/tiers.png"), EnumUtils.TIERS);
         SpecialColors.GUI_OBJECTS.parse(Mekanism.rl("textures/colormap/gui_objects.png"));
         SpecialColors.GUI_TEXT.parse(Mekanism.rl("textures/colormap/gui_text.png"));
         GuiElementHolder.updateBackgroundColor();

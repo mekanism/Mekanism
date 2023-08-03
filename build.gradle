@@ -13,7 +13,7 @@ import java.util.function.Consumer
 
 plugins {
     id 'org.ajoberstar.grgit.service' version '5.2.0'
-    id 'net.darkhax.curseforgegradle' version '1.0.14'
+    id 'net.darkhax.curseforgegradle' version '1.1.16'
     id "com.modrinth.minotaur" version "2.+"
     id 'java'
     id 'eclipse'
@@ -42,8 +42,8 @@ idea {
 
 ext {
     versionProperties = ["version"       : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
-                         "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range, "jei_version": jei_version_range,
-                         "curios_version": curios_version_range]
+                         "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range, "curios_version": curios_version_range,
+                         "jei_version": jei_version_range, "json_things_version": json_things_version_range]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
     secondaryModules = ['additions', 'defense', 'generators', 'tools']
     extraTypes = ['datagen', 'gameTest']
@@ -488,11 +488,14 @@ def allJar = tasks.register('allJar', Jar, {
     duplicatesStrategy(DuplicatesStrategy.FAIL)
     archiveClassifier.set("all")
     manifest.attributes(getManifestAttributes("MekanismAll"))
-    //Start by generating the merged data
-    MergeJars.merge(project, sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
+    def combineSets = [sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools]
+    doFirst {
+        //Start by generating the merged data
+        MergeJars.merge(project, combineSets)
+    }
     //Then copy all the files except for ones we are going to include from the merged
     from(sourceSets.api.output)
-    List<String> baseExcludeData = MergeJars.getGeneralPathsToExclude(project)
+    List<String> baseExcludeData = MergeJars.getGeneralPathsToExclude(project, combineSets)
     Closure excludeFromMain = MergeJars.createExcludeClosure(baseExcludeData)
     from(sourceSets.main.output, excludeFromMain)
     Closure excludeFromAll = MergeJars.createExcludeClosure(baseExcludeData, 'logo.png', 'pack.mcmeta')
@@ -512,13 +515,7 @@ clean {
     def filteredDelete = new HashSet<>()
     for (def toDelete : getDelete()) {
         for (def f : file(toDelete).listFiles()) {
-            if (f.getName() == "generated") {
-                for (def generated : file(f).listFiles()) {
-                    if (generated.getName() != "assets" && generated.getName() != "data" && generated.getName() != "META-INF") {
-                        filteredDelete.add(generated)
-                    }
-                }
-            } else if (f.getName() != "fg_cache") {
+            if (f.getName() != "fg_cache") {
                 filteredDelete.add(f)
             }
         }
@@ -697,7 +694,7 @@ def changeLogResolver = { ->
             //Use full message rather than short message to get any new lines, and trim it so that any trailing new lines
             // get removed so that we don't end up with extra spaces
             String message = commit.fullMessage.trim()
-            if (!message.startsWith("Merge branch") && !message.startsWith("Merge pull request")) {
+            if (!message.startsWith("Merge branch") && !message.startsWith("Merge pull request") && !message.contains("[no-changelog]")) {
                 //Ignore Merges and PR Merges
                 message = message.replaceAll("#(\\d+)", { match ->//turn issues/prs into links (github currently supports prs being linked as issues)
                     return "<a href=\"https://github.com/mekanism/Mekanism/issues/${match[1]}\">${match[0]}</a>"
@@ -781,6 +778,8 @@ void setGenericCurseArtifactData(UploadArtifact artifact, String changelog) {
     artifact.changelog = changelog
     artifact.changelogType = 'html'
     artifact.releaseType = "${release_type}"
+    //Add that we support forge for now as we currently support both Forge and NeoForge. NeoForge is detected automatically from the gradle plugin
+    artifact.addModLoader("Forge")
 }
 
 void uploadSecondaryCurseProject(TaskPublishCurseForge task, long projectId, String changelog, TaskProvider<Jar> sourceSetJar) {
@@ -816,6 +815,11 @@ if (System.getenv("MODRINTH_TOKEN") != null || project.hasProperty('modrinthToke
         versionType = "${release_type}"
         changelog = changeLogResolver.call()
         uploadFile = jar
+        //Add that we support forge for now as we currently support both Forge and NeoForge
+        // Note: Once we no longer support forge we can just remove the line as NeoForge will be able to be detected automatically
+        // Currently we can't as Minotaur only detects loaders if none are set
+        loaders.addAll("forge", "neoforge")
+
         getAdditionalFiles().value([apiJar.get()])
         //Note: Can't use nested dependency configuration as we have no way to clear it for the secondary uploads
         getDependencies().value([

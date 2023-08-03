@@ -207,7 +207,7 @@ public abstract class Frequency implements IFrequency {
     }
 
     public static <FREQ extends Frequency> FREQ readFromPacket(FriendlyByteBuf dataStream) {
-        return (FREQ) FrequencyType.load(dataStream).create(dataStream);
+        return FrequencyType.<FREQ>load(dataStream).create(dataStream);
     }
 
     public record FrequencyIdentity(Object key, boolean isPublic) {

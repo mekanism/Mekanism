@@ -76,11 +76,16 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
             return;
         }
         //We know this is present from our earlier checks
-        IItemHandler inventory = lazyCapability.resolve().get();
+        IItemHandler inventory = lazyCapability.orElseThrow(MekanismUtils.MISSING_CAP_ERROR);
+        int slots = inventory.getSlots();
+        if (slots == 0) {
+            //If the inventory has no slots just exit early
+            return;
+        }
         Set<HashedItem> typesAdded = new HashSet<>();
         int maxTypes = getMaxTransitTypes(), maxCount = getMaxTransitCount(), countAdded = 0;
 
-        for (int i = inventory.getSlots() - 1; i >= 0; i--) {
+        for (int i = slots - 1; i >= 0; i--) {
             ItemStack stack = inventory.extractItem(i, maxCount - countAdded, true);
             if (stack.isEmpty()) {
                 continue;

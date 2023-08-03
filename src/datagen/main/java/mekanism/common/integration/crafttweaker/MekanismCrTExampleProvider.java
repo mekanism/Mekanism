@@ -545,7 +545,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
         @NotNull
         @Override
         public String asString() {
-            return type + '.' + constructor + "().color(0x" + Integer.toHexString(color).toUpperCase(Locale.ROOT) + ").build(\"" + name + "\");";
+            return type + '.' + constructor + "().tint(0x" + Integer.toHexString(color).toUpperCase(Locale.ROOT) + ").build(\"" + name + "\");";
         }
     }
 }

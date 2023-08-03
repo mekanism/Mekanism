@@ -1,6 +1,7 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
+import java.util.Map;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
@@ -35,6 +36,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -56,12 +58,12 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     @Override
     public void releaseUsing(@NotNull ItemStack stack, @NotNull Level world, @NotNull LivingEntity entityLiving, int timeLeft) {
         if (entityLiving instanceof Player player) {
-            //Vanilla diff - Get the energy container, because if something went wrong, and we don't have one then we can exit early
+            //Vanilla diff - Get the energy container and validate we have enough energy, because if something went wrong, then we can exit early
             IEnergyContainer energyContainer = null;
-            boolean fireState = getFireState(stack);
+            FloatingLong energyNeeded = FloatingLong.ZERO;
             if (!player.isCreative()) {
                 energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                FloatingLong energyNeeded = fireState ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
+                energyNeeded = getFireState(stack) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
                 if (energyContainer == null || energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyNeeded)) {
                     return;
                 }
@@ -97,13 +99,12 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
                     if (punch > 0) {
                         arrowEntity.setKnockback(punch);
                     }
-                    //Vanilla diff - set it on fire if the bow's mode is set to fire, even if there is no flame enchantment
-                    if (fireState || stack.getEnchantmentLevel(Enchantments.FLAMING_ARROWS) > 0) {
+                    if (stack.getEnchantmentLevel(Enchantments.FLAMING_ARROWS) > 0) {
                         arrowEntity.setSecondsOnFire(100);
                     }
                     //Vanilla diff - Instead of damaging the item we remove energy from it
-                    if (!player.isCreative() && energyContainer != null) {
-                        energyContainer.extract(fireState ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get(), Action.EXECUTE, AutomationType.MANUAL);
+                    if (energyContainer != null) {
+                        energyContainer.extract(energyNeeded, Action.EXECUTE, AutomationType.MANUAL);
                     }
                     if (noConsume || player.isCreative() && (ammo.getItem() == Items.SPECTRAL_ARROW || ammo.getItem() == Items.TIPPED_ARROW)) {
                         arrowEntity.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
@@ -123,11 +124,37 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
         }
     }
 
-    public void setFireState(ItemStack stack, boolean state) {
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        //Note: This stops application of it via enchanted books while in survival. We don't override isBookEnchantable as we don't care
+        // if someone enchants it in creative and would rather not stop players from enchanting with books that have flame and power on them
+        return enchantment != Enchantments.FLAMING_ARROWS && super.canApplyAtEnchantingTable(stack, enchantment);
+    }
+
+    @Override
+    public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment) {
+        if (stack.isEmpty()) {
+            return 0;
+        } else if (enchantment == Enchantments.FLAMING_ARROWS && getFireState(stack)) {
+            return Math.max(1, super.getEnchantmentLevel(stack, enchantment));
+        }
+        return super.getEnchantmentLevel(stack, enchantment);
+    }
+
+    @Override
+    public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack) {
+        Map<Enchantment, Integer> enchantments = super.getAllEnchantments(stack);
+        if (getFireState(stack)) {
+            enchantments.merge(Enchantments.FLAMING_ARROWS, 1, Math::max);
+        }
+        return enchantments;
+    }
+
+    private void setFireState(ItemStack stack, boolean state) {
         ItemDataUtils.setBoolean(stack, NBTConstants.MODE, state);
     }
 
-    public boolean getFireState(ItemStack stack) {
+    private boolean getFireState(ItemStack stack) {
         return ItemDataUtils.getBoolean(stack, NBTConstants.MODE);
     }
 

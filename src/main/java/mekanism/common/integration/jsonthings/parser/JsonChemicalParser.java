@@ -4,7 +4,10 @@ import com.google.gson.JsonObject;
 import dev.gigaherz.jsonthings.things.builders.BaseBuilder;
 import dev.gigaherz.jsonthings.things.parsers.ThingParser;
 import dev.gigaherz.jsonthings.util.parse.JParse;
+import dev.gigaherz.jsonthings.util.parse.function.ObjValueFunction;
+import dev.gigaherz.jsonthings.util.parse.value.Any;
 import dev.gigaherz.jsonthings.util.parse.value.ObjValue;
+import java.util.function.IntConsumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
@@ -39,11 +42,19 @@ public abstract class JsonChemicalParser<CHEMICAL extends Chemical<CHEMICAL>, BU
         });
     }
 
+    protected static void processColor(Any val, IntConsumer colorSetter) {
+        val.ifObj(obj -> obj.map((ObjValueFunction<Integer>) ThingParser::parseColor).handle(colorSetter::accept))
+              .ifArray(arr -> arr.mapWhole(ThingParser::parseColor).handle(colorSetter::accept))
+              .ifString(str -> str.map(ThingParser::parseColor).handle(colorSetter::accept))
+              .ifInteger(i -> i.handle(colorSetter))
+              .typeError();
+    }
+
     protected ObjValue parseCommon(JsonObject data, THING_BUILDER builder) {
         return JParse.begin(data)
               .ifKey("texture", val -> val.string().map(ResourceLocation::new).handle(builder::texture))
-              .ifKey("tint", val -> val.intValue().handle(builder::tint))
-              .ifKey("color_representation", val -> val.intValue().handle(builder::colorRepresentation))
+              .ifKey("tint", val -> processColor(val, builder::tint))
+              .ifKey("color_representation", val -> processColor(val, builder::colorRepresentation))
               .ifKey("hidden", val -> val.bool().handle(builder::hidden))
               .ifKey("attributes", val -> processAttribute(builder, val.obj()));
     }

@@ -365,9 +365,14 @@ public class PacketGuiInteract implements IMekanismPacket {
                 assemblicator.craftAll();
             }
         }),
-        MOVE_ITEMS((tile, player, extra) -> {
+        EMPTY_GRID((tile, player, extra) -> {
             if (tile instanceof TileEntityFormulaicAssemblicator assemblicator) {
-                assemblicator.moveItems();
+                assemblicator.emptyGrid();
+            }
+        }),
+        FILL_GRID((tile, player, extra) -> {
+            if (tile instanceof TileEntityFormulaicAssemblicator assemblicator) {
+                assemblicator.fillGrid();
             }
         }),
 

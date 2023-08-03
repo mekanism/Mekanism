@@ -1,26 +1,26 @@
 {
   "variants": {
     "facing=up": {
-      "model": "mekanism:block/energy_cube",
+      "model": "mekanism:block/energy_cube/elite",
       "x": -90
     },
     "facing=down": {
-      "model": "mekanism:block/energy_cube",
+      "model": "mekanism:block/energy_cube/elite",
       "x": 90
     },
     "facing=north": {
-      "model": "mekanism:block/energy_cube"
+      "model": "mekanism:block/energy_cube/elite"
     },
     "facing=south": {
-      "model": "mekanism:block/energy_cube",
+      "model": "mekanism:block/energy_cube/elite",
       "y": 180
     },
     "facing=east": {
-      "model": "mekanism:block/energy_cube",
+      "model": "mekanism:block/energy_cube/elite",
       "y": 90
     },
     "facing=west": {
-      "model": "mekanism:block/energy_cube",
+      "model": "mekanism:block/energy_cube/elite",
       "y": -90
     }
   }

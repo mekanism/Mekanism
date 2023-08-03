@@ -2,7 +2,8 @@ package mekanism.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import mekanism.api.text.EnumColor;
+import mekanism.api.SupportsColorMap;
+import mekanism.api.tier.BaseTier;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
@@ -40,11 +41,11 @@ public class ModelEnergyCore extends MekanismJavaModel {
         cube = CUBE.getFromRoot(root);
     }
 
-    public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, EnumColor color, float energyPercentage) {
-        render(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, color, energyPercentage);
+    public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, BaseTier baseTier, float energyPercentage) {
+        render(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, baseTier, energyPercentage);
     }
 
-    public void render(@NotNull PoseStack matrix, @NotNull VertexConsumer buffer, int light, int overlayLight, EnumColor color, float energyPercentage) {
+    public void render(@NotNull PoseStack matrix, @NotNull VertexConsumer buffer, int light, int overlayLight, SupportsColorMap color, float energyPercentage) {
         renderToBuffer(matrix, buffer, light, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), energyPercentage);
     }
 

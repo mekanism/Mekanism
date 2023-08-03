@@ -13,6 +13,7 @@ import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -41,7 +42,11 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         super(MekanismBlocks.QIO_REDSTONE_ADAPTER, pos, state);
     }
 
-    public boolean isPowering() {
+    public int getRedstoneLevel(Direction side) {
+        return side != getOppositeDirection() && isPowering() ? 15 : 0;
+    }
+
+    private boolean isPowering() {
         if (isRemote()) {
             return prevPowering;
         }
@@ -89,7 +94,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         if (powering != prevPowering) {
             Level world = getLevel();
             if (world != null) {
-                world.updateNeighborsAt(getBlockPos(), getBlockType());
+                world.updateNeighborsAtExceptFromFacing(getBlockPos(), getBlockType(), getOppositeDirection());
             }
             prevPowering = powering;
             sendUpdatePacket();

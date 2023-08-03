@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiPredicate;
+import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
@@ -151,6 +152,10 @@ public class ExtensionBakedModel<T> extends BakedModelWrapper<BakedModel> {
             this.random = random;
             this.layer = layer;
             this.quads = quads;
+        }
+
+        public QuadsKey<T> transform(Supplier<? extends QuadTransformation> transformation) {
+            return transform(transformation.get());
         }
 
         public QuadsKey<T> transform(QuadTransformation transformation) {

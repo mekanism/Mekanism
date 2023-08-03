@@ -11,6 +11,7 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
+import mekanism.api.tier.BaseTier;
 import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiChemicalTank;
 import mekanism.client.gui.GuiDimensionalStabilizer;
@@ -152,7 +153,7 @@ import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.block.ItemBlockCardboardBox;
-import mekanism.common.item.block.ItemBlockEnergyCube;
+import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -170,7 +171,6 @@ import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.resource.IResource;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
-import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.qio.TileEntityQIOComponent;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.util.RegistryUtils;
@@ -488,15 +488,18 @@ public class ClientRegistration {
         event.registerSpriteSet(MekanismParticleTypes.RADIATION.get(), RadiationParticle.Factory::new);
     }
 
-    private static void registerIColoredBlocks(RegisterColorHandlersEvent event) {
-        //Fluid Tank
-        ClientRegistrationUtil.registerIColoredBlockHandler(event, MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK,
-              MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.CREATIVE_FLUID_TANK);
-    }
-
     @SubscribeEvent
     public static void registerBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
-        registerIColoredBlocks(event);
+        ClientRegistrationUtil.registerBlockColorHandler(event, (state, world, pos, tintIndex) -> {
+                  if (tintIndex == 1) {
+                      BaseTier tier = Attribute.getBaseTier(state.getBlock());
+                      if (tier != null) {
+                          return MekanismRenderer.getColorARGB(tier, 1);
+                      }
+                  }
+                  return -1;
+              }, MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
+              MekanismBlocks.CREATIVE_FLUID_TANK);
         ClientRegistrationUtil.registerBlockColorHandler(event, (state, world, pos, tintIndex) -> {
                   if (pos != null) {
                       TileEntityQIOComponent tile = WorldUtils.getTileEntity(TileEntityQIOComponent.class, world, pos);
@@ -527,21 +530,18 @@ public class ClientRegistration {
                 ClientRegistrationUtil.registerBlockColorHandler(event, (state, world, pos, index) -> index == 1 ? tint : -1, entry.getValue());
             }
         }
-        ClientRegistrationUtil.registerBlockColorHandler(event, (state, world, pos, index) -> {
-                  if (index == 1) {
-                      EnergyCubeTier tier = Attribute.getTier(state.getBlock(), EnergyCubeTier.class);
-                      if (tier != null) {
-                          return MekanismRenderer.getColorARGB(tier.getBaseTier().getColor(), 1);
-                      }
-                  }
-                  return -1;
-              }, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE,
-              MekanismBlocks.CREATIVE_ENERGY_CUBE);
     }
 
     @SubscribeEvent
     public static void registerItemColorHandlers(RegisterColorHandlersEvent.Item event) {
-        registerIColoredBlocks(event);
+        ClientRegistrationUtil.registerItemColorHandler(event, (stack, tintIndex) -> {
+                  Item item = stack.getItem();
+                  if (tintIndex == 1 && item instanceof ItemBlockFluidTank tank) {
+                      return MekanismRenderer.getColorARGB(tank.getTier().getBaseTier(), 1);
+                  }
+                  return -1;
+              }, MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
+              MekanismBlocks.CREATIVE_FLUID_TANK);
         ClientRegistrationUtil.registerBucketColorHandler(event, MekanismFluids.FLUIDS);
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
             int tint = item.getColumnKey().getTint();
@@ -564,13 +564,6 @@ public class ClientRegistration {
             }
             return -1;
         }, MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS, MekanismItems.MEKASUIT_BOOTS);
-        ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> {
-                  if (index == 1 && stack.getItem() instanceof ItemBlockEnergyCube cube) {
-                      return MekanismRenderer.getColorARGB(cube.getTier().getBaseTier().getColor(), 1);
-                  }
-                  return -1;
-              }, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE,
-              MekanismBlocks.CREATIVE_ENERGY_CUBE);
 
         for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             if (entry.getKey() instanceof PrimaryResource primaryResource) {

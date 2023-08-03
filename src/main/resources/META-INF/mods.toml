@@ -30,14 +30,20 @@ license="MIT"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.mekanism]]
+    modId="curios"
+    mandatory=false
+    versionRange="${curios_version}"
+    ordering="AFTER"
+    side="BOTH"
+[[dependencies.mekanism]]
     modId="jei"
     mandatory=false
     versionRange="${jei_version}"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.mekanism]]
-    modId="curios"
+    modId="jsonthings"
     mandatory=false
-    versionRange="${curios_version}"
+    versionRange="${json_things_version}"
     ordering="AFTER"
     side="BOTH"

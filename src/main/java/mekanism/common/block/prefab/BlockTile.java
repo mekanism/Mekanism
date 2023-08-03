@@ -125,7 +125,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
         if (redstoneEmitter != null) {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
             if (tile != null) {
-                return redstoneEmitter.getRedstoneLevel(tile);
+                return redstoneEmitter.getRedstoneLevel(tile, side.getOpposite());
             }
         }
         return super.getSignal(state, world, pos, side);

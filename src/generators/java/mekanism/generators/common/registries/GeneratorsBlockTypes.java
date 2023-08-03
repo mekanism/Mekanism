@@ -29,7 +29,6 @@ import mekanism.generators.common.tile.fission.TileEntityControlRodAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionFuelAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter;
-import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter.RedstoneStatus;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
@@ -197,7 +196,7 @@ public class GeneratorsBlockTypes {
     // Fission Reactor Logic Adapter
     public static final BlockTypeTile<TileEntityFissionReactorLogicAdapter> FISSION_REACTOR_LOGIC_ADAPTER = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_LOGIC_ADAPTER, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_LOGIC_ADAPTER)
-          .with(new AttributeRedstoneEmitter<>(tile -> tile.getStatus() == RedstoneStatus.OUTPUTTING ? 15 : 0))
+          .with(new AttributeRedstoneEmitter<>(TileEntityFissionReactorLogicAdapter::getRedstoneLevel))
           .with(Attributes.REDSTONE)
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR_LOGIC_ADAPTER)
           .withSound(GeneratorsSounds.FISSION_REACTOR)
@@ -241,7 +240,7 @@ public class GeneratorsBlockTypes {
     public static final BlockTypeTile<TileEntityFusionReactorLogicAdapter> FUSION_REACTOR_LOGIC_ADAPTER = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_LOGIC_ADAPTER, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_LOGIC_ADAPTER)
           .withGui(() -> GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER)
-          .with(new AttributeRedstoneEmitter<>(tile -> tile.checkMode() ? 15 : 0))
+          .with(new AttributeRedstoneEmitter<>(TileEntityFusionReactorLogicAdapter::getRedstoneLevel))
           .externalMultiblock()
           .withComputerSupport("fusionReactorLogicAdapter")
           .build();

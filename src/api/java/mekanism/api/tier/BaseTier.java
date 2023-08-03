@@ -1,9 +1,11 @@
 package mekanism.api.tier;
 
 import java.util.Locale;
+import mekanism.api.SupportsColorMap;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -11,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author aidancbrady
  */
-public enum BaseTier implements StringRepresentable {
+public enum BaseTier implements StringRepresentable, SupportsColorMap {
     BASIC("Basic", EnumColor.BRIGHT_GREEN, EnumColor.BRIGHT_GREEN),
     ADVANCED("Advanced", EnumColor.DARK_RED, EnumColor.RED),
     ELITE("Elite", EnumColor.INDIGO, EnumColor.INDIGO),
@@ -23,11 +25,14 @@ public enum BaseTier implements StringRepresentable {
     private final String name;
     private final EnumColor color;
     private final EnumColor textColor;
+    private int[] rgbCode;
 
-    BaseTier(String s, EnumColor c, EnumColor c1) {
-        name = s;
-        color = c;
-        textColor = c1;
+    BaseTier(String name, EnumColor color, EnumColor textColor) {
+        this.name = name;
+        this.color = color;
+        this.textColor = textColor;
+        //TODO - 1.20: Default this instead via parameter instead of via the enum color
+        setColorFromAtlas(color.getRgbCode());
     }
 
     /**
@@ -45,10 +50,35 @@ public enum BaseTier implements StringRepresentable {
     }
 
     /**
-     * Gets the color that corresponds to this tier for use in rendering.
+     * Gets the map color that corresponds to this tier.
+     *
+     * @since 10.4.0
      */
-    public EnumColor getColor() {
-        return color;
+    public MapColor getMapColor() {
+        //TODO - 1.20: Update the colors?
+        return color.getMapColor();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @apiNote Modifying the returned array will result in this color object changing the color it represents, and should not be done.
+     */
+    @Override
+    public int[] getRgbCode() {
+        return rgbCode;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @apiNote This method is mostly for <strong>INTERNAL</strong> usage.
+     *
+     * @since 10.4.0
+     */
+    @Override
+    public void setColorFromAtlas(int[] color) {
+        rgbCode = color;
     }
 
     /**
