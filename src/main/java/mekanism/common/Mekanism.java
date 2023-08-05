@@ -66,7 +66,6 @@ import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.PacketHandler;
 import mekanism.common.network.to_client.PacketTransmitterUpdate;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.recipe.condition.ModVersionLoadedCondition;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
@@ -189,7 +188,8 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
-        MinecraftForge.EVENT_BUS.addListener(BinInsertRecipe::onCrafting);
+        //TODO - 1.20: Modifying the result doesn't apply properly when "quick crafting". When this gets fixed in Neo re-enable the listener
+        //MinecraftForge.EVENT_BUS.addListener(BinInsertRecipe::onCrafting);
         MinecraftForge.EVENT_BUS.addListener(this::onTagsReload);
         MinecraftForge.EVENT_BUS.addListener(MekanismPermissions::registerPermissionNodes);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
