@@ -19,19 +19,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
-    public static final ModelProperty<Void> POWERING_PROPERTY = new ModelProperty<>();
-
-    private boolean prevPowering;
     @Nullable
     private HashedItem itemType = null;
     private boolean fuzzy;
@@ -40,18 +33,11 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
     public TileEntityQIORedstoneAdapter(BlockPos pos, BlockState state) {
         super(MekanismBlocks.QIO_REDSTONE_ADAPTER, pos, state);
+        delaySupplier = NO_DELAY;
     }
 
     public int getRedstoneLevel(Direction side) {
-        return side != getOppositeDirection() && isPowering() ? 15 : 0;
-    }
-
-    private boolean isPowering() {
-        if (isRemote()) {
-            return prevPowering;
-        }
-        long stored = getFreqStored();
-        return stored > 0 && stored >= count;
+        return side != getOppositeDirection() && getActive() ? 15 : 0;
     }
 
     private long getFreqStored() {
@@ -90,21 +76,8 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        boolean powering = isPowering();
-        if (powering != prevPowering) {
-            Level world = getLevel();
-            if (world != null) {
-                world.updateNeighborsAtExceptFromFacing(getBlockPos(), getBlockType(), getOppositeDirection());
-            }
-            prevPowering = powering;
-            sendUpdatePacket();
-        }
-    }
-
-    @NotNull
-    @Override
-    public ModelData getModelData() {
-        return prevPowering ? ModelData.builder().with(POWERING_PROPERTY, null).build() : super.getModelData();
+        long stored = getFreqStored();
+        setActive(stored > 0 && stored >= count);
     }
 
     @Override
@@ -132,23 +105,6 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         remap.put(NBTConstants.AMOUNT, NBTConstants.AMOUNT);
         remap.put(NBTConstants.FUZZY_MODE, NBTConstants.FUZZY_MODE);
         return remap;
-    }
-
-    @NotNull
-    @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
-        updateTag.putBoolean(NBTConstants.ACTIVE, prevPowering);
-        return updateTag;
-    }
-
-    @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
-        if (prevPowering != tag.getBoolean(NBTConstants.ACTIVE)) {
-            prevPowering = !prevPowering;
-            updateModelData();
-        }
     }
 
     @ComputerMethod(nameOverride = "getTargetItem")

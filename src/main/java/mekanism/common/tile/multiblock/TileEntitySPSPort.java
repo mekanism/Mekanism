@@ -35,7 +35,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing implements IMultibloc
 
     public TileEntitySPSPort(BlockPos pos, BlockState state) {
         super(MekanismBlocks.SPS_PORT, pos, state);
-        delaySupplier = () -> 0;
+        delaySupplier = NO_DELAY;
     }
 
     @Override

@@ -41,7 +41,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
 
     public TileEntityFusionReactorPort(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.FUSION_REACTOR_PORT, pos, state);
-        delaySupplier = () -> 0;
+        delaySupplier = NO_DELAY;
     }
 
     @NotNull
