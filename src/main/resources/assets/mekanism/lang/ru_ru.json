@@ -189,7 +189,6 @@
   "assemblicator.mekanism.craft_available": "Создать доступные предметы",
   "assemblicator.mekanism.craft_single": "Создать 1 предмет",
   "assemblicator.mekanism.encode_formula": "Записать формулу",
-  "assemblicator.mekanism.fill_empty": "Заполнить / очистить окно создания",
   "assemblicator.mekanism.stock_control": "Контроль запасов: %1$s",
   "auto.mekanism.eject": "Авто-извлечение",
   "auto.mekanism.pull": "Авто-выброс",
