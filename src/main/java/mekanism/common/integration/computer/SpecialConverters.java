@@ -40,15 +40,15 @@ public class SpecialConverters {
         return null;
     }
 
-    private static ItemStack tryCreateFilterItem(@Nullable Object rawName, @Nullable Object rawNBT) throws ComputerException {
+    private static ItemStack tryCreateFilterItem(@Nullable String rawName, @Nullable String rawNBT) throws ComputerException {
         Item item = tryCreateItem(rawName);
         if (item == Items.AIR) {
             return ItemStack.EMPTY;
         }
         ItemStack stack = new ItemStack(item);
-        if (rawNBT instanceof String snbt) {
+        if (rawNBT != null) {
             try {
-                stack.setTag(NbtUtils.snbtToStructure(snbt));
+                stack.setTag(NbtUtils.snbtToStructure(rawNBT));
             } catch (CommandSyntaxException ex) {
                 throw new ComputerException("Invalid SNBT: "+ex.getMessage());
             }
@@ -116,7 +116,7 @@ public class SpecialConverters {
                         filter.setEnabled(enable);
                     }
                     if (filter instanceof IItemStackFilter<?> itemFilter) {
-                        ItemStack stack = tryCreateFilterItem(map.get("item"), map.get("itemNBT"));
+                        ItemStack stack = tryCreateFilterItem((String) map.get("item"), (String) map.get("itemNBT"));
                         if (stack.isEmpty()) {
                             return null;
                         }
