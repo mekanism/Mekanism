@@ -3,6 +3,8 @@ package mekanism.common.content.miner;
 import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.BaseFilter;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -14,7 +16,9 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends BaseFilter<FILTER> {
 
+    @SyntheticComputerMethod(getter = "getReplaceTarget", setter = "setReplaceTarget", threadSafeGetter = true, threadSafeSetter = true)
     public Item replaceTarget = Items.AIR;
+    @SyntheticComputerMethod(getter = "getRequiresReplacement", setter = "setRequiresReplacement", threadSafeSetter = true, threadSafeGetter = true)
     public boolean requiresReplacement;
 
     protected MinerFilter() {
@@ -31,6 +35,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
 
     public abstract boolean canFilter(BlockState state);
 
+    @ComputerMethod
     public abstract boolean hasBlacklistedElement();
 
     @Override
@@ -79,4 +84,8 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
         MinerFilter<?> other = (MinerFilter<?>) o;
         return requiresReplacement == other.requiresReplacement && replaceTarget == other.replaceTarget;
     }
+
+    @Override
+    @ComputerMethod(threadSafe = true)
+    public abstract FILTER clone();
 }

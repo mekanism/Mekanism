@@ -4,9 +4,15 @@ import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.content.filter.IFilter;
+import mekanism.common.content.miner.MinerFilter;
+import mekanism.common.content.oredictionificator.OredictionificatorFilter;
+import mekanism.common.content.qio.filter.QIOFilter;
+import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.integration.computer.BaseComputerHelper;
 import mekanism.common.integration.computer.ComputerException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -140,5 +146,46 @@ public class CCComputerHelper extends BaseComputerHelper {
     @Override
     public Object voidResult() {
         return MethodResult.of();
+    }
+
+    @Override
+    public <FILTER extends IFilter<FILTER>> @Nullable FILTER getFilter(int param, Class<FILTER> expectedType) throws ComputerException {
+        Object value = null;
+        try {
+            value = arguments.get(param);
+        } catch (LuaException e) {
+            throw new ComputerException(e);
+        }
+        if (value instanceof CCFilterWrapper<?> filterWrapper) {
+            if (!expectedType.isInstance(filterWrapper.filter)) {
+                throw new ComputerException("Wrong filter type supplied");
+            }
+            return expectedType.cast(filterWrapper.filter);
+        }
+        return super.getFilter(param, expectedType);
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public Object convert(@Nullable MinerFilter<?> minerFilter) {
+        return minerFilter != null ? new CCFilterWrapper(minerFilter.clone()) : null;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public Object convert(@Nullable SorterFilter<?> sorterFilter) {
+        return sorterFilter != null ? new CCFilterWrapper(sorterFilter.clone()) : null;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public Object convert(@Nullable QIOFilter<?> qioFilter) {
+        return qioFilter != null ? new CCFilterWrapper(qioFilter.clone()) : null;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public Object convert(@Nullable OredictionificatorFilter<?, ?, ?> filter) {
+        return filter != null ? new CCFilterWrapper(filter.clone()) : null;
     }
 }

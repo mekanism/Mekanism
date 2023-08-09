@@ -9,6 +9,7 @@ import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.miner.MinerFilter;
+import mekanism.common.content.oredictionificator.OredictionificatorFilter;
 import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
@@ -354,13 +355,15 @@ public abstract class BaseComputerHelper {
         return wrapped;
     }
 
-    public Object convert(@Nullable OredictionificatorItemFilter filter) {
+    public Object convert(@Nullable OredictionificatorFilter<?, ?, ?> filter) {
         if (filter == null) {
             return null;
         }
         Map<String, Object> wrapped = convertFilterCommon(filter);
         wrapped.put("target", filter.getFilterText());
-        wrapped.put("selected", convert(filter.getResultElement()));
+        if (filter instanceof OredictionificatorItemFilter itemFilter) {
+            wrapped.put("selected", convert(itemFilter.getResultElement()));
+        }
         return wrapped;
     }
 
