@@ -8,7 +8,7 @@ import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.miner.MinerFilter;
-import mekanism.common.content.oredictionificator.OredictionificatorFilter;
+import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.content.transporter.SorterFilter;
@@ -273,10 +273,7 @@ public abstract class BaseComputerHelper {
         return res != null ? res.name() : null;
     }
 
-    public Object convert(@Nullable IFilter<?> result) {
-        if (result == null) {
-            return null;
-        }
+    protected Map<String, Object> convertFilterCommon(IFilter<?> result) {
         Map<String, Object> wrapped = new HashMap<>();
         wrapped.put("type", convert(result.getFilterType()));
         wrapped.put("enabled", result.isEnabled());
@@ -294,27 +291,53 @@ public abstract class BaseComputerHelper {
         } else if (result instanceof ITagFilter<?> tagFilter) {
             wrapped.put("tag", tagFilter.getTagName());
         }
-        if (result instanceof MinerFilter<?> minerFilter) {
-            wrapped.put("requiresReplacement", minerFilter.requiresReplacement);
-            wrapped.put("replaceTarget", convert(minerFilter.replaceTarget));
-        } else if (result instanceof SorterFilter<?> sorterFilter) {
-            wrapped.put("allowDefault", sorterFilter.allowDefault);
-            wrapped.put("color", convert(sorterFilter.color));
-            wrapped.put("size", sorterFilter.sizeMode);
-            wrapped.put("min", sorterFilter.min);
-            wrapped.put("max", sorterFilter.max);
-            if (sorterFilter instanceof SorterItemStackFilter filter) {
-                wrapped.put("fuzzy", filter.fuzzyMode);
-            }
-        } else if (result instanceof QIOFilter<?> qioFilter) {
-            if (qioFilter instanceof QIOItemStackFilter filter) {
-                wrapped.put("fuzzy", filter.fuzzyMode);
-            }
-        } else if (result instanceof OredictionificatorFilter<?, ?, ?> filter) {
-            wrapped.put("target", filter.getFilterText());
-            Object resultElement = filter.getResultElement();
-            wrapped.put("selected", convert(resultElement instanceof Item ? (Item)resultElement : null));//todo only Item seems to be used?
+        return wrapped;
+    }
+
+    public Object convert(@Nullable MinerFilter<?> minerFilter) {
+        if (minerFilter == null) {
+            return null;
         }
+        Map<String, Object> wrapped = convertFilterCommon(minerFilter);
+        wrapped.put("requiresReplacement", minerFilter.requiresReplacement);
+        wrapped.put("replaceTarget", convert(minerFilter.replaceTarget));
+        return wrapped;
+    }
+
+    public Object convert(@Nullable SorterFilter<?> sorterFilter) {
+        if (sorterFilter == null) {
+            return null;
+        }
+        Map<String, Object> wrapped = convertFilterCommon(sorterFilter);
+        wrapped.put("allowDefault", sorterFilter.allowDefault);
+        wrapped.put("color", convert(sorterFilter.color));
+        wrapped.put("size", sorterFilter.sizeMode);
+        wrapped.put("min", sorterFilter.min);
+        wrapped.put("max", sorterFilter.max);
+        if (sorterFilter instanceof SorterItemStackFilter filter) {
+            wrapped.put("fuzzy", filter.fuzzyMode);
+        }
+        return wrapped;
+    }
+
+    public Object convert(@Nullable QIOFilter<?> qioFilter) {
+        if (qioFilter == null) {
+            return null;
+        }
+        Map<String, Object> wrapped = convertFilterCommon(qioFilter);
+        if (qioFilter instanceof QIOItemStackFilter filter) {
+            wrapped.put("fuzzy", filter.fuzzyMode);
+        }
+        return wrapped;
+    }
+
+    public Object convert(@Nullable OredictionificatorItemFilter filter) {
+        if (filter == null) {
+            return null;
+        }
+        Map<String, Object> wrapped = convertFilterCommon(filter);
+        wrapped.put("target", filter.getFilterText());
+        wrapped.put("selected", convert(filter.getResultElement()));
         return wrapped;
     }
 
