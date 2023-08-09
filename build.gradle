@@ -413,10 +413,7 @@ dependencies {
     compileOnly fg.deobf("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     compileOnly fg.deobf("curse.maven:opencomputers2-437654:${oc2_id}")
     compileOnly fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
-    def ccCoreAPI = fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-core-api:${cc_tweaked_version}")
-    compileOnly ccCoreAPI
-    //We require cc tweaked so that our CCArgumentWrapper tests can load, so expose it to the test runtime
-    testRuntimeOnly ccCoreAPI
+    compileOnly fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-core-api:${cc_tweaked_version}")
     //implementation fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly fg.deobf("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
 
