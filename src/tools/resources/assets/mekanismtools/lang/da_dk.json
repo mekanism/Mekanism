@@ -1,4 +1,6 @@
 {
+  "constants.mekanismtools.mod_name": "Mekanism: Værktøjer",
+  "constants.mekanismtools.pack_description": "Ressourcer brugt til Mekanism: Værktøjer",
   "item.mekanismtools.bronze_axe": "Bronzeøkse",
   "item.mekanismtools.bronze_boots": "Bronzestøvler",
   "item.mekanismtools.bronze_chestplate": "Bronzebrystplade",
