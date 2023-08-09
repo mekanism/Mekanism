@@ -168,7 +168,7 @@ public abstract class BaseComputerHelper {
         return b;
     }
 
-    public <T> Object convert(Collection<T> list, Function<T, Object> converter) {
+    public <T> Object convert(@Nullable Collection<T> list, @NotNull Function<T, Object> converter) {
         if (list == null) return Collections.emptyList();
         List<Object> converted = new ArrayList<>(list.size());
         for (T el : list) {
@@ -177,34 +177,47 @@ public abstract class BaseComputerHelper {
         return converted;
     }
 
-    public Object convert(ResourceLocation rl) {
-        return rl.toString();
+    public Object convert(@Nullable ResourceLocation rl) {
+        return rl != null? rl.toString() : null;
     }
 
-    public Object convert(UUID uuid) {
-        return uuid.toString();
+    public Object convert(@Nullable UUID uuid) {
+        return uuid != null ? uuid.toString() : null;
     }
 
-    public Object convert(ChemicalStack<?> stack) {
+    public Object convert(@Nullable ChemicalStack<?> stack) {
+        if (stack == null) {
+            return null;
+        }
         Map<String, Object> wrapped = new HashMap<>(2);
-        wrapped.put("name", stack.getTypeRegistryName().toString());
+        wrapped.put("name", convert(stack.getTypeRegistryName()));
         wrapped.put("amount", stack.getAmount());
         return wrapped;
     }
 
-    public Object convert(FluidStack stack) {
+    public Object convert(@Nullable FluidStack stack) {
+        if (stack == null) {
+            return null;
+        }
         return SpecialConverters.wrapStack(RegistryUtils.getName(stack.getFluid()), "amount", stack.getAmount(), stack.getTag());
     }
 
-    public Object convert(ItemStack stack) {
+    public Object convert(@Nullable ItemStack stack) {
+        if (stack == null) {
+            return null;
+        }
         return SpecialConverters.wrapStack(RegistryUtils.getName(stack.getItem()), "count", stack.getCount(), stack.getTag());
     }
 
-    public Object convert(BlockState state) {
+    public Object convert(@Nullable BlockState state) {
+        if (state == null) {
+            return null;
+        }
+
         Map<String, Object> wrapped = new HashMap<>(2);
         ResourceLocation name = RegistryUtils.getName(state.getBlock());
         if (name != null) {
-            wrapped.put("block", name.toString());
+            wrapped.put("block", convert(name));
         }
         Map<String, Object> stateData = new HashMap<>();
         for (Map.Entry<Property<?>, Comparable<?>> entry : state.getValues().entrySet()) {
@@ -221,7 +234,10 @@ public abstract class BaseComputerHelper {
         return wrapped;
     }
 
-    public Object convert(Vec3i pos) {
+    public Object convert(@Nullable Vec3i pos) {
+        if (pos == null) {
+            return null;
+        }
         //BlockPos is covered by this case
         Map<String, Object> wrapped = new HashMap<>(3);
         wrapped.put("x", pos.getX());
@@ -230,7 +246,10 @@ public abstract class BaseComputerHelper {
         return wrapped;
     }
 
-    public Object convert(Coord4D coord) {
+    public Object convert(@Nullable Coord4D coord) {
+        if (coord == null) {
+            return null;
+        }
         Map<String, Object> wrapped = new HashMap<>(4);
         wrapped.put("x", coord.getX());
         wrapped.put("y", coord.getY());
@@ -239,7 +258,10 @@ public abstract class BaseComputerHelper {
         return wrapped;
     }
 
-    public Object convert(Frequency frequency) {
+    public Object convert(@Nullable Frequency frequency) {
+        if (frequency == null) {
+            return null;
+        }
         Frequency.FrequencyIdentity identity = frequency.getIdentity();
         Map<String, Object> wrapped = new HashMap<>(2);
         wrapped.put("key", identity.key().toString());
@@ -247,11 +269,14 @@ public abstract class BaseComputerHelper {
         return wrapped;
     }
 
-    public Object convert(Enum<?> res) {
-        return res.name();
+    public Object convert(@Nullable Enum<?> res) {
+        return res != null ? res.name() : null;
     }
 
-    public Object convert(IFilter<?> result) {
+    public Object convert(@Nullable IFilter<?> result) {
+        if (result == null) {
+            return null;
+        }
         Map<String, Object> wrapped = new HashMap<>();
         wrapped.put("type", convert(result.getFilterType()));
         wrapped.put("enabled", result.isEnabled());
@@ -293,15 +318,21 @@ public abstract class BaseComputerHelper {
         return wrapped;
     }
 
-    public <KEY, VALUE> Object convert(Map<KEY, VALUE> res, Function<KEY, Object> keyConverter, Function<VALUE, Object> valueConverter) {
+    public <KEY, VALUE> Object convert(@NotNull Map<KEY, VALUE> res, Function<KEY, Object> keyConverter, @NotNull Function<VALUE, Object> valueConverter) {
         return res.entrySet().stream().collect(Collectors.toMap(entry -> keyConverter.apply(entry.getKey()), entry -> valueConverter.apply(entry.getValue()), (a, b) -> b));
     }
 
-    public Object convert(Item item) {
-        return RegistryUtils.getName(item);
+    public Object convert(@Nullable Item item) {
+        if (item == null) {
+            return null;
+        }
+        return convert(RegistryUtils.getName(item));
     }
 
-    public Object convert(Convertable<?> convertable) {
+    public Object convert(@Nullable Convertable<?> convertable) {
+        if (convertable == null) {
+            return null;
+        }
         return convertable.convert(this);
     }
 
