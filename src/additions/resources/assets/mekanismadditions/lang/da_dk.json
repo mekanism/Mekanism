@@ -144,6 +144,8 @@
   "block.mekanismadditions.yellow_plastic_stairs": "Gul Plastic Stairs",
   "block.mekanismadditions.yellow_reinforced_plastic": "Gul Forstærket Plastblok",
   "block.mekanismadditions.yellow_slick_plastic": "Gul Slick Plastblok",
+  "constants.mekanismadditions.mod_name": "Mekanisme: Tilføjelser",
+  "constants.mekanismadditions.pack_description": "Ressourcer, der anvendes til Mekanism: Tilføjelser",
   "entity.mekanismadditions.baby_skeleton": "Baby Skelet",
   "entity.mekanismadditions.balloon": "Ballon",
   "item.mekanismadditions.baby_skeleton_spawn_egg": "Baby Skelet Spawn Egg",
