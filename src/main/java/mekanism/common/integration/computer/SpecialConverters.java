@@ -176,8 +176,7 @@ public class SpecialConverters {
                             }
                         }
                     }
-                    //noinspection unchecked
-                    return (FILTER) filter;
+                    return expectedType.cast(filter);
                 }
             }
         }
