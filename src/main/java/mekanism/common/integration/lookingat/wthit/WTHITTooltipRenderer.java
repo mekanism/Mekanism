@@ -37,6 +37,8 @@ public class WTHITTooltipRenderer implements IBlockComponentProvider, IEntityCom
     private void append(ITooltip tooltip, IDataReader dataReader, IPluginConfig config) {
         WTHITLookingAtHelper helper = dataReader.get(WTHITLookingAtHelper.class);
         if (helper != null) {
+            //We have mek data, add an empty line for it so that we know to skip rendering the builtin types
+            tooltip.setLine(MekanismWTHITPlugin.MEK_DATA);
             Component lastText = null;
             //Copy the data we need and have from the server and pass it on to the tooltip rendering
             for (Object element : helper.elements) {

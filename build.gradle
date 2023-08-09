@@ -43,7 +43,7 @@ idea {
 ext {
     versionProperties = ["version"       : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
                          "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range, "curios_version": curios_version_range,
-                         "jei_version": jei_version_range, "json_things_version": json_things_version_range]
+                         "jei_version": jei_version_range, "json_things_version": json_things_version_range, "wthit_version": wthit_version_range]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
     secondaryModules = ['additions', 'defense', 'generators', 'tools']
     extraTypes = ['datagen', 'gameTest']
