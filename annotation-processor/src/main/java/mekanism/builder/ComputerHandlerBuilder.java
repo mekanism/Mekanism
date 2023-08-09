@@ -269,6 +269,10 @@ public class ComputerHandlerBuilder {
             CodeBlock setterRegistration = buildRegisterMethodCall(annotationValues, Collections.singletonList(new FakeParameter(fieldType,"value")), typeUtils.getNoType(TypeKind.VOID), handlerMethod, setterName, annotationValues.getLiteral("threadSafeSetter", false));
             constructorBuilder.addStatement(setterRegistration);
         }
+
+        if (getterName == null && setterName == null) {
+            messager.printMessage(Diagnostic.Kind.ERROR, "SyntheticMethod with no getter nor setter", fieldElement);
+        }
     }
 
     /**
