@@ -95,7 +95,7 @@ public class SpecialConverters {
         return raw instanceof Boolean bool ? bool : false;
     }
 
-    private static int getIntFromRaw(@Nullable Object raw) {
+    static int getIntFromRaw(@Nullable Object raw) {
         return raw instanceof Number number ? number.intValue() : 0;
     }
 

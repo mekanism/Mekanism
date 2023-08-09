@@ -1,5 +1,6 @@
 package mekanism.common.integration.computer;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.FloatingLong;
@@ -18,6 +19,7 @@ import mekanism.common.util.RegistryUtils;
 import net.minecraft.Util;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -131,11 +133,30 @@ public abstract class BaseComputerHelper {
      */
     public Item getItem(int param) throws ComputerException {
         ResourceLocation itemName = getResourceLocation(param);
+        return getItemFromResourceLocation(itemName);
+    }
+
+    @NotNull
+    private static Item getItemFromResourceLocation(ResourceLocation itemName) {
         Item item = ForgeRegistries.ITEMS.getValue(itemName);
         if (item != null) {
             return item;
         }
         return Items.AIR;
+    }
+
+    public ItemStack getItemStack(int param) throws ComputerException {
+        Map<?,?> map = getMap(param);
+        try {
+            Item item = getItemFromResourceLocation(ResourceLocation.tryParse((String) map.get("name")));
+            int count = SpecialConverters.getIntFromRaw(map.get("count"));
+            String nbt = (String) map.get("nbt");
+            return new ItemStack(item, count, nbt != null ? NbtUtils.snbtToStructure(nbt) : null);
+        } catch (ClassCastException ex) {
+            throw new ComputerException("Invalid ItemStack at index "+param);
+        } catch (CommandSyntaxException e) {
+            throw new ComputerException("Invalid NBT data");
+        }
     }
 
     /**
