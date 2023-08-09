@@ -18,6 +18,8 @@ import java.util.function.Supplier;
 public class FactoryRegistry {
     /** subject to Factory registration map */
     private static final Map<Class<?>, Lazy<ComputerMethodFactory<?>>> factories = new HashMap<>();
+    /** interface to factory registration map, must be iterated */
+    public static final Map<Class<?>, Lazy<ComputerMethodFactory<?>>> interfaceFactories = new HashMap<>();
     /** map of (relevant) superclasses for a subject's class. Added to at runtime to cache lookups for subclasses */
     private static final Map<Class<?>, List<Class<?>>> superClasses = new HashMap<>();
     /** cached list of factories for a subject class */
@@ -37,6 +39,11 @@ public class FactoryRegistry {
         } else {
             superClasses.put(subject, Collections.emptyList());
         }
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public synchronized static <T> void registerInterface(Class<T> subject, Supplier<ComputerMethodFactory<T>> factorySupplier) {
+        interfaceFactories.put(subject, (Lazy) Lazy.of(factorySupplier));
     }
 
     /**
@@ -62,6 +69,12 @@ public class FactoryRegistry {
         List<ComputerMethodFactory<?>> factoriesToBind = getHandlersForHierarchy(subjectClass);
         for (ComputerMethodFactory computerMethodFactory : factoriesToBind) {
             computerMethodFactory.bindTo(subject, holder);
+        }
+        for (Map.Entry<Class<?>, Lazy<ComputerMethodFactory<?>>> interfaceEntry : interfaceFactories.entrySet()) {
+            if (interfaceEntry.getKey().isAssignableFrom(subjectClass)) {
+                ComputerMethodFactory computerMethodFactory = interfaceEntry.getValue().get();
+                computerMethodFactory.bindTo(subject, holder);
+            }
         }
     }
 

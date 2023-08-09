@@ -5,10 +5,7 @@ import mekanism.visitors.AnnotationHelper;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.*;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
@@ -94,8 +91,9 @@ public class MethodFactoryProcessor extends AbstractProcessor {
         } while ((superClass = superTypeElement.getSuperclass()).getKind() != TypeKind.NONE);
 
         //add register call to the factory
+        String registerName = handledType.getKind() == ElementKind.INTERFACE ? "registerInterface" : "register";
         CodeBlock.Builder registerStatement = CodeBlock.builder()
-                .add("$T.register($T.class, $T::new", factoryRegistry, processingEnv.getTypeUtils().erasure(handledType.asType()), factoryClassName);
+                .add("$T.$L($T.class, $T::new", factoryRegistry, registerName, processingEnv.getTypeUtils().erasure(handledType.asType()), factoryClassName);
         //add all super classes, so we don't have to calculate at runtime
         for (ClassName cls : superClasses) {
             registerStatement.add(", $T.class", cls);
