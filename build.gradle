@@ -361,7 +361,7 @@ repositories { RepositoryHandler handler ->
     })
     exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
     exclusiveRepo(handler, 'https://maven.tterrag.com/', 'team.chisel.ctm')
-    exclusiveRepo(handler, 'https://squiddev.cc/maven/', 'cc.tweaked')
+    exclusiveRepo(handler, 'https://squiddev.cc/maven/', 'cc.tweaked', 'org.squiddev')
     exclusiveRepo(handler, 'https://dogforce-games.com/maven/', 'dev.gigaherz.jsonthings')
     exclusiveRepo(handler, 'https://maven2.bai.lol', 'lol.bai', 'mcp.mobius.waila')//WTHIT
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
@@ -417,6 +417,7 @@ dependencies {
     compileOnly ccCoreAPI
     //We require cc tweaked so that our CCArgumentWrapper tests can load, so expose it to the test runtime
     testRuntimeOnly ccCoreAPI
+    //implementation fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly fg.deobf("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
 
     //Dependencies for data generators for mod compat reference
