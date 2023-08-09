@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import li.cil.oc2.api.bus.device.rpc.RPCInvocation;
 import mekanism.common.integration.computer.BaseComputerHelper;
 import mekanism.common.integration.computer.ComputerException;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -64,11 +65,13 @@ public class OC2ComputerHelper extends BaseComputerHelper {
     }
 
     @Override
+    @NotNull
     public String getString(int param) throws ComputerException {
         return getParam(param).getAsString();
     }
 
     @Override
+    @NotNull
     public Map<?, ?> getMap(int param) throws ComputerException {
         return getParam(param).getAsJsonObject().asMap();
     }

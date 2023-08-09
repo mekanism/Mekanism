@@ -94,8 +94,10 @@ public abstract class BaseComputerHelper {
         return FloatingLong.createConst(finiteDouble);
     }
 
+    @NotNull
     public abstract String getString(int param) throws ComputerException;
 
+    @NotNull
     public abstract Map<?,?> getMap(int param) throws ComputerException;
 
     /**
@@ -108,7 +110,7 @@ public abstract class BaseComputerHelper {
      */
     @Nullable
     public <FILTER extends IFilter<FILTER>> FILTER getFilter(int param, Class<FILTER> expectedType) throws ComputerException {
-        return requireNonNull(param,SpecialConverters.convertMapToFilter(expectedType,getMap(param)));
+        return SpecialConverters.convertMapToFilter(expectedType, getMap(param));
     }
 
     /**

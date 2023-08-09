@@ -118,6 +118,7 @@ public class CCComputerHelper extends BaseComputerHelper {
     }
 
     @Override
+    @NotNull
     public Map<?, ?> getMap(int param) throws ComputerException {
         try {
             return arguments.getTable(param);
@@ -127,6 +128,7 @@ public class CCComputerHelper extends BaseComputerHelper {
     }
 
     @Override
+    @NotNull
     public String getString(int param) throws ComputerException {
         try {
             return arguments.getString(param);
