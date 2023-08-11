@@ -2,7 +2,10 @@ package mekanism.client.render.lib;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
+import java.util.Arrays;
 import java.util.function.Consumer;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -13,7 +16,6 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.pipeline.QuadBakingVertexConsumer;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 public class Quad {
@@ -122,7 +124,7 @@ public class Quad {
     public Quad copy() {
         Vertex[] newVertices = new Vertex[vertices.length];
         for (int i = 0; i < newVertices.length; i++) {
-            newVertices[i] = vertices[i].copy();
+            newVertices[i] = vertices[i].copy(true);
         }
         return new Quad(sprite, side, newVertices, tintIndex, shade, hasAmbientOcclusion);
     }
@@ -135,47 +137,42 @@ public class Quad {
         return new Quad(sprite, side.getOpposite(), flipped, tintIndex, shade, hasAmbientOcclusion);
     }
 
+    @NothingNullByDefault
     private class BakedQuadUnpacker implements VertexConsumer {
 
         private Vertex vertex = new Vertex();
         private int vertexIndex = 0;
 
-        @NotNull
         @Override
         public VertexConsumer vertex(double x, double y, double z) {
             vertex.pos(new Vec3(x, y, z));
             return this;
         }
 
-        @NotNull
         @Override
         public VertexConsumer color(int red, int green, int blue, int alpha) {
             vertex.color(red, green, blue, alpha);
             return this;
         }
 
-        @NotNull
         @Override
         public VertexConsumer uv(float u, float v) {
             vertex.texRaw(u, v);
             return this;
         }
 
-        @NotNull
         @Override
         public VertexConsumer overlayCoords(int u, int v) {
             vertex.overlay(u, v);
             return this;
         }
 
-        @NotNull
         @Override
         public VertexConsumer uv2(int u, int v) {
             vertex.lightRaw(u, v);
             return this;
         }
 
-        @NotNull
         @Override
         public VertexConsumer normal(float x, float y, float z) {
             vertex.normal(x, y, z);
@@ -198,6 +195,12 @@ public class Quad {
         @Override
         public void unsetDefaultColor() {
             //We don't support having a default color
+        }
+
+        @Override
+        public VertexConsumer misc(VertexFormatElement element, int... rawData) {
+            vertex.misc(element, Arrays.copyOf(rawData, rawData.length));
+            return this;
         }
     }
 

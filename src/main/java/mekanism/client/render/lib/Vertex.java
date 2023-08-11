@@ -1,6 +1,10 @@
 package mekanism.client.render.lib;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -8,6 +12,8 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
 public class Vertex {
+
+    private final Map<VertexFormatElement, int[]> miscData;
 
     private Vec3 pos;
     private Vector3f normal;
@@ -23,6 +29,7 @@ public class Vertex {
     private int lightU, lightV;
 
     public Vertex() {
+        this.miscData = new HashMap<>();
     }
 
     public Vertex(Vec3 pos, Vector3f normal, Color color, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV) {
@@ -30,6 +37,11 @@ public class Vertex {
     }
 
     public Vertex(Vec3 pos, Vector3f normal, int red, int green, int blue, int alpha, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV) {
+        this(pos, normal, red, green, blue, alpha, texU, texV, overlayU, overlayV, lightU, lightV, new HashMap<>());
+    }
+
+    public Vertex(Vec3 pos, Vector3f normal, int red, int green, int blue, int alpha, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV,
+          Map<VertexFormatElement, int[]> miscData) {
         this.pos = pos;
         this.normal = normal;
         this.red = red;
@@ -42,6 +54,7 @@ public class Vertex {
         this.overlayV = overlayV;
         this.lightU = lightU;
         this.lightV = lightV;
+        this.miscData = miscData;
     }
 
     public static Vertex create(Vec3 pos, Vector3f normal, Color color, TextureAtlasSprite sprite, float texU, float texV, int overlayU, int overlayV, int lightU,
@@ -149,12 +162,29 @@ public class Vertex {
         return lightRaw(u << 4, v << 4);
     }
 
-    public Vertex flip() {
-        return copy().normal(-normal.x(), -normal.y(), -normal.z());
+    public Vertex misc(VertexFormatElement element, int... data) {
+        miscData.put(element, data);
+        return this;
     }
 
-    public Vertex copy() {
-        return new Vertex(pos, normal, red, green, blue, alpha, texU, texV, overlayU, overlayV, lightU, lightV);
+    public Vertex flip() {
+        return flip(true);
+    }
+
+    public Vertex flip(boolean deepCopy) {
+        return copy(deepCopy).normal(-normal.x(), -normal.y(), -normal.z());
+    }
+
+    public Vertex copy(boolean deepCopy) {
+        if (deepCopy) {
+            //Deep copy the misc data
+            Map<VertexFormatElement, int[]> miscCopy = new HashMap<>();
+            for (Map.Entry<VertexFormatElement, int[]> entry : miscData.entrySet()) {
+                miscCopy.put(entry.getKey(), Arrays.copyOf(entry.getValue(), entry.getValue().length));
+            }
+            return new Vertex(pos, new Vector3f(normal), red, green, blue, alpha, texU, texV, overlayU, overlayV, lightU, lightV, miscCopy);
+        }
+        return new Vertex(pos, normal, red, green, blue, alpha, texU, texV, overlayU, overlayV, lightU, lightV, miscData);
     }
 
     public void write(VertexConsumer consumer) {
@@ -164,6 +194,9 @@ public class Vertex {
         consumer.overlayCoords(overlayU, overlayV);
         consumer.uv2(lightU, lightV);
         consumer.normal(normal.x(), normal.y(), normal.z());
+        for (Map.Entry<VertexFormatElement, int[]> entry : miscData.entrySet()) {
+            consumer.misc(entry.getKey(), entry.getValue());
+        }
         consumer.endVertex();
     }
 }

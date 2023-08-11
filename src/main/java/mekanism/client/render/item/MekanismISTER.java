@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.StainedGlassPaneBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,8 +71,9 @@ public abstract class MekanismISTER extends BlockEntityWithoutLevelRenderer {
         }
         Minecraft minecraft = Minecraft.getInstance();
         ItemRenderer itemRenderer = minecraft.getItemRenderer();
+        BlockState defaultState = block.defaultBlockState();
         //TODO: See if we can come up with a better way to handle getting the model, maybe even one that supports non block items??
-        BakedModel baseModel = minecraft.getModelManager().getBlockModelShaper().getBlockModel(block.defaultBlockState());
+        BakedModel baseModel = minecraft.getModelManager().getBlockModelShaper().getBlockModel(defaultState);
         long seed = 42;
         RandomSource random = RandomSource.create();
         boolean hasEffect = stack.hasFoil();
@@ -86,10 +88,10 @@ public abstract class MekanismISTER extends BlockEntityWithoutLevelRenderer {
                 //Note: Manually call the render quads lists rather than using renderModelLists so that we can pass the proper render type and model data
                 for (Direction direction : EnumUtils.DIRECTIONS) {
                     random.setSeed(seed);
-                    itemRenderer.renderQuadList(matrix, buffer, model.getQuads(null, direction, random, modelData, renderType), stack, light, overlayLight);
+                    itemRenderer.renderQuadList(matrix, buffer, model.getQuads(defaultState, direction, random, modelData, renderType), stack, light, overlayLight);
                 }
                 random.setSeed(seed);
-                itemRenderer.renderQuadList(matrix, buffer, model.getQuads(null, null, random, modelData, renderType), stack, light, overlayLight);
+                itemRenderer.renderQuadList(matrix, buffer, model.getQuads(defaultState, null, random, modelData, renderType), stack, light, overlayLight);
             }
         }
     }
