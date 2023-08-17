@@ -177,12 +177,11 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
 
         @Override
         public List<@NotNull ItemStack> getRepresentations() {
-            //TODO: Can this be cached some how
+            //TODO: Can this be cached somehow
             List<@NotNull ItemStack> representations = new ArrayList<>();
             for (ItemStack stack : ingredient.getItems()) {
-                if (stack.getCount() == amount) {
-                    representations.add(stack);
-                } else {
+                if (!stack.isEmpty()) {
+                    //Ignore empty stacks as some mods have ingredients that some stacks are empty
                     representations.add(stack.copyWithCount(amount));
                 }
             }

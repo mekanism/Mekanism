@@ -139,7 +139,8 @@ public class CrTFluidStackIngredient {
     @ZenCodeType.Caster(implicit = true)
     public static CTFluidIngredient asCTFluidIngredient(FluidStackIngredient _this) {
         if (_this instanceof SingleFluidStackIngredient single) {
-            return new CTFluidIngredient.FluidStackIngredient(IFluidStack.of(single.getInputRaw()));
+            //Note: We likely don't need to copy this, but just in case we want to make sure the raw input doesn't somehow leak
+            return new CTFluidIngredient.FluidStackIngredient(IFluidStack.of(single.getInputRaw().copy()));
         } else if (_this instanceof TaggedFluidStackIngredient tagged) {
             return new CTFluidIngredient.FluidTagWithAmountIngredient(CrTUtils.fluidTags()
                   .tag(tagged.getTag())

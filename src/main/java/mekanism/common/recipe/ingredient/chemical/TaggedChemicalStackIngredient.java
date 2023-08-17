@@ -73,7 +73,7 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
     @Override
     public List<@NotNull STACK> getRepresentations() {
         ChemicalIngredientInfo<CHEMICAL, STACK> ingredientInfo = getIngredientInfo();
-        //TODO: Can this be cached some how
+        //TODO: Can this be cached somehow
         List<@NotNull STACK> representations = new ArrayList<>();
         for (CHEMICAL chemical : tag) {
             representations.add(ingredientInfo.createStack(chemical, amount));

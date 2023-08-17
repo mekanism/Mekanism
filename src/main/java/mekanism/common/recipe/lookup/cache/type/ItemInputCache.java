@@ -30,7 +30,10 @@ public class ItemInputCache<RECIPE extends MekanismRecipe> extends NBTSensitiveI
             //Vanilla ingredients and simple ingredients don't actually check anything related to NBT,
             // so we can add the items to our base/raw input cache directly
             for (ItemStack item : input.getItems()) {
-                addInputCache(item.getItem(), recipe);
+                if (!item.isEmpty()) {
+                    //Ignore empty stacks as some mods have ingredients that some stacks are empty
+                    addInputCache(item.getItem(), recipe);
+                }
             }
         } else if (input instanceof CompoundIngredient compoundIngredient) {
             //Special handling for forge's compound ingredient to map all children
