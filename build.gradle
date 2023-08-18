@@ -400,8 +400,7 @@ dependencies {
     compileOnly fg.deobf("mcp.mobius.waila:wthit-api:forge-${wthit_version}")
 
     implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
-    //TODO - 1.20: Switch this back to implementation when it updates
-    compileOnly fg.deobf("com.blamejared.jeitweaker:JeiTweaker-forge-${previous_minecraft_version}:${jeitweaker_version}")
+    implementation fg.deobf("com.blamejared.jeitweaker:JeiTweaker-forge-${minecraft_version}:${jeitweaker_version}")
 
     compileOnly fg.deobf("dev.gigaherz.jsonthings:JsonThings-${minecraft_version}:${json_things_version}")
 
