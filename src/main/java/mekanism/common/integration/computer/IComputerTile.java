@@ -1,6 +1,5 @@
 package mekanism.common.integration.computer;
 
-import java.util.Map;
 import mekanism.common.Mekanism;
 
 public interface IComputerTile {

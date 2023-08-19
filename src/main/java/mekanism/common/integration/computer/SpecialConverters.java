@@ -1,8 +1,16 @@
 package mekanism.common.integration.computer;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import mekanism.api.text.EnumColor;
-import mekanism.common.content.filter.*;
+import mekanism.common.content.filter.BaseFilter;
+import mekanism.common.content.filter.FilterType;
+import mekanism.common.content.filter.IFilter;
+import mekanism.common.content.filter.IItemStackFilter;
+import mekanism.common.content.filter.IModIDFilter;
+import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.oredictionificator.OredictionificatorFilter;
 import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
@@ -12,7 +20,8 @@ import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.text.InputValidator;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -20,8 +29,6 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
 
 public class SpecialConverters {
 
