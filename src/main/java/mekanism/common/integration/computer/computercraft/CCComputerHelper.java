@@ -160,7 +160,7 @@ public class CCComputerHelper extends BaseComputerHelper {
             if (!expectedType.isInstance(filterWrapper.filter)) {
                 throw new ComputerException("Wrong filter type supplied");
             }
-            return expectedType.cast(filterWrapper.filter);
+            return expectedType.cast(filterWrapper.filter.clone());
         }
         return super.getFilter(param, expectedType);
     }
