@@ -24,13 +24,13 @@ import java.lang.ref.WeakReference;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNotNullByDefault
-public class MekanismDeviceV2<TILE extends BlockEntity & IComputerTile> extends BoundMethodHolder implements RPCDevice {
-    public static <TILE extends BlockEntity & IComputerTile> MekanismDeviceV2<TILE> create(TILE tile) {
-        MekanismDeviceV2<TILE> device = new MekanismDeviceV2<>(tile);
+public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends BoundMethodHolder implements RPCDevice {
+    public static <TILE extends BlockEntity & IComputerTile> MekanismDevice<TILE> create(TILE tile) {
+        MekanismDevice<TILE> device = new MekanismDevice<>(tile);
         //add helper apis first
         FactoryRegistry.bindTo(device, null, ComputerEnergyHelper.class);
         //bind the tile's methods
-        tile.getComputerMethodsV2(device);
+        tile.getComputerMethods(device);
         return device;
     }
 
@@ -39,7 +39,7 @@ public class MekanismDeviceV2<TILE extends BlockEntity & IComputerTile> extends 
     private final List<String> name;
     private final WeakReference<TILE> attachedTile;
 
-    public MekanismDeviceV2(TILE tile) {
+    public MekanismDevice(TILE tile) {
         this.name = Collections.singletonList(tile.getComputerName());
         this.attachedTile = new WeakReference<>(tile);
     }
@@ -56,7 +56,7 @@ public class MekanismDeviceV2<TILE extends BlockEntity & IComputerTile> extends 
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof MekanismDeviceV2<?> other && this.attachedTile.get() == other.attachedTile.get();
+        return obj instanceof MekanismDevice<?> other && this.attachedTile.get() == other.attachedTile.get();
     }
 
     @Override

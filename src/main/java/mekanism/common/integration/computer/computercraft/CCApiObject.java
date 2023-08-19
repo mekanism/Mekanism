@@ -8,7 +8,7 @@ import mekanism.common.integration.computer.FactoryRegistry;
 /**
  * Registers a CC Api handler. Static classes only for now.
  */
-public class CCApiObject extends CCMethodCallerV2 implements IDynamicLuaObject, ILuaAPI {
+public class CCApiObject extends CCMethodCaller implements IDynamicLuaObject, ILuaAPI {
     static ILuaAPIFactory create(Class<?> source, String... apiNames) {
         return computer -> {
             CCApiObject apiObject = new CCApiObject(apiNames);

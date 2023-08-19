@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
@@ -1292,8 +1291,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void getComputerMethodsV2(BoundMethodHolder holder) {
-        IComputerTile.super.getComputerMethodsV2(holder);
+    public void getComputerMethods(BoundMethodHolder holder) {
+        IComputerTile.super.getComputerMethods(holder);
         for (ITileComponent component : components) {
             //Allow any supported components to add their computer methods as well
             // For example side config, ejector, and upgrade components

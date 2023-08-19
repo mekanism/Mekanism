@@ -1,7 +1,6 @@
 package mekanism.common.tile.prefab;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Map;
 import java.util.UUID;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
@@ -389,8 +388,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void getComputerMethodsV2(BoundMethodHolder holder) {
-        super.getComputerMethodsV2(holder);
+    public void getComputerMethods(BoundMethodHolder holder) {
+        super.getComputerMethods(holder);
         if (exposesMultiblockToComputer()) {
             T multiblock = getMultiblock();
             if (multiblock.isFormed()) {

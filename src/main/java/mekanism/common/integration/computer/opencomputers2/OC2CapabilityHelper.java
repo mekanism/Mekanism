@@ -15,8 +15,8 @@ public class OC2CapabilityHelper {
 
     public static <TILE extends BlockEntity & IComputerTile> ICapabilityResolver getOpenComputers2Capability(TILE tile) {
         if (tile.isComputerCapabilityPersistent()) {
-            return BasicCapabilityResolver.persistent(CAPABILITY, () -> MekanismDeviceV2.create(tile));
+            return BasicCapabilityResolver.persistent(CAPABILITY, () -> MekanismDevice.create(tile));
         }
-        return BasicCapabilityResolver.create(CAPABILITY, () -> MekanismDeviceV2.create(tile));
+        return BasicCapabilityResolver.create(CAPABILITY, () -> MekanismDevice.create(tile));
     }
 }

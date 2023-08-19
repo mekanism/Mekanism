@@ -13,20 +13,20 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 
-public class MekanismPeripheralV2<TILE extends BlockEntity & IComputerTile> extends CCMethodCallerV2 implements IDynamicPeripheral {
+public class MekanismPeripheral<TILE extends BlockEntity & IComputerTile> extends CCMethodCaller implements IDynamicPeripheral {
     /**
      * Only call this if the given tile actually has computer support as it won't be double-checked.
      */
-    public static <TILE extends BlockEntity & IComputerTile> MekanismPeripheralV2<TILE> create(TILE tile) {
-        MekanismPeripheralV2<TILE> mekanismPeripheral = new MekanismPeripheralV2<>(tile);
-        tile.getComputerMethodsV2(mekanismPeripheral);
+    public static <TILE extends BlockEntity & IComputerTile> MekanismPeripheral<TILE> create(TILE tile) {
+        MekanismPeripheral<TILE> mekanismPeripheral = new MekanismPeripheral<>(tile);
+        tile.getComputerMethods(mekanismPeripheral);
         return mekanismPeripheral;
     }
 
     private final String name;
     private final WeakReference<TILE> tile;
 
-    private MekanismPeripheralV2(TILE tile) {
+    private MekanismPeripheral(TILE tile) {
         this.tile = new WeakReference<>(tile);
         this.name = tile.getComputerName();
     }
@@ -48,12 +48,12 @@ public class MekanismPeripheralV2<TILE extends BlockEntity & IComputerTile> exte
 
     @Override
     public boolean equals(@Nullable IPeripheral other) {
-        return other instanceof MekanismPeripheralV2<?> && getTarget() == other.getTarget();
+        return other instanceof MekanismPeripheral<?> && getTarget() == other.getTarget();
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof MekanismPeripheralV2<?> other && equals(other);
+        return obj instanceof MekanismPeripheral<?> other && equals(other);
     }
 
     @Override

@@ -22,7 +22,7 @@ public interface IComputerTile {
      *
      * @apiNote Only call this if {@link #hasComputerSupport()} is true.
      */
-    default void getComputerMethodsV2(BoundMethodHolder holder) {
+    default void getComputerMethods(BoundMethodHolder holder) {
         FactoryRegistry.bindTo(holder, this);
     }
 

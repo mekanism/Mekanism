@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-public class CCMethodCallerV2 extends BoundMethodHolder {
+public class CCMethodCaller extends BoundMethodHolder {
     public String[] getMethodNames() {
         return methodNames.get();
     }
