@@ -22,13 +22,13 @@ import java.util.function.Supplier;
  */
 public class FactoryRegistry {
     /** subject to Factory registration map */
-    private static final Map<Class<?>, Lazy<ComputerMethodFactory<?>>> factories = new HashMap<>();
+    private static final Map<Class<?>, Lazy<? extends ComputerMethodFactory<?>>> factories = new HashMap<>();
     /** interface to factory registration map, must be iterated */
-    public static final Map<Class<?>, Lazy<ComputerMethodFactory<?>>> interfaceFactories = new HashMap<>();
+    public static final Map<Class<?>, Lazy<? extends ComputerMethodFactory<?>>> interfaceFactories = new HashMap<>();
     /** map of (relevant) superclasses for a subject's class. Added to at runtime to cache lookups for subclasses */
     private static final Map<Class<?>, List<Class<?>>> superClasses = new HashMap<>();
     /** cached list of factories for a subject class */
-    private static final Map<Class<?>, List<ComputerMethodFactory<?>>> hierarchyHandlers = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, List<? extends ComputerMethodFactory<?>>> hierarchyHandlers = new ConcurrentHashMap<>();
 
     /**
      * Adds a Factory to the registry
@@ -36,9 +36,8 @@ public class FactoryRegistry {
      * @param factorySupplier constructor of the factory
      * @param parents Classes of the supertypes which will be checked for handlers (calculated at compile time)
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public synchronized static <T> void register(Class<T> subject, Supplier<ComputerMethodFactory<T>> factorySupplier, Class<?>... parents) {
-        factories.put(subject, (Lazy) Lazy.of(factorySupplier));
+        factories.put(subject, Lazy.of(factorySupplier));
         if (parents != null && parents.length > 0) {
             superClasses.put(subject, Arrays.asList(parents));
         } else {
@@ -46,9 +45,8 @@ public class FactoryRegistry {
         }
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public synchronized static <T> void registerInterface(Class<T> subject, Supplier<ComputerMethodFactory<T>> factorySupplier) {
-        interfaceFactories.put(subject, (Lazy) Lazy.of(factorySupplier));
+        interfaceFactories.put(subject, Lazy.of(factorySupplier));
     }
 
     /**
@@ -71,11 +69,11 @@ public class FactoryRegistry {
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static void bindTo(BoundMethodHolder holder, @Nullable Object subject, @NotNull Class<?> subjectClass) {
-        List<ComputerMethodFactory<?>> factoriesToBind = getHandlersForHierarchy(subjectClass);
+        List<? extends ComputerMethodFactory<?>> factoriesToBind = getHandlersForHierarchy(subjectClass);
         for (ComputerMethodFactory computerMethodFactory : factoriesToBind) {
             computerMethodFactory.bindTo(subject, holder);
         }
-        for (Map.Entry<Class<?>, Lazy<ComputerMethodFactory<?>>> interfaceEntry : interfaceFactories.entrySet()) {
+        for (Map.Entry<Class<?>, Lazy<? extends ComputerMethodFactory<?>>> interfaceEntry : interfaceFactories.entrySet()) {
             if (interfaceEntry.getKey().isAssignableFrom(subjectClass)) {
                 ComputerMethodFactory computerMethodFactory = interfaceEntry.getValue().get();
                 computerMethodFactory.bindTo(subject, holder);
@@ -88,8 +86,8 @@ public class FactoryRegistry {
      * @param target the subject class
      * @return a list of applicable handlers
      */
-    private static List<ComputerMethodFactory<?>> getHandlersForHierarchy(Class<?> target) {
-        List<ComputerMethodFactory<?>> handlers = hierarchyHandlers.get(target);
+    private static List<? extends ComputerMethodFactory<?>> getHandlersForHierarchy(Class<?> target) {
+        List<? extends ComputerMethodFactory<?>> handlers = hierarchyHandlers.get(target);
         if (handlers != null) {
             return handlers;
         }
@@ -105,12 +103,12 @@ public class FactoryRegistry {
      * @param target class to find handlers for
      * @return list of handlers (perhaps empty)
      */
-    private static List<ComputerMethodFactory<?>> buildHandlersForHierarchy(Class<?> target) {
+    private static List<? extends ComputerMethodFactory<?>> buildHandlersForHierarchy(Class<?> target) {
         if (factories.containsKey(target)) {
             //found one we handle, all supers will be present (if required)
             List<ComputerMethodFactory<?>> outList = new ArrayList<>();
             for (Class<?> aClass : superClasses.get(target)) {
-                Lazy<ComputerMethodFactory<?>> computerMethodFactoryLazy = factories.get(aClass);
+                Lazy<? extends ComputerMethodFactory<?>> computerMethodFactoryLazy = factories.get(aClass);
                 if (computerMethodFactoryLazy != null) {
                     outList.add(computerMethodFactoryLazy.get());
                 }
