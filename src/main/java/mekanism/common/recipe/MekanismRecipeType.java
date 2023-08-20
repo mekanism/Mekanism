@@ -160,7 +160,7 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
     public static final RecipeTypeRegistryObject<SawmillRecipe, SingleItem<SawmillRecipe>> SAWING =
           register("sawing", recipeType -> new SingleItem<>(recipeType, SawmillRecipe::getInput));
 
-    private static <RECIPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache> RecipeTypeRegistryObject<RECIPE, INPUT_CACHE> register(String name,
+    public static <RECIPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache> RecipeTypeRegistryObject<RECIPE, INPUT_CACHE> register(String name,
           Function<MekanismRecipeType<RECIPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator) {
         return RECIPE_TYPES.register(name, () -> new MekanismRecipeType<>(name, inputCacheCreator));
     }
