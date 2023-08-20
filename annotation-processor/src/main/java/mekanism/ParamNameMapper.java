@@ -92,11 +92,9 @@ public class ParamNameMapper extends AbstractProcessor {
         if (!annotatedData.isEmpty()) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             Filer filer = processingEnv.getFiler();
-            for (Map.Entry<AnnotationParamScanner, Map</*class name*/String,Map</*method name*/String, Map</*descriptor*/String,/*params*/List<String>>>>> entry : annotatedData.entrySet()) {
-                AnnotationParamScanner scanner = entry.getKey();
-                //Note: We know allMethods is not empty, as we only add annotated data if we have a method to add
-                // We also sort the methods to ensure the order is consistent when saved
-                var allMethods = entry.getValue();
+            //Note: We know allMethods is not empty, as we only add annotated data if we have a method to add
+            // We also sort the methods to ensure the order is consistent when saved
+            annotatedData.forEach((scanner, allMethods) -> {
                 try {
                     FileObject resource = filer.createResource(StandardLocation.CLASS_OUTPUT, "", scanner.targetFile() + ".json", scanner.originatingElements().toArray(new Element[0]));
                     try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(resource.openOutputStream(), StandardCharsets.UTF_8))) {
@@ -105,7 +103,7 @@ public class ParamNameMapper extends AbstractProcessor {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
+            });
         }
         //Don't mark the annotation as used to allow other processors to process them if we ever end up having any
         return false;
