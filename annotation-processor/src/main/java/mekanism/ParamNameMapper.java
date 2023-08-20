@@ -31,10 +31,6 @@ public class ParamNameMapper extends AbstractProcessor {
     public static final Type PARAM_TREE_TYPETOKEN = new TypeToken<Map</*class name*/String, Map</*method name*/String, Map</*descriptor*/String,/*params*/List<String>>>>>() {
     }.getType();
 
-    private static String forDatagen(String path) {
-        return path;
-    }
-
     private Set<AnnotationParamScanner> scanners = Collections.emptySet();
 
     @Override
@@ -48,7 +44,7 @@ public class ParamNameMapper extends AbstractProcessor {
         String mekModule = processingEnv.getOptions().getOrDefault(MekAnnotationProcessors.MODULE_OPTION, "mekanism");
         if (mekModule.equals("mekanism")) {
             scanners = Set.of(
-                  new AnnotationParamScanner(forDatagen("crafttweaker_parameter_names"), ZenCodeType.Method.class)
+                  new AnnotationParamScanner("crafttweaker_parameter_names", ZenCodeType.Method.class)
             );
         }
     }
