@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 public class ParamNameMapper extends AbstractProcessor {
 
-    public static final Type PARAM_TREE_TYPETOKEN = new TypeToken<Map</*class name*/String, Map</*method name*/String, Map</*descriptor*/String,/*params*/List<String>>>>>() {
+    public static final Type PARAM_TREE_TYPE_TOKEN = new TypeToken<Map</*class name*/String, Map</*method name*/String, Map</*descriptor*/String,/*params*/List<String>>>>>() {
     }.getType();
 
     private Set<AnnotationParamScanner> scanners = Collections.emptySet();
@@ -99,7 +99,7 @@ public class ParamNameMapper extends AbstractProcessor {
                 try {
                     FileObject resource = filer.createResource(StandardLocation.CLASS_OUTPUT, "", scanner.targetFile() + ".json", scanner.originatingElements().toArray(new Element[0]));
                     try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(resource.openOutputStream(), StandardCharsets.UTF_8))) {
-                        writer.write(gson.toJson(allMethods, PARAM_TREE_TYPETOKEN));
+                        writer.write(gson.toJson(allMethods, PARAM_TREE_TYPE_TOKEN));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
