@@ -75,9 +75,10 @@ public class ParamNameMapper extends AbstractProcessor {
                         for (Class<? extends Annotation> annotation : scanner.supportedAnnotations()) {
                             if (annotatedElement.getAnnotation(annotation) != null) {
                                 scanner.originatingElements().add(annotatedElement);
-                                var classMethods = annotatedData.computeIfAbsent(scanner, a -> new TreeMap<>());
-                                var methods = classMethods.computeIfAbsent(className, a->new TreeMap<>());
-                                var signatures = methods.computeIfAbsent(methodName, a->new TreeMap<>());
+                                Map<String, List<String>> signatures = annotatedData
+                                      .computeIfAbsent(scanner, unused -> new TreeMap<>())
+                                      .computeIfAbsent(className, unused -> new TreeMap<>())
+                                      .computeIfAbsent(methodName, unused-> new TreeMap<>());
                                 signatures.put(methodSignature, paramNames);
                                 //We can skip checking other annotations this scanner may support as we have
                                 // already added the signature to this scanner
