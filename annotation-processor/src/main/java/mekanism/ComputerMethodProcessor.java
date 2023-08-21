@@ -52,8 +52,8 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         return true;
     }
 
-    private void processTypeWithAnnotations(TypeElement containingType, List<Element> annotatedElementList) {
-        JavaFile factoryFile = new ComputerHandlerBuilder(containingType, processingEnv).build(annotatedElementList);
+    private void processTypeWithAnnotations(TypeElement containingType, List<Element> annotatedElements) {
+        JavaFile factoryFile = new ComputerHandlerBuilder(containingType, processingEnv).build(annotatedElements);
         try {
             factoryFile.writeTo(processingEnv.getFiler());
         } catch (IOException e) {
