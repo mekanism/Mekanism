@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import mekanism.generated.mekanism.ComputerMethodRegistry_mekanism;
 import net.minecraftforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +15,7 @@ import java.util.function.Supplier;
 
 /**
  * Central place for Factories to be registered and bound.
- * Each child mod must call the generated code somewhere in its initialisation, e.g. {@link ComputerMethodRegistry_mekanism#init()}
+ * Each child mod must call the generated code somewhere in its initialisation, e.g. {@link mekanism.generated.mekanism.ComputerMethodRegistry_mekanism#init()}
  * {@link #bindTo} is used to gather methods for a subject or class (static methods only, or it would explode at runtime)
  * Factories are constructed lazily to reduce initialisation time.
  */
