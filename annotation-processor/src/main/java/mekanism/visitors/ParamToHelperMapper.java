@@ -54,23 +54,15 @@ public class ParamToHelperMapper extends SimpleTypeVisitor14<CodeBlock, Integer>
         //call enum getter
         if (typeElement.getKind() == ElementKind.ENUM) {
             return CodeBlock.of("$N.getEnum($L, $T.class)", helperParam, paramNum, className);
-        } else {
-            if (typeUtils.isAssignable(t, filterInterface)) {
-                //call IFilter getter
-                return CodeBlock.of("$N.getFilter($L, $T.class)", helperParam, paramNum, className);
-            }
+        } else if (typeUtils.isAssignable(t, filterInterface)) {
+            //call IFilter getter
+            return CodeBlock.of("$N.getFilter($L, $T.class)", helperParam, paramNum, className);
         }
         //check for list or map. List not yet implemented
-        switch (className.canonicalName()) {
-            case "java.util.List" -> {
-                return CodeBlock.of("$N.getList($L /* $L */)", helperParam, paramNum, t.getTypeArguments().get(0).toString());
-            }
-            case "java.util.Map" -> {
-                return CodeBlock.of("$N.getMap($L)", helperParam, paramNum);
-            }
-            default -> {
-                return CodeBlock.of("$N.get$L($L)", helperParam, className.simpleName(), paramNum);
-            }
-        }
+        return switch (className.canonicalName()) {
+            case "java.util.List" -> CodeBlock.of("$N.getList($L /* $L */)", helperParam, paramNum, t.getTypeArguments().get(0).toString());
+            case "java.util.Map" -> CodeBlock.of("$N.getMap($L)", helperParam, paramNum);
+            default -> CodeBlock.of("$N.get$L($L)", helperParam, className.simpleName(), paramNum);
+        };
     }
 }
