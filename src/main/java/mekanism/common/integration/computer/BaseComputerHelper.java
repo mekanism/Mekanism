@@ -178,7 +178,12 @@ public abstract class BaseComputerHelper {
     }
 
     public Object convert(@Nullable FloatingLong result) {
-        return result == null ? 0 : result.doubleValue();
+        if (result == null) {
+            return 0;
+        } else if (result.getDecimal() == 0 && result.getValue() >= 0) {
+            return result.longValue();
+        }
+        return result.doubleValue();
     }
 
     public Object convert(int i) {
