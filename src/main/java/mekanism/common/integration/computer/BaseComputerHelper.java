@@ -145,6 +145,9 @@ public abstract class BaseComputerHelper {
 
     @NotNull
     private static Item getItemFromResourceLocation(ResourceLocation itemName) {
+        if (itemName == null) {
+            return Items.AIR;
+        }
         Item item = ForgeRegistries.ITEMS.getValue(itemName);
         if (item != null) {
             return item;
