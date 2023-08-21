@@ -9,11 +9,11 @@ import java.util.function.BiFunction;
  * Wrapper type for a method which may return a different static type at runtime.
  * Ensures that the result can still be converted.
  */
-public class Convertable<RAW> {
+public final class Convertable<RAW> {
     private final RAW value;
     private final BiFunction<BaseComputerHelper, RAW, Object> converter;
 
-    public Convertable(RAW value, BiFunction<BaseComputerHelper, RAW, Object> converter) {
+    private Convertable(RAW value, BiFunction<BaseComputerHelper, RAW, Object> converter) {
         this.value = value;
         this.converter = converter;
     }
