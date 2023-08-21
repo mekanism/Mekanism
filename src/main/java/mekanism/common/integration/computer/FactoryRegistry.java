@@ -35,7 +35,7 @@ public class FactoryRegistry {
      * @param factorySupplier constructor of the factory
      * @param parents Classes of the supertypes which will be checked for handlers (calculated at compile time)
      */
-    public synchronized static <T> void register(Class<T> subject, Supplier<ComputerMethodFactory<T>> factorySupplier, Class<?>... parents) {
+    public static synchronized <T> void register(Class<T> subject, Supplier<ComputerMethodFactory<T>> factorySupplier, Class<?>... parents) {
         factories.put(subject, Lazy.of(factorySupplier));
         if (parents != null && parents.length > 0) {
             superClasses.put(subject, Arrays.asList(parents));
@@ -44,7 +44,7 @@ public class FactoryRegistry {
         }
     }
 
-    public synchronized static <T> void registerInterface(Class<T> subject, Supplier<ComputerMethodFactory<T>> factorySupplier) {
+    public static synchronized <T> void registerInterface(Class<T> subject, Supplier<ComputerMethodFactory<T>> factorySupplier) {
         interfaceFactories.put(subject, Lazy.of(factorySupplier));
     }
 
