@@ -73,13 +73,12 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends Bo
             List<MethodData> overloads = this.methods.get(key);
             if (overloads.size() == 1) {
                 return new Method(key, overloads.get(0));
-            } else {
-                Set<RPCMethod> set = new HashSet<>();
-                for (MethodData md : overloads) {
-                    set.add(new Method(key, md));
-                }
-                return new MethodGroup(key, set);
             }
+            Set<RPCMethod> set = new HashSet<>();
+            for (MethodData md : overloads) {
+                set.add(new Method(key, md));
+            }
+            return new MethodGroup(key, set);
         }).toList();
     }
 
