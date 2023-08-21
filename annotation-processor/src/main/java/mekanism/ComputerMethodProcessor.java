@@ -47,9 +47,7 @@ public class ComputerMethodProcessor extends AbstractProcessor {
             annotatedElementsByParent.computeIfAbsent((TypeElement) element.getEnclosingElement(), i -> new ArrayList<>()).add(element);
         }
 
-        for (Map.Entry<TypeElement, List<Element>> entry : annotatedElementsByParent.entrySet()) {
-            processTypeWithAnnotations(entry.getKey(), entry.getValue());
-        }
+        annotatedElementsByParent.forEach(this::processTypeWithAnnotations);
 
         return true;
     }
