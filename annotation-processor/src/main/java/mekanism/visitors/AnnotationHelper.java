@@ -22,9 +22,8 @@ public class AnnotationHelper {
 
     public AnnotationHelper(Elements elementUtils, AnnotationMirror annotationMirror) {
         this.annotationValueMap = elementUtils.getElementValuesWithDefaults(annotationMirror);
-        for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> value : elementUtils.getElementValuesWithDefaults(annotationMirror).entrySet()) {
-            //annotationValueMap.put(value.getKey().getSimpleName().toString(), value.getValue());
-            nameToElement.put(value.getKey().getSimpleName().toString(), value.getKey());
+        for (ExecutableElement key : this.annotationValueMap.keySet()) {
+            nameToElement.put(key.getSimpleName().toString(), key);
         }
     }
 
