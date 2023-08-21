@@ -96,8 +96,10 @@ public final class MekanismHooks {
         TOPLoaded = modList.isLoaded(TOP_MOD_ID);
         FluxNetworksLoaded = modList.isLoaded(FLUX_NETWORKS_MOD_ID);
         WildfireGenderModLoaded = modList.isLoaded(WILDFIRE_GENDER_MOD_ID);
-        if (CCLoaded) {
+        if (computerCompatEnabled()) {
             ComputerMethodRegistry_mekanism.init();
+        }
+        if (CCLoaded) {
             CCCapabilityHelper.registerCCMathHelper();
         }
         EnergyCompatUtils.initLoadedCache();

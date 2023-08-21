@@ -113,7 +113,7 @@ public class MekanismGenerators implements IModModule {
             BuildCommand.register("turbine", GeneratorsLang.TURBINE, new TurbineBuilder());
             BuildCommand.register("fission", GeneratorsLang.FISSION_REACTOR, new FissionReactorBuilder());
             BuildCommand.register("fusion", GeneratorsLang.FUSION_REACTOR, new FusionReactorBuilder());
-            if (Mekanism.hooks.CCLoaded) {
+            if (Mekanism.hooks.computerCompatEnabled()) {
                 ComputerMethodRegistry_mekanismgenerators.init();
             }
         });
