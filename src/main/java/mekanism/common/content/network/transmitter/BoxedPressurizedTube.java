@@ -205,7 +205,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     public CompoundTag write(@NotNull CompoundTag nbtTags) {
         super.write(nbtTags);
         if (hasTransmitterNetwork()) {
-            getTransmitterNetwork().validateSaveShares(getTransmitter());
+            getTransmitterNetwork().validateSaveShares(this);
         }
         if (saveShare.isEmpty()) {
             nbtTags.remove(NBTConstants.BOXED_CHEMICAL);
