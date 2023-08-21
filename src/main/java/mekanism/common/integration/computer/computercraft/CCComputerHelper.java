@@ -157,31 +157,28 @@ public class CCComputerHelper extends BaseComputerHelper {
             throw new ComputerException(e);
         }
         if (value instanceof CCFilterWrapper<?> filterWrapper) {
-            if (!expectedType.isInstance(filterWrapper.filter)) {
-                throw new ComputerException("Wrong filter type supplied");
-            }
-            return expectedType.cast(filterWrapper.filter.clone());
+            return filterWrapper.getAs(expectedType);
         }
         return super.getFilter(param, expectedType);
     }
 
     @Override
     public Object convert(@Nullable MinerFilter<?> minerFilter) {
-        return minerFilter != null ? new CCFilterWrapper<>(minerFilter.clone()) : null;
+        return minerFilter != null ? new CCFilterWrapper<>(minerFilter) : null;
     }
 
     @Override
     public Object convert(@Nullable SorterFilter<?> sorterFilter) {
-        return sorterFilter != null ? new CCFilterWrapper<>(sorterFilter.clone()) : null;
+        return sorterFilter != null ? new CCFilterWrapper<>(sorterFilter) : null;
     }
 
     @Override
     public Object convert(@Nullable QIOFilter<?> qioFilter) {
-        return qioFilter != null ? new CCFilterWrapper<>(qioFilter.clone()) : null;
+        return qioFilter != null ? new CCFilterWrapper<>(qioFilter) : null;
     }
 
     @Override
     public Object convert(@Nullable OredictionificatorFilter<?, ?, ?> filter) {
-        return filter != null ? new CCFilterWrapper<>(filter.clone()) : null;
+        return filter != null ? new CCFilterWrapper<>(filter) : null;
     }
 }
