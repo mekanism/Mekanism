@@ -232,11 +232,8 @@ def setupTasks(SourceSet sourceSet) {
     compileTask.configure {
         setGroup("compile")
         options.annotationProcessorPath = configurations.annotationProcessor
-        //todo fix the Crafttweaker datagen
-        //options.getGeneratedSourceOutputDirectory().set(file("src/datagen/${output}/"))
         options.compilerArgs.addAll([
-                //"-processor", "mekanism.ParamNameMapper,mekanism.ComputerMethodProcessor",
-                "-AmekanismModule=mekanism${sourceSet == sourceSets.main ? "" : output}"
+                "-AmekanismModule=mekanism${sourceSet == sourceSets.main ? "" : output}"//annotation processor param
         ])
     }
 }
@@ -414,7 +411,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:opencomputers2-437654:${oc2_id}")
     compileOnly fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
     compileOnly fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-core-api:${cc_tweaked_version}")
-    //implementation fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
+    //runtimeOnly fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly fg.deobf("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
 
     //Dependencies for data generators for mod compat reference
