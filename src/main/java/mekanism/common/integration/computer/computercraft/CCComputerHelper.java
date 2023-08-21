@@ -165,27 +165,23 @@ public class CCComputerHelper extends BaseComputerHelper {
         return super.getFilter(param, expectedType);
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public Object convert(@Nullable MinerFilter<?> minerFilter) {
-        return minerFilter != null ? new CCFilterWrapper(minerFilter.clone()) : null;
+        return minerFilter != null ? new CCFilterWrapper<>(minerFilter.clone()) : null;
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public Object convert(@Nullable SorterFilter<?> sorterFilter) {
-        return sorterFilter != null ? new CCFilterWrapper(sorterFilter.clone()) : null;
+        return sorterFilter != null ? new CCFilterWrapper<>(sorterFilter.clone()) : null;
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public Object convert(@Nullable QIOFilter<?> qioFilter) {
-        return qioFilter != null ? new CCFilterWrapper(qioFilter.clone()) : null;
+        return qioFilter != null ? new CCFilterWrapper<>(qioFilter.clone()) : null;
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public Object convert(@Nullable OredictionificatorFilter<?, ?, ?> filter) {
-        return filter != null ? new CCFilterWrapper(filter.clone()) : null;
+        return filter != null ? new CCFilterWrapper<>(filter.clone()) : null;
     }
 }
