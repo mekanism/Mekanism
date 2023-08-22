@@ -42,6 +42,7 @@ public class MekanismPeripheral<TILE extends BlockEntity & IComputerTile> extend
     }
 
     @Override
+    @Nullable
     public Object getTarget() {
         return tile.get();
     }
