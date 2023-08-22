@@ -150,7 +150,7 @@ public class CCComputerHelper extends BaseComputerHelper {
 
     @Override
     public <FILTER extends IFilter<FILTER>> @Nullable FILTER getFilter(int param, Class<FILTER> expectedType) throws ComputerException {
-        Object value = null;
+        Object value;
         try {
             value = arguments.get(param);
         } catch (LuaException e) {
