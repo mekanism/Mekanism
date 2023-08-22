@@ -68,7 +68,7 @@ public class MethodFactoryProcessor extends AbstractProcessor {
                 }
                 registryType.addOriginatingElement(factoryTypeEl);
                 AnnotationHelper helper = new AnnotationHelper(processingEnv.getElementUtils(), annotationMirror);
-                addHandlerToRegistry((TypeElement) processingEnv.getTypeUtils().asElement(helper.getClassValue("target")), ClassName.get(factoryTypeEl));
+                addHandlerToRegistry((TypeElement) typeUtils().asElement(helper.getClassValue("target")), ClassName.get(factoryTypeEl));
             }
         }
 
@@ -108,7 +108,7 @@ public class MethodFactoryProcessor extends AbstractProcessor {
         //add register call to the factory
         String registerName = handledType.getKind() == ElementKind.INTERFACE ? "registerInterface" : "register";
         CodeBlock.Builder registerStatement = CodeBlock.builder()
-                .add("$T.$L($T.class, $T::new", factoryRegistry, registerName, processingEnv.getTypeUtils().erasure(handledType.asType()), factoryClassName);
+                .add("$T.$L($T.class, $T::new", factoryRegistry, registerName, typeUtils().erasure(handledType.asType()), factoryClassName);
         //add all super classes, so we don't have to calculate at runtime
         for (ClassName cls : superClasses) {
             registerStatement.add(", $T.class", cls);

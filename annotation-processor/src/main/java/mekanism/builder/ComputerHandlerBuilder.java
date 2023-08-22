@@ -111,13 +111,13 @@ public class ComputerHandlerBuilder {
     /**
      * Builds the Factory class
      *
-     * @param annotatedElementList the elements annotated with one of the supported annotations
+     * @param annotatedElements the elements annotated with one of the supported annotations
      *
      * @return a build JavaFile ready for output
      */
-    public JavaFile build(List<Element> annotatedElementList) {
+    public JavaFile build(List<Element> annotatedElements) {
 
-        for (Element annotatedElement : annotatedElementList) {
+        for (Element annotatedElement : annotatedElements) {
             String annotatedName = annotatedElement.getSimpleName().toString();
 
             Set<Modifier> modifiers = annotatedElement.getModifiers();
