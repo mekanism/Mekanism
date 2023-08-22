@@ -72,7 +72,7 @@ public class MethodFactoryProcessor extends AbstractProcessor {
             }
         }
 
-        if (registryType.originatingElements.size() > 0) {
+        if (!registryType.originatingElements.isEmpty()) {
             registryType.addMethod(registryInit.build());
             TypeSpec registrySpec = registryType.build();
             try {
