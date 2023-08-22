@@ -28,5 +28,9 @@ public abstract class BoundMethodHolder {
         this.methods.put(name, new MethodData(name, threadSafe, argumentNames, argClasses, returnType, subject != null ? new WeakReference<>(subject) : null, (ComputerMethodFactory.ComputerFunctionCaller<Object>) handler));
     }
 
-    public record MethodData(String name, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses, Class<?> returnType, @Nullable WeakReference<Object> subject, ComputerMethodFactory.ComputerFunctionCaller<Object> handler){}
+    public record MethodData(String name, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses, Class<?> returnType, @Nullable WeakReference<Object> subject, ComputerMethodFactory.ComputerFunctionCaller<Object> handler){
+        public Object call(BaseComputerHelper helper) throws ComputerException {
+            return handler.apply(subject == null ? null : subject.get(), helper);
+        }
+    }
 }

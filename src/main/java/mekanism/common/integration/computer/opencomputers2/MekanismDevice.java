@@ -137,8 +137,7 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends Bo
         @Nullable
         @Override
         public Object invoke(RPCInvocation invocation) throws Throwable {
-            WeakReference<Object> subject = methodData.subject();
-            return methodData.handler().apply(subject != null ? subject.get() : null, new OC2ComputerHelper(invocation));
+            return methodData.call(new OC2ComputerHelper(invocation));
         }
 
         @Override

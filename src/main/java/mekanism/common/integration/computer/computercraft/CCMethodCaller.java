@@ -43,8 +43,7 @@ public class CCMethodCaller extends BoundMethodHolder {
     private static MethodResult callHandler(IArguments arguments, MethodData methodToCall) throws LuaException {
         Object result;
         try {
-            WeakReference<Object> subject = methodToCall.subject();
-            result = methodToCall.handler().apply(subject != null ? subject.get() : null, new CCComputerHelper(arguments));
+            result = methodToCall.call(new CCComputerHelper(arguments));
         } catch (ComputerException ex) {
             if (ex.getCause() instanceof LuaException luaException) {
                 throw luaException;
