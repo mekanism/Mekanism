@@ -35,7 +35,7 @@ public class CCComputerHelper extends BaseComputerHelper {
     }
 
     @Override
-    public boolean getBool(int param) throws ComputerException {
+    public boolean getBoolean(int param) throws ComputerException {
         try {
             return arguments.getBoolean(param);
         } catch (LuaException e) {

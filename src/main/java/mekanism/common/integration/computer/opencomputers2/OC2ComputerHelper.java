@@ -25,7 +25,7 @@ public class OC2ComputerHelper extends BaseComputerHelper {
     }
 
     @Override
-    public boolean getBool(int param) throws ComputerException {
+    public boolean getBoolean(int param) throws ComputerException {
         return getParam(param).getAsBoolean();
     }
 

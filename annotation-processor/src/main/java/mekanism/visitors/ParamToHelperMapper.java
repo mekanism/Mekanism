@@ -35,7 +35,7 @@ public class ParamToHelperMapper extends SimpleTypeVisitor14<CodeBlock, Integer>
     @Override
     public CodeBlock visitPrimitive(PrimitiveType t, Integer paramNum) {
         return CodeBlock.of("$N.$L($L)", helperParam, "get" + switch (t.getKind()) {
-            case BOOLEAN -> "Bool";
+            case BOOLEAN -> "Boolean";
             case BYTE -> "Byte";
             case SHORT -> "Short";
             case INT -> "Int";

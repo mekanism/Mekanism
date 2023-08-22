@@ -73,7 +73,7 @@ public abstract class BaseComputerHelper {
         return requireNonNull(param, SpecialConverters.sanitizeStringToEnum(enumClazz, getString(param)));
     }
 
-    public abstract boolean getBool(int param) throws ComputerException;
+    public abstract boolean getBoolean(int param) throws ComputerException;
 
     public abstract byte getByte(int param) throws ComputerException;
 
