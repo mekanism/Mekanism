@@ -49,7 +49,7 @@ public class ComputerMethodFactory<T>{
             field.setAccessible(true);
             return lookup.unreflectGetter(field);
         } catch (ReflectiveOperationException roe) {
-            throw new RuntimeException("Couldn't get getter methodhandle for "+fieldName, roe);
+            throw new RuntimeException("Couldn't get getter MethodHandle for "+fieldName, roe);
         }
     }
 
