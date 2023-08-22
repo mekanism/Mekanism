@@ -43,9 +43,9 @@ import java.util.stream.Collectors;
  */
 public class ComputerHandlerBuilder {
 
-    private static final ClassName computerMethodFactoryRaw = ClassName.get("mekanism.common.integration.computer", "ComputerMethodFactory");
-    private static final ClassName baseComputerHelper = ClassName.get("mekanism.common.integration.computer", "BaseComputerHelper");
-    private static final ClassName computerException = ClassName.get("mekanism.common.integration.computer", "ComputerException");
+    private static final ClassName computerMethodFactoryRaw = ClassName.get(MekAnnotationProcessors.COMPUTER_INTEGRATION_PACKAGE, "ComputerMethodFactory");
+    private static final ClassName baseComputerHelper = ClassName.get(MekAnnotationProcessors.COMPUTER_INTEGRATION_PACKAGE, "BaseComputerHelper");
+    private static final ClassName computerException = ClassName.get(MekAnnotationProcessors.COMPUTER_INTEGRATION_PACKAGE, "ComputerException");
     private static TypeMirror computerMethodAnnotationType;
     private static TypeMirror syntheticComputerMethodAnnotationType;
     private static TypeMirror wrappingComputerMethodAnnotationType;
@@ -61,9 +61,9 @@ public class ComputerHandlerBuilder {
      * @param typeUtils    Types from processor
      */
     public static void init(Elements elementUtils, Types typeUtils) {
-        computerMethodAnnotationType = Objects.requireNonNull(elementUtils.getTypeElement("mekanism.common.integration.computer.annotation.ComputerMethod")).asType();
-        syntheticComputerMethodAnnotationType = Objects.requireNonNull(elementUtils.getTypeElement("mekanism.common.integration.computer.annotation.SyntheticComputerMethod")).asType();
-        wrappingComputerMethodAnnotationType = Objects.requireNonNull(elementUtils.getTypeElement("mekanism.common.integration.computer.annotation.WrappingComputerMethod")).asType();
+        computerMethodAnnotationType = Objects.requireNonNull(elementUtils.getTypeElement(MekAnnotationProcessors.ANNOTATION_COMPUTER_METHOD)).asType();
+        syntheticComputerMethodAnnotationType = Objects.requireNonNull(elementUtils.getTypeElement(MekAnnotationProcessors.ANNOTATION_SYNTHETIC_COMPUTER_METHOD)).asType();
+        wrappingComputerMethodAnnotationType = Objects.requireNonNull(elementUtils.getTypeElement(MekAnnotationProcessors.ANNOTATION_WRAPPING_COMPUTER_METHOD)).asType();
         collectionType = Objects.requireNonNull(elementUtils.getTypeElement("java.util.Collection")).asType();
         mapType = Objects.requireNonNull(elementUtils.getTypeElement("java.util.Map")).asType();
         TypeMirror filterInterface = typeUtils.erasure(elementUtils.getTypeElement("mekanism.common.content.filter.IFilter").asType());

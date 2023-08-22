@@ -28,9 +28,9 @@ import java.util.Set;
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 @SupportedAnnotationTypes({
-        "mekanism.common.integration.computer.annotation.ComputerMethod",
-        "mekanism.common.integration.computer.annotation.SyntheticComputerMethod",
-        "mekanism.common.integration.computer.annotation.WrappingComputerMethod"
+        MekAnnotationProcessors.ANNOTATION_COMPUTER_METHOD,
+        MekAnnotationProcessors.ANNOTATION_SYNTHETIC_COMPUTER_METHOD,
+        MekAnnotationProcessors.ANNOTATION_WRAPPING_COMPUTER_METHOD
 })
 public class ComputerMethodProcessor extends AbstractProcessor {
     @Override
