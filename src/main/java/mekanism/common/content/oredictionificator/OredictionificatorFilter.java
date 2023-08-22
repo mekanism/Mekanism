@@ -90,7 +90,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
     }
 
     @ComputerMethod(nameOverride = "setFilter")
-    void computer_SetFilter(ResourceLocation tag) throws ComputerException {
+    void computerSetFilter(ResourceLocation tag) throws ComputerException {
         if (tag == null || !TileEntityOredictionificator.isValidTarget(tag)) {
             throw new ComputerException("Invalid tag");
         }

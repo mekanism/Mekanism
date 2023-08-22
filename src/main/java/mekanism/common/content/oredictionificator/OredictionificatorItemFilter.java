@@ -70,7 +70,7 @@ public class OredictionificatorItemFilter extends OredictionificatorFilter<Item,
     }
 
     @ComputerMethod(nameOverride = "setSelectedOutput", threadSafe = true)
-    void computer_setSelectedOutput(@NotNull Item item) {
+    void computerSetSelectedOutput(@NotNull Item item) {
         setSelectedOutput(item);
     }
 }
