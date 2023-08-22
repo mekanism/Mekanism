@@ -84,6 +84,7 @@ public class FactoryRegistry {
      * Caches and builds a list of factories applicable to the target class
      * @param target the subject class
      * @return a list of applicable handlers
+     * @implNote can't use computeIfAbsent, as that will cause a ConcurrentModificationException
      */
     private static List<? extends ComputerMethodFactory<?>> getHandlersForHierarchy(Class<?> target) {
         List<? extends ComputerMethodFactory<?>> handlers = hierarchyHandlers.get(target);
