@@ -51,7 +51,6 @@ public class ComputerHandlerBuilder {
     private static TypeMirror wrappingComputerMethodAnnotationType;
     private static TypeMirror collectionType;
     private static TypeMirror mapType;
-    private static TypeMirror filterInterface;
     private static final ParameterSpec helperParam = ParameterSpec.builder(baseComputerHelper, "helper").build();
     private static ParamToHelperMapper paramToHelperMapper;
 
@@ -67,7 +66,7 @@ public class ComputerHandlerBuilder {
         wrappingComputerMethodAnnotationType = Objects.requireNonNull(elementUtils.getTypeElement("mekanism.common.integration.computer.annotation.WrappingComputerMethod")).asType();
         collectionType = Objects.requireNonNull(elementUtils.getTypeElement("java.util.Collection")).asType();
         mapType = Objects.requireNonNull(elementUtils.getTypeElement("java.util.Map")).asType();
-        filterInterface = typeUtils.erasure(elementUtils.getTypeElement("mekanism.common.content.filter.IFilter").asType());
+        TypeMirror filterInterface = typeUtils.erasure(elementUtils.getTypeElement("mekanism.common.content.filter.IFilter").asType());
         paramToHelperMapper = new ParamToHelperMapper(helperParam, filterInterface, typeUtils);
     }
 
