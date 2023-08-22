@@ -75,9 +75,6 @@ public class ComputerMethodFactory<T>{
     }
 
     private boolean modsLoaded(String[] mods) {
-        if (mods.length == 0) {
-            return true;
-        }
         for (String mod : mods) {
             if (!ModList.get().isLoaded(mod)) {
                 return false;
