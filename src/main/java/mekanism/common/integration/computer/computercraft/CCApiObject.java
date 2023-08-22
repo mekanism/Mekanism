@@ -19,7 +19,7 @@ public class CCApiObject extends CCMethodCaller implements IDynamicLuaObject, IL
 
     private final String[] apiNames;
 
-    public CCApiObject(String[] apiNames) {
+    private CCApiObject(String[] apiNames) {
         this.apiNames = apiNames;
     }
 
