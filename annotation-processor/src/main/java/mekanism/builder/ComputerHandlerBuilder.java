@@ -172,10 +172,8 @@ public class ComputerHandlerBuilder {
 
         //get the value part of the getter (i.e. what we use as the param to the wrapper)
         CodeBlock targetReference;
-        //TypeMirror wrappedType;
         if (annotatedElement instanceof VariableElement fieldElement) {
             targetReference = getReadTargetReferenceForField(annotatedName, isPrivateOrProtected, isStatic, fieldElement);
-            //wrappedType = fieldElement.asType();
         } else if (annotatedElement instanceof ExecutableElement executableElement) {
             //get either the proxy method or call the actual method
             if (isPrivateOrProtected) {
@@ -188,15 +186,9 @@ public class ComputerHandlerBuilder {
             } else {
                 targetReference = callTargetMethod(annotatedName, isStatic, Collections.emptyList());
             }
-            //wrappedType = executableElement.getReturnType();
         } else {
             throw new IllegalStateException("Unknown element type: " + annotatedElement.getClass());
         }
-
-        // old code which declared a local variable of the new subject. Removed as some types were private
-        //TypeName wrappedTypeName = TypeName.get(wrappedType);
-        //ParameterSpec wrappedSubject = ParameterSpec.builder(wrappedTypeName, "wrappedSubject").build();
-        //CodeBlock getNewSubject = CodeBlock.builder().addStatement("$T $N = $L", wrappedTypeName, wrappedSubject, targetReference).build();
 
         //create a method for each wrapper method in format 'annotatedName$wrapperMethodName'
         for (int i = 0; i < targetMethodNames.size(); i++) {
