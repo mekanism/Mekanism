@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.ServiceLoader.Provider;
+import mekanism.common.Mekanism;
 import net.minecraftforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +31,16 @@ public class FactoryRegistry {
     private static final Map<Class<?>, List<Class<?>>> superClasses = new HashMap<>();
     /** cached list of factories for a subject class */
     private static final Map<Class<?>, List<? extends ComputerMethodFactory<?>>> hierarchyHandlers = new ConcurrentHashMap<>();
+
+    public static void load() {
+        List<IComputerMethodRegistry> registries = ServiceLoader.load(IComputerMethodRegistry.class).stream().map(Provider::get).toList();
+        if (registries.isEmpty()) {
+            Mekanism.logger.error("Expected to find at least one IComputerMethodRegistry, but didn't find any");
+        }
+        for (IComputerMethodRegistry registry : registries) {
+            registry.register();
+        }
+    }
 
     /**
      * Adds a Factory to the registry

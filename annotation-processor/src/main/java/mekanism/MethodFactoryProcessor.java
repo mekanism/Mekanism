@@ -5,6 +5,7 @@ import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -19,6 +20,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.tools.StandardLocation;
 import mekanism.visitors.AnnotationHelper;
 
 import javax.lang.model.SourceVersion;
@@ -38,7 +40,10 @@ import java.io.IOException;
 public class MethodFactoryProcessor extends AbstractProcessor {
     private String mekModule;
     private final ClassName factoryRegistry = ClassName.get(MekAnnotationProcessors.COMPUTER_INTEGRATION_PACKAGE, "FactoryRegistry");
-    private final MethodSpec.Builder registryInit = MethodSpec.methodBuilder("init").addModifiers(Modifier.STATIC, Modifier.PUBLIC);
+    private final ClassName methodRegistryInterface = ClassName.get(MekAnnotationProcessors.COMPUTER_INTEGRATION_PACKAGE, "IComputerMethodRegistry");
+    private final MethodSpec.Builder registryInit = MethodSpec.methodBuilder("register")
+          .addModifiers(Modifier.PUBLIC)
+          .addAnnotation(Override.class);
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -49,7 +54,9 @@ public class MethodFactoryProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotatedTypes, RoundEnvironment roundEnvironment) {
         TypeMirror methodFactoryType = processingEnv.getElementUtils().getTypeElement(MekAnnotationProcessors.COMPUTER_METHOD_FACTORY_ANNOTATION_CLASSNAME).asType();
-        TypeSpec.Builder registryType = TypeSpec.classBuilder("ComputerMethodRegistry_" + mekModule).addModifiers(Modifier.PUBLIC);
+        TypeSpec.Builder registryType = TypeSpec.classBuilder("ComputerMethodRegistry_" + mekModule)
+              .addModifiers(Modifier.PUBLIC)
+              .addSuperinterface(methodRegistryInterface);
 
         //this should only ever be 1 annotation
         for (Element element : roundEnvironment.getElementsAnnotatedWithAny(annotatedTypes.toArray(new TypeElement[0]))) {
@@ -75,8 +82,14 @@ public class MethodFactoryProcessor extends AbstractProcessor {
         if (!registryType.originatingElements.isEmpty()) {
             registryType.addMethod(registryInit.build());
             TypeSpec registrySpec = registryType.build();
+            String packageName = "mekanism.generated." + mekModule;
             try {
-                JavaFile.builder("mekanism.generated."+mekModule, registrySpec).build().writeTo(processingEnv.getFiler());
+                JavaFile.builder(packageName, registrySpec).build().writeTo(processingEnv.getFiler());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            try(Writer serviceWriter = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "","META-INF/services/"+methodRegistryInterface.canonicalName()).openWriter()) {
+                serviceWriter.write(packageName+"."+registrySpec.name);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

@@ -2,6 +2,7 @@ package mekanism.common.integration;
 
 import java.util.List;
 import java.util.Optional;
+import mekanism.common.integration.computer.FactoryRegistry;
 import mekanism.common.integration.computer.computercraft.CCCapabilityHelper;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
 import mekanism.common.integration.curios.CuriosIntegration;
@@ -9,7 +10,6 @@ import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.integration.jsonthings.JsonThingsIntegration;
 import mekanism.common.integration.lookingat.theoneprobe.TOPProvider;
 import mekanism.common.integration.projecte.NSSHelper;
-import mekanism.generated.mekanism.ComputerMethodRegistry_mekanism;
 import net.minecraftforge.data.loading.DatagenModLoader;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -97,7 +97,7 @@ public final class MekanismHooks {
         FluxNetworksLoaded = modList.isLoaded(FLUX_NETWORKS_MOD_ID);
         WildfireGenderModLoaded = modList.isLoaded(WILDFIRE_GENDER_MOD_ID);
         if (computerCompatEnabled()) {
-            ComputerMethodRegistry_mekanism.init();
+            FactoryRegistry.load();
         }
         if (CCLoaded) {
             CCCapabilityHelper.registerCCMathHelper();

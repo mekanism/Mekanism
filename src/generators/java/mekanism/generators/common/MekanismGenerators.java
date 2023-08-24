@@ -12,7 +12,6 @@ import mekanism.common.config.listener.ConfigBasedCachedFLSupplier;
 import mekanism.common.lib.Version;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismGases;
-import mekanism.generated.mekanismgenerators.ComputerMethodRegistry_mekanismgenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorCache;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
@@ -114,10 +113,6 @@ public class MekanismGenerators implements IModModule {
             BuildCommand.register("fission", GeneratorsLang.FISSION_REACTOR, new FissionReactorBuilder());
             BuildCommand.register("fusion", GeneratorsLang.FUSION_REACTOR, new FusionReactorBuilder());
         });
-
-        if (Mekanism.hooks.computerCompatEnabled()) {
-            ComputerMethodRegistry_mekanismgenerators.init();
-        }
 
         packetHandler.initialize();
 
