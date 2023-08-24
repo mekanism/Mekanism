@@ -23,6 +23,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.tools.Diagnostic.Kind;
 import mekanism.MekAnnotationProcessors;
 import mekanism.util.FakeParameter;
 import mekanism.visitors.AnnotationHelper;
@@ -126,10 +127,18 @@ public class ComputerHandlerBuilder {
 
             for (AnnotationMirror annotationMirror : annotatedElement.getAnnotationMirrors()) {
                 AnnotationHelper annotationValues = new AnnotationHelper(elementUtils, annotationMirror);
-                if (typeUtils.isSameType(annotationMirror.getAnnotationType(), computerMethodAnnotationType) && annotatedElement instanceof ExecutableElement executableElement) {
-                    handleAtComputerMethod(annotatedName, isPrivateOrProtected, isStatic, annotationValues, executableElement);
-                } else if (typeUtils.isSameType(annotationMirror.getAnnotationType(), syntheticComputerMethodAnnotationType) && annotatedElement instanceof VariableElement fieldElement) {
-                    handleAtSyntheticMethod(annotatedName, isPrivateOrProtected, isStatic, annotationValues, fieldElement);
+                if (typeUtils.isSameType(annotationMirror.getAnnotationType(), computerMethodAnnotationType)) {
+                    if (annotatedElement instanceof ExecutableElement executableElement) {
+                        handleAtComputerMethod(annotatedName, isPrivateOrProtected, isStatic, annotationValues, executableElement);
+                    } else {
+                        messager.printMessage(Kind.ERROR, "Unable to handle, expected ExecutableElement but found "+annotatedElement.getClass().getSimpleName());
+                    }
+                } else if (typeUtils.isSameType(annotationMirror.getAnnotationType(), syntheticComputerMethodAnnotationType)) {
+                    if (annotatedElement instanceof VariableElement fieldElement) {
+                        handleAtSyntheticMethod(annotatedName, isPrivateOrProtected, isStatic, annotationValues, fieldElement);
+                    } else {
+                        messager.printMessage(Kind.ERROR, "Unable to handle, expected VariableElement but found "+annotatedElement.getClass().getSimpleName());
+                    }
                 } else if (typeUtils.isSameType(annotationMirror.getAnnotationType(), wrappingComputerMethodAnnotationType)) {
                     handleAtWrappingComputerMethod(annotatedElement, annotatedName, isPrivateOrProtected, isStatic, annotationValues);
                 }
