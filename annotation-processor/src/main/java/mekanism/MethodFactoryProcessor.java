@@ -37,7 +37,7 @@ import java.io.IOException;
 @SupportedOptions(MekAnnotationProcessors.MODULE_OPTION)
 public class MethodFactoryProcessor extends AbstractProcessor {
     private String mekModule;
-    private final ClassName factoryRegistry = ClassName.get("mekanism.common.integration.computer", "FactoryRegistry");
+    private final ClassName factoryRegistry = ClassName.get(MekAnnotationProcessors.COMPUTER_INTEGRATION_PACKAGE, "FactoryRegistry");
     private final MethodSpec.Builder registryInit = MethodSpec.methodBuilder("init").addModifiers(Modifier.STATIC, Modifier.PUBLIC);
 
     @Override
