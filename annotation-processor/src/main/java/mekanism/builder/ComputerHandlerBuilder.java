@@ -121,26 +121,25 @@ public class ComputerHandlerBuilder {
             String annotatedName = annotatedElement.getSimpleName().toString();
 
             Set<Modifier> modifiers = annotatedElement.getModifiers();
-            //boolean isPublic = modifiers.contains(Modifier.PUBLIC);
-            boolean isPrivateOrProtected = modifiers.contains(Modifier.PRIVATE) || modifiers.contains(Modifier.PROTECTED);
+            boolean isPrivate = modifiers.contains(Modifier.PRIVATE);
             boolean isStatic = modifiers.contains(Modifier.STATIC);
 
             for (AnnotationMirror annotationMirror : annotatedElement.getAnnotationMirrors()) {
                 AnnotationHelper annotationValues = new AnnotationHelper(elementUtils, annotationMirror);
                 if (typeUtils.isSameType(annotationMirror.getAnnotationType(), computerMethodAnnotationType)) {
                     if (annotatedElement instanceof ExecutableElement executableElement) {
-                        handleAtComputerMethod(annotatedName, isPrivateOrProtected, isStatic, annotationValues, executableElement);
+                        handleAtComputerMethod(annotatedName, isPrivate, isStatic, annotationValues, executableElement);
                     } else {
                         messager.printMessage(Kind.ERROR, "Unable to handle, expected ExecutableElement but found "+annotatedElement.getClass().getSimpleName());
                     }
                 } else if (typeUtils.isSameType(annotationMirror.getAnnotationType(), syntheticComputerMethodAnnotationType)) {
                     if (annotatedElement instanceof VariableElement fieldElement) {
-                        handleAtSyntheticMethod(annotatedName, isPrivateOrProtected, isStatic, annotationValues, fieldElement);
+                        handleAtSyntheticMethod(annotatedName, isPrivate, isStatic, annotationValues, fieldElement);
                     } else {
                         messager.printMessage(Kind.ERROR, "Unable to handle, expected VariableElement but found "+annotatedElement.getClass().getSimpleName());
                     }
                 } else if (typeUtils.isSameType(annotationMirror.getAnnotationType(), wrappingComputerMethodAnnotationType)) {
-                    handleAtWrappingComputerMethod(annotatedElement, annotatedName, isPrivateOrProtected, isStatic, annotationValues);
+                    handleAtWrappingComputerMethod(annotatedElement, annotatedName, isPrivate, isStatic, annotationValues);
                 }
             }
         }
@@ -156,11 +155,11 @@ public class ComputerHandlerBuilder {
      *
      * @param annotatedElement     the field or method annotated
      * @param annotatedName        the field or method simple name
-     * @param isPrivateOrProtected modifiers checked previously
+     * @param isPrivate modifiers checked previously
      * @param isStatic             modifier checked previously
      * @param annotationValues     an annotation helper for this annotation's values
      */
-    private void handleAtWrappingComputerMethod(Element annotatedElement, String annotatedName, boolean isPrivateOrProtected, boolean isStatic, AnnotationHelper annotationValues) {
+    private void handleAtWrappingComputerMethod(Element annotatedElement, String annotatedName, boolean isPrivate, boolean isStatic, AnnotationHelper annotationValues) {
         //get the wrapper type and find its static methods
         TypeElement wrapperTypeEl;
         TypeMirror wrapperTypeMirror = annotationValues.getClassValue("wrapper");
@@ -182,10 +181,10 @@ public class ComputerHandlerBuilder {
         //get the value part of the getter (i.e. what we use as the param to the wrapper)
         CodeBlock targetReference;
         if (annotatedElement instanceof VariableElement fieldElement) {
-            targetReference = getReadTargetReferenceForField(annotatedName, isPrivateOrProtected, isStatic, fieldElement);
+            targetReference = getReadTargetReferenceForField(annotatedName, isPrivate, isStatic, fieldElement);
         } else if (annotatedElement instanceof ExecutableElement executableElement) {
             //get either the proxy method or call the actual method
-            if (isPrivateOrProtected) {
+            if (isPrivate) {
                 MethodSpec proxyMethod = methodProxies.computeIfAbsent(executableElement, el -> getMethodProxy(annotatedName, executableElement));
                 if (isStatic) {
                     targetReference = CodeBlock.of("$N()", proxyMethod);
@@ -246,14 +245,14 @@ public class ComputerHandlerBuilder {
      * Generate a getter and/or setter for a field. Private fields do not support setter (currently unused anyway)
      *
      * @param annotatedName        the field or method simple name
-     * @param isPrivateOrProtected modifiers checked previously
+     * @param isPrivate modifiers checked previously
      * @param isStatic             modifier checked previously
      * @param annotationValues     an annotation helper for this annotation's values
      * @param fieldElement         the field annotated
      */
-    private void handleAtSyntheticMethod(String annotatedName, boolean isPrivateOrProtected, boolean isStatic, AnnotationHelper annotationValues, VariableElement fieldElement) {
+    private void handleAtSyntheticMethod(String annotatedName, boolean isPrivate, boolean isStatic, AnnotationHelper annotationValues, VariableElement fieldElement) {
         //get a code reference to the field, or a call of the generated getter
-        CodeBlock targetReference = getReadTargetReferenceForField(annotatedName, isPrivateOrProtected, isStatic, fieldElement);
+        CodeBlock targetReference = getReadTargetReferenceForField(annotatedName, isPrivate, isStatic, fieldElement);
 
         //the type of the annotated field
         TypeMirror fieldType = fieldElement.asType();
@@ -276,8 +275,8 @@ public class ComputerHandlerBuilder {
         String setterName = annotationValues.getStringValue("setter", null);
         if (setterName != null) {
             //bail if the setter is not directly accessible
-            if (isPrivateOrProtected) {
-                messager.printMessage(Diagnostic.Kind.ERROR, "Setter not implemented for private/protected fields");
+            if (isPrivate) {
+                messager.printMessage(Diagnostic.Kind.ERROR, "Setter not implemented for private fields");
                 return;
             }
             //generate a method which sets the value and then returns a void result
@@ -302,15 +301,15 @@ public class ComputerHandlerBuilder {
      * Handle an @ComputerMethod annotated method
      *
      * @param annotatedName        the field or method simple name
-     * @param isPrivateOrProtected modifiers checked previously
+     * @param isPrivate modifiers checked previously
      * @param isStatic             modifier checked previously
      * @param annotationValues     an annotation helper for this annotation's values
      * @param executableElement    the method with the annotation
      */
-    private void handleAtComputerMethod(String annotatedName, boolean isPrivateOrProtected, boolean isStatic, AnnotationHelper annotationValues, ExecutableElement executableElement) {
+    private void handleAtComputerMethod(String annotatedName, boolean isPrivate, boolean isStatic, AnnotationHelper annotationValues, ExecutableElement executableElement) {
         //bail if method isn't directly accessible for performance reasons
-        if (isPrivateOrProtected) {
-            messager.printMessage(Diagnostic.Kind.ERROR, "Target for @ComputerMethod should be public or package private", executableElement);
+        if (isPrivate) {
+            messager.printMessage(Diagnostic.Kind.ERROR, "Target for @ComputerMethod should be not be private", executableElement);
             return;
         }
         TypeMirror returnType = executableElement.getReturnType();
@@ -339,15 +338,15 @@ public class ComputerHandlerBuilder {
      * Generate a CodeBlock which grabs the value of the field.
      *
      * @param annotatedName        the simple name of the field to get
-     * @param isPrivateOrProtected if we need to use a proxy getter / method handle
+     * @param isPrivate if we need to use a proxy getter / method handle
      * @param isStatic             is it a static method
      * @param fieldElement         the element we're getting
      *
      * @return CodeBlock which references the field
      */
-    private CodeBlock getReadTargetReferenceForField(String annotatedName, boolean isPrivateOrProtected, boolean isStatic, VariableElement fieldElement) {
+    private CodeBlock getReadTargetReferenceForField(String annotatedName, boolean isPrivate, boolean isStatic, VariableElement fieldElement) {
         CodeBlock.Builder targetFieldBuilder = CodeBlock.builder();
-        if (isPrivateOrProtected) {
+        if (isPrivate) {
             MethodSpec getterMethod = fieldGetters.computeIfAbsent(fieldElement, el -> getFieldGetter(annotatedName, fieldElement));
             if (isStatic) {
                 targetFieldBuilder.add("$N()", getterMethod);
