@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 
 /**
  * Central place for Factories to be registered and bound.
- * Each child mod must call the generated code somewhere in its initialisation, e.g. {@link mekanism.generated.mekanism.ComputerMethodRegistry_mekanism#init()}
+ * Registries should be registered as an IComputerMethodRegistry service.
  * {@link #bindTo} is used to gather methods for a subject or class (static methods only, or it would explode at runtime)
  * Factories are constructed lazily to reduce initialisation time.
  */
@@ -48,7 +48,7 @@ public class FactoryRegistry {
      * @param factorySupplier constructor of the factory
      * @param parents Classes of the supertypes which will be checked for handlers (calculated at compile time)
      */
-    public static synchronized <T> void register(Class<T> subject, Supplier<ComputerMethodFactory<T>> factorySupplier, Class<?>... parents) {
+    public static <T> void register(Class<T> subject, Supplier<ComputerMethodFactory<T>> factorySupplier, Class<?>... parents) {
         factories.put(subject, Lazy.of(factorySupplier));
         if (parents != null && parents.length > 0) {
             superClasses.put(subject, Arrays.asList(parents));
@@ -57,7 +57,7 @@ public class FactoryRegistry {
         }
     }
 
-    public static synchronized <T> void registerInterface(Class<T> subject, Supplier<ComputerMethodFactory<T>> factorySupplier) {
+    public static <T> void registerInterface(Class<T> subject, Supplier<ComputerMethodFactory<T>> factorySupplier) {
         interfaceFactories.put(subject, Lazy.of(factorySupplier));
     }
 
