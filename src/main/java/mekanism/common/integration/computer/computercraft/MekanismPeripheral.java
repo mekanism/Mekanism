@@ -49,7 +49,10 @@ public class MekanismPeripheral<TILE extends BlockEntity & IComputerTile> extend
 
     @Override
     public boolean equals(@Nullable IPeripheral other) {
-        return other instanceof MekanismPeripheral<?> && getTarget() == other.getTarget();
+        Object target = getTarget();
+        // only will really be creating a single instance of this, and other instances of the same tile may
+        // be invalid if it is not persistent such as for multiblocks
+        return other instanceof MekanismPeripheral<?> && target != null && target == other.getTarget();
     }
 
     @Override

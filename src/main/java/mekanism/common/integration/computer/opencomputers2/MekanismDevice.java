@@ -56,7 +56,10 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends Bo
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof MekanismDevice<?> other && this.attachedTile.get() == other.attachedTile.get();
+        TILE attached = this.attachedTile.get();
+        // only will really be creating a single instance of this, and other instances of the same tile may
+        // be invalid if it is not persistent such as for multiblocks
+        return obj instanceof MekanismDevice<?> other && attached != null && attached == other.attachedTile.get();
     }
 
     @Override
