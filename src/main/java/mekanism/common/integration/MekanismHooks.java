@@ -98,9 +98,9 @@ public final class MekanismHooks {
         WildfireGenderModLoaded = modList.isLoaded(WILDFIRE_GENDER_MOD_ID);
         if (computerCompatEnabled()) {
             FactoryRegistry.load();
-        }
-        if (CCLoaded) {
-            CCCapabilityHelper.registerCCMathHelper();
+            if (CCLoaded) {
+                CCCapabilityHelper.registerCCMathHelper();
+            }
         }
         EnergyCompatUtils.initLoadedCache();
     }
