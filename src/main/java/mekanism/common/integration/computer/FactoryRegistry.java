@@ -53,8 +53,6 @@ public class FactoryRegistry {
         factories.put(subject, Lazy.of(factorySupplier));
         if (parents != null && parents.length > 0) {
             superClasses.put(subject, Arrays.asList(parents));
-        } else {
-            superClasses.put(subject, Collections.emptyList());
         }
     }
 
@@ -121,7 +119,7 @@ public class FactoryRegistry {
         if (factories.containsKey(target)) {
             //found one we handle, all supers will be present (if required)
             List<ComputerMethodFactory<?>> outList = new ArrayList<>();
-            for (Class<?> aClass : superClasses.get(target)) {
+            for (Class<?> aClass : superClasses.getOrDefault(target, Collections.emptyList())) {
                 Lazy<? extends ComputerMethodFactory<?>> computerMethodFactoryLazy = factories.get(aClass);
                 if (computerMethodFactoryLazy != null) {
                     outList.add(computerMethodFactoryLazy.get());
