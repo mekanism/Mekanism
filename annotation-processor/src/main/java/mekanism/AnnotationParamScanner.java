@@ -18,14 +18,10 @@ public record AnnotationParamScanner(String targetFile, Set<Class<? extends Anno
         if (this == o) {
             return true;
         }
-        if (!(o instanceof AnnotationParamScanner that)) {
-            return false;
-        }
 
-        if (!targetFile.equals(that.targetFile)) {
-            return false;
-        }
-        return supportedAnnotations.equals(that.supportedAnnotations);
+        return (o instanceof AnnotationParamScanner that) &&
+               targetFile.equals(that.targetFile) &&
+               supportedAnnotations.equals(that.supportedAnnotations);
     }
 
     @Override
