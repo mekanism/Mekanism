@@ -30,7 +30,7 @@ public class FactoryRegistry {
     /** map of (relevant) superclasses for a subject's class. Added to at runtime to cache lookups for subclasses */
     private static final Map<Class<?>, List<Class<?>>> superClasses = new HashMap<>();
     /** cached list of factories for a subject class */
-    private static final Map<Class<?>, List<? extends ComputerMethodFactory<?>>> hierarchyHandlers = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, List<? extends ComputerMethodFactory<?>>> hierarchyHandlers = new HashMap<>();
 
     public static void load() {
         List<IComputerMethodRegistry> registries = ServiceLoader.load(IComputerMethodRegistry.class).stream().map(Provider::get).toList();
@@ -99,7 +99,7 @@ public class FactoryRegistry {
      * @return a list of applicable handlers
      * @implNote can't use computeIfAbsent, as that will cause a ConcurrentModificationException
      */
-    private static List<? extends ComputerMethodFactory<?>> getHandlersForHierarchy(Class<?> target) {
+    private static synchronized List<? extends ComputerMethodFactory<?>> getHandlersForHierarchy(Class<?> target) {
         List<? extends ComputerMethodFactory<?>> handlers = hierarchyHandlers.get(target);
         if (handlers != null) {
             return handlers;
