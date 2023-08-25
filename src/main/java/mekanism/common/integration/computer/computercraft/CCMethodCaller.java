@@ -19,7 +19,7 @@ public class CCMethodCaller extends BoundMethodHolder {
     }
 
     public MethodResult callMethod(ILuaContext context, int methodIdx, IArguments arguments) throws LuaException {
-        String[] methodNames = this.methodNames.get();
+        String[] methodNames = this.getMethodNames();
         if (methodIdx >= methodNames.length) {
             throw new LuaException(String.format(Locale.ROOT, "Method index '%d' is out of bounds. This handler only has '%d' methods.", methodIdx, methodNames.length));
         }
