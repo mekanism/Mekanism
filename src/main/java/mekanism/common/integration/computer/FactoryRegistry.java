@@ -131,8 +131,7 @@ public class FactoryRegistry {
         Class<?> parent = target.getSuperclass();
         if (parent == Object.class || parent == null) {
             return Collections.emptyList();
-        } else {
-            return getHandlersForHierarchy(parent);
         }
+        return getHandlersForHierarchy(parent);
     }
 }
