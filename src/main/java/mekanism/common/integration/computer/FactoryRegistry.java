@@ -33,12 +33,13 @@ public class FactoryRegistry {
     private static final Map<Class<?>, List<? extends ComputerMethodFactory<?>>> hierarchyHandlers = new HashMap<>();
 
     public static void load() {
-        List<IComputerMethodRegistry> registries = ServiceLoader.load(IComputerMethodRegistry.class).stream().map(Provider::get).toList();
-        if (registries.isEmpty()) {
-            Mekanism.logger.error("Expected to find at least one IComputerMethodRegistry, but didn't find any");
-        }
-        for (IComputerMethodRegistry registry : registries) {
+        boolean hasRegistry = false;
+        for (IComputerMethodRegistry registry : ServiceLoader.load(IComputerMethodRegistry.class)) {
             registry.register();
+            hasRegistry = true;
+        }
+        if (!hasRegistry) {
+            Mekanism.logger.error("Expected to find at least one IComputerMethodRegistry, but didn't find any");
         }
     }
 
