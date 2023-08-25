@@ -17,19 +17,17 @@ class MergeJars {
         List<String> toExclude = new ArrayList<>()
         toExclude.add('META-INF/mods.toml')
         toExclude.add('META-INF/accesstransformer.cfg')
-        getReverseLookup(project, atlasFilter, sourceSets).each { atlas, atlasPaths ->
-            if (atlasPaths.size() > 1) {
-                //println("adding $atlas")
-                toExclude.add(atlas.substring(1))
-            }
-        }
-        getReverseLookup(project, tagFilter, sourceSets).each { tag, tagPaths ->
-            if (tagPaths.size() > 1) {
-                //println("adding $tag")
-                toExclude.add(tag.substring(1))
-            }
-        }
+        addDuplicates(project, atlasFilter, sourceSets, toExclude)
+        addDuplicates(project, tagFilter, sourceSets, toExclude)
         return toExclude
+    }
+
+    private static addDuplicates(Project project, Closure<PatternFilterable> filter, List<SourceSet> sourceSets, toExclude) {
+        getReverseLookup(project, filter, sourceSets).each { name, paths ->
+            if (paths.size() > 1) {
+                toExclude.add(name.substring(1))
+            }
+        }
     }
 
     static Closure createExcludeClosure(List<String> baseExcludeData, String... extraExclusions) {
