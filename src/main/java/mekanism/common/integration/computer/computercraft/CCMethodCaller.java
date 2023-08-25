@@ -23,6 +23,7 @@ public class CCMethodCaller extends BoundMethodHolder {
         if (methodIdx >= methodNames.length) {
             throw new LuaException(String.format(Locale.ROOT, "Method index '%d' is out of bounds. This handler only has '%d' methods.", methodIdx, methodNames.length));
         }
+        //validate arg counts match, types are checked at call time
         Collection<MethodData> methodDataCollection = this.methods.get(methodNames[methodIdx]);
         int argCount = arguments.count();
         MethodData methodToCall = methodDataCollection.stream().filter(md -> md.argumentNames().length == argCount)
