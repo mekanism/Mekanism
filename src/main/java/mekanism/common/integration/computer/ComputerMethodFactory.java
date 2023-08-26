@@ -2,6 +2,7 @@ package mekanism.common.integration.computer;
 
 import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -71,9 +72,10 @@ public class ComputerMethodFactory<T>{
     }
 
     void bindTo(@Nullable T subject, BoundMethodHolder holder) {
+        WeakReference<T> weakSubject = subject != null ? new WeakReference<>(subject) : null;
         for (MethodData<T> methodData : this.methods) {
             if (methodData.restriction.test(subject) && modsLoaded(methodData.requiredMods)) {
-                holder.register(methodData.name(), methodData.threadSafe(), methodData.argumentNames(), methodData.argClasses(), methodData.returnType(), subject, methodData.handler());
+                holder.register(methodData.name(), methodData.threadSafe(), methodData.argumentNames(), methodData.argClasses(), methodData.returnType(), weakSubject, methodData.handler());
             }
         }
     }

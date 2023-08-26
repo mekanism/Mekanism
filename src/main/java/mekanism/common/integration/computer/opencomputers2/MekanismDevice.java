@@ -73,12 +73,12 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends Bo
 
     private List<RPCMethodGroup> buildMethodGroups() {
         return this.methods.keySet().stream().map(key->{
-            List<MethodData> overloads = this.methods.get(key);
+            List<MethodData<?>> overloads = this.methods.get(key);
             if (overloads.size() == 1) {
                 return new Method(key, overloads.get(0));
             }
             Set<RPCMethod> set = new HashSet<>();
-            for (MethodData md : overloads) {
+            for (MethodData<?> md : overloads) {
                 set.add(new Method(key, md));
             }
             return new MethodGroup(key, set);
@@ -112,11 +112,11 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends Bo
 
     private static class Method implements RPCMethod {
         private final String name;
-        private final MethodData methodData;
+        private final MethodData<?> methodData;
         private final Class<?> returnType;
         private final Lazy<RPCParameter[]> params = Lazy.of(this::buildOCParams);
 
-        private Method(String name, MethodData methodData) {
+        private Method(String name, MethodData<?> methodData) {
             this.name = name;
             this.methodData = methodData;
             this.returnType = BaseComputerHelper.convertType(methodData.returnType());
