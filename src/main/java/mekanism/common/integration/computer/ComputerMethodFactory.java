@@ -59,11 +59,15 @@ public class ComputerMethodFactory<T>{
      */
     private final Set<ObjectIntPair<String>> methodsKnown = new HashSet<>();
 
-    protected void register(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses, Class<?> returnType, ComputerFunctionCaller<T> handler) {
+    protected void register(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, Class<?> returnType, ComputerFunctionCaller<T> handler, String[] argumentNames, Class<?>[] argClasses) {
         if (!methodsKnown.add(new ObjectIntImmutablePair<>(name, argumentNames.length))) {
             throw new RuntimeException("Duplicate method name "+name+"_"+argumentNames.length);
         }
         this.methods.add(new MethodData<>(name, restriction, requiredMods, threadSafe, argumentNames, argClasses, returnType, handler));
+    }
+
+    protected void register(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, Class<?> returnType, ComputerFunctionCaller<T> handler) {
+        register(name, restriction, requiredMods, threadSafe, returnType, handler, NO_STRINGS, NO_CLASSES);
     }
 
     void bindTo(@Nullable T subject, BoundMethodHolder holder) {

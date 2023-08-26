@@ -575,11 +575,13 @@ public class ComputerHandlerBuilder {
         }
         //threadsafe
         registerMethodBuilder.add("$L, ", threadSafeLiteral);
+        //return type
+        registerMethodBuilder.add("$T.class, ", TypeName.get(typeUtils.erasure(returnType)));
+        //method reference to handler method
+        registerMethodBuilder.add("$N::$N", handlerClassName, handlerMethod);
         //param names
-        if (parameters.isEmpty()) {
-            registerMethodBuilder.add("NO_STRINGS, ");//names
-            registerMethodBuilder.add("NO_CLASSES, ");//classes
-        } else {
+        if (!parameters.isEmpty()) {
+            registerMethodBuilder.add(", ");
             List<String> paramNames = parameters.stream().map(variableElement -> variableElement.getSimpleName().toString()).toList();
             FieldSpec paramNameField = this.paramNameConstants.computeIfAbsent(paramNames, params ->
                   FieldSpec.builder(String[].class, "NAMES_"+String.join("_", params), Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
@@ -593,12 +595,8 @@ public class ComputerHandlerBuilder {
                         .initializer("new Class[]{$L}", parameters.stream().map(param -> CodeBlock.of("$T.class", typeUtils.erasure(param.asType()))).collect(CodeBlock.joining(",")))
                         .build()
             );
-            registerMethodBuilder.add("$N, ", paramTypesField);
+            registerMethodBuilder.add("$N", paramTypesField);
         }
-        //return type
-        registerMethodBuilder.add("$T.class, ", TypeName.get(typeUtils.erasure(returnType)));
-        //method reference to handler method
-        registerMethodBuilder.add("$N::$N", handlerClassName, handlerMethod);
         registerMethodBuilder.add(")");
         return registerMethodBuilder.build();
     }
