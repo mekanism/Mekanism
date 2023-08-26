@@ -99,7 +99,7 @@ public final class MekanismHooks {
         if (computerCompatEnabled()) {
             FactoryRegistry.load();
             if (CCLoaded) {
-                CCCapabilityHelper.registerCCMathHelper();
+                CCCapabilityHelper.registerApis();
             }
         }
         EnergyCompatUtils.initLoadedCache();
