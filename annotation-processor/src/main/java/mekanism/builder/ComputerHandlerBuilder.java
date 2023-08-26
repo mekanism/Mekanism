@@ -584,14 +584,14 @@ public class ComputerHandlerBuilder {
             registerMethodBuilder.add(", ");
             List<String> paramNames = parameters.stream().map(variableElement -> variableElement.getSimpleName().toString()).toList();
             FieldSpec paramNameField = this.paramNameConstants.computeIfAbsent(paramNames, params ->
-                  FieldSpec.builder(String[].class, "NAMES_"+String.join("_", params), Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+                  FieldSpec.builder(String[].class, "NAMES_"+String.join("_", params), Modifier.PRIVATE, Modifier.FINAL)
                         .initializer("new String[]{$L}", params.stream().map(p->CodeBlock.of("$S",p)).collect(CodeBlock.joining(",")))
                         .build()
             );
             registerMethodBuilder.add("$N, ", paramNameField);
             List<String> paramTypes = parameters.stream().map(param -> typeUtils.erasure(param.asType()).toString()).toList();
             FieldSpec paramTypesField = this.paramTypeConstants.computeIfAbsent(paramTypes, typesKey ->
-                  FieldSpec.builder(Class[].class, "TYPES_" + Integer.toHexString(typesKey.hashCode()), Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+                  FieldSpec.builder(Class[].class, "TYPES_" + Integer.toHexString(typesKey.hashCode()), Modifier.PRIVATE, Modifier.FINAL)
                         .initializer("new Class[]{$L}", parameters.stream().map(param -> CodeBlock.of("$T.class", typeUtils.erasure(param.asType()))).collect(CodeBlock.joining(",")))
                         .build()
             );
