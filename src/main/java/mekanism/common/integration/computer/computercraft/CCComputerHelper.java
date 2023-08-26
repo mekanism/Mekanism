@@ -148,6 +148,7 @@ public class CCComputerHelper extends BaseComputerHelper {
         return MethodResult.of();
     }
 
+    /*
     @Override
     public <FILTER extends IFilter<FILTER>> @Nullable FILTER getFilter(int param, Class<FILTER> expectedType) throws ComputerException {
         Object value;
@@ -180,5 +181,5 @@ public class CCComputerHelper extends BaseComputerHelper {
     @Override
     public Object convert(@Nullable OredictionificatorFilter<?, ?, ?> filter) {
         return filter != null ? new CCFilterWrapper<>(filter) : null;
-    }
+    }*/
 }
