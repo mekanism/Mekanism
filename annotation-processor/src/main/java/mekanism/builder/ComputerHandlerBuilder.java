@@ -90,6 +90,9 @@ public class ComputerHandlerBuilder {
     /** stores proxy methods for MethodHandle provided methods. Used to call by name */
     private final Map<Element, MethodSpec> methodProxies = new HashMap<>();
 
+    private final Map<List<String>, FieldSpec> paramNameConstants = new HashMap<>();
+    private final Map<List<String>, FieldSpec> paramTypeConstants = new HashMap<>();
+
     public ComputerHandlerBuilder(TypeElement containingType, ProcessingEnvironment env) {
         this.typeUtils = env.getTypeUtils();
         this.messager = env.getMessager();
@@ -145,6 +148,8 @@ public class ComputerHandlerBuilder {
         }
 
         handlerTypeSpec.addMethod(constructorBuilder.build());
+        handlerTypeSpec.addFields(paramNameConstants.values());
+        handlerTypeSpec.addFields(paramTypeConstants.values());
         TypeSpec factorySpec = handlerTypeSpec.build();
 
         return JavaFile.builder(containingClassName.packageName(), factorySpec).build();
@@ -575,8 +580,20 @@ public class ComputerHandlerBuilder {
             registerMethodBuilder.add("NO_STRINGS, ");//names
             registerMethodBuilder.add("NO_CLASSES, ");//classes
         } else {
-            registerMethodBuilder.add("new String[]{$L}, ", parameters.stream().map(param -> CodeBlock.of("$S", param.getSimpleName())).collect(CodeBlock.joining(",")));
-            registerMethodBuilder.add("new Class[]{$L}, ", parameters.stream().map(param -> CodeBlock.of("$T.class", typeUtils.erasure(param.asType()))).collect(CodeBlock.joining(",")));
+            List<String> paramNames = parameters.stream().map(variableElement -> variableElement.getSimpleName().toString()).toList();
+            FieldSpec paramNameField = this.paramNameConstants.computeIfAbsent(paramNames, params ->
+                  FieldSpec.builder(String[].class, "NAMES_"+String.join("_", params), Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+                        .initializer("new String[]{$L}", params.stream().map(p->CodeBlock.of("$S",p)).collect(CodeBlock.joining(",")))
+                        .build()
+            );
+            registerMethodBuilder.add("$N, ", paramNameField);
+            List<String> paramTypes = parameters.stream().map(param -> typeUtils.erasure(param.asType()).toString()).toList();
+            FieldSpec paramTypesField = this.paramTypeConstants.computeIfAbsent(paramTypes, typesKey ->
+                  FieldSpec.builder(Class[].class, "TYPES_" + Integer.toHexString(typesKey.hashCode()), Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+                        .initializer("new Class[]{$L}", parameters.stream().map(param -> CodeBlock.of("$T.class", typeUtils.erasure(param.asType()))).collect(CodeBlock.joining(",")))
+                        .build()
+            );
+            registerMethodBuilder.add("$N, ", paramTypesField);
         }
         //return type
         registerMethodBuilder.add("$T.class, ", TypeName.get(typeUtils.erasure(returnType)));

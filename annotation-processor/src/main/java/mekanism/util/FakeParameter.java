@@ -42,6 +42,11 @@ public class FakeParameter implements VariableElement {
             public CharSequence subSequence(int start, int end) {
                 return nameIn.subSequence(start, end);
             }
+
+            @Override
+            public String toString() {
+                return nameIn;
+            }
         };
     }
 
