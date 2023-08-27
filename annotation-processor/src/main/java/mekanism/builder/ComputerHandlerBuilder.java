@@ -578,7 +578,9 @@ public class ComputerHandlerBuilder {
         //return type
         registerMethodBuilder.add("$T.class, ", TypeName.get(typeUtils.erasure(returnType)));
         //method reference to handler method
-        registerMethodBuilder.add("$N::$N", handlerClassName, handlerMethod);
+        registerMethodBuilder.add("$N::$N, ", handlerClassName, handlerMethod);
+        //method description
+        registerMethodBuilder.add("$L", annotationValues.getLiteral("methodDescription",null));
         //param names
         if (!parameters.isEmpty()) {
             registerMethodBuilder.add(", ");

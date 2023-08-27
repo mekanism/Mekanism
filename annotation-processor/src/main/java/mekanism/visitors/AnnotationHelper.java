@@ -36,6 +36,9 @@ public class AnnotationHelper {
      */
     public Object getLiteral(String key, Object defaultValue) {
         ExecutableElement element = nameToElement.get(key);
+        if (element == null) {
+            return defaultValue;
+        }
         AnnotationValue value = annotationValueMap.get(element);
         return value.accept(new AnnotationValueToLiteralVisitor(
                 defaultValue instanceof String ? CodeBlock.of("$S", defaultValue) : defaultValue

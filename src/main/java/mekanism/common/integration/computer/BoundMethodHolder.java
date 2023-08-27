@@ -123,6 +123,9 @@ public abstract class BoundMethodHolder {
                 helpData.put("returnValues", getEnumConstantNames(data.returnType));
             }
         }
+        if (data.methodDescription() != null) {
+            helpData.put("description", data.methodDescription());
+        }
         return helpData;
     }
 
