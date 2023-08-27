@@ -276,7 +276,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         return frequency;
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         InventoryFrequency frequency = FrequencyType.INVENTORY.getManagerWrapper().getPublicManager().getFrequency(name);
@@ -286,7 +286,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         setFrequency(FrequencyType.INVENTORY, frequency.getIdentity(), getOwnerUUID());
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void createFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         InventoryFrequency frequency = FrequencyType.INVENTORY.getManagerWrapper().getPublicManager().getFrequency(name);

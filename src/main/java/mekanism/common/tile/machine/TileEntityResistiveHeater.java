@@ -176,7 +176,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         return energyContainer.getEnergyPerTick();
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setEnergyUsage(FloatingLong usage) throws ComputerException {
         validateSecurityIsPublic();
         setEnergyUsageFromPacket(usage);

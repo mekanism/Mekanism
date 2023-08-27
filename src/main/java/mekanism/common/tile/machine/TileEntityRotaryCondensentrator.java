@@ -297,7 +297,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         return !mode;
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setCondensentrating(boolean value) throws ComputerException {
         validateSecurityIsPublic();
         if (mode != value) {

@@ -237,7 +237,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void dumpChemical() throws ComputerException {
         validateSecurityIsPublic();
         gasTank.setEmpty();

@@ -693,7 +693,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return frequency;
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         TeleporterFrequency frequency = FrequencyType.TELEPORTER.getManagerWrapper().getPublicManager().getFrequency(name);
@@ -703,7 +703,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         setFrequency(FrequencyType.TELEPORTER, frequency.getIdentity(), getOwnerUUID());
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void createFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         TeleporterFrequency frequency = FrequencyType.TELEPORTER.getManagerWrapper().getPublicManager().getFrequency(name);
@@ -718,20 +718,20 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return getFrequency().getColor();
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setFrequencyColor(EnumColor color) throws ComputerException {
         validateSecurityIsPublic();
         getFrequency().setColor(color);
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void incrementFrequencyColor() throws ComputerException {
         validateSecurityIsPublic();
         TeleporterFrequency frequency = getFrequency();
         frequency.setColor(frequency.getColor().getNext());
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void decrementFrequencyColor() throws ComputerException {
         validateSecurityIsPublic();
         TeleporterFrequency frequency = getFrequency();

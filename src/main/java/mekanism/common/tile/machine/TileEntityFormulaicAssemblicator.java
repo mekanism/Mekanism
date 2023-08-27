@@ -760,7 +760,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return inputSlots.get(slot).getStack();
     }
 
-    @ComputerMethod(nameOverride = "encodeFormula")
+    @ComputerMethod(nameOverride = "encodeFormula", requiresPublicSecurity = true)
     void computerEncodeFormula() throws ComputerException {
         validateSecurityIsPublic();
         ItemStack formulaStack = formulaSlot.getStack();
@@ -774,7 +774,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         encodeFormula();
     }
 
-    @ComputerMethod(nameOverride = "emptyGrid")
+    @ComputerMethod(nameOverride = "emptyGrid", requiresPublicSecurity = true)
     void computerEmptyGrid() throws ComputerException {
         validateSecurityIsPublic();
         if (autoMode) {
@@ -783,7 +783,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         emptyGrid();
     }
 
-    @ComputerMethod(nameOverride = "fillGrid")
+    @ComputerMethod(nameOverride = "fillGrid", requiresPublicSecurity = true)
     void computerFillGrid() throws ComputerException {
         validateSecurityIsPublic();
         if (autoMode) {
@@ -801,13 +801,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void craftSingleItem() throws ComputerException {
         validateCanCraft();
         craftSingle();
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void craftAvailableItems() throws ComputerException {
         validateCanCraft();
         craftAll();
@@ -820,13 +820,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
-    @ComputerMethod(nameOverride = "getStockControl")
+    @ComputerMethod(nameOverride = "getStockControl", requiresPublicSecurity = true)
     boolean computerGetStockControl() throws ComputerException {
         validateHasValidFormula("Stock Control");
         return getStockControl();
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setStockControl(boolean mode) throws ComputerException {
         validateHasValidFormula("Stock Control");
         if (stockControl != mode) {
@@ -834,13 +834,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
-    @ComputerMethod(nameOverride = "getAutoMode")
+    @ComputerMethod(nameOverride = "getAutoMode", requiresPublicSecurity = true)
     boolean computerGetAutoMode() throws ComputerException {
         validateHasValidFormula("Auto-Mode");
         return getAutoMode();
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setAutoMode(boolean mode) throws ComputerException {
         validateHasValidFormula("Auto-Mode");
         if (autoMode != mode) {

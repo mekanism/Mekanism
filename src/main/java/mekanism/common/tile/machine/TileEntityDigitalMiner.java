@@ -1281,7 +1281,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return searcher.state;
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setAutoEject(boolean eject) throws ComputerException {
         validateSecurityIsPublic();
         if (doEject != eject) {
@@ -1289,7 +1289,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setAutoPull(boolean pull) throws ComputerException {
         validateSecurityIsPublic();
         if (doPull != pull) {
@@ -1297,25 +1297,25 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
     }
 
-    @ComputerMethod(nameOverride = "setSilkTouch")
+    @ComputerMethod(nameOverride = "setSilkTouch", requiresPublicSecurity = true)
     void computerSetSilkTouch(boolean silk) throws ComputerException {
         validateSecurityIsPublic();
         setSilkTouch(silk);
     }
 
-    @ComputerMethod(nameOverride = "start")
+    @ComputerMethod(nameOverride = "start", requiresPublicSecurity = true)
     void computerStart() throws ComputerException {
         validateSecurityIsPublic();
         start();
     }
 
-    @ComputerMethod(nameOverride = "stop")
+    @ComputerMethod(nameOverride = "stop", requiresPublicSecurity = true)
     void computerStop() throws ComputerException {
         validateSecurityIsPublic();
         stop();
     }
 
-    @ComputerMethod(nameOverride = "reset")
+    @ComputerMethod(nameOverride = "reset", requiresPublicSecurity = true)
     void computerReset() throws ComputerException {
         validateSecurityIsPublic();
         reset();
@@ -1334,7 +1334,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
     }
 
-    @ComputerMethod(nameOverride = "setRadius")
+    @ComputerMethod(nameOverride = "setRadius", requiresPublicSecurity = true)
     void computerSetRadius(int radius) throws ComputerException {
         validateCanChangeConfiguration();
         if (radius < 0 || radius > MekanismConfig.general.minerMaxRadius.get()) {
@@ -1344,7 +1344,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         setRadiusFromPacket(radius);
     }
 
-    @ComputerMethod(nameOverride = "setMinY")
+    @ComputerMethod(nameOverride = "setMinY", requiresPublicSecurity = true)
     void computerSetMinY(int minY) throws ComputerException {
         validateCanChangeConfiguration();
         if (level != null) {
@@ -1357,7 +1357,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
     }
 
-    @ComputerMethod(nameOverride = "setMaxY")
+    @ComputerMethod(nameOverride = "setMaxY", requiresPublicSecurity = true)
     void computerSetMaxY(int maxY) throws ComputerException {
         validateCanChangeConfiguration();
         if (level != null) {
@@ -1370,7 +1370,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setInverseMode(boolean enabled) throws ComputerException {
         validateCanChangeConfiguration();
         if (inverse != enabled) {
@@ -1378,7 +1378,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setInverseModeRequiresReplacement(boolean requiresReplacement) throws ComputerException {
         validateCanChangeConfiguration();
         if (inverseRequiresReplacement != requiresReplacement) {
@@ -1386,13 +1386,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setInverseModeReplaceTarget(Item target) throws ComputerException {
         validateCanChangeConfiguration();
         setInverseReplaceTarget(target);
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void clearInverseModeReplaceTarget() throws ComputerException {
         setInverseModeReplaceTarget(Items.AIR);
     }
@@ -1402,13 +1402,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return filterManager.getFilters();
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     boolean addFilter(MinerFilter<?> filter) throws ComputerException {
         validateCanChangeConfiguration();
         return filterManager.addFilter(filter);
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     boolean removeFilter(MinerFilter<?> filter) throws ComputerException {
         validateCanChangeConfiguration();
         return filterManager.removeFilter(filter);

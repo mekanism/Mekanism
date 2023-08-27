@@ -276,7 +276,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void dumpChemical() throws ComputerException {
         validateSecurityIsPublic();
         dump();

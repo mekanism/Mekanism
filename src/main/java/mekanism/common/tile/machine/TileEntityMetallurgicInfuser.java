@@ -188,7 +188,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void dumpInfuseType() throws ComputerException {
         validateSecurityIsPublic();
         dump();

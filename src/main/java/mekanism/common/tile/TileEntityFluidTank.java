@@ -278,7 +278,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setContainerEditMode(ContainerEditMode mode) throws ComputerException {
         validateSecurityIsPublic();
         if (editMode != mode) {
@@ -287,13 +287,13 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         }
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void incrementContainerEditMode() throws ComputerException {
         validateSecurityIsPublic();
         nextMode();
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void decrementContainerEditMode() throws ComputerException {
         validateSecurityIsPublic();
         previousMode();

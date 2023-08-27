@@ -70,13 +70,13 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
         return filterManager.getFilters();
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     boolean addFilter(QIOFilter<?> filter) throws ComputerException {
         validateSecurityIsPublic();
         return filterManager.addFilter(filter);
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     boolean removeFilter(QIOFilter<?> filter) throws ComputerException {
         validateSecurityIsPublic();
         return filterManager.removeFilter(filter);

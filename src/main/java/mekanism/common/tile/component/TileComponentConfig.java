@@ -399,7 +399,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         return configInfo.get(type).isEjecting();
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setEjecting(TransmissionType type, boolean ejecting) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateSupportedTransmissionType(type);
@@ -413,19 +413,19 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         }
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     Set<DataType> getSupportedModes(TransmissionType type) throws ComputerException {
         validateSupportedTransmissionType(type);
         return configInfo.get(type).getSupportedDataTypes();
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     DataType getMode(TransmissionType type, RelativeSide side) throws ComputerException {
         validateSupportedTransmissionType(type);
         return configInfo.get(type).getDataType(side);
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setMode(TransmissionType type, RelativeSide side, DataType mode) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateSupportedTransmissionType(type);
@@ -440,7 +440,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         }
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void incrementMode(TransmissionType type, RelativeSide side) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateSupportedTransmissionType(type);
@@ -450,7 +450,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         }
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void decrementMode(TransmissionType type, RelativeSide side) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateSupportedTransmissionType(type);

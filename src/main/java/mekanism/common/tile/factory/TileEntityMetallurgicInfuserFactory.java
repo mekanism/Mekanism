@@ -194,7 +194,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void dumpInfuseType() throws ComputerException {
         validateSecurityIsPublic();
         dump();

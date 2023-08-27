@@ -331,7 +331,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod(nameOverride = "reset")
+    @ComputerMethod(nameOverride = "reset", requiresPublicSecurity = true)
     void resetPlenisher() throws ComputerException {
         validateSecurityIsPublic();
         reset();

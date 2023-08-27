@@ -488,7 +488,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         }
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setAutoSort(boolean enabled) throws ComputerException {
         validateSecurityIsPublic();
         if (sorting != enabled) {

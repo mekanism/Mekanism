@@ -118,7 +118,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         return frequency;
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         QIOFrequency frequency = FrequencyType.QIO.getManagerWrapper().getPublicManager().getFrequency(name);
@@ -128,7 +128,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         setFrequency(FrequencyType.QIO, frequency.getIdentity(), getOwnerUUID());
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void createFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         QIOFrequency frequency = FrequencyType.QIO.getManagerWrapper().getPublicManager().getFrequency(name);
@@ -143,20 +143,20 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         return computerGetFrequency().getColor();
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setFrequencyColor(EnumColor color) throws ComputerException {
         validateSecurityIsPublic();
         computerGetFrequency().setColor(color);
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void incrementFrequencyColor() throws ComputerException {
         validateSecurityIsPublic();
         QIOFrequency frequency = computerGetFrequency();
         frequency.setColor(frequency.getColor().getNext());
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void decrementFrequencyColor() throws ComputerException {
         validateSecurityIsPublic();
         QIOFrequency frequency = computerGetFrequency();

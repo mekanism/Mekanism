@@ -216,13 +216,13 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         return filterManager.getFilters();
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     boolean addFilter(OredictionificatorItemFilter filter) throws ComputerException {
         validateSecurityIsPublic();
         return filterManager.addFilter(filter);
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     boolean removeFilter(OredictionificatorItemFilter filter) throws ComputerException {
         validateSecurityIsPublic();
         return filterManager.removeFilter(filter);

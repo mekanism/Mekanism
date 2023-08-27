@@ -367,7 +367,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setLeftOutputDumpingMode(GasMode mode) throws ComputerException {
         validateSecurityIsPublic();
         if (dumpLeft != mode) {
@@ -376,20 +376,20 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         }
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void incrementLeftOutputDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         nextMode(0);
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void decrementLeftOutputDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         dumpLeft = dumpLeft.getPrevious();
         markForSave();
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setRightOutputDumpingMode(GasMode mode) throws ComputerException {
         validateSecurityIsPublic();
         if (dumpRight != mode) {
@@ -398,13 +398,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         }
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void incrementRightOutputDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         nextMode(1);
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void decrementRightOutputDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         dumpRight = dumpRight.getPrevious();

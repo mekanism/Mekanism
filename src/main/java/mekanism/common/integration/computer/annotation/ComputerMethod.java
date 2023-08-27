@@ -29,4 +29,9 @@ public @interface ComputerMethod {
      * Whether this method is thread-safe or needs to be queued to run on the main thread.
      */
     boolean threadSafe() default false;
+
+    /**
+     * Whether this method will fail when security is not public. Documentation property.
+     */
+    boolean requiresPublicSecurity() default false;
 }
