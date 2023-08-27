@@ -99,13 +99,13 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @SyntheticComputerMethod(getter = "getHeatingRate")
     public long lastBoilRate = 0;
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getActualBurnRate")
+    @SyntheticComputerMethod(getter = "getActualBurnRate", methodDescription = "Actual burn rate as it may be lower if say there is not enough fuel")
     public double lastBurnRate = 0;
     private boolean clientBurning;
     @ContainerSync
     public double reactorDamage = 0;
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getBurnRate")
+    @SyntheticComputerMethod(getter = "getBurnRate", methodDescription = "Configured burn rate")
     public double rateLimit = MekanismGeneratorsConfig.generators.defaultBurnRate.get();
     public double burnRemaining = 0, partialWaste = 0;
     @ContainerSync
@@ -441,7 +441,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         return forceDisable;
     }
 
-    @ComputerMethod(nameOverride = "getStatus")
+    @ComputerMethod(nameOverride = "getStatus", methodDescription = "true -> active, false -> off")
     public boolean isActive() {
         return active;
     }
@@ -513,7 +513,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     //Computer related methods
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Must be disabled, and if meltdowns are disabled must not have been force disabled")
     void activate() throws ComputerException {
         if (isActive()) {
             throw new ComputerException("Reactor is already active.");
@@ -523,7 +523,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         setActive(true);
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Must be enabled")
     void scram() throws ComputerException {
         if (!isActive()) {
             throw new ComputerException("Scram requires the reactor to be active.");

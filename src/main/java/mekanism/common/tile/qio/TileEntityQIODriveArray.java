@@ -160,33 +160,33 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         return DriveStatus.byIndexStatic(driveStatus[slot]);
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
     long getFrequencyItemCount() throws ComputerException {
         return computerGetFrequency().getTotalItemCount();
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
     long getFrequencyItemCapacity() throws ComputerException {
         return computerGetFrequency().getTotalItemCountCapacity();
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
     double getFrequencyItemPercentage() throws ComputerException {
         QIOFrequency frequency = computerGetFrequency();
         return frequency.getTotalItemCount() / (double) frequency.getTotalItemCountCapacity();
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
     long getFrequencyItemTypeCount() throws ComputerException {
         return computerGetFrequency().getTotalItemTypes(false);
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
     long getFrequencyItemTypeCapacity() throws ComputerException {
         return computerGetFrequency().getTotalItemTypeCapacity();
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
     double getFrequencyItemTypePercentage() throws ComputerException {
         QIOFrequency frequency = computerGetFrequency();
         return frequency.getTotalItemTypes(false) / (double) frequency.getTotalItemTypeCapacity();

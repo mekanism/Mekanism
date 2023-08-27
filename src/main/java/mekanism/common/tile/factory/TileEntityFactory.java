@@ -367,7 +367,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         return lastUsage;
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Total number of ticks it takes currently for the recipe to complete")
     public int getTicksRequired() {
         return ticksRequired;
     }

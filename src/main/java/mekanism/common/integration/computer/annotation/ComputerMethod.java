@@ -34,4 +34,9 @@ public @interface ComputerMethod {
      * Whether this method will fail when security is not public. Documentation property.
      */
     boolean requiresPublicSecurity() default false;
+
+    /**
+     * Method description for documentation.
+     */
+    String methodDescription() default "";
 }

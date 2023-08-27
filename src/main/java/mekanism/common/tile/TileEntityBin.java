@@ -195,7 +195,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         return binSlot.getLockStack();
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Must not be creative, empty, or already locked")
     void lock() throws ComputerException {
         if (getTier() == BinTier.CREATIVE) {
             throw new ComputerException("Creative bins cannot be locked!");
@@ -206,7 +206,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         }
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Must not be creative, or unlocked")
     void unlock() throws ComputerException {
         if (getTier() == BinTier.CREATIVE) {
             throw new ComputerException("Creative bins cannot be unlocked!");

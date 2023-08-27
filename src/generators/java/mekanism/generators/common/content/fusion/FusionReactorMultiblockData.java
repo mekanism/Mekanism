@@ -414,7 +414,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         return MekanismUtils.redstoneLevelFromContents(fuelTank.getStored(), fuelTank.getCapacity());
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "true -> water cooled, false -> air cooled")
     public int getMinInjectionRate(boolean active) {
         double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
         double caseAirConductivity = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get();
@@ -424,7 +424,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         return (int) (2 * Math.ceil(aMin / 2D));
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "true -> water cooled, false -> air cooled")
     public double getMaxPlasmaTemperature(boolean active) {
         double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
         double caseAirConductivity = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get();
@@ -433,7 +433,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
                (plasmaCaseConductivity + k + caseAirConductivity) / (k + caseAirConductivity);
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "true -> water cooled, false -> air cooled")
     public double getMaxCasingTemperature(boolean active) {
         double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
         long injectionRate = Math.max(this.injectionRate, lastBurned);
@@ -441,7 +441,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
               .divide(k + MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get()).doubleValue();
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "true -> water cooled, false -> air cooled")
     public double getIgnitionTemperature(boolean active) {
         double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
         double caseAirConductivity = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get();

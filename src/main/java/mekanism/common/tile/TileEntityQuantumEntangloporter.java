@@ -244,12 +244,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         return getFrequency(FrequencyType.INVENTORY);
     }
 
-    @ComputerMethod(nameOverride = "getTransferLoss")
+    @ComputerMethod(nameOverride = "getTransferLoss", methodDescription = "May not be accurate if there is no frequency")
     public double getLastTransferLoss() {
         return lastTransferLoss;
     }
 
-    @ComputerMethod(nameOverride = "getEnvironmentalLoss")
+    @ComputerMethod(nameOverride = "getEnvironmentalLoss", methodDescription = "May not be accurate if there is no frequency")
     public double getLastEnvironmentLoss() {
         return lastEnvironmentLoss;
     }
@@ -262,12 +262,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Lists public frequencies")
     Collection<InventoryFrequency> getFrequencies() {
         return FrequencyType.INVENTORY.getManagerWrapper().getPublicManager().getFrequencies();
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
     InventoryFrequency getFrequency() throws ComputerException {
         InventoryFrequency frequency = getFreq();
         if (frequency == null || !frequency.isValid() || frequency.isRemoved()) {
@@ -276,7 +276,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         return frequency;
     }
 
-    @ComputerMethod(requiresPublicSecurity = true)
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a public frequency to exist")
     void setFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         InventoryFrequency frequency = FrequencyType.INVENTORY.getManagerWrapper().getPublicManager().getFrequency(name);
@@ -286,7 +286,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         setFrequency(FrequencyType.INVENTORY, frequency.getIdentity(), getOwnerUUID());
     }
 
-    @ComputerMethod(requiresPublicSecurity = true)
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation")
     void createFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         InventoryFrequency frequency = FrequencyType.INVENTORY.getManagerWrapper().getPublicManager().getFrequency(name);
@@ -333,7 +333,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         return getFrequency().getSlurryTanks(null).get(0);
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
     double getTemperature() throws ComputerException {
         return getFrequency().getTotalTemperature();
     }

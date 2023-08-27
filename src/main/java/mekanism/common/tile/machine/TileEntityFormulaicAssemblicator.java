@@ -760,7 +760,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return inputSlots.get(slot).getStack();
     }
 
-    @ComputerMethod(nameOverride = "encodeFormula", requiresPublicSecurity = true)
+    @ComputerMethod(nameOverride = "encodeFormula", requiresPublicSecurity = true, methodDescription = "Requires an unencoded formula in the formula slot and a valid recipe")
     void computerEncodeFormula() throws ComputerException {
         validateSecurityIsPublic();
         ItemStack formulaStack = formulaSlot.getStack();
@@ -774,7 +774,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         encodeFormula();
     }
 
-    @ComputerMethod(nameOverride = "emptyGrid", requiresPublicSecurity = true)
+    @ComputerMethod(nameOverride = "emptyGrid", requiresPublicSecurity = true, methodDescription = "Requires auto mode to be disabled")
     void computerEmptyGrid() throws ComputerException {
         validateSecurityIsPublic();
         if (autoMode) {
@@ -783,7 +783,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         emptyGrid();
     }
 
-    @ComputerMethod(nameOverride = "fillGrid", requiresPublicSecurity = true)
+    @ComputerMethod(nameOverride = "fillGrid", requiresPublicSecurity = true, methodDescription = "Requires auto mode to be disabled")
     void computerFillGrid() throws ComputerException {
         validateSecurityIsPublic();
         if (autoMode) {
@@ -801,13 +801,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
-    @ComputerMethod(requiresPublicSecurity = true)
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires recipe and auto mode to be disabled")
     void craftSingleItem() throws ComputerException {
         validateCanCraft();
         craftSingle();
     }
 
-    @ComputerMethod(requiresPublicSecurity = true)
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires recipe and auto mode to be disabled")
     void craftAvailableItems() throws ComputerException {
         validateCanCraft();
         craftAll();
@@ -820,13 +820,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
-    @ComputerMethod(nameOverride = "getStockControl", requiresPublicSecurity = true)
+    @ComputerMethod(nameOverride = "getStockControl", requiresPublicSecurity = true, methodDescription = "Requires valid encoded formula")
     boolean computerGetStockControl() throws ComputerException {
         validateHasValidFormula("Stock Control");
         return getStockControl();
     }
 
-    @ComputerMethod(requiresPublicSecurity = true)
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires valid encoded formula")
     void setStockControl(boolean mode) throws ComputerException {
         validateHasValidFormula("Stock Control");
         if (stockControl != mode) {
@@ -834,13 +834,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
-    @ComputerMethod(nameOverride = "getAutoMode", requiresPublicSecurity = true)
+    @ComputerMethod(nameOverride = "getAutoMode", requiresPublicSecurity = true, methodDescription = "Requires valid encoded formula")
     boolean computerGetAutoMode() throws ComputerException {
         validateHasValidFormula("Auto-Mode");
         return getAutoMode();
     }
 
-    @ComputerMethod(requiresPublicSecurity = true)
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires valid encoded formula")
     void setAutoMode(boolean mode) throws ComputerException {
         validateHasValidFormula("Auto-Mode");
         if (autoMode != mode) {

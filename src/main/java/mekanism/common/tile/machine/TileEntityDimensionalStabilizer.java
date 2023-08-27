@@ -298,18 +298,18 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         return val + MAX_LOAD_RADIUS;
     }
 
-    @ComputerMethod(nameOverride = "isChunkLoadingAt")
+    @ComputerMethod(nameOverride = "isChunkLoadingAt", methodDescription = "Range: [-2, 2]")
     boolean computerIsChunkloadingAt(int x, int z) throws ComputerException {
         return isChunkLoadingAt(validateDimension(x, true), validateDimension(z, false));
     }
 
-    @ComputerMethod(nameOverride = "toggleChunkLoadingAt", requiresPublicSecurity = true)
+    @ComputerMethod(nameOverride = "toggleChunkLoadingAt", requiresPublicSecurity = true, methodDescription = "Range: [-2, 2]")
     void computerToggleChunkLoadingAt(int x, int z) throws ComputerException {
         validateSecurityIsPublic();
         toggleChunkLoadingAt(validateDimension(x, true), validateDimension(z, false));
     }
 
-    @ComputerMethod(nameOverride = "setChunkLoadingAt", requiresPublicSecurity = true)
+    @ComputerMethod(nameOverride = "setChunkLoadingAt", requiresPublicSecurity = true, methodDescription = "Range: [-2, 2]")
     void computerSetChunkLoadingAt(int x, int z, boolean load) throws ComputerException {
         validateSecurityIsPublic();
         if (setChunkLoadingAt(validateDimension(x, true), validateDimension(z, false), load)) {
@@ -327,14 +327,14 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         }
     }
 
-    @ComputerMethod(requiresPublicSecurity = true)
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Range: [1, 2]")
     void enableChunkLoadingFor(int radius) throws ComputerException {
         validateSecurityIsPublic();
         validateRadius(radius);
         adjustChunkLoadingRadius(radius, true);
     }
 
-    @ComputerMethod(requiresPublicSecurity = true)
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Range: [1, 2]")
     void disableChunkLoadingFor(int radius) throws ComputerException {
         validateSecurityIsPublic();
         validateRadius(radius);
