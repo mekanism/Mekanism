@@ -1,0 +1,6955 @@
+{
+  "mekanism.common.content.boiler.BoilerMultiblockData": [
+    {
+      "methodName": "getBoilCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getBoilRate",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getCooledCoolant",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getCooledCoolantCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getCooledCoolantFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getCooledCoolantNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getEnvironmentalLoss",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getHeatedCoolant",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getHeatedCoolantCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getHeatedCoolantFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getHeatedCoolantNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getMaxBoilRate",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getSteam",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getSteamCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getSteamFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getSteamNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getSuperheaters",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getTemperature",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getWater",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraftforge.fluids.FluidStack"
+      }
+    },
+    {
+      "methodName": "getWaterCapacity",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getWaterFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getWaterNeeded",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    }
+  ],
+  "mekanism.common.content.evaporation.EvaporationMultiblockData": [
+    {
+      "methodName": "getActiveSolars",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getEnvironmentalLoss",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraftforge.fluids.FluidStack"
+      }
+    },
+    {
+      "methodName": "getInputCapacity",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getInputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getInputItemInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getInputItemOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getInputNeeded",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraftforge.fluids.FluidStack"
+      }
+    },
+    {
+      "methodName": "getOutputCapacity",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getOutputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getOutputItemInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutputItemOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutputNeeded",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getProductionAmount",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getTemperature",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    }
+  ],
+  "mekanism.common.content.filter.IFilter": [
+    {
+      "methodName": "getFilterType",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.common.content.filter.FilterType",
+        "values": [
+          "MINER_ITEMSTACK_FILTER",
+          "MINER_MODID_FILTER",
+          "MINER_TAG_FILTER",
+          "SORTER_ITEMSTACK_FILTER",
+          "SORTER_MODID_FILTER",
+          "SORTER_TAG_FILTER",
+          "OREDICTIONIFICATOR_ITEM_FILTER",
+          "QIO_ITEMSTACK_FILTER",
+          "QIO_MODID_FILTER",
+          "QIO_TAG_FILTER"
+        ]
+      }
+    },
+    {
+      "methodName": "isEnabled",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "setEnabled",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "arg0"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.content.filter.IItemStackFilter": [
+    {
+      "methodName": "getItemStack",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "setItem",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "net.minecraft.world.item.Item",
+          "name": "item"
+        }
+      ]
+    },
+    {
+      "methodName": "setItemStack",
+      "params": [
+        {
+          "type": "Table",
+          "javaType": "net.minecraft.world.item.ItemStack",
+          "name": "arg0"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.content.filter.IModIDFilter": [
+    {
+      "methodName": "getModID",
+      "returns": {
+        "type": "String",
+        "javaType": "java.lang.String"
+      }
+    },
+    {
+      "methodName": "setModID",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "java.lang.String",
+          "name": "arg0"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.content.filter.ITagFilter": [
+    {
+      "methodName": "getTagName",
+      "returns": {
+        "type": "String",
+        "javaType": "java.lang.String"
+      }
+    },
+    {
+      "methodName": "setTagName",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "java.lang.String",
+          "name": "arg0"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.content.matrix.MatrixMultiblockData": [
+    {
+      "methodName": "getInputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getInstalledCells",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getInstalledProviders",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getLastInput",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getLastOutput",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getTransferCap",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    }
+  ],
+  "mekanism.common.content.miner.MinerFilter": [
+    {
+      "methodName": "clone",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.common.content.miner.MinerFilter"
+      }
+    },
+    {
+      "methodName": "getReplaceTarget",
+      "returns": {
+        "type": "String",
+        "javaType": "net.minecraft.world.item.Item"
+      }
+    },
+    {
+      "methodName": "getRequiresReplacement",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "hasBlacklistedElement",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "setReplaceTarget",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "net.minecraft.world.item.Item",
+          "name": "value"
+        }
+      ]
+    },
+    {
+      "methodName": "setRequiresReplacement",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "value"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.content.oredictionificator.OredictionificatorFilter": [
+    {
+      "methodName": "clone",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.common.content.oredictionificator.OredictionificatorFilter"
+      }
+    },
+    {
+      "methodName": "getFilter",
+      "returns": {
+        "type": "String",
+        "javaType": "java.lang.String"
+      }
+    },
+    {
+      "methodName": "setFilter",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "net.minecraft.resources.ResourceLocation",
+          "name": "tag"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.content.oredictionificator.OredictionificatorItemFilter": [
+    {
+      "methodName": "getSelectedOutput",
+      "returns": {
+        "type": "String",
+        "javaType": "net.minecraft.world.item.Item"
+      }
+    },
+    {
+      "methodName": "setSelectedOutput",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "net.minecraft.world.item.Item",
+          "name": "item"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.content.qio.filter.QIOFilter": [
+    {
+      "methodName": "clone",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.common.content.qio.filter.QIOFilter"
+      }
+    }
+  ],
+  "mekanism.common.content.sps.SPSMultiblockData": [
+    {
+      "methodName": "getCoils",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getInputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getInputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getInputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getOutputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getOutputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getOutputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getProcessRate",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    }
+  ],
+  "mekanism.common.content.tank.TankMultiblockData": [
+    {
+      "methodName": "decrementContainerEditMode"
+    },
+    {
+      "methodName": "getChemicalTankCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getContainerEditMode",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.common.tile.interfaces.IFluidContainerManager$ContainerEditMode",
+        "values": [
+          "BOTH",
+          "FILL",
+          "EMPTY"
+        ]
+      }
+    },
+    {
+      "methodName": "getFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getInputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getStored",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.common.integration.computer.Convertable"
+      }
+    },
+    {
+      "methodName": "getTankCapacity",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "incrementContainerEditMode"
+    },
+    {
+      "methodName": "setContainerEditMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.common.tile.interfaces.IFluidContainerManager$ContainerEditMode",
+          "name": "mode",
+          "values": [
+            "BOTH",
+            "FILL",
+            "EMPTY"
+          ]
+        }
+      ]
+    }
+  ],
+  "mekanism.common.content.transporter.SorterFilter": [
+    {
+      "methodName": "clone",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.common.content.transporter.SorterFilter"
+      }
+    },
+    {
+      "methodName": "getAllowDefault",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "getColor",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.api.text.EnumColor",
+        "values": [
+          "BLACK",
+          "DARK_BLUE",
+          "DARK_GREEN",
+          "DARK_AQUA",
+          "DARK_RED",
+          "PURPLE",
+          "ORANGE",
+          "GRAY",
+          "DARK_GRAY",
+          "INDIGO",
+          "BRIGHT_GREEN",
+          "AQUA",
+          "RED",
+          "PINK",
+          "YELLOW",
+          "WHITE",
+          "BROWN",
+          "BRIGHT_PINK"
+        ]
+      }
+    },
+    {
+      "methodName": "getMax",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getMin",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getSizeMode",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "setAllowDefault",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "value"
+        }
+      ]
+    },
+    {
+      "methodName": "setColor",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.api.text.EnumColor",
+          "name": "value",
+          "values": [
+            "BLACK",
+            "DARK_BLUE",
+            "DARK_GREEN",
+            "DARK_AQUA",
+            "DARK_RED",
+            "PURPLE",
+            "ORANGE",
+            "GRAY",
+            "DARK_GRAY",
+            "INDIGO",
+            "BRIGHT_GREEN",
+            "AQUA",
+            "RED",
+            "PINK",
+            "YELLOW",
+            "WHITE",
+            "BROWN",
+            "BRIGHT_PINK"
+          ]
+        }
+      ]
+    },
+    {
+      "methodName": "setMinMax",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "min"
+        },
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "max"
+        }
+      ]
+    },
+    {
+      "methodName": "setSizeMode",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "value"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.integration.computer.ComputerEnergyHelper": [
+    {
+      "methodName": "euToJoules",
+      "params": [
+        {
+          "type": "FloatingLong",
+          "javaType": "mekanism.api.math.FloatingLong",
+          "name": "eu"
+        }
+      ],
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "feToJoules",
+      "params": [
+        {
+          "type": "FloatingLong",
+          "javaType": "mekanism.api.math.FloatingLong",
+          "name": "fe"
+        }
+      ],
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "joulesToEU",
+      "params": [
+        {
+          "type": "FloatingLong",
+          "javaType": "mekanism.api.math.FloatingLong",
+          "name": "joules"
+        }
+      ],
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "joulesToFE",
+      "params": [
+        {
+          "type": "FloatingLong",
+          "javaType": "mekanism.api.math.FloatingLong",
+          "name": "joules"
+        }
+      ],
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    }
+  ],
+  "mekanism.common.integration.computer.ComputerFilterHelper": [
+    {
+      "methodName": "createMinerItemFilter",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "net.minecraft.world.item.Item",
+          "name": "item"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.common.content.miner.MinerItemStackFilter"
+      }
+    },
+    {
+      "methodName": "createMinerModIdFilter",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "java.lang.String",
+          "name": "modId"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.common.content.miner.MinerModIDFilter"
+      }
+    },
+    {
+      "methodName": "createMinerTagFilter",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "java.lang.String",
+          "name": "tag"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.common.content.miner.MinerTagFilter"
+      }
+    },
+    {
+      "methodName": "createOredictionificatorItemFilter",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "net.minecraft.resources.ResourceLocation",
+          "name": "filterTag"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.common.content.oredictionificator.OredictionificatorItemFilter"
+      }
+    },
+    {
+      "methodName": "createOredictionificatorItemFilter",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "net.minecraft.resources.ResourceLocation",
+          "name": "filterTag"
+        },
+        {
+          "type": "String",
+          "javaType": "net.minecraft.world.item.Item",
+          "name": "selectedOutput"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.common.content.oredictionificator.OredictionificatorItemFilter"
+      }
+    },
+    {
+      "methodName": "createQIOItemFilter",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "net.minecraft.world.item.Item",
+          "name": "item"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.common.content.qio.filter.QIOItemStackFilter"
+      }
+    },
+    {
+      "methodName": "createQIOModIdFilter",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "java.lang.String",
+          "name": "modId"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.common.content.qio.filter.QIOModIDFilter"
+      }
+    },
+    {
+      "methodName": "createQIOTagFilter",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "java.lang.String",
+          "name": "tag"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.common.content.qio.filter.QIOTagFilter"
+      }
+    },
+    {
+      "methodName": "createSorterItemFilter",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "net.minecraft.world.item.Item",
+          "name": "item"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.common.content.transporter.SorterItemStackFilter"
+      }
+    },
+    {
+      "methodName": "createSorterModIdFilter",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "java.lang.String",
+          "name": "modId"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.common.content.transporter.SorterModIDFilter"
+      }
+    },
+    {
+      "methodName": "createSorterTagFilter",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "java.lang.String",
+          "name": "tag"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.common.content.transporter.SorterTagFilter"
+      }
+    }
+  ],
+  "mekanism.common.lib.multiblock.MultiblockData": [
+    {
+      "methodName": "getHeight",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getLength",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getMaxPos",
+      "returns": {
+        "type": "BlockPos",
+        "javaType": "net.minecraft.core.BlockPos"
+      }
+    },
+    {
+      "methodName": "getMinPos",
+      "returns": {
+        "type": "BlockPos",
+        "javaType": "net.minecraft.core.BlockPos"
+      }
+    },
+    {
+      "methodName": "getWidth",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    }
+  ],
+  "mekanism.common.tile.TileEntityBin": [
+    {
+      "methodName": "getCapacity",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getLock",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getStored",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "isLocked",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "description": "Must not be creative, empty, or already locked",
+      "methodName": "lock"
+    },
+    {
+      "description": "Must not be creative, or unlocked",
+      "methodName": "unlock"
+    }
+  ],
+  "mekanism.common.tile.TileEntityChemicalTank": [
+    {
+      "methodName": "decrementDumpingMode"
+    },
+    {
+      "methodName": "getCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getDrainItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getDumpingMode",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
+        "values": [
+          "IDLE",
+          "DUMPING_EXCESS",
+          "DUMPING"
+        ]
+      }
+    },
+    {
+      "methodName": "getFillItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getStored",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "incrementDumpingMode"
+    },
+    {
+      "methodName": "setDumpingMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
+          "name": "mode",
+          "values": [
+            "IDLE",
+            "DUMPING_EXCESS",
+            "DUMPING"
+          ]
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.TileEntityEnergyCube": [
+    {
+      "methodName": "getChargeItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getDischargeItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    }
+  ],
+  "mekanism.common.tile.TileEntityFluidTank": [
+    {
+      "methodName": "decrementContainerEditMode"
+    },
+    {
+      "methodName": "getCapacity",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getContainerEditMode",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.common.tile.interfaces.IFluidContainerManager$ContainerEditMode",
+        "values": [
+          "BOTH",
+          "FILL",
+          "EMPTY"
+        ]
+      }
+    },
+    {
+      "methodName": "getFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getInputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getNeeded",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getStored",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraftforge.fluids.FluidStack"
+      }
+    },
+    {
+      "methodName": "incrementContainerEditMode"
+    },
+    {
+      "methodName": "setContainerEditMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.common.tile.interfaces.IFluidContainerManager$ContainerEditMode",
+          "name": "mode",
+          "values": [
+            "BOTH",
+            "FILL",
+            "EMPTY"
+          ]
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.TileEntityLogisticalSorter": [
+    {
+      "methodName": "addFilter",
+      "params": [
+        {
+          "type": "Table",
+          "javaType": "mekanism.common.content.transporter.SorterFilter",
+          "name": "filter"
+        }
+      ],
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "clearDefaultColor"
+    },
+    {
+      "methodName": "decrementDefaultColor"
+    },
+    {
+      "methodName": "getAutoMode",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "getDefaultColor",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.api.text.EnumColor",
+        "values": [
+          "BLACK",
+          "DARK_BLUE",
+          "DARK_GREEN",
+          "DARK_AQUA",
+          "DARK_RED",
+          "PURPLE",
+          "ORANGE",
+          "GRAY",
+          "DARK_GRAY",
+          "INDIGO",
+          "BRIGHT_GREEN",
+          "AQUA",
+          "RED",
+          "PINK",
+          "YELLOW",
+          "WHITE",
+          "BROWN",
+          "BRIGHT_PINK"
+        ]
+      }
+    },
+    {
+      "methodName": "getFilters",
+      "returns": {
+        "type": "List",
+        "javaType": "java.util.List"
+      }
+    },
+    {
+      "methodName": "incrementDefaultColor"
+    },
+    {
+      "methodName": "isRoundRobin",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "isSingle",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "removeFilter",
+      "params": [
+        {
+          "type": "Table",
+          "javaType": "mekanism.common.content.transporter.SorterFilter",
+          "name": "filter"
+        }
+      ],
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "setAutoMode",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "value"
+        }
+      ]
+    },
+    {
+      "methodName": "setDefaultColor",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.api.text.EnumColor",
+          "name": "color",
+          "values": [
+            "BLACK",
+            "DARK_BLUE",
+            "DARK_GREEN",
+            "DARK_AQUA",
+            "DARK_RED",
+            "PURPLE",
+            "ORANGE",
+            "GRAY",
+            "DARK_GRAY",
+            "INDIGO",
+            "BRIGHT_GREEN",
+            "AQUA",
+            "RED",
+            "PINK",
+            "YELLOW",
+            "WHITE",
+            "BROWN",
+            "BRIGHT_PINK"
+          ]
+        }
+      ]
+    },
+    {
+      "methodName": "setRoundRobin",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "value"
+        }
+      ]
+    },
+    {
+      "methodName": "setSingle",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "value"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.TileEntityModificationStation": [
+    {
+      "methodName": "getContainerItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getModuleItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    }
+  ],
+  "mekanism.common.tile.TileEntityQuantumEntangloporter": [
+    {
+      "description": "Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation",
+      "methodName": "createFrequency",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "java.lang.String",
+          "name": "name"
+        }
+      ]
+    },
+    {
+      "methodName": "getBufferFluid",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraftforge.fluids.FluidStack"
+      }
+    },
+    {
+      "methodName": "getBufferFluidCapacity",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getBufferFluidFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getBufferFluidNeeded",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getBufferGas",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getBufferGasCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getBufferGasFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getBufferGasNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getBufferInfuseType",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getBufferInfuseTypeCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getBufferInfuseTypeFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getBufferInfuseTypeNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getBufferItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getBufferPigment",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getBufferPigmentCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getBufferPigmentFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getBufferPigmentNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getBufferSlurry",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getBufferSlurryCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getBufferSlurryFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getBufferSlurryNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "description": "May not be accurate if there is no frequency",
+      "methodName": "getEnvironmentalLoss",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "description": "Lists public frequencies",
+      "methodName": "getFrequencies",
+      "returns": {
+        "type": "Collection",
+        "javaType": "java.util.Collection"
+      }
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "getFrequency",
+      "returns": {
+        "type": "InventoryFrequency",
+        "javaType": "mekanism.common.content.entangloporter.InventoryFrequency"
+      }
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "getTemperature",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "description": "May not be accurate if there is no frequency",
+      "methodName": "getTransferLoss",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "hasFrequency",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "description": "Requires a public frequency to exist",
+      "methodName": "setFrequency",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "java.lang.String",
+          "name": "name"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.TileEntityRadioactiveWasteBarrel": [
+    {
+      "methodName": "getCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getStored",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    }
+  ],
+  "mekanism.common.tile.TileEntityTeleporter": [
+    {
+      "description": "Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation",
+      "methodName": "createFrequency",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "java.lang.String",
+          "name": "name"
+        }
+      ]
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "decrementFrequencyColor"
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "getActiveTeleporters",
+      "returns": {
+        "type": "Set",
+        "javaType": "java.util.Set"
+      }
+    },
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "description": "Lists public frequencies",
+      "methodName": "getFrequencies",
+      "returns": {
+        "type": "Collection",
+        "javaType": "java.util.Collection"
+      }
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "getFrequency",
+      "returns": {
+        "type": "TeleporterFrequency",
+        "javaType": "mekanism.common.content.teleporter.TeleporterFrequency"
+      }
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "getFrequencyColor",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.api.text.EnumColor",
+        "values": [
+          "BLACK",
+          "DARK_BLUE",
+          "DARK_GREEN",
+          "DARK_AQUA",
+          "DARK_RED",
+          "PURPLE",
+          "ORANGE",
+          "GRAY",
+          "DARK_GRAY",
+          "INDIGO",
+          "BRIGHT_GREEN",
+          "AQUA",
+          "RED",
+          "PINK",
+          "YELLOW",
+          "WHITE",
+          "BROWN",
+          "BRIGHT_PINK"
+        ]
+      }
+    },
+    {
+      "methodName": "getStatus",
+      "returns": {
+        "type": "String",
+        "javaType": "java.lang.String"
+      }
+    },
+    {
+      "methodName": "hasFrequency",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "incrementFrequencyColor"
+    },
+    {
+      "description": "Requires a public frequency to exist",
+      "methodName": "setFrequency",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "java.lang.String",
+          "name": "name"
+        }
+      ]
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "setFrequencyColor",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.api.text.EnumColor",
+          "name": "color",
+          "values": [
+            "BLACK",
+            "DARK_BLUE",
+            "DARK_GREEN",
+            "DARK_AQUA",
+            "DARK_RED",
+            "PURPLE",
+            "ORANGE",
+            "GRAY",
+            "DARK_GRAY",
+            "INDIGO",
+            "BRIGHT_GREEN",
+            "AQUA",
+            "RED",
+            "PINK",
+            "YELLOW",
+            "WHITE",
+            "BROWN",
+            "BRIGHT_PINK"
+          ]
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.base.TileEntityMekanism": [
+    {
+      "methodName": "getComparatorLevel",
+      "restriction": "COMPARATOR",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getDirection",
+      "restriction": "DIRECTIONAL",
+      "returns": {
+        "type": "String",
+        "javaType": "net.minecraft.core.Direction",
+        "values": [
+          "DOWN",
+          "UP",
+          "NORTH",
+          "SOUTH",
+          "WEST",
+          "EAST"
+        ]
+      }
+    },
+    {
+      "methodName": "getEnergy",
+      "restriction": "ENERGY",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getEnergyFilledPercentage",
+      "restriction": "ENERGY",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getEnergyNeeded",
+      "restriction": "ENERGY",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getMaxEnergy",
+      "restriction": "ENERGY",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getRedstoneMode",
+      "restriction": "REDSTONE_CONTROL",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.common.tile.interfaces.IRedstoneControl$RedstoneControl",
+        "values": [
+          "DISABLED",
+          "HIGH",
+          "LOW",
+          "PULSE"
+        ]
+      }
+    },
+    {
+      "methodName": "setRedstoneMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.common.tile.interfaces.IRedstoneControl$RedstoneControl",
+          "name": "type",
+          "values": [
+            "DISABLED",
+            "HIGH",
+            "LOW",
+            "PULSE"
+          ]
+        }
+      ],
+      "restriction": "REDSTONE_CONTROL"
+    }
+  ],
+  "mekanism.common.tile.component.TileComponentConfig": [
+    {
+      "methodName": "canEject",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.common.lib.transmitter.TransmissionType",
+          "name": "type",
+          "values": [
+            "ENERGY",
+            "FLUID",
+            "GAS",
+            "INFUSION",
+            "PIGMENT",
+            "SLURRY",
+            "ITEM",
+            "HEAT"
+          ]
+        }
+      ],
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "decrementMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.common.lib.transmitter.TransmissionType",
+          "name": "type",
+          "values": [
+            "ENERGY",
+            "FLUID",
+            "GAS",
+            "INFUSION",
+            "PIGMENT",
+            "SLURRY",
+            "ITEM",
+            "HEAT"
+          ]
+        },
+        {
+          "type": "String",
+          "javaType": "mekanism.api.RelativeSide",
+          "name": "side",
+          "values": [
+            "FRONT",
+            "LEFT",
+            "RIGHT",
+            "BACK",
+            "TOP",
+            "BOTTOM"
+          ]
+        }
+      ]
+    },
+    {
+      "methodName": "getConfigurableTypes",
+      "returns": {
+        "type": "List",
+        "javaType": "java.util.List"
+      }
+    },
+    {
+      "methodName": "getMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.common.lib.transmitter.TransmissionType",
+          "name": "type",
+          "values": [
+            "ENERGY",
+            "FLUID",
+            "GAS",
+            "INFUSION",
+            "PIGMENT",
+            "SLURRY",
+            "ITEM",
+            "HEAT"
+          ]
+        },
+        {
+          "type": "String",
+          "javaType": "mekanism.api.RelativeSide",
+          "name": "side",
+          "values": [
+            "FRONT",
+            "LEFT",
+            "RIGHT",
+            "BACK",
+            "TOP",
+            "BOTTOM"
+          ]
+        }
+      ],
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.common.tile.component.config.DataType",
+        "values": [
+          "NONE",
+          "INPUT",
+          "INPUT_1",
+          "INPUT_2",
+          "OUTPUT",
+          "OUTPUT_1",
+          "OUTPUT_2",
+          "INPUT_OUTPUT",
+          "ENERGY",
+          "EXTRA"
+        ]
+      }
+    },
+    {
+      "methodName": "getSupportedModes",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.common.lib.transmitter.TransmissionType",
+          "name": "type",
+          "values": [
+            "ENERGY",
+            "FLUID",
+            "GAS",
+            "INFUSION",
+            "PIGMENT",
+            "SLURRY",
+            "ITEM",
+            "HEAT"
+          ]
+        }
+      ],
+      "returns": {
+        "type": "Set",
+        "javaType": "java.util.Set"
+      }
+    },
+    {
+      "methodName": "incrementMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.common.lib.transmitter.TransmissionType",
+          "name": "type",
+          "values": [
+            "ENERGY",
+            "FLUID",
+            "GAS",
+            "INFUSION",
+            "PIGMENT",
+            "SLURRY",
+            "ITEM",
+            "HEAT"
+          ]
+        },
+        {
+          "type": "String",
+          "javaType": "mekanism.api.RelativeSide",
+          "name": "side",
+          "values": [
+            "FRONT",
+            "LEFT",
+            "RIGHT",
+            "BACK",
+            "TOP",
+            "BOTTOM"
+          ]
+        }
+      ]
+    },
+    {
+      "methodName": "isEjecting",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.common.lib.transmitter.TransmissionType",
+          "name": "type",
+          "values": [
+            "ENERGY",
+            "FLUID",
+            "GAS",
+            "INFUSION",
+            "PIGMENT",
+            "SLURRY",
+            "ITEM",
+            "HEAT"
+          ]
+        }
+      ],
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "setEjecting",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.common.lib.transmitter.TransmissionType",
+          "name": "type",
+          "values": [
+            "ENERGY",
+            "FLUID",
+            "GAS",
+            "INFUSION",
+            "PIGMENT",
+            "SLURRY",
+            "ITEM",
+            "HEAT"
+          ]
+        },
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "ejecting"
+        }
+      ]
+    },
+    {
+      "methodName": "setMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.common.lib.transmitter.TransmissionType",
+          "name": "type",
+          "values": [
+            "ENERGY",
+            "FLUID",
+            "GAS",
+            "INFUSION",
+            "PIGMENT",
+            "SLURRY",
+            "ITEM",
+            "HEAT"
+          ]
+        },
+        {
+          "type": "String",
+          "javaType": "mekanism.api.RelativeSide",
+          "name": "side",
+          "values": [
+            "FRONT",
+            "LEFT",
+            "RIGHT",
+            "BACK",
+            "TOP",
+            "BOTTOM"
+          ]
+        },
+        {
+          "type": "String",
+          "javaType": "mekanism.common.tile.component.config.DataType",
+          "name": "mode",
+          "values": [
+            "NONE",
+            "INPUT",
+            "INPUT_1",
+            "INPUT_2",
+            "OUTPUT",
+            "OUTPUT_1",
+            "OUTPUT_2",
+            "INPUT_OUTPUT",
+            "ENERGY",
+            "EXTRA"
+          ]
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.component.TileComponentEjector": [
+    {
+      "methodName": "clearInputColor",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.api.RelativeSide",
+          "name": "side",
+          "values": [
+            "FRONT",
+            "LEFT",
+            "RIGHT",
+            "BACK",
+            "TOP",
+            "BOTTOM"
+          ]
+        }
+      ]
+    },
+    {
+      "methodName": "clearOutputColor"
+    },
+    {
+      "methodName": "decrementInputColor",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.api.RelativeSide",
+          "name": "side",
+          "values": [
+            "FRONT",
+            "LEFT",
+            "RIGHT",
+            "BACK",
+            "TOP",
+            "BOTTOM"
+          ]
+        }
+      ]
+    },
+    {
+      "methodName": "decrementOutputColor"
+    },
+    {
+      "methodName": "getInputColor",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.api.RelativeSide",
+          "name": "side",
+          "values": [
+            "FRONT",
+            "LEFT",
+            "RIGHT",
+            "BACK",
+            "TOP",
+            "BOTTOM"
+          ]
+        }
+      ],
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.api.text.EnumColor",
+        "values": [
+          "BLACK",
+          "DARK_BLUE",
+          "DARK_GREEN",
+          "DARK_AQUA",
+          "DARK_RED",
+          "PURPLE",
+          "ORANGE",
+          "GRAY",
+          "DARK_GRAY",
+          "INDIGO",
+          "BRIGHT_GREEN",
+          "AQUA",
+          "RED",
+          "PINK",
+          "YELLOW",
+          "WHITE",
+          "BROWN",
+          "BRIGHT_PINK"
+        ]
+      }
+    },
+    {
+      "methodName": "getOutputColor",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.api.text.EnumColor",
+        "values": [
+          "BLACK",
+          "DARK_BLUE",
+          "DARK_GREEN",
+          "DARK_AQUA",
+          "DARK_RED",
+          "PURPLE",
+          "ORANGE",
+          "GRAY",
+          "DARK_GRAY",
+          "INDIGO",
+          "BRIGHT_GREEN",
+          "AQUA",
+          "RED",
+          "PINK",
+          "YELLOW",
+          "WHITE",
+          "BROWN",
+          "BRIGHT_PINK"
+        ]
+      }
+    },
+    {
+      "methodName": "hasStrictInput",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "incrementInputColor",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.api.RelativeSide",
+          "name": "side",
+          "values": [
+            "FRONT",
+            "LEFT",
+            "RIGHT",
+            "BACK",
+            "TOP",
+            "BOTTOM"
+          ]
+        }
+      ]
+    },
+    {
+      "methodName": "incrementOutputColor"
+    },
+    {
+      "methodName": "setInputColor",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.api.RelativeSide",
+          "name": "side",
+          "values": [
+            "FRONT",
+            "LEFT",
+            "RIGHT",
+            "BACK",
+            "TOP",
+            "BOTTOM"
+          ]
+        },
+        {
+          "type": "String",
+          "javaType": "mekanism.api.text.EnumColor",
+          "name": "color",
+          "values": [
+            "BLACK",
+            "DARK_BLUE",
+            "DARK_GREEN",
+            "DARK_AQUA",
+            "DARK_RED",
+            "PURPLE",
+            "ORANGE",
+            "GRAY",
+            "DARK_GRAY",
+            "INDIGO",
+            "BRIGHT_GREEN",
+            "AQUA",
+            "RED",
+            "PINK",
+            "YELLOW",
+            "WHITE",
+            "BROWN",
+            "BRIGHT_PINK"
+          ]
+        }
+      ]
+    },
+    {
+      "methodName": "setOutputColor",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.api.text.EnumColor",
+          "name": "color",
+          "values": [
+            "BLACK",
+            "DARK_BLUE",
+            "DARK_GREEN",
+            "DARK_AQUA",
+            "DARK_RED",
+            "PURPLE",
+            "ORANGE",
+            "GRAY",
+            "DARK_GRAY",
+            "INDIGO",
+            "BRIGHT_GREEN",
+            "AQUA",
+            "RED",
+            "PINK",
+            "YELLOW",
+            "WHITE",
+            "BROWN",
+            "BRIGHT_PINK"
+          ]
+        }
+      ]
+    },
+    {
+      "methodName": "setStrictInput",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "strict"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.component.TileComponentSecurity": [
+    {
+      "methodName": "getOwnerName",
+      "returns": {
+        "type": "String",
+        "javaType": "java.lang.String"
+      }
+    },
+    {
+      "methodName": "getOwnerUUID",
+      "returns": {
+        "type": "String",
+        "javaType": "java.util.UUID"
+      }
+    },
+    {
+      "methodName": "getSecurityMode",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.api.security.SecurityMode",
+        "values": [
+          "PUBLIC",
+          "PRIVATE",
+          "TRUSTED"
+        ]
+      }
+    }
+  ],
+  "mekanism.common.tile.component.TileComponentUpgrade": [
+    {
+      "methodName": "getInstalledUpgrades",
+      "returns": {
+        "type": "Table",
+        "javaType": "java.util.Map"
+      }
+    },
+    {
+      "methodName": "getSupportedUpgrades",
+      "returns": {
+        "type": "Set",
+        "javaType": "java.util.Set"
+      }
+    }
+  ],
+  "mekanism.common.tile.factory.TileEntityCombiningFactory": [
+    {
+      "methodName": "getSecondaryInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    }
+  ],
+  "mekanism.common.tile.factory.TileEntityFactory": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getInput",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "process"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutput",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "process"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getRecipeProgress",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "process"
+        }
+      ],
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "description": "Total number of ticks it takes currently for the recipe to complete",
+      "methodName": "getTicksRequired",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "isAutoSortEnabled",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "setAutoSort",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "enabled"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory": [
+    {
+      "methodName": "dumpChemical"
+    },
+    {
+      "methodName": "getChemical",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getChemicalCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getChemicalFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getChemicalItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getChemicalNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    }
+  ],
+  "mekanism.common.tile.factory.TileEntityMetallurgicInfuserFactory": [
+    {
+      "methodName": "dumpInfuseType"
+    },
+    {
+      "methodName": "getInfuseType",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getInfuseTypeCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getInfuseTypeFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getInfuseTypeItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getInfuseTypeNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    }
+  ],
+  "mekanism.common.tile.factory.TileEntitySawingFactory": [
+    {
+      "methodName": "getSecondaryOutput",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "process"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    }
+  ],
+  "mekanism.common.tile.laser.TileEntityBasicLaser": [
+    {
+      "methodName": "getDiggingPos",
+      "returns": {
+        "type": "BlockPos",
+        "javaType": "net.minecraft.core.BlockPos"
+      }
+    }
+  ],
+  "mekanism.common.tile.laser.TileEntityLaserAmplifier": [
+    {
+      "methodName": "getDelay",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getMaxThreshold",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getMinThreshold",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getRedstoneOutputMode",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.common.tile.laser.TileEntityLaserAmplifier$RedstoneOutput",
+        "values": [
+          "OFF",
+          "ENTITY_DETECTION",
+          "ENERGY_CONTENTS"
+        ]
+      }
+    },
+    {
+      "methodName": "setDelay",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "delay"
+        }
+      ]
+    },
+    {
+      "methodName": "setMaxThreshold",
+      "params": [
+        {
+          "type": "FloatingLong",
+          "javaType": "mekanism.api.math.FloatingLong",
+          "name": "threshold"
+        }
+      ]
+    },
+    {
+      "methodName": "setMinThreshold",
+      "params": [
+        {
+          "type": "FloatingLong",
+          "javaType": "mekanism.api.math.FloatingLong",
+          "name": "threshold"
+        }
+      ]
+    },
+    {
+      "methodName": "setRedstoneOutputMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.common.tile.laser.TileEntityLaserAmplifier$RedstoneOutput",
+          "name": "mode",
+          "values": [
+            "OFF",
+            "ENTITY_DETECTION",
+            "ENERGY_CONTENTS"
+          ]
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.laser.TileEntityLaserTractorBeam": [
+    {
+      "methodName": "getItemInSlot",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "slot"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getSlotCount",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getInputChemical",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getInputChemicalCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getInputChemicalFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getInputChemicalItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getInputChemicalNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getInputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityChemicalCrystallizer": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getInputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getInputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getInputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getInputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getGasInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getGasInputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getGasInputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getGasInputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getInputGasItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getInputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getOutputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getOutputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityChemicalInfuser": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getLeftInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getLeftInputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getLeftInputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getLeftInputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getLeftInputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getOutputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getOutputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getRightInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getRightInputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getRightInputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getRightInputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getRightInputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityChemicalOxidizer": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getOutputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getOutputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityChemicalWasher": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getFluid",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraftforge.fluids.FluidStack"
+      }
+    },
+    {
+      "methodName": "getFluidCapacity",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getFluidFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getFluidItemInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getFluidItemOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getFluidNeeded",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getSlurryInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getSlurryInputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getSlurryInputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getSlurryInputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getSlurryOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getSlurryOutputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getSlurryOutputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getSlurryOutputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityCombiner": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getMainInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getSecondaryInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityDigitalMiner": [
+    {
+      "description": "Require miner to be stopped/reset first",
+      "methodName": "addFilter",
+      "params": [
+        {
+          "type": "Table",
+          "javaType": "mekanism.common.content.miner.MinerFilter",
+          "name": "filter"
+        }
+      ],
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "clearInverseModeReplaceTarget"
+    },
+    {
+      "methodName": "getAutoEject",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "getAutoPull",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getFilters",
+      "returns": {
+        "type": "List",
+        "javaType": "java.util.List"
+      }
+    },
+    {
+      "methodName": "getInverseMode",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "getInverseModeReplaceTarget",
+      "returns": {
+        "type": "String",
+        "javaType": "net.minecraft.world.item.Item"
+      }
+    },
+    {
+      "methodName": "getInverseModeRequiresReplacement",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "getItemInSlot",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "slot"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getMaxRadius",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getMaxY",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getMinY",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getRadius",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getSilkTouch",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "getSlotCount",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getState",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.common.content.miner.ThreadMinerSearch$State",
+        "values": [
+          "IDLE",
+          "SEARCHING",
+          "PAUSED",
+          "FINISHED"
+        ]
+      }
+    },
+    {
+      "methodName": "getToMine",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "isRunning",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "description": "Require miner to be stopped/reset first",
+      "methodName": "removeFilter",
+      "params": [
+        {
+          "type": "Table",
+          "javaType": "mekanism.common.content.miner.MinerFilter",
+          "name": "filter"
+        }
+      ],
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "reset"
+    },
+    {
+      "methodName": "setAutoEject",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "eject"
+        }
+      ]
+    },
+    {
+      "methodName": "setAutoPull",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "pull"
+        }
+      ]
+    },
+    {
+      "description": "Require miner to be stopped/reset first",
+      "methodName": "setInverseMode",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "enabled"
+        }
+      ]
+    },
+    {
+      "description": "Require miner to be stopped/reset first",
+      "methodName": "setInverseModeReplaceTarget",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "net.minecraft.world.item.Item",
+          "name": "target"
+        }
+      ]
+    },
+    {
+      "description": "Require miner to be stopped/reset first",
+      "methodName": "setInverseModeRequiresReplacement",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "requiresReplacement"
+        }
+      ]
+    },
+    {
+      "description": "Require miner to be stopped/reset first",
+      "methodName": "setMaxY",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "maxY"
+        }
+      ]
+    },
+    {
+      "description": "Require miner to be stopped/reset first",
+      "methodName": "setMinY",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "minY"
+        }
+      ]
+    },
+    {
+      "description": "Require miner to be stopped/reset first",
+      "methodName": "setRadius",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "radius"
+        }
+      ]
+    },
+    {
+      "methodName": "setSilkTouch",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "silk"
+        }
+      ]
+    },
+    {
+      "methodName": "start"
+    },
+    {
+      "methodName": "stop"
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityDimensionalStabilizer": [
+    {
+      "description": "Range: [1, 2]",
+      "methodName": "disableChunkLoadingFor",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "radius"
+        }
+      ]
+    },
+    {
+      "description": "Range: [1, 2]",
+      "methodName": "enableChunkLoadingFor",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "radius"
+        }
+      ]
+    },
+    {
+      "methodName": "getChunksLoaded",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "description": "Range: [-2, 2]",
+      "methodName": "isChunkLoadingAt",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "x"
+        },
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "z"
+        }
+      ],
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "description": "Range: [-2, 2]",
+      "methodName": "setChunkLoadingAt",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "x"
+        },
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "z"
+        },
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "load"
+        }
+      ]
+    },
+    {
+      "description": "Range: [-2, 2]",
+      "methodName": "toggleChunkLoadingAt",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "x"
+        },
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "z"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityElectricPump": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getFluid",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraftforge.fluids.FluidStack"
+      }
+    },
+    {
+      "methodName": "getFluidCapacity",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getFluidFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getFluidNeeded",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getInputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "reset"
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityElectrolyticSeparator": [
+    {
+      "methodName": "decrementLeftOutputDumpingMode"
+    },
+    {
+      "methodName": "decrementRightOutputDumpingMode"
+    },
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraftforge.fluids.FluidStack"
+      }
+    },
+    {
+      "methodName": "getInputCapacity",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getInputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getInputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getInputNeeded",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getLeftOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getLeftOutputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getLeftOutputDumpingMode",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
+        "values": [
+          "IDLE",
+          "DUMPING_EXCESS",
+          "DUMPING"
+        ]
+      }
+    },
+    {
+      "methodName": "getLeftOutputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getLeftOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getLeftOutputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getRightOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getRightOutputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getRightOutputDumpingMode",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
+        "values": [
+          "IDLE",
+          "DUMPING_EXCESS",
+          "DUMPING"
+        ]
+      }
+    },
+    {
+      "methodName": "getRightOutputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getRightOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getRightOutputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "incrementLeftOutputDumpingMode"
+    },
+    {
+      "methodName": "incrementRightOutputDumpingMode"
+    },
+    {
+      "methodName": "setLeftOutputDumpingMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
+          "name": "mode",
+          "values": [
+            "IDLE",
+            "DUMPING_EXCESS",
+            "DUMPING"
+          ]
+        }
+      ]
+    },
+    {
+      "methodName": "setRightOutputDumpingMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
+          "name": "mode",
+          "values": [
+            "IDLE",
+            "DUMPING_EXCESS",
+            "DUMPING"
+          ]
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityFluidicPlenisher": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getFluid",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraftforge.fluids.FluidStack"
+      }
+    },
+    {
+      "methodName": "getFluidCapacity",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getFluidFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getFluidNeeded",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getInputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "reset"
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityFormulaicAssemblicator": [
+    {
+      "description": "Requires recipe and auto mode to be disabled",
+      "methodName": "craftAvailableItems"
+    },
+    {
+      "description": "Requires recipe and auto mode to be disabled",
+      "methodName": "craftSingleItem"
+    },
+    {
+      "description": "Requires auto mode to be disabled",
+      "methodName": "emptyGrid"
+    },
+    {
+      "description": "Requires an unencoded formula in the formula slot and a valid recipe",
+      "methodName": "encodeFormula"
+    },
+    {
+      "description": "Requires auto mode to be disabled",
+      "methodName": "fillGrid"
+    },
+    {
+      "description": "Requires valid encoded formula",
+      "methodName": "getAutoMode",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "getCraftingInputSlot",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "slot"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getCraftingOutputSlot",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "slot"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getCraftingOutputSlots",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getExcessRemainingItems",
+      "returns": {
+        "type": "NonNullList",
+        "javaType": "net.minecraft.core.NonNullList"
+      }
+    },
+    {
+      "methodName": "getFormulaItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getItemInSlot",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "slot"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getRecipeProgress",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getSlots",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "description": "Requires valid encoded formula",
+      "methodName": "getStockControl",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "getTicksRequired",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "hasRecipe",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "hasValidFormula",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "description": "Requires valid encoded formula",
+      "methodName": "setAutoMode",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "mode"
+        }
+      ]
+    },
+    {
+      "description": "Requires valid encoded formula",
+      "methodName": "setStockControl",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "mode"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityFuelwoodHeater": [
+    {
+      "methodName": "getEnvironmentalLoss",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getFuelItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getTemperature",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getTransferLoss",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityIsotopicCentrifuge": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getInputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getInputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getInputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getInputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getOutputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getOutputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityMetallurgicInfuser": [
+    {
+      "methodName": "dumpInfuseType"
+    },
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getInfuseType",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getInfuseTypeCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getInfuseTypeFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getInfuseTypeItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getInfuseTypeNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityNutritionalLiquifier": [
+    {
+      "methodName": "getContainerFillItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraftforge.fluids.FluidStack"
+      }
+    },
+    {
+      "methodName": "getOutputCapacity",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getOutputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutputNeeded",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityOredictionificator": [
+    {
+      "methodName": "addFilter",
+      "params": [
+        {
+          "type": "Table",
+          "javaType": "mekanism.common.content.oredictionificator.OredictionificatorItemFilter",
+          "name": "filter"
+        }
+      ],
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "getFilters",
+      "returns": {
+        "type": "List",
+        "javaType": "java.util.List"
+      }
+    },
+    {
+      "methodName": "getInputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "removeFilter",
+      "params": [
+        {
+          "type": "Table",
+          "javaType": "mekanism.common.content.oredictionificator.OredictionificatorItemFilter",
+          "name": "filter"
+        }
+      ],
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityPaintingMachine": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getInputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getInputPigmentItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getPigmentInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getPigmentInputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getPigmentInputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getPigmentInputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityPigmentExtractor": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getOutputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getOutputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityPigmentMixer": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getLeftInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getLeftInputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getLeftInputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getLeftInputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getLeftInputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getOutputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getOutputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getRightInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getRightInputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getRightInputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getRightInputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getRightInputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityPrecisionSawmill": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getSecondaryOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityPressurizedReactionChamber": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getInputFluid",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraftforge.fluids.FluidStack"
+      }
+    },
+    {
+      "methodName": "getInputFluidCapacity",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getInputFluidFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getInputFluidNeeded",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getInputGas",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getInputGasCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getInputGasFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getInputGasNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getInputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutputGas",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getOutputGasCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getOutputGasFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getOutputGasNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityResistiveHeater": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getEnergyUsed",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getEnvironmentalLoss",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getTemperature",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getTransferLoss",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "setEnergyUsage",
+      "params": [
+        {
+          "type": "FloatingLong",
+          "javaType": "mekanism.api.math.FloatingLong",
+          "name": "usage"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntityRotaryCondensentrator": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getFluid",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraftforge.fluids.FluidStack"
+      }
+    },
+    {
+      "methodName": "getFluidCapacity",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getFluidFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getFluidItemInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getFluidItemOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getFluidNeeded",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getGas",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getGasCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getGasFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getGasItemInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getGasItemOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getGasNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "isCondensentrating",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "setCondensentrating",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "value"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntitySeismicVibrator": [
+    {
+      "methodName": "getBlockAt",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "chunkRelativeX"
+        },
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "y"
+        },
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "chunkRelativeZ"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.level.block.state.BlockState"
+      }
+    },
+    {
+      "methodName": "getColumnAt",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "chunkRelativeX"
+        },
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "chunkRelativeZ"
+        }
+      ],
+      "returns": {
+        "type": "Int2ObjectMap",
+        "javaType": "it.unimi.dsi.fastutil.ints.Int2ObjectMap"
+      }
+    },
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "isVibrating",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    }
+  ],
+  "mekanism.common.tile.machine.TileEntitySolarNeutronActivator": [
+    {
+      "methodName": "canSeeSun",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "getInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getInputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getInputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getInputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getInputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getOutputCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getOutputFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getOutputItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutputNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getPeakProductionRate",
+      "returns": {
+        "type": "float",
+        "javaType": "float"
+      }
+    },
+    {
+      "methodName": "getProductionRate",
+      "returns": {
+        "type": "float",
+        "javaType": "float"
+      }
+    }
+  ],
+  "mekanism.common.tile.multiblock.TileEntityBoilerValve": [
+    {
+      "methodName": "decrementMode"
+    },
+    {
+      "methodName": "getMode",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.common.block.attribute.AttributeStateBoilerValveMode$BoilerValveMode",
+        "values": [
+          "INPUT",
+          "OUTPUT_STEAM",
+          "OUTPUT_COOLANT"
+        ]
+      }
+    },
+    {
+      "methodName": "incrementMode"
+    },
+    {
+      "methodName": "setMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.common.block.attribute.AttributeStateBoilerValveMode$BoilerValveMode",
+          "name": "mode",
+          "values": [
+            "INPUT",
+            "OUTPUT_STEAM",
+            "OUTPUT_COOLANT"
+          ]
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.multiblock.TileEntityInductionPort": [
+    {
+      "description": "true -> output, false -> input. TODO change this to enum",
+      "methodName": "getMode",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "description": "true -> output, false -> input",
+      "methodName": "setMode",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "output"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.multiblock.TileEntitySPSPort": [
+    {
+      "description": "true -> output, false -> input. TODO change this to enum",
+      "methodName": "getMode",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "description": "true -> output, false -> input. TODO change this to enum",
+      "methodName": "setMode",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "output"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine": [
+    {
+      "methodName": "dumpChemical"
+    },
+    {
+      "methodName": "getChemical",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getChemicalCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getChemicalFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getChemicalItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getChemicalNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    }
+  ],
+  "mekanism.common.tile.prefab.TileEntityElectricMachine": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnergyUsage",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getInput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getOutput",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    }
+  ],
+  "mekanism.common.tile.prefab.TileEntityMultiblock": [
+    {
+      "methodName": "isFormed",
+      "restriction": "MULTIBLOCK",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    }
+  ],
+  "mekanism.common.tile.prefab.TileEntityProgressMachine": [
+    {
+      "methodName": "getRecipeProgress",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getTicksRequired",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    }
+  ],
+  "mekanism.common.tile.qio.TileEntityQIOComponent": [
+    {
+      "description": "Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation",
+      "methodName": "createFrequency",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "java.lang.String",
+          "name": "name"
+        }
+      ]
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "decrementFrequencyColor"
+    },
+    {
+      "description": "Lists public frequencies",
+      "methodName": "getFrequencies",
+      "returns": {
+        "type": "Collection",
+        "javaType": "java.util.Collection"
+      }
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "getFrequency",
+      "returns": {
+        "type": "QIOFrequency",
+        "javaType": "mekanism.common.content.qio.QIOFrequency"
+      }
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "getFrequencyColor",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.api.text.EnumColor",
+        "values": [
+          "BLACK",
+          "DARK_BLUE",
+          "DARK_GREEN",
+          "DARK_AQUA",
+          "DARK_RED",
+          "PURPLE",
+          "ORANGE",
+          "GRAY",
+          "DARK_GRAY",
+          "INDIGO",
+          "BRIGHT_GREEN",
+          "AQUA",
+          "RED",
+          "PINK",
+          "YELLOW",
+          "WHITE",
+          "BROWN",
+          "BRIGHT_PINK"
+        ]
+      }
+    },
+    {
+      "methodName": "hasFrequency",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "incrementFrequencyColor"
+    },
+    {
+      "description": "Requires a public frequency to exist",
+      "methodName": "setFrequency",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "java.lang.String",
+          "name": "name"
+        }
+      ]
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "setFrequencyColor",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.api.text.EnumColor",
+          "name": "color",
+          "values": [
+            "BLACK",
+            "DARK_BLUE",
+            "DARK_GREEN",
+            "DARK_AQUA",
+            "DARK_RED",
+            "PURPLE",
+            "ORANGE",
+            "GRAY",
+            "DARK_GRAY",
+            "INDIGO",
+            "BRIGHT_GREEN",
+            "AQUA",
+            "RED",
+            "PINK",
+            "YELLOW",
+            "WHITE",
+            "BROWN",
+            "BRIGHT_PINK"
+          ]
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.qio.TileEntityQIODashboard": [
+    {
+      "methodName": "getCraftingInput",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "window"
+        },
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "slot"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getCraftingOutput",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "window"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    }
+  ],
+  "mekanism.common.tile.qio.TileEntityQIODriveArray": [
+    {
+      "methodName": "getDrive",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "slot"
+        }
+      ],
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getDriveStatus",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "slot"
+        }
+      ],
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.common.tile.qio.TileEntityQIODriveArray$DriveStatus",
+        "values": [
+          "NONE",
+          "OFFLINE",
+          "READY",
+          "NEAR_FULL",
+          "FULL"
+        ]
+      }
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "getFrequencyItemCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "getFrequencyItemCount",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "getFrequencyItemPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "getFrequencyItemTypeCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "getFrequencyItemTypeCount",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "description": "Requires a frequency to be selected",
+      "methodName": "getFrequencyItemTypePercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getSlotCount",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    }
+  ],
+  "mekanism.common.tile.qio.TileEntityQIOExporter": [
+    {
+      "methodName": "getExportWithoutFilter",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "setExportsWithoutFilter",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "value"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.qio.TileEntityQIOFilterHandler": [
+    {
+      "methodName": "addFilter",
+      "params": [
+        {
+          "type": "Table",
+          "javaType": "mekanism.common.content.qio.filter.QIOFilter",
+          "name": "filter"
+        }
+      ],
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "getFilters",
+      "returns": {
+        "type": "List",
+        "javaType": "java.util.List"
+      }
+    },
+    {
+      "methodName": "removeFilter",
+      "params": [
+        {
+          "type": "Table",
+          "javaType": "mekanism.common.content.qio.filter.QIOFilter",
+          "name": "filter"
+        }
+      ],
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    }
+  ],
+  "mekanism.common.tile.qio.TileEntityQIOImporter": [
+    {
+      "methodName": "getImportWithoutFilter",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "setImportsWithoutFilter",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "value"
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.qio.TileEntityQIORedstoneAdapter": [
+    {
+      "methodName": "clearTargetItem"
+    },
+    {
+      "methodName": "getFuzzyMode",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "getTargetItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getTriggerAmount",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "setFuzzyMode",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "fuzzy"
+        }
+      ]
+    },
+    {
+      "methodName": "setTargetItem",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "net.minecraft.resources.ResourceLocation",
+          "name": "itemName"
+        }
+      ]
+    },
+    {
+      "methodName": "setTriggerAmount",
+      "params": [
+        {
+          "type": "long",
+          "javaType": "long",
+          "name": "amount"
+        }
+      ]
+    },
+    {
+      "methodName": "toggleFuzzyMode"
+    }
+  ],
+  "mekanism.common.tile.transmitter.TileEntityDiversionTransporter": [
+    {
+      "methodName": "decrementMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "net.minecraft.core.Direction",
+          "name": "side",
+          "values": [
+            "DOWN",
+            "UP",
+            "NORTH",
+            "SOUTH",
+            "WEST",
+            "EAST"
+          ]
+        }
+      ]
+    },
+    {
+      "methodName": "getMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "net.minecraft.core.Direction",
+          "name": "side",
+          "values": [
+            "DOWN",
+            "UP",
+            "NORTH",
+            "SOUTH",
+            "WEST",
+            "EAST"
+          ]
+        }
+      ],
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.common.content.network.transmitter.DiversionTransporter$DiversionControl",
+        "values": [
+          "DISABLED",
+          "HIGH",
+          "LOW"
+        ]
+      }
+    },
+    {
+      "methodName": "incrementMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "net.minecraft.core.Direction",
+          "name": "side",
+          "values": [
+            "DOWN",
+            "UP",
+            "NORTH",
+            "SOUTH",
+            "WEST",
+            "EAST"
+          ]
+        }
+      ]
+    },
+    {
+      "methodName": "setMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "net.minecraft.core.Direction",
+          "name": "side",
+          "values": [
+            "DOWN",
+            "UP",
+            "NORTH",
+            "SOUTH",
+            "WEST",
+            "EAST"
+          ]
+        },
+        {
+          "type": "String",
+          "javaType": "mekanism.common.content.network.transmitter.DiversionTransporter$DiversionControl",
+          "name": "mode",
+          "values": [
+            "DISABLED",
+            "HIGH",
+            "LOW"
+          ]
+        }
+      ]
+    }
+  ],
+  "mekanism.common.tile.transmitter.TileEntityMechanicalPipe": [
+    {
+      "methodName": "getBuffer",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraftforge.fluids.FluidStack"
+      }
+    },
+    {
+      "methodName": "getCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    }
+  ],
+  "mekanism.common.tile.transmitter.TileEntityPressurizedTube": [
+    {
+      "methodName": "getBuffer",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    }
+  ],
+  "mekanism.common.tile.transmitter.TileEntityUniversalCable": [
+    {
+      "methodName": "getBuffer",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getCapacity",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getNeeded",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    }
+  ],
+  "mekanism.generators.common.content.fission.FissionReactorMultiblockData": [
+    {
+      "description": "Must be disabled, and if meltdowns are disabled must not have been force disabled",
+      "methodName": "activate"
+    },
+    {
+      "description": "Actual burn rate as it may be lower if say there is not enough fuel",
+      "methodName": "getActualBurnRate",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getBoilEfficiency",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "description": "Configured burn rate",
+      "methodName": "getBurnRate",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getCoolant",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.common.integration.computer.Convertable"
+      }
+    },
+    {
+      "methodName": "getCoolantCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getCoolantFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getCoolantNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getDamagePercent",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getEnvironmentalLoss",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getFuel",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getFuelAssemblies",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getFuelCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getFuelFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getFuelNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getFuelSurfaceArea",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getHeatCapacity",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getHeatedCoolant",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getHeatedCoolantCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getHeatedCoolantFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getHeatedCoolantNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getHeatingRate",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getMaxBurnRate",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "description": "true -> active, false -> off",
+      "methodName": "getStatus",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "getTemperature",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getWaste",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getWasteCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getWasteFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getWasteNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "isForceDisabled",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "description": "Must be enabled",
+      "methodName": "scram"
+    },
+    {
+      "methodName": "setBurnRate",
+      "params": [
+        {
+          "type": "double",
+          "javaType": "double",
+          "name": "rate"
+        }
+      ]
+    }
+  ],
+  "mekanism.generators.common.content.fusion.FusionReactorMultiblockData": [
+    {
+      "methodName": "getCaseTemperature",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getDTFuel",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getDTFuelCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getDTFuelFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getDTFuelNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getDeuterium",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getDeuteriumCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getDeuteriumFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getDeuteriumNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getEnvironmentalLoss",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getHohlraum",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "description": "true -> water cooled, false -> air cooled",
+      "methodName": "getIgnitionTemperature",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "active"
+        }
+      ],
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getInjectionRate",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "description": "true -> water cooled, false -> air cooled",
+      "methodName": "getMaxCasingTemperature",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "active"
+        }
+      ],
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "description": "true -> water cooled, false -> air cooled",
+      "methodName": "getMaxPlasmaTemperature",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "active"
+        }
+      ],
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "description": "true -> water cooled, false -> air cooled",
+      "methodName": "getMinInjectionRate",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "active"
+        }
+      ],
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getPassiveGeneration",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "active"
+        }
+      ],
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getPlasmaTemperature",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getProductionRate",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getSteam",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getSteamCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getSteamFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getSteamNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getTransferLoss",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getTritium",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getTritiumCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getTritiumFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getTritiumNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getWater",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraftforge.fluids.FluidStack"
+      }
+    },
+    {
+      "methodName": "getWaterCapacity",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getWaterFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getWaterNeeded",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "setInjectionRate",
+      "params": [
+        {
+          "type": "int",
+          "javaType": "int",
+          "name": "rate"
+        }
+      ]
+    }
+  ],
+  "mekanism.generators.common.content.turbine.TurbineMultiblockData": [
+    {
+      "methodName": "decrementDumpingMode"
+    },
+    {
+      "methodName": "getBlades",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getCoils",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getCondensers",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getDispersers",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getDumpingMode",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
+        "values": [
+          "IDLE",
+          "DUMPING_EXCESS",
+          "DUMPING"
+        ]
+      }
+    },
+    {
+      "methodName": "getFlowRate",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getLastSteamInputRate",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getMaxFlowRate",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getMaxProduction",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getMaxWaterOutput",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getProductionRate",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getSteam",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getSteamCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getSteamFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getSteamNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getVents",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "incrementDumpingMode"
+    },
+    {
+      "methodName": "setDumpingMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
+          "name": "mode",
+          "values": [
+            "IDLE",
+            "DUMPING_EXCESS",
+            "DUMPING"
+          ]
+        }
+      ]
+    }
+  ],
+  "mekanism.generators.common.tile.TileEntityBioGenerator": [
+    {
+      "methodName": "getBioFuel",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraftforge.fluids.FluidStack"
+      }
+    },
+    {
+      "methodName": "getBioFuelCapacity",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getBioFuelFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getBioFuelNeeded",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getFuelItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getProductionRate",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    }
+  ],
+  "mekanism.generators.common.tile.TileEntityGasGenerator": [
+    {
+      "methodName": "getBurnRate",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getFuel",
+      "returns": {
+        "type": "Table",
+        "javaType": "mekanism.api.chemical.ChemicalStack"
+      }
+    },
+    {
+      "methodName": "getFuelCapacity",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getFuelFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getFuelItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getFuelNeeded",
+      "returns": {
+        "type": "long",
+        "javaType": "long"
+      }
+    },
+    {
+      "methodName": "getProductionRate",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    }
+  ],
+  "mekanism.generators.common.tile.TileEntityGenerator": [
+    {
+      "methodName": "getMaxOutput",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    }
+  ],
+  "mekanism.generators.common.tile.TileEntityHeatGenerator": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getEnvironmentalLoss",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getFuelItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getLava",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraftforge.fluids.FluidStack"
+      }
+    },
+    {
+      "methodName": "getLavaCapacity",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getLavaFilledPercentage",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getLavaNeeded",
+      "returns": {
+        "type": "int",
+        "javaType": "int"
+      }
+    },
+    {
+      "methodName": "getProductionRate",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "getTemperature",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    },
+    {
+      "methodName": "getTransferLoss",
+      "returns": {
+        "type": "double",
+        "javaType": "double"
+      }
+    }
+  ],
+  "mekanism.generators.common.tile.TileEntitySolarGenerator": [
+    {
+      "methodName": "canSeeSun",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getProductionRate",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    }
+  ],
+  "mekanism.generators.common.tile.TileEntityWindGenerator": [
+    {
+      "methodName": "getEnergyItem",
+      "returns": {
+        "type": "Table",
+        "javaType": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "methodName": "getProductionRate",
+      "returns": {
+        "type": "FloatingLong",
+        "javaType": "mekanism.api.math.FloatingLong"
+      }
+    },
+    {
+      "methodName": "isBlacklistedDimension",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    }
+  ],
+  "mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter": [
+    {
+      "methodName": "getLogicMode",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter$FissionReactorLogic",
+        "values": [
+          "DISABLED",
+          "ACTIVATION",
+          "TEMPERATURE",
+          "EXCESS_WASTE",
+          "DAMAGED",
+          "DEPLETED"
+        ]
+      }
+    },
+    {
+      "methodName": "getRedstoneLogicStatus",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter$RedstoneStatus",
+        "values": [
+          "IDLE",
+          "OUTPUTTING",
+          "POWERED"
+        ]
+      }
+    },
+    {
+      "methodName": "setLogicMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter$FissionReactorLogic",
+          "name": "logicType",
+          "values": [
+            "DISABLED",
+            "ACTIVATION",
+            "TEMPERATURE",
+            "EXCESS_WASTE",
+            "DAMAGED",
+            "DEPLETED"
+          ]
+        }
+      ]
+    }
+  ],
+  "mekanism.generators.common.tile.fission.TileEntityFissionReactorPort": [
+    {
+      "methodName": "decrementMode"
+    },
+    {
+      "methodName": "getMode",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.generators.common.block.attribute.AttributeStateFissionPortMode$FissionPortMode",
+        "values": [
+          "INPUT",
+          "OUTPUT_WASTE",
+          "OUTPUT_COOLANT"
+        ]
+      }
+    },
+    {
+      "methodName": "incrementMode"
+    },
+    {
+      "methodName": "setMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.generators.common.block.attribute.AttributeStateFissionPortMode$FissionPortMode",
+          "name": "mode",
+          "values": [
+            "INPUT",
+            "OUTPUT_WASTE",
+            "OUTPUT_COOLANT"
+          ]
+        }
+      ]
+    }
+  ],
+  "mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter": [
+    {
+      "methodName": "getLogicMode",
+      "returns": {
+        "type": "String",
+        "javaType": "mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter$FusionReactorLogic",
+        "values": [
+          "DISABLED",
+          "READY",
+          "CAPACITY",
+          "DEPLETED"
+        ]
+      }
+    },
+    {
+      "methodName": "isActiveCooledLogic",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "methodName": "setActiveCooledLogic",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "active"
+        }
+      ]
+    },
+    {
+      "methodName": "setLogicMode",
+      "params": [
+        {
+          "type": "String",
+          "javaType": "mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter$FusionReactorLogic",
+          "name": "logicType",
+          "values": [
+            "DISABLED",
+            "READY",
+            "CAPACITY",
+            "DEPLETED"
+          ]
+        }
+      ]
+    }
+  ],
+  "mekanism.generators.common.tile.fusion.TileEntityFusionReactorPort": [
+    {
+      "description": "true -> output, false -> input",
+      "methodName": "getMode",
+      "returns": {
+        "type": "boolean",
+        "javaType": "boolean"
+      }
+    },
+    {
+      "description": "true -> output, false -> input",
+      "methodName": "setMode",
+      "params": [
+        {
+          "type": "boolean",
+          "javaType": "boolean",
+          "name": "output"
+        }
+      ]
+    }
+  ]
+}

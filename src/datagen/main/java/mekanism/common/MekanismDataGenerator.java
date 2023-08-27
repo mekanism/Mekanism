@@ -10,6 +10,7 @@ import mekanism.client.texture.MekanismSpriteSourceProvider;
 import mekanism.client.texture.PrideRobitTextureProvider;
 import mekanism.common.advancements.MekanismAdvancementProvider;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
+import mekanism.common.integration.computer.ComputerHelpProvider;
 import mekanism.common.integration.crafttweaker.MekanismCrTExampleProvider;
 import mekanism.common.loot.MekanismLootProvider;
 import mekanism.common.recipe.impl.MekanismRecipeProvider;
@@ -63,6 +64,7 @@ public class MekanismDataGenerator {
         gen.addProvider(event.includeServer(), new MekanismCrTExampleProvider(output, existingFileHelper));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         gen.addProvider(true, new PersistingDisabledProvidersProvider(output, recipeProvider.getDisabledCompats()));
+        gen.addProvider(event.includeServer(), new ComputerHelpProvider(output, existingFileHelper, Mekanism.MODID));
     }
 
     public static <PROVIDER extends DataProvider> void addProvider(DataGenerator gen, boolean run, DataProvider.Factory<PROVIDER> factory) {

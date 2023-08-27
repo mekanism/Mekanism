@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +30,7 @@ import java.lang.reflect.Method;
 public class ComputerMethodFactory<T>{
     protected static String[] NO_STRINGS = new String[0];
     protected static Class<?>[] NO_CLASSES = new Class[0];
+    private static final Comparator<MethodData<?>> METHODDATA_COMPARATOR = Comparator.<MethodData<?>, String>comparing(MethodData::name).thenComparing(md -> md.argumentNames.length);
 
     protected static MethodHandles.Lookup lookup = MethodHandles.lookup();
 
@@ -78,6 +80,10 @@ public class ComputerMethodFactory<T>{
                 holder.register(methodData, weakSubject);
             }
         }
+    }
+
+    public List<MethodHelpData> getHelpData() {
+        return this.methods.stream().sorted(METHODDATA_COMPARATOR).map(MethodHelpData::from).toList();
     }
 
     @FunctionalInterface
