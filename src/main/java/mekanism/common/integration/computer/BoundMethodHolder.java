@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class BoundMethodHolder {
-    private static final Comparator<BoundMethodData<?>> METHODDATA_COMPARATOR = Comparator.<MethodData<?>, String>comparing(MethodData::name).thenComparing(md -> md.argumentNames().length);
-    private static final MethodData<ListMultimap<String, BoundMethodData<?>>> HELP_METHOD = new ComputerMethodFactory.MethodData<>("help", MethodRestriction.NONE, ComputerMethodFactory.NO_STRINGS, true, ComputerMethodFactory.NO_STRINGS, ComputerMethodFactory.NO_CLASSES, Map.class, BoundMethodHolder::generateHelp);
+    private static final Comparator<BoundMethodData<?>> METHODDATA_COMPARATOR = Comparator.<BoundMethodData<?>, String>comparing(BoundMethodData::name).thenComparing(md -> md.argumentNames().length);
+    private static final MethodData<ListMultimap<String, BoundMethodData<?>>> HELP_METHOD = new ComputerMethodFactory.MethodData<>("help", MethodRestriction.NONE, ComputerMethodFactory.NO_STRINGS, true, ComputerMethodFactory.NO_STRINGS, ComputerMethodFactory.NO_CLASSES, Map.class, BoundMethodHolder::generateHelp, null);
     protected final ListMultimap<String, BoundMethodData<?>> methods = ArrayListMultimap.create();
     /**
      * Method + arg count pairs to make sure methods are unique
@@ -96,48 +96,13 @@ public abstract class BoundMethodHolder {
     }
 
     public static Object generateHelp(ListMultimap<String, BoundMethodData<?>> methods, BaseComputerHelper helper) {
-        Map<String, Object> helpItems = new HashMap<>();
+        if (methods == null) {
+            return null;
+        }
+        Map<String, MethodHelpData> helpItems = new HashMap<>();
         methods.values().stream().sorted(METHODDATA_COMPARATOR).forEach(md->
-              helpItems.put(md.name()+"("+String.join(", ", md.argumentNames())+")", generateHelpItem(md))
+              helpItems.put(md.name()+"("+String.join(", ", md.argumentNames())+")", MethodHelpData.from(md))
         );
-        return helpItems;
-    }
-
-    private static Map<String, Object> generateHelpItem(BoundMethodData<?> data) {
-        Map<String, Object> helpData = new HashMap<>();
-        List<Map<String, Object>> params = new ArrayList<>();
-        helpData.put("params", params);
-        for (int i = 0; i < data.argumentNames.length; i++) {
-            Map<String, Object> arg = new HashMap<>();
-            arg.put("name", data.argumentNames[i]);
-            arg.put("type", getHumanType(data.argClasses[i]));
-            if (Enum.class.isAssignableFrom(data.argClasses[i])) {
-                List<String> constList = getEnumConstantNames(data.argClasses[i]);
-                arg.put("values", constList);
-            }
-            params.add(arg);
-        }
-        if (data.returnType != void.class) {
-            helpData.put("returns", getHumanType(data.returnType));
-            if (Enum.class.isAssignableFrom(data.returnType)) {
-                helpData.put("returnValues", getEnumConstantNames(data.returnType));
-            }
-        }
-        if (data.methodDescription() != null) {
-            helpData.put("description", data.methodDescription());
-        }
-        return helpData;
-    }
-
-    @NotNull
-    private static String getHumanType(Class<?> type) {
-        Class<?> convertedType = BaseComputerHelper.convertType(type);
-        return convertedType == Map.class ? "Table" : convertedType.getSimpleName();
-    }
-
-    @NotNull
-    private static List<String> getEnumConstantNames(Class<?> argClass) {
-        Enum<?>[] enumConstants = ((Class<? extends Enum<?>>) argClass).getEnumConstants();
-        return Arrays.stream(enumConstants).map(Enum::name).toList();
+        return helper.convert(helpItems, helper::convert, helper::convert);
     }
 }

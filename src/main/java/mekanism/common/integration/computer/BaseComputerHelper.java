@@ -399,6 +399,37 @@ public abstract class BaseComputerHelper {
         return convertable.convert(this);
     }
 
+    public Object convert(@Nullable MethodHelpData methodHelpData) {
+        if (methodHelpData == null) {
+            return null;
+        }
+        Map<String, Object> helpData = new HashMap<>();
+        helpData.put("name", methodHelpData.methodName());
+        if (methodHelpData.params() != null) {
+            helpData.put("params", methodHelpData.params().stream().map(p->{
+                Map<String, Object> arg = new HashMap<>();
+                arg.put("name", p.name());
+                arg.put("type", p.type());
+                if (p.values() != null) {
+                    arg.put("values", p.values());
+                }
+                return arg;
+            }).toList());
+        }
+
+        Map<String, Object> returns = new HashMap<>();
+        returns.put("type", methodHelpData.returns().type());
+        if (methodHelpData.returns().values() != null) {
+            returns.put("values", methodHelpData.returns().values());
+        }
+        helpData.put("returns", returns);
+
+        if (methodHelpData.description() != null) {
+            helpData.put("description", methodHelpData.description());
+        }
+        return helpData;
+    }
+
     /**
      * Convert a type to the converted version (what is exposed to the computer).
      * Used on OpenComputers2
