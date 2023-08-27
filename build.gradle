@@ -492,9 +492,11 @@ def allJar = tasks.register('allJar', Jar, {
     //Then copy all the files except for ones we are going to include from the merged
     from(sourceSets.api.output)
     List<String> baseExcludeData = MergeJars.getGeneralPathsToExclude(project, combineSets)
-    Closure excludeFromMain = MergeJars.createExcludeClosure(baseExcludeData, 'crafttweaker_parameter_names.json')
+    //file doesnt exist until compile time
+    final computerRegistryService = 'META-INF/services/mekanism.common.integration.computer.IComputerMethodRegistry'
+    Closure excludeFromMain = MergeJars.createExcludeClosure(baseExcludeData, 'crafttweaker_parameter_names.json', computerRegistryService)
     from(sourceSets.main.output, excludeFromMain)
-    Closure excludeFromAll = MergeJars.createExcludeClosure(baseExcludeData, 'logo.png', 'pack.mcmeta')
+    Closure excludeFromAll = MergeJars.createExcludeClosure(baseExcludeData, 'logo.png', 'pack.mcmeta', computerRegistryService)
     for (String name : secondaryModules) {
         from(sourceSets.getByName(name).output, excludeFromAll)
     }
