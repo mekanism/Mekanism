@@ -10,7 +10,7 @@ import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public record MethodHelpData(String methodName, @Nullable List<Param> params, Returns returns, @Nullable String description, @Nullable MethodRestriction restriction) {
+public record MethodHelpData(String methodName, @Nullable List<Param> params, Returns returns, @Nullable String description, MethodRestriction restriction) {
 
     public static MethodHelpData from(BoundMethodHolder.BoundMethodData<?> data) {
         return from(data.method());
@@ -21,7 +21,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
     }
 
     @NotNull
-    private static MethodHelpData from(String methodName, String[] argumentNames, Class<?>[] argumentClasses, Class<?> returnType, @Nullable String methodDescription, @Nullable MethodRestriction restriction) {
+    private static MethodHelpData from(String methodName, String[] argumentNames, Class<?>[] argumentClasses, Class<?> returnType, @Nullable String methodDescription, MethodRestriction restriction) {
         List<Param> params = new ArrayList<>();
         for (int i = 0; i < argumentNames.length; i++) {
             Class<?> argClass = argumentClasses[i];
