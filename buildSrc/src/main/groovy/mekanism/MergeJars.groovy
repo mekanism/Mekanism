@@ -26,6 +26,8 @@ class MergeJars {
         List<String> toExclude = new ArrayList<>()
         toExclude.add('META-INF/mods.toml')
         toExclude.add('META-INF/accesstransformer.cfg')
+        //This file doesn't exist until compile time
+        toExclude.add('META-INF/services/mekanism.common.integration.computer.IComputerMethodRegistry')
         addDuplicates(project, atlasFilter, sourceSets, toExclude)
         addDuplicates(project, tagFilter, sourceSets, toExclude)
         addDuplicates(project, serviceFilter, sourceSets, toExclude, annotationGeneratedLister)
