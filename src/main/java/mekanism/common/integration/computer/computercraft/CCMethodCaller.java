@@ -8,7 +8,6 @@ import mekanism.common.integration.computer.BoundMethodHolder;
 import mekanism.common.integration.computer.ComputerException;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -24,9 +23,9 @@ public class CCMethodCaller extends BoundMethodHolder {
             throw new LuaException(String.format(Locale.ROOT, "Method index '%d' is out of bounds. This handler only has '%d' methods.", methodIdx, methodNames.length));
         }
         //validate arg counts match, types are checked at call time
-        Collection<MethodData<?>> methodDataCollection = this.methods.get(methodNames[methodIdx]);
+        Collection<BoundMethodData<?>> methodDataCollection = this.methods.get(methodNames[methodIdx]);
         int argCount = arguments.count();
-        MethodData<?> methodToCall = methodDataCollection.stream().filter(md -> md.argumentNames().length == argCount)
+        BoundMethodData<?> methodToCall = methodDataCollection.stream().filter(md -> md.argumentNames().length == argCount)
                 .findAny()
                 .orElseThrow(() -> new LuaException(String.format(Locale.ROOT,
                         "Found %d arguments, expected %s",
@@ -41,7 +40,7 @@ public class CCMethodCaller extends BoundMethodHolder {
     }
 
     @NotNull
-    private static MethodResult callHandler(IArguments arguments, MethodData<?> methodToCall) throws LuaException {
+    private static MethodResult callHandler(IArguments arguments, BoundMethodData<?> methodToCall) throws LuaException {
         Object result;
         try {
             result = methodToCall.call(new CCComputerHelper(arguments));
