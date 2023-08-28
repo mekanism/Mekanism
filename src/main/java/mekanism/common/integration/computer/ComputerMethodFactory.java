@@ -75,7 +75,7 @@ public class ComputerMethodFactory<T>{
         WeakReference<T> weakSubject = subject != null ? new WeakReference<>(subject) : null;
         for (MethodData<T> methodData : this.methods) {
             if (methodData.restriction.test(subject) && modsLoaded(methodData.requiredMods)) {
-                holder.register(methodData.name(), methodData.threadSafe(), methodData.argumentNames(), methodData.argClasses(), methodData.returnType(), weakSubject, methodData.handler());
+                holder.register(methodData, weakSubject);
             }
         }
     }
