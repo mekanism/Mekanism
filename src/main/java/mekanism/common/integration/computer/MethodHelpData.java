@@ -10,18 +10,18 @@ import net.minecraft.util.ExtraCodecs;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public record MethodHelpData(String methodName, @Nullable List<Param> params, Returns returns, @Nullable String description, MethodRestriction restriction) {
+public record MethodHelpData(String methodName, @Nullable List<Param> params, Returns returns, @Nullable String description, MethodRestriction restriction, boolean requiresPublicSecurity) {
 
     public static MethodHelpData from(BoundMethodHolder.BoundMethodData<?> data) {
         return from(data.method());
     }
 
     public static MethodHelpData from(ComputerMethodFactory.MethodData<?> data) {
-        return from(data.name(), data.argumentNames(), data.argClasses(), data.returnType(), data.methodDescription(), data.restriction());
+        return from(data.name(), data.argumentNames(), data.argClasses(), data.returnType(), data.methodDescription(), data.restriction(), data.requiresPublicSecurity());
     }
 
     @NotNull
-    private static MethodHelpData from(String methodName, String[] argumentNames, Class<?>[] argumentClasses, Class<?> returnType, @Nullable String methodDescription, MethodRestriction restriction) {
+    private static MethodHelpData from(String methodName, String[] argumentNames, Class<?>[] argumentClasses, Class<?> returnType, @Nullable String methodDescription, MethodRestriction restriction, boolean requiresPublicSecurity) {
         List<Param> params = new ArrayList<>();
         for (int i = 0; i < argumentNames.length; i++) {
             Class<?> argClass = argumentClasses[i];
@@ -30,7 +30,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
 
         Returns returns = returnType != void.class ? new Returns(getHumanType(returnType), returnType, getEnumConstantNames(returnType)) : Returns.NOTHING;
 
-        return new MethodHelpData(methodName, params.isEmpty() ? null : params, returns, methodDescription, restriction);
+        return new MethodHelpData(methodName, params.isEmpty() ? null : params, returns, methodDescription, restriction, requiresPublicSecurity);
     }
 
     @NotNull
@@ -64,7 +64,8 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
                 Param.CODEC.listOf().optionalFieldOf("params", null).forGetter(MethodHelpData::params),
                 Returns.CODEC.optionalFieldOf("returns", Returns.NOTHING).forGetter(MethodHelpData::returns),
                 Codec.STRING.optionalFieldOf("description", null).forGetter(MethodHelpData::description),
-                METHOD_RESTRICTION_CODEC.optionalFieldOf("restriction", MethodRestriction.NONE).forGetter(MethodHelpData::restriction)
+                METHOD_RESTRICTION_CODEC.optionalFieldOf("restriction", MethodRestriction.NONE).forGetter(MethodHelpData::restriction),
+                Codec.BOOL.optionalFieldOf("requiresPublicSecurity", false).forGetter(MethodHelpData::requiresPublicSecurity)
           ).apply(instance, MethodHelpData::new)
     );
 

@@ -302,7 +302,7 @@
         {
           "type": "boolean",
           "javaType": "boolean",
-          "name": "enabled"
+          "name": "arg0"
         }
       ]
     }
@@ -331,7 +331,7 @@
         {
           "type": "Table",
           "javaType": "net.minecraft.world.item.ItemStack",
-          "name": "stack"
+          "name": "arg0"
         }
       ]
     }
@@ -350,7 +350,7 @@
         {
           "type": "String",
           "javaType": "java.lang.String",
-          "name": "id"
+          "name": "arg0"
         }
       ]
     }
@@ -369,7 +369,7 @@
         {
           "type": "String",
           "javaType": "java.lang.String",
-          "name": "name"
+          "name": "arg0"
         }
       ]
     }
@@ -1103,7 +1103,8 @@
   ],
   "mekanism.common.tile.TileEntityChemicalTank": [
     {
-      "methodName": "decrementDumpingMode"
+      "methodName": "decrementDumpingMode",
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "getCapacity",
@@ -1160,7 +1161,8 @@
       }
     },
     {
-      "methodName": "incrementDumpingMode"
+      "methodName": "incrementDumpingMode",
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setDumpingMode",
@@ -1175,7 +1177,8 @@
             "DUMPING"
           ]
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.TileEntityEnergyCube": [
@@ -1196,7 +1199,8 @@
   ],
   "mekanism.common.tile.TileEntityFluidTank": [
     {
-      "methodName": "decrementContainerEditMode"
+      "methodName": "decrementContainerEditMode",
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "getCapacity",
@@ -1253,7 +1257,8 @@
       }
     },
     {
-      "methodName": "incrementContainerEditMode"
+      "methodName": "incrementContainerEditMode",
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setContainerEditMode",
@@ -1268,7 +1273,8 @@
             "EMPTY"
           ]
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.TileEntityLogisticalSorter": [
@@ -1281,16 +1287,19 @@
           "name": "filter"
         }
       ],
+      "requiresPublicSecurity": true,
       "returns": {
         "type": "boolean",
         "javaType": "boolean"
       }
     },
     {
-      "methodName": "clearDefaultColor"
+      "methodName": "clearDefaultColor",
+      "requiresPublicSecurity": true
     },
     {
-      "methodName": "decrementDefaultColor"
+      "methodName": "decrementDefaultColor",
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "getAutoMode",
@@ -1334,7 +1343,8 @@
       }
     },
     {
-      "methodName": "incrementDefaultColor"
+      "methodName": "incrementDefaultColor",
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "isRoundRobin",
@@ -1359,6 +1369,7 @@
           "name": "filter"
         }
       ],
+      "requiresPublicSecurity": true,
       "returns": {
         "type": "boolean",
         "javaType": "boolean"
@@ -1372,7 +1383,8 @@
           "javaType": "boolean",
           "name": "value"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setDefaultColor",
@@ -1402,7 +1414,8 @@
             "BRIGHT_PINK"
           ]
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setRoundRobin",
@@ -1412,7 +1425,8 @@
           "javaType": "boolean",
           "name": "value"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setSingle",
@@ -1422,7 +1436,8 @@
           "javaType": "boolean",
           "name": "value"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.TileEntityModificationStation": [
@@ -1458,7 +1473,8 @@
           "javaType": "java.lang.String",
           "name": "name"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "getBufferFluid",
@@ -1663,7 +1679,8 @@
           "javaType": "java.lang.String",
           "name": "name"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.TileEntityRadioactiveWasteBarrel": [
@@ -1706,11 +1723,13 @@
           "javaType": "java.lang.String",
           "name": "name"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "description": "Requires a frequency to be selected",
-      "methodName": "decrementFrequencyColor"
+      "methodName": "decrementFrequencyColor",
+      "requiresPublicSecurity": true
     },
     {
       "description": "Requires a frequency to be selected",
@@ -1787,7 +1806,8 @@
     },
     {
       "description": "Requires a frequency to be selected",
-      "methodName": "incrementFrequencyColor"
+      "methodName": "incrementFrequencyColor",
+      "requiresPublicSecurity": true
     },
     {
       "description": "Requires a public frequency to exist",
@@ -1798,7 +1818,8 @@
           "javaType": "java.lang.String",
           "name": "name"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "description": "Requires a frequency to be selected",
@@ -1829,7 +1850,8 @@
             "BRIGHT_PINK"
           ]
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.base.TileEntityMekanism": [
@@ -1918,6 +1940,7 @@
           ]
         }
       ],
+      "requiresPublicSecurity": true,
       "restriction": "REDSTONE_CONTROL"
     }
   ],
@@ -1977,7 +2000,8 @@
             "BOTTOM"
           ]
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "getConfigurableTypes",
@@ -2018,6 +2042,7 @@
           ]
         }
       ],
+      "requiresPublicSecurity": true,
       "returns": {
         "type": "String",
         "javaType": "mekanism.common.tile.component.config.DataType",
@@ -2054,6 +2079,7 @@
           ]
         }
       ],
+      "requiresPublicSecurity": true,
       "returns": {
         "type": "Set",
         "javaType": "java.util.Set"
@@ -2090,7 +2116,8 @@
             "BOTTOM"
           ]
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "isEjecting",
@@ -2139,7 +2166,8 @@
           "javaType": "boolean",
           "name": "ejecting"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setMode",
@@ -2189,7 +2217,8 @@
             "EXTRA"
           ]
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.component.TileComponentEjector": [
@@ -2209,10 +2238,12 @@
             "BOTTOM"
           ]
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
-      "methodName": "clearOutputColor"
+      "methodName": "clearOutputColor",
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "decrementInputColor",
@@ -2230,10 +2261,12 @@
             "BOTTOM"
           ]
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
-      "methodName": "decrementOutputColor"
+      "methodName": "decrementOutputColor",
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "getInputColor",
@@ -2327,10 +2360,12 @@
             "BOTTOM"
           ]
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
-      "methodName": "incrementOutputColor"
+      "methodName": "incrementOutputColor",
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setInputColor",
@@ -2373,7 +2408,8 @@
             "BRIGHT_PINK"
           ]
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setOutputColor",
@@ -2403,7 +2439,8 @@
             "BRIGHT_PINK"
           ]
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setStrictInput",
@@ -2413,7 +2450,8 @@
           "javaType": "boolean",
           "name": "strict"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.component.TileComponentSecurity": [
@@ -2549,12 +2587,14 @@
           "javaType": "boolean",
           "name": "enabled"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory": [
     {
-      "methodName": "dumpChemical"
+      "methodName": "dumpChemical",
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "getChemical",
@@ -2594,7 +2634,8 @@
   ],
   "mekanism.common.tile.factory.TileEntityMetallurgicInfuserFactory": [
     {
-      "methodName": "dumpInfuseType"
+      "methodName": "dumpInfuseType",
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "getInfuseType",
@@ -2699,7 +2740,8 @@
           "javaType": "int",
           "name": "delay"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setMaxThreshold",
@@ -2709,7 +2751,8 @@
           "javaType": "mekanism.api.math.FloatingLong",
           "name": "threshold"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setMinThreshold",
@@ -2719,7 +2762,8 @@
           "javaType": "mekanism.api.math.FloatingLong",
           "name": "threshold"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setRedstoneOutputMode",
@@ -2734,7 +2778,8 @@
             "ENERGY_CONTENTS"
           ]
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.laser.TileEntityLaserTractorBeam": [
@@ -3324,13 +3369,15 @@
           "name": "filter"
         }
       ],
+      "requiresPublicSecurity": true,
       "returns": {
         "type": "boolean",
         "javaType": "boolean"
       }
     },
     {
-      "methodName": "clearInverseModeReplaceTarget"
+      "methodName": "clearInverseModeReplaceTarget",
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "getAutoEject",
@@ -3481,13 +3528,15 @@
           "name": "filter"
         }
       ],
+      "requiresPublicSecurity": true,
       "returns": {
         "type": "boolean",
         "javaType": "boolean"
       }
     },
     {
-      "methodName": "reset"
+      "methodName": "reset",
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setAutoEject",
@@ -3497,7 +3546,8 @@
           "javaType": "boolean",
           "name": "eject"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setAutoPull",
@@ -3507,7 +3557,8 @@
           "javaType": "boolean",
           "name": "pull"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "description": "Require miner to be stopped/reset first",
@@ -3518,7 +3569,8 @@
           "javaType": "boolean",
           "name": "enabled"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "description": "Require miner to be stopped/reset first",
@@ -3529,7 +3581,8 @@
           "javaType": "net.minecraft.world.item.Item",
           "name": "target"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "description": "Require miner to be stopped/reset first",
@@ -3540,7 +3593,8 @@
           "javaType": "boolean",
           "name": "requiresReplacement"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "description": "Require miner to be stopped/reset first",
@@ -3551,7 +3605,8 @@
           "javaType": "int",
           "name": "maxY"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "description": "Require miner to be stopped/reset first",
@@ -3562,7 +3617,8 @@
           "javaType": "int",
           "name": "minY"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "description": "Require miner to be stopped/reset first",
@@ -3573,7 +3629,8 @@
           "javaType": "int",
           "name": "radius"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setSilkTouch",
@@ -3583,13 +3640,16 @@
           "javaType": "boolean",
           "name": "silk"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
-      "methodName": "start"
+      "methodName": "start",
+      "requiresPublicSecurity": true
     },
     {
-      "methodName": "stop"
+      "methodName": "stop",
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.machine.TileEntityDimensionalStabilizer": [
@@ -3602,7 +3662,8 @@
           "javaType": "int",
           "name": "radius"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "description": "Range: [1, 2]",
@@ -3613,7 +3674,8 @@
           "javaType": "int",
           "name": "radius"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "getChunksLoaded",
@@ -3668,7 +3730,8 @@
           "javaType": "boolean",
           "name": "load"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "description": "Range: [-2, 2]",
@@ -3684,7 +3747,8 @@
           "javaType": "int",
           "name": "z"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.machine.TileEntityElectricPump": [
@@ -3738,15 +3802,18 @@
       }
     },
     {
-      "methodName": "reset"
+      "methodName": "reset",
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.machine.TileEntityElectrolyticSeparator": [
     {
-      "methodName": "decrementLeftOutputDumpingMode"
+      "methodName": "decrementLeftOutputDumpingMode",
+      "requiresPublicSecurity": true
     },
     {
-      "methodName": "decrementRightOutputDumpingMode"
+      "methodName": "decrementRightOutputDumpingMode",
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "getEnergyItem",
@@ -3892,10 +3959,12 @@
       }
     },
     {
-      "methodName": "incrementLeftOutputDumpingMode"
+      "methodName": "incrementLeftOutputDumpingMode",
+      "requiresPublicSecurity": true
     },
     {
-      "methodName": "incrementRightOutputDumpingMode"
+      "methodName": "incrementRightOutputDumpingMode",
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setLeftOutputDumpingMode",
@@ -3910,7 +3979,8 @@
             "DUMPING"
           ]
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setRightOutputDumpingMode",
@@ -3925,7 +3995,8 @@
             "DUMPING"
           ]
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.machine.TileEntityFluidicPlenisher": [
@@ -3979,33 +4050,40 @@
       }
     },
     {
-      "methodName": "reset"
+      "methodName": "reset",
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.machine.TileEntityFormulaicAssemblicator": [
     {
       "description": "Requires recipe and auto mode to be disabled",
-      "methodName": "craftAvailableItems"
+      "methodName": "craftAvailableItems",
+      "requiresPublicSecurity": true
     },
     {
       "description": "Requires recipe and auto mode to be disabled",
-      "methodName": "craftSingleItem"
+      "methodName": "craftSingleItem",
+      "requiresPublicSecurity": true
     },
     {
       "description": "Requires auto mode to be disabled",
-      "methodName": "emptyGrid"
+      "methodName": "emptyGrid",
+      "requiresPublicSecurity": true
     },
     {
       "description": "Requires an unencoded formula in the formula slot and a valid recipe",
-      "methodName": "encodeFormula"
+      "methodName": "encodeFormula",
+      "requiresPublicSecurity": true
     },
     {
       "description": "Requires auto mode to be disabled",
-      "methodName": "fillGrid"
+      "methodName": "fillGrid",
+      "requiresPublicSecurity": true
     },
     {
       "description": "Requires valid encoded formula",
       "methodName": "getAutoMode",
+      "requiresPublicSecurity": true,
       "returns": {
         "type": "boolean",
         "javaType": "boolean"
@@ -4098,6 +4176,7 @@
     {
       "description": "Requires valid encoded formula",
       "methodName": "getStockControl",
+      "requiresPublicSecurity": true,
       "returns": {
         "type": "boolean",
         "javaType": "boolean"
@@ -4133,7 +4212,8 @@
           "javaType": "boolean",
           "name": "mode"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "description": "Requires valid encoded formula",
@@ -4144,7 +4224,8 @@
           "javaType": "boolean",
           "name": "mode"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.machine.TileEntityFuelwoodHeater": [
@@ -4265,7 +4346,8 @@
   ],
   "mekanism.common.tile.machine.TileEntityMetallurgicInfuser": [
     {
-      "methodName": "dumpInfuseType"
+      "methodName": "dumpInfuseType",
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "getEnergyItem",
@@ -4406,6 +4488,7 @@
           "name": "filter"
         }
       ],
+      "requiresPublicSecurity": true,
       "returns": {
         "type": "boolean",
         "javaType": "boolean"
@@ -4441,6 +4524,7 @@
           "name": "filter"
         }
       ],
+      "requiresPublicSecurity": true,
       "returns": {
         "type": "boolean",
         "javaType": "boolean"
@@ -4893,7 +4977,8 @@
           "javaType": "mekanism.api.math.FloatingLong",
           "name": "usage"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.machine.TileEntityRotaryCondensentrator": [
@@ -5010,7 +5095,8 @@
           "javaType": "boolean",
           "name": "value"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.machine.TileEntitySeismicVibrator": [
@@ -5244,7 +5330,8 @@
   ],
   "mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine": [
     {
-      "methodName": "dumpChemical"
+      "methodName": "dumpChemical",
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "getChemical",
@@ -5376,11 +5463,13 @@
           "javaType": "java.lang.String",
           "name": "name"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "description": "Requires a frequency to be selected",
-      "methodName": "decrementFrequencyColor"
+      "methodName": "decrementFrequencyColor",
+      "requiresPublicSecurity": true
     },
     {
       "description": "Lists public frequencies",
@@ -5435,7 +5524,8 @@
     },
     {
       "description": "Requires a frequency to be selected",
-      "methodName": "incrementFrequencyColor"
+      "methodName": "incrementFrequencyColor",
+      "requiresPublicSecurity": true
     },
     {
       "description": "Requires a public frequency to exist",
@@ -5446,7 +5536,8 @@
           "javaType": "java.lang.String",
           "name": "name"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "description": "Requires a frequency to be selected",
@@ -5477,7 +5568,8 @@
             "BRIGHT_PINK"
           ]
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.qio.TileEntityQIODashboard": [
@@ -5623,7 +5715,8 @@
           "javaType": "boolean",
           "name": "value"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.qio.TileEntityQIOFilterHandler": [
@@ -5636,6 +5729,7 @@
           "name": "filter"
         }
       ],
+      "requiresPublicSecurity": true,
       "returns": {
         "type": "boolean",
         "javaType": "boolean"
@@ -5657,6 +5751,7 @@
           "name": "filter"
         }
       ],
+      "requiresPublicSecurity": true,
       "returns": {
         "type": "boolean",
         "javaType": "boolean"
@@ -5679,12 +5774,14 @@
           "javaType": "boolean",
           "name": "value"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.qio.TileEntityQIORedstoneAdapter": [
     {
-      "methodName": "clearTargetItem"
+      "methodName": "clearTargetItem",
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "getFuzzyMode",
@@ -5715,7 +5812,8 @@
           "javaType": "boolean",
           "name": "fuzzy"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setTargetItem",
@@ -5725,7 +5823,8 @@
           "javaType": "net.minecraft.resources.ResourceLocation",
           "name": "itemName"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
       "methodName": "setTriggerAmount",
@@ -5735,10 +5834,12 @@
           "javaType": "long",
           "name": "amount"
         }
-      ]
+      ],
+      "requiresPublicSecurity": true
     },
     {
-      "methodName": "toggleFuzzyMode"
+      "methodName": "toggleFuzzyMode",
+      "requiresPublicSecurity": true
     }
   ],
   "mekanism.common.tile.transmitter.TileEntityDiversionTransporter": [

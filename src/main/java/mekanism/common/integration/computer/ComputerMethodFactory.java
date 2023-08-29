@@ -62,15 +62,15 @@ public class ComputerMethodFactory<T>{
      */
     private final Set<ObjectIntPair<String>> methodsKnown = new HashSet<>();
 
-    protected void register(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, Class<?> returnType, ComputerFunctionCaller<T> handler, @Nullable String methodDescription, String[] argumentNames, Class<?>[] argClasses) {
+    protected void register(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, Class<?> returnType, ComputerFunctionCaller<T> handler, @Nullable String methodDescription, boolean requiresPublicSecurity, String[] argumentNames, Class<?>[] argClasses) {
         if (!methodsKnown.add(new ObjectIntImmutablePair<>(name, argumentNames.length))) {
             throw new RuntimeException("Duplicate method name "+name+"_"+argumentNames.length);
         }
-        this.methods.add(new MethodData<>(name, restriction, requiredMods, threadSafe, argumentNames, argClasses, returnType, handler, methodDescription));
+        this.methods.add(new MethodData<>(name, restriction, requiredMods, threadSafe, argumentNames, argClasses, returnType, handler, methodDescription, requiresPublicSecurity));
     }
 
-    protected void register(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, Class<?> returnType, ComputerFunctionCaller<T> handler, @Nullable String methodDescription) {
-        register(name, restriction, requiredMods, threadSafe, returnType, handler, methodDescription, NO_STRINGS, NO_CLASSES);
+    protected void register(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, Class<?> returnType, ComputerFunctionCaller<T> handler, @Nullable String methodDescription, boolean requiresPublicSecurity) {
+        register(name, restriction, requiredMods, threadSafe, returnType, handler, methodDescription, requiresPublicSecurity, NO_STRINGS, NO_CLASSES);
     }
 
     void bindTo(@Nullable T subject, BoundMethodHolder holder) {
@@ -100,7 +100,7 @@ public class ComputerMethodFactory<T>{
         Object apply(@Nullable T t, BaseComputerHelper u) throws ComputerException;
     }
 
-    public record MethodData<T>(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses, Class<?> returnType, ComputerFunctionCaller<T> handler, @Nullable String methodDescription) {
+    public record MethodData<T>(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses, Class<?> returnType, ComputerFunctionCaller<T> handler, @Nullable String methodDescription, boolean requiresPublicSecurity) {
 
         public boolean supports(@Nullable T subject) {
             return restriction.test(subject) && modsLoaded(requiredMods);

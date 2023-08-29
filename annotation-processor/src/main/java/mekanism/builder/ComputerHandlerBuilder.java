@@ -580,7 +580,9 @@ public class ComputerHandlerBuilder {
         //method reference to handler method
         registerMethodBuilder.add("$N::$N, ", handlerClassName, handlerMethod);
         //method description
-        registerMethodBuilder.add("$L", annotationValues.getLiteral("methodDescription",null));
+        registerMethodBuilder.add("$L, ", annotationValues.getLiteral("methodDescription",null));
+        //requires public security
+        registerMethodBuilder.add("$L", annotationValues.getLiteral("requiresPublicSecurity",false));
         //param names
         if (!parameters.isEmpty()) {
             registerMethodBuilder.add(", ");
