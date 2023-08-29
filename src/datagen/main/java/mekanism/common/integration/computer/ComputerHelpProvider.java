@@ -11,10 +11,12 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -57,7 +59,8 @@ import org.jetbrains.annotations.NotNull;
 @MethodsReturnNonnullByDefault
 @ParametersAreNotNullByDefault
 public class ComputerHelpProvider implements DataProvider {
-    private static final String[] CSV_HEADERS = new String[]{"Class", "Method Name", "Params", "Returns", "Restriction", "Requires Public Security", "Description"};
+    private static final String[] METHOD_CSV_HEADERS = new String[]{"Class", "Method Name", "Params", "Returns", "Restriction", "Requires Public Security", "Description"};
+    private static final String[] ENUM_CSV_HEADERS = new String[]{"Type Name", "Values"};
     private final PackOutput.PathProvider pathProvider;
     private final ExistingFileHelper existingFileHelper;
     private final String modid;
@@ -74,7 +77,8 @@ public class ComputerHelpProvider implements DataProvider {
         Map<Class<?>, List<MethodHelpData>> helpData = FactoryRegistry.getHelpData();
         return CompletableFuture.allOf(
               makeMethodsJson(pOutput, helpData),
-              makeMethodsCsv(pOutput, helpData)
+              makeMethodsCsv(pOutput, helpData),
+              makeEnumsCsv(pOutput, helpData)
         );
     }
 
@@ -83,12 +87,12 @@ public class ComputerHelpProvider implements DataProvider {
         JsonElement jsonElement = JSONCODEC.encodeStart(JsonOps.INSTANCE, helpData).getOrThrow(false, e -> {
             throw new RuntimeException(e);
         });
-        return DataProvider.saveStable(pOutput, jsonElement, this.pathProvider.json(new ResourceLocation(this.modid, "all")));
+        return DataProvider.saveStable(pOutput, jsonElement, this.pathProvider.json(new ResourceLocation(this.modid, "methods")));
     }
 
     @NotNull
     private CompletableFuture<?> makeMethodsCsv(CachedOutput pOutput, Map<Class<?>, List<MethodHelpData>> helpData) {
-        return saveCSV(pOutput, this.pathProvider.file(new ResourceLocation(this.modid, "all"), "csv"), CSV_HEADERS, output -> {
+        return saveCSV(pOutput, this.pathProvider.file(new ResourceLocation(this.modid, "methods"), "csv"), METHOD_CSV_HEADERS, output -> {
             List<Pair<String, List<MethodHelpData>>> friendlyList = helpData.entrySet().stream().map(entry -> Pair.of(getFriendlyName(entry.getKey()), entry.getValue())).sorted(Entry.comparingByKey()).toList();
             for (Pair<String, List<MethodHelpData>> entry : friendlyList) {
                 String friendlyClassName = entry.getKey();
@@ -108,14 +112,38 @@ public class ComputerHelpProvider implements DataProvider {
         });
     }
 
+    @NotNull
+    private CompletableFuture<?> makeEnumsCsv(CachedOutput pOutput, Map<Class<?>, List<MethodHelpData>> helpData) {
+        //gather the enums into a sorted map
+        Map<Class<?>, List<String>> enumToValues = new TreeMap<>(Comparator.comparing(Class::getSimpleName));
+        helpData.forEach((unused, methods)->{
+            for (MethodHelpData method : methods) {
+                if (method.returns().values() != null) {
+                    enumToValues.put(method.returns().javaType(), method.returns().values());
+                }
+                if (method.params() != null) {
+                    for (Param param : method.params()) {
+                        if (param.values() != null) {
+                            enumToValues.put(param.javaType(), param.values());
+                        }
+                    }
+                }
+            }
+        });
+        return saveCSV(pOutput, this.pathProvider.file(new ResourceLocation(this.modid, "enums"), "csv"), ENUM_CSV_HEADERS, csvOutput ->{
+            for (Entry<Class<?>, List<String>> entry : enumToValues.entrySet()) {
+                Class<?> clazz = entry.getKey();
+                List<String> values = entry.getValue();
+                csvOutput.writeRow(clazz.getSimpleName(), String.join(", ", values));
+            }
+        });
+    }
+
     private static String csvReturnsValue(Returns returns) {
         if (returns == Returns.NOTHING) {
             return "";
         }
-        if (returns.values() == null) {
-            return returns.type();
-        }
-        return returns.javaType().getSimpleName()+" (\"" + String.join("\", \"", returns.values()) + "\")";
+        return returns.type();
     }
 
     @Override

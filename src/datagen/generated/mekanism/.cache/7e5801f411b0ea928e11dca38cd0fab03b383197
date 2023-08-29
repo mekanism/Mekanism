@@ -1,3 +1,4 @@
-// 1.20.1	2023-08-29T18:24:15.5377281	ComputerHelp:mekanism
-222314347505ced706e860cc0e13059dc8253729 data/mekanism/computerHelp/all.csv
-3387e4e53cef55de460380ca42814361d55280ec data/mekanism/computerHelp/all.json
+// 1.20.1	2023-08-29T20:33:40.0126851	ComputerHelp:mekanism
+333bb5d5c5916100a930b8afa4ae54656ff85c4d data/mekanism/computerHelp/enums.csv
+d65e798fadf8914e6a5100153ae009a49df32b87 data/mekanism/computerHelp/methods.csv
+3387e4e53cef55de460380ca42814361d55280ec data/mekanism/computerHelp/methods.json
