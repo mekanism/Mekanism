@@ -52,6 +52,7 @@ import net.minecraft.util.CsvOutput.Builder;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNotNullByDefault
@@ -71,28 +72,40 @@ public class ComputerHelpProvider implements DataProvider {
     public CompletableFuture<?> run(CachedOutput pOutput) {
         FactoryRegistry.load();
         Map<Class<?>, List<MethodHelpData>> helpData = FactoryRegistry.getHelpData();
-        JsonElement element = JSONCODEC.encodeStart(JsonOps.INSTANCE, helpData).getOrThrow(false, e->{throw new RuntimeException(e);});
         return CompletableFuture.allOf(
-              DataProvider.saveStable(pOutput, element, this.pathProvider.json(new ResourceLocation(this.modid, "all"))),
-              saveCSV(pOutput, this.pathProvider.file(new ResourceLocation(this.modid, "all"), "csv"), CSV_HEADERS, output -> {
-                  List<Pair<String, List<MethodHelpData>>> friendlyList = helpData.entrySet().stream().map(entry -> Pair.of(getFriendlyName(entry.getKey()), entry.getValue())).sorted(Entry.comparingByKey()).toList();
-                  for (Pair<String, List<MethodHelpData>> entry : friendlyList) {
-                      String friendlyClassName = entry.getKey();
-                      List<MethodHelpData> methods = entry.getValue();
-                      for (MethodHelpData method : methods) {
-                          output.writeRow(
-                                friendlyClassName,
-                                method.methodName(),
-                                method.params() != null ? method.params().stream().map(Param::name).collect(Collectors.joining(", ")) : "",
-                                csvReturnsValue(method.returns()),
-                                method.restriction() != MethodRestriction.NONE ? method.restriction().name() : "",
-                                method.requiresPublicSecurity(),
-                                method.description() != null ? method.description() : ""
-                          );
-                      }
-                  }
-              })
+              makeMethodsJson(pOutput, helpData),
+              makeMethodsCsv(pOutput, helpData)
         );
+    }
+
+    @NotNull
+    private CompletableFuture<?> makeMethodsJson(CachedOutput pOutput, Map<Class<?>, List<MethodHelpData>> helpData) {
+        JsonElement jsonElement = JSONCODEC.encodeStart(JsonOps.INSTANCE, helpData).getOrThrow(false, e -> {
+            throw new RuntimeException(e);
+        });
+        return DataProvider.saveStable(pOutput, jsonElement, this.pathProvider.json(new ResourceLocation(this.modid, "all")));
+    }
+
+    @NotNull
+    private CompletableFuture<?> makeMethodsCsv(CachedOutput pOutput, Map<Class<?>, List<MethodHelpData>> helpData) {
+        return saveCSV(pOutput, this.pathProvider.file(new ResourceLocation(this.modid, "all"), "csv"), CSV_HEADERS, output -> {
+            List<Pair<String, List<MethodHelpData>>> friendlyList = helpData.entrySet().stream().map(entry -> Pair.of(getFriendlyName(entry.getKey()), entry.getValue())).sorted(Entry.comparingByKey()).toList();
+            for (Pair<String, List<MethodHelpData>> entry : friendlyList) {
+                String friendlyClassName = entry.getKey();
+                List<MethodHelpData> methods = entry.getValue();
+                for (MethodHelpData method : methods) {
+                    output.writeRow(
+                          friendlyClassName,
+                          method.methodName(),
+                          method.params() != null ? method.params().stream().map(Param::name).collect(Collectors.joining(", ")) : "",
+                          csvReturnsValue(method.returns()),
+                          method.restriction() != MethodRestriction.NONE ? method.restriction().name() : "",
+                          method.requiresPublicSecurity(),
+                          method.description() != null ? method.description() : ""
+                    );
+                }
+            }
+        });
     }
 
     private static String csvReturnsValue(Returns returns) {
