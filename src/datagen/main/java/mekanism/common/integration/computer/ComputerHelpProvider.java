@@ -101,7 +101,7 @@ public class ComputerHelpProvider implements DataProvider {
                     output.writeRow(
                           friendlyClassName,
                           method.methodName(),
-                          method.params() != null ? method.params().stream().map(Param::name).collect(Collectors.joining(", ")) : "",
+                          method.params() != null ? method.params().stream().map(param -> param.name()+": "+param.type()).collect(Collectors.joining(", ")) : "",
                           csvReturnsValue(method.returns()),
                           method.restriction() != MethodRestriction.NONE ? method.restriction().name() : "",
                           method.requiresPublicSecurity(),
