@@ -6,7 +6,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import mekanism.api.Coord4D;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.math.FloatingLong;
+import mekanism.common.content.filter.IFilter;
+import mekanism.common.lib.frequency.Frequency;
+import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,9 +46,20 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
     }
 
     @NotNull
-    private static String getHumanType(Class<?> type) {
-        Class<?> convertedType = BaseComputerHelper.convertType(type);
-        return convertedType == Map.class ? "Table" : convertedType.getSimpleName();
+    private static String getHumanType(Class<?> clazz) {
+        if (clazz == UUID.class || clazz == ResourceLocation.class || clazz == Item.class) {
+            return "String ("+clazz.getSimpleName()+")";
+        }
+        if (Frequency.class.isAssignableFrom(clazz) || clazz == Coord4D.class || clazz == Vec3i.class || clazz == FluidStack.class || clazz == ItemStack.class || clazz == BlockState.class || ChemicalStack.class.isAssignableFrom(clazz) || IFilter.class.isAssignableFrom(clazz)) {
+            return "Table ("+clazz.getSimpleName()+")";
+        }
+        if (clazz == int.class || clazz == long.class || clazz == float.class || clazz == double.class || clazz == FloatingLong.class) {
+            return "Number ("+clazz.getSimpleName()+")";
+        }
+        if (clazz == Convertable.class) {
+            return "Varies";//technically can be anything, but so far only map used
+        }
+        return clazz == Map.class ? "Table" : clazz.getSimpleName();
     }
 
     @SuppressWarnings("unchecked")

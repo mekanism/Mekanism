@@ -3,154 +3,154 @@
     {
       "methodName": "getBoilCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getBoilRate",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getCooledCoolant",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getCooledCoolantCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getCooledCoolantFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getCooledCoolantNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getEnvironmentalLoss",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getHeatedCoolant",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getHeatedCoolantCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getHeatedCoolantFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getHeatedCoolantNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getMaxBoilRate",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getSteam",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getSteamCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getSteamFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getSteamNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getSuperheaters",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getTemperature",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getWater",
       "returns": {
-        "type": "Table",
+        "type": "Table (FluidStack)",
         "javaType": "net.minecraftforge.fluids.FluidStack"
       }
     },
     {
       "methodName": "getWaterCapacity",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getWaterFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getWaterNeeded",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     }
@@ -159,112 +159,112 @@
     {
       "methodName": "getActiveSolars",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getEnvironmentalLoss",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (FluidStack)",
         "javaType": "net.minecraftforge.fluids.FluidStack"
       }
     },
     {
       "methodName": "getInputCapacity",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getInputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getInputItemInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getInputItemOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getInputNeeded",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (FluidStack)",
         "javaType": "net.minecraftforge.fluids.FluidStack"
       }
     },
     {
       "methodName": "getOutputCapacity",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getOutputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getOutputItemInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutputItemOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutputNeeded",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getProductionAmount",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getTemperature",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     }
@@ -273,7 +273,7 @@
     {
       "methodName": "getFilterType",
       "returns": {
-        "type": "String",
+        "type": "FilterType",
         "javaType": "mekanism.common.content.filter.FilterType",
         "values": [
           "MINER_ITEMSTACK_FILTER",
@@ -311,7 +311,7 @@
     {
       "methodName": "getItemStack",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
@@ -319,7 +319,7 @@
       "methodName": "setItem",
       "params": [
         {
-          "type": "String",
+          "type": "String (Item)",
           "javaType": "net.minecraft.world.item.Item",
           "name": "item"
         }
@@ -329,7 +329,7 @@
       "methodName": "setItemStack",
       "params": [
         {
-          "type": "Table",
+          "type": "Table (ItemStack)",
           "javaType": "net.minecraft.world.item.ItemStack",
           "name": "arg0"
         }
@@ -378,49 +378,49 @@
     {
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getInstalledCells",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getInstalledProviders",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getLastInput",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getLastOutput",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getTransferCap",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     }
@@ -429,14 +429,14 @@
     {
       "methodName": "clone",
       "returns": {
-        "type": "Table",
+        "type": "Table (MinerFilter)",
         "javaType": "mekanism.common.content.miner.MinerFilter"
       }
     },
     {
       "methodName": "getReplaceTarget",
       "returns": {
-        "type": "String",
+        "type": "String (Item)",
         "javaType": "net.minecraft.world.item.Item"
       }
     },
@@ -458,7 +458,7 @@
       "methodName": "setReplaceTarget",
       "params": [
         {
-          "type": "String",
+          "type": "String (Item)",
           "javaType": "net.minecraft.world.item.Item",
           "name": "value"
         }
@@ -479,7 +479,7 @@
     {
       "methodName": "clone",
       "returns": {
-        "type": "Table",
+        "type": "Table (OredictionificatorFilter)",
         "javaType": "mekanism.common.content.oredictionificator.OredictionificatorFilter"
       }
     },
@@ -494,7 +494,7 @@
       "methodName": "setFilter",
       "params": [
         {
-          "type": "String",
+          "type": "String (ResourceLocation)",
           "javaType": "net.minecraft.resources.ResourceLocation",
           "name": "tag"
         }
@@ -505,7 +505,7 @@
     {
       "methodName": "getSelectedOutput",
       "returns": {
-        "type": "String",
+        "type": "String (Item)",
         "javaType": "net.minecraft.world.item.Item"
       }
     },
@@ -513,7 +513,7 @@
       "methodName": "setSelectedOutput",
       "params": [
         {
-          "type": "String",
+          "type": "String (Item)",
           "javaType": "net.minecraft.world.item.Item",
           "name": "item"
         }
@@ -524,7 +524,7 @@
     {
       "methodName": "clone",
       "returns": {
-        "type": "Table",
+        "type": "Table (QIOFilter)",
         "javaType": "mekanism.common.content.qio.filter.QIOFilter"
       }
     }
@@ -533,70 +533,70 @@
     {
       "methodName": "getCoils",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getInputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getInputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getInputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getOutputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getOutputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getOutputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getProcessRate",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     }
@@ -608,14 +608,14 @@
     {
       "methodName": "getChemicalTankCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getContainerEditMode",
       "returns": {
-        "type": "String",
+        "type": "ContainerEditMode",
         "javaType": "mekanism.common.tile.interfaces.IFluidContainerManager$ContainerEditMode",
         "values": [
           "BOTH",
@@ -627,35 +627,35 @@
     {
       "methodName": "getFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getStored",
       "returns": {
-        "type": "Table",
+        "type": "Varies",
         "javaType": "mekanism.common.integration.computer.Convertable"
       }
     },
     {
       "methodName": "getTankCapacity",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
@@ -666,7 +666,7 @@
       "methodName": "setContainerEditMode",
       "params": [
         {
-          "type": "String",
+          "type": "ContainerEditMode",
           "javaType": "mekanism.common.tile.interfaces.IFluidContainerManager$ContainerEditMode",
           "name": "mode",
           "values": [
@@ -682,7 +682,7 @@
     {
       "methodName": "clone",
       "returns": {
-        "type": "Table",
+        "type": "Table (SorterFilter)",
         "javaType": "mekanism.common.content.transporter.SorterFilter"
       }
     },
@@ -696,7 +696,7 @@
     {
       "methodName": "getColor",
       "returns": {
-        "type": "String",
+        "type": "EnumColor",
         "javaType": "mekanism.api.text.EnumColor",
         "values": [
           "BLACK",
@@ -723,14 +723,14 @@
     {
       "methodName": "getMax",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getMin",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
@@ -755,7 +755,7 @@
       "methodName": "setColor",
       "params": [
         {
-          "type": "String",
+          "type": "EnumColor",
           "javaType": "mekanism.api.text.EnumColor",
           "name": "value",
           "values": [
@@ -785,12 +785,12 @@
       "methodName": "setMinMax",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "min"
         },
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "max"
         }
@@ -812,13 +812,13 @@
       "methodName": "euToJoules",
       "params": [
         {
-          "type": "FloatingLong",
+          "type": "Number (FloatingLong)",
           "javaType": "mekanism.api.math.FloatingLong",
           "name": "eu"
         }
       ],
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
@@ -826,13 +826,13 @@
       "methodName": "feToJoules",
       "params": [
         {
-          "type": "FloatingLong",
+          "type": "Number (FloatingLong)",
           "javaType": "mekanism.api.math.FloatingLong",
           "name": "fe"
         }
       ],
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
@@ -840,13 +840,13 @@
       "methodName": "joulesToEU",
       "params": [
         {
-          "type": "FloatingLong",
+          "type": "Number (FloatingLong)",
           "javaType": "mekanism.api.math.FloatingLong",
           "name": "joules"
         }
       ],
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
@@ -854,13 +854,13 @@
       "methodName": "joulesToFE",
       "params": [
         {
-          "type": "FloatingLong",
+          "type": "Number (FloatingLong)",
           "javaType": "mekanism.api.math.FloatingLong",
           "name": "joules"
         }
       ],
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     }
@@ -870,13 +870,13 @@
       "methodName": "createMinerItemFilter",
       "params": [
         {
-          "type": "String",
+          "type": "String (Item)",
           "javaType": "net.minecraft.world.item.Item",
           "name": "item"
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (MinerItemStackFilter)",
         "javaType": "mekanism.common.content.miner.MinerItemStackFilter"
       }
     },
@@ -890,7 +890,7 @@
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (MinerModIDFilter)",
         "javaType": "mekanism.common.content.miner.MinerModIDFilter"
       }
     },
@@ -904,7 +904,7 @@
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (MinerTagFilter)",
         "javaType": "mekanism.common.content.miner.MinerTagFilter"
       }
     },
@@ -912,13 +912,13 @@
       "methodName": "createOredictionificatorItemFilter",
       "params": [
         {
-          "type": "String",
+          "type": "String (ResourceLocation)",
           "javaType": "net.minecraft.resources.ResourceLocation",
           "name": "filterTag"
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (OredictionificatorItemFilter)",
         "javaType": "mekanism.common.content.oredictionificator.OredictionificatorItemFilter"
       }
     },
@@ -926,18 +926,18 @@
       "methodName": "createOredictionificatorItemFilter",
       "params": [
         {
-          "type": "String",
+          "type": "String (ResourceLocation)",
           "javaType": "net.minecraft.resources.ResourceLocation",
           "name": "filterTag"
         },
         {
-          "type": "String",
+          "type": "String (Item)",
           "javaType": "net.minecraft.world.item.Item",
           "name": "selectedOutput"
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (OredictionificatorItemFilter)",
         "javaType": "mekanism.common.content.oredictionificator.OredictionificatorItemFilter"
       }
     },
@@ -945,13 +945,13 @@
       "methodName": "createQIOItemFilter",
       "params": [
         {
-          "type": "String",
+          "type": "String (Item)",
           "javaType": "net.minecraft.world.item.Item",
           "name": "item"
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (QIOItemStackFilter)",
         "javaType": "mekanism.common.content.qio.filter.QIOItemStackFilter"
       }
     },
@@ -965,7 +965,7 @@
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (QIOModIDFilter)",
         "javaType": "mekanism.common.content.qio.filter.QIOModIDFilter"
       }
     },
@@ -979,7 +979,7 @@
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (QIOTagFilter)",
         "javaType": "mekanism.common.content.qio.filter.QIOTagFilter"
       }
     },
@@ -987,13 +987,13 @@
       "methodName": "createSorterItemFilter",
       "params": [
         {
-          "type": "String",
+          "type": "String (Item)",
           "javaType": "net.minecraft.world.item.Item",
           "name": "item"
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (SorterItemStackFilter)",
         "javaType": "mekanism.common.content.transporter.SorterItemStackFilter"
       }
     },
@@ -1007,7 +1007,7 @@
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (SorterModIDFilter)",
         "javaType": "mekanism.common.content.transporter.SorterModIDFilter"
       }
     },
@@ -1021,7 +1021,7 @@
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (SorterTagFilter)",
         "javaType": "mekanism.common.content.transporter.SorterTagFilter"
       }
     }
@@ -1030,14 +1030,14 @@
     {
       "methodName": "getHeight",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getLength",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
@@ -1058,7 +1058,7 @@
     {
       "methodName": "getWidth",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     }
@@ -1067,21 +1067,21 @@
     {
       "methodName": "getCapacity",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getLock",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getStored",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
@@ -1109,21 +1109,21 @@
     {
       "methodName": "getCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getDrainItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getDumpingMode",
       "returns": {
-        "type": "String",
+        "type": "GasMode",
         "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
         "values": [
           "IDLE",
@@ -1135,28 +1135,28 @@
     {
       "methodName": "getFillItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getStored",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
@@ -1168,7 +1168,7 @@
       "methodName": "setDumpingMode",
       "params": [
         {
-          "type": "String",
+          "type": "GasMode",
           "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
           "name": "mode",
           "values": [
@@ -1185,14 +1185,14 @@
     {
       "methodName": "getChargeItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getDischargeItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     }
@@ -1205,14 +1205,14 @@
     {
       "methodName": "getCapacity",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getContainerEditMode",
       "returns": {
-        "type": "String",
+        "type": "ContainerEditMode",
         "javaType": "mekanism.common.tile.interfaces.IFluidContainerManager$ContainerEditMode",
         "values": [
           "BOTH",
@@ -1224,35 +1224,35 @@
     {
       "methodName": "getFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getNeeded",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getStored",
       "returns": {
-        "type": "Table",
+        "type": "Table (FluidStack)",
         "javaType": "net.minecraftforge.fluids.FluidStack"
       }
     },
@@ -1264,7 +1264,7 @@
       "methodName": "setContainerEditMode",
       "params": [
         {
-          "type": "String",
+          "type": "ContainerEditMode",
           "javaType": "mekanism.common.tile.interfaces.IFluidContainerManager$ContainerEditMode",
           "name": "mode",
           "values": [
@@ -1282,7 +1282,7 @@
       "methodName": "addFilter",
       "params": [
         {
-          "type": "Table",
+          "type": "Table (SorterFilter)",
           "javaType": "mekanism.common.content.transporter.SorterFilter",
           "name": "filter"
         }
@@ -1311,7 +1311,7 @@
     {
       "methodName": "getDefaultColor",
       "returns": {
-        "type": "String",
+        "type": "EnumColor",
         "javaType": "mekanism.api.text.EnumColor",
         "values": [
           "BLACK",
@@ -1364,7 +1364,7 @@
       "methodName": "removeFilter",
       "params": [
         {
-          "type": "Table",
+          "type": "Table (SorterFilter)",
           "javaType": "mekanism.common.content.transporter.SorterFilter",
           "name": "filter"
         }
@@ -1390,7 +1390,7 @@
       "methodName": "setDefaultColor",
       "params": [
         {
-          "type": "String",
+          "type": "EnumColor",
           "javaType": "mekanism.api.text.EnumColor",
           "name": "color",
           "values": [
@@ -1444,21 +1444,21 @@
     {
       "methodName": "getContainerItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getModuleItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     }
@@ -1479,147 +1479,147 @@
     {
       "methodName": "getBufferFluid",
       "returns": {
-        "type": "Table",
+        "type": "Table (FluidStack)",
         "javaType": "net.minecraftforge.fluids.FluidStack"
       }
     },
     {
       "methodName": "getBufferFluidCapacity",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getBufferFluidFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getBufferFluidNeeded",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getBufferGas",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getBufferGasCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getBufferGasFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getBufferGasNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getBufferInfuseType",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getBufferInfuseTypeCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getBufferInfuseTypeFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getBufferInfuseTypeNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getBufferItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getBufferPigment",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getBufferPigmentCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getBufferPigmentFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getBufferPigmentNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getBufferSlurry",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getBufferSlurryCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getBufferSlurryFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getBufferSlurryNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
@@ -1627,7 +1627,7 @@
       "description": "May not be accurate if there is no frequency",
       "methodName": "getEnvironmentalLoss",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
@@ -1643,7 +1643,7 @@
       "description": "Requires a frequency to be selected",
       "methodName": "getFrequency",
       "returns": {
-        "type": "InventoryFrequency",
+        "type": "Table (InventoryFrequency)",
         "javaType": "mekanism.common.content.entangloporter.InventoryFrequency"
       }
     },
@@ -1651,7 +1651,7 @@
       "description": "Requires a frequency to be selected",
       "methodName": "getTemperature",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
@@ -1659,7 +1659,7 @@
       "description": "May not be accurate if there is no frequency",
       "methodName": "getTransferLoss",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
@@ -1687,28 +1687,28 @@
     {
       "methodName": "getCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getStored",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     }
@@ -1742,7 +1742,7 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
@@ -1758,7 +1758,7 @@
       "description": "Requires a frequency to be selected",
       "methodName": "getFrequency",
       "returns": {
-        "type": "TeleporterFrequency",
+        "type": "Table (TeleporterFrequency)",
         "javaType": "mekanism.common.content.teleporter.TeleporterFrequency"
       }
     },
@@ -1766,7 +1766,7 @@
       "description": "Requires a frequency to be selected",
       "methodName": "getFrequencyColor",
       "returns": {
-        "type": "String",
+        "type": "EnumColor",
         "javaType": "mekanism.api.text.EnumColor",
         "values": [
           "BLACK",
@@ -1826,7 +1826,7 @@
       "methodName": "setFrequencyColor",
       "params": [
         {
-          "type": "String",
+          "type": "EnumColor",
           "javaType": "mekanism.api.text.EnumColor",
           "name": "color",
           "values": [
@@ -1859,7 +1859,7 @@
       "methodName": "getComparatorLevel",
       "restriction": "COMPARATOR",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
@@ -1867,7 +1867,7 @@
       "methodName": "getDirection",
       "restriction": "DIRECTIONAL",
       "returns": {
-        "type": "String",
+        "type": "Direction",
         "javaType": "net.minecraft.core.Direction",
         "values": [
           "DOWN",
@@ -1883,7 +1883,7 @@
       "methodName": "getEnergy",
       "restriction": "ENERGY",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
@@ -1891,7 +1891,7 @@
       "methodName": "getEnergyFilledPercentage",
       "restriction": "ENERGY",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
@@ -1899,7 +1899,7 @@
       "methodName": "getEnergyNeeded",
       "restriction": "ENERGY",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
@@ -1907,7 +1907,7 @@
       "methodName": "getMaxEnergy",
       "restriction": "ENERGY",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
@@ -1915,7 +1915,7 @@
       "methodName": "getRedstoneMode",
       "restriction": "REDSTONE_CONTROL",
       "returns": {
-        "type": "String",
+        "type": "RedstoneControl",
         "javaType": "mekanism.common.tile.interfaces.IRedstoneControl$RedstoneControl",
         "values": [
           "DISABLED",
@@ -1929,7 +1929,7 @@
       "methodName": "setRedstoneMode",
       "params": [
         {
-          "type": "String",
+          "type": "RedstoneControl",
           "javaType": "mekanism.common.tile.interfaces.IRedstoneControl$RedstoneControl",
           "name": "type",
           "values": [
@@ -1949,7 +1949,7 @@
       "methodName": "canEject",
       "params": [
         {
-          "type": "String",
+          "type": "TransmissionType",
           "javaType": "mekanism.common.lib.transmitter.TransmissionType",
           "name": "type",
           "values": [
@@ -1973,7 +1973,7 @@
       "methodName": "decrementMode",
       "params": [
         {
-          "type": "String",
+          "type": "TransmissionType",
           "javaType": "mekanism.common.lib.transmitter.TransmissionType",
           "name": "type",
           "values": [
@@ -1988,7 +1988,7 @@
           ]
         },
         {
-          "type": "String",
+          "type": "RelativeSide",
           "javaType": "mekanism.api.RelativeSide",
           "name": "side",
           "values": [
@@ -2014,7 +2014,7 @@
       "methodName": "getMode",
       "params": [
         {
-          "type": "String",
+          "type": "TransmissionType",
           "javaType": "mekanism.common.lib.transmitter.TransmissionType",
           "name": "type",
           "values": [
@@ -2029,7 +2029,7 @@
           ]
         },
         {
-          "type": "String",
+          "type": "RelativeSide",
           "javaType": "mekanism.api.RelativeSide",
           "name": "side",
           "values": [
@@ -2044,7 +2044,7 @@
       ],
       "requiresPublicSecurity": true,
       "returns": {
-        "type": "String",
+        "type": "DataType",
         "javaType": "mekanism.common.tile.component.config.DataType",
         "values": [
           "NONE",
@@ -2064,7 +2064,7 @@
       "methodName": "getSupportedModes",
       "params": [
         {
-          "type": "String",
+          "type": "TransmissionType",
           "javaType": "mekanism.common.lib.transmitter.TransmissionType",
           "name": "type",
           "values": [
@@ -2089,7 +2089,7 @@
       "methodName": "incrementMode",
       "params": [
         {
-          "type": "String",
+          "type": "TransmissionType",
           "javaType": "mekanism.common.lib.transmitter.TransmissionType",
           "name": "type",
           "values": [
@@ -2104,7 +2104,7 @@
           ]
         },
         {
-          "type": "String",
+          "type": "RelativeSide",
           "javaType": "mekanism.api.RelativeSide",
           "name": "side",
           "values": [
@@ -2123,7 +2123,7 @@
       "methodName": "isEjecting",
       "params": [
         {
-          "type": "String",
+          "type": "TransmissionType",
           "javaType": "mekanism.common.lib.transmitter.TransmissionType",
           "name": "type",
           "values": [
@@ -2147,7 +2147,7 @@
       "methodName": "setEjecting",
       "params": [
         {
-          "type": "String",
+          "type": "TransmissionType",
           "javaType": "mekanism.common.lib.transmitter.TransmissionType",
           "name": "type",
           "values": [
@@ -2173,7 +2173,7 @@
       "methodName": "setMode",
       "params": [
         {
-          "type": "String",
+          "type": "TransmissionType",
           "javaType": "mekanism.common.lib.transmitter.TransmissionType",
           "name": "type",
           "values": [
@@ -2188,7 +2188,7 @@
           ]
         },
         {
-          "type": "String",
+          "type": "RelativeSide",
           "javaType": "mekanism.api.RelativeSide",
           "name": "side",
           "values": [
@@ -2201,7 +2201,7 @@
           ]
         },
         {
-          "type": "String",
+          "type": "DataType",
           "javaType": "mekanism.common.tile.component.config.DataType",
           "name": "mode",
           "values": [
@@ -2226,7 +2226,7 @@
       "methodName": "clearInputColor",
       "params": [
         {
-          "type": "String",
+          "type": "RelativeSide",
           "javaType": "mekanism.api.RelativeSide",
           "name": "side",
           "values": [
@@ -2249,7 +2249,7 @@
       "methodName": "decrementInputColor",
       "params": [
         {
-          "type": "String",
+          "type": "RelativeSide",
           "javaType": "mekanism.api.RelativeSide",
           "name": "side",
           "values": [
@@ -2272,7 +2272,7 @@
       "methodName": "getInputColor",
       "params": [
         {
-          "type": "String",
+          "type": "RelativeSide",
           "javaType": "mekanism.api.RelativeSide",
           "name": "side",
           "values": [
@@ -2286,7 +2286,7 @@
         }
       ],
       "returns": {
-        "type": "String",
+        "type": "EnumColor",
         "javaType": "mekanism.api.text.EnumColor",
         "values": [
           "BLACK",
@@ -2313,7 +2313,7 @@
     {
       "methodName": "getOutputColor",
       "returns": {
-        "type": "String",
+        "type": "EnumColor",
         "javaType": "mekanism.api.text.EnumColor",
         "values": [
           "BLACK",
@@ -2348,7 +2348,7 @@
       "methodName": "incrementInputColor",
       "params": [
         {
-          "type": "String",
+          "type": "RelativeSide",
           "javaType": "mekanism.api.RelativeSide",
           "name": "side",
           "values": [
@@ -2371,7 +2371,7 @@
       "methodName": "setInputColor",
       "params": [
         {
-          "type": "String",
+          "type": "RelativeSide",
           "javaType": "mekanism.api.RelativeSide",
           "name": "side",
           "values": [
@@ -2384,7 +2384,7 @@
           ]
         },
         {
-          "type": "String",
+          "type": "EnumColor",
           "javaType": "mekanism.api.text.EnumColor",
           "name": "color",
           "values": [
@@ -2415,7 +2415,7 @@
       "methodName": "setOutputColor",
       "params": [
         {
-          "type": "String",
+          "type": "EnumColor",
           "javaType": "mekanism.api.text.EnumColor",
           "name": "color",
           "values": [
@@ -2465,14 +2465,14 @@
     {
       "methodName": "getOwnerUUID",
       "returns": {
-        "type": "String",
+        "type": "String (UUID)",
         "javaType": "java.util.UUID"
       }
     },
     {
       "methodName": "getSecurityMode",
       "returns": {
-        "type": "String",
+        "type": "SecurityMode",
         "javaType": "mekanism.api.security.SecurityMode",
         "values": [
           "PUBLIC",
@@ -2502,7 +2502,7 @@
     {
       "methodName": "getSecondaryInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     }
@@ -2511,14 +2511,14 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
@@ -2526,13 +2526,13 @@
       "methodName": "getInput",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "process"
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
@@ -2540,13 +2540,13 @@
       "methodName": "getOutput",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "process"
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
@@ -2554,13 +2554,13 @@
       "methodName": "getRecipeProgress",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "process"
         }
       ],
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
@@ -2568,7 +2568,7 @@
       "description": "Total number of ticks it takes currently for the recipe to complete",
       "methodName": "getTicksRequired",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
@@ -2599,35 +2599,35 @@
     {
       "methodName": "getChemical",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getChemicalCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getChemicalFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getChemicalItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getChemicalNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     }
@@ -2640,35 +2640,35 @@
     {
       "methodName": "getInfuseType",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getInfuseTypeCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getInfuseTypeFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getInfuseTypeItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getInfuseTypeNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     }
@@ -2678,13 +2678,13 @@
       "methodName": "getSecondaryOutput",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "process"
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     }
@@ -2702,28 +2702,28 @@
     {
       "methodName": "getDelay",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getMaxThreshold",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getMinThreshold",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getRedstoneOutputMode",
       "returns": {
-        "type": "String",
+        "type": "RedstoneOutput",
         "javaType": "mekanism.common.tile.laser.TileEntityLaserAmplifier$RedstoneOutput",
         "values": [
           "OFF",
@@ -2736,7 +2736,7 @@
       "methodName": "setDelay",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "delay"
         }
@@ -2747,7 +2747,7 @@
       "methodName": "setMaxThreshold",
       "params": [
         {
-          "type": "FloatingLong",
+          "type": "Number (FloatingLong)",
           "javaType": "mekanism.api.math.FloatingLong",
           "name": "threshold"
         }
@@ -2758,7 +2758,7 @@
       "methodName": "setMinThreshold",
       "params": [
         {
-          "type": "FloatingLong",
+          "type": "Number (FloatingLong)",
           "javaType": "mekanism.api.math.FloatingLong",
           "name": "threshold"
         }
@@ -2769,7 +2769,7 @@
       "methodName": "setRedstoneOutputMode",
       "params": [
         {
-          "type": "String",
+          "type": "RedstoneOutput",
           "javaType": "mekanism.common.tile.laser.TileEntityLaserAmplifier$RedstoneOutput",
           "name": "mode",
           "values": [
@@ -2787,20 +2787,20 @@
       "methodName": "getItemInSlot",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "slot"
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getSlotCount",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     }
@@ -2809,63 +2809,63 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getInputChemical",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getInputChemicalCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getInputChemicalFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getInputChemicalItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getInputChemicalNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     }
@@ -2874,56 +2874,56 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getInputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getInputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getInputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     }
@@ -2932,91 +2932,91 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getGasInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getGasInputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getGasInputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getGasInputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getInputGasItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getOutputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getOutputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     }
@@ -3025,119 +3025,119 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getLeftInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getLeftInputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getLeftInputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getLeftInputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getLeftInputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getOutputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getOutputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getRightInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getRightInputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getRightInputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getRightInputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getRightInputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     }
@@ -3146,56 +3146,56 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getOutputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getOutputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     }
@@ -3204,119 +3204,119 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getFluid",
       "returns": {
-        "type": "Table",
+        "type": "Table (FluidStack)",
         "javaType": "net.minecraftforge.fluids.FluidStack"
       }
     },
     {
       "methodName": "getFluidCapacity",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getFluidFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getFluidItemInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getFluidItemOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getFluidNeeded",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getSlurryInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getSlurryInputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getSlurryInputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getSlurryInputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getSlurryOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getSlurryOutputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getSlurryOutputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getSlurryOutputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     }
@@ -3325,35 +3325,35 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getMainInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getSecondaryInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     }
@@ -3364,7 +3364,7 @@
       "methodName": "addFilter",
       "params": [
         {
-          "type": "Table",
+          "type": "Table (MinerFilter)",
           "javaType": "mekanism.common.content.miner.MinerFilter",
           "name": "filter"
         }
@@ -3396,14 +3396,14 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
@@ -3424,7 +3424,7 @@
     {
       "methodName": "getInverseModeReplaceTarget",
       "returns": {
-        "type": "String",
+        "type": "String (Item)",
         "javaType": "net.minecraft.world.item.Item"
       }
     },
@@ -3439,41 +3439,41 @@
       "methodName": "getItemInSlot",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "slot"
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getMaxRadius",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getMaxY",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getMinY",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getRadius",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
@@ -3487,14 +3487,14 @@
     {
       "methodName": "getSlotCount",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getState",
       "returns": {
-        "type": "String",
+        "type": "State",
         "javaType": "mekanism.common.content.miner.ThreadMinerSearch$State",
         "values": [
           "IDLE",
@@ -3507,7 +3507,7 @@
     {
       "methodName": "getToMine",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
@@ -3523,7 +3523,7 @@
       "methodName": "removeFilter",
       "params": [
         {
-          "type": "Table",
+          "type": "Table (MinerFilter)",
           "javaType": "mekanism.common.content.miner.MinerFilter",
           "name": "filter"
         }
@@ -3577,7 +3577,7 @@
       "methodName": "setInverseModeReplaceTarget",
       "params": [
         {
-          "type": "String",
+          "type": "String (Item)",
           "javaType": "net.minecraft.world.item.Item",
           "name": "target"
         }
@@ -3601,7 +3601,7 @@
       "methodName": "setMaxY",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "maxY"
         }
@@ -3613,7 +3613,7 @@
       "methodName": "setMinY",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "minY"
         }
@@ -3625,7 +3625,7 @@
       "methodName": "setRadius",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "radius"
         }
@@ -3658,7 +3658,7 @@
       "methodName": "disableChunkLoadingFor",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "radius"
         }
@@ -3670,7 +3670,7 @@
       "methodName": "enableChunkLoadingFor",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "radius"
         }
@@ -3680,14 +3680,14 @@
     {
       "methodName": "getChunksLoaded",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
@@ -3696,12 +3696,12 @@
       "methodName": "isChunkLoadingAt",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "x"
         },
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "z"
         }
@@ -3716,12 +3716,12 @@
       "methodName": "setChunkLoadingAt",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "x"
         },
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "z"
         },
@@ -3738,12 +3738,12 @@
       "methodName": "toggleChunkLoadingAt",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "x"
         },
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "z"
         }
@@ -3755,49 +3755,49 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getFluid",
       "returns": {
-        "type": "Table",
+        "type": "Table (FluidStack)",
         "javaType": "net.minecraftforge.fluids.FluidStack"
       }
     },
     {
       "methodName": "getFluidCapacity",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getFluidFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getFluidNeeded",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
@@ -3818,70 +3818,70 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (FluidStack)",
         "javaType": "net.minecraftforge.fluids.FluidStack"
       }
     },
     {
       "methodName": "getInputCapacity",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getInputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getInputNeeded",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getLeftOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getLeftOutputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getLeftOutputDumpingMode",
       "returns": {
-        "type": "String",
+        "type": "GasMode",
         "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
         "values": [
           "IDLE",
@@ -3893,42 +3893,42 @@
     {
       "methodName": "getLeftOutputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getLeftOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getLeftOutputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getRightOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getRightOutputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getRightOutputDumpingMode",
       "returns": {
-        "type": "String",
+        "type": "GasMode",
         "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
         "values": [
           "IDLE",
@@ -3940,21 +3940,21 @@
     {
       "methodName": "getRightOutputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getRightOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getRightOutputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
@@ -3970,7 +3970,7 @@
       "methodName": "setLeftOutputDumpingMode",
       "params": [
         {
-          "type": "String",
+          "type": "GasMode",
           "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
           "name": "mode",
           "values": [
@@ -3986,7 +3986,7 @@
       "methodName": "setRightOutputDumpingMode",
       "params": [
         {
-          "type": "String",
+          "type": "GasMode",
           "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
           "name": "mode",
           "values": [
@@ -4003,49 +4003,49 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getFluid",
       "returns": {
-        "type": "Table",
+        "type": "Table (FluidStack)",
         "javaType": "net.minecraftforge.fluids.FluidStack"
       }
     },
     {
       "methodName": "getFluidCapacity",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getFluidFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getFluidNeeded",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
@@ -4093,13 +4093,13 @@
       "methodName": "getCraftingInputSlot",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "slot"
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
@@ -4107,27 +4107,27 @@
       "methodName": "getCraftingOutputSlot",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "slot"
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getCraftingOutputSlots",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
@@ -4141,7 +4141,7 @@
     {
       "methodName": "getFormulaItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
@@ -4149,27 +4149,27 @@
       "methodName": "getItemInSlot",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "slot"
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getRecipeProgress",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getSlots",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
@@ -4185,7 +4185,7 @@
     {
       "methodName": "getTicksRequired",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
@@ -4232,28 +4232,28 @@
     {
       "methodName": "getEnvironmentalLoss",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getFuelItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getTemperature",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getTransferLoss",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     }
@@ -4262,84 +4262,84 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getInputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getInputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getInputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getOutputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getOutputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     }
@@ -4352,63 +4352,63 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getInfuseType",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getInfuseTypeCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getInfuseTypeFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getInfuseTypeItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getInfuseTypeNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     }
@@ -4417,63 +4417,63 @@
     {
       "methodName": "getContainerFillItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (FluidStack)",
         "javaType": "net.minecraftforge.fluids.FluidStack"
       }
     },
     {
       "methodName": "getOutputCapacity",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getOutputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutputNeeded",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     }
@@ -4483,7 +4483,7 @@
       "methodName": "addFilter",
       "params": [
         {
-          "type": "Table",
+          "type": "Table (OredictionificatorItemFilter)",
           "javaType": "mekanism.common.content.oredictionificator.OredictionificatorItemFilter",
           "name": "filter"
         }
@@ -4504,14 +4504,14 @@
     {
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
@@ -4519,7 +4519,7 @@
       "methodName": "removeFilter",
       "params": [
         {
-          "type": "Table",
+          "type": "Table (OredictionificatorItemFilter)",
           "javaType": "mekanism.common.content.oredictionificator.OredictionificatorItemFilter",
           "name": "filter"
         }
@@ -4535,63 +4535,63 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getInputPigmentItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getPigmentInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getPigmentInputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getPigmentInputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getPigmentInputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     }
@@ -4600,56 +4600,56 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getOutputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getOutputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     }
@@ -4658,119 +4658,119 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getLeftInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getLeftInputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getLeftInputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getLeftInputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getLeftInputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getOutputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getOutputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getRightInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getRightInputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getRightInputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getRightInputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getRightInputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     }
@@ -4779,35 +4779,35 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getSecondaryOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     }
@@ -4816,112 +4816,112 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getInputFluid",
       "returns": {
-        "type": "Table",
+        "type": "Table (FluidStack)",
         "javaType": "net.minecraftforge.fluids.FluidStack"
       }
     },
     {
       "methodName": "getInputFluidCapacity",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getInputFluidFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getInputFluidNeeded",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getInputGas",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getInputGasCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getInputGasFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getInputGasNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutputGas",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getOutputGasCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getOutputGasFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getOutputGasNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     }
@@ -4930,42 +4930,42 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getEnergyUsed",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getEnvironmentalLoss",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getTemperature",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getTransferLoss",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
@@ -4973,7 +4973,7 @@
       "methodName": "setEnergyUsage",
       "params": [
         {
-          "type": "FloatingLong",
+          "type": "Number (FloatingLong)",
           "javaType": "mekanism.api.math.FloatingLong",
           "name": "usage"
         }
@@ -4985,98 +4985,98 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getFluid",
       "returns": {
-        "type": "Table",
+        "type": "Table (FluidStack)",
         "javaType": "net.minecraftforge.fluids.FluidStack"
       }
     },
     {
       "methodName": "getFluidCapacity",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getFluidFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getFluidItemInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getFluidItemOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getFluidNeeded",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getGas",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getGasCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getGasFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getGasItemInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getGasItemOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getGasNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
@@ -5104,23 +5104,23 @@
       "methodName": "getBlockAt",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "chunkRelativeX"
         },
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "y"
         },
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "chunkRelativeZ"
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (BlockState)",
         "javaType": "net.minecraft.world.level.block.state.BlockState"
       }
     },
@@ -5128,12 +5128,12 @@
       "methodName": "getColumnAt",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "chunkRelativeX"
         },
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "chunkRelativeZ"
         }
@@ -5146,7 +5146,7 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
@@ -5169,70 +5169,70 @@
     {
       "methodName": "getInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getInputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getInputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getInputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getInputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getOutputCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getOutputFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getOutputItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutputNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
@@ -5258,7 +5258,7 @@
     {
       "methodName": "getMode",
       "returns": {
-        "type": "String",
+        "type": "BoilerValveMode",
         "javaType": "mekanism.common.block.attribute.AttributeStateBoilerValveMode$BoilerValveMode",
         "values": [
           "INPUT",
@@ -5274,7 +5274,7 @@
       "methodName": "setMode",
       "params": [
         {
-          "type": "String",
+          "type": "BoilerValveMode",
           "javaType": "mekanism.common.block.attribute.AttributeStateBoilerValveMode$BoilerValveMode",
           "name": "mode",
           "values": [
@@ -5336,63 +5336,63 @@
     {
       "methodName": "getChemical",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getChemicalCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getChemicalFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getChemicalItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getChemicalNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     }
@@ -5401,28 +5401,28 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnergyUsage",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getInput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getOutput",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     }
@@ -5441,14 +5441,14 @@
     {
       "methodName": "getRecipeProgress",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getTicksRequired",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     }
@@ -5483,7 +5483,7 @@
       "description": "Requires a frequency to be selected",
       "methodName": "getFrequency",
       "returns": {
-        "type": "QIOFrequency",
+        "type": "Table (QIOFrequency)",
         "javaType": "mekanism.common.content.qio.QIOFrequency"
       }
     },
@@ -5491,7 +5491,7 @@
       "description": "Requires a frequency to be selected",
       "methodName": "getFrequencyColor",
       "returns": {
-        "type": "String",
+        "type": "EnumColor",
         "javaType": "mekanism.api.text.EnumColor",
         "values": [
           "BLACK",
@@ -5544,7 +5544,7 @@
       "methodName": "setFrequencyColor",
       "params": [
         {
-          "type": "String",
+          "type": "EnumColor",
           "javaType": "mekanism.api.text.EnumColor",
           "name": "color",
           "values": [
@@ -5577,18 +5577,18 @@
       "methodName": "getCraftingInput",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "window"
         },
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "slot"
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
@@ -5596,13 +5596,13 @@
       "methodName": "getCraftingOutput",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "window"
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     }
@@ -5612,13 +5612,13 @@
       "methodName": "getDrive",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "slot"
         }
       ],
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
@@ -5626,13 +5626,13 @@
       "methodName": "getDriveStatus",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "slot"
         }
       ],
       "returns": {
-        "type": "String",
+        "type": "DriveStatus",
         "javaType": "mekanism.common.tile.qio.TileEntityQIODriveArray$DriveStatus",
         "values": [
           "NONE",
@@ -5647,7 +5647,7 @@
       "description": "Requires a frequency to be selected",
       "methodName": "getFrequencyItemCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
@@ -5655,7 +5655,7 @@
       "description": "Requires a frequency to be selected",
       "methodName": "getFrequencyItemCount",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
@@ -5663,7 +5663,7 @@
       "description": "Requires a frequency to be selected",
       "methodName": "getFrequencyItemPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
@@ -5671,7 +5671,7 @@
       "description": "Requires a frequency to be selected",
       "methodName": "getFrequencyItemTypeCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
@@ -5679,7 +5679,7 @@
       "description": "Requires a frequency to be selected",
       "methodName": "getFrequencyItemTypeCount",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
@@ -5687,14 +5687,14 @@
       "description": "Requires a frequency to be selected",
       "methodName": "getFrequencyItemTypePercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getSlotCount",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     }
@@ -5724,7 +5724,7 @@
       "methodName": "addFilter",
       "params": [
         {
-          "type": "Table",
+          "type": "Table (QIOFilter)",
           "javaType": "mekanism.common.content.qio.filter.QIOFilter",
           "name": "filter"
         }
@@ -5746,7 +5746,7 @@
       "methodName": "removeFilter",
       "params": [
         {
-          "type": "Table",
+          "type": "Table (QIOFilter)",
           "javaType": "mekanism.common.content.qio.filter.QIOFilter",
           "name": "filter"
         }
@@ -5793,14 +5793,14 @@
     {
       "methodName": "getTargetItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getTriggerAmount",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
@@ -5819,7 +5819,7 @@
       "methodName": "setTargetItem",
       "params": [
         {
-          "type": "String",
+          "type": "String (ResourceLocation)",
           "javaType": "net.minecraft.resources.ResourceLocation",
           "name": "itemName"
         }
@@ -5830,7 +5830,7 @@
       "methodName": "setTriggerAmount",
       "params": [
         {
-          "type": "long",
+          "type": "Number (long)",
           "javaType": "long",
           "name": "amount"
         }
@@ -5847,7 +5847,7 @@
       "methodName": "decrementMode",
       "params": [
         {
-          "type": "String",
+          "type": "Direction",
           "javaType": "net.minecraft.core.Direction",
           "name": "side",
           "values": [
@@ -5865,7 +5865,7 @@
       "methodName": "getMode",
       "params": [
         {
-          "type": "String",
+          "type": "Direction",
           "javaType": "net.minecraft.core.Direction",
           "name": "side",
           "values": [
@@ -5879,7 +5879,7 @@
         }
       ],
       "returns": {
-        "type": "String",
+        "type": "DiversionControl",
         "javaType": "mekanism.common.content.network.transmitter.DiversionTransporter$DiversionControl",
         "values": [
           "DISABLED",
@@ -5892,7 +5892,7 @@
       "methodName": "incrementMode",
       "params": [
         {
-          "type": "String",
+          "type": "Direction",
           "javaType": "net.minecraft.core.Direction",
           "name": "side",
           "values": [
@@ -5910,7 +5910,7 @@
       "methodName": "setMode",
       "params": [
         {
-          "type": "String",
+          "type": "Direction",
           "javaType": "net.minecraft.core.Direction",
           "name": "side",
           "values": [
@@ -5923,7 +5923,7 @@
           ]
         },
         {
-          "type": "String",
+          "type": "DiversionControl",
           "javaType": "mekanism.common.content.network.transmitter.DiversionTransporter$DiversionControl",
           "name": "mode",
           "values": [
@@ -5939,28 +5939,28 @@
     {
       "methodName": "getBuffer",
       "returns": {
-        "type": "Table",
+        "type": "Table (FluidStack)",
         "javaType": "net.minecraftforge.fluids.FluidStack"
       }
     },
     {
       "methodName": "getCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     }
@@ -5969,28 +5969,28 @@
     {
       "methodName": "getBuffer",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     }
@@ -5999,28 +5999,28 @@
     {
       "methodName": "getBuffer",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getCapacity",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getNeeded",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     }
@@ -6034,14 +6034,14 @@
       "description": "Actual burn rate as it may be lower if say there is not enough fuel",
       "methodName": "getActualBurnRate",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getBoilEfficiency",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
@@ -6049,140 +6049,140 @@
       "description": "Configured burn rate",
       "methodName": "getBurnRate",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getCoolant",
       "returns": {
-        "type": "Table",
+        "type": "Varies",
         "javaType": "mekanism.common.integration.computer.Convertable"
       }
     },
     {
       "methodName": "getCoolantCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getCoolantFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getCoolantNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getDamagePercent",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getEnvironmentalLoss",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getFuel",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getFuelAssemblies",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getFuelCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getFuelFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getFuelNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getFuelSurfaceArea",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getHeatCapacity",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getHeatedCoolant",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getHeatedCoolantCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getHeatedCoolantFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getHeatedCoolantNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getHeatingRate",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getMaxBurnRate",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
@@ -6197,35 +6197,35 @@
     {
       "methodName": "getTemperature",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getWaste",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getWasteCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getWasteFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getWasteNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
@@ -6244,7 +6244,7 @@
       "methodName": "setBurnRate",
       "params": [
         {
-          "type": "double",
+          "type": "Number (double)",
           "javaType": "double",
           "name": "rate"
         }
@@ -6255,77 +6255,77 @@
     {
       "methodName": "getCaseTemperature",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getDTFuel",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getDTFuelCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getDTFuelFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getDTFuelNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getDeuterium",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getDeuteriumCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getDeuteriumFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getDeuteriumNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getEnvironmentalLoss",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getHohlraum",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
@@ -6340,14 +6340,14 @@
         }
       ],
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getInjectionRate",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
@@ -6362,7 +6362,7 @@
         }
       ],
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
@@ -6377,7 +6377,7 @@
         }
       ],
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
@@ -6392,7 +6392,7 @@
         }
       ],
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
@@ -6406,112 +6406,112 @@
         }
       ],
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getPlasmaTemperature",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getProductionRate",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getSteam",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getSteamCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getSteamFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getSteamNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getTransferLoss",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getTritium",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getTritiumCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getTritiumFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getTritiumNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getWater",
       "returns": {
-        "type": "Table",
+        "type": "Table (FluidStack)",
         "javaType": "net.minecraftforge.fluids.FluidStack"
       }
     },
     {
       "methodName": "getWaterCapacity",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getWaterFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getWaterNeeded",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
@@ -6519,7 +6519,7 @@
       "methodName": "setInjectionRate",
       "params": [
         {
-          "type": "int",
+          "type": "Number (int)",
           "javaType": "int",
           "name": "rate"
         }
@@ -6533,35 +6533,35 @@
     {
       "methodName": "getBlades",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getCoils",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getCondensers",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getDispersers",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getDumpingMode",
       "returns": {
-        "type": "String",
+        "type": "GasMode",
         "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
         "values": [
           "IDLE",
@@ -6573,77 +6573,77 @@
     {
       "methodName": "getFlowRate",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getLastSteamInputRate",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getMaxFlowRate",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getMaxProduction",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getMaxWaterOutput",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getProductionRate",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getSteam",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getSteamCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getSteamFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getSteamNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getVents",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
@@ -6654,7 +6654,7 @@
       "methodName": "setDumpingMode",
       "params": [
         {
-          "type": "String",
+          "type": "GasMode",
           "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
           "name": "mode",
           "values": [
@@ -6670,49 +6670,49 @@
     {
       "methodName": "getBioFuel",
       "returns": {
-        "type": "Table",
+        "type": "Table (FluidStack)",
         "javaType": "net.minecraftforge.fluids.FluidStack"
       }
     },
     {
       "methodName": "getBioFuelCapacity",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getBioFuelFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getBioFuelNeeded",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getFuelItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getProductionRate",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     }
@@ -6721,56 +6721,56 @@
     {
       "methodName": "getBurnRate",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getFuel",
       "returns": {
-        "type": "Table",
+        "type": "Table (ChemicalStack)",
         "javaType": "mekanism.api.chemical.ChemicalStack"
       }
     },
     {
       "methodName": "getFuelCapacity",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getFuelFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getFuelItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getFuelNeeded",
       "returns": {
-        "type": "long",
+        "type": "Number (long)",
         "javaType": "long"
       }
     },
     {
       "methodName": "getProductionRate",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     }
@@ -6779,7 +6779,7 @@
     {
       "methodName": "getMaxOutput",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     }
@@ -6788,70 +6788,70 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getEnvironmentalLoss",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getFuelItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getLava",
       "returns": {
-        "type": "Table",
+        "type": "Table (FluidStack)",
         "javaType": "net.minecraftforge.fluids.FluidStack"
       }
     },
     {
       "methodName": "getLavaCapacity",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getLavaFilledPercentage",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getLavaNeeded",
       "returns": {
-        "type": "int",
+        "type": "Number (int)",
         "javaType": "int"
       }
     },
     {
       "methodName": "getProductionRate",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
     {
       "methodName": "getTemperature",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     },
     {
       "methodName": "getTransferLoss",
       "returns": {
-        "type": "double",
+        "type": "Number (double)",
         "javaType": "double"
       }
     }
@@ -6867,14 +6867,14 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getProductionRate",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     }
@@ -6883,14 +6883,14 @@
     {
       "methodName": "getEnergyItem",
       "returns": {
-        "type": "Table",
+        "type": "Table (ItemStack)",
         "javaType": "net.minecraft.world.item.ItemStack"
       }
     },
     {
       "methodName": "getProductionRate",
       "returns": {
-        "type": "FloatingLong",
+        "type": "Number (FloatingLong)",
         "javaType": "mekanism.api.math.FloatingLong"
       }
     },
@@ -6906,7 +6906,7 @@
     {
       "methodName": "getLogicMode",
       "returns": {
-        "type": "String",
+        "type": "FissionReactorLogic",
         "javaType": "mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter$FissionReactorLogic",
         "values": [
           "DISABLED",
@@ -6921,7 +6921,7 @@
     {
       "methodName": "getRedstoneLogicStatus",
       "returns": {
-        "type": "String",
+        "type": "RedstoneStatus",
         "javaType": "mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter$RedstoneStatus",
         "values": [
           "IDLE",
@@ -6934,7 +6934,7 @@
       "methodName": "setLogicMode",
       "params": [
         {
-          "type": "String",
+          "type": "FissionReactorLogic",
           "javaType": "mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter$FissionReactorLogic",
           "name": "logicType",
           "values": [
@@ -6956,7 +6956,7 @@
     {
       "methodName": "getMode",
       "returns": {
-        "type": "String",
+        "type": "FissionPortMode",
         "javaType": "mekanism.generators.common.block.attribute.AttributeStateFissionPortMode$FissionPortMode",
         "values": [
           "INPUT",
@@ -6972,7 +6972,7 @@
       "methodName": "setMode",
       "params": [
         {
-          "type": "String",
+          "type": "FissionPortMode",
           "javaType": "mekanism.generators.common.block.attribute.AttributeStateFissionPortMode$FissionPortMode",
           "name": "mode",
           "values": [
@@ -6988,7 +6988,7 @@
     {
       "methodName": "getLogicMode",
       "returns": {
-        "type": "String",
+        "type": "FusionReactorLogic",
         "javaType": "mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter$FusionReactorLogic",
         "values": [
           "DISABLED",
@@ -7019,7 +7019,7 @@
       "methodName": "setLogicMode",
       "params": [
         {
-          "type": "String",
+          "type": "FusionReactorLogic",
           "javaType": "mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter$FusionReactorLogic",
           "name": "logicType",
           "values": [
