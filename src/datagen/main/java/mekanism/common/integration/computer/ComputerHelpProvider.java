@@ -59,7 +59,7 @@ public class ComputerHelpProvider implements DataProvider {
                                 clazz.getSimpleName(),
                                 method.methodName(),
                                 method.params() != null ? method.params().stream().map(Param::name).collect(Collectors.joining(", ")) : "",
-                                method.returns() != Returns.NOTHING ? method.returns().values() == null ? method.returns().type() : String.join(", ", method.returns().values()) : "",
+                                csvReturnsValue(method.returns()),
                                 method.restriction() != MethodRestriction.NONE ? method.restriction().name() : "",
                                 method.requiresPublicSecurity(),
                                 method.description() != null ? method.description() : ""
@@ -68,6 +68,16 @@ public class ComputerHelpProvider implements DataProvider {
                   }
               })
         );
+    }
+
+    private static String csvReturnsValue(Returns returns) {
+        if (returns == Returns.NOTHING) {
+            return "";
+        }
+        if (returns.values() == null) {
+            return returns.type();
+        }
+        return returns.javaType().getSimpleName()+" (\"" + String.join("\", \"", returns.values()) + "\")";
     }
 
     @Override
