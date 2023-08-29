@@ -24,6 +24,8 @@ import java.util.Map;
 public abstract class BoundMethodHolder {
     private static final Comparator<BoundMethodData<?>> METHODDATA_COMPARATOR = Comparator.<BoundMethodData<?>, String>comparing(BoundMethodData::name).thenComparing(md -> md.argumentNames().length);
     private static final MethodData<ListMultimap<String, BoundMethodData<?>>> HELP_METHOD = new ComputerMethodFactory.MethodData<>("help", MethodRestriction.NONE, ComputerMethodFactory.NO_STRINGS, true, ComputerMethodFactory.NO_STRINGS, ComputerMethodFactory.NO_CLASSES, Map.class, BoundMethodHolder::generateHelp, null, false);
+    private static final MethodData<ListMultimap<String, BoundMethodData<?>>> HELP_METHOD_WITH_NAME = new ComputerMethodFactory.MethodData<>("help", MethodRestriction.NONE, ComputerMethodFactory.NO_STRINGS, true, new String[]{"methodName"}, new Class[]{String.class}, Map.class, BoundMethodHolder::generateHelpSpecific, null, false);
+
     protected final ListMultimap<String, BoundMethodData<?>> methods = ArrayListMultimap.create();
     /**
      * Method + arg count pairs to make sure methods are unique
@@ -34,6 +36,7 @@ public abstract class BoundMethodHolder {
 
     public BoundMethodHolder() {
         register(HELP_METHOD, new WeakReference<>(this.methods));
+        register(HELP_METHOD_WITH_NAME, new WeakReference<>(this.methods));
     }
 
     public <T> void register(MethodData<T> method, @Nullable WeakReference<T> subject) {
@@ -103,6 +106,21 @@ public abstract class BoundMethodHolder {
         methods.values().stream().sorted(METHODDATA_COMPARATOR).forEach(md->
               helpItems.put(md.name()+"("+String.join(", ", md.argumentNames())+")", MethodHelpData.from(md))
         );
+        return helper.convert(helpItems, helper::convert, helper::convert);
+    }
+
+    public static Object generateHelpSpecific(ListMultimap<String, BoundMethodData<?>> methods, BaseComputerHelper helper) throws ComputerException {
+        if (methods == null) {
+            return null;
+        }
+        String methodName = helper.getString(0);
+        Map<String, MethodHelpData> helpItems = new HashMap<>();
+        methods.values().stream().sorted(METHODDATA_COMPARATOR).filter(md->md.name().equalsIgnoreCase(methodName)).forEach(md->
+              helpItems.put(md.name()+"("+String.join(", ", md.argumentNames())+")", MethodHelpData.from(md))
+        );
+        if (helpItems.isEmpty()) {
+            return helper.convert("Method name not found: "+methodName);
+        }
         return helper.convert(helpItems, helper::convert, helper::convert);
     }
 }
