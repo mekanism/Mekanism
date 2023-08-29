@@ -47,10 +47,10 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
 
     @NotNull
     private static String getHumanType(Class<?> clazz) {
-        if (clazz == UUID.class || clazz == ResourceLocation.class || clazz == Item.class) {
+        if (clazz == UUID.class || clazz == ResourceLocation.class || clazz == Item.class || Enum.class.isAssignableFrom(clazz)) {
             return "String ("+clazz.getSimpleName()+")";
         }
-        if (Frequency.class.isAssignableFrom(clazz) || clazz == Coord4D.class || clazz == Vec3i.class || clazz == FluidStack.class || clazz == ItemStack.class || clazz == BlockState.class || ChemicalStack.class.isAssignableFrom(clazz) || IFilter.class.isAssignableFrom(clazz)) {
+        if (Frequency.class.isAssignableFrom(clazz) || clazz == Coord4D.class || Vec3i.class.isAssignableFrom(clazz) || clazz == FluidStack.class || clazz == ItemStack.class || clazz == BlockState.class || ChemicalStack.class.isAssignableFrom(clazz) || IFilter.class.isAssignableFrom(clazz)) {
             return "Table ("+clazz.getSimpleName()+")";
         }
         if (clazz == int.class || clazz == long.class || clazz == float.class || clazz == double.class || clazz == FloatingLong.class) {
@@ -59,7 +59,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
         if (clazz == Convertable.class) {
             return "Varies";//technically can be anything, but so far only map used
         }
-        return clazz == Map.class ? "Table" : clazz.getSimpleName();
+        return Map.class.isAssignableFrom(clazz) ? "Table" : clazz.getSimpleName();
     }
 
     @SuppressWarnings("unchecked")
