@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import java.util.Objects;
 import mekanism.common.integration.computer.ComputerMethodFactory.ComputerFunctionCaller;
 import mekanism.common.integration.computer.ComputerMethodFactory.MethodData;
 import net.minecraftforge.common.util.Lazy;
@@ -32,7 +33,12 @@ public abstract class BoundMethodHolder {
     public record BoundMethodData<T>(MethodData<T> method, @Nullable WeakReference<T> subject) {
 
         public Object call(BaseComputerHelper helper) throws ComputerException {
-            return method.handler().apply(subject == null ? null : subject.get(), helper);
+            return method.handler().apply(unwrappedSubject(), helper);
+        }
+
+        @Nullable
+        private T unwrappedSubject() {
+            return subject == null ? null : subject.get();
         }
 
         public String name() {
@@ -57,6 +63,22 @@ public abstract class BoundMethodHolder {
 
         public ComputerFunctionCaller<T> handler() {
             return method.handler();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            return o instanceof BoundMethodData<?> that && method.equals(that.method) && Objects.equals(unwrappedSubject(), that.unwrappedSubject());
+        }
+
+        @Override
+        public int hashCode() {
+            int result = method.hashCode();
+            T subject = unwrappedSubject();
+            result = 31 * result + (subject != null ? subject.hashCode() : 0);
+            return result;
         }
     }
 }

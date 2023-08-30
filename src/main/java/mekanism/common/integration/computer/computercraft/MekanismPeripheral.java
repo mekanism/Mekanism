@@ -52,7 +52,7 @@ public class MekanismPeripheral<TILE extends BlockEntity & IComputerTile> extend
         Object target = getTarget();
         // only will really be creating a single instance of this, and other instances of the same tile may
         // be invalid if it is not persistent such as for multiblocks
-        return other instanceof MekanismPeripheral<?> && target != null && target == other.getTarget();
+        return other instanceof MekanismPeripheral<?> otherP && target != null && target == other.getTarget() && methods.equals(otherP.methods);
     }
 
     @Override
@@ -65,6 +65,7 @@ public class MekanismPeripheral<TILE extends BlockEntity & IComputerTile> extend
         int result = name.hashCode();
         TILE tileRef = tile.get();
         result = 31 * result + (tileRef != null ? tileRef.hashCode() : 0);
+        result = 31 & result + methods.hashCode();
         return result;
     }
 }

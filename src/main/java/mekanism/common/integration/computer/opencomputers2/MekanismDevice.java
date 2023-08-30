@@ -59,7 +59,7 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends Bo
         TILE attached = this.attachedTile.get();
         // only will really be creating a single instance of this, and other instances of the same tile may
         // be invalid if it is not persistent such as for multiblocks
-        return obj instanceof MekanismDevice<?> other && attached != null && attached == other.attachedTile.get();
+        return obj == this || (obj instanceof MekanismDevice<?> other && attached != null && attached == other.attachedTile.get() && methods.equals(other.methods));
     }
 
     @Override
@@ -68,6 +68,7 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends Bo
         result = 31 * result + name.hashCode();
         TILE tile = attachedTile.get();
         result = 31 * result + (tile != null ? tile.hashCode() : 0);
+        result = 31 & result + methods.hashCode();
         return result;
     }
 
