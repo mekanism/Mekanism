@@ -1,1 +1,25 @@
-{}
+{
+  "block.mekanismadditions.aqua_glow_panel": "Panell Lluminós Aiguamarina",
+  "block.mekanismadditions.aqua_plastic": "Bloc de Plàstic Aiguamarina",
+  "block.mekanismadditions.aqua_plastic_fence": "Tanca de Plàstic Aiguamarina",
+  "block.mekanismadditions.aqua_plastic_fence_gate": "Porta de Tanca de Plàstic Aiguamarina",
+  "block.mekanismadditions.aqua_plastic_glow": "Bloc de Plàstic Lluminós Aiguamarina",
+  "block.mekanismadditions.aqua_plastic_glow_slab": "Llosa de Plàstic Lluminosa Aiguamarina",
+  "block.mekanismadditions.aqua_plastic_glow_stairs": "Escales de Plàstic Lluminoses Aiguamarines",
+  "block.mekanismadditions.aqua_plastic_road": "Carretera de Plàstic Aiguamarina",
+  "block.mekanismadditions.aqua_plastic_slab": "Llosa de Plàstic Aiguamarina",
+  "block.mekanismadditions.aqua_plastic_stairs": "Escales de Plàstic Aiguamarines",
+  "block.mekanismadditions.aqua_plastic_transparent": "Bloc de Plàstic Transparent Aiguamarina",
+  "block.mekanismadditions.aqua_plastic_transparent_slab": "Llosa de Plàstic Transparent Aiguamarina",
+  "block.mekanismadditions.aqua_plastic_transparent_stairs": "Escales de Plàstic Transparents Aiguamarines",
+  "block.mekanismadditions.aqua_reinforced_plastic": "Bloc de Plàstic Reforçat Aiguamarina",
+  "block.mekanismadditions.aqua_slick_plastic": "Bloc de Plàstic Relliscós Aiguamarina",
+  "block.mekanismadditions.black_glow_panel": "Panell Lluminós Negre",
+  "block.mekanismadditions.black_plastic": "Bloc de Plàstic Negre",
+  "block.mekanismadditions.black_plastic_fence": "Tanca de Plàstic Negra",
+  "block.mekanismadditions.black_plastic_fence_gate": "Porta de Tanca de Plàstic Negra",
+  "block.mekanismadditions.black_plastic_glow": "Bloc de Plàstic Lluminós Negre",
+  "block.mekanismadditions.black_plastic_glow_slab": "Llosa de Plàstic Lluminosa Negra",
+  "block.mekanismadditions.black_plastic_glow_stairs": "Escales de Plàstic Lluminoses Negres",
+  "block.mekanismadditions.black_plastic_road": "Carretera de Plàstic Negra"
+}
