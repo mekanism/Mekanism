@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 
 /**
  * A base class for the annotation generator to extend.
- * It's constructor will call {@link #register(String, MethodRestriction, String[], boolean, String[], Class[], Class, ComputerFunctionCaller)}
+ * It's constructor will call {@link #register(String, MethodRestriction, String[], boolean, Class, ComputerFunctionCaller, String[], Class[])}
  * to set up the possible methods.
  * These will then be tested and, if not restricted, "bound" to the holder in {@link #bindTo(Object, BoundMethodHolder)}
  * Methods with the same name must have different parameter counts.
@@ -74,19 +74,10 @@ public class ComputerMethodFactory<T>{
     void bindTo(@Nullable T subject, BoundMethodHolder holder) {
         WeakReference<T> weakSubject = subject != null ? new WeakReference<>(subject) : null;
         for (MethodData<T> methodData : this.methods) {
-            if (methodData.restriction.test(subject) && modsLoaded(methodData.requiredMods)) {
+            if (methodData.supports(subject)) {
                 holder.register(methodData, weakSubject);
             }
         }
-    }
-
-    private boolean modsLoaded(String[] mods) {
-        for (String mod : mods) {
-            if (!ModList.get().isLoaded(mod)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @FunctionalInterface
@@ -103,5 +94,19 @@ public class ComputerMethodFactory<T>{
         Object apply(@Nullable T t, BaseComputerHelper u) throws ComputerException;
     }
 
-    public record MethodData<T>(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses, Class<?> returnType, ComputerFunctionCaller<T> handler){}
+    public record MethodData<T>(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses, Class<?> returnType, ComputerFunctionCaller<T> handler) {
+
+        public boolean supports(@Nullable T subject) {
+            return restriction.test(subject) && modsLoaded(requiredMods);
+        }
+
+        private boolean modsLoaded(String[] mods) {
+            for (String mod : mods) {
+                if (!ModList.get().isLoaded(mod)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
 }
