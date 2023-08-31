@@ -12,7 +12,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.content.filter.IFilter;
-import mekanism.common.integration.computer.ComputerMethodFactory.MethodData;
 import mekanism.common.lib.frequency.Frequency;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +31,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
         return from(data.method());
     }
 
-    public static MethodHelpData from(ComputerMethodFactory.MethodData<?> data) {
+    public static MethodHelpData from(MethodData<?> data) {
         List<Param> params = new ArrayList<>();
         for (int i = 0; i < data.argumentNames().length; i++) {
             params.add(Param.from(data.argClasses()[i], data.argumentNames()[i]));

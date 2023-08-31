@@ -6,25 +6,20 @@ import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import java.util.Objects;
 import mekanism.common.integration.computer.ComputerMethodFactory.ComputerFunctionCaller;
-import mekanism.common.integration.computer.ComputerMethodFactory.MethodData;
 import net.minecraftforge.common.util.Lazy;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public abstract class BoundMethodHolder {
     private static final Comparator<BoundMethodData<?>> METHODDATA_COMPARATOR = Comparator.<BoundMethodData<?>, String>comparing(BoundMethodData::name).thenComparing(md -> md.argumentNames().length);
-    private static final MethodData<ListMultimap<String, BoundMethodData<?>>> HELP_METHOD = new ComputerMethodFactory.MethodData<>("help", MethodRestriction.NONE, ComputerMethodFactory.NO_STRINGS, true, ComputerMethodFactory.NO_STRINGS, ComputerMethodFactory.NO_CLASSES, Map.class, ComputerMethodFactory.NO_CLASSES, BoundMethodHolder::generateHelp, null, false);
-    private static final MethodData<ListMultimap<String, BoundMethodData<?>>> HELP_METHOD_WITH_NAME = new ComputerMethodFactory.MethodData<>("help", MethodRestriction.NONE, ComputerMethodFactory.NO_STRINGS, true, new String[]{"methodName"}, new Class[]{String.class}, Map.class, ComputerMethodFactory.NO_CLASSES, BoundMethodHolder::generateHelpSpecific, null, false);
+    private static final MethodData<ListMultimap<String, BoundMethodData<?>>> HELP_METHOD = new MethodData<>("help", MethodRestriction.NONE, ComputerMethodFactory.NO_STRINGS, true, ComputerMethodFactory.NO_STRINGS, ComputerMethodFactory.NO_CLASSES, Map.class, ComputerMethodFactory.NO_CLASSES, BoundMethodHolder::generateHelp, null, false);
+    private static final MethodData<ListMultimap<String, BoundMethodData<?>>> HELP_METHOD_WITH_NAME = new MethodData<>("help", MethodRestriction.NONE, ComputerMethodFactory.NO_STRINGS, true, new String[]{"methodName"}, new Class[]{String.class}, Map.class, ComputerMethodFactory.NO_CLASSES, BoundMethodHolder::generateHelpSpecific, null, false);
 
     protected final ListMultimap<String, BoundMethodData<?>> methods = ArrayListMultimap.create();
     /**

@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
@@ -30,7 +29,7 @@ import java.lang.reflect.Method;
 public class ComputerMethodFactory<T>{
     protected static String[] NO_STRINGS = new String[0];
     protected static Class<?>[] NO_CLASSES = new Class[0];
-    private static final Comparator<MethodData<?>> METHODDATA_COMPARATOR = Comparator.<MethodData<?>, String>comparing(MethodData::name).thenComparing(md -> md.argumentNames.length);
+    private static final Comparator<MethodData<?>> METHODDATA_COMPARATOR = Comparator.<MethodData<?>, String>comparing(MethodData::name).thenComparing(md -> md.argumentNames().length);
 
     protected static MethodHandles.Lookup lookup = MethodHandles.lookup();
 
@@ -100,19 +99,4 @@ public class ComputerMethodFactory<T>{
         Object apply(@Nullable T t, BaseComputerHelper u) throws ComputerException;
     }
 
-    public record MethodData<T>(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses, Class<?> returnType, Class<?>[] returnExtra, ComputerFunctionCaller<T> handler, @Nullable String methodDescription, boolean requiresPublicSecurity) {
-
-        public boolean supports(@Nullable T subject) {
-            return restriction.test(subject) && modsLoaded(requiredMods);
-        }
-
-        private boolean modsLoaded(String[] mods) {
-            for (String mod : mods) {
-                if (!ModList.get().isLoaded(mod)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
 }
