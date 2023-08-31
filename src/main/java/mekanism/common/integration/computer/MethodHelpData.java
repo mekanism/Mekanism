@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -55,6 +56,9 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
         }
         if (clazz == int.class || clazz == long.class || clazz == float.class || clazz == double.class || clazz == FloatingLong.class) {
             return "Number ("+clazz.getSimpleName()+")";
+        }
+        if (Collection.class.isAssignableFrom(clazz)) {
+            return "List";
         }
         if (clazz == Convertable.class) {
             return "Varies";//technically can be anything, but so far only map used
