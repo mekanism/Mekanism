@@ -738,7 +738,7 @@ SPS Port,getMode,,boolean,,false,"true -> output, false -> input. TODO change th
 SPS Port,setMode,output: boolean,,,false,"true -> output, false -> input. TODO change this to enum"
 Sawing Factory,getSecondaryOutput,process: Number (int),Table (ItemStack),,false,
 Seismic Vibrator,getBlockAt,"chunkRelativeX: Number (int), y: Number (int), chunkRelativeZ: Number (int)",Table (BlockState),,false,
-Seismic Vibrator,getColumnAt,"chunkRelativeX: Number (int), chunkRelativeZ: Number (int)",Table (Number (int) => Table (BlockState)),,false,
+Seismic Vibrator,getColumnAt,"chunkRelativeX: Number (int), chunkRelativeZ: Number (int)",Table (Number (int) => Table (BlockState)),,false,"Get a column info, table key is the Y level"
 Seismic Vibrator,getEnergyItem,,Table (ItemStack),,false,
 Seismic Vibrator,isVibrating,,boolean,,false,
 Solar Generator,canSeeSun,,boolean,,false,

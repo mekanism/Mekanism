@@ -6661,6 +6661,7 @@
       }
     },
     {
+      "description": "Get a column info, table key is the Y level",
       "methodName": "getColumnAt",
       "params": [
         {

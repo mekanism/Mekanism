@@ -149,7 +149,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
         return level.getBlockState(targetPos);
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Get a column info, table key is the Y level")
     Map<Integer, BlockState> getColumnAt(int chunkRelativeX, int chunkRelativeZ) throws ComputerException {
         validateVibrating();
         Int2ObjectMap<BlockState> blocks = new Int2ObjectOpenHashMap<>();
