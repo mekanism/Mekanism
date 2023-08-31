@@ -26,6 +26,8 @@ import org.jetbrains.annotations.Nullable;
 
 public record MethodHelpData(String methodName, @Nullable List<Param> params, Returns returns, @Nullable String description, MethodRestriction restriction, boolean requiresPublicSecurity) {
 
+    private static final Class<?>[] NO_CLASSES = ComputerMethodFactory.NO_CLASSES;
+
     public static MethodHelpData from(BoundMethodHolder.BoundMethodData<?> data) {
         return from(data.method());
     }
@@ -33,15 +35,14 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
     public static MethodHelpData from(ComputerMethodFactory.MethodData<?> data) {
         List<Param> params = new ArrayList<>();
         for (int i = 0; i < data.argumentNames().length; i++) {
-            Class<?> argClass = data.argClasses()[i];
-            params.add(new Param(data.argumentNames()[i], getHumanType(argClass), argClass, getEnumConstantNames(argClass)));
+            params.add(Param.from(data.argClasses()[i], data.argumentNames()[i]));
         }
 
         return new MethodHelpData(data.name(), params.isEmpty() ? null : params, Returns.from(data), data.methodDescription(), data.restriction(), data.requiresPublicSecurity());
     }
 
     @NotNull
-    private static String getHumanType(Class<?> clazz) {
+    private static String getHumanType(Class<?> clazz, Class<?>[] extraTypes) {
         if (clazz == UUID.class || clazz == ResourceLocation.class || clazz == Item.class || Enum.class.isAssignableFrom(clazz)) {
             return "String ("+clazz.getSimpleName()+")";
         }
@@ -52,7 +53,11 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
             return "Number ("+clazz.getSimpleName()+")";
         }
         if (Collection.class.isAssignableFrom(clazz)) {
-            return "List";
+            String humanType = "List";
+            if (extraTypes.length > 0) {
+                humanType += " (" + getHumanType(extraTypes[0], NO_CLASSES) + ")";
+            }
+            return humanType;
         }
         if (clazz == Convertable.class) {
             return "Varies";//technically can be anything, but so far only map used
@@ -99,19 +104,29 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
                     Codec.STRING.listOf().optionalFieldOf("values", null).forGetter(Param::values)
               ).apply(instance, Param::new)
         );
+
+        @NotNull
+        private static Param from(Class<?> argClass, String paramName) {
+            return new Param(paramName, getHumanType(argClass, NO_CLASSES), argClass, getEnumConstantNames(argClass));
+        }
     }
 
-    public record Returns(String type, Class<?> javaType, @Nullable List<String> values){
-        public static final Returns NOTHING = new Returns("Nothing", void.class, null);
+    public record Returns(String type, Class<?> javaType, Class<?>[] javaExtra, @Nullable List<String> values){
+        public static final Returns NOTHING = new Returns("Nothing", void.class, null, null);
         public static final Codec<Returns> CODEC = RecordCodecBuilder.create(instance->instance.group(
               Codec.STRING.fieldOf("type").forGetter(Returns::type),
               CLASS_TO_STRING_CODEC.fieldOf("javaType").forGetter(Returns::javaType),
+              CLASS_TO_STRING_CODEC.listOf().<Class<?>[]>xmap(cl -> cl.toArray(new Class[0]), Arrays::asList).optionalFieldOf("javaExtra", NO_CLASSES).forGetter(Returns::javaExtra),
               Codec.STRING.listOf().optionalFieldOf("values", null).forGetter(Returns::values)
         ).apply(instance, Returns::new));
 
         public static Returns from(MethodData<?> data) {
             if (data.returnType() != void.class) {
-                return new Returns(getHumanType(data.returnType()), data.returnType(), getEnumConstantNames(data.returnType()));
+                List<String> enumConstantNames = getEnumConstantNames(data.returnType());
+                if (Collection.class.isAssignableFrom(data.returnType()) && data.returnExtra().length > 0) {
+                    enumConstantNames = getEnumConstantNames(data.returnExtra()[0]);
+                }
+                return new Returns(getHumanType(data.returnType(), data.returnExtra()), data.returnType(), data.returnExtra(), enumConstantNames);
             }
             return Returns.NOTHING;
         }

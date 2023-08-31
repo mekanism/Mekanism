@@ -163,7 +163,7 @@ Digital Miner,getAutoEject,,boolean,,false,
 Digital Miner,getAutoPull,,boolean,,false,
 Digital Miner,getEnergyItem,,Table (ItemStack),,false,
 Digital Miner,getEnergyUsage,,Number (FloatingLong),,false,
-Digital Miner,getFilters,,List,,false,
+Digital Miner,getFilters,,List (Table (MinerFilter)),,false,
 Digital Miner,getInverseMode,,boolean,,false,
 Digital Miner,getInverseModeReplaceTarget,,String (Item),,false,
 Digital Miner,getInverseModeRequiresReplacement,,boolean,,false,
@@ -357,7 +357,7 @@ Formulaic Assemblicator,getCraftingInputSlot,slot: Number (int),Table (ItemStack
 Formulaic Assemblicator,getCraftingOutputSlot,slot: Number (int),Table (ItemStack),,false,
 Formulaic Assemblicator,getCraftingOutputSlots,,Number (int),,false,
 Formulaic Assemblicator,getEnergyItem,,Table (ItemStack),,false,
-Formulaic Assemblicator,getExcessRemainingItems,,NonNullList,,false,
+Formulaic Assemblicator,getExcessRemainingItems,,List (Table (ItemStack)),,false,
 Formulaic Assemblicator,getFormulaItem,,Table (ItemStack),,false,
 Formulaic Assemblicator,getItemInSlot,slot: Number (int),Table (ItemStack),,false,
 Formulaic Assemblicator,getRecipeProgress,,Number (int),,false,
@@ -494,7 +494,7 @@ Logistical Sorter,clearDefaultColor,,,,true,
 Logistical Sorter,decrementDefaultColor,,,,true,
 Logistical Sorter,getAutoMode,,boolean,,false,
 Logistical Sorter,getDefaultColor,,String (EnumColor),,false,
-Logistical Sorter,getFilters,,List,,false,
+Logistical Sorter,getFilters,,List (Table (SorterFilter)),,false,
 Logistical Sorter,incrementDefaultColor,,,,true,
 Logistical Sorter,isRoundRobin,,boolean,,false,
 Logistical Sorter,isSingle,,boolean,,false,
@@ -522,15 +522,15 @@ Machine with Security Component,getOwnerUUID,,String (UUID),,false,
 Machine with Security Component,getSecurityMode,,String (SecurityMode),,false,
 Machine with Side Configuration Component,canEject,type: String (TransmissionType),boolean,,false,
 Machine with Side Configuration Component,decrementMode,"type: String (TransmissionType), side: String (RelativeSide)",,,true,
-Machine with Side Configuration Component,getConfigurableTypes,,List,,false,
+Machine with Side Configuration Component,getConfigurableTypes,,List (String (TransmissionType)),,false,
 Machine with Side Configuration Component,getMode,"type: String (TransmissionType), side: String (RelativeSide)",String (DataType),,true,
-Machine with Side Configuration Component,getSupportedModes,type: String (TransmissionType),Set,,true,
+Machine with Side Configuration Component,getSupportedModes,type: String (TransmissionType),List (String (DataType)),,true,
 Machine with Side Configuration Component,incrementMode,"type: String (TransmissionType), side: String (RelativeSide)",,,true,
 Machine with Side Configuration Component,isEjecting,type: String (TransmissionType),boolean,,false,
 Machine with Side Configuration Component,setEjecting,"type: String (TransmissionType), ejecting: boolean",,,true,
 Machine with Side Configuration Component,setMode,"type: String (TransmissionType), side: String (RelativeSide), mode: String (DataType)",,,true,
 Machine with Upgrade Component,getInstalledUpgrades,,Table,,false,
-Machine with Upgrade Component,getSupportedUpgrades,,Set,,false,
+Machine with Upgrade Component,getSupportedUpgrades,,List (String (Upgrade)),,false,
 Mechanical Pipe,getBuffer,,Table (FluidStack),,false,
 Mechanical Pipe,getCapacity,,Number (long),,false,
 Mechanical Pipe,getFilledPercentage,,Number (double),,false,
@@ -570,7 +570,7 @@ Nutritional Liquifier,getOutputFilledPercentage,,Number (double),,false,
 Nutritional Liquifier,getOutputItem,,Table (ItemStack),,false,
 Nutritional Liquifier,getOutputNeeded,,Number (int),,false,
 Oredictionificator,addFilter,filter: Table (OredictionificatorItemFilter),boolean,,true,
-Oredictionificator,getFilters,,List,,false,
+Oredictionificator,getFilters,,List (Table (OredictionificatorItemFilter)),,false,
 Oredictionificator,getInputItem,,Table (ItemStack),,false,
 Oredictionificator,getOutputItem,,Table (ItemStack),,false,
 Oredictionificator,removeFilter,filter: Table (OredictionificatorItemFilter),boolean,,true,
@@ -650,7 +650,7 @@ QIO Importer,getImportWithoutFilter,,boolean,,false,
 QIO Importer,setImportsWithoutFilter,value: boolean,,,true,
 QIO Machine,createFrequency,name: String,,,true,Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation
 QIO Machine,decrementFrequencyColor,,,,true,Requires a frequency to be selected
-QIO Machine,getFrequencies,,Collection,,false,Lists public frequencies
+QIO Machine,getFrequencies,,List (Table (QIOFrequency)),,false,Lists public frequencies
 QIO Machine,getFrequency,,Table (QIOFrequency),,false,Requires a frequency to be selected
 QIO Machine,getFrequencyColor,,String (EnumColor),,false,Requires a frequency to be selected
 QIO Machine,hasFrequency,,boolean,,false,
@@ -658,7 +658,7 @@ QIO Machine,incrementFrequencyColor,,,,true,Requires a frequency to be selected
 QIO Machine,setFrequency,name: String,,,true,Requires a public frequency to exist
 QIO Machine,setFrequencyColor,color: String (EnumColor),,,true,Requires a frequency to be selected
 QIO Machine with Filter,addFilter,filter: Table (QIOFilter),boolean,,true,
-QIO Machine with Filter,getFilters,,List,,false,
+QIO Machine with Filter,getFilters,,List (Table (QIOFilter)),,false,
 QIO Machine with Filter,removeFilter,filter: Table (QIOFilter),boolean,,true,
 QIO Redstone Adapter,clearTargetItem,,,,true,
 QIO Redstone Adapter,getFuzzyMode,,boolean,,false,
@@ -691,7 +691,7 @@ Quantum Entangloporter,getBufferSlurryCapacity,,Number (long),,false,
 Quantum Entangloporter,getBufferSlurryFilledPercentage,,Number (double),,false,
 Quantum Entangloporter,getBufferSlurryNeeded,,Number (long),,false,
 Quantum Entangloporter,getEnvironmentalLoss,,Number (double),,false,May not be accurate if there is no frequency
-Quantum Entangloporter,getFrequencies,,Collection,,false,Lists public frequencies
+Quantum Entangloporter,getFrequencies,,List (Table (InventoryFrequency)),,false,Lists public frequencies
 Quantum Entangloporter,getFrequency,,Table (InventoryFrequency),,false,Requires a frequency to be selected
 Quantum Entangloporter,getTemperature,,Number (double),,false,Requires a frequency to be selected
 Quantum Entangloporter,getTransferLoss,,Number (double),,false,May not be accurate if there is no frequency
@@ -759,9 +759,9 @@ Solar Neutron Activator,getPeakProductionRate,,Number (float),,false,
 Solar Neutron Activator,getProductionRate,,Number (float),,false,
 Teleporter,createFrequency,name: String,,,true,Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation
 Teleporter,decrementFrequencyColor,,,,true,Requires a frequency to be selected
-Teleporter,getActiveTeleporters,,Set,,false,Requires a frequency to be selected
+Teleporter,getActiveTeleporters,,List (Table (Coord4D)),,false,Requires a frequency to be selected
 Teleporter,getEnergyItem,,Table (ItemStack),,false,
-Teleporter,getFrequencies,,Collection,,false,Lists public frequencies
+Teleporter,getFrequencies,,List (Table (TeleporterFrequency)),,false,Lists public frequencies
 Teleporter,getFrequency,,Table (TeleporterFrequency),,false,Requires a frequency to be selected
 Teleporter,getFrequencyColor,,String (EnumColor),,false,Requires a frequency to be selected
 Teleporter,getStatus,,String,,false,

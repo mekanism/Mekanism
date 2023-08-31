@@ -23,6 +23,8 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeVariable;
 import javax.tools.Diagnostic.Kind;
 import mekanism.MekAnnotationProcessors;
 import mekanism.util.FakeParameter;
@@ -576,7 +578,18 @@ public class ComputerHandlerBuilder {
         //threadsafe
         registerMethodBuilder.add("$L, ", threadSafeLiteral);
         //return type
-        registerMethodBuilder.add("$T.class, ", TypeName.get(typeUtils.erasure(returnType)));
+        TypeMirror erasedReturnType = typeUtils.erasure(returnType);
+        registerMethodBuilder.add("$T.class, ", TypeName.get(erasedReturnType));
+        //return extra
+        CodeBlock returnExtra = CodeBlock.of("NO_CLASSES");
+        if (typeUtils.isAssignable(erasedReturnType, collectionType)) {
+            if (returnType instanceof DeclaredType declaredType && !declaredType.getTypeArguments().isEmpty()) {
+                returnExtra = CodeBlock.of("new Class[]{$L}", declaredType.getTypeArguments().stream().map(typeMirror -> CodeBlock.of("$T.class", typeUtils.erasure(typeMirror))).collect(CodeBlock.joining(", ")));
+            } else {
+                throw new RuntimeException("Unknown type: "+returnType.getClass());
+            }
+        }
+        registerMethodBuilder.add("$L, ", returnExtra);
         //method reference to handler method
         registerMethodBuilder.add("$N::$N, ", handlerClassName, handlerMethod);
         //method description

@@ -1302,7 +1302,10 @@
     {
       "methodName": "getFilters",
       "returns": {
-        "type": "List",
+        "type": "List (Table (MinerFilter))",
+        "javaExtra": [
+          "mekanism.common.content.miner.MinerFilter"
+        ],
         "javaType": "java.util.List"
       }
     },
@@ -3052,7 +3055,10 @@
     {
       "methodName": "getExcessRemainingItems",
       "returns": {
-        "type": "NonNullList",
+        "type": "List (Table (ItemStack))",
+        "javaExtra": [
+          "net.minecraft.world.item.ItemStack"
+        ],
         "javaType": "net.minecraft.core.NonNullList"
       }
     },
@@ -4224,7 +4230,10 @@
     {
       "methodName": "getFilters",
       "returns": {
-        "type": "List",
+        "type": "List (Table (SorterFilter))",
+        "javaExtra": [
+          "mekanism.common.content.transporter.SorterFilter"
+        ],
         "javaType": "java.util.List"
       }
     },
@@ -4665,8 +4674,21 @@
     {
       "methodName": "getConfigurableTypes",
       "returns": {
-        "type": "List",
-        "javaType": "java.util.List"
+        "type": "List (String (TransmissionType))",
+        "javaExtra": [
+          "mekanism.common.lib.transmitter.TransmissionType"
+        ],
+        "javaType": "java.util.List",
+        "values": [
+          "ENERGY",
+          "FLUID",
+          "GAS",
+          "INFUSION",
+          "PIGMENT",
+          "SLURRY",
+          "ITEM",
+          "HEAT"
+        ]
       }
     },
     {
@@ -4740,8 +4762,23 @@
       ],
       "requiresPublicSecurity": true,
       "returns": {
-        "type": "Set",
-        "javaType": "java.util.Set"
+        "type": "List (String (DataType))",
+        "javaExtra": [
+          "mekanism.common.tile.component.config.DataType"
+        ],
+        "javaType": "java.util.Set",
+        "values": [
+          "NONE",
+          "INPUT",
+          "INPUT_1",
+          "INPUT_2",
+          "OUTPUT",
+          "OUTPUT_1",
+          "OUTPUT_2",
+          "INPUT_OUTPUT",
+          "ENERGY",
+          "EXTRA"
+        ]
       }
     },
     {
@@ -4891,8 +4928,20 @@
     {
       "methodName": "getSupportedUpgrades",
       "returns": {
-        "type": "Set",
-        "javaType": "java.util.Set"
+        "type": "List (String (Upgrade))",
+        "javaExtra": [
+          "mekanism.api.Upgrade"
+        ],
+        "javaType": "java.util.Set",
+        "values": [
+          "SPEED",
+          "ENERGY",
+          "FILTER",
+          "GAS",
+          "MUFFLING",
+          "ANCHOR",
+          "STONE_GENERATOR"
+        ]
       }
     }
   ],
@@ -5190,7 +5239,10 @@
     {
       "methodName": "getFilters",
       "returns": {
-        "type": "List",
+        "type": "List (Table (OredictionificatorItemFilter))",
+        "javaExtra": [
+          "mekanism.common.content.oredictionificator.OredictionificatorItemFilter"
+        ],
         "javaType": "java.util.List"
       }
     },
@@ -5838,7 +5890,10 @@
       "description": "Lists public frequencies",
       "methodName": "getFrequencies",
       "returns": {
-        "type": "Collection",
+        "type": "List (Table (QIOFrequency))",
+        "javaExtra": [
+          "mekanism.common.content.qio.QIOFrequency"
+        ],
         "javaType": "java.util.Collection"
       }
     },
@@ -5954,7 +6009,10 @@
     {
       "methodName": "getFilters",
       "returns": {
-        "type": "List",
+        "type": "List (Table (QIOFilter))",
+        "javaExtra": [
+          "mekanism.common.content.qio.filter.QIOFilter"
+        ],
         "javaType": "java.util.List"
       }
     },
@@ -6210,7 +6268,10 @@
       "description": "Lists public frequencies",
       "methodName": "getFrequencies",
       "returns": {
-        "type": "Collection",
+        "type": "List (Table (InventoryFrequency))",
+        "javaExtra": [
+          "mekanism.common.content.entangloporter.InventoryFrequency"
+        ],
         "javaType": "java.util.Collection"
       }
     },
@@ -6767,7 +6828,10 @@
       "description": "Requires a frequency to be selected",
       "methodName": "getActiveTeleporters",
       "returns": {
-        "type": "Set",
+        "type": "List (Table (Coord4D))",
+        "javaExtra": [
+          "mekanism.api.Coord4D"
+        ],
         "javaType": "java.util.Set"
       }
     },
@@ -6782,7 +6846,10 @@
       "description": "Lists public frequencies",
       "methodName": "getFrequencies",
       "returns": {
-        "type": "Collection",
+        "type": "List (Table (TeleporterFrequency))",
+        "javaExtra": [
+          "mekanism.common.content.teleporter.TeleporterFrequency"
+        ],
         "javaType": "java.util.Collection"
       }
     },

@@ -23,8 +23,8 @@ import java.util.Map;
 
 public abstract class BoundMethodHolder {
     private static final Comparator<BoundMethodData<?>> METHODDATA_COMPARATOR = Comparator.<BoundMethodData<?>, String>comparing(BoundMethodData::name).thenComparing(md -> md.argumentNames().length);
-    private static final MethodData<ListMultimap<String, BoundMethodData<?>>> HELP_METHOD = new ComputerMethodFactory.MethodData<>("help", MethodRestriction.NONE, ComputerMethodFactory.NO_STRINGS, true, ComputerMethodFactory.NO_STRINGS, ComputerMethodFactory.NO_CLASSES, Map.class, BoundMethodHolder::generateHelp, null, false);
-    private static final MethodData<ListMultimap<String, BoundMethodData<?>>> HELP_METHOD_WITH_NAME = new ComputerMethodFactory.MethodData<>("help", MethodRestriction.NONE, ComputerMethodFactory.NO_STRINGS, true, new String[]{"methodName"}, new Class[]{String.class}, Map.class, BoundMethodHolder::generateHelpSpecific, null, false);
+    private static final MethodData<ListMultimap<String, BoundMethodData<?>>> HELP_METHOD = new ComputerMethodFactory.MethodData<>("help", MethodRestriction.NONE, ComputerMethodFactory.NO_STRINGS, true, ComputerMethodFactory.NO_STRINGS, ComputerMethodFactory.NO_CLASSES, Map.class, ComputerMethodFactory.NO_CLASSES, BoundMethodHolder::generateHelp, null, false);
+    private static final MethodData<ListMultimap<String, BoundMethodData<?>>> HELP_METHOD_WITH_NAME = new ComputerMethodFactory.MethodData<>("help", MethodRestriction.NONE, ComputerMethodFactory.NO_STRINGS, true, new String[]{"methodName"}, new Class[]{String.class}, Map.class, ComputerMethodFactory.NO_CLASSES, BoundMethodHolder::generateHelpSpecific, null, false);
 
     protected final ListMultimap<String, BoundMethodData<?>> methods = ArrayListMultimap.create();
     /**

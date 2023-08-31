@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -119,7 +120,11 @@ public class ComputerHelpProvider implements DataProvider {
         helpData.forEach((unused, methods)->{
             for (MethodHelpData method : methods) {
                 if (method.returns().values() != null) {
-                    enumToValues.put(method.returns().javaType(), method.returns().values());
+                    Class<?> jType = method.returns().javaType();
+                    if (Collection.class.isAssignableFrom(jType) && method.returns().javaExtra().length > 0) {
+                        jType = method.returns().javaExtra()[0];
+                    }
+                    enumToValues.put(jType, method.returns().values());
                 }
                 if (method.params() != null) {
                     for (Param param : method.params()) {
