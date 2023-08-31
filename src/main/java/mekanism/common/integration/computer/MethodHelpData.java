@@ -12,6 +12,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.content.filter.IFilter;
+import mekanism.common.integration.computer.ComputerMethodFactory.MethodData;
 import mekanism.common.lib.frequency.Frequency;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
@@ -30,20 +31,13 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
     }
 
     public static MethodHelpData from(ComputerMethodFactory.MethodData<?> data) {
-        return from(data.name(), data.argumentNames(), data.argClasses(), data.returnType(), data.methodDescription(), data.restriction(), data.requiresPublicSecurity());
-    }
-
-    @NotNull
-    private static MethodHelpData from(String methodName, String[] argumentNames, Class<?>[] argumentClasses, Class<?> returnType, @Nullable String methodDescription, MethodRestriction restriction, boolean requiresPublicSecurity) {
         List<Param> params = new ArrayList<>();
-        for (int i = 0; i < argumentNames.length; i++) {
-            Class<?> argClass = argumentClasses[i];
-            params.add(new Param(argumentNames[i], getHumanType(argClass), argClass, getEnumConstantNames(argClass)));
+        for (int i = 0; i < data.argumentNames().length; i++) {
+            Class<?> argClass = data.argClasses()[i];
+            params.add(new Param(data.argumentNames()[i], getHumanType(argClass), argClass, getEnumConstantNames(argClass)));
         }
 
-        Returns returns = returnType != void.class ? new Returns(getHumanType(returnType), returnType, getEnumConstantNames(returnType)) : Returns.NOTHING;
-
-        return new MethodHelpData(methodName, params.isEmpty() ? null : params, returns, methodDescription, restriction, requiresPublicSecurity);
+        return new MethodHelpData(data.name(), params.isEmpty() ? null : params, Returns.from(data), data.methodDescription(), data.restriction(), data.requiresPublicSecurity());
     }
 
     @NotNull
@@ -114,5 +108,12 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
               CLASS_TO_STRING_CODEC.fieldOf("javaType").forGetter(Returns::javaType),
               Codec.STRING.listOf().optionalFieldOf("values", null).forGetter(Returns::values)
         ).apply(instance, Returns::new));
+
+        public static Returns from(MethodData<?> data) {
+            if (data.returnType() != void.class) {
+                return new Returns(getHumanType(data.returnType()), data.returnType(), getEnumConstantNames(data.returnType()));
+            }
+            return Returns.NOTHING;
+        }
     }
 }
