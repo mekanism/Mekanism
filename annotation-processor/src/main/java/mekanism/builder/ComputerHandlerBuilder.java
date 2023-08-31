@@ -49,6 +49,7 @@ public class ComputerHandlerBuilder {
     private static final ClassName computerMethodFactoryRaw = ClassName.get(MekAnnotationProcessors.COMPUTER_INTEGRATION_PACKAGE, "ComputerMethodFactory");
     private static final ClassName baseComputerHelper = ClassName.get(MekAnnotationProcessors.COMPUTER_INTEGRATION_PACKAGE, "BaseComputerHelper");
     private static final ClassName computerException = ClassName.get(MekAnnotationProcessors.COMPUTER_INTEGRATION_PACKAGE, "ComputerException");
+    private static final ClassName methodData = ClassName.get(MekAnnotationProcessors.COMPUTER_INTEGRATION_PACKAGE, "MethodData");
     private static TypeMirror computerMethodAnnotationType;
     private static TypeMirror syntheticComputerMethodAnnotationType;
     private static TypeMirror wrappingComputerMethodAnnotationType;
@@ -564,55 +565,59 @@ public class ComputerHandlerBuilder {
      */
     private CodeBlock buildRegisterMethodCall(AnnotationHelper annotationValues, List<VariableElement> parameters, TypeMirror returnType, MethodSpec handlerMethod, String computerExposedName, Object threadSafeLiteral) {
         CodeBlock.Builder registerMethodBuilder = CodeBlock.builder();
-        //Computer exposed method name
-        registerMethodBuilder.add("register($S, ", computerExposedName);
+        //Computer exposed method name & handler reference
+        registerMethodBuilder.add("register($T.builder($S, $N::$N)", methodData, computerExposedName, handlerClassName, handlerMethod);
         //restriction
-        registerMethodBuilder.add("$L, ", annotationValues.getLiteral("restriction", null));
+        if (!annotationValues.getEnumConstantName("restriction", "NONE").equals("NONE")) {
+            registerMethodBuilder.add(".restriction($L)", annotationValues.getLiteral("restriction", null));
+        }
         //mods required
         List<String> modsRequired = annotationValues.getStringArray("requiredMods");
-        if (modsRequired.isEmpty()) {
-            registerMethodBuilder.add("NO_STRINGS, ");
-        } else {
-            registerMethodBuilder.add("$L, ", annotationValues.getLiteral("requiredMods", "NO_STRINGS"));
+        if (!modsRequired.isEmpty()) {
+            registerMethodBuilder.add(".requiredMods($L)", annotationValues.getLiteral("requiredMods", "NO_STRINGS"));
         }
         //threadsafe
-        registerMethodBuilder.add("$L, ", threadSafeLiteral);
+        if (!(threadSafeLiteral instanceof Boolean) || ((Boolean) threadSafeLiteral)) {
+            registerMethodBuilder.add(".threadSafe()", threadSafeLiteral);
+        }
         //return type
         TypeMirror erasedReturnType = typeUtils.erasure(returnType);
-        registerMethodBuilder.add("$T.class, ", TypeName.get(erasedReturnType));
+        if (erasedReturnType.getKind() != TypeKind.VOID) {
+            registerMethodBuilder.add(".returnType($T.class)", TypeName.get(erasedReturnType));
+        }
         //return extra
-        CodeBlock returnExtra = CodeBlock.of("NO_CLASSES");
         if (typeUtils.isAssignable(erasedReturnType, collectionType)) {
             if (returnType instanceof DeclaredType declaredType && !declaredType.getTypeArguments().isEmpty()) {
-                returnExtra = CodeBlock.of("new Class[]{$L}", declaredType.getTypeArguments().stream().map(typeMirror -> CodeBlock.of("$T.class", typeUtils.erasure(typeMirror))).collect(CodeBlock.joining(", ")));
+                registerMethodBuilder.add(".returnExtra($L)", declaredType.getTypeArguments().stream().map(typeMirror -> CodeBlock.of("$T.class", typeUtils.erasure(typeMirror))).collect(CodeBlock.joining(", ")));
             } else {
                 throw new RuntimeException("Unknown type: "+returnType.getClass());
             }
         }
-        registerMethodBuilder.add("$L, ", returnExtra);
-        //method reference to handler method
-        registerMethodBuilder.add("$N::$N, ", handlerClassName, handlerMethod);
+
         //method description
-        registerMethodBuilder.add("$L, ", annotationValues.getLiteral("methodDescription",null));
+        String methodDescription = annotationValues.getStringValue("methodDescription",null);
+        if (methodDescription != null && !methodDescription.isBlank()) {
+            registerMethodBuilder.add(".methodDescription($S)", methodDescription);
+        }
         //requires public security
-        registerMethodBuilder.add("$L", annotationValues.getLiteral("requiresPublicSecurity",false));
+        if (annotationValues.getBooleanValue("requiresPublicSecurity",false)) {
+            registerMethodBuilder.add(".requiresPublicSecurity()");
+        }
         //param names
         if (!parameters.isEmpty()) {
-            registerMethodBuilder.add(", ");
             List<String> paramNames = parameters.stream().map(variableElement -> variableElement.getSimpleName().toString()).toList();
             FieldSpec paramNameField = this.paramNameConstants.computeIfAbsent(paramNames, params ->
                   FieldSpec.builder(String[].class, "NAMES_"+String.join("_", params), Modifier.PRIVATE, Modifier.FINAL)
                         .initializer("new String[]{$L}", params.stream().map(p->CodeBlock.of("$S",p)).collect(CodeBlock.joining(",")))
                         .build()
             );
-            registerMethodBuilder.add("$N, ", paramNameField);
             List<String> paramTypes = parameters.stream().map(param -> typeUtils.erasure(param.asType()).toString()).toList();
             FieldSpec paramTypesField = this.paramTypeConstants.computeIfAbsent(paramTypes, typesKey ->
                   FieldSpec.builder(Class[].class, "TYPES_" + Integer.toHexString(typesKey.hashCode()), Modifier.PRIVATE, Modifier.FINAL)
                         .initializer("new Class[]{$L}", parameters.stream().map(param -> CodeBlock.of("$T.class", typeUtils.erasure(param.asType()))).collect(CodeBlock.joining(",")))
                         .build()
             );
-            registerMethodBuilder.add("$N", paramTypesField);
+            registerMethodBuilder.add(".arguments($N, $N)", paramNameField, paramTypesField);
         }
         registerMethodBuilder.add(")");
         return registerMethodBuilder.build();

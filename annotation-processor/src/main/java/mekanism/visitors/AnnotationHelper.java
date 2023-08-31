@@ -5,6 +5,7 @@ import com.squareup.javapoet.CodeBlock;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.SimpleAnnotationValueVisitor14;
@@ -46,6 +47,27 @@ public class AnnotationHelper {
     }
 
     /**
+     * Get an enum constant name, element must be an enum constant or default will be returned
+     *
+     * @param key the annotation member name
+     * @param defaultValue a default value to use if no value found
+     * @return a raw primitive or CodeBlock representing the value
+     */
+    public String getEnumConstantName(String key, String defaultValue) {
+        ExecutableElement element = nameToElement.get(key);
+        if (element == null) {
+            return defaultValue;
+        }
+        AnnotationValue value = annotationValueMap.get(element);
+        return value.accept(new SimpleAnnotationValueVisitor14<String, Void>(defaultValue){
+            @Override
+            public String visitEnumConstant(VariableElement c, Void unused) {
+                return c.getSimpleName().toString();
+            }
+        }, null);
+    }
+
+    /**
      * Get a string value from the annotation.
      * @param key the annotation member name
      * @param defaultValue a value to return if the value found is empty or not a string
@@ -55,6 +77,19 @@ public class AnnotationHelper {
         AnnotationValue value = annotationValueMap.get(nameToElement.get(key));
         if (value != null && value.getValue() instanceof String s && !s.isBlank())
             return s;
+        return defaultValue;
+    }
+
+    /**
+     * Get a boolean value from the annotation.
+     * @param key the annotation member name
+     * @param defaultValue a value to return if the value found is empty or not a boolean
+     * @return the boolean value or the default
+     */
+    public boolean getBooleanValue(String key, boolean defaultValue) {
+        AnnotationValue value = annotationValueMap.get(nameToElement.get(key));
+        if (value != null && value.getValue() instanceof Boolean b)
+            return b;
         return defaultValue;
     }
 

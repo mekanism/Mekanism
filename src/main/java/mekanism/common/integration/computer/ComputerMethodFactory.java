@@ -61,15 +61,15 @@ public class ComputerMethodFactory<T>{
      */
     private final Set<ObjectIntPair<String>> methodsKnown = new HashSet<>();
 
-    protected void register(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, Class<?> returnType, Class<?>[] returnExtra, ComputerFunctionCaller<T> handler, @Nullable String methodDescription, boolean requiresPublicSecurity, String[] argumentNames, Class<?>[] argClasses) {
-        if (!methodsKnown.add(new ObjectIntImmutablePair<>(name, argumentNames.length))) {
-            throw new RuntimeException("Duplicate method name "+name+"_"+argumentNames.length);
-        }
-        this.methods.add(new MethodData<>(name, restriction, requiredMods, threadSafe, argumentNames, argClasses, returnType, returnExtra, handler, methodDescription, requiresPublicSecurity));
+    protected void register(MethodData.Builder<T> methodData) {
+        this.register(methodData.build());
     }
 
-    protected void register(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, Class<?> returnType, @Nullable Class<?>[] returnExtra, ComputerFunctionCaller<T> handler, @Nullable String methodDescription, boolean requiresPublicSecurity) {
-        register(name, restriction, requiredMods, threadSafe, returnType, returnExtra, handler, methodDescription, requiresPublicSecurity, NO_STRINGS, NO_CLASSES);
+    protected void register(MethodData<T> methodData) {
+        if (!methodsKnown.add(new ObjectIntImmutablePair<>(methodData.name(), methodData.argumentNames().length))) {
+            throw new RuntimeException("Duplicate method name "+methodData.name()+"_"+methodData.argumentNames().length);
+        }
+        this.methods.add(methodData);
     }
 
     void bindTo(@Nullable T subject, BoundMethodHolder holder) {
