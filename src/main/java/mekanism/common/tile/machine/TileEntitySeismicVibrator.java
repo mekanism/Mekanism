@@ -2,6 +2,7 @@ package mekanism.common.tile.machine;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import java.util.Map;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -149,7 +150,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     }
 
     @ComputerMethod
-    Int2ObjectMap<BlockState> getColumnAt(int chunkRelativeX, int chunkRelativeZ) throws ComputerException {
+    Map<Integer, BlockState> getColumnAt(int chunkRelativeX, int chunkRelativeZ) throws ComputerException {
         validateVibrating();
         Int2ObjectMap<BlockState> blocks = new Int2ObjectOpenHashMap<>();
         BlockPos minPos = getVerticalPos(chunkRelativeX, level.getMinBuildHeight(), chunkRelativeZ);

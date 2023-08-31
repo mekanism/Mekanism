@@ -5,8 +5,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.ChemicalStack;
@@ -20,6 +23,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
+import org.apache.commons.lang3.ClassUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,7 +52,10 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
         if (Frequency.class.isAssignableFrom(clazz) || clazz == Coord4D.class || Vec3i.class.isAssignableFrom(clazz) || clazz == FluidStack.class || clazz == ItemStack.class || clazz == BlockState.class || ChemicalStack.class.isAssignableFrom(clazz) || IFilter.class.isAssignableFrom(clazz)) {
             return "Table ("+clazz.getSimpleName()+")";
         }
-        if (clazz == int.class || clazz == long.class || clazz == float.class || clazz == double.class || clazz == FloatingLong.class) {
+        if (clazz == int.class || clazz == long.class || clazz == float.class || clazz == double.class || clazz == FloatingLong.class || Number.class.isAssignableFrom(clazz)) {
+            if (ClassUtils.isPrimitiveWrapper(clazz)) {
+                clazz = Objects.requireNonNull(ClassUtils.wrapperToPrimitive(clazz), clazz::getName);
+            }
             return "Number ("+clazz.getSimpleName()+")";
         }
         if (Collection.class.isAssignableFrom(clazz)) {
@@ -61,7 +68,14 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
         if (clazz == Convertable.class) {
             return "Varies";//technically can be anything, but so far only map used
         }
-        return Map.class.isAssignableFrom(clazz) ? "Table" : clazz.getSimpleName();
+        if (Map.class.isAssignableFrom(clazz)) {
+            String humanType = "Table";
+            if (extraTypes.length == 2) {
+                humanType += " (" + getHumanType(extraTypes[0], NO_CLASSES) + " => " + getHumanType(extraTypes[1], NO_CLASSES) + ")";
+            }
+            return humanType;
+        }
+        return clazz.getSimpleName();
     }
 
     @SuppressWarnings("unchecked")
@@ -115,7 +129,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
         public static final Codec<Returns> CODEC = RecordCodecBuilder.create(instance->instance.group(
               Codec.STRING.fieldOf("type").forGetter(Returns::type),
               CLASS_TO_STRING_CODEC.fieldOf("javaType").forGetter(Returns::javaType),
-              CLASS_TO_STRING_CODEC.listOf().<Class<?>[]>xmap(cl -> cl.toArray(new Class[0]), Arrays::asList).optionalFieldOf("javaExtra", NO_CLASSES).forGetter(Returns::javaExtra),
+              CLASS_TO_STRING_CODEC.listOf().optionalFieldOf("javaExtra", Collections.emptyList()).<Class<?>[]>xmap(cl -> cl.toArray(new Class[0]), Arrays::asList).forGetter(Returns::javaExtra),
               Codec.STRING.listOf().optionalFieldOf("values", null).forGetter(Returns::values)
         ).apply(instance, Returns::new));
 

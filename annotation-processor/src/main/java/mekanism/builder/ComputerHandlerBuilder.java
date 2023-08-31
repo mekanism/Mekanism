@@ -586,11 +586,11 @@ public class ComputerHandlerBuilder {
             registerMethodBuilder.add(".returnType($T.class)", TypeName.get(erasedReturnType));
         }
         //return extra
-        if (typeUtils.isAssignable(erasedReturnType, collectionType)) {
+        if (typeUtils.isAssignable(erasedReturnType, collectionType) || typeUtils.isAssignable(erasedReturnType, mapType)) {
             if (returnType instanceof DeclaredType declaredType && !declaredType.getTypeArguments().isEmpty()) {
                 registerMethodBuilder.add(".returnExtra($L)", declaredType.getTypeArguments().stream().map(typeMirror -> CodeBlock.of("$T.class", typeUtils.erasure(typeMirror))).collect(CodeBlock.joining(", ")));
             } else {
-                throw new RuntimeException("Unknown type: "+returnType.getClass());
+                throw new RuntimeException("Unknown type: " + returnType.getClass());
             }
         }
 

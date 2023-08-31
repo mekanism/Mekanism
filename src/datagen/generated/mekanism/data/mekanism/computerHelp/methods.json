@@ -2227,7 +2227,7 @@
         {
           "type": "boolean",
           "javaType": "boolean",
-          "name": "arg0"
+          "name": "enabled"
         }
       ]
     }
@@ -2306,7 +2306,7 @@
         {
           "type": "Table (ItemStack)",
           "javaType": "net.minecraft.world.item.ItemStack",
-          "name": "arg0"
+          "name": "stack"
         }
       ]
     }
@@ -2454,7 +2454,7 @@
         {
           "type": "String",
           "javaType": "java.lang.String",
-          "name": "arg0"
+          "name": "id"
         }
       ]
     }
@@ -2527,7 +2527,7 @@
         {
           "type": "String",
           "javaType": "java.lang.String",
-          "name": "arg0"
+          "name": "name"
         }
       ]
     }
@@ -4921,7 +4921,11 @@
     {
       "methodName": "getInstalledUpgrades",
       "returns": {
-        "type": "Table",
+        "type": "Table (String (Upgrade) => Number (int))",
+        "javaExtra": [
+          "mekanism.api.Upgrade",
+          "java.lang.Integer"
+        ],
         "javaType": "java.util.Map"
       }
     },
@@ -6671,8 +6675,12 @@
         }
       ],
       "returns": {
-        "type": "Table",
-        "javaType": "it.unimi.dsi.fastutil.ints.Int2ObjectMap"
+        "type": "Table (Number (int) => Table (BlockState))",
+        "javaExtra": [
+          "java.lang.Integer",
+          "net.minecraft.world.level.block.state.BlockState"
+        ],
+        "javaType": "java.util.Map"
       }
     },
     {
