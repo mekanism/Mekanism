@@ -74,9 +74,9 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     private MergedChemicalTank chemicalTank;
     private ChemicalTankTier tier;
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDrainItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDrainItem", docPlaceholder = "drain slot")
     MergedChemicalInventorySlot<MergedChemicalTank> drainSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFillItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFillItem", docPlaceholder = "fill slot")
     MergedChemicalInventorySlot<MergedChemicalTank> fillSlot;
 
     public TileEntityChemicalTank(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
@@ -192,7 +192,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         return type == SubstanceType.GAS || type == SubstanceType.INFUSION || type == SubstanceType.PIGMENT || type == SubstanceType.SLURRY;
     }
 
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"}, docPlaceholder = "tank")
     IChemicalTank<?, ?> getCurrentTank() {
         Current current = chemicalTank.getCurrent();
         return chemicalTank.getTankFromCurrent(current == Current.EMPTY ? Current.GAS : current);

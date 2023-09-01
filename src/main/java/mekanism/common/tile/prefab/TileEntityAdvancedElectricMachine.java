@@ -74,7 +74,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     private long usedSoFar;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getChemical", "getChemicalCapacity", "getChemicalNeeded",
-                                                                                        "getChemicalFilledPercentage"})
+                                                                                        "getChemicalFilledPercentage"}, docPlaceholder = "gas tank")
     public IGasTank gasTank;
 
     protected final IOutputHandler<@NotNull ItemStack> outputHandler;
@@ -82,13 +82,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     protected final ILongInputHandler<@NotNull GasStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityAdvancedElectricMachine> energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")
     InputInventorySlot inputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput", docPlaceholder = "output slot")
     OutputInventorySlot outputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChemicalItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChemicalItem", docPlaceholder = "secondary input slot")
     GasInventorySlot secondarySlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
     public TileEntityAdvancedElectricMachine(IBlockProvider blockProvider, BlockPos pos, BlockState state, int ticksRequired) {

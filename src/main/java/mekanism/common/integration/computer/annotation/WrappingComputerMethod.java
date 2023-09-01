@@ -40,10 +40,18 @@ public @interface WrappingComputerMethod {
      */
     boolean threadSafe() default false;
 
+    String docPlaceholder();
+
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     @interface WrappingComputerMethodIndex {
 
         int value();
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    @interface WrappingComputerMethodHelp {
+        String value();
     }
 }

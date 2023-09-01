@@ -56,7 +56,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     private boolean clientRendering;
 
     private FixedUsageEnergyContainer<TileEntityDimensionalStabilizer> energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
     public TileEntityDimensionalStabilizer(BlockPos pos, BlockState state) {

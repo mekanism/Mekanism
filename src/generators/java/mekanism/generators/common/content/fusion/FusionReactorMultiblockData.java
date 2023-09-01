@@ -81,10 +81,10 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public IHeatCapacitor heatCapacitor;
 
     @ContainerSync(tags = HEAT_TAB)
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded", "getWaterFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded", "getWaterFilledPercentage"}, docPlaceholder = "water tank")
     public IExtendedFluidTank waterTank;
     @ContainerSync(tags = HEAT_TAB)
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded", "getSteamFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded", "getSteamFilledPercentage"}, docPlaceholder = "steam tank")
     public IGasTank steamTank;
 
     private double biomeAmbientTemp;
@@ -101,14 +101,14 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     @ContainerSync(tags = FUEL_TAB)
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDeuterium", "getDeuteriumCapacity", "getDeuteriumNeeded",
-                                                                                        "getDeuteriumFilledPercentage"})
+                                                                                        "getDeuteriumFilledPercentage"}, docPlaceholder = "deuterium tank")
     public IGasTank deuteriumTank;
     @ContainerSync(tags = FUEL_TAB)
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getTritium", "getTritiumCapacity", "getTritiumNeeded",
-                                                                                        "getTritiumFilledPercentage"})
+                                                                                        "getTritiumFilledPercentage"}, docPlaceholder = "tritium tank")
     public IGasTank tritiumTank;
     @ContainerSync(tags = FUEL_TAB)
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDTFuel", "getDTFuelCapacity", "getDTFuelNeeded", "getDTFuelFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDTFuel", "getDTFuelCapacity", "getDTFuelNeeded", "getDTFuelFilledPercentage"}, docPlaceholder = "fuel tank")
     public IGasTank fuelTank;
     @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB}, getter = "getInjectionRate", setter = "setInjectionRate")
     private int injectionRate = 2;
@@ -117,7 +117,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     public double plasmaTemperature;
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getHohlraum")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getHohlraum", docPlaceholder = "Hohlraum slot")
     final ReactorInventorySlot reactorSlot;
 
     private boolean clientBurning;

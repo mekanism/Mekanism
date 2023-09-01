@@ -53,7 +53,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityFluidTank extends TileEntityMekanism implements IConfigurable, IFluidContainerManager, ISustainedData {
 
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"}, docPlaceholder = "tank")
     public FluidTankFluidTank fluidTank;
 
     private ContainerEditMode editMode = ContainerEditMode.BOTH;
@@ -68,9 +68,9 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     private boolean needsPacket;
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
     FluidInventorySlot inputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
     OutputInventorySlot outputSlot;
 
     private boolean updateClientLight = false;

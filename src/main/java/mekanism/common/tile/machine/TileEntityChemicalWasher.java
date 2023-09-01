@@ -73,13 +73,13 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     private static final long MAX_SLURRY = 10_000;
     private static final int MAX_FLUID = 10_000;
 
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded", "getFluidFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded", "getFluidFilledPercentage"}, docPlaceholder = "fluid tank")
     public BasicFluidTank fluidTank;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSlurryInput", "getSlurryInputCapacity", "getSlurryInputNeeded",
-                                                                                        "getSlurryInputFilledPercentage"})
+                                                                                        "getSlurryInputFilledPercentage"}, docPlaceholder = "input slurry tank")
     public ISlurryTank inputTank;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSlurryOutput", "getSlurryOutputCapacity", "getSlurryOutputNeeded",
-                                                                                        "getSlurryOutputFilledPercentage"})
+                                                                                        "getSlurryOutputFilledPercentage"}, docPlaceholder = "output slurry tank")
     public ISlurryTank outputTank;
 
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
@@ -90,13 +90,13 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     private final IInputHandler<@NotNull SlurryStack> slurryInputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalWasher> energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFluidItemInput")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFluidItemInput", docPlaceholder = "fluid item input slot")
     FluidInventorySlot fluidSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFluidItemOutput")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFluidItemOutput", docPlaceholder = "fluid item output slot")
     OutputInventorySlot fluidOutputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "slurry item output slot")
     SlurryInventorySlot slurryOutputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
     public TileEntityChemicalWasher(BlockPos pos, BlockState state) {

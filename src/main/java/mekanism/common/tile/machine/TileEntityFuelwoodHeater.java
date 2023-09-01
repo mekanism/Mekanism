@@ -34,9 +34,9 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     private double lastEnvironmentLoss;
     private double lastTransferLoss;
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem", docPlaceholder = "fuel slot")
     FuelInventorySlot fuelSlot;
-    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "heater")
     BasicHeatCapacitor heatCapacitor;
 
     public TileEntityFuelwoodHeater(BlockPos pos, BlockState state) {

@@ -44,9 +44,9 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     @SyntheticComputerMethod(getter = "getContainerEditMode")
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
     HybridInventorySlot inputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
     HybridInventorySlot outputSlot;
     private int tankCapacity;
     private long chemicalTankCapacity;

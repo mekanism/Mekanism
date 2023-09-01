@@ -66,7 +66,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
     public static final long MAX_INFUSE = 1_000;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInfuseType", "getInfuseTypeCapacity", "getInfuseTypeNeeded",
-                                                                                        "getInfuseTypeFilledPercentage"})
+                                                                                        "getInfuseTypeFilledPercentage"}, docPlaceholder = "infusion buffer")
     public IInfusionTank infusionTank;
 
     private final IOutputHandler<@NotNull ItemStack> outputHandler;
@@ -74,13 +74,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
     private final IInputHandler<@NotNull ItemStack> itemInputHandler;
 
     private MachineEnergyContainer<TileEntityMetallurgicInfuser> energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInfuseTypeItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInfuseTypeItem", docPlaceholder = "infusion (extra) input slot")
     InfusionInventorySlot infusionSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")
     InputInventorySlot inputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput", docPlaceholder = "output slot")
     OutputInventorySlot outputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
     public TileEntityMetallurgicInfuser(BlockPos pos, BlockState state) {

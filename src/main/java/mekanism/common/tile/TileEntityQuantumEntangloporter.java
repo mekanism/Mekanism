@@ -304,31 +304,31 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     }
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getBufferFluid", "getBufferFluidCapacity", "getBufferFluidNeeded",
-                                                                                     "getBufferFluidFilledPercentage"})
+                                                                                     "getBufferFluidFilledPercentage"}, docPlaceholder = "fluid buffer")
     IExtendedFluidTank getBufferFluidTank() throws ComputerException {
         return getFrequency().getFluidTanks(null).get(0);
     }
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferGas", "getBufferGasCapacity", "getBufferGasNeeded",
-                                                                                        "getBufferGasFilledPercentage"})
+                                                                                        "getBufferGasFilledPercentage"}, docPlaceholder = "gas buffer")
     IGasTank getBufferGasTank() throws ComputerException {
         return getFrequency().getGasTanks(null).get(0);
     }
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferInfuseType", "getBufferInfuseTypeCapacity", "getBufferInfuseTypeNeeded",
-                                                                                        "getBufferInfuseTypeFilledPercentage"})
+                                                                                        "getBufferInfuseTypeFilledPercentage"}, docPlaceholder = "infusion buffer")
     IInfusionTank getBufferInfuseTypeTank() throws ComputerException {
         return getFrequency().getInfusionTanks(null).get(0);
     }
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferPigment", "getBufferPigmentCapacity", "getBufferPigmentNeeded",
-                                                                                        "getBufferPigmentFilledPercentage"})
+                                                                                        "getBufferPigmentFilledPercentage"}, docPlaceholder = "pigment buffer")
     IPigmentTank getBufferPigmentTank() throws ComputerException {
         return getFrequency().getPigmentTanks(null).get(0);
     }
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferSlurry", "getBufferSlurryCapacity", "getBufferSlurryNeeded",
-                                                                                        "getBufferSlurryFilledPercentage"})
+                                                                                        "getBufferSlurryFilledPercentage"}, docPlaceholder = "slurry buffer")
     ISlurryTank getBufferSlurryTank() throws ComputerException {
         return getFrequency().getSlurryTanks(null).get(0);
     }

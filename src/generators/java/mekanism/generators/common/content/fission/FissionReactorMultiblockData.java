@@ -79,18 +79,18 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @ContainerSync
     public VariableCapacityFluidTank fluidCoolantTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded", "getFuelFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded", "getFuelFilledPercentage"}, docPlaceholder = "fuel tank")
     public IGasTank fuelTank;
 
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getHeatedCoolant", "getHeatedCoolantCapacity", "getHeatedCoolantNeeded",
-                                                                                        "getHeatedCoolantFilledPercentage"})
+                                                                                        "getHeatedCoolantFilledPercentage"}, docPlaceholder = "heated coolant")
     public IGasTank heatedCoolantTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getWaste", "getWasteCapacity", "getWasteNeeded", "getWasteFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getWaste", "getWasteCapacity", "getWasteNeeded", "getWasteFilledPercentage"}, docPlaceholder = "waste tank")
     public IGasTank wasteTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "reactor")
     public VariableHeatCapacitor heatCapacitor;
 
     private double biomeAmbientTemp;

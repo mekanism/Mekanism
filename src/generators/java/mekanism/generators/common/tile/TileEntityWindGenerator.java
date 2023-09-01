@@ -33,7 +33,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     private double angle;
     private FloatingLong currentMultiplier = FloatingLong.ZERO;
     private boolean isBlacklistDimension;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy item slot")
     EnergyInventorySlot energySlot;
 
     public TileEntityWindGenerator(BlockPos pos, BlockState state) {

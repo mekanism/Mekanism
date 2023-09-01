@@ -61,10 +61,10 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
 
     private final IInputHandler<@NotNull InfusionStack> infusionInputHandler;
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInfuseTypeItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInfuseTypeItem", docPlaceholder = "infusion extra input slot")
     InfusionInventorySlot extraSlot;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInfuseType", "getInfuseTypeCapacity", "getInfuseTypeNeeded",
-                                                                                        "getInfuseTypeFilledPercentage"})
+                                                                                        "getInfuseTypeFilledPercentage"}, docPlaceholder = "infusion buffer")
     IInfusionTank infusionTank;
 
     public TileEntityMetallurgicInfuserFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {

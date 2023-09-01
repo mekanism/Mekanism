@@ -77,13 +77,13 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     private static final long MAX_GAS = 10_000;
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInputFluid", "getInputFluidCapacity", "getInputFluidNeeded",
-                                                                                     "getInputFluidFilledPercentage"})
+                                                                                     "getInputFluidFilledPercentage"}, docPlaceholder = "fluid input")
     public BasicFluidTank inputFluidTank;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInputGas", "getInputGasCapacity", "getInputGasNeeded",
-                                                                                        "getInputGasFilledPercentage"})
+                                                                                        "getInputGasFilledPercentage"}, docPlaceholder = "gas input")
     public IGasTank inputGasTank;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutputGas", "getOutputGasCapacity", "getOutputGasNeeded",
-                                                                                        "getOutputGasFilledPercentage"})
+                                                                                        "getOutputGasFilledPercentage"}, docPlaceholder = "gas output")
     public IGasTank outputGasTank;
 
     private FloatingLong recipeEnergyRequired = FloatingLong.ZERO;
@@ -93,11 +93,11 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     private final IInputHandler<@NotNull GasStack> gasInputHandler;
 
     private PRCEnergyContainer energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "item input slot")
     InputInventorySlot inputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "item output slot")
     OutputInventorySlot outputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
     public TileEntityPressurizedReactionChamber(BlockPos pos, BlockState state) {

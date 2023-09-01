@@ -49,20 +49,20 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
 
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getHeatedCoolant", "getHeatedCoolantCapacity", "getHeatedCoolantNeeded",
-                                                                                        "getHeatedCoolantFilledPercentage"})
+                                                                                        "getHeatedCoolantFilledPercentage"}, docPlaceholder = "heated coolant tank")
     public IGasTank superheatedCoolantTank;
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getCooledCoolant", "getCooledCoolantCapacity", "getCooledCoolantNeeded",
-                                                                                        "getCooledCoolantFilledPercentage"})
+                                                                                        "getCooledCoolantFilledPercentage"}, docPlaceholder = "cooled coolant")
     public IGasTank cooledCoolantTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded", "getWaterFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded", "getWaterFilledPercentage"}, docPlaceholder = "water tank")
     public VariableCapacityFluidTank waterTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded", "getSteamFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded", "getSteamFilledPercentage"}, docPlaceholder = "steam tank")
     public IGasTank steamTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "boiler")
     public VariableHeatCapacitor heatCapacitor;
 
     private double biomeAmbientTemp;

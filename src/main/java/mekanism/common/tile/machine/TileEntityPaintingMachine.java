@@ -60,7 +60,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
     );
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getPigmentInput", "getPigmentInputCapacity", "getPigmentInputNeeded",
-                                                                                        "getPigmentInputFilledPercentage"})
+                                                                                        "getPigmentInputFilledPercentage"}, docPlaceholder = "pigment tank")
     public IPigmentTank pigmentTank;
 
     private final IOutputHandler<@NotNull ItemStack> outputHandler;
@@ -68,13 +68,13 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
     private final IInputHandler<@NotNull PigmentStack> pigmentInputHandler;
 
     private MachineEnergyContainer<TileEntityPaintingMachine> energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputPigmentItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputPigmentItem", docPlaceholder = "pigment slot")
     PigmentInventorySlot pigmentInputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "paintable item slot")
     InputInventorySlot inputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput", docPlaceholder = "painted item slot")
     OutputInventorySlot outputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
     public TileEntityPaintingMachine(BlockPos pos, BlockState state) {

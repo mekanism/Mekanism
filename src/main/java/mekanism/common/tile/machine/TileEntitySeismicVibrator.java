@@ -37,7 +37,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     public int clientPiston;
 
     private MachineEnergyContainer<TileEntitySeismicVibrator> energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
     public TileEntitySeismicVibrator(BlockPos pos, BlockState state) {

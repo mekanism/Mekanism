@@ -101,9 +101,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private List<IInventorySlot> craftingGridSlots;
     private List<IInventorySlot> inputSlots;
     private List<IInventorySlot> outputSlots;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFormulaItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFormulaItem", docPlaceholder = "formula slot")
     BasicInventorySlot formulaSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
     public TileEntityFormulaicAssemblicator(BlockPos pos, BlockState state) {

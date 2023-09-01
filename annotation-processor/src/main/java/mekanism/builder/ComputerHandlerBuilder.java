@@ -15,8 +15,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -52,6 +55,7 @@ public class ComputerHandlerBuilder {
     private static TypeMirror computerMethodAnnotationType;
     private static TypeMirror syntheticComputerMethodAnnotationType;
     private static TypeMirror wrappingComputerMethodAnnotationType;
+    private static TypeMirror wrappingComputerMethodDocAnnotationType;
     private static TypeMirror collectionType;
     private static TypeMirror mapType;
     private static TypeMirror convertableType;
@@ -69,6 +73,7 @@ public class ComputerHandlerBuilder {
         computerMethodAnnotationType = Objects.requireNonNull(elementUtils.getTypeElement(MekAnnotationProcessors.ANNOTATION_COMPUTER_METHOD)).asType();
         syntheticComputerMethodAnnotationType = Objects.requireNonNull(elementUtils.getTypeElement(MekAnnotationProcessors.ANNOTATION_SYNTHETIC_COMPUTER_METHOD)).asType();
         wrappingComputerMethodAnnotationType = Objects.requireNonNull(elementUtils.getTypeElement(MekAnnotationProcessors.ANNOTATION_WRAPPING_COMPUTER_METHOD)).asType();
+        wrappingComputerMethodDocAnnotationType = Objects.requireNonNull(elementUtils.getTypeElement(MekAnnotationProcessors.ANNOTATION_WRAPPING_COMPUTER_METHOD_DOC)).asType();
         collectionType = Objects.requireNonNull(elementUtils.getTypeElement("java.util.Collection")).asType();
         mapType = Objects.requireNonNull(elementUtils.getTypeElement("java.util.Map")).asType();
         eitherType = Objects.requireNonNull(elementUtils.getTypeElement("com.mojang.datafixers.util.Either")).asType();
@@ -188,6 +193,7 @@ public class ComputerHandlerBuilder {
             messager.printMessage(Diagnostic.Kind.ERROR, "Mismatched methodName count. Expected " + wrapperMethods.size() + ", found " + targetMethodNames.size(), annotatedElement);
             return;
         }
+        String docPlaceholder = annotationValues.getStringValue("docPlaceholder", null);
 
         //get the value part of the getter (i.e. what we use as the param to the wrapper)
         CodeBlock targetReference;
@@ -225,8 +231,32 @@ public class ComputerHandlerBuilder {
             MethodSpec handlerMethod = buildHandlerMethod(annotatedName + "$" + targetMethodName, methodBody);
             handlerTypeSpec.addMethod(handlerMethod);
 
+            //generate the doc string, if we have all the data
+            String methodDescription = null;
+            if (docPlaceholder != null) {
+                methodDescription = wrapperMethod.getAnnotationMirrors()
+                      .stream()
+                      //find the doc annotation on the target method
+                      .filter(it -> typeUtils.isSameType(it.getAnnotationType(), wrappingComputerMethodDocAnnotationType))
+                      .findFirst()
+                      //find the 'value' member
+                      .flatMap(am -> am.getElementValues()
+                            .entrySet().stream()
+                            .filter(it -> it.getKey().getSimpleName().contentEquals("value"))
+                            //we just need its value
+                            .map(Entry::getValue)
+                            .findFirst()
+                      )
+                      //get the value as a string
+                      .map(v -> (String) v.getValue())
+                      //format it
+                      .map(template -> String.format(template, docPlaceholder))
+                      //something in the chain failed, default to null
+                      .orElse(null);
+            }
+
             //add a call to register() in the handler class's constructor
-            CodeBlock registerMethodBuilder = buildRegisterMethodCall(annotationValues, Collections.emptyList(), wrapperMethod.getReturnType(), handlerMethod, targetMethodName, annotationValues.getLiteral("threadSafe", false));
+            CodeBlock registerMethodBuilder = buildRegisterMethodCall(annotationValues, Collections.emptyList(), wrapperMethod.getReturnType(), handlerMethod, targetMethodName, annotationValues.getLiteral("threadSafe", false), methodDescription);
             constructorBuilder.addStatement(registerMethodBuilder);
 
         }
@@ -278,7 +308,7 @@ public class ComputerHandlerBuilder {
             handlerTypeSpec.addMethod(handlerMethod);
 
             //ensure the getter is registered
-            CodeBlock getterRegistration = buildRegisterMethodCall(annotationValues, Collections.emptyList(), fieldType, handlerMethod, getterName, annotationValues.getLiteral("threadSafeGetter", false));
+            CodeBlock getterRegistration = buildRegisterMethodCall(annotationValues, Collections.emptyList(), fieldType, handlerMethod, getterName, annotationValues.getLiteral("threadSafeGetter", false), annotationValues.getStringValue("methodDescription",null));
             constructorBuilder.addStatement(getterRegistration);
         }
 
@@ -299,7 +329,7 @@ public class ComputerHandlerBuilder {
             handlerTypeSpec.addMethod(handlerMethod);
 
             //register the setter
-            CodeBlock setterRegistration = buildRegisterMethodCall(annotationValues, Collections.singletonList(new FakeParameter(fieldType, "value")), typeUtils.getNoType(TypeKind.VOID), handlerMethod, setterName, annotationValues.getLiteral("threadSafeSetter", false));
+            CodeBlock setterRegistration = buildRegisterMethodCall(annotationValues, Collections.singletonList(new FakeParameter(fieldType, "value")), typeUtils.getNoType(TypeKind.VOID), handlerMethod, setterName, annotationValues.getLiteral("threadSafeSetter", false), annotationValues.getStringValue("methodDescription",null));
             constructorBuilder.addStatement(setterRegistration);
         }
 
@@ -341,7 +371,7 @@ public class ComputerHandlerBuilder {
         handlerTypeSpec.addMethod(handlerMethod);
 
         //add a call to register() in the handler class's constructor
-        CodeBlock registerMethodBuilder = buildRegisterMethodCall(annotationValues, parameters, returnType, handlerMethod, nameOverride, annotationValues.getLiteral("threadSafe", false));
+        CodeBlock registerMethodBuilder = buildRegisterMethodCall(annotationValues, parameters, returnType, handlerMethod, nameOverride, annotationValues.getLiteral("threadSafe", false), annotationValues.getStringValue("methodDescription",null));
         constructorBuilder.addStatement(registerMethodBuilder);
     }
 
@@ -566,9 +596,10 @@ public class ComputerHandlerBuilder {
      * @param computerExposedName either a name override or the annotated name, exposed to a computer
      * @param threadSafeLiteral   the value of the threadsafe annotation member (name varies in the case of synthetics)
      *
+     * @param methodDescription
      * @return a CodeBlock to be added to the constructor
      */
-    private CodeBlock buildRegisterMethodCall(AnnotationHelper annotationValues, List<VariableElement> parameters, TypeMirror returnType, MethodSpec handlerMethod, String computerExposedName, Object threadSafeLiteral) {
+    private CodeBlock buildRegisterMethodCall(AnnotationHelper annotationValues, List<VariableElement> parameters, TypeMirror returnType, MethodSpec handlerMethod, String computerExposedName, Object threadSafeLiteral, String methodDescription) {
         CodeBlock.Builder registerMethodBuilder = CodeBlock.builder();
         //Computer exposed method name & handler reference
         registerMethodBuilder.add("register($T.builder($S, $N::$N)", methodData, computerExposedName, handlerClassName, handlerMethod);
@@ -605,7 +636,6 @@ public class ComputerHandlerBuilder {
         }
 
         //method description
-        String methodDescription = annotationValues.getStringValue("methodDescription",null);
         if (methodDescription != null && !methodDescription.isBlank()) {
             registerMethodBuilder.add(".methodDescription($S)", methodDescription);
         }

@@ -48,9 +48,9 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
     private ResistiveHeaterEnergyContainer energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "heater")
     BasicHeatCapacitor heatCapacitor;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
     public TileEntityResistiveHeater(BlockPos pos, BlockState state) {
