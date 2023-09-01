@@ -9,6 +9,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -50,6 +51,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.fluids.FluidStack;
 
 public class FissionReactorMultiblockData extends MultiblockData implements IValveHandler {
 
@@ -543,7 +545,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         setRateLimit(rate);
     }
 
-    @ComputerMethod
+    @ComputerMethod(possibleReturns = {ChemicalStack.class, FluidStack.class})
     Convertable<?> getCoolant() {
         if (fluidCoolantTank.isEmpty() && !gasCoolantTank.isEmpty()) {
             return Convertable.of(gasCoolantTank.getStack());

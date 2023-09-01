@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import mekanism.api.Coord4D;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
@@ -46,6 +47,11 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
     }
 
     @NotNull
+    private static String getHumanType(Class<?> clazz) {
+        return getHumanType(clazz, NO_CLASSES);
+    }
+
+    @NotNull
     private static String getHumanType(Class<?> clazz, Class<?>[] extraTypes) {
         if (clazz == UUID.class || clazz == ResourceLocation.class || clazz == Item.class || Enum.class.isAssignableFrom(clazz)) {
             return "String ("+clazz.getSimpleName()+")";
@@ -62,17 +68,21 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
         if (Collection.class.isAssignableFrom(clazz)) {
             String humanType = "List";
             if (extraTypes.length > 0) {
-                humanType += " (" + getHumanType(extraTypes[0], NO_CLASSES) + ")";
+                humanType += " (" + getHumanType(extraTypes[0]) + ")";
             }
             return humanType;
         }
         if (clazz == Convertable.class) {
-            return "Varies";//technically can be anything, but so far only map used
+            String humanType = "Varies";
+            if (extraTypes.length > 0) {
+                humanType = Arrays.stream(extraTypes).map(MethodHelpData::getHumanType).collect(Collectors.joining(" || "));
+            }
+            return humanType;
         }
         if (Map.class.isAssignableFrom(clazz)) {
             String humanType = "Table";
             if (extraTypes.length == 2) {
-                humanType += " (" + getHumanType(extraTypes[0], NO_CLASSES) + " => " + getHumanType(extraTypes[1], NO_CLASSES) + ")";
+                humanType += " (" + getHumanType(extraTypes[0]) + " => " + getHumanType(extraTypes[1]) + ")";
             }
             return humanType;
         }
@@ -122,7 +132,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
 
         @NotNull
         private static Param from(Class<?> argClass, String paramName) {
-            return new Param(paramName, getHumanType(argClass, NO_CLASSES), argClass, getEnumConstantNames(argClass));
+            return new Param(paramName, getHumanType(argClass), argClass, getEnumConstantNames(argClass));
         }
     }
 

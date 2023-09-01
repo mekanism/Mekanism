@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
@@ -206,7 +207,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         setContainerEditMode(editMode.getPrevious());
     }
 
-    @ComputerMethod
+    @ComputerMethod(possibleReturns = {ChemicalStack.class, FluidStack.class})
     Convertable<?> getStored() {
         return switch (mergedTank.getCurrentType()) {
             case FLUID -> Convertable.of(getFluidTank().getFluid());

@@ -207,7 +207,7 @@ Dynamic Tank Multiblock (formed),getContainerEditMode,,String (ContainerEditMode
 Dynamic Tank Multiblock (formed),getFilledPercentage,,Number (double),,false,
 Dynamic Tank Multiblock (formed),getInputItem,,Table (ItemStack),,false,
 Dynamic Tank Multiblock (formed),getOutputItem,,Table (ItemStack),,false,
-Dynamic Tank Multiblock (formed),getStored,,Varies,,false,
+Dynamic Tank Multiblock (formed),getStored,,Table (ChemicalStack) || Table (FluidStack),,false,
 Dynamic Tank Multiblock (formed),getTankCapacity,,Number (int),,false,
 Dynamic Tank Multiblock (formed),incrementContainerEditMode,,,,false,
 Dynamic Tank Multiblock (formed),setContainerEditMode,mode: String (ContainerEditMode),,,false,
@@ -297,7 +297,7 @@ Fission Reactor Multiblock (formed),activate,,,,false,"Must be disabled, and if 
 Fission Reactor Multiblock (formed),getActualBurnRate,,Number (double),,false,Actual burn rate as it may be lower if say there is not enough fuel
 Fission Reactor Multiblock (formed),getBoilEfficiency,,Number (double),,false,
 Fission Reactor Multiblock (formed),getBurnRate,,Number (double),,false,Configured burn rate
-Fission Reactor Multiblock (formed),getCoolant,,Varies,,false,
+Fission Reactor Multiblock (formed),getCoolant,,Table (ChemicalStack) || Table (FluidStack),,false,
 Fission Reactor Multiblock (formed),getCoolantCapacity,,Number (long),,false,
 Fission Reactor Multiblock (formed),getCoolantFilledPercentage,,Number (double),,false,
 Fission Reactor Multiblock (formed),getCoolantNeeded,,Number (long),,false,

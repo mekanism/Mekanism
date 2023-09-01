@@ -107,6 +107,32 @@ public class AnnotationHelper {
     }
 
     /**
+     * Get a list of Class (TypeMirror) values from the annotation. Non class values will be ignored
+     * @param key the annotation member name
+     * @return a list with any values found
+     */
+    public List<TypeMirror> getClassArray(String key) {
+        AnnotationValue value = annotationValueMap.get(nameToElement.get(key));
+        List<TypeMirror> returnVal = new ArrayList<>();
+        value.accept(new SimpleAnnotationValueVisitor14<Void, Void>() {
+            @Override
+            public Void visitArray(List<? extends AnnotationValue> vals, Void unused) {
+                for (AnnotationValue annotationValue : vals) {
+                    annotationValue.accept(this, null);
+                }
+                return null;
+            }
+
+            @Override
+            public Void visitType(TypeMirror t, Void unused) {
+                returnVal.add(t);
+                return null;
+            }
+        }, null);
+        return returnVal;
+    }
+
+    /**
      * Get a list of String values from the annotation. Non string values will be ignored
      * @param key the annotation member name
      * @return a list with any values found

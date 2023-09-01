@@ -24,7 +24,6 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeVariable;
 import javax.tools.Diagnostic.Kind;
 import mekanism.MekAnnotationProcessors;
 import mekanism.util.FakeParameter;
@@ -55,6 +54,7 @@ public class ComputerHandlerBuilder {
     private static TypeMirror wrappingComputerMethodAnnotationType;
     private static TypeMirror collectionType;
     private static TypeMirror mapType;
+    private static TypeMirror convertableType;
     private static final ParameterSpec helperParam = ParameterSpec.builder(baseComputerHelper, "helper").build();
     private static ParamToHelperMapper paramToHelperMapper;
 
@@ -70,6 +70,7 @@ public class ComputerHandlerBuilder {
         wrappingComputerMethodAnnotationType = Objects.requireNonNull(elementUtils.getTypeElement(MekAnnotationProcessors.ANNOTATION_WRAPPING_COMPUTER_METHOD)).asType();
         collectionType = Objects.requireNonNull(elementUtils.getTypeElement("java.util.Collection")).asType();
         mapType = Objects.requireNonNull(elementUtils.getTypeElement("java.util.Map")).asType();
+        convertableType = Objects.requireNonNull(elementUtils.getTypeElement(MekAnnotationProcessors.COMPUTER_INTEGRATION_PACKAGE+".Convertable")).asType();
         TypeMirror filterInterface = typeUtils.erasure(elementUtils.getTypeElement("mekanism.common.content.filter.IFilter").asType());
         paramToHelperMapper = new ParamToHelperMapper(helperParam, filterInterface, typeUtils);
     }
@@ -588,9 +589,14 @@ public class ComputerHandlerBuilder {
         //return extra
         if (typeUtils.isAssignable(erasedReturnType, collectionType) || typeUtils.isAssignable(erasedReturnType, mapType)) {
             if (returnType instanceof DeclaredType declaredType && !declaredType.getTypeArguments().isEmpty()) {
-                registerMethodBuilder.add(".returnExtra($L)", declaredType.getTypeArguments().stream().map(typeMirror -> CodeBlock.of("$T.class", typeUtils.erasure(typeMirror))).collect(CodeBlock.joining(", ")));
+                registerMethodBuilder.add(".returnExtra($L)", typeMirrorListToClassCodeblock(declaredType.getTypeArguments()));
             } else {
                 throw new RuntimeException("Unknown type: " + returnType.getClass());
+            }
+        } else if (typeUtils.isAssignable(erasedReturnType, convertableType)) {
+            List<TypeMirror> possibleReturns = annotationValues.getClassArray("possibleReturns");
+            if (!possibleReturns.isEmpty()) {
+                registerMethodBuilder.add(".returnExtra($L)", typeMirrorListToClassCodeblock(possibleReturns));
             }
         }
 
@@ -621,6 +627,10 @@ public class ComputerHandlerBuilder {
         }
         registerMethodBuilder.add(")");
         return registerMethodBuilder.build();
+    }
+
+    private CodeBlock typeMirrorListToClassCodeblock(List<? extends TypeMirror> mirrors) {
+        return mirrors.stream().map(typeMirror -> CodeBlock.of("$T.class", typeUtils.erasure(typeMirror))).collect(CodeBlock.joining(", "));
     }
 
     /**

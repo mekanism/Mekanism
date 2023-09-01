@@ -39,4 +39,9 @@ public @interface ComputerMethod {
      * Method description for documentation.
      */
     String methodDescription() default "";
+
+    /**
+     * For {@link mekanism.common.integration.computer.Convertable} return types, specifies the possible values for documentation
+     */
+    Class[] possibleReturns() default {};
 }
