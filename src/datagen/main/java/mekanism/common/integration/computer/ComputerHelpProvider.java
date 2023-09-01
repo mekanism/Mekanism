@@ -119,12 +119,14 @@ public class ComputerHelpProvider implements DataProvider {
         Map<Class<?>, List<String>> enumToValues = new TreeMap<>(Comparator.comparing(Class::getSimpleName));
         helpData.forEach((unused, methods)->{
             for (MethodHelpData method : methods) {
-                if (method.returns().values() != null) {
+                if (Enum.class.isAssignableFrom(method.returns().javaType())) {
                     Class<?> jType = method.returns().javaType();
-                    if (Collection.class.isAssignableFrom(jType) && method.returns().javaExtra().length > 0) {
-                        jType = method.returns().javaExtra()[0];
-                    }
                     enumToValues.put(jType, method.returns().values());
+                }
+                for (Class<?> extraClass : method.returns().javaExtra()) {
+                    if (Enum.class.isAssignableFrom(extraClass)) {
+                        enumToValues.put(extraClass, MethodHelpData.getEnumConstantNames(extraClass));
+                    }
                 }
                 if (method.params() != null) {
                     for (Param param : method.params()) {

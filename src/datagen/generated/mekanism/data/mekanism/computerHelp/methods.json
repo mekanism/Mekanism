@@ -4926,7 +4926,16 @@
           "mekanism.api.Upgrade",
           "java.lang.Integer"
         ],
-        "javaType": "java.util.Map"
+        "javaType": "java.util.Map",
+        "values": [
+          "SPEED",
+          "ENERGY",
+          "FILTER",
+          "GAS",
+          "MUFFLING",
+          "ANCHOR",
+          "STONE_GENERATOR"
+        ]
       }
     },
     {

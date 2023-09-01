@@ -9,9 +9,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.Coord4D;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.content.filter.IFilter;
@@ -27,6 +27,7 @@ import org.apache.commons.lang3.ClassUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@NothingNullByDefault
 public record MethodHelpData(String methodName, @Nullable List<Param> params, Returns returns, @Nullable String description, MethodRestriction restriction, boolean requiresPublicSecurity) {
 
     private static final Class<?>[] NO_CLASSES = ComputerMethodFactory.NO_CLASSES;
@@ -79,7 +80,8 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
     }
 
     @SuppressWarnings("unchecked")
-    private static List<String> getEnumConstantNames(Class<?> argClass) {
+    @Nullable
+    public static List<String> getEnumConstantNames(Class<?> argClass) {
         if (!Enum.class.isAssignableFrom(argClass)) {
             return null;
         }
@@ -125,7 +127,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
     }
 
     public record Returns(String type, Class<?> javaType, Class<?>[] javaExtra, @Nullable List<String> values){
-        public static final Returns NOTHING = new Returns("Nothing", void.class, null, null);
+        public static final Returns NOTHING = new Returns("Nothing", void.class, NO_CLASSES, null);
         public static final Codec<Returns> CODEC = RecordCodecBuilder.create(instance->instance.group(
               Codec.STRING.fieldOf("type").forGetter(Returns::type),
               CLASS_TO_STRING_CODEC.fieldOf("javaType").forGetter(Returns::javaType),
@@ -136,8 +138,10 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
         public static Returns from(MethodData<?> data) {
             if (data.returnType() != void.class) {
                 List<String> enumConstantNames = getEnumConstantNames(data.returnType());
-                if (Collection.class.isAssignableFrom(data.returnType()) && data.returnExtra().length > 0) {
-                    enumConstantNames = getEnumConstantNames(data.returnExtra()[0]);
+                if (enumConstantNames == null && data.returnExtra().length > 0) {
+                    for (int i = 0; i < data.returnExtra().length && enumConstantNames == null; i++) {
+                        enumConstantNames = getEnumConstantNames(data.returnExtra()[0]);
+                    }
                 }
                 return new Returns(getHumanType(data.returnType(), data.returnExtra()), data.returnType(), data.returnExtra(), enumConstantNames);
             }
