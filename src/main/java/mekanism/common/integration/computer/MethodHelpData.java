@@ -1,5 +1,6 @@
 package mekanism.common.integration.computer;
 
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
@@ -72,10 +73,10 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
             }
             return humanType;
         }
-        if (clazz == Convertable.class) {
+        if (clazz == Convertable.class || clazz == Either.class) {
             String humanType = "Varies";
             if (extraTypes.length > 0) {
-                humanType = Arrays.stream(extraTypes).map(MethodHelpData::getHumanType).collect(Collectors.joining(" || "));
+                humanType = Arrays.stream(extraTypes).map(MethodHelpData::getHumanType).collect(Collectors.joining(" or "));
             }
             return humanType;
         }

@@ -1,5 +1,6 @@
 package mekanism.generators.common.content.fission;
 
+import com.mojang.datafixers.util.Either;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -23,7 +24,6 @@ import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBu
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.integration.computer.ComputerException;
-import mekanism.common.integration.computer.Convertable;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerHeatCapacitorWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -545,12 +545,12 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         setRateLimit(rate);
     }
 
-    @ComputerMethod(possibleReturns = {ChemicalStack.class, FluidStack.class})
-    Convertable<?> getCoolant() {
+    @ComputerMethod
+    Either<ChemicalStack<?>, FluidStack> getCoolant() {
         if (fluidCoolantTank.isEmpty() && !gasCoolantTank.isEmpty()) {
-            return Convertable.of(gasCoolantTank.getStack());
+            return Either.left(gasCoolantTank.getStack());
         }
-        return Convertable.of(fluidCoolantTank.getFluid());
+        return Either.right(fluidCoolantTank.getFluid());
     }
 
     @ComputerMethod

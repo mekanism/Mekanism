@@ -1786,12 +1786,12 @@
     {
       "methodName": "getStored",
       "returns": {
-        "type": "Table (ChemicalStack) || Table (FluidStack)",
+        "type": "Table (ChemicalStack) or Table (FluidStack)",
         "javaExtra": [
           "mekanism.api.chemical.ChemicalStack",
           "net.minecraftforge.fluids.FluidStack"
         ],
-        "javaType": "mekanism.common.integration.computer.Convertable"
+        "javaType": "com.mojang.datafixers.util.Either"
       }
     },
     {
@@ -2614,12 +2614,12 @@
     {
       "methodName": "getCoolant",
       "returns": {
-        "type": "Table (ChemicalStack) || Table (FluidStack)",
+        "type": "Table (ChemicalStack) or Table (FluidStack)",
         "javaExtra": [
           "mekanism.api.chemical.ChemicalStack",
           "net.minecraftforge.fluids.FluidStack"
         ],
-        "javaType": "mekanism.common.integration.computer.Convertable"
+        "javaType": "com.mojang.datafixers.util.Either"
       }
     },
     {

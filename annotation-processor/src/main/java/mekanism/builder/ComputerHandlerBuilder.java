@@ -55,6 +55,7 @@ public class ComputerHandlerBuilder {
     private static TypeMirror collectionType;
     private static TypeMirror mapType;
     private static TypeMirror convertableType;
+    private static TypeMirror eitherType;
     private static final ParameterSpec helperParam = ParameterSpec.builder(baseComputerHelper, "helper").build();
     private static ParamToHelperMapper paramToHelperMapper;
 
@@ -70,6 +71,7 @@ public class ComputerHandlerBuilder {
         wrappingComputerMethodAnnotationType = Objects.requireNonNull(elementUtils.getTypeElement(MekAnnotationProcessors.ANNOTATION_WRAPPING_COMPUTER_METHOD)).asType();
         collectionType = Objects.requireNonNull(elementUtils.getTypeElement("java.util.Collection")).asType();
         mapType = Objects.requireNonNull(elementUtils.getTypeElement("java.util.Map")).asType();
+        eitherType = Objects.requireNonNull(elementUtils.getTypeElement("com.mojang.datafixers.util.Either")).asType();
         convertableType = Objects.requireNonNull(elementUtils.getTypeElement(MekAnnotationProcessors.COMPUTER_INTEGRATION_PACKAGE+".Convertable")).asType();
         TypeMirror filterInterface = typeUtils.erasure(elementUtils.getTypeElement("mekanism.common.content.filter.IFilter").asType());
         paramToHelperMapper = new ParamToHelperMapper(helperParam, filterInterface, typeUtils);
@@ -493,7 +495,7 @@ public class ComputerHandlerBuilder {
             TypeKind returnTypeKind = returnType.getKind();
             //complain on Object return as it can't be run through convert methods
             if (returnTypeKind == TypeKind.DECLARED && returnType.toString().equals("java.lang.Object")) {
-                messager.printMessage(Diagnostic.Kind.ERROR, "Raw Object returned for computer method, use a concrete type or Convertable instead", annotatedElement);
+                messager.printMessage(Diagnostic.Kind.ERROR, "Raw Object returned for computer method, use a concrete type, Either, or Convertable (with annotation) instead", annotatedElement);
             }
             //uncomment to allow primitives to pass through unconverted
             /*if (returnTypeKind.isPrimitive() || (returnTypeKind == TypeKind.DECLARED && (returnType).toString().equals("java.lang.String"))) {
@@ -505,6 +507,8 @@ public class ComputerHandlerBuilder {
                 valueReturner.addStatement("return $N.convert($L, $N::convert)", helperParam, targetInvoker, helperParam);
             } else if (typeUtils.isAssignable(erasedType, mapType)) {
                 valueReturner.addStatement("return $N.convert($L, $N::convert, $N::convert)", helperParam, targetInvoker, helperParam, helperParam);
+            } else if (typeUtils.isAssignable(erasedType, eitherType)) {
+                valueReturner.addStatement("return $L.map($N::convert, $N::convert)", targetInvoker, helperParam, helperParam);
             } else {
                 //let the compiler figure out which method to call
                 valueReturner.addStatement("return $N.convert($L)", helperParam, targetInvoker);
@@ -587,7 +591,7 @@ public class ComputerHandlerBuilder {
             registerMethodBuilder.add(".returnType($T.class)", TypeName.get(erasedReturnType));
         }
         //return extra
-        if (typeUtils.isAssignable(erasedReturnType, collectionType) || typeUtils.isAssignable(erasedReturnType, mapType)) {
+        if (typeUtils.isAssignable(erasedReturnType, collectionType) || typeUtils.isAssignable(erasedReturnType, mapType) || typeUtils.isAssignable(erasedReturnType, eitherType)) {
             if (returnType instanceof DeclaredType declaredType && !declaredType.getTypeArguments().isEmpty()) {
                 registerMethodBuilder.add(".returnExtra($L)", typeMirrorListToClassCodeblock(declaredType.getTypeArguments()));
             } else {

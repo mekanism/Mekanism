@@ -1,5 +1,6 @@
 package mekanism.common.content.tank;
 
+import com.mojang.datafixers.util.Either;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.IContentsListener;
@@ -18,7 +19,6 @@ import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.computer.Convertable;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
@@ -207,15 +207,15 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         setContainerEditMode(editMode.getPrevious());
     }
 
-    @ComputerMethod(possibleReturns = {ChemicalStack.class, FluidStack.class})
-    Convertable<?> getStored() {
+    @ComputerMethod
+    Either<ChemicalStack<?>, FluidStack> getStored() {
         return switch (mergedTank.getCurrentType()) {
-            case FLUID -> Convertable.of(getFluidTank().getFluid());
-            case GAS -> Convertable.of(getGasTank().getStack());
-            case INFUSION -> Convertable.of(getInfusionTank().getStack());
-            case PIGMENT -> Convertable.of(getPigmentTank().getStack());
-            case SLURRY -> Convertable.of(getSlurryTank().getStack());
-            default -> Convertable.of(FluidStack.EMPTY);
+            case FLUID -> Either.right(getFluidTank().getFluid());
+            case GAS -> Either.left(getGasTank().getStack());
+            case INFUSION -> Either.left(getInfusionTank().getStack());
+            case PIGMENT -> Either.left(getPigmentTank().getStack());
+            case SLURRY -> Either.left(getSlurryTank().getStack());
+            default -> Either.right(FluidStack.EMPTY);
         };
     }
 
