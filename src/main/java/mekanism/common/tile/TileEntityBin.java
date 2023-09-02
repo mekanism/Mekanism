@@ -180,22 +180,22 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Get the maximum number of items the bin can contain.")
     int getCapacity() {
         return binSlot.getLimit(binSlot.getStack());
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "If true, the Bin is locked to a particular item type.")
     boolean isLocked() {
         return binSlot.isLocked();
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Get the type of item the Bin is locked to (or Air if not locked)")
     ItemStack getLock() {
         return binSlot.getLockStack();
     }
 
-    @ComputerMethod(methodDescription = "Must not be creative, empty, or already locked")
+    @ComputerMethod(methodDescription = "Lock the Bin to the currently stored item type. The Bin must not be creative, empty, or already locked")
     void lock() throws ComputerException {
         if (getTier() == BinTier.CREATIVE) {
             throw new ComputerException("Creative bins cannot be locked!");
@@ -206,7 +206,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         }
     }
 
-    @ComputerMethod(methodDescription = "Must not be creative, or unlocked")
+    @ComputerMethod(methodDescription = "Unlock the Bin's fixed item type. The Bin must not be creative, or already unlocked")
     void unlock() throws ComputerException {
         if (getTier() == BinTier.CREATIVE) {
             throw new ComputerException("Creative bins cannot be unlocked!");
