@@ -164,7 +164,6 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
     FloatingLong getProductionRate() {
         return getGenerationRate().multiply(getUsed()).multiply(getMaxBurnTicks());
     }

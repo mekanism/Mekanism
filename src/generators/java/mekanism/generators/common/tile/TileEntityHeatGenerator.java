@@ -193,8 +193,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         return null;
     }
 
-    @ComputerMethod(nameOverride = "getProductionRate")
-    public FloatingLong getProducingEnergy() {
+    public FloatingLong getProductionRate() {
         return producingEnergy;
     }
 
@@ -221,7 +220,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableFloatingLong.create(this::getProducingEnergy, value -> producingEnergy = value));
+        container.track(SyncableFloatingLong.create(this::getProductionRate, value -> producingEnergy = value));
         container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
         container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }
