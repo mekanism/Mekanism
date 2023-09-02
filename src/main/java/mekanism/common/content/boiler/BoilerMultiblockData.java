@@ -53,7 +53,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     public IGasTank superheatedCoolantTank;
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getCooledCoolant", "getCooledCoolantCapacity", "getCooledCoolantNeeded",
-                                                                                        "getCooledCoolantFilledPercentage"}, docPlaceholder = "cooled coolant")
+                                                                                        "getCooledCoolantFilledPercentage"}, docPlaceholder = "cooled coolant tank")
     public IGasTank cooledCoolantTank;
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded", "getWaterFilledPercentage"}, docPlaceholder = "water tank")
@@ -67,17 +67,17 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
 
     private double biomeAmbientTemp;
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getEnvironmentalLoss")
+    @SyntheticComputerMethod(getter = "getEnvironmentalLoss", methodDescription = "Get the amount of heat lost to the environment in the last tick (Kelvin)")
     public double lastEnvironmentLoss;
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getBoilRate")
+    @SyntheticComputerMethod(getter = "getBoilRate", methodDescription = "Get the rate of boiling (mB/t)")
     public int lastBoilRate;
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getMaxBoilRate")
+    @SyntheticComputerMethod(getter = "getMaxBoilRate", methodDescription = "Get the maximum rate of boiling seen (mB/t)")
     public int lastMaxBoil;
 
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getSuperheaters")
+    @SyntheticComputerMethod(getter = "getSuperheaters", methodDescription = "How many superheaters this Boiler has")
     public int superheatingElements;
 
     @ContainerSync(setter = "setWaterVolume")
@@ -248,7 +248,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         }
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Get the maximum possible boil rate for this Boiler, based on the number of Superheating Elements")
     public long getBoilCapacity() {
         double boilCapacity = MekanismConfig.general.superheatingHeatTransfer.get() * superheatingElements / HeatUtils.getWaterThermalEnthalpy();
         return MathUtils.clampToLong(boilCapacity * HeatUtils.getSteamEnergyEfficiency());

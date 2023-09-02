@@ -68,7 +68,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityChemicalTank extends TileEntityConfigurableMachine implements ISustainedData, IHasGasMode {
 
-    @SyntheticComputerMethod(getter = "getDumpingMode")
+    @SyntheticComputerMethod(getter = "getDumpingMode", methodDescription = "Get the current Dumping configuration")
     public GasMode dumping = GasMode.IDLE;
 
     private MergedChemicalTank chemicalTank;
@@ -273,7 +273,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod(requiresPublicSecurity = true)
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Set the Dumping mode of the tank")
     void setDumpingMode(GasMode mode) throws ComputerException {
         validateSecurityIsPublic();
         if (dumping != mode) {
@@ -282,13 +282,13 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         }
     }
 
-    @ComputerMethod(requiresPublicSecurity = true)
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Advance the Dumping mode to the next configuration in the list")
     void incrementDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         nextMode(0);
     }
 
-    @ComputerMethod(requiresPublicSecurity = true)
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Descend the Dumping mode to the previous configuration in the list")
     void decrementDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         dumping = dumping.getPrevious();
