@@ -47,7 +47,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     private BinTier tier;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getStored")
-    private BinInventorySlot binSlot;
+    BinInventorySlot binSlot;
 
     public TileEntityBin(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
@@ -181,22 +181,22 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private int getCapacity() {
+    int getCapacity() {
         return binSlot.getLimit(binSlot.getStack());
     }
 
     @ComputerMethod
-    private boolean isLocked() {
+    boolean isLocked() {
         return binSlot.isLocked();
     }
 
     @ComputerMethod
-    private ItemStack getLock() {
+    ItemStack getLock() {
         return binSlot.getLockStack();
     }
 
     @ComputerMethod
-    private void lock() throws ComputerException {
+    void lock() throws ComputerException {
         if (getTier() == BinTier.CREATIVE) {
             throw new ComputerException("Creative bins cannot be locked!");
         } else if (binSlot.isEmpty()) {
@@ -207,7 +207,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     @ComputerMethod
-    private void unlock() throws ComputerException {
+    void unlock() throws ComputerException {
         if (getTier() == BinTier.CREATIVE) {
             throw new ComputerException("Creative bins cannot be unlocked!");
         } else if (!setLocked(true)) {

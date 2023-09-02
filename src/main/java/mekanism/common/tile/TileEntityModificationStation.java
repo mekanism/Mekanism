@@ -46,9 +46,9 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     public int operatingTicks;
     private boolean usedEnergy = false;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getModuleItem")
-    private InputInventorySlot moduleSlot;
+    InputInventorySlot moduleSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getContainerItem")
     public InputInventorySlot containerSlot;
     private MachineEnergyContainer<TileEntityModificationStation> energyContainer;

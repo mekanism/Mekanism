@@ -74,11 +74,11 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
 
     private MachineEnergyContainer<TileEntityChemicalCrystallizer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private MergedChemicalInventorySlot<MergedChemicalTank> inputSlot;
+    MergedChemicalInventorySlot<MergedChemicalTank> inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput")
-    private OutputInventorySlot outputSlot;
+    OutputInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityChemicalCrystallizer(BlockPos pos, BlockState state) {
         super(MekanismBlocks.CHEMICAL_CRYSTALLIZER, pos, state, TRACKED_ERROR_TYPES, 200);
@@ -200,12 +200,12 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private FloatingLong getEnergyUsage() {
+    FloatingLong getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
     }
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded", "getInputFilledPercentage"})
-    private IChemicalTank<?, ?> getInputTank() {
+    IChemicalTank<?, ?> getInputTank() {
         Current current = inputTank.getCurrent();
         return inputTank.getTankFromCurrent(current == Current.EMPTY ? Current.GAS : current);
     }

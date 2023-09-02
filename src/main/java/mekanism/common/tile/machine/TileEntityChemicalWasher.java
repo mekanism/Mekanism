@@ -90,13 +90,13 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
 
     private MachineEnergyContainer<TileEntityChemicalWasher> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFluidItemInput")
-    private FluidInventorySlot fluidSlot;
+    FluidInventorySlot fluidSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFluidItemOutput")
-    private OutputInventorySlot fluidOutputSlot;
+    OutputInventorySlot fluidOutputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private SlurryInventorySlot slurryOutputSlot;
+    SlurryInventorySlot slurryOutputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityChemicalWasher(BlockPos pos, BlockState state) {
         super(MekanismBlocks.CHEMICAL_WASHER, pos, state, TRACKED_ERROR_TYPES);

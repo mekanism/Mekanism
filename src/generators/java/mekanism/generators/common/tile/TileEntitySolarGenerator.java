@@ -33,7 +33,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     private boolean seesSun;
     private FloatingLong lastProductionAmount = FloatingLong.ZERO;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
     @Nullable
     protected SolarCheck solarCheck;
 

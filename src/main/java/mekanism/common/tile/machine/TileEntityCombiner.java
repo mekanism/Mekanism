@@ -57,13 +57,13 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
 
     private MachineEnergyContainer<TileEntityCombiner> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getMainInput")
-    private InputInventorySlot mainInputSlot;
+    InputInventorySlot mainInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getSecondaryInput")
-    private InputInventorySlot extraInputSlot;
+    InputInventorySlot extraInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput")
-    private OutputInventorySlot outputSlot;
+    OutputInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityCombiner(BlockPos pos, BlockState state) {
         super(MekanismBlocks.COMBINER, pos, state, TRACKED_ERROR_TYPES, 200);
@@ -154,7 +154,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private FloatingLong getEnergyUsage() {
+    FloatingLong getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
     }
     //End methods IComputerTile

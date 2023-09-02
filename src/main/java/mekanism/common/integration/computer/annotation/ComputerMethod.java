@@ -4,9 +4,9 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import mekanism.common.integration.computer.ComputerMethodMapper.MethodRestriction;
+import mekanism.common.integration.computer.MethodRestriction;
 
-@Retention(RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.CLASS)
 @Target(ElementType.METHOD)
 public @interface ComputerMethod {
 
@@ -23,7 +23,7 @@ public @interface ComputerMethod {
     /**
      * Array of modids that are required for this method to be applied to a handler.
      */
-    String[] requiredMods() default "";
+    String[] requiredMods() default {};
 
     /**
      * Whether this method is thread-safe or needs to be queued to run on the main thread.

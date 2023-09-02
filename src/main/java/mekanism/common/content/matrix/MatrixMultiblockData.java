@@ -44,10 +44,10 @@ public class MatrixMultiblockData extends MultiblockData {
 
     @NotNull
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private final EnergyInventorySlot energyInputSlot;
+    final EnergyInventorySlot energyInputSlot;
     @NotNull
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private final EnergyInventorySlot energyOutputSlot;
+    final EnergyInventorySlot energyOutputSlot;
 
     public MatrixMultiblockData(TileEntityInductionCasing tile) {
         super(tile);

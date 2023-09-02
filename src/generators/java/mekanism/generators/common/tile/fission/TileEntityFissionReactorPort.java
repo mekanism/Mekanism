@@ -101,12 +101,12 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     }
 
     @ComputerMethod
-    private FissionPortMode getMode() {
+    FissionPortMode getMode() {
         return getBlockState().getValue(AttributeStateFissionPortMode.modeProperty);
     }
 
     @ComputerMethod
-    private void setMode(FissionPortMode mode) {
+    void setMode(FissionPortMode mode) {
         if (mode != getMode()) {
             level.setBlockAndUpdate(worldPosition, getBlockState().setValue(AttributeStateFissionPortMode.modeProperty, mode));
         }
@@ -164,12 +164,12 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     }
 
     @ComputerMethod
-    private void incrementMode() {
+    void incrementMode() {
         setMode(getMode().getNext());
     }
 
     @ComputerMethod
-    private void decrementMode() {
+    void decrementMode() {
         setMode(getMode().getPrevious());
     }
     //End methods IComputerTile

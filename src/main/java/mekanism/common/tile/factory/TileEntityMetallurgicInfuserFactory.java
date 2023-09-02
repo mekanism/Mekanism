@@ -62,10 +62,10 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     private final IInputHandler<@NotNull InfusionStack> infusionInputHandler;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInfuseTypeItem")
-    private InfusionInventorySlot extraSlot;
+    InfusionInventorySlot extraSlot;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInfuseType", "getInfuseTypeCapacity", "getInfuseTypeNeeded",
                                                                                         "getInfuseTypeFilledPercentage"})
-    private IInfusionTank infusionTank;
+    IInfusionTank infusionTank;
 
     public TileEntityMetallurgicInfuserFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, GLOBAL_ERROR_TYPES);
@@ -195,7 +195,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private void dumpInfuseType() throws ComputerException {
+    void dumpInfuseType() throws ComputerException {
         validateSecurityIsPublic();
         dump();
     }

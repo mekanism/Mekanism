@@ -270,12 +270,12 @@ public class TurbineMultiblockData extends MultiblockData {
 
     //Computer related methods
     @ComputerMethod
-    private void incrementDumpingMode() {
+    void incrementDumpingMode() {
         setDumpMode(dumpMode.getNext());
     }
 
     @ComputerMethod
-    private void decrementDumpingMode() {
+    void decrementDumpingMode() {
         setDumpMode(dumpMode.getPrevious());
     }
     //End computer related methods

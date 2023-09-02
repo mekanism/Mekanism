@@ -75,9 +75,9 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     private ChemicalTankTier tier;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDrainItem")
-    private MergedChemicalInventorySlot<MergedChemicalTank> drainSlot;
+    MergedChemicalInventorySlot<MergedChemicalTank> drainSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFillItem")
-    private MergedChemicalInventorySlot<MergedChemicalTank> fillSlot;
+    MergedChemicalInventorySlot<MergedChemicalTank> fillSlot;
 
     public TileEntityChemicalTank(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
@@ -193,7 +193,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     }
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
-    private IChemicalTank<?, ?> getCurrentTank() {
+    IChemicalTank<?, ?> getCurrentTank() {
         Current current = chemicalTank.getCurrent();
         return chemicalTank.getTankFromCurrent(current == Current.EMPTY ? Current.GAS : current);
     }
@@ -274,7 +274,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private void setDumpingMode(GasMode mode) throws ComputerException {
+    void setDumpingMode(GasMode mode) throws ComputerException {
         validateSecurityIsPublic();
         if (dumping != mode) {
             dumping = mode;
@@ -283,13 +283,13 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     }
 
     @ComputerMethod
-    private void incrementDumpingMode() throws ComputerException {
+    void incrementDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         nextMode(0);
     }
 
     @ComputerMethod
-    private void decrementDumpingMode() throws ComputerException {
+    void decrementDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         dumping = dumping.getPrevious();
         markForSave();

@@ -7,39 +7,33 @@ import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IDynamicPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.integration.computer.BoundComputerMethod;
 import mekanism.common.integration.computer.IComputerTile;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
-@NothingNullByDefault
-public class MekanismPeripheral<TILE extends BlockEntity & IComputerTile> extends CCMethodCaller implements IDynamicPeripheral {
+import java.lang.ref.WeakReference;
 
+public class MekanismPeripheral<TILE extends BlockEntity & IComputerTile> extends CCMethodCaller implements IDynamicPeripheral {
     /**
      * Only call this if the given tile actually has computer support as it won't be double-checked.
      */
     public static <TILE extends BlockEntity & IComputerTile> MekanismPeripheral<TILE> create(TILE tile) {
-        //Linked map to ensure that the order is persisted
-        Map<String, BoundComputerMethod> boundMethods = new LinkedHashMap<>();
-        tile.getComputerMethods(boundMethods);
-        return new MekanismPeripheral<>(tile, boundMethods);
+        MekanismPeripheral<TILE> mekanismPeripheral = new MekanismPeripheral<>(tile);
+        tile.getComputerMethods(mekanismPeripheral);
+        return mekanismPeripheral;
     }
 
     private final String name;
-    private final TILE tile;
+    private final WeakReference<TILE> tile;
 
-    private MekanismPeripheral(TILE tile, Map<String, BoundComputerMethod> boundMethods) {
-        super(boundMethods);
-        this.tile = tile;
-        this.name = this.tile.getComputerName();
+    private MekanismPeripheral(TILE tile) {
+        this.tile = new WeakReference<>(tile);
+        this.name = tile.getComputerName();
     }
 
     @Override
-    protected String getCallerType() {
-        return "peripheral";
+    public MethodResult callMethod(IComputerAccess computer, ILuaContext context, int method, IArguments arguments) throws LuaException {
+        return callMethod(context, method, arguments);
     }
 
     @Override
@@ -48,20 +42,30 @@ public class MekanismPeripheral<TILE extends BlockEntity & IComputerTile> extend
     }
 
     @Override
+    @Nullable
     public Object getTarget() {
-        return tile;
+        return tile.get();
     }
 
     @Override
     public boolean equals(@Nullable IPeripheral other) {
-        //Note: Check if we are the same object as the other one, otherwise consider us to not be equal as we
+        Object target = getTarget();
         // only will really be creating a single instance of this, and other instances of the same tile may
         // be invalid if it is not persistent such as for multiblocks
-        return other == this;
+        return other instanceof MekanismPeripheral<?> otherP && target != null && target == other.getTarget() && methods.equals(otherP.methods);
     }
 
     @Override
-    public MethodResult callMethod(IComputerAccess computer, ILuaContext context, int methodIndex, IArguments arguments) throws LuaException {
-        return callMethod(context, methodIndex, arguments);
+    public boolean equals(Object obj) {
+        return obj instanceof MekanismPeripheral<?> other && equals(other);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        TILE tileRef = tile.get();
+        result = 31 * result + (tileRef != null ? tileRef.hashCode() : 0);
+        result = 31 & result + methods.hashCode();
+        return result;
     }
 }

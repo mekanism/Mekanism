@@ -128,23 +128,23 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
     }
 
     @ComputerMethod
-    private FloatingLong getBuffer() {
+    FloatingLong getBuffer() {
         return getTransmitter().getBufferWithFallback();
     }
 
     @ComputerMethod
-    private FloatingLong getCapacity() {
+    FloatingLong getCapacity() {
         UniversalCable cable = getTransmitter();
         return cable.hasTransmitterNetwork() ? cable.getTransmitterNetwork().getCapacityAsFloatingLong() : cable.getCapacityAsFloatingLong();
     }
 
     @ComputerMethod
-    private FloatingLong getNeeded() {
+    FloatingLong getNeeded() {
         return getCapacity().subtract(getBuffer());
     }
 
     @ComputerMethod
-    private double getFilledPercentage() {
+    double getFilledPercentage() {
         return getBuffer().divideToLevel(getCapacity());
     }
     //End methods IComputerTile

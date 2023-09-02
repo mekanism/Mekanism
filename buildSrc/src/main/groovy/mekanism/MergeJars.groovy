@@ -8,28 +8,42 @@ import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.util.PatternFilterable
 
 import java.util.function.BinaryOperator
+import java.util.function.Function
 
 class MergeJars {
     static Closure atlasFilter = { PatternFilterable pf -> pf.include('**/assets/*/atlases/**/*.json') }
+    static Closure serviceFilter = { PatternFilterable pf -> pf.include('**/META-INF/services/*') }
     static Closure tagFilter = { PatternFilterable pf -> pf.include('**/data/*/tags/**/*.json') }
+    static Function<SourceSet, Set<File>> resourceLister = (SourceSet sourceSet) -> sourceSet.resources.srcDirs
+    static Function<SourceSet, Set<File>> annotationGeneratedLister = (SourceSet sourceSet) -> {
+        Set<File> combined = new HashSet<>(sourceSet.resources.srcDirs)
+        //Include things that might be generated as classes in addition to our normal resources
+        combined.addAll(sourceSet.output.getClassesDirs().files)
+        return combined
+    }
 
     static List<String> getGeneralPathsToExclude(Project project, List<SourceSet> sourceSets) {
         List<String> toExclude = new ArrayList<>()
         toExclude.add('META-INF/mods.toml')
         toExclude.add('META-INF/accesstransformer.cfg')
-        getReverseLookup(project, atlasFilter, sourceSets).each { atlas, atlasPaths ->
-            if (atlasPaths.size() > 1) {
-                //println("adding $atlas")
-                toExclude.add(atlas.substring(1))
-            }
-        }
-        getReverseLookup(project, tagFilter, sourceSets).each { tag, tagPaths ->
-            if (tagPaths.size() > 1) {
-                //println("adding $tag")
-                toExclude.add(tag.substring(1))
-            }
-        }
+        //This file doesn't exist until compile time
+        toExclude.add('META-INF/services/mekanism.common.integration.computer.IComputerMethodRegistry')
+        addDuplicates(project, atlasFilter, sourceSets, toExclude)
+        addDuplicates(project, tagFilter, sourceSets, toExclude)
+        addDuplicates(project, serviceFilter, sourceSets, toExclude, annotationGeneratedLister)
         return toExclude
+    }
+
+    private static addDuplicates(Project project, Closure<PatternFilterable> filter, List<SourceSet> sourceSets, toExclude) {
+        addDuplicates(project, filter, sourceSets, toExclude, resourceLister)
+    }
+
+    private static addDuplicates(Project project, Closure<PatternFilterable> filter, List<SourceSet> sourceSets, toExclude, Function<SourceSet, Set<File>> fileLister) {
+        getReverseLookup(project, filter, sourceSets, fileLister).each { name, paths ->
+            if (paths.size() > 1) {
+                toExclude.add(name.substring(1))
+            }
+        }
     }
 
     static Closure createExcludeClosure(List<String> baseExcludeData, String... extraExclusions) {
@@ -45,16 +59,19 @@ class MergeJars {
     static void merge(Project project, List<SourceSet> sourceSets) {
         //Generate folders, merge the access transformers and mods.toml files
         project.mkdir("$project.buildDir/generated/META-INF")
-        (new File("$project.buildDir/generated/META-INF/accesstransformer.cfg")).text = mergeATs(sourceSets)
-        (new File("$project.buildDir/generated/META-INF/mods.toml")).text = mergeModsTOML(sourceSets)
+        mergeBasic(project, sourceSets, 'META-INF/accesstransformer.cfg', (text, fileText) -> text + "\n" + fileText)
+        mergeModsTOML(project, sourceSets)
         //Delete the data directory so that we don't accidentally leak bad old data into it
         project.file("$project.buildDir/generated/assets").deleteDir()
         project.file("$project.buildDir/generated/data").deleteDir()
+        project.file("$project.buildDir/generated/META-INF/services").deleteDir()
         //And then recreate the directory so we can put stuff in it
         project.mkdir("$project.buildDir/generated/assets")
         project.mkdir("$project.buildDir/generated/data")
+        project.mkdir("$project.buildDir/generated/META-INF/services")
         mergeAtlases(project, sourceSets)
         mergeTags(project, sourceSets)
+        mergeServices(project, sourceSets)
     }
 
     static List<Closure> getGeneratedClosures(Map<String, ?> versionProperties) {
@@ -64,48 +81,42 @@ class MergeJars {
             c.expand(versionProperties)
         })
         generated.add({ CopySpec c ->
-            c.include('META-INF/accesstransformer.cfg', 'assets/**', 'data/**')
+            c.include('META-INF/accesstransformer.cfg', 'META-INF/services/*', 'assets/**', 'data/**')
         })
         return generated
     }
 
-    private static String mergeATs(List<SourceSet> sourceSets) {
-        String text = ""
-        for (SourceSet sourceSet : sourceSets) {
-            sourceSet.resources.matching { PatternFilterable pf ->
-                pf.include('META-INF/accesstransformer.cfg')
-            }.each { file ->
-                text = text.isEmpty() ? file.getText() : text + "\n" + file.getText()
+    private static void mergeModsTOML(Project project, List<SourceSet> sourceSets) {
+        mergeBasic(project, sourceSets, 'META-INF/mods.toml', (text, fileText) -> {
+            //Add all but the first four lines (which are duplicated between the files)
+            String[] lines = fileText.split("\n")
+            for (int i = 4; i < lines.length; i++) {
+                text = text + "\n" + lines[i]
             }
-        }
-        return text
+            return text
+        })
     }
 
-    private static String mergeModsTOML(List<SourceSet> sourceSets) {
+    private static void mergeBasic(Project project, List<SourceSet> sourceSets, String name, BinaryOperator<String> appender) {
         String text = ""
         for (SourceSet sourceSet : sourceSets) {
             sourceSet.resources.matching { PatternFilterable pf ->
-                pf.include('META-INF/mods.toml')
+                pf.include(name)
             }.each { file ->
-                if (text.isEmpty()) {
-                    //Nothing added yet, take it all
-                    text = file.getText()
-                } else {
-                    //Otherwise add all but the first four lines (which are duplicated between the files)
-                    String[] lines = file.getText().split("\n")
-                    for (int i = 4; i < lines.length; i++) {
-                        text = text + "\n" + lines[i]
-                    }
-                }
+                text = text.isEmpty() ? file.getText() : appender.apply(text, file.getText())
             }
         }
-        return text
+        writeOutputFile(project, '/' + name, text)
     }
 
     private static Map<String, List<String>> getReverseLookup(Project project, Closure filter, List<SourceSet> sourceSets) {
+        return getReverseLookup(project, filter, sourceSets, resourceLister)
+    }
+
+    private static Map<String, List<String>> getReverseLookup(Project project, Closure filter, List<SourceSet> sourceSets, Function<SourceSet, Set<File>> fileLister) {
         Map<String, List<String>> reverseLookup = new HashMap<>()
         for (SourceSet sourceSet : sourceSets) {
-            sourceSet.resources.srcDirs.each { srcDir ->
+            fileLister.apply(sourceSet).each { srcDir ->
                 int srcDirPathLength = srcDir.getPath().length()
                 project.fileTree(srcDir).matching(filter).each { file ->
                     //Add the sourceSet to the reverse lookup
@@ -126,12 +137,10 @@ class MergeJars {
         //Go through the reverse atlas lookup and if there are multiple sourceSets that contain the same atlas
         // properly merge that atlas
         reverseAtlasLookup.each { atlas, atlasPaths ->
-            if (atlasPaths.size() > 1) {
-                mergeSimpleJson(project, atlas, atlasPaths, (a, b) -> {
-                    a.sources += b.sources
-                    return a
-                })
-            }
+            mergeSimpleJson(project, atlas, atlasPaths, (a, b) -> {
+                a.sources += b.sources
+                return a
+            })
         }
     }
 
@@ -140,17 +149,19 @@ class MergeJars {
         //Go through the reverse tag index and if there are multiple sourceSets that contain the same tag
         // properly merge that tag
         reverseTags.each { tag, tagPaths ->
-            if (tagPaths.size() > 1) {
-                mergeSimpleJson(project, tag, tagPaths, (a, b) -> {
-                    a.values += b.values
-                    return a
-                })
-            }
+            mergeSimpleJson(project, tag, tagPaths, (a, b) -> {
+                a.values += b.values
+                return a
+            })
         }
     }
 
-    private static void mergeSimpleJson(Project project, String jsonPath, List<String> paths, BinaryOperator<Object> appender) {
-        //println(jsonPath + " appeared " + paths.size() + " times")
+    private static void mergeSimpleJson(Project project, String outputPath, List<String> paths, BinaryOperator<Object> appender) {
+        //println(outputPath + " appeared " + paths.size() + " times")
+        if (paths.size() < 2) {
+            //Skip any there is only a single element for
+            return
+        }
         Object outputAsJson = null
         paths.each { path ->
             Object json = new JsonSlurper().parse(project.file(path))
@@ -161,10 +172,33 @@ class MergeJars {
             }
         }
         if (outputAsJson != null) {
-            File outputFile = new File("$project.buildDir/generated" + jsonPath)
-            //Make all parent directories needed
-            outputFile.getParentFile().mkdirs()
-            outputFile.text = JsonOutput.toJson(outputAsJson)
+            writeOutputFile(project, outputPath, JsonOutput.toJson(outputAsJson))
         }
+    }
+
+    private static void mergeServices(Project project, List<SourceSet> sourceSets) {
+        Map<String, List<String>> reverseServices = getReverseLookup(project, serviceFilter, sourceSets, annotationGeneratedLister)
+        reverseServices.each { tag, tagPaths -> mergeSimpleLines(project, tag, tagPaths) }
+    }
+
+    private static void mergeSimpleLines(Project project, String outputPath, List<String> paths) {
+        //println(outputPath + " appeared " + paths.size() + " times")
+        if (paths.size() < 2) {
+            //Skip any there is only a single element for
+            return
+        }
+        String text = ""
+        paths.each { path ->
+            def file = project.file(path)
+            text = text.isEmpty() ? file.getText() : text + "\n" + file.getText()
+        }
+        writeOutputFile(project, outputPath, text)
+    }
+
+    private static void writeOutputFile(Project project, String outputPath, String text) {
+        File outputFile = new File("$project.buildDir/generated" + outputPath)
+        //Make all parent directories needed
+        outputFile.getParentFile().mkdirs()
+        outputFile.text = text
     }
 }

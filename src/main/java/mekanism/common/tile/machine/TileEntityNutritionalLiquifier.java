@@ -78,13 +78,13 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
 
     private MachineEnergyContainer<TileEntityNutritionalLiquifier> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput")
-    private InputInventorySlot inputSlot;
+    InputInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getContainerFillItem")
-    private FluidInventorySlot containerFillSlot;
+    FluidInventorySlot containerFillSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private OutputInventorySlot outputSlot;
+    OutputInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     @Nullable
     private HashedItem lastPasteItem;
@@ -262,7 +262,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private FloatingLong getEnergyUsage() {
+    public FloatingLong getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
     }
     //End methods IComputerTile

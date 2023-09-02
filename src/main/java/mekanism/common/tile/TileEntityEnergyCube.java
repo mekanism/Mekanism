@@ -49,9 +49,9 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
 
     private EnergyCubeEnergyContainer energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChargeItem")
-    private EnergyInventorySlot chargeSlot;
+    EnergyInventorySlot chargeSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDischargeItem")
-    private EnergyInventorySlot dischargeSlot;
+    EnergyInventorySlot dischargeSlot;
 
     /**
      * A block used to store and transfer electricity.

@@ -77,12 +77,12 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private boolean getMode() {
+    boolean getMode() {
         return getActive();
     }
 
     @ComputerMethod
-    private void setMode(boolean output) {
+    void setMode(boolean output) {
         setActive(output);
     }
     //End methods IComputerTile

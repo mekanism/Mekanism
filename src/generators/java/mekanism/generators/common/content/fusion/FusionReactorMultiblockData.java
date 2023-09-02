@@ -89,10 +89,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     private double biomeAmbientTemp;
     @ContainerSync(tags = HEAT_TAB)
-    @SyntheticComputerMethod(getter = "getPlasmaTemperature")
     private double lastPlasmaTemperature;
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getCaseTemperature")
     private double lastCaseTemperature;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getEnvironmentalLoss")
@@ -120,7 +118,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public double plasmaTemperature;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getHohlraum")
-    private final ReactorInventorySlot reactorSlot;
+    final ReactorInventorySlot reactorSlot;
 
     private boolean clientBurning;
     private double clientTemp;
@@ -345,10 +343,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
         lastPlasmaTemperature = temp;
     }
 
+    @ComputerMethod(nameOverride = "getPlasmaTemperature")
     public double getLastPlasmaTemp() {
         return lastPlasmaTemperature;
     }
 
+    @ComputerMethod(nameOverride = "getCaseTemperature")
     public double getLastCaseTemp() {
         return lastCaseTemperature;
     }
@@ -467,7 +467,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     //Computer related methods
     @ComputerMethod(nameOverride = "setInjectionRate")
-    private void computerSetInjectionRate(int rate) throws ComputerException {
+    void computerSetInjectionRate(int rate) throws ComputerException {
         if (rate < 0 || rate > MAX_INJECTION) {
             //Validate bounds even though we can clamp
             throw new ComputerException("Injection Rate '%d' is out of range must be an even number between 0 and %d. (Inclusive)", rate, MAX_INJECTION);
@@ -479,12 +479,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     @ComputerMethod
-    private FloatingLong getPassiveGeneration(boolean active) {
+    FloatingLong getPassiveGeneration(boolean active) {
         return getPassiveGeneration(active, false);
     }
 
     @ComputerMethod
-    private FloatingLong getProductionRate() {
+    FloatingLong getProductionRate() {
         return getPassiveGeneration(false, true);
     }
     //End computer related methods

@@ -112,7 +112,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     protected final List<IInventorySlot> inputSlots;
     protected final List<IInventorySlot> outputSlots;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    protected EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     protected TileEntityFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes, Set<RecipeError> globalErrorTypes) {
         super(blockProvider, pos, state);
@@ -489,7 +489,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @ComputerMethod
-    private void setAutoSort(boolean enabled) throws ComputerException {
+    void setAutoSort(boolean enabled) throws ComputerException {
         validateSecurityIsPublic();
         if (sorting != enabled) {
             sorting = enabled;
@@ -498,19 +498,19 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @ComputerMethod
-    private int getRecipeProgress(int process) throws ComputerException {
+    int getRecipeProgress(int process) throws ComputerException {
         validateValidProcess(process);
         return getProgress(process);
     }
 
     @ComputerMethod
-    private ItemStack getInput(int process) throws ComputerException {
+    ItemStack getInput(int process) throws ComputerException {
         validateValidProcess(process);
         return processInfoSlots[process].inputSlot().getStack();
     }
 
     @ComputerMethod
-    private ItemStack getOutput(int process) throws ComputerException {
+    ItemStack getOutput(int process) throws ComputerException {
         validateValidProcess(process);
         return processInfoSlots[process].outputSlot().getStack();
     }

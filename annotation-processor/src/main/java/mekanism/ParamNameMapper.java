@@ -2,21 +2,9 @@ package mekanism;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.lang.annotation.Annotation;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
+import com.google.gson.reflect.TypeToken;
+import org.openzen.zencode.java.ZenCodeType;
+
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -25,7 +13,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
@@ -34,40 +22,41 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
-import mekanism.common.integration.computer.annotation.ComputerMethod;
-import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
-import org.openzen.zencode.java.ZenCodeType;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class ParamNameMapper extends AbstractProcessor {
 
-    private static final String MODULE_OPTION = "mekanismModule";
-
-    private static String forDatagen(String path) {
-        return "resources/" + path;
-    }
-
-    private static AnnotationParamScanner computer(String module) {
-        return new AnnotationParamScanner("annotation_generated/data/" + module + "/parameter_names/computer", ComputerMethod.class, WrappingComputerMethod.class);
-    }
+    public static final Type PARAM_TREE_TYPE_TOKEN = new TypeToken<Map</*class name*/String, Map</*method name*/String, Map</*descriptor*/String,/*params*/List<String>>>>>() {
+    }.getType();
 
     private Set<AnnotationParamScanner> scanners = Collections.emptySet();
 
     @Override
     public Set<String> getSupportedOptions() {
-        return Collections.singleton(MODULE_OPTION);
+        return Collections.singleton(MekAnnotationProcessors.MODULE_OPTION);
     }
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        String mekModule = processingEnv.getOptions().getOrDefault(MODULE_OPTION, "mekanism");
+        String mekModule = processingEnv.getOptions().getOrDefault(MekAnnotationProcessors.MODULE_OPTION, "mekanism");
         if (mekModule.equals("mekanism")) {
             scanners = Set.of(
-                  new AnnotationParamScanner(forDatagen("crafttweaker_parameter_names"), ZenCodeType.Method.class),
-                  computer(mekModule)
+                  new AnnotationParamScanner("crafttweaker_parameter_names", ZenCodeType.Method.class)
             );
-        } else {
-            scanners = Collections.singleton(computer(mekModule));
         }
     }
 
@@ -76,7 +65,7 @@ public class ParamNameMapper extends AbstractProcessor {
         Types typeUtils = processingEnv.getTypeUtils();
         Elements elementUtils = processingEnv.getElementUtils();
         Set<Class<? extends Annotation>> supportedAnnotations = getSupportedAnnotations();
-        Map<AnnotationParamScanner, JsonObject> annotatedData = new HashMap<>();
+        Map<AnnotationParamScanner, Map</*class name*/String,Map</*method name*/String, Map</*descriptor*/String,/*params*/List<String>>>>> annotatedData = new IdentityHashMap<>();
         for (Element annotatedElement : roundEnv.getElementsAnnotatedWithAny(supportedAnnotations)) {
             if (annotatedElement.getKind() == ElementKind.METHOD) {
                 ExecutableElement executableElement = (ExecutableElement) annotatedElement;
@@ -84,7 +73,7 @@ public class ParamNameMapper extends AbstractProcessor {
                 if (!parameters.isEmpty()) {
                     String methodName = executableElement.getSimpleName().toString();
                     StringBuilder signatureBuilder = new StringBuilder("(");
-                    JsonArray paramNames = new JsonArray(parameters.size());
+                    List<String> paramNames = new ArrayList<>();
                     for (VariableElement parameter : parameters) {
                         signatureBuilder.append(getParamDescriptor(typeUtils, elementUtils, parameter.asType()));
                         paramNames.add(parameter.getSimpleName().toString());
@@ -96,14 +85,12 @@ public class ParamNameMapper extends AbstractProcessor {
                         // annotations that this element possesses
                         for (Class<? extends Annotation> annotation : scanner.supportedAnnotations()) {
                             if (annotatedElement.getAnnotation(annotation) != null) {
-                                JsonObject classMethods = annotatedData.computeIfAbsent(scanner, a -> new JsonObject());
-                                JsonObject methods = getOrAddObject(classMethods, className);
-                                JsonObject signatures = getOrAddObject(methods, methodName);
-                                if (paramNames.size() == 1) {//Flatten the array to a single element
-                                    signatures.addProperty(methodSignature, paramNames.get(0).getAsString());
-                                } else {
-                                    signatures.add(methodSignature, paramNames);
-                                }
+                                scanner.originatingElements().add(annotatedElement);
+                                Map<String, List<String>> signatures = annotatedData
+                                      .computeIfAbsent(scanner, unused -> new TreeMap<>())
+                                      .computeIfAbsent(className, unused -> new TreeMap<>())
+                                      .computeIfAbsent(methodName, unused-> new TreeMap<>());
+                                signatures.put(methodSignature, paramNames);
                                 //We can skip checking other annotations this scanner may support as we have
                                 // already added the signature to this scanner
                                 break;
@@ -116,47 +103,21 @@ public class ParamNameMapper extends AbstractProcessor {
         if (!annotatedData.isEmpty()) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             Filer filer = processingEnv.getFiler();
-            for (Map.Entry<AnnotationParamScanner, JsonObject> entry : annotatedData.entrySet()) {
-                AnnotationParamScanner scanner = entry.getKey();
-                //Note: We know allMethods is not empty, as we only add annotated data if we have a method to add
-                // We also sort the methods to ensure the order is consistent when saved
-                JsonObject allMethods = sortJson(entry.getValue());
+            //Note: We know allMethods is not empty, as we only add annotated data if we have a method to add
+            // We also sort the methods to ensure the order is consistent when saved
+            annotatedData.forEach((scanner, allMethods) -> {
                 try {
-                    FileObject resource = filer.createResource(StandardLocation.SOURCE_OUTPUT, "", scanner.targetFile() + ".json");
+                    FileObject resource = filer.createResource(StandardLocation.CLASS_OUTPUT, "", scanner.targetFile() + ".json", scanner.originatingElements().toArray(new Element[0]));
                     try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(resource.openOutputStream(), StandardCharsets.UTF_8))) {
-                        writer.write(gson.toJson(allMethods));
+                        writer.write(gson.toJson(allMethods, PARAM_TREE_TYPE_TOKEN));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
+            });
         }
         //Don't mark the annotation as used to allow other processors to process them if we ever end up having any
         return false;
-    }
-
-    private static JsonObject sortJson(JsonObject obj) {
-        if (obj.size() < 2) {
-            //Don't bother creating new objects to sort it if there isn't multiple elements
-            return obj;
-        }
-        JsonObject sorted = new JsonObject();
-        for (String key : new TreeSet<>(obj.keySet())) {
-            JsonElement element = obj.get(key);
-            if (element.isJsonObject()) {
-                element = sortJson(element.getAsJsonObject());
-            }
-            sorted.add(key, element);
-        }
-        return sorted;
-    }
-
-    private JsonObject getOrAddObject(JsonObject parent, String key) {
-        JsonObject element = parent.getAsJsonObject(key);
-        if (element == null) {
-            parent.add(key, element = new JsonObject());
-        }
-        return element;
     }
 
     private String getParamDescriptor(Types typeUtils, Elements elementUtils, TypeMirror type) {
@@ -179,17 +140,8 @@ public class ParamNameMapper extends AbstractProcessor {
     }
 
     private String getClassDescriptor(Types typeUtils, Elements elementUtils, TypeMirror type) {
-        PackageElement pkg = elementUtils.getPackageOf(typeUtils.asElement(type));
-        String packageName = pkg.getQualifiedName().toString();
-        String className = type.toString();
-        if (packageName.isEmpty()) {
-            return className.replace('.', '$');
-        } else if (className.startsWith(packageName)) {
-            //Should always start with but validate to make sure, also increment by one to get past the dot between the package and the class
-            String path = className.substring(packageName.length() + 1);
-            return packageName.replace('.', '/') + "/" + path.replace('.', '$');
-        }
-        throw new IllegalStateException("Fully qualified name of Class '" + className + "' does not start with expected package: " + packageName);
+        Name binaryName = elementUtils.getBinaryName((TypeElement) typeUtils.asElement(type));
+        return binaryName.toString().replace('.', '/');
     }
 
     private Set<Class<? extends Annotation>> getSupportedAnnotations() {

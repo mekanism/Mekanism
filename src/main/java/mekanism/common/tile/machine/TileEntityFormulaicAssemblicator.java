@@ -92,7 +92,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @Nullable
     private CraftingRecipe cachedRecipe = null;
     @SyntheticComputerMethod(getter = "getExcessRemainingItems")
-    private NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
+    NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
 
     private ItemStack lastFormulaStack = ItemStack.EMPTY;
     private ItemStack lastOutputStack = ItemStack.EMPTY;
@@ -102,9 +102,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private List<IInventorySlot> inputSlots;
     private List<IInventorySlot> outputSlots;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFormulaItem")
-    private BasicInventorySlot formulaSlot;
+    BasicInventorySlot formulaSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityFormulaicAssemblicator(BlockPos pos, BlockState state) {
         super(MekanismBlocks.FORMULAIC_ASSEMBLICATOR, pos, state);
@@ -720,7 +720,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private ItemStack getCraftingInputSlot(int slot) throws ComputerException {
+    ItemStack getCraftingInputSlot(int slot) throws ComputerException {
         if (slot < 0 || slot >= craftingGridSlots.size()) {
             throw new ComputerException("Crafting Input Slot '%d' is out of bounds, must be between 0 and %d.", slot, craftingGridSlots.size());
         }
@@ -728,12 +728,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @ComputerMethod
-    private int getCraftingOutputSlots() {
+    int getCraftingOutputSlots() {
         return outputSlots.size();
     }
 
     @ComputerMethod
-    private ItemStack getCraftingOutputSlot(int slot) throws ComputerException {
+    ItemStack getCraftingOutputSlot(int slot) throws ComputerException {
         int size = getCraftingOutputSlots();
         if (slot < 0 || slot >= size) {
             throw new ComputerException("Crafting Output Slot '%d' is out of bounds, must be between 0 and %d.", slot, size);
@@ -742,17 +742,17 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @ComputerMethod
-    private boolean hasValidFormula() {
+    boolean hasValidFormula() {
         return formula != null && formula.isValidFormula();
     }
 
     @ComputerMethod(nameOverride = "getSlots")
-    private int computerGetSlots() {
+    int computerGetSlots() {
         return inputSlots.size();
     }
 
     @ComputerMethod
-    private ItemStack getItemInSlot(int slot) throws ComputerException {
+    ItemStack getItemInSlot(int slot) throws ComputerException {
         int size = computerGetSlots();
         if (slot < 0 || slot >= size) {
             throw new ComputerException("Slot '%d' is out of bounds, must be between 0 and %d.", slot, size);
@@ -761,7 +761,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @ComputerMethod(nameOverride = "encodeFormula")
-    private void computerEncodeFormula() throws ComputerException {
+    void computerEncodeFormula() throws ComputerException {
         validateSecurityIsPublic();
         ItemStack formulaStack = formulaSlot.getStack();
         if (formulaStack.isEmpty() || !(formulaStack.getItem() instanceof ItemCraftingFormula craftingFormula)) {
@@ -775,7 +775,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @ComputerMethod(nameOverride = "emptyGrid")
-    private void computerEmptyGrid() throws ComputerException {
+    void computerEmptyGrid() throws ComputerException {
         validateSecurityIsPublic();
         if (autoMode) {
             throw new ComputerException("Emptying the grid requires Auto-Mode to be disabled.");
@@ -784,7 +784,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @ComputerMethod(nameOverride = "fillGrid")
-    private void computerFillGrid() throws ComputerException {
+    void computerFillGrid() throws ComputerException {
         validateSecurityIsPublic();
         if (autoMode) {
             throw new ComputerException("Filling the grid requires Auto-Mode to be disabled.");
@@ -802,13 +802,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @ComputerMethod
-    private void craftSingleItem() throws ComputerException {
+    void craftSingleItem() throws ComputerException {
         validateCanCraft();
         craftSingle();
     }
 
     @ComputerMethod
-    private void craftAvailableItems() throws ComputerException {
+    void craftAvailableItems() throws ComputerException {
         validateCanCraft();
         craftAll();
     }
@@ -821,13 +821,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @ComputerMethod(nameOverride = "getStockControl")
-    private boolean computerGetStockControl() throws ComputerException {
+    boolean computerGetStockControl() throws ComputerException {
         validateHasValidFormula("Stock Control");
         return getStockControl();
     }
 
     @ComputerMethod
-    private void setStockControl(boolean mode) throws ComputerException {
+    void setStockControl(boolean mode) throws ComputerException {
         validateHasValidFormula("Stock Control");
         if (stockControl != mode) {
             toggleStockControl();
@@ -835,13 +835,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @ComputerMethod(nameOverride = "getAutoMode")
-    private boolean computerGetAutoMode() throws ComputerException {
+    boolean computerGetAutoMode() throws ComputerException {
         validateHasValidFormula("Auto-Mode");
         return getAutoMode();
     }
 
     @ComputerMethod
-    private void setAutoMode(boolean mode) throws ComputerException {
+    void setAutoMode(boolean mode) throws ComputerException {
         validateHasValidFormula("Auto-Mode");
         if (autoMode != mode) {
             nextMode();

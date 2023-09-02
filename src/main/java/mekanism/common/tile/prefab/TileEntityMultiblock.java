@@ -1,7 +1,6 @@
 package mekanism.common.tile.prefab;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Map;
 import java.util.UUID;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
@@ -14,9 +13,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.computer.BoundComputerMethod;
-import mekanism.common.integration.computer.ComputerMethodMapper;
-import mekanism.common.integration.computer.ComputerMethodMapper.MethodRestriction;
+import mekanism.common.integration.computer.*;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
@@ -391,8 +388,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void getComputerMethods(Map<String, BoundComputerMethod> methods) {
-        super.getComputerMethods(methods);
+    public void getComputerMethods(BoundMethodHolder holder) {
+        super.getComputerMethods(holder);
         if (exposesMultiblockToComputer()) {
             T multiblock = getMultiblock();
             if (multiblock.isFormed()) {
@@ -400,13 +397,13 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 // our capabilities are invalidated, so should end up getting rechecked and this called by
                 // the various computer integration mods, and allow us to only expose the multiblock's methods
                 // as even existing if the multiblock is complete
-                ComputerMethodMapper.INSTANCE.getAndBindToHandler(multiblock, methods);
+                FactoryRegistry.bindTo(holder, multiblock);
             }
         }
     }
 
     @ComputerMethod(restriction = MethodRestriction.MULTIBLOCK)
-    private boolean isFormed() {
+    boolean isFormed() {
         return getMultiblock().isFormed();
     }
     //End methods IComputerTile

@@ -4,9 +4,9 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import mekanism.common.integration.computer.ComputerMethodMapper.MethodRestriction;
+import mekanism.common.integration.computer.MethodRestriction;
 
-@Retention(RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.CLASS)
 @Target(ElementType.FIELD)
 public @interface SyntheticComputerMethod {
 
@@ -18,7 +18,7 @@ public @interface SyntheticComputerMethod {
     /**
      * Array of modids that are required for synthetic methods to be generated and applied to a handler.
      */
-    String[] requiredMods() default "";
+    String[] requiredMods() default {};
 
     /**
      * Name to use for the synthetic getter.

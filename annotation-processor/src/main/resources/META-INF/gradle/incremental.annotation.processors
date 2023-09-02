@@ -1,0 +1,3 @@
+mekanism.ComputerMethodProcessor,isolating
+mekanism.MethodFactoryProcessor,aggregating
+mekanism.ParamNameMapper,aggregating

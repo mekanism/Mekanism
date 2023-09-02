@@ -99,18 +99,18 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private Collection<QIOFrequency> getFrequencies() {
+    Collection<QIOFrequency> getFrequencies() {
         return FrequencyType.QIO.getManagerWrapper().getPublicManager().getFrequencies();
     }
 
     @ComputerMethod
-    private boolean hasFrequency() {
+    boolean hasFrequency() {
         QIOFrequency frequency = getQIOFrequency();
         return frequency != null && frequency.isValid() && !frequency.isRemoved();
     }
 
     @ComputerMethod(nameOverride = "getFrequency")
-    protected QIOFrequency computerGetFrequency() throws ComputerException {
+    QIOFrequency computerGetFrequency() throws ComputerException {
         QIOFrequency frequency = getQIOFrequency();
         if (frequency == null || !frequency.isValid() || frequency.isRemoved()) {
             throw new ComputerException("No frequency is currently selected.");
@@ -119,7 +119,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     @ComputerMethod
-    private void setFrequency(String name) throws ComputerException {
+    void setFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         QIOFrequency frequency = FrequencyType.QIO.getManagerWrapper().getPublicManager().getFrequency(name);
         if (frequency == null) {
@@ -129,7 +129,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     @ComputerMethod
-    private void createFrequency(String name) throws ComputerException {
+    void createFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         QIOFrequency frequency = FrequencyType.QIO.getManagerWrapper().getPublicManager().getFrequency(name);
         if (frequency != null) {
@@ -139,25 +139,25 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     @ComputerMethod
-    private EnumColor getFrequencyColor() throws ComputerException {
+    EnumColor getFrequencyColor() throws ComputerException {
         return computerGetFrequency().getColor();
     }
 
     @ComputerMethod
-    private void setFrequencyColor(EnumColor color) throws ComputerException {
+    void setFrequencyColor(EnumColor color) throws ComputerException {
         validateSecurityIsPublic();
         computerGetFrequency().setColor(color);
     }
 
     @ComputerMethod
-    private void incrementFrequencyColor() throws ComputerException {
+    void incrementFrequencyColor() throws ComputerException {
         validateSecurityIsPublic();
         QIOFrequency frequency = computerGetFrequency();
         frequency.setColor(frequency.getColor().getNext());
     }
 
     @ComputerMethod
-    private void decrementFrequencyColor() throws ComputerException {
+    void decrementFrequencyColor() throws ComputerException {
         validateSecurityIsPublic();
         QIOFrequency frequency = computerGetFrequency();
         frequency.setColor(frequency.getColor().getPrevious());

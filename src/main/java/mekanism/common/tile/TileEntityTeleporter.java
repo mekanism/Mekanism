@@ -102,7 +102,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     private MachineEnergyContainer<TileEntityTeleporter> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityTeleporter(BlockPos pos, BlockState state) {
         super(MekanismBlocks.TELEPORTER, pos, state);
@@ -674,18 +674,18 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private Collection<TeleporterFrequency> getFrequencies() {
+    Collection<TeleporterFrequency> getFrequencies() {
         return FrequencyType.TELEPORTER.getManagerWrapper().getPublicManager().getFrequencies();
     }
 
     @ComputerMethod
-    private boolean hasFrequency() {
+    boolean hasFrequency() {
         TeleporterFrequency frequency = getFrequency(FrequencyType.TELEPORTER);
         return frequency != null && frequency.isValid() && !frequency.isRemoved();
     }
 
     @ComputerMethod
-    private TeleporterFrequency getFrequency() throws ComputerException {
+    TeleporterFrequency getFrequency() throws ComputerException {
         TeleporterFrequency frequency = getFrequency(FrequencyType.TELEPORTER);
         if (frequency == null || !frequency.isValid() || frequency.isRemoved()) {
             throw new ComputerException("No frequency is currently selected.");
@@ -694,7 +694,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @ComputerMethod
-    private void setFrequency(String name) throws ComputerException {
+    void setFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         TeleporterFrequency frequency = FrequencyType.TELEPORTER.getManagerWrapper().getPublicManager().getFrequency(name);
         if (frequency == null) {
@@ -704,7 +704,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @ComputerMethod
-    private void createFrequency(String name) throws ComputerException {
+    void createFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         TeleporterFrequency frequency = FrequencyType.TELEPORTER.getManagerWrapper().getPublicManager().getFrequency(name);
         if (frequency != null) {
@@ -714,37 +714,37 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @ComputerMethod
-    private EnumColor getFrequencyColor() throws ComputerException {
+    EnumColor getFrequencyColor() throws ComputerException {
         return getFrequency().getColor();
     }
 
     @ComputerMethod
-    private void setFrequencyColor(EnumColor color) throws ComputerException {
+    void setFrequencyColor(EnumColor color) throws ComputerException {
         validateSecurityIsPublic();
         getFrequency().setColor(color);
     }
 
     @ComputerMethod
-    private void incrementFrequencyColor() throws ComputerException {
+    void incrementFrequencyColor() throws ComputerException {
         validateSecurityIsPublic();
         TeleporterFrequency frequency = getFrequency();
         frequency.setColor(frequency.getColor().getNext());
     }
 
     @ComputerMethod
-    private void decrementFrequencyColor() throws ComputerException {
+    void decrementFrequencyColor() throws ComputerException {
         validateSecurityIsPublic();
         TeleporterFrequency frequency = getFrequency();
         frequency.setColor(frequency.getColor().getPrevious());
     }
 
     @ComputerMethod
-    private Set<Coord4D> getActiveTeleporters() throws ComputerException {
+    Set<Coord4D> getActiveTeleporters() throws ComputerException {
         return getFrequency().getActiveCoords();
     }
 
     @ComputerMethod
-    private String getStatus() {
+    String getStatus() {
         if (hasFrequency()) {
             return switch (status) {
                 case 1 -> "ready";

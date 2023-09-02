@@ -90,13 +90,13 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
 
     private MachineEnergyContainer<TileEntityChemicalDissolutionChamber> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputGasItem")
-    private GasInventorySlot gasInputSlot;
+    GasInventorySlot gasInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private InputInventorySlot inputSlot;
+    InputInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private MergedChemicalInventorySlot<MergedChemicalTank> outputSlot;
+    MergedChemicalInventorySlot<MergedChemicalTank> outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityChemicalDissolutionChamber(BlockPos pos, BlockState state) {
         super(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, pos, state, TRACKED_ERROR_TYPES, BASE_TICKS_REQUIRED);
@@ -235,12 +235,12 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private FloatingLong getEnergyUsage() {
+    FloatingLong getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
     }
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"})
-    private IChemicalTank<?, ?> getOutputTank() {
+    IChemicalTank<?, ?> getOutputTank() {
         Current current = outputTank.getCurrent();
         return outputTank.getTankFromCurrent(current == Current.EMPTY ? Current.GAS : current);
     }

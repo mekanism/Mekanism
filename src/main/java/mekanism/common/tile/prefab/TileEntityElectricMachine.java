@@ -51,11 +51,11 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
 
     private MachineEnergyContainer<TileEntityElectricMachine> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput")
-    private InputInventorySlot inputSlot;
+    InputInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput")
-    private OutputInventorySlot outputSlot;
+    OutputInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityElectricMachine(IBlockProvider blockProvider, BlockPos pos, BlockState state, int ticksRequired) {
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, ticksRequired);
@@ -134,7 +134,7 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private FloatingLong getEnergyUsage() {
+    FloatingLong getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
     }
     //End methods IComputerTile

@@ -40,7 +40,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
 
     private long lastProcessTick;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
-    private StackedWasteBarrel gasTank;
+    StackedWasteBarrel gasTank;
     private float prevScale;
     private int processTicks;
 

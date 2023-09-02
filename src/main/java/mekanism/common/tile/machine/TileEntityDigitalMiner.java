@@ -155,7 +155,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     private MinerEnergyContainer energyContainer;
     private List<IInventorySlot> mainSlots;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityDigitalMiner(BlockPos pos, BlockState state) {
         super(MekanismBlocks.DIGITAL_MINER, pos, state);
@@ -1258,17 +1258,17 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private FloatingLong getEnergyUsage() {
+    FloatingLong getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
     }
 
     @ComputerMethod
-    private int getSlotCount() {
+    int getSlotCount() {
         return mainSlots.size();
     }
 
     @ComputerMethod
-    private ItemStack getItemInSlot(int slot) throws ComputerException {
+    ItemStack getItemInSlot(int slot) throws ComputerException {
         int slots = getSlotCount();
         if (slot < 0 || slot >= slots) {
             throw new ComputerException("Slot: '%d' is out of bounds, as this digital miner only has '%d' slots (zero indexed).", slot, slots);
@@ -1277,12 +1277,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @ComputerMethod
-    private State getState() {
+    State getState() {
         return searcher.state;
     }
 
     @ComputerMethod
-    private void setAutoEject(boolean eject) throws ComputerException {
+    void setAutoEject(boolean eject) throws ComputerException {
         validateSecurityIsPublic();
         if (doEject != eject) {
             toggleAutoEject();
@@ -1290,7 +1290,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @ComputerMethod
-    private void setAutoPull(boolean pull) throws ComputerException {
+    void setAutoPull(boolean pull) throws ComputerException {
         validateSecurityIsPublic();
         if (doPull != pull) {
             toggleAutoPull();
@@ -1298,31 +1298,31 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @ComputerMethod(nameOverride = "setSilkTouch")
-    private void computerSetSilkTouch(boolean silk) throws ComputerException {
+    void computerSetSilkTouch(boolean silk) throws ComputerException {
         validateSecurityIsPublic();
         setSilkTouch(silk);
     }
 
     @ComputerMethod(nameOverride = "start")
-    private void computerStart() throws ComputerException {
+    void computerStart() throws ComputerException {
         validateSecurityIsPublic();
         start();
     }
 
     @ComputerMethod(nameOverride = "stop")
-    private void computerStop() throws ComputerException {
+    void computerStop() throws ComputerException {
         validateSecurityIsPublic();
         stop();
     }
 
     @ComputerMethod(nameOverride = "reset")
-    private void computerReset() throws ComputerException {
+    void computerReset() throws ComputerException {
         validateSecurityIsPublic();
         reset();
     }
 
     @ComputerMethod
-    private int getMaxRadius() {
+    int getMaxRadius() {
         return MekanismConfig.general.minerMaxRadius.get();
     }
 
@@ -1335,7 +1335,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @ComputerMethod(nameOverride = "setRadius")
-    private void computerSetRadius(int radius) throws ComputerException {
+    void computerSetRadius(int radius) throws ComputerException {
         validateCanChangeConfiguration();
         if (radius < 0 || radius > MekanismConfig.general.minerMaxRadius.get()) {
             //Validate dimensions even though we can clamp
@@ -1345,7 +1345,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @ComputerMethod(nameOverride = "setMinY")
-    private void computerSetMinY(int minY) throws ComputerException {
+    void computerSetMinY(int minY) throws ComputerException {
         validateCanChangeConfiguration();
         if (level != null) {
             int min = level.getMinBuildHeight();
@@ -1358,7 +1358,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @ComputerMethod(nameOverride = "setMaxY")
-    private void computerSetMaxY(int maxY) throws ComputerException {
+    void computerSetMaxY(int maxY) throws ComputerException {
         validateCanChangeConfiguration();
         if (level != null) {
             int max = level.getMaxBuildHeight() - 1;
@@ -1371,7 +1371,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @ComputerMethod
-    private void setInverseMode(boolean enabled) throws ComputerException {
+    void setInverseMode(boolean enabled) throws ComputerException {
         validateCanChangeConfiguration();
         if (inverse != enabled) {
             toggleInverse();
@@ -1379,7 +1379,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @ComputerMethod
-    private void setInverseModeRequiresReplacement(boolean requiresReplacement) throws ComputerException {
+    void setInverseModeRequiresReplacement(boolean requiresReplacement) throws ComputerException {
         validateCanChangeConfiguration();
         if (inverseRequiresReplacement != requiresReplacement) {
             toggleInverseRequiresReplacement();
@@ -1387,29 +1387,29 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @ComputerMethod
-    private void setInverseModeReplaceTarget(Item target) throws ComputerException {
+    void setInverseModeReplaceTarget(Item target) throws ComputerException {
         validateCanChangeConfiguration();
         setInverseReplaceTarget(target);
     }
 
     @ComputerMethod
-    private void clearInverseModeReplaceTarget() throws ComputerException {
+    void clearInverseModeReplaceTarget() throws ComputerException {
         setInverseModeReplaceTarget(Items.AIR);
     }
 
     @ComputerMethod
-    private List<MinerFilter<?>> getFilters() {
+    List<MinerFilter<?>> getFilters() {
         return filterManager.getFilters();
     }
 
     @ComputerMethod
-    private boolean addFilter(MinerFilter<?> filter) throws ComputerException {
+    boolean addFilter(MinerFilter<?> filter) throws ComputerException {
         validateCanChangeConfiguration();
         return filterManager.addFilter(filter);
     }
 
     @ComputerMethod
-    private boolean removeFilter(MinerFilter<?> filter) throws ComputerException {
+    boolean removeFilter(MinerFilter<?> filter) throws ComputerException {
         validateCanChangeConfiguration();
         return filterManager.removeFilter(filter);
     }

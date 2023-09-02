@@ -7,7 +7,10 @@ import java.util.function.IntBinaryOperator;
 import mekanism.api.NBTConstants;
 import mekanism.common.config.value.CachedOredictionificatorConfigValue;
 import mekanism.common.content.filter.BaseFilter;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.network.BasePacketHandler;
+import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -72,6 +75,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
         isValid = false;
     }
 
+    @ComputerMethod(nameOverride = "getFilter", threadSafe = true)
     public String getFilterText() {
         return filterLocation == null ? "" : filterLocation.location().toString();
     }
@@ -83,6 +87,14 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
         filterLocation = location == null ? null : getTagManager().createTagKey(location);
         flushCachedTag();
         isValid = true;
+    }
+
+    @ComputerMethod(nameOverride = "setFilter")
+    public void computerSetFilter(ResourceLocation tag) throws ComputerException {
+        if (tag == null || !TileEntityOredictionificator.isValidTarget(tag)) {
+            throw new ComputerException("Invalid tag");
+        }
+        setFilter(tag);
     }
 
     /**
@@ -225,4 +237,8 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
     protected abstract STACK createResultStack(TYPE type);
 
     protected abstract CachedOredictionificatorConfigValue getValidValuesConfig();
+
+    @Override
+    @ComputerMethod(threadSafe = true)
+    public abstract FILTER clone();
 }

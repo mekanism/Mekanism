@@ -100,11 +100,11 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     private MachineEnergyContainer<TileEntityElectricPump> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private FluidInventorySlot inputSlot;
+    FluidInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private OutputInventorySlot outputSlot;
+    OutputInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityElectricPump(BlockPos pos, BlockState state) {
         super(MekanismBlocks.ELECTRIC_PUMP, pos, state);
@@ -376,7 +376,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     //Methods relating to IComputerTile
     @ComputerMethod(nameOverride = "reset")
-    private void resetPump() throws ComputerException {
+    void resetPump() throws ComputerException {
         validateSecurityIsPublic();
         reset();
     }

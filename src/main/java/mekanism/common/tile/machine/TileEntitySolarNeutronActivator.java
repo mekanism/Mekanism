@@ -75,9 +75,9 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
     private final IInputHandler<@NotNull GasStack> inputHandler;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private GasInventorySlot inputSlot;
+    GasInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private GasInventorySlot outputSlot;
+    GasInventorySlot outputSlot;
 
     public TileEntitySolarNeutronActivator(BlockPos pos, BlockState state) {
         super(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR, pos, state, TRACKED_ERROR_TYPES);
@@ -164,7 +164,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
     }
 
     @ComputerMethod
-    private boolean canSeeSun() {
+    boolean canSeeSun() {
         return WorldUtils.canSeeSun(level, worldPosition.above());
     }
 

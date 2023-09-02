@@ -49,9 +49,9 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     private double gasUsedLastTick;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem")
-    private GasInventorySlot fuelSlot;
+    GasInventorySlot fuelSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityGasGenerator(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.GAS_BURNING_GENERATOR, pos, state, MekanismConfig.general.FROM_H2);
@@ -165,7 +165,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private FloatingLong getProductionRate() {
+    FloatingLong getProductionRate() {
         return getGenerationRate().multiply(getUsed()).multiply(getMaxBurnTicks());
     }
     //End methods IComputerTile

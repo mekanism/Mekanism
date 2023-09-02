@@ -54,9 +54,9 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     public boolean didProcess;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private InputInventorySlot inputSlot;
+    InputInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private OutputInventorySlot outputSlot;
+    OutputInventorySlot outputSlot;
     private final IConfigValueInvalidationListener validFiltersListener = new ODConfigValueInvalidationListener();
 
     public TileEntityOredictionificator(BlockPos pos, BlockState state) {
@@ -212,18 +212,18 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private List<OredictionificatorItemFilter> getFilters() {
+    List<OredictionificatorItemFilter> getFilters() {
         return filterManager.getFilters();
     }
 
     @ComputerMethod
-    private boolean addFilter(OredictionificatorItemFilter filter) throws ComputerException {
+    boolean addFilter(OredictionificatorItemFilter filter) throws ComputerException {
         validateSecurityIsPublic();
         return filterManager.addFilter(filter);
     }
 
     @ComputerMethod
-    private boolean removeFilter(OredictionificatorItemFilter filter) throws ComputerException {
+    boolean removeFilter(OredictionificatorItemFilter filter) throws ComputerException {
         validateSecurityIsPublic();
         return filterManager.removeFilter(filter);
     }

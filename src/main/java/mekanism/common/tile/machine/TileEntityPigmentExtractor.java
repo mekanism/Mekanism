@@ -66,11 +66,11 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
 
     private MachineEnergyContainer<TileEntityPigmentExtractor> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput")
-    private InputInventorySlot inputSlot;
+    InputInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private PigmentInventorySlot outputSlot;
+    PigmentInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityPigmentExtractor(BlockPos pos, BlockState state) {
         super(MekanismBlocks.PIGMENT_EXTRACTOR, pos, state, TRACKED_ERROR_TYPES, 100);
@@ -157,7 +157,7 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private FloatingLong getEnergyUsage() {
+    FloatingLong getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
     }
     //End methods IComputerTile

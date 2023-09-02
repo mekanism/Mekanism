@@ -38,9 +38,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
                                                                                      "getBioFuelFilledPercentage"})
     public BasicFluidTank bioFuelTank;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem")
-    private FluidFuelInventorySlot fuelSlot;
+    FluidFuelInventorySlot fuelSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
     private float lastFluidScale;
 
     public TileEntityBioGenerator(BlockPos pos, BlockState state) {
@@ -114,7 +114,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private FloatingLong getProductionRate() {
+    FloatingLong getProductionRate() {
         return getActive() ? MekanismGeneratorsConfig.generators.bioGeneration.get() : FloatingLong.ZERO;
     }
     //End methods IComputerTile

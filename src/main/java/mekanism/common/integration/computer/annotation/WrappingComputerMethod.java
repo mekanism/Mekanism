@@ -4,13 +4,13 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import mekanism.common.integration.computer.ComputerMethodMapper.MethodRestriction;
+import mekanism.common.integration.computer.MethodRestriction;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper;
 
 /**
  * Wraps fields as getters and methods with return types into one or more "synthetic" methods, based on the wrapper class.
  */
-@Retention(RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.CLASS)
 @Target({ElementType.METHOD, ElementType.FIELD})
 public @interface WrappingComputerMethod {
 
@@ -33,7 +33,7 @@ public @interface WrappingComputerMethod {
     /**
      * Array of modids that are required for if the method wrappers should be generated and applied to a handler.
      */
-    String[] requiredMods() default "";
+    String[] requiredMods() default {};
 
     /**
      * Whether the generated wrapped methods are thread-safe or needs to be queued to run on the main thread.

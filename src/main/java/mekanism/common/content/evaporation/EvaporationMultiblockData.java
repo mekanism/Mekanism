@@ -98,13 +98,13 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     private final IInputHandler<@NotNull FluidStack> inputHandler;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItemInput")
-    private final FluidInventorySlot inputInputSlot;
+    final FluidInventorySlot inputInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItemOutput")
-    private final OutputInventorySlot outputInputSlot;
+    final OutputInventorySlot outputInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItemInput")
-    private final FluidInventorySlot inputOutputSlot;
+    final FluidInventorySlot inputOutputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItemOutput")
-    private final OutputInventorySlot outputOutputSlot;
+    final OutputInventorySlot outputOutputSlot;
 
     public EvaporationMultiblockData(TileEntityThermalEvaporationBlock tile) {
         super(tile);
@@ -269,7 +269,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     @ComputerMethod
-    private int getActiveSolars() {
+    int getActiveSolars() {
         int ret = 0;
         for (LazyOptional<IEvaporationSolar> capability : cachedSolar.values()) {
             if (capability.map(IEvaporationSolar::canSeeSun).orElse(false)) {

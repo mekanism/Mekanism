@@ -4,6 +4,9 @@ import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.BaseFilter;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.util.NBTUtils;
@@ -17,10 +20,15 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
 
     public static final int MAX_LENGTH = 48;
 
+    @SyntheticComputerMethod(getter = "getColor", setter = "setColor", threadSafeGetter = true, threadSafeSetter = true)
     public EnumColor color;
+    @SyntheticComputerMethod(getter = "getAllowDefault", setter = "setAllowDefault", threadSafeGetter = true, threadSafeSetter = true)
     public boolean allowDefault;
+    @SyntheticComputerMethod(getter = "getSizeMode", setter = "setSizeMode", threadSafeSetter = true, threadSafeGetter = true)
     public boolean sizeMode;
+    @SyntheticComputerMethod(getter = "getMin", threadSafeGetter = true)
     public int min;
+    @SyntheticComputerMethod(getter = "getMax", threadSafeGetter = true)
     public int max;
 
     protected SorterFilter() {
@@ -99,4 +107,17 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
         SorterFilter<?> other = (SorterFilter<?>) o;
         return allowDefault == other.allowDefault && sizeMode == other.sizeMode && min == other.min && max == other.max && color == other.color;
     }
+
+    @ComputerMethod(threadSafe = true)
+    void setMinMax(int min, int max) throws ComputerException{
+        if (min < 0 || max < 0 || min > max || max > 64) {
+            throw new ComputerException("Invalid or min/max: 0 <= min <= max <= 64");
+        }
+        this.min = min;
+        this.max = max;
+    }
+
+    @Override
+    @ComputerMethod(threadSafe = true)
+    public abstract FILTER clone();
 }

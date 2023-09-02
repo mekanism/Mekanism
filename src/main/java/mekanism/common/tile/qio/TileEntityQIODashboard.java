@@ -94,7 +94,7 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     }
 
     @ComputerMethod
-    private ItemStack getCraftingInput(int window, int slot) throws ComputerException {
+    ItemStack getCraftingInput(int window, int slot) throws ComputerException {
         validateWindow(window);
         if (slot < 0 || slot >= 9) {
             throw new ComputerException("Slot '%d' is out of bounds, must be between 0 and 9.", slot);
@@ -103,7 +103,7 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     }
 
     @ComputerMethod
-    private ItemStack getCraftingOutput(int window) throws ComputerException {
+    ItemStack getCraftingOutput(int window) throws ComputerException {
         validateWindow(window);
         return craftingWindows[window].getOutputSlot().getStack();
     }

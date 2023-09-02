@@ -48,9 +48,9 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     private ResistiveHeaterEnergyContainer energyContainer;
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
-    private BasicHeatCapacitor heatCapacitor;
+    BasicHeatCapacitor heatCapacitor;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    EnergyInventorySlot energySlot;
 
     public TileEntityResistiveHeater(BlockPos pos, BlockState state) {
         super(MekanismBlocks.RESISTIVE_HEATER, pos, state);
@@ -172,12 +172,12 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private FloatingLong getEnergyUsage() {
+    FloatingLong getEnergyUsage() {
         return energyContainer.getEnergyPerTick();
     }
 
     @ComputerMethod
-    private void setEnergyUsage(FloatingLong usage) throws ComputerException {
+    void setEnergyUsage(FloatingLong usage) throws ComputerException {
         validateSecurityIsPublic();
         setEnergyUsageFromPacket(usage);
     }

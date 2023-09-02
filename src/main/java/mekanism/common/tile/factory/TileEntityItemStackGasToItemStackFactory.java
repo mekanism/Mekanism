@@ -71,10 +71,10 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     private final ILongInputHandler<@NotNull GasStack> gasInputHandler;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChemicalItem")
-    private GasInventorySlot extraSlot;
+    GasInventorySlot extraSlot;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getChemical", "getChemicalCapacity", "getChemicalNeeded",
                                                                                         "getChemicalFilledPercentage"})
-    private IGasTank gasTank;
+    IGasTank gasTank;
     private final ChemicalUsageMultiplier gasUsageMultiplier;
     private final long[] usedSoFar;
     private double gasPerTickMeanMultiplier = 1;
@@ -277,7 +277,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private void dumpChemical() throws ComputerException {
+    void dumpChemical() throws ComputerException {
         validateSecurityIsPublic();
         dump();
     }
