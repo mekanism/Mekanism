@@ -2,18 +2,18 @@ package mekanism.client.lang;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import mekanism.client.lang.FormatSplitter.Component;
 import mekanism.client.lang.FormatSplitter.FormatComponent;
 import net.minecraft.Util;
 import net.minecraft.data.PackOutput;
 
 public class NonAmericanLanguageProvider extends ConvertibleLanguageProvider {
-    private static final List<Map.Entry<Pattern, String>> CONVERSIONS = Util.make(new HashMap<String, String>(), map ->{
+
+    private static final List<WordConversion> CONVERSIONS = Util.make(new HashMap<String, String>(), map -> {
         addEntry(map, "Pressurized", "Pressurised");
         addEntry(map, "Stabilizer", "Stabiliser");
         addEntry(map, "Stabilizing", "Stabilising");
@@ -31,11 +31,11 @@ public class NonAmericanLanguageProvider extends ConvertibleLanguageProvider {
         addEntry(map, "Bodyarmor", "Bodyarmour");
         addEntry(map, "Armor", "Armour");
         addEntry(map, "Armored", "Armoured");
-    }).entrySet().stream().map(entry->Map.entry(Pattern.compile("\\b"+entry.getKey()+"\\b"), entry.getValue())).toList();
+    }).entrySet().stream().map(entry -> new WordConversion(entry.getKey(), entry.getValue())).toList();
 
     private static void addEntry(Map<String, String> map, String key, String value) {
         map.put(key, value);
-        map.put(key.toLowerCase(), value.toLowerCase());
+        map.put(key.toLowerCase(Locale.ROOT), value.toLowerCase(Locale.ROOT));
     }
 
     public NonAmericanLanguageProvider(PackOutput output, String modid, String locale) {
@@ -52,11 +52,11 @@ public class NonAmericanLanguageProvider extends ConvertibleLanguageProvider {
             } else {
                 String contents = component.contents();
                 String finalContents = contents;
-                List<Entry<Pattern, String>> matched = CONVERSIONS.stream().filter(e->e.getKey().matcher(finalContents).find()).toList();
+                List<WordConversion> matched = CONVERSIONS.stream().filter(e -> e.match(finalContents).find()).toList();
                 if (!matched.isEmpty()) {
                     foundMatch = true;
-                    for (Entry<Pattern, String> entry : matched) {
-                        contents = entry.getKey().matcher(contents).replaceAll(entry.getValue());
+                    for (WordConversion conversion : matched) {
+                        contents = conversion.replace(contents);
                     }
                 }
                 builder.append(contents);
@@ -64,6 +64,21 @@ public class NonAmericanLanguageProvider extends ConvertibleLanguageProvider {
         }
         if (foundMatch) {
             add(key, builder.toString());
+        }
+    }
+
+    private record WordConversion(Pattern matcher, String replacement) {
+
+        private WordConversion(String toReplace, String replacement) {
+            this(Pattern.compile("\\b" + toReplace + "\\b"), replacement);
+        }
+
+        public Matcher match(String contents) {
+            return matcher.matcher(contents);
+        }
+
+        public String replace(String contents) {
+            return match(contents).replaceAll(replacement);
         }
     }
 }
