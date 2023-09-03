@@ -40,6 +40,9 @@ public @interface WrappingComputerMethod {
      */
     boolean threadSafe() default false;
 
+    /**
+     * Describe the wrapped element, to be used in the %s placeholder of target methods' docs.
+     */
     String docPlaceholder();
 
     @Retention(RetentionPolicy.RUNTIME)
@@ -52,6 +55,10 @@ public @interface WrappingComputerMethod {
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     @interface WrappingComputerMethodHelp {
+
+        /**
+         * Describes the target method, should have a single %s placeholder to denote the subject.
+         */
         String value();
     }
 }
