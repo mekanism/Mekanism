@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -76,19 +75,29 @@ public class ComputerHelpProvider implements DataProvider {
     public CompletableFuture<?> run(CachedOutput pOutput) {
         FactoryRegistry.load();
         Map<Class<?>, List<MethodHelpData>> helpData = FactoryRegistry.getHelpData();
+        Map<Class<?>, List<String>> enumValues = getEnumValues(helpData);
         return CompletableFuture.allOf(
               makeMethodsJson(pOutput, helpData),
               makeMethodsCsv(pOutput, helpData),
-              makeEnumsCsv(pOutput, helpData)
+              makeEnumsCsv(pOutput, enumValues),
+              makeEnumsJson(pOutput, enumValues)
         );
     }
 
     @NotNull
     private CompletableFuture<?> makeMethodsJson(CachedOutput pOutput, Map<Class<?>, List<MethodHelpData>> helpData) {
-        JsonElement jsonElement = JSONCODEC.encodeStart(JsonOps.INSTANCE, helpData).getOrThrow(false, e -> {
+        JsonElement jsonElement = METHODS_DATA_CODEC.encodeStart(JsonOps.INSTANCE, helpData).getOrThrow(false, e -> {
             throw new RuntimeException(e);
         });
         return DataProvider.saveStable(pOutput, jsonElement, this.pathProvider.json(new ResourceLocation(this.modid, "methods")));
+    }
+
+    @NotNull
+    private CompletableFuture<?> makeEnumsJson(CachedOutput pOutput, Map<Class<?>, List<String>> enumValues) {
+        JsonElement jsonElement = ENUMS_CODEC.encodeStart(JsonOps.INSTANCE, enumValues).getOrThrow(false, e -> {
+            throw new RuntimeException(e);
+        });
+        return DataProvider.saveStable(pOutput, jsonElement, this.pathProvider.json(new ResourceLocation(this.modid, "enums")));
     }
 
     @NotNull
@@ -114,8 +123,19 @@ public class ComputerHelpProvider implements DataProvider {
     }
 
     @NotNull
-    private CompletableFuture<?> makeEnumsCsv(CachedOutput pOutput, Map<Class<?>, List<MethodHelpData>> helpData) {
+    private CompletableFuture<?> makeEnumsCsv(CachedOutput pOutput, Map<Class<?>, List<String>> enumValues) {
         //gather the enums into a sorted map
+        return saveCSV(pOutput, this.pathProvider.file(new ResourceLocation(this.modid, "enums"), "csv"), ENUM_CSV_HEADERS, csvOutput ->{
+            for (Entry<Class<?>, List<String>> entry : enumValues.entrySet()) {
+                Class<?> clazz = entry.getKey();
+                List<String> values = entry.getValue();
+                csvOutput.writeRow(clazz.getSimpleName(), String.join(", ", values));
+            }
+        });
+    }
+
+    @NotNull
+    private static Map<Class<?>, List<String>> getEnumValues(Map<Class<?>, List<MethodHelpData>> helpData) {
         Map<Class<?>, List<String>> enumToValues = new TreeMap<>(Comparator.comparing(Class::getSimpleName));
         helpData.forEach((unused, methods)->{
             for (MethodHelpData method : methods) {
@@ -137,13 +157,7 @@ public class ComputerHelpProvider implements DataProvider {
                 }
             }
         });
-        return saveCSV(pOutput, this.pathProvider.file(new ResourceLocation(this.modid, "enums"), "csv"), ENUM_CSV_HEADERS, csvOutput ->{
-            for (Entry<Class<?>, List<String>> entry : enumToValues.entrySet()) {
-                Class<?> clazz = entry.getKey();
-                List<String> values = entry.getValue();
-                csvOutput.writeRow(clazz.getSimpleName(), String.join(", ", values));
-            }
-        });
+        return enumToValues;
     }
 
     private static String csvReturnsValue(Returns returns) {
@@ -218,7 +232,8 @@ public class ComputerHelpProvider implements DataProvider {
     }
 
     private static final Codec<Class<?>> CLASS_TO_FRIENDLY_NAME_CODEC = ExtraCodecs.stringResolverCodec(ComputerHelpProvider::getFriendlyName, p->null);
-    private static final Codec<Map<Class<?>, List<MethodHelpData>>> JSONCODEC = Codec.unboundedMap(CLASS_TO_FRIENDLY_NAME_CODEC, MethodHelpData.CODEC.listOf());
+    private static final Codec<Map<Class<?>, List<MethodHelpData>>> METHODS_DATA_CODEC = Codec.unboundedMap(CLASS_TO_FRIENDLY_NAME_CODEC, MethodHelpData.CODEC.listOf());
+    private static final Codec<Map<Class<?>, List<String>>> ENUMS_CODEC = Codec.unboundedMap(MethodHelpData.CLASS_TO_STRING_CODEC, Codec.STRING.listOf());
 
     private static final Map<Class<?>, String> FRIENDLY_NAMES = Map.ofEntries(
           Map.entry(IFilter.class, "Filter Wrapper"),

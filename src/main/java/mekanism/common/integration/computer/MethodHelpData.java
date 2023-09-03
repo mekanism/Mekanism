@@ -122,12 +122,16 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
     );
 
     public record Param(String name, String type, Class<?> javaType, @Nullable List<String> values){
+        public Param(String name, String type, Class<?> javaType){
+            this(name, type, javaType, null);
+        }
+
         public static final Codec<Param> CODEC = RecordCodecBuilder.create(instance ->
               instance.group(
                     Codec.STRING.fieldOf("name").forGetter(Param::name),
                     Codec.STRING.fieldOf("type").forGetter(Param::type),
-                    CLASS_TO_STRING_CODEC.fieldOf("javaType").forGetter(Param::javaType),
-                    Codec.STRING.listOf().optionalFieldOf("values", null).forGetter(Param::values)
+                    CLASS_TO_STRING_CODEC.fieldOf("javaType").forGetter(Param::javaType)/*,
+                    Codec.STRING.listOf().optionalFieldOf("values", null).forGetter(Param::values)*/
               ).apply(instance, Param::new)
         );
 
@@ -138,12 +142,16 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
     }
 
     public record Returns(String type, Class<?> javaType, Class<?>[] javaExtra, @Nullable List<String> values){
+        public Returns(String type, Class<?> javaType, Class<?>[] javaExtra) {
+            this(type, javaType, javaExtra, null);
+        }
+
         public static final Returns NOTHING = new Returns("Nothing", void.class, NO_CLASSES, null);
         public static final Codec<Returns> CODEC = RecordCodecBuilder.create(instance->instance.group(
               Codec.STRING.fieldOf("type").forGetter(Returns::type),
               CLASS_TO_STRING_CODEC.fieldOf("javaType").forGetter(Returns::javaType),
-              CLASS_TO_STRING_CODEC.listOf().optionalFieldOf("javaExtra", Collections.emptyList()).<Class<?>[]>xmap(cl -> cl.toArray(new Class[0]), Arrays::asList).forGetter(Returns::javaExtra),
-              Codec.STRING.listOf().optionalFieldOf("values", null).forGetter(Returns::values)
+              CLASS_TO_STRING_CODEC.listOf().optionalFieldOf("javaExtra", Collections.emptyList()).<Class<?>[]>xmap(cl -> cl.toArray(new Class[0]), Arrays::asList).forGetter(Returns::javaExtra)/*,
+              Codec.STRING.listOf().optionalFieldOf("values", null).forGetter(Returns::values)*/
         ).apply(instance, Returns::new));
 
         public static Returns from(MethodData<?> data) {
