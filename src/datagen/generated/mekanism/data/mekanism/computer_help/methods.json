@@ -587,12 +587,7 @@
       "methodName": "getMode",
       "returns": {
         "type": "String (BoilerValveMode)",
-        "javaType": "mekanism.common.block.attribute.AttributeStateBoilerValveMode$BoilerValveMode",
-        "values": [
-          "INPUT",
-          "OUTPUT_STEAM",
-          "OUTPUT_COOLANT"
-        ]
+        "javaType": "mekanism.common.block.attribute.AttributeStateBoilerValveMode$BoilerValveMode"
       }
     },
     {
@@ -606,12 +601,7 @@
         {
           "type": "String (BoilerValveMode)",
           "javaType": "mekanism.common.block.attribute.AttributeStateBoilerValveMode$BoilerValveMode",
-          "name": "mode",
-          "values": [
-            "INPUT",
-            "OUTPUT_STEAM",
-            "OUTPUT_COOLANT"
-          ]
+          "name": "mode"
         }
       ]
     }
@@ -1019,12 +1009,7 @@
       "methodName": "getDumpingMode",
       "returns": {
         "type": "String (GasMode)",
-        "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
-        "values": [
-          "IDLE",
-          "DUMPING_EXCESS",
-          "DUMPING"
-        ]
+        "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode"
       }
     },
     {
@@ -1071,12 +1056,7 @@
         {
           "type": "String (GasMode)",
           "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
-          "name": "mode",
-          "values": [
-            "IDLE",
-            "DUMPING_EXCESS",
-            "DUMPING"
-          ]
+          "name": "mode"
         }
       ],
       "requiresPublicSecurity": true
@@ -1555,13 +1535,7 @@
       "methodName": "getState",
       "returns": {
         "type": "String (State)",
-        "javaType": "mekanism.common.content.miner.ThreadMinerSearch$State",
-        "values": [
-          "IDLE",
-          "SEARCHING",
-          "PAUSED",
-          "FINISHED"
-        ]
+        "javaType": "mekanism.common.content.miner.ThreadMinerSearch$State"
       }
     },
     {
@@ -1828,15 +1802,7 @@
         {
           "type": "String (Direction)",
           "javaType": "net.minecraft.core.Direction",
-          "name": "side",
-          "values": [
-            "DOWN",
-            "UP",
-            "NORTH",
-            "SOUTH",
-            "WEST",
-            "EAST"
-          ]
+          "name": "side"
         }
       ]
     },
@@ -1846,25 +1812,12 @@
         {
           "type": "String (Direction)",
           "javaType": "net.minecraft.core.Direction",
-          "name": "side",
-          "values": [
-            "DOWN",
-            "UP",
-            "NORTH",
-            "SOUTH",
-            "WEST",
-            "EAST"
-          ]
+          "name": "side"
         }
       ],
       "returns": {
         "type": "String (DiversionControl)",
-        "javaType": "mekanism.common.content.network.transmitter.DiversionTransporter$DiversionControl",
-        "values": [
-          "DISABLED",
-          "HIGH",
-          "LOW"
-        ]
+        "javaType": "mekanism.common.content.network.transmitter.DiversionTransporter$DiversionControl"
       }
     },
     {
@@ -1873,15 +1826,7 @@
         {
           "type": "String (Direction)",
           "javaType": "net.minecraft.core.Direction",
-          "name": "side",
-          "values": [
-            "DOWN",
-            "UP",
-            "NORTH",
-            "SOUTH",
-            "WEST",
-            "EAST"
-          ]
+          "name": "side"
         }
       ]
     },
@@ -1891,25 +1836,12 @@
         {
           "type": "String (Direction)",
           "javaType": "net.minecraft.core.Direction",
-          "name": "side",
-          "values": [
-            "DOWN",
-            "UP",
-            "NORTH",
-            "SOUTH",
-            "WEST",
-            "EAST"
-          ]
+          "name": "side"
         },
         {
           "type": "String (DiversionControl)",
           "javaType": "mekanism.common.content.network.transmitter.DiversionTransporter$DiversionControl",
-          "name": "mode",
-          "values": [
-            "DISABLED",
-            "HIGH",
-            "LOW"
-          ]
+          "name": "mode"
         }
       ]
     }
@@ -1929,12 +1861,7 @@
       "methodName": "getContainerEditMode",
       "returns": {
         "type": "String (ContainerEditMode)",
-        "javaType": "mekanism.common.tile.interfaces.IFluidContainerManager$ContainerEditMode",
-        "values": [
-          "BOTH",
-          "FILL",
-          "EMPTY"
-        ]
+        "javaType": "mekanism.common.tile.interfaces.IFluidContainerManager$ContainerEditMode"
       }
     },
     {
@@ -1987,12 +1914,7 @@
         {
           "type": "String (ContainerEditMode)",
           "javaType": "mekanism.common.tile.interfaces.IFluidContainerManager$ContainerEditMode",
-          "name": "mode",
-          "values": [
-            "BOTH",
-            "FILL",
-            "EMPTY"
-          ]
+          "name": "mode"
         }
       ]
     }
@@ -2178,12 +2100,7 @@
       "methodName": "getLeftOutputDumpingMode",
       "returns": {
         "type": "String (GasMode)",
-        "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
-        "values": [
-          "IDLE",
-          "DUMPING_EXCESS",
-          "DUMPING"
-        ]
+        "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode"
       }
     },
     {
@@ -2230,12 +2147,7 @@
       "methodName": "getRightOutputDumpingMode",
       "returns": {
         "type": "String (GasMode)",
-        "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
-        "values": [
-          "IDLE",
-          "DUMPING_EXCESS",
-          "DUMPING"
-        ]
+        "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode"
       }
     },
     {
@@ -2276,12 +2188,7 @@
         {
           "type": "String (GasMode)",
           "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
-          "name": "mode",
-          "values": [
-            "IDLE",
-            "DUMPING_EXCESS",
-            "DUMPING"
-          ]
+          "name": "mode"
         }
       ],
       "requiresPublicSecurity": true
@@ -2292,12 +2199,7 @@
         {
           "type": "String (GasMode)",
           "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
-          "name": "mode",
-          "values": [
-            "IDLE",
-            "DUMPING_EXCESS",
-            "DUMPING"
-          ]
+          "name": "mode"
         }
       ],
       "requiresPublicSecurity": true
@@ -2412,19 +2314,7 @@
       "methodName": "getFilterType",
       "returns": {
         "type": "String (FilterType)",
-        "javaType": "mekanism.common.content.filter.FilterType",
-        "values": [
-          "MINER_ITEMSTACK_FILTER",
-          "MINER_MODID_FILTER",
-          "MINER_TAG_FILTER",
-          "SORTER_ITEMSTACK_FILTER",
-          "SORTER_MODID_FILTER",
-          "SORTER_TAG_FILTER",
-          "OREDICTIONIFICATOR_ITEM_FILTER",
-          "QIO_ITEMSTACK_FILTER",
-          "QIO_MODID_FILTER",
-          "QIO_TAG_FILTER"
-        ]
+        "javaType": "mekanism.common.content.filter.FilterType"
       }
     },
     {
@@ -2543,27 +2433,7 @@
       "methodName": "getColor",
       "returns": {
         "type": "String (EnumColor)",
-        "javaType": "mekanism.api.text.EnumColor",
-        "values": [
-          "BLACK",
-          "DARK_BLUE",
-          "DARK_GREEN",
-          "DARK_AQUA",
-          "DARK_RED",
-          "PURPLE",
-          "ORANGE",
-          "GRAY",
-          "DARK_GRAY",
-          "INDIGO",
-          "BRIGHT_GREEN",
-          "AQUA",
-          "RED",
-          "PINK",
-          "YELLOW",
-          "WHITE",
-          "BROWN",
-          "BRIGHT_PINK"
-        ]
+        "javaType": "mekanism.api.text.EnumColor"
       }
     },
     {
@@ -2603,27 +2473,7 @@
         {
           "type": "String (EnumColor)",
           "javaType": "mekanism.api.text.EnumColor",
-          "name": "value",
-          "values": [
-            "BLACK",
-            "DARK_BLUE",
-            "DARK_GREEN",
-            "DARK_AQUA",
-            "DARK_RED",
-            "PURPLE",
-            "ORANGE",
-            "GRAY",
-            "DARK_GRAY",
-            "INDIGO",
-            "BRIGHT_GREEN",
-            "AQUA",
-            "RED",
-            "PINK",
-            "YELLOW",
-            "WHITE",
-            "BROWN",
-            "BRIGHT_PINK"
-          ]
+          "name": "value"
         }
       ]
     },
@@ -2750,27 +2600,14 @@
       "methodName": "getLogicMode",
       "returns": {
         "type": "String (FissionReactorLogic)",
-        "javaType": "mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter$FissionReactorLogic",
-        "values": [
-          "DISABLED",
-          "ACTIVATION",
-          "TEMPERATURE",
-          "EXCESS_WASTE",
-          "DAMAGED",
-          "DEPLETED"
-        ]
+        "javaType": "mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter$FissionReactorLogic"
       }
     },
     {
       "methodName": "getRedstoneLogicStatus",
       "returns": {
         "type": "String (RedstoneStatus)",
-        "javaType": "mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter$RedstoneStatus",
-        "values": [
-          "IDLE",
-          "OUTPUTTING",
-          "POWERED"
-        ]
+        "javaType": "mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter$RedstoneStatus"
       }
     },
     {
@@ -2779,15 +2616,7 @@
         {
           "type": "String (FissionReactorLogic)",
           "javaType": "mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter$FissionReactorLogic",
-          "name": "logicType",
-          "values": [
-            "DISABLED",
-            "ACTIVATION",
-            "TEMPERATURE",
-            "EXCESS_WASTE",
-            "DAMAGED",
-            "DEPLETED"
-          ]
+          "name": "logicType"
         }
       ]
     }
@@ -3043,12 +2872,7 @@
       "methodName": "getMode",
       "returns": {
         "type": "String (FissionPortMode)",
-        "javaType": "mekanism.generators.common.block.attribute.AttributeStateFissionPortMode$FissionPortMode",
-        "values": [
-          "INPUT",
-          "OUTPUT_WASTE",
-          "OUTPUT_COOLANT"
-        ]
+        "javaType": "mekanism.generators.common.block.attribute.AttributeStateFissionPortMode$FissionPortMode"
       }
     },
     {
@@ -3060,12 +2884,7 @@
         {
           "type": "String (FissionPortMode)",
           "javaType": "mekanism.generators.common.block.attribute.AttributeStateFissionPortMode$FissionPortMode",
-          "name": "mode",
-          "values": [
-            "INPUT",
-            "OUTPUT_WASTE",
-            "OUTPUT_COOLANT"
-          ]
+          "name": "mode"
         }
       ]
     }
@@ -3087,12 +2906,7 @@
       "methodName": "getContainerEditMode",
       "returns": {
         "type": "String (ContainerEditMode)",
-        "javaType": "mekanism.common.tile.interfaces.IFluidContainerManager$ContainerEditMode",
-        "values": [
-          "BOTH",
-          "FILL",
-          "EMPTY"
-        ]
+        "javaType": "mekanism.common.tile.interfaces.IFluidContainerManager$ContainerEditMode"
       }
     },
     {
@@ -3145,12 +2959,7 @@
         {
           "type": "String (ContainerEditMode)",
           "javaType": "mekanism.common.tile.interfaces.IFluidContainerManager$ContainerEditMode",
-          "name": "mode",
-          "values": [
-            "BOTH",
-            "FILL",
-            "EMPTY"
-          ]
+          "name": "mode"
         }
       ],
       "requiresPublicSecurity": true
@@ -3434,13 +3243,7 @@
       "methodName": "getLogicMode",
       "returns": {
         "type": "String (FusionReactorLogic)",
-        "javaType": "mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter$FusionReactorLogic",
-        "values": [
-          "DISABLED",
-          "READY",
-          "CAPACITY",
-          "DEPLETED"
-        ]
+        "javaType": "mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter$FusionReactorLogic"
       }
     },
     {
@@ -3466,13 +3269,7 @@
         {
           "type": "String (FusionReactorLogic)",
           "javaType": "mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter$FusionReactorLogic",
-          "name": "logicType",
-          "values": [
-            "DISABLED",
-            "READY",
-            "CAPACITY",
-            "DEPLETED"
-          ]
+          "name": "logicType"
         }
       ]
     }
@@ -3882,15 +3679,7 @@
       "restriction": "DIRECTIONAL",
       "returns": {
         "type": "String (Direction)",
-        "javaType": "net.minecraft.core.Direction",
-        "values": [
-          "DOWN",
-          "UP",
-          "NORTH",
-          "SOUTH",
-          "WEST",
-          "EAST"
-        ]
+        "javaType": "net.minecraft.core.Direction"
       }
     },
     {
@@ -3930,13 +3719,7 @@
       "restriction": "REDSTONE_CONTROL",
       "returns": {
         "type": "String (RedstoneControl)",
-        "javaType": "mekanism.common.tile.interfaces.IRedstoneControl$RedstoneControl",
-        "values": [
-          "DISABLED",
-          "HIGH",
-          "LOW",
-          "PULSE"
-        ]
+        "javaType": "mekanism.common.tile.interfaces.IRedstoneControl$RedstoneControl"
       }
     },
     {
@@ -3945,13 +3728,7 @@
         {
           "type": "String (RedstoneControl)",
           "javaType": "mekanism.common.tile.interfaces.IRedstoneControl$RedstoneControl",
-          "name": "type",
-          "values": [
-            "DISABLED",
-            "HIGH",
-            "LOW",
-            "PULSE"
-          ]
+          "name": "type"
         }
       ],
       "requiresPublicSecurity": true,
@@ -4140,12 +3917,7 @@
       "methodName": "getDumpingMode",
       "returns": {
         "type": "String (GasMode)",
-        "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
-        "values": [
-          "IDLE",
-          "DUMPING_EXCESS",
-          "DUMPING"
-        ]
+        "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode"
       }
     },
     {
@@ -4238,12 +4010,7 @@
         {
           "type": "String (GasMode)",
           "javaType": "mekanism.common.tile.TileEntityChemicalTank$GasMode",
-          "name": "mode",
-          "values": [
-            "IDLE",
-            "DUMPING_EXCESS",
-            "DUMPING"
-          ]
+          "name": "mode"
         }
       ]
     }
@@ -4381,12 +4148,7 @@
       "methodName": "getRedstoneOutputMode",
       "returns": {
         "type": "String (RedstoneOutput)",
-        "javaType": "mekanism.common.tile.laser.TileEntityLaserAmplifier$RedstoneOutput",
-        "values": [
-          "OFF",
-          "ENTITY_DETECTION",
-          "ENERGY_CONTENTS"
-        ]
+        "javaType": "mekanism.common.tile.laser.TileEntityLaserAmplifier$RedstoneOutput"
       }
     },
     {
@@ -4428,12 +4190,7 @@
         {
           "type": "String (RedstoneOutput)",
           "javaType": "mekanism.common.tile.laser.TileEntityLaserAmplifier$RedstoneOutput",
-          "name": "mode",
-          "values": [
-            "OFF",
-            "ENTITY_DETECTION",
-            "ENERGY_CONTENTS"
-          ]
+          "name": "mode"
         }
       ],
       "requiresPublicSecurity": true
@@ -4497,27 +4254,7 @@
       "methodName": "getDefaultColor",
       "returns": {
         "type": "String (EnumColor)",
-        "javaType": "mekanism.api.text.EnumColor",
-        "values": [
-          "BLACK",
-          "DARK_BLUE",
-          "DARK_GREEN",
-          "DARK_AQUA",
-          "DARK_RED",
-          "PURPLE",
-          "ORANGE",
-          "GRAY",
-          "DARK_GRAY",
-          "INDIGO",
-          "BRIGHT_GREEN",
-          "AQUA",
-          "RED",
-          "PINK",
-          "YELLOW",
-          "WHITE",
-          "BROWN",
-          "BRIGHT_PINK"
-        ]
+        "javaType": "mekanism.api.text.EnumColor"
       }
     },
     {
@@ -4580,27 +4317,7 @@
         {
           "type": "String (EnumColor)",
           "javaType": "mekanism.api.text.EnumColor",
-          "name": "color",
-          "values": [
-            "BLACK",
-            "DARK_BLUE",
-            "DARK_GREEN",
-            "DARK_AQUA",
-            "DARK_RED",
-            "PURPLE",
-            "ORANGE",
-            "GRAY",
-            "DARK_GRAY",
-            "INDIGO",
-            "BRIGHT_GREEN",
-            "AQUA",
-            "RED",
-            "PINK",
-            "YELLOW",
-            "WHITE",
-            "BROWN",
-            "BRIGHT_PINK"
-          ]
+          "name": "color"
         }
       ],
       "requiresPublicSecurity": true
@@ -4635,15 +4352,7 @@
         {
           "type": "String (RelativeSide)",
           "javaType": "mekanism.api.RelativeSide",
-          "name": "side",
-          "values": [
-            "FRONT",
-            "LEFT",
-            "RIGHT",
-            "BACK",
-            "TOP",
-            "BOTTOM"
-          ]
+          "name": "side"
         }
       ],
       "requiresPublicSecurity": true
@@ -4658,15 +4367,7 @@
         {
           "type": "String (RelativeSide)",
           "javaType": "mekanism.api.RelativeSide",
-          "name": "side",
-          "values": [
-            "FRONT",
-            "LEFT",
-            "RIGHT",
-            "BACK",
-            "TOP",
-            "BOTTOM"
-          ]
+          "name": "side"
         }
       ],
       "requiresPublicSecurity": true
@@ -4681,67 +4382,19 @@
         {
           "type": "String (RelativeSide)",
           "javaType": "mekanism.api.RelativeSide",
-          "name": "side",
-          "values": [
-            "FRONT",
-            "LEFT",
-            "RIGHT",
-            "BACK",
-            "TOP",
-            "BOTTOM"
-          ]
+          "name": "side"
         }
       ],
       "returns": {
         "type": "String (EnumColor)",
-        "javaType": "mekanism.api.text.EnumColor",
-        "values": [
-          "BLACK",
-          "DARK_BLUE",
-          "DARK_GREEN",
-          "DARK_AQUA",
-          "DARK_RED",
-          "PURPLE",
-          "ORANGE",
-          "GRAY",
-          "DARK_GRAY",
-          "INDIGO",
-          "BRIGHT_GREEN",
-          "AQUA",
-          "RED",
-          "PINK",
-          "YELLOW",
-          "WHITE",
-          "BROWN",
-          "BRIGHT_PINK"
-        ]
+        "javaType": "mekanism.api.text.EnumColor"
       }
     },
     {
       "methodName": "getOutputColor",
       "returns": {
         "type": "String (EnumColor)",
-        "javaType": "mekanism.api.text.EnumColor",
-        "values": [
-          "BLACK",
-          "DARK_BLUE",
-          "DARK_GREEN",
-          "DARK_AQUA",
-          "DARK_RED",
-          "PURPLE",
-          "ORANGE",
-          "GRAY",
-          "DARK_GRAY",
-          "INDIGO",
-          "BRIGHT_GREEN",
-          "AQUA",
-          "RED",
-          "PINK",
-          "YELLOW",
-          "WHITE",
-          "BROWN",
-          "BRIGHT_PINK"
-        ]
+        "javaType": "mekanism.api.text.EnumColor"
       }
     },
     {
@@ -4757,15 +4410,7 @@
         {
           "type": "String (RelativeSide)",
           "javaType": "mekanism.api.RelativeSide",
-          "name": "side",
-          "values": [
-            "FRONT",
-            "LEFT",
-            "RIGHT",
-            "BACK",
-            "TOP",
-            "BOTTOM"
-          ]
+          "name": "side"
         }
       ],
       "requiresPublicSecurity": true
@@ -4780,40 +4425,12 @@
         {
           "type": "String (RelativeSide)",
           "javaType": "mekanism.api.RelativeSide",
-          "name": "side",
-          "values": [
-            "FRONT",
-            "LEFT",
-            "RIGHT",
-            "BACK",
-            "TOP",
-            "BOTTOM"
-          ]
+          "name": "side"
         },
         {
           "type": "String (EnumColor)",
           "javaType": "mekanism.api.text.EnumColor",
-          "name": "color",
-          "values": [
-            "BLACK",
-            "DARK_BLUE",
-            "DARK_GREEN",
-            "DARK_AQUA",
-            "DARK_RED",
-            "PURPLE",
-            "ORANGE",
-            "GRAY",
-            "DARK_GRAY",
-            "INDIGO",
-            "BRIGHT_GREEN",
-            "AQUA",
-            "RED",
-            "PINK",
-            "YELLOW",
-            "WHITE",
-            "BROWN",
-            "BRIGHT_PINK"
-          ]
+          "name": "color"
         }
       ],
       "requiresPublicSecurity": true
@@ -4824,27 +4441,7 @@
         {
           "type": "String (EnumColor)",
           "javaType": "mekanism.api.text.EnumColor",
-          "name": "color",
-          "values": [
-            "BLACK",
-            "DARK_BLUE",
-            "DARK_GREEN",
-            "DARK_AQUA",
-            "DARK_RED",
-            "PURPLE",
-            "ORANGE",
-            "GRAY",
-            "DARK_GRAY",
-            "INDIGO",
-            "BRIGHT_GREEN",
-            "AQUA",
-            "RED",
-            "PINK",
-            "YELLOW",
-            "WHITE",
-            "BROWN",
-            "BRIGHT_PINK"
-          ]
+          "name": "color"
         }
       ],
       "requiresPublicSecurity": true
@@ -4896,12 +4493,7 @@
       "methodName": "getSecurityMode",
       "returns": {
         "type": "String (SecurityMode)",
-        "javaType": "mekanism.api.security.SecurityMode",
-        "values": [
-          "PUBLIC",
-          "PRIVATE",
-          "TRUSTED"
-        ]
+        "javaType": "mekanism.api.security.SecurityMode"
       }
     }
   ],
@@ -4912,17 +4504,7 @@
         {
           "type": "String (TransmissionType)",
           "javaType": "mekanism.common.lib.transmitter.TransmissionType",
-          "name": "type",
-          "values": [
-            "ENERGY",
-            "FLUID",
-            "GAS",
-            "INFUSION",
-            "PIGMENT",
-            "SLURRY",
-            "ITEM",
-            "HEAT"
-          ]
+          "name": "type"
         }
       ],
       "returns": {
@@ -4936,30 +4518,12 @@
         {
           "type": "String (TransmissionType)",
           "javaType": "mekanism.common.lib.transmitter.TransmissionType",
-          "name": "type",
-          "values": [
-            "ENERGY",
-            "FLUID",
-            "GAS",
-            "INFUSION",
-            "PIGMENT",
-            "SLURRY",
-            "ITEM",
-            "HEAT"
-          ]
+          "name": "type"
         },
         {
           "type": "String (RelativeSide)",
           "javaType": "mekanism.api.RelativeSide",
-          "name": "side",
-          "values": [
-            "FRONT",
-            "LEFT",
-            "RIGHT",
-            "BACK",
-            "TOP",
-            "BOTTOM"
-          ]
+          "name": "side"
         }
       ],
       "requiresPublicSecurity": true
@@ -4971,17 +4535,7 @@
         "javaExtra": [
           "mekanism.common.lib.transmitter.TransmissionType"
         ],
-        "javaType": "java.util.List",
-        "values": [
-          "ENERGY",
-          "FLUID",
-          "GAS",
-          "INFUSION",
-          "PIGMENT",
-          "SLURRY",
-          "ITEM",
-          "HEAT"
-        ]
+        "javaType": "java.util.List"
       }
     },
     {
@@ -4990,48 +4544,18 @@
         {
           "type": "String (TransmissionType)",
           "javaType": "mekanism.common.lib.transmitter.TransmissionType",
-          "name": "type",
-          "values": [
-            "ENERGY",
-            "FLUID",
-            "GAS",
-            "INFUSION",
-            "PIGMENT",
-            "SLURRY",
-            "ITEM",
-            "HEAT"
-          ]
+          "name": "type"
         },
         {
           "type": "String (RelativeSide)",
           "javaType": "mekanism.api.RelativeSide",
-          "name": "side",
-          "values": [
-            "FRONT",
-            "LEFT",
-            "RIGHT",
-            "BACK",
-            "TOP",
-            "BOTTOM"
-          ]
+          "name": "side"
         }
       ],
       "requiresPublicSecurity": true,
       "returns": {
         "type": "String (DataType)",
-        "javaType": "mekanism.common.tile.component.config.DataType",
-        "values": [
-          "NONE",
-          "INPUT",
-          "INPUT_1",
-          "INPUT_2",
-          "OUTPUT",
-          "OUTPUT_1",
-          "OUTPUT_2",
-          "INPUT_OUTPUT",
-          "ENERGY",
-          "EXTRA"
-        ]
+        "javaType": "mekanism.common.tile.component.config.DataType"
       }
     },
     {
@@ -5040,17 +4564,7 @@
         {
           "type": "String (TransmissionType)",
           "javaType": "mekanism.common.lib.transmitter.TransmissionType",
-          "name": "type",
-          "values": [
-            "ENERGY",
-            "FLUID",
-            "GAS",
-            "INFUSION",
-            "PIGMENT",
-            "SLURRY",
-            "ITEM",
-            "HEAT"
-          ]
+          "name": "type"
         }
       ],
       "requiresPublicSecurity": true,
@@ -5059,19 +4573,7 @@
         "javaExtra": [
           "mekanism.common.tile.component.config.DataType"
         ],
-        "javaType": "java.util.Set",
-        "values": [
-          "NONE",
-          "INPUT",
-          "INPUT_1",
-          "INPUT_2",
-          "OUTPUT",
-          "OUTPUT_1",
-          "OUTPUT_2",
-          "INPUT_OUTPUT",
-          "ENERGY",
-          "EXTRA"
-        ]
+        "javaType": "java.util.Set"
       }
     },
     {
@@ -5080,30 +4582,12 @@
         {
           "type": "String (TransmissionType)",
           "javaType": "mekanism.common.lib.transmitter.TransmissionType",
-          "name": "type",
-          "values": [
-            "ENERGY",
-            "FLUID",
-            "GAS",
-            "INFUSION",
-            "PIGMENT",
-            "SLURRY",
-            "ITEM",
-            "HEAT"
-          ]
+          "name": "type"
         },
         {
           "type": "String (RelativeSide)",
           "javaType": "mekanism.api.RelativeSide",
-          "name": "side",
-          "values": [
-            "FRONT",
-            "LEFT",
-            "RIGHT",
-            "BACK",
-            "TOP",
-            "BOTTOM"
-          ]
+          "name": "side"
         }
       ],
       "requiresPublicSecurity": true
@@ -5114,17 +4598,7 @@
         {
           "type": "String (TransmissionType)",
           "javaType": "mekanism.common.lib.transmitter.TransmissionType",
-          "name": "type",
-          "values": [
-            "ENERGY",
-            "FLUID",
-            "GAS",
-            "INFUSION",
-            "PIGMENT",
-            "SLURRY",
-            "ITEM",
-            "HEAT"
-          ]
+          "name": "type"
         }
       ],
       "returns": {
@@ -5138,17 +4612,7 @@
         {
           "type": "String (TransmissionType)",
           "javaType": "mekanism.common.lib.transmitter.TransmissionType",
-          "name": "type",
-          "values": [
-            "ENERGY",
-            "FLUID",
-            "GAS",
-            "INFUSION",
-            "PIGMENT",
-            "SLURRY",
-            "ITEM",
-            "HEAT"
-          ]
+          "name": "type"
         },
         {
           "type": "boolean",
@@ -5164,47 +4628,17 @@
         {
           "type": "String (TransmissionType)",
           "javaType": "mekanism.common.lib.transmitter.TransmissionType",
-          "name": "type",
-          "values": [
-            "ENERGY",
-            "FLUID",
-            "GAS",
-            "INFUSION",
-            "PIGMENT",
-            "SLURRY",
-            "ITEM",
-            "HEAT"
-          ]
+          "name": "type"
         },
         {
           "type": "String (RelativeSide)",
           "javaType": "mekanism.api.RelativeSide",
-          "name": "side",
-          "values": [
-            "FRONT",
-            "LEFT",
-            "RIGHT",
-            "BACK",
-            "TOP",
-            "BOTTOM"
-          ]
+          "name": "side"
         },
         {
           "type": "String (DataType)",
           "javaType": "mekanism.common.tile.component.config.DataType",
-          "name": "mode",
-          "values": [
-            "NONE",
-            "INPUT",
-            "INPUT_1",
-            "INPUT_2",
-            "OUTPUT",
-            "OUTPUT_1",
-            "OUTPUT_2",
-            "INPUT_OUTPUT",
-            "ENERGY",
-            "EXTRA"
-          ]
+          "name": "mode"
         }
       ],
       "requiresPublicSecurity": true
@@ -5219,16 +4653,7 @@
           "mekanism.api.Upgrade",
           "java.lang.Integer"
         ],
-        "javaType": "java.util.Map",
-        "values": [
-          "SPEED",
-          "ENERGY",
-          "FILTER",
-          "GAS",
-          "MUFFLING",
-          "ANCHOR",
-          "STONE_GENERATOR"
-        ]
+        "javaType": "java.util.Map"
       }
     },
     {
@@ -5238,16 +4663,7 @@
         "javaExtra": [
           "mekanism.api.Upgrade"
         ],
-        "javaType": "java.util.Set",
-        "values": [
-          "SPEED",
-          "ENERGY",
-          "FILTER",
-          "GAS",
-          "MUFFLING",
-          "ANCHOR",
-          "STONE_GENERATOR"
-        ]
+        "javaType": "java.util.Set"
       }
     }
   ],
@@ -6152,14 +5568,7 @@
       ],
       "returns": {
         "type": "String (DriveStatus)",
-        "javaType": "mekanism.common.tile.qio.TileEntityQIODriveArray$DriveStatus",
-        "values": [
-          "NONE",
-          "OFFLINE",
-          "READY",
-          "NEAR_FULL",
-          "FULL"
-        ]
+        "javaType": "mekanism.common.tile.qio.TileEntityQIODriveArray$DriveStatus"
       }
     },
     {
@@ -6300,27 +5709,7 @@
       "methodName": "getFrequencyColor",
       "returns": {
         "type": "String (EnumColor)",
-        "javaType": "mekanism.api.text.EnumColor",
-        "values": [
-          "BLACK",
-          "DARK_BLUE",
-          "DARK_GREEN",
-          "DARK_AQUA",
-          "DARK_RED",
-          "PURPLE",
-          "ORANGE",
-          "GRAY",
-          "DARK_GRAY",
-          "INDIGO",
-          "BRIGHT_GREEN",
-          "AQUA",
-          "RED",
-          "PINK",
-          "YELLOW",
-          "WHITE",
-          "BROWN",
-          "BRIGHT_PINK"
-        ]
+        "javaType": "mekanism.api.text.EnumColor"
       }
     },
     {
@@ -6354,27 +5743,7 @@
         {
           "type": "String (EnumColor)",
           "javaType": "mekanism.api.text.EnumColor",
-          "name": "color",
-          "values": [
-            "BLACK",
-            "DARK_BLUE",
-            "DARK_GREEN",
-            "DARK_AQUA",
-            "DARK_RED",
-            "PURPLE",
-            "ORANGE",
-            "GRAY",
-            "DARK_GRAY",
-            "INDIGO",
-            "BRIGHT_GREEN",
-            "AQUA",
-            "RED",
-            "PINK",
-            "YELLOW",
-            "WHITE",
-            "BROWN",
-            "BRIGHT_PINK"
-          ]
+          "name": "color"
         }
       ],
       "requiresPublicSecurity": true
@@ -7316,27 +6685,7 @@
       "methodName": "getFrequencyColor",
       "returns": {
         "type": "String (EnumColor)",
-        "javaType": "mekanism.api.text.EnumColor",
-        "values": [
-          "BLACK",
-          "DARK_BLUE",
-          "DARK_GREEN",
-          "DARK_AQUA",
-          "DARK_RED",
-          "PURPLE",
-          "ORANGE",
-          "GRAY",
-          "DARK_GRAY",
-          "INDIGO",
-          "BRIGHT_GREEN",
-          "AQUA",
-          "RED",
-          "PINK",
-          "YELLOW",
-          "WHITE",
-          "BROWN",
-          "BRIGHT_PINK"
-        ]
+        "javaType": "mekanism.api.text.EnumColor"
       }
     },
     {
@@ -7377,27 +6726,7 @@
         {
           "type": "String (EnumColor)",
           "javaType": "mekanism.api.text.EnumColor",
-          "name": "color",
-          "values": [
-            "BLACK",
-            "DARK_BLUE",
-            "DARK_GREEN",
-            "DARK_AQUA",
-            "DARK_RED",
-            "PURPLE",
-            "ORANGE",
-            "GRAY",
-            "DARK_GRAY",
-            "INDIGO",
-            "BRIGHT_GREEN",
-            "AQUA",
-            "RED",
-            "PINK",
-            "YELLOW",
-            "WHITE",
-            "BROWN",
-            "BRIGHT_PINK"
-          ]
+          "name": "color"
         }
       ],
       "requiresPublicSecurity": true
