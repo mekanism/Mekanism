@@ -64,7 +64,7 @@ public class MekanismDataGenerator {
         gen.addProvider(event.includeServer(), new MekanismCrTExampleProvider(output, existingFileHelper));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         gen.addProvider(true, new PersistingDisabledProvidersProvider(output, recipeProvider.getDisabledCompats()));
-        gen.addProvider(event.includeServer(), new ComputerHelpProvider(output, existingFileHelper, Mekanism.MODID));
+        gen.addProvider(event.includeServer(), new ComputerHelpProvider(output, Mekanism.MODID));
     }
 
     public static <PROVIDER extends DataProvider> void addProvider(DataGenerator gen, boolean run, DataProvider.Factory<PROVIDER> factory) {

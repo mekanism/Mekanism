@@ -62,12 +62,10 @@ public class ComputerHelpProvider implements DataProvider {
     private static final String[] METHOD_CSV_HEADERS = {"Class", "Method Name", "Params", "Returns", "Restriction", "Requires Public Security", "Description"};
     private static final String[] ENUM_CSV_HEADERS = {"Type Name", "Values"};
     private final PackOutput.PathProvider pathProvider;
-    private final ExistingFileHelper existingFileHelper;
     private final String modid;
 
-    public ComputerHelpProvider(PackOutput output, ExistingFileHelper existingFileHelper, String modid) {
+    public ComputerHelpProvider(PackOutput output, String modid) {
         this.modid = modid;
-        this.existingFileHelper = existingFileHelper;
         this.pathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "computerHelp");
     }
 
