@@ -162,10 +162,8 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
         public static Returns from(MethodData<?> data) {
             if (data.returnType() != void.class) {
                 List<String> enumConstantNames = getEnumConstantNames(data.returnType());
-                if (enumConstantNames == null && data.returnExtra().length > 0) {
-                    for (int i = 0; i < data.returnExtra().length && enumConstantNames == null; i++) {
-                        enumConstantNames = getEnumConstantNames(data.returnExtra()[0]);
-                    }
+                for (int i = 0; i < data.returnExtra().length && enumConstantNames == null; i++) {
+                    enumConstantNames = getEnumConstantNames(data.returnExtra()[0]);
                 }
                 return new Returns(getHumanType(data.returnType(), data.returnExtra()), data.returnType(), data.returnExtra(), enumConstantNames);
             }
