@@ -68,7 +68,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityChemicalTank extends TileEntityConfigurableMachine implements ISustainedData, IHasGasMode {
 
-    @SyntheticComputerMethod(getter = "getDumpingMode", methodDescription = "Get the current Dumping configuration")
+    @SyntheticComputerMethod(getter = "getDumpingMode", getterDescription = "Get the current Dumping configuration")
     public GasMode dumping = GasMode.IDLE;
 
     private MergedChemicalTank chemicalTank;

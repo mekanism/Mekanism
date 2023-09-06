@@ -53,7 +53,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     private final ChunkLoader chunkLoaderComponent;
     private final boolean[][] loadingChunks;
-    @SyntheticComputerMethod(getter = "getChunksLoaded", methodDescription = "Get the number of chunks being loaded.")
+    @SyntheticComputerMethod(getter = "getChunksLoaded", getterDescription = "Get the number of chunks being loaded.")
     private int chunksLoaded = 1;
     private boolean clientRendering;
 

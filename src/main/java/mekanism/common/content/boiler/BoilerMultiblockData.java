@@ -67,17 +67,17 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
 
     private double biomeAmbientTemp;
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getEnvironmentalLoss", methodDescription = "Get the amount of heat lost to the environment in the last tick (Kelvin)")
+    @SyntheticComputerMethod(getter = "getEnvironmentalLoss", getterDescription = "Get the amount of heat lost to the environment in the last tick (Kelvin)")
     public double lastEnvironmentLoss;
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getBoilRate", methodDescription = "Get the rate of boiling (mB/t)")
+    @SyntheticComputerMethod(getter = "getBoilRate", getterDescription = "Get the rate of boiling (mB/t)")
     public int lastBoilRate;
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getMaxBoilRate", methodDescription = "Get the maximum rate of boiling seen (mB/t)")
+    @SyntheticComputerMethod(getter = "getMaxBoilRate", getterDescription = "Get the maximum rate of boiling seen (mB/t)")
     public int lastMaxBoil;
 
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getSuperheaters", methodDescription = "How many superheaters this Boiler has")
+    @SyntheticComputerMethod(getter = "getSuperheaters", getterDescription = "How many superheaters this Boiler has")
     public int superheatingElements;
 
     @ContainerSync(setter = "setWaterVolume")

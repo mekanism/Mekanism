@@ -308,7 +308,7 @@ public class ComputerHandlerBuilder {
             handlerTypeSpec.addMethod(handlerMethod);
 
             //ensure the getter is registered
-            CodeBlock getterRegistration = buildRegisterMethodCall(annotationValues, Collections.emptyList(), fieldType, handlerMethod, getterName, annotationValues.getLiteral("threadSafeGetter", false), annotationValues.getStringValue("methodDescription",null));
+            CodeBlock getterRegistration = buildRegisterMethodCall(annotationValues, Collections.emptyList(), fieldType, handlerMethod, getterName, annotationValues.getLiteral("threadSafeGetter", false), annotationValues.getStringValue("getterDescription",null));
             constructorBuilder.addStatement(getterRegistration);
         }
 
@@ -329,7 +329,7 @@ public class ComputerHandlerBuilder {
             handlerTypeSpec.addMethod(handlerMethod);
 
             //register the setter
-            CodeBlock setterRegistration = buildRegisterMethodCall(annotationValues, Collections.singletonList(new FakeParameter(fieldType, "value")), typeUtils.getNoType(TypeKind.VOID), handlerMethod, setterName, annotationValues.getLiteral("threadSafeSetter", false), annotationValues.getStringValue("methodDescription",null));
+            CodeBlock setterRegistration = buildRegisterMethodCall(annotationValues, Collections.singletonList(new FakeParameter(fieldType, "value")), typeUtils.getNoType(TypeKind.VOID), handlerMethod, setterName, annotationValues.getLiteral("threadSafeSetter", false), annotationValues.getStringValue("setterDescription",null));
             constructorBuilder.addStatement(setterRegistration);
         }
 

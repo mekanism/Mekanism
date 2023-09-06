@@ -41,7 +41,12 @@ public @interface SyntheticComputerMethod {
     boolean threadSafeSetter() default false;
 
     /**
-     * Method description for documentation.
+     * Method description for getter documentation.
      */
-    String methodDescription() default "";
+    String getterDescription() default "";
+
+    /**
+     * Method description for setter documentation.
+     */
+    String setterDescription() default "";
 }

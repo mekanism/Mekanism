@@ -101,13 +101,13 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @SyntheticComputerMethod(getter = "getHeatingRate")
     public long lastBoilRate = 0;
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getActualBurnRate", methodDescription = "Actual burn rate as it may be lower if say there is not enough fuel")
+    @SyntheticComputerMethod(getter = "getActualBurnRate", getterDescription = "Actual burn rate as it may be lower if say there is not enough fuel")
     public double lastBurnRate = 0;
     private boolean clientBurning;
     @ContainerSync
     public double reactorDamage = 0;
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getBurnRate", methodDescription = "Configured burn rate")
+    @SyntheticComputerMethod(getter = "getBurnRate", getterDescription = "Configured burn rate")
     public double rateLimit = MekanismGeneratorsConfig.generators.defaultBurnRate.get();
     public double burnRemaining = 0, partialWaste = 0;
     @ContainerSync
