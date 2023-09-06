@@ -59,7 +59,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
 
     @NotNull
     private static String getHumanType(Class<?> clazz, Class<?>[] extraTypes) {
-        if (clazz == UUID.class || clazz == ResourceLocation.class || clazz == Item.class || Enum.class.isAssignableFrom(clazz)) {
+        if (clazz == UUID.class || clazz == ResourceLocation.class || clazz == Item.class || clazz.isEnum()) {
             return "String ("+clazz.getSimpleName()+")";
         }
         if (Frequency.class.isAssignableFrom(clazz) || clazz == Coord4D.class || Vec3i.class.isAssignableFrom(clazz) || clazz == FluidStack.class || clazz == ItemStack.class || clazz == BlockState.class || ChemicalStack.class.isAssignableFrom(clazz) || IFilter.class.isAssignableFrom(clazz)) {
@@ -98,7 +98,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
     @SuppressWarnings("unchecked")
     @Nullable
     public static List<String> getEnumConstantNames(Class<?> argClass) {
-        if (!Enum.class.isAssignableFrom(argClass)) {
+        if (!argClass.isEnum()) {
             return null;
         }
         Enum<?>[] enumConstants = ((Class<? extends Enum<?>>) argClass).getEnumConstants();
