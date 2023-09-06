@@ -163,7 +163,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
             if (data.returnType() != void.class) {
                 List<String> enumConstantNames = getEnumConstantNames(data.returnType());
                 for (int i = 0; i < data.returnExtra().length && enumConstantNames == null; i++) {
-                    enumConstantNames = getEnumConstantNames(data.returnExtra()[0]);
+                    enumConstantNames = getEnumConstantNames(data.returnExtra()[i]);
                 }
                 return new Returns(getHumanType(data.returnType(), data.returnExtra()), data.returnType(), data.returnExtra(), enumConstantNames);
             }
