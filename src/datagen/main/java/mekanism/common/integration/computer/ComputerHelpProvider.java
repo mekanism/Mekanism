@@ -59,8 +59,8 @@ import org.jetbrains.annotations.NotNull;
 @MethodsReturnNonnullByDefault
 @ParametersAreNotNullByDefault
 public class ComputerHelpProvider implements DataProvider {
-    private static final String[] METHOD_CSV_HEADERS = new String[]{"Class", "Method Name", "Params", "Returns", "Restriction", "Requires Public Security", "Description"};
-    private static final String[] ENUM_CSV_HEADERS = new String[]{"Type Name", "Values"};
+    private static final String[] METHOD_CSV_HEADERS = {"Class", "Method Name", "Params", "Returns", "Restriction", "Requires Public Security", "Description"};
+    private static final String[] ENUM_CSV_HEADERS = {"Type Name", "Values"};
     private final PackOutput.PathProvider pathProvider;
     private final ExistingFileHelper existingFileHelper;
     private final String modid;
