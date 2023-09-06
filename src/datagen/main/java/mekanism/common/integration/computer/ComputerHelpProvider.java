@@ -66,7 +66,7 @@ public class ComputerHelpProvider implements DataProvider {
 
     public ComputerHelpProvider(PackOutput output, String modid) {
         this.modid = modid;
-        this.pathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "computerHelp");
+        this.pathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, "computer_help");
     }
 
     @Override
@@ -167,7 +167,7 @@ public class ComputerHelpProvider implements DataProvider {
 
     @Override
     public String getName() {
-        return "ComputerHelp:" + modid;
+        return "ComputerHelp: " + modid;
     }
 
     //implementation isn't quite "stable" like json, but input is always sorted
