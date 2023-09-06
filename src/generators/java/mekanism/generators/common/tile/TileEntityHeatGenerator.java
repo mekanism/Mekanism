@@ -193,6 +193,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         return null;
     }
 
+    @Override
     public FloatingLong getProductionRate() {
         return producingEnergy;
     }

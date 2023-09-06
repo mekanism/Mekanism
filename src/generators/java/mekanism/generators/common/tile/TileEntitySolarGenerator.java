@@ -121,6 +121,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return MekanismGeneratorsConfig.generators.solarGeneration.get();
     }
 
+    @Override
     public FloatingLong getProductionRate() {
         return lastProductionAmount;
     }
