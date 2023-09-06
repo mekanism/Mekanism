@@ -52,7 +52,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.CsvOutput;
 import net.minecraft.util.CsvOutput.Builder;
 import net.minecraft.util.ExtraCodecs;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 @MethodsReturnNonnullByDefault
@@ -92,11 +91,14 @@ public class ComputerHelpProvider implements DataProvider {
     @NotNull
     private CompletableFuture<?> makeMethodsCsv(CachedOutput pOutput, Map<Class<?>, List<MethodHelpData>> helpData) {
         return saveCSV(pOutput, this.pathProvider.file(new ResourceLocation(this.modid, "methods"), "csv"), METHOD_CSV_HEADERS, output -> {
-            List<Pair<String, List<MethodHelpData>>> friendlyList = helpData.entrySet().stream().map(entry -> Pair.of(getFriendlyName(entry.getKey()), entry.getValue())).sorted(Entry.comparingByKey()).toList();
-            for (Pair<String, List<MethodHelpData>> entry : friendlyList) {
+            //NB: list is used as the IOException will be captured in saveCSV
+            List<Map.Entry<String, List<MethodHelpData>>> friendlyList = helpData.entrySet().stream()
+                  .map(entry -> Map.entry(getFriendlyName(entry.getKey()), entry.getValue()))
+                  .sorted(Entry.comparingByKey())
+                  .toList();
+            for (Map.Entry<String, List<MethodHelpData>> entry : friendlyList) {
                 String friendlyClassName = entry.getKey();
-                List<MethodHelpData> methods = entry.getValue();
-                for (MethodHelpData method : methods) {
+                for (MethodHelpData method : entry.getValue()) {
                     output.writeRow(
                           friendlyClassName,
                           method.methodName(),
