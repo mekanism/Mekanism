@@ -79,11 +79,10 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
             return humanType;
         }
         if (clazz == Convertable.class || clazz == Either.class) {
-            String humanType = "Varies";
             if (extraTypes.length > 0) {
-                humanType = Arrays.stream(extraTypes).map(MethodHelpData::getHumanType).collect(Collectors.joining(" or "));
+                return Arrays.stream(extraTypes).map(MethodHelpData::getHumanType).collect(Collectors.joining(" or "));
             }
-            return humanType;
+            return "Varies";
         }
         if (Map.class.isAssignableFrom(clazz)) {
             String humanType = "Table";
