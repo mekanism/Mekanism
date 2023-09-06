@@ -31,6 +31,11 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public record MethodHelpData(String methodName, @Nullable List<Param> params, Returns returns, @Nullable String description, MethodRestriction restriction, boolean requiresPublicSecurity) {
+    public MethodHelpData {
+        if (params != null && params.isEmpty()) {
+            params = null;
+        }
+    }
 
     private static final Class<?>[] NO_CLASSES = ComputerMethodFactory.NO_CLASSES;
 
@@ -44,7 +49,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
             params.add(Param.from(data.argClasses()[i], data.argumentNames()[i]));
         }
 
-        return new MethodHelpData(data.name(), params.isEmpty() ? null : params, Returns.from(data), data.methodDescription(), data.restriction(), data.requiresPublicSecurity());
+        return new MethodHelpData(data.name(), params, Returns.from(data), data.methodDescription(), data.restriction(), data.requiresPublicSecurity());
     }
 
     @NotNull
