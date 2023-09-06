@@ -52,7 +52,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.CsvOutput;
 import net.minecraft.util.CsvOutput.Builder;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
@@ -75,27 +74,19 @@ public class ComputerHelpProvider implements DataProvider {
         Map<Class<?>, List<MethodHelpData>> helpData = FactoryRegistry.getHelpData();
         Map<Class<?>, List<String>> enumValues = getEnumValues(helpData);
         return CompletableFuture.allOf(
-              makeMethodsJson(pOutput, helpData),
+              makeJson(pOutput, helpData, METHODS_DATA_CODEC, "methods"),
               makeMethodsCsv(pOutput, helpData),
-              makeEnumsCsv(pOutput, enumValues),
-              makeEnumsJson(pOutput, enumValues)
+              makeJson(pOutput, enumValues, ENUMS_CODEC, "enums"),
+              makeEnumsCsv(pOutput, enumValues)
         );
     }
 
     @NotNull
-    private CompletableFuture<?> makeMethodsJson(CachedOutput pOutput, Map<Class<?>, List<MethodHelpData>> helpData) {
-        JsonElement jsonElement = METHODS_DATA_CODEC.encodeStart(JsonOps.INSTANCE, helpData).getOrThrow(false, e -> {
+    private <DATA> CompletableFuture<?> makeJson(CachedOutput pOutput, DATA helpData, Codec<DATA> codec, String path) {
+        JsonElement jsonElement = codec.encodeStart(JsonOps.INSTANCE, helpData).getOrThrow(false, e -> {
             throw new RuntimeException(e);
         });
-        return DataProvider.saveStable(pOutput, jsonElement, this.pathProvider.json(new ResourceLocation(this.modid, "methods")));
-    }
-
-    @NotNull
-    private CompletableFuture<?> makeEnumsJson(CachedOutput pOutput, Map<Class<?>, List<String>> enumValues) {
-        JsonElement jsonElement = ENUMS_CODEC.encodeStart(JsonOps.INSTANCE, enumValues).getOrThrow(false, e -> {
-            throw new RuntimeException(e);
-        });
-        return DataProvider.saveStable(pOutput, jsonElement, this.pathProvider.json(new ResourceLocation(this.modid, "enums")));
+        return DataProvider.saveStable(pOutput, jsonElement, this.pathProvider.json(new ResourceLocation(this.modid, path)));
     }
 
     @NotNull
