@@ -68,15 +68,20 @@ public class ComputerHelpProvider implements DataProvider {
     }
 
     @Override
-    public CompletableFuture<?> run(CachedOutput pOutput) {
+    public CompletableFuture<?> run(CachedOutput output) {
+        //Manually initialize the computer method factory registry
         FactoryRegistry.load();
+
+        //gather common data
         Map<Class<?>, List<MethodHelpData>> helpData = FactoryRegistry.getHelpData();
         Map<Class<?>, List<String>> enumValues = getEnumValues(helpData);
+
+        //generate
         return CompletableFuture.allOf(
-              makeJson(pOutput, helpData, METHODS_DATA_CODEC, "methods"),
-              makeMethodsCsv(pOutput, helpData),
-              makeJson(pOutput, enumValues, ENUMS_CODEC, "enums"),
-              makeEnumsCsv(pOutput, enumValues)
+              makeJson(output, helpData, METHODS_DATA_CODEC, "methods"),
+              makeMethodsCsv(output, helpData),
+              makeJson(output, enumValues, ENUMS_CODEC, "enums"),
+              makeEnumsCsv(output, enumValues)
         );
     }
 
@@ -167,8 +172,7 @@ public class ComputerHelpProvider implements DataProvider {
     @SuppressWarnings("UnstableApiUsage")
     static CompletableFuture<?> saveCSV(CachedOutput pOutput, Path pPath, String[] headers, IOConsumer<CsvOutput> rowGenerator) {
         return CompletableFuture.runAsync(() -> {
-            try {
-                ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
+            try (ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream()) {
                 HashingOutputStream hashingoutputstream = new HashingOutputStream(Hashing.sha1(), bytearrayoutputstream);
 
                 try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(hashingoutputstream, StandardCharsets.UTF_8))) {
