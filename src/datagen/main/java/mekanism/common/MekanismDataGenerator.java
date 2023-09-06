@@ -62,9 +62,10 @@ public class MekanismDataGenerator {
         //TODO - 1.20: Re-enable after updating ProjectE
         //addProvider(gen, event.includeServer(), MekanismCustomConversions::new);
         gen.addProvider(event.includeServer(), new MekanismCrTExampleProvider(output, existingFileHelper));
-        //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
-        gen.addProvider(true, new PersistingDisabledProvidersProvider(output, recipeProvider.getDisabledCompats()));
         gen.addProvider(event.includeServer(), new ComputerHelpProvider(output, Mekanism.MODID));
+        //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
+        // DO NOT ADD OTHERS AFTER THIS ONE
+        gen.addProvider(true, new PersistingDisabledProvidersProvider(output, recipeProvider.getDisabledCompats()));
     }
 
     public static <PROVIDER extends DataProvider> void addProvider(DataGenerator gen, boolean run, DataProvider.Factory<PROVIDER> factory) {
