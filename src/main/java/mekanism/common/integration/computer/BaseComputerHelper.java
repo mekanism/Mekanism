@@ -11,6 +11,8 @@ import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.text.EnumColor;
+import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IModIDFilter;
@@ -25,6 +27,7 @@ import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -36,6 +39,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -52,6 +56,8 @@ import java.util.stream.Collectors;
  * convert methods should not wrap results, as they will be used to convert lists/maps
  */
 public abstract class BaseComputerHelper {
+    public static final Lazy<Map<Class<?>, TableType>> BUILTIN_TABLES = Lazy.of(BaseComputerHelper::getBuiltInTables);
+
     @NotNull
     private <T> T requireNonNull(int param, @Nullable T value) throws ComputerException {
         if (value == null) {
@@ -451,5 +457,88 @@ public abstract class BaseComputerHelper {
             return Map.class;//technically can be anything, but so far only map used
         }
         return clazz;
+    }
+
+    private static Map<Class<?>, TableType> getBuiltInTables() {
+        Map<Class<?>, TableType> types = new HashMap<>();
+
+        TableType.builder(Coord4D.class, "An xyz position with a dimension component")
+              .addField("x", int.class, "The x component")
+              .addField("y", int.class, "The y component")
+              .addField("z", int.class, "The z component")
+              .addField("dimension", ResourceLocation.class, "The dimension component")
+              .build(types);
+
+        TableType.builder(BlockPos.class, "An xyz position")
+              .addField("x", int.class, "The x component")
+              .addField("y", int.class, "The y component")
+              .addField("z", int.class, "The z component")
+              .build(types);
+
+        TableType.builder(ItemStack.class, "A stack of Item(s)")
+              .addField("name", Item.class, "The Item's registered name")
+              .addField("count", int.class, "The count of items in the stack")
+              .addField("nbt", String.class, "Any NBT of the item, in Command JSON format")
+              .build(types);
+
+        TableType.builder(FluidStack.class, "An amount of fluid")
+              .addField("name", ResourceLocation.class, "The Fluid's registered name, e.g. minecraft:water")
+              .addField("amount", int.class, "The amount in mB")
+              .addField("nbt", String.class, "Any NBT of the fluid, in Command JSON format")
+              .build(types);
+
+        TableType.builder(ChemicalStack.class, "An amount of Gas/Fluid/Slurry/Pigment")
+              .addField("name", Item.class, "The Chemical's registered name")
+              .addField("amount", int.class, "The amount in mB")
+              .build(types);
+
+        TableType.builder(BlockState.class, "A Block State")
+              .addField("block", String.class, "The Block's registered name, e.g. minecraft:sand")
+              .addField("state", Map.class, "Any state parameters will be in Table format under this key. Not present if there are none")
+              .build(types);
+
+        TableType.builder(Frequency.class, "A frequency's identity")
+              .addField("key", String.class, "Usually the name of the frequency entered in the GUI")
+              .addField("public", boolean.class, "Whether the Frequency is public or not")
+              .build(types);
+
+        TableType.builder(IFilter.class, "Common Filter properties. Use the API Global to make constructing these a little easier.\nFilters are a combination of these base properties, an ItemStack or Mod Id or Tag component, and a device specific type.\nThe exception to that is an Oredictionificator filter, which does not have an item/mod/tag component.")
+              .addField("type", FilterType.class, "The type of filter in this structure")
+              .addField("enabled", boolean.class, "Whether the filter is enabled when added to a device")
+              .addField("item", Item.class, "ItemStack filters only. The filtered item's registered name")
+              .addField("itemNBT", String.class, "ItemStack filters only. The NBT data of the filtered item, optional")
+              .addField("modId", String.class, "Mod Id filters only. The mod id to filter. e.g. mekansim")
+              .addField("tag", String.class, "Tag filters only. The tag to filter. e.g. forge:ores")
+              .build(types);
+
+        TableType.builder(MinerFilter.class, "A Digital Miner filter")
+              .extendz(IFilter.class)
+              .addField("requiresReplacement", boolean.class, "Whether the filter requires a replacement to be done before it will allow mining")
+              .addField("replaceTarget", Item.class, "The name of the item block that will be used to replace a mined block")
+              .build(types);
+
+        TableType.builder(OredictionificatorFilter.class, "An Oredictionificator filter")
+              .extendz(IFilter.class)
+              .addField("target", String.class, "The target tag to match (input)")
+              .addField("selected", Item.class, "The selected output item's registered name. Optional for adding a filter")
+              .build(types);
+
+        final String FUZZY_ITEM_FILTER = "ItemStack filters only. Whether Fuzzy mode is enabled (checks only the item name/type)";
+        TableType.builder(SorterFilter.class, "A Logistical Sorter filter")
+              .extendz(IFilter.class)
+              .addField("allowDefault", boolean.class, "Allows the filtered item to travel to the default color destination")
+              .addField("color", EnumColor.class, "The color configured, nil if none")
+              .addField("size", boolean.class, "If Size Mode is enabled")
+              .addField("min", int.class, "In Size Mode, the minimum to send")
+              .addField("max", int.class, "In Size Mode, the maximum to send")
+              .addField("fuzzy", boolean.class, FUZZY_ITEM_FILTER)
+              .build(types);
+
+        TableType.builder(QIOFilter.class, "A Quantum Item Orchestration filter")
+              .extendz(IFilter.class)
+              .addField("fuzzy", boolean.class, FUZZY_ITEM_FILTER)
+              .build(types);
+
+        return types;
     }
 }

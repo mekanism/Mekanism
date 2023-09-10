@@ -57,7 +57,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
     }
 
     @NotNull
-    private static String getHumanType(Class<?> clazz, Class<?>[] extraTypes) {
+    public static String getHumanType(Class<?> clazz, Class<?>[] extraTypes) {
         if (clazz == UUID.class || clazz == ResourceLocation.class || clazz == Item.class || clazz.isEnum()) {
             return "String ("+clazz.getSimpleName()+")";
         }

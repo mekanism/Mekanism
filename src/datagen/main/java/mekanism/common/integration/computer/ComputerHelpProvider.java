@@ -108,7 +108,8 @@ public class ComputerHelpProvider implements DataProvider {
     @NotNull
     private CompletableFuture<?> makeJekyllData(CachedOutput output, Map<Class<?>, List<MethodHelpData>> methods, Map<Class<?>, List<String>> enumValues) {
         return CompletableFuture.runAsync(()->{
-            Node frontMatterNode = YamlHelper.sortMappingKeys(JekyllData.CODEC.encodeStart(new SnakeYamlOps(), new JekyllData(Mekanism.instance.versionNumber, methods, enumValues)).getOrThrow(false, Mekanism.logger::error), Comparator.naturalOrder());
+            JekyllData jekyllData = new JekyllData(Mekanism.instance.versionNumber, methods, enumValues, BaseComputerHelper.BUILTIN_TABLES.get());
+            Node frontMatterNode = YamlHelper.sortMappingKeys(JekyllData.CODEC.encodeStart(new SnakeYamlOps(), jekyllData).getOrThrow(false, Mekanism.logger::error), Comparator.naturalOrder());
             MekanismDataGenerator.save(output, os-> {
                 try (Writer writer = new BufferedWriter(new OutputStreamWriter(os))) {
                     writer.write("---\n");
@@ -293,14 +294,15 @@ public class ComputerHelpProvider implements DataProvider {
         dop.setLineBreak(DumperOptions.LineBreak.UNIX);
     });
 
-    record JekyllData(Version version, Map<Class<?>, List<MethodHelpData>> methods, Map<Class<?>, List<String>> enums) {
+    record JekyllData(Version version, Map<Class<?>, List<MethodHelpData>> methods, Map<Class<?>, List<String>> enums, Map<Class<?>, TableType> builtInTables) {
 
         static Codec<Version> VERSION_CODEC = ExtraCodecs.stringResolverCodec(Version::toString, Version::get);
         static Codec<JekyllData> CODEC = RecordCodecBuilder.create(instance ->
               instance.group(
                     VERSION_CODEC.fieldOf("version").forGetter(JekyllData::version),
                     METHODS_DATA_CODEC.fieldOf("methods").forGetter(JekyllData::methods),
-                    ENUMS_CODEC.fieldOf("enums").forGetter(JekyllData::enums)
+                    ENUMS_CODEC.fieldOf("enums").forGetter(JekyllData::enums),
+                    TableType.TABLE_MAP_CODEC.fieldOf("builtInTables").forGetter(JekyllData::builtInTables)
               ).apply(instance, JekyllData::new)
         );
     }

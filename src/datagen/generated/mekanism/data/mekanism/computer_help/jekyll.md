@@ -1,4 +1,210 @@
 ---
+builtInTables:
+  mekanism.api.Coord4D:
+    description: An xyz position with a dimension component
+    fields:
+      dimension:
+        description: The dimension component
+        javaType: net.minecraft.resources.ResourceLocation
+        type: String (ResourceLocation)
+      x:
+        description: The x component
+        javaType: int
+        type: Number (int)
+      y:
+        description: The y component
+        javaType: int
+        type: Number (int)
+      z:
+        description: The z component
+        javaType: int
+        type: Number (int)
+    humanName: Table (Coord4D)
+  mekanism.api.chemical.ChemicalStack:
+    description: An amount of Gas/Fluid/Slurry/Pigment
+    fields:
+      amount:
+        description: The amount in mB
+        javaType: int
+        type: Number (int)
+      name:
+        description: The Chemical's registered name
+        javaType: net.minecraft.world.item.Item
+        type: String (Item)
+    humanName: Table (ChemicalStack)
+  mekanism.common.content.filter.IFilter:
+    description: |-
+      Common Filter properties. Use the API Global to make constructing these a little easier.
+      Filters are a combination of these base properties, an ItemStack or Mod Id or Tag component, and a device specific type.
+      The exception to that is an Oredictionificator filter, which does not have an item/mod/tag component.
+    fields:
+      enabled:
+        description: Whether the filter is enabled when added to a device
+        javaType: boolean
+        type: boolean
+      item:
+        description: ItemStack filters only. The filtered item's registered name
+        javaType: net.minecraft.world.item.Item
+        type: String (Item)
+      itemNBT:
+        description: ItemStack filters only. The NBT data of the filtered item, optional
+        javaType: java.lang.String
+        type: String
+      modId:
+        description: Mod Id filters only. The mod id to filter. e.g. mekansim
+        javaType: java.lang.String
+        type: String
+      tag:
+        description: Tag filters only. The tag to filter. e.g. forge:ores
+        javaType: java.lang.String
+        type: String
+      type:
+        description: The type of filter in this structure
+        javaType: mekanism.common.content.filter.FilterType
+        type: String (FilterType)
+    humanName: Table (IFilter)
+  mekanism.common.content.miner.MinerFilter:
+    description: A Digital Miner filter
+    extends: mekanism.common.content.filter.IFilter
+    fields:
+      replaceTarget:
+        description: The name of the item block that will be used to replace a mined
+          block
+        javaType: net.minecraft.world.item.Item
+        type: String (Item)
+      requiresReplacement:
+        description: Whether the filter requires a replacement to be done before it
+          will allow mining
+        javaType: boolean
+        type: boolean
+    humanName: Table (MinerFilter)
+  mekanism.common.content.oredictionificator.OredictionificatorFilter:
+    description: An Oredictionificator filter
+    extends: mekanism.common.content.filter.IFilter
+    fields:
+      selected:
+        description: The selected output item's registered name. Optional for adding
+          a filter
+        javaType: net.minecraft.world.item.Item
+        type: String (Item)
+      target:
+        description: The target tag to match (input)
+        javaType: java.lang.String
+        type: String
+    humanName: Table (OredictionificatorFilter)
+  mekanism.common.content.qio.filter.QIOFilter:
+    description: A Quantum Item Orchestration filter
+    extends: mekanism.common.content.filter.IFilter
+    fields:
+      fuzzy:
+        description: ItemStack filters only. Whether Fuzzy mode is enabled (checks
+          only the item name/type)
+        javaType: boolean
+        type: boolean
+    humanName: Table (QIOFilter)
+  mekanism.common.content.transporter.SorterFilter:
+    description: A Logistical Sorter filter
+    extends: mekanism.common.content.filter.IFilter
+    fields:
+      allowDefault:
+        description: Allows the filtered item to travel to the default color destination
+        javaType: boolean
+        type: boolean
+      color:
+        description: The color configured, nil if none
+        javaType: mekanism.api.text.EnumColor
+        type: String (EnumColor)
+      fuzzy:
+        description: ItemStack filters only. Whether Fuzzy mode is enabled (checks
+          only the item name/type)
+        javaType: boolean
+        type: boolean
+      max:
+        description: In Size Mode, the maximum to send
+        javaType: int
+        type: Number (int)
+      min:
+        description: In Size Mode, the minimum to send
+        javaType: int
+        type: Number (int)
+      size:
+        description: If Size Mode is enabled
+        javaType: boolean
+        type: boolean
+    humanName: Table (SorterFilter)
+  mekanism.common.lib.frequency.Frequency:
+    description: A frequency's identity
+    fields:
+      key:
+        description: Usually the name of the frequency entered in the GUI
+        javaType: java.lang.String
+        type: String
+      public:
+        description: Whether the Frequency is public or not
+        javaType: boolean
+        type: boolean
+    humanName: Table (Frequency)
+  net.minecraft.core.BlockPos:
+    description: An xyz position
+    fields:
+      x:
+        description: The x component
+        javaType: int
+        type: Number (int)
+      y:
+        description: The y component
+        javaType: int
+        type: Number (int)
+      z:
+        description: The z component
+        javaType: int
+        type: Number (int)
+    humanName: Table (BlockPos)
+  net.minecraft.world.item.ItemStack:
+    description: A stack of Item(s)
+    fields:
+      count:
+        description: The count of items in the stack
+        javaType: int
+        type: Number (int)
+      name:
+        description: The Item's registered name
+        javaType: net.minecraft.world.item.Item
+        type: String (Item)
+      nbt:
+        description: Any NBT of the item, in Command JSON format
+        javaType: java.lang.String
+        type: String
+    humanName: Table (ItemStack)
+  net.minecraft.world.level.block.state.BlockState:
+    description: A Block State
+    fields:
+      block:
+        description: The Block's registered name, e.g. minecraft:sand
+        javaType: java.lang.String
+        type: String
+      state:
+        description: Any state parameters will be in Table format under this key.
+          Not present if there are none
+        javaType: java.util.Map
+        type: Table
+    humanName: Table (BlockState)
+  net.minecraftforge.fluids.FluidStack:
+    description: An amount of fluid
+    fields:
+      amount:
+        description: The amount in mB
+        javaType: int
+        type: Number (int)
+      name:
+        description: The Fluid's registered name, e.g. minecraft:water
+        javaType: net.minecraft.resources.ResourceLocation
+        type: String (ResourceLocation)
+      nbt:
+        description: Any NBT of the fluid, in Command JSON format
+        javaType: java.lang.String
+        type: String
+    humanName: Table (FluidStack)
 enums:
   mekanism.api.RelativeSide:
   - FRONT
@@ -134,7 +340,7 @@ enums:
   - EAST
 methods:
   'API Global: computerEnergyHelper':
-  - description: Convert IC2 Energy Units to Mekanism Joues
+  - description: Convert IC2 Energy Units to Mekanism Joules
     methodName: euToJoules
     params:
     - javaType: mekanism.api.math.FloatingLong
@@ -1573,7 +1779,7 @@ methods:
   - methodName: setEnabled
     params:
     - javaType: boolean
-      name: enabled
+      name: arg0
       type: boolean
   Filter Wrapper (Digital Miner):
   - methodName: clone
@@ -1615,7 +1821,7 @@ methods:
   - methodName: setItemStack
     params:
     - javaType: net.minecraft.world.item.ItemStack
-      name: stack
+      name: arg0
       type: Table (ItemStack)
   Filter Wrapper (Logistical Sorter):
   - methodName: clone
@@ -1673,7 +1879,7 @@ methods:
   - methodName: setModID
     params:
     - javaType: java.lang.String
-      name: id
+      name: arg0
       type: String
   Filter Wrapper (Oredictionificator Item):
   - methodName: getSelectedOutput
@@ -1712,7 +1918,7 @@ methods:
   - methodName: setTagName
     params:
     - javaType: java.lang.String
-      name: name
+      name: arg0
       type: String
   Fission Reactor Logic Adapter:
   - methodName: getLogicMode
