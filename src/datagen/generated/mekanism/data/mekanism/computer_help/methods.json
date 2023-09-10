@@ -1,7 +1,7 @@
 {
   "API Global: computerEnergyHelper": [
     {
-      "description": "Convert IC2 Energy Units to Mekanism Joues",
+      "description": "Convert IC2 Energy Units to Mekanism Joules",
       "methodName": "euToJoules",
       "params": [
         {
@@ -2330,7 +2330,7 @@
         {
           "type": "boolean",
           "javaType": "boolean",
-          "name": "enabled"
+          "name": "arg0"
         }
       ]
     }
@@ -2409,7 +2409,7 @@
         {
           "type": "Table (ItemStack)",
           "javaType": "net.minecraft.world.item.ItemStack",
-          "name": "stack"
+          "name": "arg0"
         }
       ]
     }
@@ -2517,7 +2517,7 @@
         {
           "type": "String",
           "javaType": "java.lang.String",
-          "name": "id"
+          "name": "arg0"
         }
       ]
     }
@@ -2590,7 +2590,7 @@
         {
           "type": "String",
           "javaType": "java.lang.String",
-          "name": "name"
+          "name": "arg0"
         }
       ]
     }

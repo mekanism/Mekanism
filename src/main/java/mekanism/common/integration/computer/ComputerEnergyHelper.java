@@ -24,7 +24,7 @@ public class ComputerEnergyHelper {
         return convert(EnergyUnit.ELECTRICAL_UNITS, joules, true);
     }
 
-    @ComputerMethod(requiredMods = MekanismHooks.IC2_MOD_ID, methodDescription = "Convert IC2 Energy Units to Mekanism Joues")
+    @ComputerMethod(requiredMods = MekanismHooks.IC2_MOD_ID, methodDescription = "Convert IC2 Energy Units to Mekanism Joules")
     public static FloatingLong euToJoules(FloatingLong eu) throws ComputerException {
         return convert(EnergyUnit.ELECTRICAL_UNITS, eu, false);
     }
