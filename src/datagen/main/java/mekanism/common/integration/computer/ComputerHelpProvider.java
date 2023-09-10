@@ -51,6 +51,7 @@ import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.tile.qio.TileEntityQIOComponent;
 import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
+import mekanism.common.util.MekCodecs;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.data.CachedOutput;
@@ -248,7 +249,7 @@ public class ComputerHelpProvider implements DataProvider {
 
     private static final Codec<Class<?>> CLASS_TO_FRIENDLY_NAME_CODEC = ExtraCodecs.stringResolverCodec(ComputerHelpProvider::getFriendlyName, p->null);
     private static final Codec<Map<Class<?>, List<MethodHelpData>>> METHODS_DATA_CODEC = Codec.unboundedMap(CLASS_TO_FRIENDLY_NAME_CODEC, MethodHelpData.CODEC.listOf());
-    private static final Codec<Map<Class<?>, List<String>>> ENUMS_CODEC = Codec.unboundedMap(MethodHelpData.CLASS_TO_STRING_CODEC, Codec.STRING.listOf());
+    private static final Codec<Map<Class<?>, List<String>>> ENUMS_CODEC = Codec.unboundedMap(MekCodecs.CLASS_TO_STRING_CODEC, Codec.STRING.listOf());
 
     private static final Map<Class<?>, String> FRIENDLY_NAMES = Map.ofEntries(
           Map.entry(IFilter.class, "Filter Wrapper"),

@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -18,9 +17,9 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.lib.frequency.Frequency;
+import mekanism.common.util.MekCodecs;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -104,23 +103,13 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
         return Arrays.stream(enumConstants).map(Enum::name).toList();
     }
 
-    private static final Codec<MethodRestriction> METHOD_RESTRICTION_CODEC = ExtraCodecs.stringResolverCodec(MethodRestriction::name, MethodRestriction::valueOf);
-
-    public static final Codec<Class<?>> CLASS_TO_STRING_CODEC = ExtraCodecs.stringResolverCodec(Class::getName, s->{
-        try {
-            return Class.forName(s);
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
-    });
-
     public static final Codec<MethodHelpData> CODEC = RecordCodecBuilder.create(instance ->
           instance.group(
                 Codec.STRING.fieldOf("methodName").forGetter(MethodHelpData::methodName),
                 Param.CODEC.listOf().optionalFieldOf("params", null).forGetter(MethodHelpData::params),
                 Returns.CODEC.optionalFieldOf("returns", Returns.NOTHING).forGetter(MethodHelpData::returns),
                 Codec.STRING.optionalFieldOf("description", null).forGetter(MethodHelpData::description),
-                METHOD_RESTRICTION_CODEC.optionalFieldOf("restriction", MethodRestriction.NONE).forGetter(MethodHelpData::restriction),
+                MekCodecs.METHOD_RESTRICTION_CODEC.optionalFieldOf("restriction", MethodRestriction.NONE).forGetter(MethodHelpData::restriction),
                 Codec.BOOL.optionalFieldOf("requiresPublicSecurity", false).forGetter(MethodHelpData::requiresPublicSecurity)
           ).apply(instance, MethodHelpData::new)
     );
@@ -134,7 +123,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
               instance.group(
                     Codec.STRING.fieldOf("name").forGetter(Param::name),
                     Codec.STRING.fieldOf("type").forGetter(Param::type),
-                    CLASS_TO_STRING_CODEC.fieldOf("javaType").forGetter(Param::javaType)/*,
+                    MekCodecs.CLASS_TO_STRING_CODEC.fieldOf("javaType").forGetter(Param::javaType)/*,
                     Codec.STRING.listOf().optionalFieldOf("values", null).forGetter(Param::values)*/
               ).apply(instance, Param::new)
         );
@@ -153,8 +142,8 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
         public static final Returns NOTHING = new Returns("Nothing", void.class, NO_CLASSES, null);
         public static final Codec<Returns> CODEC = RecordCodecBuilder.create(instance->instance.group(
               Codec.STRING.fieldOf("type").forGetter(Returns::type),
-              CLASS_TO_STRING_CODEC.fieldOf("javaType").forGetter(Returns::javaType),
-              CLASS_TO_STRING_CODEC.listOf().optionalFieldOf("javaExtra", Collections.emptyList()).<Class<?>[]>xmap(cl -> cl.toArray(new Class[0]), Arrays::asList).forGetter(Returns::javaExtra)/*,
+              MekCodecs.CLASS_TO_STRING_CODEC.fieldOf("javaType").forGetter(Returns::javaType),
+              MekCodecs.optionalClassArrayCodec("javaExtra").forGetter(Returns::javaExtra)/*,
               Codec.STRING.listOf().optionalFieldOf("values", null).forGetter(Returns::values)*/
         ).apply(instance, Returns::new));
 
@@ -169,4 +158,5 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
             return Returns.NOTHING;
         }
     }
+
 }
