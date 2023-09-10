@@ -1,4 +1,4 @@
-// 1.19.2	2023-03-17T14:59:35.1374336	CraftTweaker Examples: mekanism
+// 1.20.1	2023-09-10T15:23:49.880605	CraftTweaker Examples: mekanism
 719e73bbdf4fab3516676ed64917ab3ec66fea29 data/mekanism/scripts/mekanism/activating.zs
 b9e81fc33aabdf1967b14270c7b5e8e491577758 data/mekanism/scripts/mekanism/centrifuging.zs
 7da55452ead769f44c65aa528195f219c102e6fd data/mekanism/scripts/mekanism/chemical_infusing.zs
@@ -6,7 +6,7 @@ b9e81fc33aabdf1967b14270c7b5e8e491577758 data/mekanism/scripts/mekanism/centrifu
 e1aba948a3aa3bcb6ba08c55911327cf55c2ff12 data/mekanism/scripts/mekanism/compressing.zs
 4d1d2cc416b30a79676636164a88a56a941a115c data/mekanism/scripts/mekanism/crushing.zs
 5ba47158fa473d764c2920fce2aed65976a70078 data/mekanism/scripts/mekanism/crystallizer.zs
-cc8b8c6e45b287f28132eec9d9984bf7a3d0e633 data/mekanism/scripts/mekanism/custom_chemicals.zs
+ec2ace665d0c78ef5952d60a9bba9f9fc5f7e778 data/mekanism/scripts/mekanism/custom_chemicals.zs
 15ca7c090ce87e975acb30adec42fb2dddeb8bd5 data/mekanism/scripts/mekanism/dissolution.zs
 81fecdb4ab37d61bb5dfa0a26d3c762d9c172364 data/mekanism/scripts/mekanism/energy_conversion.zs
 4a2dec92272049c0c9d8b475744823b9d9dbf87d data/mekanism/scripts/mekanism/enriching.zs
