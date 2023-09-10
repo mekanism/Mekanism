@@ -146,11 +146,11 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         }
         if (!fakeCaches.isEmpty()) {
             //Reset the original caches to a fresh copy
-            originalCachesField.transformValue(cache, ConstantPredicates.alwaysTrue(), value -> {
+            existingCaches.transformValue(cache, ConstantPredicates.alwaysTrue(), value -> {
                 //Add the fake caches as having existed in the original
                 HashMap<String, PROVIDER_CACHE> map = new HashMap<>(caches);
                 map.putAll(fakeCaches);
-                return Map.copyOf(map);
+                return map;
             });
             //Technically this is unused except in a logging message but log it anyway, if we didn't end up having any caches to add though we can ignore it
             int totalAdditional = additional;
