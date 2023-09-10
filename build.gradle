@@ -77,6 +77,10 @@ sourceSets {
     }
 }
 
+configurations {
+    datagenNonMod
+}
+
 //Add all extra source sets that the main sourceSet should have
 setupExtraSourceSets(sourceSets.main)
 
@@ -130,7 +134,11 @@ def setupExtraSourceSets(SourceSet base) {
         //Setup a source set in extraType/$name
         def extraSourceSet = setupExtraSourceSet(base, extraType)
         //And then setup the configurations for it
-        project.configurations.maybeCreate(extraSourceSet.getTaskName(null, "implementation")).extendsFrom(baseImplementation)
+        def implExtends = [baseImplementation]
+        if (extraType == 'datagen'){
+            implExtends.add(project.configurations.getByName("datagenNonMod"))
+        }
+        project.configurations.maybeCreate(extraSourceSet.getTaskName(null, "implementation")).extendsFrom(*implExtends)
         project.configurations.maybeCreate(extraSourceSet.getTaskName(null, "compileOnly")).extendsFrom(baseCompileOnly)
         project.configurations.maybeCreate(extraSourceSet.getTaskName(null, "runtimeOnly")).extendsFrom(baseRuntimeOnly)
     }
@@ -247,6 +255,16 @@ java {
     withSourcesJar()
 }
 
+//nb this exists here so that IDEA can resolve `project`
+def datagenExtraClasspath = {
+    def paths = new HashSet<String>()
+    project.configurations.datagenNonMod.copyRecursive().resolve()
+            .collect { it.absolutePath.toString() }
+            .findAll { (!it.contains("datafixerupper")) }//avoid adding datafixerupper twice as modlauncher will die
+            .each { path -> paths.add(path) }
+    return paths.join(File.pathSeparator)
+}
+
 minecraft {
     if (mappings_channel == "parchment_previous") {
         mappings channel: 'parchment', version: "${previous_minecraft_version}-${mappings_version}"
@@ -296,6 +314,13 @@ minecraft {
                 def extra = getExtraSourceSet(name, 'datagen')
                 mods.named(modName).configure { source(extra) }
                 args '--mod', modName, '--existing', file("src/${name}/resources/")
+            }
+
+            project.afterEvaluate {
+                //After the project has been evaluated so our dependencies has been populated,
+                // add all the extra non-mod files to runData's minecraft classpath so that they can be
+                // access from the game module layer at runtime
+                lazyToken("minecraft_classpath", datagenExtraClasspath)
             }
         }
     }
@@ -363,6 +388,7 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://maven2.bai.lol', 'lol.bai', 'mcp.mobius.waila')//WTHIT
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
     exclusiveRepo(handler, 'https://modmaven.dev/', 'appeng', 'mcjty.theoneprobe')
+    exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil')
 }
 
 test {
@@ -429,6 +455,8 @@ dependencies {
     datagenMainCompileOnly fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
     //TODO - 1.20: Re-enable after projecte is updated
     //datagenMainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
+
+    datagenNonMod "com.thiakil:yaml-ops:1.0.2"
 }
 
 def getManifestAttributes(String title) {
