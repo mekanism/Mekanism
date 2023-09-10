@@ -1,4 +1,4 @@
-// 1.19.2	2023-06-12T14:13:17.2338723	Tags: mekanism
+// 1.20.1	2023-09-10T15:23:49.8776068	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluids/no_infinite_draining.json
 b6ed3f4920042490a8f14b25e1284bb270aafaea data/forge/tags/blocks/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/forge/tags/blocks/barrels/personal.json
@@ -56,12 +56,12 @@ f0537f1936148e32495131ccb13289c7c2bd9d82 data/forge/tags/fluids/uranium_hexafluo
 cdac7eca7cb7c07e861fc05c673143b1222eef80 data/forge/tags/items/alloys/advanced.json
 a8642dda8d9bdd8df8ad4b81c8e4e61c46c0b80d data/forge/tags/items/alloys/elite.json
 7a1dd799ddfe4fe9175f1c879443b0035e0341fe data/forge/tags/items/alloys/ultimate.json
-aba1afa9533f4988f739be3a61b86b1da0034984 data/forge/tags/items/armors/armors/hazmat.json
 816f00146cda08da61ce8eb511e7bba1360e7a2c data/forge/tags/items/armors/boots.json
 9262339b3cb1ebb7ea1a533763e27705259699ac data/forge/tags/items/armors/boots/hazmat.json
 50ae8f822dd279e70ddf97cc0dcba65fb98d4117 data/forge/tags/items/armors/chestplates.json
 7a509189cfba132e0fc7c95cd738ac0f41ab5486 data/forge/tags/items/armors/chestplates/hazmat.json
-2e0046c9160e09e1ced8cb23e70d2b295373c996 data/forge/tags/items/armors/helmets.json
+aba1afa9533f4988f739be3a61b86b1da0034984 data/forge/tags/items/armors/hazmat.json
+d69b7ba977b2d14cab302dc6cf6b98a7f266da4a data/forge/tags/items/armors/helmets.json
 4e7957e891fede3029f9fdb66e7773d0223bb2e1 data/forge/tags/items/armors/leggings.json
 fea456a28f6aa80c0e17c1efa71a2835390669e6 data/forge/tags/items/armors/leggings/hazmat.json
 32044e00ba3bebe9f195bc943e1104e2142516ed data/forge/tags/items/batteries.json
@@ -161,9 +161,12 @@ a0e1d0be802d6dafd3d9be7540058fffce14f805 data/forge/tags/items/wrenches.json
 fc2b2dd5fbf2bde4bc6c245bae31790b24f54f7f data/forge/tags/items/yellow_cake_uranium.json
 31dda85af6dc162d0d24e36e4108720fac495d5b data/mekanism/tags/blocks/atomic_disassembler_ore.json
 84b32c9ee0028d93a52717c272c68791cd560c69 data/mekanism/tags/blocks/cardboard_blacklist.json
+f549715bfd65ed54ca643077696fcff45e31cb72 data/mekanism/tags/blocks/farming_override.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanism/tags/blocks/miner_blacklist.json
 f38d75ae22ae01d504bba4c88d0d1dd19fa4b485 data/mekanism/tags/blocks/personal_storage.json
 890446b036d7f08c93b84681f06ee9a04f1ccd15 data/mekanism/tags/block_entity_type/cardboard_blacklist.json
+10324698ef50d9ab1c367abd0d46152a26bf5ed5 data/mekanism/tags/damage_type/is_preventable_magic.json
+6d9075db5bb31fd7f651ff23a0ecfd848ad92184 data/mekanism/tags/damage_type/mekasuit_always_supported.json
 ab7a3106f18b6b47d54a87a099ddd43adfa77368 data/mekanism/tags/items/alloys.json
 04c1c012b37c20d74587d644525f0beec6b23f5f data/mekanism/tags/items/alloys/atomic.json
 5db69586b6c50b2befacf44de1aedc4a5af092fe data/mekanism/tags/items/alloys/basic.json
@@ -234,6 +237,7 @@ b52afb060e54f9fa521b82346af5cb3cd4378697 data/mekanism/tags/mekanism/infuse_type
 3825830b29d051492a06a5aa0de89f95cd6ac79d data/mekanism/tags/mekanism/slurry/clean.json
 61af0ea7c8d297d714e770d36434a317500d15e9 data/mekanism/tags/mekanism/slurry/dirty.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/mekanism/tags/mob_effect/speed_up_blacklist.json
+b020f6cdcd2d955793278b2f89a178a1d31e599a data/mekanism/tags/worldgen/biome/spawn_ores.json
 b79a9a1e0ddcf1344df98002024bc070480b51d7 data/minecraft/tags/blocks/axolotls_spawnable_on.json
 8702bbea19451a114725d603fecfd2359f3fcb5b data/minecraft/tags/blocks/beacon_base_blocks.json
 76c3b1172e0f737e9f67a7801456e83390a59a66 data/minecraft/tags/blocks/guarded_by_piglins.json
@@ -244,8 +248,11 @@ b79a9a1e0ddcf1344df98002024bc070480b51d7 data/minecraft/tags/blocks/mineable/sho
 a2316de7395edfd30bb8271ff596240f453f2986 data/minecraft/tags/blocks/needs_diamond_tool.json
 d38d7e371e2b8bbf34fb9050178a8db980f242fe data/minecraft/tags/blocks/needs_stone_tool.json
 126bb288e656325f718c704f6e9d414c37adbc2a data/minecraft/tags/blocks/overworld_carver_replaceables.json
+eb49540974a606ef95d77f140b9b9bdd083e1549 data/minecraft/tags/blocks/replaceable.json
 b79a9a1e0ddcf1344df98002024bc070480b51d7 data/minecraft/tags/blocks/sculk_replaceable.json
 126bb288e656325f718c704f6e9d414c37adbc2a data/minecraft/tags/blocks/snaps_goat_horn.json
+87b902979fae3b74fea0244d63fdc6b8cd2ecd0d data/minecraft/tags/damage_type/bypasses_armor.json
+b1755f575eaf88f8b903d525d0f11aad3467e94c data/minecraft/tags/damage_type/bypasses_cooldown.json
 903060898e7790a3059ae8734191a498ce75e0cb data/minecraft/tags/entity_types/freeze_immune_entity_types.json
 0fb43bed38ff396827c6a2fbc65bebb2a2ea0b7f data/minecraft/tags/entity_types/impact_projectiles.json
 903060898e7790a3059ae8734191a498ce75e0cb data/minecraft/tags/entity_types/powder_snow_walkable_mobs.json
