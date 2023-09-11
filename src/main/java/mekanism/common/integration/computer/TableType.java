@@ -2,6 +2,7 @@ package mekanism.common.integration.computer;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import mekanism.common.util.MekCodecs;
@@ -15,7 +16,7 @@ public record TableType(String description, String humanName, Map<String, FieldT
           instance.group(
                 Codec.STRING.fieldOf("description").forGetter(TableType::description),
                 Codec.STRING.fieldOf("humanName").forGetter(TableType::humanName),
-                Codec.unboundedMap(Codec.STRING, FieldType.CODEC).fieldOf("fields").forGetter(TableType::fields),
+                Codec.unboundedMap(Codec.STRING, FieldType.CODEC).optionalFieldOf("fields", Collections.emptyMap()).forGetter(TableType::fields),
                 MekCodecs.CLASS_TO_STRING_CODEC.optionalFieldOf("extends", null).forGetter(TableType::extendz)
           ).apply(instance, TableType::new)
     );

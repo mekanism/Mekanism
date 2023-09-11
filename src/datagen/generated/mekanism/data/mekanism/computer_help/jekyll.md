@@ -42,22 +42,6 @@ builtInTables:
         description: Whether the filter is enabled when added to a device
         javaType: boolean
         type: boolean
-      item:
-        description: ItemStack filters only. The filtered item's registered name
-        javaType: net.minecraft.world.item.Item
-        type: String (Item)
-      itemNBT:
-        description: ItemStack filters only. The NBT data of the filtered item, optional
-        javaType: java.lang.String
-        type: String
-      modId:
-        description: Mod Id filters only. The mod id to filter. e.g. mekansim
-        javaType: java.lang.String
-        type: String
-      tag:
-        description: Tag filters only. The tag to filter. e.g. forge:ores
-        javaType: java.lang.String
-        type: String
       type:
         description: The type of filter in this structure
         javaType: mekanism.common.content.filter.FilterType
@@ -78,7 +62,38 @@ builtInTables:
         javaType: boolean
         type: boolean
     humanName: Table (MinerFilter)
-  mekanism.common.content.oredictionificator.OredictionificatorFilter:
+  mekanism.common.content.miner.MinerItemStackFilter:
+    description: Digital Miner filter with ItemStack filter properties
+    extends: mekanism.common.content.miner.MinerFilter
+    fields:
+      item:
+        description: The filtered item's registered name
+        javaType: net.minecraft.world.item.Item
+        type: String (Item)
+      itemNBT:
+        description: The NBT data of the filtered item, optional
+        javaType: java.lang.String
+        type: String
+    humanName: Table (MinerItemStackFilter)
+  mekanism.common.content.miner.MinerModIDFilter:
+    description: Digital Miner filter with Mod Id filter properties
+    extends: mekanism.common.content.miner.MinerFilter
+    fields:
+      modId:
+        description: The mod id to filter. e.g. mekansim
+        javaType: java.lang.String
+        type: String
+    humanName: Table (MinerModIDFilter)
+  mekanism.common.content.miner.MinerTagFilter:
+    description: Digital Miner filter with Tag filter properties
+    extends: mekanism.common.content.miner.MinerFilter
+    fields:
+      tag:
+        description: The tag to filter. e.g. forge:ores
+        javaType: java.lang.String
+        type: String
+    humanName: Table (MinerTagFilter)
+  mekanism.common.content.oredictionificator.OredictionificatorItemFilter:
     description: An Oredictionificator filter
     extends: mekanism.common.content.filter.IFilter
     fields:
@@ -91,17 +106,46 @@ builtInTables:
         description: The target tag to match (input)
         javaType: java.lang.String
         type: String
-    humanName: Table (OredictionificatorFilter)
+    humanName: Table (OredictionificatorItemFilter)
   mekanism.common.content.qio.filter.QIOFilter:
     description: A Quantum Item Orchestration filter
     extends: mekanism.common.content.filter.IFilter
+    humanName: Table (QIOFilter)
+  mekanism.common.content.qio.filter.QIOItemStackFilter:
+    description: QIO filter with ItemStack filter properties
+    extends: mekanism.common.content.qio.filter.QIOFilter
     fields:
       fuzzy:
-        description: ItemStack filters only. Whether Fuzzy mode is enabled (checks
-          only the item name/type)
+        description: Whether Fuzzy mode is enabled (checks only the item name/type)
         javaType: boolean
         type: boolean
-    humanName: Table (QIOFilter)
+      item:
+        description: The filtered item's registered name
+        javaType: net.minecraft.world.item.Item
+        type: String (Item)
+      itemNBT:
+        description: The NBT data of the filtered item, optional
+        javaType: java.lang.String
+        type: String
+    humanName: Table (QIOItemStackFilter)
+  mekanism.common.content.qio.filter.QIOModIDFilter:
+    description: QIO filter with Mod Id filter properties
+    extends: mekanism.common.content.qio.filter.QIOFilter
+    fields:
+      modId:
+        description: The mod id to filter. e.g. mekansim
+        javaType: java.lang.String
+        type: String
+    humanName: Table (QIOModIDFilter)
+  mekanism.common.content.qio.filter.QIOTagFilter:
+    description: QIO filter with Tag filter properties
+    extends: mekanism.common.content.qio.filter.QIOFilter
+    fields:
+      tag:
+        description: The tag to filter. e.g. forge:ores
+        javaType: java.lang.String
+        type: String
+    humanName: Table (QIOTagFilter)
   mekanism.common.content.transporter.SorterFilter:
     description: A Logistical Sorter filter
     extends: mekanism.common.content.filter.IFilter
@@ -114,11 +158,6 @@ builtInTables:
         description: The color configured, nil if none
         javaType: mekanism.api.text.EnumColor
         type: String (EnumColor)
-      fuzzy:
-        description: ItemStack filters only. Whether Fuzzy mode is enabled (checks
-          only the item name/type)
-        javaType: boolean
-        type: boolean
       max:
         description: In Size Mode, the maximum to send
         javaType: int
@@ -132,6 +171,41 @@ builtInTables:
         javaType: boolean
         type: boolean
     humanName: Table (SorterFilter)
+  mekanism.common.content.transporter.SorterItemStackFilter:
+    description: Logistical Sorter filter with ItemStack filter properties
+    extends: mekanism.common.content.transporter.SorterFilter
+    fields:
+      fuzzy:
+        description: Whether Fuzzy mode is enabled (checks only the item name/type)
+        javaType: boolean
+        type: boolean
+      item:
+        description: The filtered item's registered name
+        javaType: net.minecraft.world.item.Item
+        type: String (Item)
+      itemNBT:
+        description: The NBT data of the filtered item, optional
+        javaType: java.lang.String
+        type: String
+    humanName: Table (SorterItemStackFilter)
+  mekanism.common.content.transporter.SorterModIDFilter:
+    description: Logistical Sorter filter with Mod Id filter properties
+    extends: mekanism.common.content.transporter.SorterFilter
+    fields:
+      modId:
+        description: The mod id to filter. e.g. mekansim
+        javaType: java.lang.String
+        type: String
+    humanName: Table (SorterModIDFilter)
+  mekanism.common.content.transporter.SorterTagFilter:
+    description: Logistical Sorter filter with Tag filter properties
+    extends: mekanism.common.content.transporter.SorterFilter
+    fields:
+      tag:
+        description: The tag to filter. e.g. forge:ores
+        javaType: java.lang.String
+        type: String
+    humanName: Table (SorterTagFilter)
   mekanism.common.lib.frequency.Frequency:
     description: A frequency's identity
     fields:
@@ -1779,7 +1853,7 @@ methods:
   - methodName: setEnabled
     params:
     - javaType: boolean
-      name: arg0
+      name: enabled
       type: boolean
   Filter Wrapper (Digital Miner):
   - methodName: clone
@@ -1821,7 +1895,7 @@ methods:
   - methodName: setItemStack
     params:
     - javaType: net.minecraft.world.item.ItemStack
-      name: arg0
+      name: stack
       type: Table (ItemStack)
   Filter Wrapper (Logistical Sorter):
   - methodName: clone
@@ -1879,7 +1953,7 @@ methods:
   - methodName: setModID
     params:
     - javaType: java.lang.String
-      name: arg0
+      name: id
       type: String
   Filter Wrapper (Oredictionificator Item):
   - methodName: getSelectedOutput
@@ -1918,7 +1992,7 @@ methods:
   - methodName: setTagName
     params:
     - javaType: java.lang.String
-      name: arg0
+      name: name
       type: String
   Fission Reactor Logic Adapter:
   - methodName: getLogicMode

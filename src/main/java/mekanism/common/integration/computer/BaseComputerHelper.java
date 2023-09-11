@@ -18,12 +18,20 @@ import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.miner.MinerFilter;
+import mekanism.common.content.miner.MinerItemStackFilter;
+import mekanism.common.content.miner.MinerModIDFilter;
+import mekanism.common.content.miner.MinerTagFilter;
 import mekanism.common.content.oredictionificator.OredictionificatorFilter;
 import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
+import mekanism.common.content.qio.filter.QIOModIDFilter;
+import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
+import mekanism.common.content.transporter.SorterModIDFilter;
+import mekanism.common.content.transporter.SorterTagFilter;
+import mekanism.common.integration.computer.TableType.Builder;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.Util;
@@ -505,10 +513,6 @@ public abstract class BaseComputerHelper {
         TableType.builder(IFilter.class, "Common Filter properties. Use the API Global to make constructing these a little easier.\nFilters are a combination of these base properties, an ItemStack or Mod Id or Tag component, and a device specific type.\nThe exception to that is an Oredictionificator filter, which does not have an item/mod/tag component.")
               .addField("type", FilterType.class, "The type of filter in this structure")
               .addField("enabled", boolean.class, "Whether the filter is enabled when added to a device")
-              .addField("item", Item.class, "ItemStack filters only. The filtered item's registered name")
-              .addField("itemNBT", String.class, "ItemStack filters only. The NBT data of the filtered item, optional")
-              .addField("modId", String.class, "Mod Id filters only. The mod id to filter. e.g. mekansim")
-              .addField("tag", String.class, "Tag filters only. The tag to filter. e.g. forge:ores")
               .build(types);
 
         TableType.builder(MinerFilter.class, "A Digital Miner filter")
@@ -517,13 +521,12 @@ public abstract class BaseComputerHelper {
               .addField("replaceTarget", Item.class, "The name of the item block that will be used to replace a mined block")
               .build(types);
 
-        TableType.builder(OredictionificatorFilter.class, "An Oredictionificator filter")
+        TableType.builder(OredictionificatorItemFilter.class, "An Oredictionificator filter")
               .extendz(IFilter.class)
               .addField("target", String.class, "The target tag to match (input)")
               .addField("selected", Item.class, "The selected output item's registered name. Optional for adding a filter")
               .build(types);
 
-        final String FUZZY_ITEM_FILTER = "ItemStack filters only. Whether Fuzzy mode is enabled (checks only the item name/type)";
         TableType.builder(SorterFilter.class, "A Logistical Sorter filter")
               .extendz(IFilter.class)
               .addField("allowDefault", boolean.class, "Allows the filtered item to travel to the default color destination")
@@ -531,14 +534,37 @@ public abstract class BaseComputerHelper {
               .addField("size", boolean.class, "If Size Mode is enabled")
               .addField("min", int.class, "In Size Mode, the minimum to send")
               .addField("max", int.class, "In Size Mode, the maximum to send")
-              .addField("fuzzy", boolean.class, FUZZY_ITEM_FILTER)
               .build(types);
 
         TableType.builder(QIOFilter.class, "A Quantum Item Orchestration filter")
               .extendz(IFilter.class)
-              .addField("fuzzy", boolean.class, FUZZY_ITEM_FILTER)
               .build(types);
 
+        buildFilterVariants(types, SorterFilter.class, SorterItemStackFilter.class, SorterModIDFilter.class, SorterTagFilter.class, "Logistical Sorter", true);
+        buildFilterVariants(types, MinerFilter.class, MinerItemStackFilter.class, MinerModIDFilter.class, MinerTagFilter.class, "Digital Miner", false);
+        buildFilterVariants(types, QIOFilter.class, QIOItemStackFilter.class, QIOModIDFilter.class, QIOTagFilter.class, "QIO", true);
+
         return types;
+    }
+
+    private static <BASE> void buildFilterVariants(Map<Class<?>, TableType> types, Class<BASE> deviceFilterType, Class<? extends BASE> itemStackFilterClass, Class<? extends BASE> modIDFilterClass, Class<? extends BASE> tagFilterClass, String deviceName, boolean hasFuzzyItem) {
+        Builder itemstackBuilder = TableType.builder(itemStackFilterClass, deviceName + " filter with ItemStack filter properties")
+              .extendz(deviceFilterType)
+              .addField("item", Item.class, "The filtered item's registered name")
+              .addField("itemNBT", String.class, "The NBT data of the filtered item, optional");
+        if (hasFuzzyItem) {
+            itemstackBuilder.addField("fuzzy", boolean.class, "Whether Fuzzy mode is enabled (checks only the item name/type)");
+        }
+        itemstackBuilder.build(types);
+
+        TableType.builder(modIDFilterClass, deviceName + " filter with Mod Id filter properties")
+              .extendz(deviceFilterType)
+              .addField("modId", String.class, "The mod id to filter. e.g. mekansim")
+              .build(types);
+
+        TableType.builder(tagFilterClass, deviceName + " filter with Tag filter properties")
+              .extendz(deviceFilterType)
+              .addField("tag", String.class, "The tag to filter. e.g. forge:ores")
+              .build(types);
     }
 }
