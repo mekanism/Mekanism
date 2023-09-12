@@ -49,7 +49,7 @@ public final class InventoryUtils {
                 shouldDrop = ISecurityUtils.INSTANCE.canAccess(null, stack, entity.level().isClientSide);
             }
             if (shouldDrop) {
-                ListTag storedContents = sustainedInventory.getInventory(stack);
+                ListTag storedContents = sustainedInventory.getSustainedInventory(stack);
                 for (IInventorySlot slot : ItemRecipeData.readContents(storedContents)) {
                     if (!slot.isEmpty()) {
                         //Pass the stack directly as while IInventorySlot#getStack says to not mutate the stack, our slot is a dummy slot

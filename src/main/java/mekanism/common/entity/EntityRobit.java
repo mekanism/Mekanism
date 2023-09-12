@@ -437,7 +437,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             }
         }
         ItemRobit item = (ItemRobit) stack.getItem();
-        item.setInventory(getInventory(), stack);
+        item.setSustainedInventory(getSustainedInventory(), stack);
         item.setName(stack, getName());
         stack.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> {
             security.setOwnerUUID(getOwnerUUID());
@@ -601,14 +601,14 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     @Override
-    public void setInventory(ListTag nbtTags, Object... data) {
+    public void setSustainedInventory(ListTag nbtTags) {
         if (nbtTags != null && !nbtTags.isEmpty()) {
             DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags);
         }
     }
 
     @Override
-    public ListTag getInventory(Object... data) {
+    public ListTag getSustainedInventory() {
         return DataHandlerUtils.writeContainers(getInventorySlots(null));
     }
 

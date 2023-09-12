@@ -27,6 +27,6 @@ public class ItemBlockSecurityDesk extends ItemBlockTooltip<BlockTileModel<TileE
         //Note: We manually override this as we don't want to display the security mode for the security desk as while it technically
         // has one in reality it is always private
         SecurityUtils.get().addOwnerTooltip(stack, tooltip);
-        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
+        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasSustainedInventory(stack))));
     }
 }

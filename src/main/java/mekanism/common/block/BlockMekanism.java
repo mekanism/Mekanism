@@ -23,6 +23,7 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.radiation.Meltdown.MeltdownExplosion;
 import mekanism.common.network.to_client.PacketSecurityUpdate;
@@ -36,7 +37,6 @@ import mekanism.common.tile.interfaces.IComparatorSupport;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.interfaces.ISustainedData;
-import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -140,8 +140,8 @@ public abstract class BlockMekanism extends Block {
                 lazyDataMap.get().put(type.getContainerTag(), DataHandlerUtils.writeContainers(type.getContainers(tile)));
             }
         }
-        if (item instanceof ISustainedInventory sustainedInventory && tile.persistInventory() && tile.getSlots() > 0) {
-            sustainedInventory.setInventory(tile.getInventory(), itemStack);
+        if (item instanceof IItemSustainedInventory sustainedInventory && tile.persistInventory() && tile.getSlots() > 0) {
+            sustainedInventory.setSustainedInventory(tile.getSustainedInventory(), itemStack);
         }
         return itemStack;
     }
@@ -319,8 +319,8 @@ public abstract class BlockMekanism extends Block {
         if (tile.supportsRedstone()) {
             NBTUtils.setEnumIfPresent(dataMap, NBTConstants.CONTROL_TYPE, RedstoneControl::byIndexStatic, tile::setControlType);
         }
-        if (item instanceof ISustainedInventory sustainedInventory && tile.persistInventory()) {
-            tile.setInventory(sustainedInventory.getInventory(stack));
+        if (item instanceof IItemSustainedInventory sustainedInventory && tile.persistInventory()) {
+            tile.setSustainedInventory(sustainedInventory.getSustainedInventory(stack));
         }
     }
 
