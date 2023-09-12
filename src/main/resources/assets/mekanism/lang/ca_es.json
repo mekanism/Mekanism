@@ -1,4 +1,8 @@
 {
+  "advancements.mekanism.advanced_control_circuit.description": "Fabrica un Circuit de Control Avançat",
+  "advancements.mekanism.advanced_control_circuit.title": "Tecnologia Avançada",
+  "advancements.mekanism.advanced_qio_drive.description": "Augmenta l'emmagatzematge de la teva Unitat d'OOQ",
+  "advancements.mekanism.advanced_qio_drive.title": "Emmagatzematge d'Alta Densitat",
   "assemblicator.mekanism.auto_mode_toggle": "Mode Automàtic: %1$s",
   "assemblicator.mekanism.craft_available": "Crea els Ítems Disponibles",
   "assemblicator.mekanism.craft_single": "Crea un sol Ítem",
