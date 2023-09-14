@@ -1,0 +1,19 @@
+{
+    "ctm": {
+        "ctm_version": 1,
+        "type": "ctm:optifine_full",
+        "extra": {
+            "connect_to": [
+                {
+                    "block": "mekanism:thermal_evaporation_block"
+                },
+                {
+                    "block": "mekanism:thermal_evaporation_controller"
+                },
+                {
+                    "block": "mekanism:thermal_evaporation_valve"
+                }
+            ]
+        }
+    }    
+}
