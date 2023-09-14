@@ -104,15 +104,6 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
     }
 
     @Override
-    public void onQuickCraft(@NotNull ItemStack current, @NotNull ItemStack newStack) {
-        int change = newStack.getCount() - current.getCount();
-        if (change > 0) {
-            slot.onContentsChanged();
-            onQuickCraft(newStack, change);
-        }
-    }
-
-    @Override
     public int getMaxStackSize() {
         return slot.getLimit(ItemStack.EMPTY);
     }
