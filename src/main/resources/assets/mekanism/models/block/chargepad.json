@@ -101,10 +101,10 @@
 		},
 		{
 			"name": "port_led",
-			"from": [5, 5, 16],
-			"to": [11, 11, 16],
+			"from": [4, 4, 16],
+			"to": [12, 12, 16],
 			"faces": {
-				"south": {"uv": [9, 9, 15, 15], "texture": "#ports_led", "cullface": "south"}
+				"south": {"uv": [8, 8, 16, 16], "texture": "#ports_led", "cullface": "south"}
 			},
 			"forge_data": {
 				"block_light": 15,

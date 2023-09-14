@@ -22,71 +22,15 @@
 		},
 		{
 			"name": "led",
-			"from": [
-				0,
-				0,
-				0
-			],
-			"to": [
-				16,
-				16,
-				16
-			],
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
 			"faces": {
-				"north": {
-					"uv": [
-						0,
-						0,
-						16,
-						16
-					],
-					"texture": "#led"
-				},
-				"east": {
-					"uv": [
-						0,
-						0,
-						16,
-						16
-					],
-					"texture": "#led"
-				},
-				"south": {
-					"uv": [
-						0,
-						0,
-						16,
-						16
-					],
-					"texture": "#led"
-				},
-				"west": {
-					"uv": [
-						0,
-						0,
-						16,
-						16
-					],
-					"texture": "#led"
-				},
-				"up": {
-					"uv": [
-						0,
-						0,
-						16,
-						16
-					],
-					"texture": "#led"
-				},
-				"down": {
-					"uv": [
-						0,
-						0,
-						16,
-						16
-					],
-					"texture": "#led"
-				}
+				"north": {"uv": [0, 0, 16, 16], "texture": "#led"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#led"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#led"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#led"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#led"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#led"}
 			},
 			"forge_data": {
 				"block_light": 15,

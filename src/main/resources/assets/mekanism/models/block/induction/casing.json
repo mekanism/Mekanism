@@ -1,1 +1,6 @@
-{"parent":"block/cube_all","textures":{"all":"mekanism:block/induction_casing"}}
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "mekanism:block/induction_casing"
+  }
+}
