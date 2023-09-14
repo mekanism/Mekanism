@@ -1,6 +1,7 @@
 {
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "mekanism:block/boiler_valve_output_coolant"
-  }
+    "parent": "mekanism:block/template/cube_all_led",
+    "textures": {
+        "all": "mekanism:block/boiler_valve_output_coolant",
+        "led": "mekanism:block/boiler_valve_output_coolant_led"
+    }
 }
