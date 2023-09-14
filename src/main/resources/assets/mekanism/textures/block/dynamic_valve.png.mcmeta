@@ -1,20 +1,20 @@
 {
-  "ctm": {
-    "ctm_version": 1,
-    "type": "CTM",
-    "layer": "SOLID",
-    "textures": [
-      "mekanism:block/dynamic_valve-ctm"
-    ],
-    "extra": {
-      "connect_to": [
-        {
-          "block": "mekanism:dynamic_tank"
-        },
-        {
-          "block": "mekanism:dynamic_valve"
+    "ctm": {
+        "ctm_version": 1,
+        "type": "CTM",
+        "layer": "SOLID",
+        "textures": [
+            "mekanism:ctm/dynamic_valve"
+        ],
+        "extra": {
+            "connect_to": [
+                {
+                    "block": "mekanism:dynamic_tank"
+                },
+                {
+                    "block": "mekanism:dynamic_valve"
+                }
+            ]
         }
-      ]
     }
-  }
 }

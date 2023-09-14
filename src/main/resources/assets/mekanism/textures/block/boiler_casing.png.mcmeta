@@ -1,20 +1,22 @@
+
 {
-  "ctm": {
-    "ctm_version": 1,
-    "type": "CTM",
-    "layer": "SOLID",
-    "textures": [
-      "mekanism:block/boiler_casing-ctm"
-    ],
-    "extra": {
-      "connect_to": [
-        {
-          "block": "mekanism:boiler_casing"
-        },
-        {
-          "block": "mekanism:boiler_valve"
+    "ctm": {
+        "ctm_version": 1,
+        "proxy": "mekanism:ctm/boiler_casing_full",
+        "type": "CTM",
+        "layer": "SOLID",
+        "textures": [
+            "mekanism:ctm/boiler_casing"
+        ],
+        "extra": {
+            "connect_to": [
+                {
+                    "block": "mekanism:boiler_casing"
+                },
+                {
+                    "block": "mekanism:boiler_valve"
+                }
+            ]
         }
-      ]
     }
-  }
 }
