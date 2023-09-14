@@ -1,6 +1,1 @@
-{
-  "parent": "mekanism:block/chemical_tank/base",
-  "textures": {
-    "valve": "mekanism:block/models/chemical_tank_advanced_valve"
-  }
-}
+{"parent":"mekanism:block/chemical_tank/base","textures":{"valve":"mekanism:block/models/chemical_tank_advanced_valve"}}

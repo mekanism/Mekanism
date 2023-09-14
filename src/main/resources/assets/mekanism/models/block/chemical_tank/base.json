@@ -1,9 +1,11 @@
 {
 	"credit": "Model by CyanideX",
 	"parent": "block/cube_all",
+	"render_type": "minecraft:cutout",
 	"textures": {
 		"particle": "mekanism:block/models/chemical_tank",
-		"body": "mekanism:block/models/chemical_tank"
+		"body": "mekanism:block/models/chemical_tank",
+		"valve": "#valve"
 	},
 	"elements": [
 		{
@@ -86,7 +88,7 @@
 			}
 		},
 		{
-			"name": "tankBase",
+			"name": "tank_base",
 			"from": [4, 0, 4],
 			"to": [12, 1, 12],
 			"faces": {
@@ -111,7 +113,7 @@
 			}
 		},
 		{
-			"name": "valveBase",
+			"name": "valve_base",
 			"from": [7, 12, 7],
 			"to": [9, 14, 9],
 			"faces": {
@@ -120,6 +122,50 @@
 				"south": {"uv": [10.5, 6, 11.5, 7], "texture": "#body"},
 				"west": {"uv": [10.5, 6, 11.5, 7], "texture": "#body"}
 			}
+		},
+		{
+			"name": "port_led",
+			"from": [5, 13, 5],
+			"to": [11, 13, 11],
+			"faces": {
+				"up": {"uv": [1, 12, 4, 15], "texture": "#body", "cullface": "up"},
+				"down": {"uv": [5, 0, 10, 5], "texture": "#body", "cullface": "up"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
+			}
 		}
-	]
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, 45, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, 225, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"ground": {
+			"translation": [0, 3, 0],
+			"scale": [0.25, 0.25, 0.25]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"fixed": {
+			"scale": [0.5, 0.5, 0.5]
+		}
+	}
 }
