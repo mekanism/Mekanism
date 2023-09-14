@@ -1,6 +1,8 @@
 {
-  "parent": "mekanism:block/thermal_evaporation/controller",
-  "textures": {
-    "front": "mekanism:block/thermal_evaporation_controller_on"
-  }
+    "parent": "mekanism:block/machine_front_led",
+    "textures": {
+        "sides": "mekanism:block/thermal_evaporation_block",
+        "front": "mekanism:block/thermal_evaporation_controller_on",
+        "front_led": "mekanism:block/thermal_evaporation_controller_on_led"
+    }
 }

@@ -1,6 +1,10 @@
 {
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "mekanism:block/basic_induction_cell"
-  }
+    "render_type": "minecraft:cutout",
+    "parent": "mekanism:block/induction/cell/base",
+    "textures": {
+        "particle": "mekanism:block/basic_induction_cell",
+        "all": "mekanism:block/basic_induction_cell",
+        "glow": "mekanism:block/induction_cell_glow",
+        "led": "mekanism:block/induction_cell_led"
+    }
 }
