@@ -59,6 +59,7 @@ import mekanism.common.lib.MekAnnotationScanner;
 import mekanism.common.lib.Version;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -300,6 +301,7 @@ public class Mekanism {
         PathfinderCache.reset();
         TransmitterNetworkRegistry.reset();
         GenHandler.reset();
+        PersonalStorageManager.reset();
     }
 
     private void imcQueue(InterModEnqueueEvent event) {
