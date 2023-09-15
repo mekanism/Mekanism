@@ -142,7 +142,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
             fakeCaches.put(fakeProvider, provider);
             additional += providerCacheData.getValue(provider).size();
             //Initialize the cache as one that should be written when we loop caches to write
-            toWrite.add(fakeProvider);
+            //toWrite.add(fakeProvider);
         }
         if (!fakeCaches.isEmpty()) {
             //Reset the original caches to a fresh copy
