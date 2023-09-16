@@ -88,4 +88,9 @@ public class ModuleTweakerContainer extends MekanismContainer {
     public ICapabilityProvider getSecurityObject() {
         return null;
     }
+
+    @Override
+    public boolean stillValid(@NotNull Player player) {
+        return true;//opened from hotkey
+    }
 }
