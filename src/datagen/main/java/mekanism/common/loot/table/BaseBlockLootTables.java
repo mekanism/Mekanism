@@ -152,7 +152,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             }
             TrackingNbtBuilder nbtBuilder = new TrackingNbtBuilder(ContextNbtProvider.BLOCK_ENTITY);
             boolean hasContents = false;
-            boolean isNameable = false;
+            LootItem.Builder<?> itemLootPool = LootItem.lootTableItem(block);
             @Nullable
             BlockEntity tile = null;
             if (block instanceof IHasTileEntity<?> hasTileEntity) {
@@ -184,7 +184,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             }
             if (tile instanceof TileEntityMekanism tileEntity) {
                 if (tileEntity.isNameable()) {
-                    isNameable = true;
+                    itemLootPool.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY));
                 }
                 for (SubstanceType type : EnumUtils.SUBSTANCES) {
                     if (tileEntity.handles(type) && !type.getContainers(tileEntity).isEmpty()) {
@@ -210,10 +210,6 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             if (block instanceof BlockCardboardBox) {
                 //TODO: Do this better so that it doesn't have to be as hard coded to being a cardboard box
                 nbtBuilder.copy(NBTConstants.DATA, NBTConstants.MEK_DATA + "." + NBTConstants.DATA);
-            }
-            LootItem.Builder<?> itemLootPool = LootItem.lootTableItem(block);
-            if (isNameable) {
-                itemLootPool.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY));
             }
             if (nbtBuilder.hasData()) {
                 itemLootPool.apply(nbtBuilder);
