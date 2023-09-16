@@ -13,6 +13,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNotNullByDefault
@@ -38,14 +39,34 @@ public class PersonalStorageManager {
         return forOwner(owner).getOrAddInventory(invId);
     }
 
+    @Nullable
+    public static PersonalStorageItemInventory getInventoryIfPresent(ItemStack stack) {
+        UUID owner = SecurityUtils.get().getOwnerUUID(stack);
+        UUID invId = getInventoryIdNullable(stack);
+        return owner != null && invId != null ? getInventoryFor(stack) : null;
+    }
+
+    public static void deleteInventory(ItemStack stack) {
+        UUID owner = SecurityUtils.get().getOwnerUUID(stack);
+        UUID invId = getInventoryIdNullable(stack);
+        if (owner != null && invId != null) {
+            forOwner(owner).removeInventory(invId);
+        }
+    }
+
     @NotNull
     private static UUID getInventoryId(ItemStack stack) {
-        UUID invId = ItemDataUtils.getUniqueID(stack, NBTConstants.PERSONAL_STORAGE_ID);
+        UUID invId = getInventoryIdNullable(stack);
         if (invId == null) {
             invId = UUID.randomUUID();
             ItemDataUtils.setUUID(stack, NBTConstants.PERSONAL_STORAGE_ID, invId);
         }
         return invId;
+    }
+
+    @Nullable
+    private static UUID getInventoryIdNullable(ItemStack stack) {
+        return ItemDataUtils.getUniqueID(stack, NBTConstants.PERSONAL_STORAGE_ID);
     }
 
     public static void reset() {

@@ -22,13 +22,6 @@ class PersonalStorageData extends MekanismSavedData {
         return inventoriesById.computeIfAbsent(id, unused->createInventory());
     }
 
-    //PersonalStorageItemInventory addInventory(UUID id) {
-    //    PersonalStorageItemInventory inv = createInventory();
-    //    inventoriesById.put(id, inv);
-    //    setDirty();
-    //    return inv;
-    //}
-
     void removeInventory(UUID id) {
         if (this.inventoriesById.remove(id) != null) {
             setDirty();
