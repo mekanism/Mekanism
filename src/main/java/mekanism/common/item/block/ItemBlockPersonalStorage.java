@@ -3,6 +3,7 @@ package mekanism.common.item.block;
 import mekanism.common.block.BlockPersonalStorage;
 import mekanism.common.inventory.container.item.PersonalStorageItemContainer;
 import mekanism.common.item.interfaces.IGuiItem;
+import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.SecurityUtils;
@@ -33,6 +34,9 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?,?>> e
     @Override
     public InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
         return SecurityUtils.get().claimOrOpenGui(world, player, hand, (p, h, s) -> {
+            if (!world.isClientSide) {
+                PersonalStorageManager.getInventoryFor(s);
+            }
             getContainerType().tryOpenGui(p, h, s);
             p.awardStat(Stats.CUSTOM.get(openStat));
         });
