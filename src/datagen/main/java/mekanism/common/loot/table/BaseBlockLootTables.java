@@ -219,25 +219,18 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 nbtBuilder.copy(NBTConstants.DATA, NBTConstants.MEK_DATA + "." + NBTConstants.DATA);
                 hasData = true;
             }
-            if (!hasData && !isNameable) {
-                //To keep the json as clean as possible don't bother even registering a blank accept function if we have no
-                // persistent data that we want to copy. Also log a warning so that we don't have to attempt to check against
-                // that block
-                dropSelf(block);
-            } else {
-                LootItem.Builder<?> itemLootPool = LootItem.lootTableItem(block);
-                if (isNameable) {
-                    itemLootPool.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY));
-                }
-                if (hasData) {
-                    itemLootPool.apply(nbtBuilder);
-                }
-                add(block, LootTable.lootTable().withPool(applyExplosionCondition(hasContents, LootPool.lootPool()
-                      .name("main")
-                      .setRolls(ConstantValue.exactly(1))
-                      .add(itemLootPool)
-                )));
+            LootItem.Builder<?> itemLootPool = LootItem.lootTableItem(block);
+            if (isNameable) {
+                itemLootPool.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY));
             }
+            if (hasData) {
+                itemLootPool.apply(nbtBuilder);
+            }
+            add(block, LootTable.lootTable().withPool(applyExplosionCondition(hasContents, LootPool.lootPool()
+                  .name("main")
+                  .setRolls(ConstantValue.exactly(1))
+                  .add(itemLootPool)
+            )));
         }
     }
 
