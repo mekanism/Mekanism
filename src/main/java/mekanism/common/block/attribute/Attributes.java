@@ -1,5 +1,6 @@
 package mekanism.common.block.attribute;
 
+import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
 import mekanism.common.block.attribute.Attribute.TileAttribute;
 import mekanism.common.block.states.BlockStateHelper;
@@ -18,6 +19,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockBehaviour.StateArgumentPredicate;
+import net.minecraft.world.level.storage.loot.functions.CopyNbtFunction;
+import net.minecraft.world.level.storage.loot.functions.FunctionUserBuilder;
+import net.minecraft.world.level.storage.loot.predicates.ConditionUserBuilder;
 import org.jetbrains.annotations.NotNull;
 
 public class Attributes {
@@ -29,7 +33,7 @@ public class Attributes {
     public static final Attribute ACTIVE_MELT_LIGHT = new AttributeStateActive(13);
     public static final Attribute ACTIVE_FULL_LIGHT = new AttributeStateActive(15);
     public static final Attribute COMPARATOR = new AttributeComparator();
-    public static final Attribute INVENTORY = new AttributeInventory();
+    public static final Attribute INVENTORY = new AttributeInventory<>();
     public static final Attribute REDSTONE = new AttributeRedstone();
     public static final Attribute SECURITY = new AttributeSecurity();
 
@@ -44,9 +48,29 @@ public class Attributes {
     }
 
     /** If a block has an inventory. */
-    public static class AttributeInventory implements Attribute {
+    public static class AttributeInventory<T extends ConditionUserBuilder<T> & FunctionUserBuilder<T>> implements Attribute {
+
+        private final BiFunction<T, CopyNbtFunction.Builder, Boolean> customLootBuilder;
+
+        /**
+         * Create an Inventory attribute with custom loot function handling
+         * @param customLootBuilder consumes the Builders and returns `hasContents` for use in {@link mekanism.common.loot.table.BaseBlockLootTables#dropSelfWithContents(java.util.List)}
+         */
+        @SuppressWarnings("JavadocReference")
+        public AttributeInventory(BiFunction<T, CopyNbtFunction.Builder, @NotNull Boolean> customLootBuilder) {
+            this.customLootBuilder = customLootBuilder;
+        }
 
         private AttributeInventory() {
+            this(null);
+        }
+
+        public boolean hasCustomLoot() {
+            return this.customLootBuilder != null;
+        }
+
+        public BiFunction<T, CopyNbtFunction.Builder, Boolean> getCustomLootBuilder() {
+            return this.customLootBuilder;
         }
     }
 

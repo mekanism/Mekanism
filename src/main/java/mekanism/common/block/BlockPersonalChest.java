@@ -1,8 +1,11 @@
 package mekanism.common.block;
 
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.interfaces.IPersonalStorage;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.BlockTypeTile;
+import mekanism.common.item.loot.PersonalStorageContentsLootFunction;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.util.WorldUtils;
@@ -14,6 +17,10 @@ import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockPersonalChest extends BlockTileModel<TileEntityPersonalChest, BlockTypeTile<TileEntityPersonalChest>> implements IPersonalStorage {
+    public static final Attribute PERSONAL_STORAGE_INVENTORY = new AttributeInventory<>(((lootBuilder, nbtBuilder) -> {
+        lootBuilder.apply(PersonalStorageContentsLootFunction.builder());
+        return true;
+    }));
 
     public BlockPersonalChest() {
         super(MekanismBlockTypes.PERSONAL_CHEST, properties -> properties.mapColor(MapColor.COLOR_GRAY));

@@ -2,6 +2,7 @@ package mekanism.common.loot.table;
 
 import it.unimi.dsi.fastutil.objects.ReferenceArraySet;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 import mekanism.api.NBTConstants;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.BlockCardboardBox;
@@ -47,6 +49,8 @@ import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.CopyNameFunction;
 import net.minecraft.world.level.storage.loot.functions.CopyNbtFunction;
 import net.minecraft.world.level.storage.loot.functions.CopyNbtFunction.MergeStrategy;
+import net.minecraft.world.level.storage.loot.functions.FunctionUserBuilder;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.ConditionUserBuilder;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
@@ -153,6 +157,8 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             TrackingNbtBuilder nbtBuilder = new TrackingNbtBuilder(ContextNbtProvider.BLOCK_ENTITY);
             boolean hasContents = false;
             LootItem.Builder<?> itemLootPool = LootItem.lootTableItem(block);
+            //delayed items until after NBT copy is added
+            DelayedLootItemBuilder delayedPool = new DelayedLootItemBuilder();
             @Nullable
             BlockEntity tile = null;
             if (block instanceof IHasTileEntity<?> hasTileEntity) {
@@ -195,11 +201,16 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                     }
                 }
             }
-            if (Attribute.has(block, AttributeInventory.class)) {
-                //If the block has an inventory, copy the inventory slots,
+            @SuppressWarnings("unchecked")
+            AttributeInventory<DelayedLootItemBuilder> attributeInventory = Attribute.get(block, AttributeInventory.class);
+            if (attributeInventory != null) {
+                if (attributeInventory.hasCustomLoot()) {
+                    hasContents = attributeInventory.getCustomLootBuilder().apply(delayedPool, nbtBuilder);
+                }
+                //If the block has an inventory and no custom loot function, copy the inventory slots,
                 // but if it is an IItemHandler, which for most cases of ours it will be,
                 // then only copy the slots if we actually have any slots because otherwise maybe something just went wrong
-                if (!(tile instanceof IItemHandler handler) || handler.getSlots() > 0) {
+                else if (!(tile instanceof IItemHandler handler) || handler.getSlots() > 0) {
                     //If we don't actually handle saving an inventory (such as the quantum entangloporter, don't actually add it as something to copy)
                     if (!(tile instanceof TileEntityMekanism tileMek) || tileMek.persistInventory()) {
                         nbtBuilder.copy(NBTConstants.ITEMS, NBTConstants.MEK_DATA + "." + NBTConstants.ITEMS);
@@ -213,6 +224,13 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             }
             if (nbtBuilder.hasData()) {
                 itemLootPool.apply(nbtBuilder);
+            }
+            //apply the delayed ones last, so that NBT funcs have happened first
+            for (LootItemFunction.Builder function : delayedPool.functions) {
+                itemLootPool.apply(function);
+            }
+            for (LootItemCondition.Builder condition : delayedPool.conditions) {
+                itemLootPool.when(condition);
             }
             add(block, LootTable.lootTable().withPool(applyExplosionCondition(hasContents, LootPool.lootPool()
                   .name("main")
@@ -304,7 +322,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
 
     @MethodsReturnNonnullByDefault
     @ParametersAreNotNullByDefault
-    public class TrackingNbtBuilder extends CopyNbtFunction.Builder {
+    public static class TrackingNbtBuilder extends CopyNbtFunction.Builder {
         private boolean hasData = false;
 
         public TrackingNbtBuilder(NbtProvider pNbtSource){
@@ -319,6 +337,29 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
         public CopyNbtFunction.Builder copy(String pSourcePath, String pTargetPath, MergeStrategy pCopyAction) {
             this.hasData = true;
             return super.copy(pSourcePath, pTargetPath, pCopyAction);
+        }
+    }
+
+    @NothingNullByDefault
+    public static class DelayedLootItemBuilder implements ConditionUserBuilder<DelayedLootItemBuilder>, FunctionUserBuilder<DelayedLootItemBuilder> {
+        private final List<LootItemFunction.Builder> functions = new ArrayList<>();
+        private final List<LootItemCondition.Builder> conditions = new ArrayList<>();
+
+        @Override
+        public DelayedLootItemBuilder apply(LootItemFunction.Builder pFunctionBuilder) {
+            functions.add(pFunctionBuilder);
+            return this;
+        }
+
+        @Override
+        public DelayedLootItemBuilder when(LootItemCondition.Builder pConditionBuilder) {
+            conditions.add(pConditionBuilder);
+            return this;
+        }
+
+        @Override
+        public DelayedLootItemBuilder unwrap() {
+            return this;
         }
     }
 }
