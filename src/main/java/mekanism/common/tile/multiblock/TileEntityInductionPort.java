@@ -76,7 +76,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod(methodDescription = "true -> output, false -> input. TODO change this to enum")
+    @ComputerMethod(methodDescription = "true -> output, false -> input.")// TODO change this to enum?
     boolean getMode() {
         return getActive();
     }
