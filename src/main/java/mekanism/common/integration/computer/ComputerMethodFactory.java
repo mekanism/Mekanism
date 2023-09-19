@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,7 +83,7 @@ public class ComputerMethodFactory<T>{
     }
 
     public List<MethodHelpData> getHelpData() {
-        return this.methods.stream().sorted(METHODDATA_COMPARATOR).map(MethodHelpData::from).toList();
+        return this.methods.stream().sorted(METHODDATA_COMPARATOR).map(MethodHelpData::from).collect(Collectors.toList());
     }
 
     @FunctionalInterface
