@@ -261,7 +261,7 @@ public class ComputerHandlerBuilder {
             }
 
             //add a call to register() in the handler class's constructor
-            CodeBlock registerMethodBuilder = buildRegisterMethodCall(annotationValues, Collections.emptyList(), wrapperMethod.getReturnType(), handlerMethod, targetMethodName, annotationValues.getLiteral("threadSafe", false), methodDescription);
+            CodeBlock registerMethodBuilder = buildRegisterMethodCall(annotationValues, Collections.emptyList(), wrapperMethod.getReturnType(), handlerMethod, targetMethodName, annotationValues.getBooleanValue("threadSafe", false), methodDescription);
             constructorBuilder.addStatement(registerMethodBuilder);
 
         }
@@ -313,7 +313,7 @@ public class ComputerHandlerBuilder {
             handlerTypeSpec.addMethod(handlerMethod);
 
             //ensure the getter is registered
-            CodeBlock getterRegistration = buildRegisterMethodCall(annotationValues, Collections.emptyList(), fieldType, handlerMethod, getterName, annotationValues.getLiteral("threadSafeGetter", false), annotationValues.getStringValue("getterDescription",null));
+            CodeBlock getterRegistration = buildRegisterMethodCall(annotationValues, Collections.emptyList(), fieldType, handlerMethod, getterName, annotationValues.getBooleanValue("threadSafeGetter", false), annotationValues.getStringValue("getterDescription",null));
             constructorBuilder.addStatement(getterRegistration);
         }
 
@@ -334,7 +334,7 @@ public class ComputerHandlerBuilder {
             handlerTypeSpec.addMethod(handlerMethod);
 
             //register the setter
-            CodeBlock setterRegistration = buildRegisterMethodCall(annotationValues, Collections.singletonList(new FakeParameter(fieldType, "value")), typeUtils.getNoType(TypeKind.VOID), handlerMethod, setterName, annotationValues.getLiteral("threadSafeSetter", false), annotationValues.getStringValue("setterDescription",null));
+            CodeBlock setterRegistration = buildRegisterMethodCall(annotationValues, Collections.singletonList(new FakeParameter(fieldType, "value")), typeUtils.getNoType(TypeKind.VOID), handlerMethod, setterName, annotationValues.getBooleanValue("threadSafeSetter", false), annotationValues.getStringValue("setterDescription",null));
             constructorBuilder.addStatement(setterRegistration);
         }
 
@@ -376,7 +376,7 @@ public class ComputerHandlerBuilder {
         handlerTypeSpec.addMethod(handlerMethod);
 
         //add a call to register() in the handler class's constructor
-        CodeBlock registerMethodBuilder = buildRegisterMethodCall(annotationValues, parameters, returnType, handlerMethod, nameOverride, annotationValues.getLiteral("threadSafe", false), annotationValues.getStringValue("methodDescription",null));
+        CodeBlock registerMethodBuilder = buildRegisterMethodCall(annotationValues, parameters, returnType, handlerMethod, nameOverride, annotationValues.getBooleanValue("threadSafe", false), annotationValues.getStringValue("methodDescription",null));
         constructorBuilder.addStatement(registerMethodBuilder);
     }
 
@@ -604,7 +604,7 @@ public class ComputerHandlerBuilder {
      * @param methodDescription
      * @return a CodeBlock to be added to the constructor
      */
-    private CodeBlock buildRegisterMethodCall(AnnotationHelper annotationValues, List<VariableElement> parameters, TypeMirror returnType, MethodSpec handlerMethod, String computerExposedName, Object threadSafeLiteral, String methodDescription) {
+    private CodeBlock buildRegisterMethodCall(AnnotationHelper annotationValues, List<VariableElement> parameters, TypeMirror returnType, MethodSpec handlerMethod, String computerExposedName, boolean threadSafeLiteral, String methodDescription) {
         CodeBlock.Builder registerMethodBuilder = CodeBlock.builder();
         //Computer exposed method name & handler reference
         registerMethodBuilder.add("register($T.builder($S, $N::$N)", methodData, computerExposedName, handlerClassName, handlerMethod);
@@ -618,8 +618,8 @@ public class ComputerHandlerBuilder {
             registerMethodBuilder.add(".requiredMods($L)", annotationValues.getLiteral("requiredMods", "NO_STRINGS"));
         }
         //threadsafe
-        if (!(threadSafeLiteral instanceof Boolean) || ((Boolean) threadSafeLiteral)) {
-            registerMethodBuilder.add(".threadSafe()", threadSafeLiteral);
+        if (threadSafeLiteral) {
+            registerMethodBuilder.add(".threadSafe()");
         }
         //return type
         TypeMirror erasedReturnType = typeUtils.erasure(returnType);
