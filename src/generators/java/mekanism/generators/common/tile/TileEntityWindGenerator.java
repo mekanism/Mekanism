@@ -151,6 +151,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     }
 
     //Methods relating to IComputerTile
+    @Override
     FloatingLong getProductionRate() {
         return getActive() ? MekanismGeneratorsConfig.generators.windGenerationMin.get().multiply(getCurrentMultiplier()) : FloatingLong.ZERO;
     }
