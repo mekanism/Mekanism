@@ -41,7 +41,6 @@ import org.slf4j.Logger;
 
 @EventBusSubscriber(modid = Mekanism.MODID, bus = Bus.MOD)
 public class MekanismDataGenerator {
-    static Logger LOGGER = LogUtils.getLogger();
 
     private MekanismDataGenerator() {
     }
@@ -116,7 +115,7 @@ public class MekanismDataGenerator {
                 osConsumer.accept(hashingOutputStream);
                 cache.writeIfNeeded(path, outputStream.toByteArray(), hashingOutputStream.hash());
             } catch (IOException ioexception) {
-                LOGGER.error("Failed to save file to {}", path, ioexception);
+                DataProvider.LOGGER.error("Failed to save file to {}", path, ioexception);
             }
         }, Util.backgroundExecutor());
     }
