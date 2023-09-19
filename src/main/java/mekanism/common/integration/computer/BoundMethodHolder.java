@@ -37,7 +37,7 @@ public abstract class BoundMethodHolder {
 
     protected Lazy<String[]> methodNames = Lazy.of(()->this.methods.keys().toArray(new String[0]));
 
-    public BoundMethodHolder() {
+    protected BoundMethodHolder() {
         register(HELP_METHOD, new WeakReference<>(this.methods));
         register(HELP_METHOD_WITH_NAME, new WeakReference<>(this.methods));
     }
@@ -103,7 +103,7 @@ public abstract class BoundMethodHolder {
 
     public static Object generateHelp(ListMultimap<String, BoundMethodData<?>> methods, BaseComputerHelper helper) {
         if (methods == null) {
-            return null;
+            return helper.voidResult();
         }
         Map<String, MethodHelpData> helpItems = new HashMap<>();
         methods.values().stream().sorted(METHODDATA_COMPARATOR).forEach(md->
@@ -114,7 +114,7 @@ public abstract class BoundMethodHolder {
 
     public static Object generateHelpSpecific(ListMultimap<String, BoundMethodData<?>> methods, BaseComputerHelper helper) throws ComputerException {
         if (methods == null) {
-            return null;
+            return helper.voidResult();
         }
         String methodName = helper.getString(0);
         Map<String, MethodHelpData> helpItems = new HashMap<>();
