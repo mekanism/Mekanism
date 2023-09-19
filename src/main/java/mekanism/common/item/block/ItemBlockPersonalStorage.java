@@ -1,17 +1,25 @@
 package mekanism.common.item.block;
 
+import java.util.Collections;
+import java.util.List;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.block.BlockPersonalStorage;
 import mekanism.common.inventory.container.item.PersonalStorageItemContainer;
+import mekanism.common.item.interfaces.IDroppableContents;
 import mekanism.common.item.interfaces.IGuiItem;
+import mekanism.common.lib.inventory.personalstorage.PersonalStorageItemInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -21,7 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.FakePlayer;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?,?>> extends ItemBlockTooltip<BLOCK> implements IGuiItem {
+public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> extends ItemBlockTooltip<BLOCK> implements IDroppableContents, IGuiItem {
 
     private final ResourceLocation openStat;
 
@@ -63,5 +71,31 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?,?>> e
     @Override
     public ContainerTypeRegistryObject<PersonalStorageItemContainer> getContainerType() {
         return MekanismContainerTypes.PERSONAL_STORAGE_ITEM;
+    }
+
+    @Override
+    public void onDestroyed(@NotNull ItemEntity item, @NotNull DamageSource damageSource) {
+        if (!item.level().isClientSide) {
+            ItemStack stack = item.getItem();
+            //Like our super impl, we try to drop the inventory contents if we are a block item that persists our inventory
+            // If we succeeded (as the player who destroyed the item was the owner or if the chest was on public) then we
+            // can delete the inventory from the manager as it has been added to the world
+            if (InventoryUtils.dropItemContents(item, damageSource) ||
+                //Or if we didn't drop the contents check if the inventory was actually empty and if so we can prune
+                // the data from the storage manager (if it isn't empty we want to persist it so that server admins can recover their items)
+                getDroppedSlots(stack).stream().allMatch(IInventorySlot::isEmpty)
+            ) {
+                PersonalStorageManager.deleteInventory(stack);
+            }
+        }
+    }
+
+    @Override
+    public List<IInventorySlot> getDroppedSlots(ItemStack stack) {
+        PersonalStorageItemInventory inventory = PersonalStorageManager.getInventoryIfPresent(stack);
+        if (inventory == null) {
+            return Collections.emptyList();
+        }
+        return inventory.getInventorySlots(null);
     }
 }

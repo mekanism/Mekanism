@@ -11,11 +11,9 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.ISecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.SelectedWindowData;
-import mekanism.common.item.interfaces.IItemSustainedInventory;
+import mekanism.common.item.interfaces.IDroppableContents;
 import mekanism.common.lib.inventory.TileTransitRequest;
-import mekanism.common.recipe.upgrade.ItemRecipeData;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -35,30 +33,32 @@ public final class InventoryUtils {
 
     /**
      * Helper to drop the contents of an inventory when it is destroyed if it is public or the cause of the destruction has access to the inventory.
+     *
+     * @return {@code true} if it was determined the contents should be dropped
      */
-    public static void dropItemContents(ItemEntity entity, DamageSource source) {
+    public static boolean dropItemContents(ItemEntity entity, DamageSource source) {
         ItemStack stack = entity.getItem();
-        if (!entity.level().isClientSide && !stack.isEmpty() && stack.getItem() instanceof IItemSustainedInventory sustainedInventory &&
-            sustainedInventory.canContentsDrop(stack)) {
+        if (!entity.level().isClientSide && !stack.isEmpty() && stack.getItem() instanceof IDroppableContents inventory && inventory.canContentsDrop(stack)) {
             boolean shouldDrop;
             if (source.getEntity() instanceof Player player) {
                 //If the destroyer is a player use security utils to properly check for access
                 shouldDrop = ISecurityUtils.INSTANCE.canAccess(player, stack);
             } else {
                 // otherwise, just check against there being no known player
-                shouldDrop = ISecurityUtils.INSTANCE.canAccess(null, stack, entity.level().isClientSide);
+                shouldDrop = ISecurityUtils.INSTANCE.canAccess(null, stack, false);
             }
             if (shouldDrop) {
-                ListTag storedContents = sustainedInventory.getSustainedInventory(stack);
-                for (IInventorySlot slot : ItemRecipeData.readContents(storedContents)) {
+                for (IInventorySlot slot : inventory.getDroppedSlots(stack)) {
                     if (!slot.isEmpty()) {
-                        //Pass the stack directly as while IInventorySlot#getStack says to not mutate the stack, our slot is a dummy slot
-                        // so even if we end up adding the entity using the source stack it is fine
-                        dropStack(slot.getStack(), slotStack -> entity.level().addFreshEntity(new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), slotStack)));
+                        //Note: While some implementations return a dummy slot, so we would be able to pass them directly without copying
+                        // we have implementations that pass the actual backing slot, so we have to copy the stack just in case
+                        dropStack(slot.getStack().copy(), slotStack -> entity.level().addFreshEntity(new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), slotStack)));
                     }
                 }
+                return true;
             }
         }
+        return false;
     }
 
     /**

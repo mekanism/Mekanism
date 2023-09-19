@@ -159,7 +159,7 @@ public final class NBTConstants {
     public static final String OWNER_UUID = "owner";
     public static final String PARTIAL_WASTE = "partialWaste";
     public static final String PATH_TYPE = "pathType";
-    /** @since 10.3.10 */
+    /** @since 10.4.0 */
     public static final String PERSONAL_STORAGE_ID = "personalStorageId";
     public static final String PICKUP_DROPS = "dropPickup";
     public static final String PIGMENT_NAME = "pigmentName";

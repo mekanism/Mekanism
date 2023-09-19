@@ -1,12 +1,16 @@
 package mekanism.common.item.interfaces;
 
+import java.util.Collections;
+import java.util.List;
 import mekanism.api.NBTConstants;
+import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.recipe.upgrade.ItemRecipeData;
 import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 
-public interface IItemSustainedInventory extends ISustainedInventory {
+public interface IItemSustainedInventory extends ISustainedInventory, IDroppableContents {
 
     @Override
     default void setSustainedInventory(ListTag nbtTags) {
@@ -23,7 +27,7 @@ public interface IItemSustainedInventory extends ISustainedInventory {
     }
 
     default ListTag getSustainedInventory(ItemStack stack) {
-            return ItemDataUtils.getList(stack, NBTConstants.ITEMS);
+        return ItemDataUtils.getList(stack, NBTConstants.ITEMS);
     }
 
     /**
@@ -38,7 +42,9 @@ public interface IItemSustainedInventory extends ISustainedInventory {
         return inventory != null && !inventory.isEmpty();
     }
 
-    default boolean canContentsDrop(ItemStack stack) {
-        return true;
+    @Override
+    default List<IInventorySlot> getDroppedSlots(ItemStack stack) {
+        ListTag inventory = getSustainedInventory(stack);
+        return inventory == null ? Collections.emptyList() : ItemRecipeData.readContents(inventory);
     }
 }
