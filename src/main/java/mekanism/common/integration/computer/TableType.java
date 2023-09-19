@@ -65,7 +65,7 @@ public record TableType(String description, String humanName, Map<String, FieldT
         }
 
         public TableType build(Map<Class<?>, TableType> destination) {
-            TableType tableType = new TableType(description, humanName, fields, extendz);
+            TableType tableType = new TableType(description, humanName, new LinkedHashMap<>(fields), extendz);
             destination.put(clazz, tableType);
             return tableType;
         }
