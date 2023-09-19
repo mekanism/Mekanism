@@ -106,6 +106,7 @@ public class FactoryRegistry {
                           entry.getValue().get().getHelpData())
                     )
               )
+              //nb, this MUST be a TreeMap for the Datagen to use
               .collect(Collectors.toMap(Pair::getLeft, Pair::getRight, (a,b)->{a.addAll(b); return a;}, ()->new TreeMap<>(Comparator.comparing(Class::getName))));
     }
 

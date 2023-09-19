@@ -195,7 +195,8 @@ public class ComputerHelpProvider implements DataProvider {
         return "ComputerHelp: " + modid;
     }
 
-    //implementation isn't quite "stable" like json, but input is always sorted
+    //implementation isn't quite "stable" like json, input MUST be pre-sorted
+    //the computer help uses TreeMaps to maintain order
     @SuppressWarnings("UnstableApiUsage")
     static CompletableFuture<?> saveCSV(CachedOutput pOutput, Path pPath, String[] headers, IOConsumer<CsvOutput> rowGenerator) {
         return CompletableFuture.runAsync(() -> {
