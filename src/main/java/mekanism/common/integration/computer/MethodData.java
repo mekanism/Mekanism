@@ -7,6 +7,11 @@ import org.jetbrains.annotations.Nullable;
 public record MethodData<T>(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses,
                             Class<?> returnType, Class<?>[] returnExtra, ComputerFunctionCaller<T> handler, @Nullable String methodDescription,
                             boolean requiresPublicSecurity) {
+    public MethodData {
+        if (argClasses.length != argumentNames.length) {
+            throw new IllegalStateException("Argument arrays should be the same length");
+        }
+    }
 
     public boolean supports(@Nullable T subject) {
         return restriction.test(subject) && modsLoaded(requiredMods);
@@ -67,6 +72,9 @@ public record MethodData<T>(String name, MethodRestriction restriction, String[]
         }
 
         public Builder<T> arguments(String[] argumentNames, Class<?>[] argClasses) {
+            if (argClasses.length != argumentNames.length) {
+                throw new IllegalStateException("Argument arrays should be the same length");
+            }
             this.argumentNames = argumentNames;
             this.argClasses = argClasses;
             return this;
