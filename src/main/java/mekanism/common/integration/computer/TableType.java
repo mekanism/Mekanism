@@ -10,14 +10,14 @@ import mekanism.common.util.MekCodecs;
 /**
  * Defines the format of a "table" (Map) format of a Mekanism data structure
  */
-public record TableType(String description, String humanName, Map<String, FieldType> fields, Class<?> extendz) {
+public record TableType(String description, String humanName, Map<String, FieldType> fields, Class<?> extendedFrom) {
 
     public static Codec<TableType> CODEC = RecordCodecBuilder.create(instance ->
           instance.group(
                 Codec.STRING.fieldOf("description").forGetter(TableType::description),
                 Codec.STRING.fieldOf("humanName").forGetter(TableType::humanName),
                 Codec.unboundedMap(Codec.STRING, FieldType.CODEC).optionalFieldOf("fields", Collections.emptyMap()).forGetter(TableType::fields),
-                MekCodecs.CLASS_TO_STRING_CODEC.optionalFieldOf("extends", null).forGetter(TableType::extendz)
+                MekCodecs.CLASS_TO_STRING_CODEC.optionalFieldOf("extends", null).forGetter(TableType::extendedFrom)
           ).apply(instance, TableType::new)
     );
     public static Codec<Map<Class<?>, TableType>> TABLE_MAP_CODEC = Codec.unboundedMap(MekCodecs.CLASS_TO_STRING_CODEC, CODEC);
@@ -43,7 +43,7 @@ public record TableType(String description, String humanName, Map<String, FieldT
         private final String description;
         private final String humanName;
         private final Map<String, FieldType> fields = new LinkedHashMap<>();
-        private Class<?> extendz = null;
+        private Class<?> extendedFrom = null;
 
         private Builder(Class<?> clazz, String description) {
             this.clazz = clazz;
@@ -52,7 +52,7 @@ public record TableType(String description, String humanName, Map<String, FieldT
         }
 
         public Builder extendedFrom(Class<?> c) {
-            this.extendz = c;
+            this.extendedFrom = c;
             return this;
         }
 
@@ -65,7 +65,7 @@ public record TableType(String description, String humanName, Map<String, FieldT
         }
 
         public TableType build(Map<Class<?>, TableType> destination) {
-            TableType tableType = new TableType(description, humanName, new LinkedHashMap<>(fields), extendz);
+            TableType tableType = new TableType(description, humanName, new LinkedHashMap<>(fields), extendedFrom);
             destination.put(clazz, tableType);
             return tableType;
         }
