@@ -40,11 +40,14 @@ public class PersonalStorageManager {
         }
         UUID invId = getInventoryId(stack);
         PersonalStorageItemInventory storageItemInventory = forOwner(owner).getOrAddInventory(invId);
+
+        //TODO - After 1.20: Remove legacy loading
         ListTag legacyData = ItemDataUtils.getList(stack, NBTConstants.ITEMS);
         if (!legacyData.isEmpty()) {
             DataHandlerUtils.readContainers(storageItemInventory.getInventorySlots(null), legacyData);
             ItemDataUtils.removeData(stack, NBTConstants.ITEMS);
         }
+
         return storageItemInventory;
     }
 
@@ -61,6 +64,7 @@ public class PersonalStorageManager {
     public static PersonalStorageItemInventory getInventoryIfPresent(ItemStack stack) {
         UUID owner = SecurityUtils.get().getOwnerUUID(stack);
         UUID invId = getInventoryIdNullable(stack);
+        //TODO - After 1.20: Remove legacy loading
         boolean hasLegacyData = ItemDataUtils.hasData(stack, NBTConstants.ITEMS, Tag.TAG_LIST);
         return owner != null && (invId != null || hasLegacyData) ? getInventoryFor(stack) : null;
     }

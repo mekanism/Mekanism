@@ -205,7 +205,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             AttributeInventory<DelayedLootItemBuilder> attributeInventory = Attribute.get(block, AttributeInventory.class);
             if (attributeInventory != null) {
                 if (attributeInventory.hasCustomLoot()) {
-                    hasContents = attributeInventory.getCustomLootBuilder().apply(delayedPool, nbtBuilder);
+                    hasContents = attributeInventory.applyLoot(delayedPool, nbtBuilder);
                 }
                 //If the block has an inventory and no custom loot function, copy the inventory slots,
                 // but if it is an IItemHandler, which for most cases of ours it will be,

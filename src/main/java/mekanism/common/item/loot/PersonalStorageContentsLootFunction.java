@@ -1,6 +1,5 @@
 package mekanism.common.item.loot;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
@@ -8,14 +7,10 @@ import java.util.List;
 import java.util.Set;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.Mekanism;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageItemInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.tile.TileEntityPersonalStorage;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -33,7 +28,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 public class PersonalStorageContentsLootFunction implements LootItemFunction {
 
     private static final PersonalStorageContentsLootFunction INSTANCE = new PersonalStorageContentsLootFunction();
-    private static final Set<LootContextParam<?>> REFERENCED_PARAMS = ImmutableSet.of(LootContextParams.BLOCK_ENTITY);
+    private static final Set<LootContextParam<?>> REFERENCED_PARAMS = Set.of(LootContextParams.BLOCK_ENTITY);
 
     private PersonalStorageContentsLootFunction() {
     }
@@ -52,7 +47,7 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
         BlockEntity blockEntity = lootContext.getParam(LootContextParams.BLOCK_ENTITY);
         if (blockEntity instanceof TileEntityPersonalStorage personalStorage) {
             List<IInventorySlot> tileSlots = personalStorage.getInventorySlots(null);
-            //only save if its empty
+            //only save if it's not empty
             if (!tileSlots.stream().allMatch(IInventorySlot::isEmpty)) {
                 PersonalStorageItemInventory destInv = PersonalStorageManager.getInventoryFor(itemStack);
                 for (int i = 0; i < tileSlots.size(); i++) {
@@ -71,7 +66,7 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
         return REFERENCED_PARAMS;
     }
 
-    public static class Serialiser implements Serializer<PersonalStorageContentsLootFunction> {
+    public static class PersonalStorageLootFunctionSerializer implements Serializer<PersonalStorageContentsLootFunction> {
 
         @Override
         public void serialize(JsonObject pJson, PersonalStorageContentsLootFunction pValue, JsonSerializationContext pSerializationContext) {

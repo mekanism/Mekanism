@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.MekanismSavedData;
@@ -35,22 +36,22 @@ class PersonalStorageData extends MekanismSavedData {
 
     /**
      * {
-     *     "data": [
+     *     [NBTConstants.DATA]: [
      *          {
-     *              "uuid": UUID,
-     *              "inv": PersonalStorageItemInventory
+     *              [NBTConstants.PERSONAL_STORAGE_ID]: UUID,
+     *              [NBTConstants.ITEMS]: PersonalStorageItemInventory
      *          }
      *     ]
      * }
      */
     @Override
     public void load(@NotNull CompoundTag nbt) {
-        ListTag entries = nbt.getList("data", Tag.TAG_COMPOUND);
+        ListTag entries = nbt.getList(NBTConstants.DATA, Tag.TAG_COMPOUND);
         for (int i = 0; i < entries.size(); i++) {
             CompoundTag entry = entries.getCompound(i);
             PersonalStorageItemInventory inv = createInventory();
-            inv.deserializeNBT(entry.getList("inv", Tag.TAG_COMPOUND));
-            inventoriesById.put(entry.getUUID("uuid"), inv);
+            inv.deserializeNBT(entry.getList(NBTConstants.ITEMS, Tag.TAG_COMPOUND));
+            inventoriesById.put(entry.getUUID(NBTConstants.PERSONAL_STORAGE_ID), inv);
         }
     }
 
@@ -59,11 +60,11 @@ class PersonalStorageData extends MekanismSavedData {
         ListTag entries = new ListTag();
         inventoriesById.forEach((uuid, inv) -> {
             CompoundTag nbtEntry = new CompoundTag();
-            nbtEntry.putUUID("uuid", uuid);
-            nbtEntry.put("inv", inv.serializeNBT());
+            nbtEntry.putUUID(NBTConstants.PERSONAL_STORAGE_ID, uuid);
+            nbtEntry.put(NBTConstants.ITEMS, inv.serializeNBT());
             entries.add(nbtEntry);
         });
-        pCompoundTag.put("data", entries);
+        pCompoundTag.put(NBTConstants.DATA, entries);
         return pCompoundTag;
     }
 
