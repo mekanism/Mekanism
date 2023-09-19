@@ -141,18 +141,21 @@ public class ComputerHandlerBuilder {
             for (AnnotationMirror annotationMirror : annotatedElement.getAnnotationMirrors()) {
                 AnnotationHelper annotationValues = new AnnotationHelper(elementUtils, annotationMirror);
                 if (typeUtils.isSameType(annotationMirror.getAnnotationType(), computerMethodAnnotationType)) {
+                    handlerTypeSpec.addOriginatingElement(annotatedElement);
                     if (annotatedElement instanceof ExecutableElement executableElement) {
                         handleAtComputerMethod(annotatedName, isPrivate, isStatic, annotationValues, executableElement);
                     } else {
                         messager.printMessage(Kind.ERROR, "Unable to handle, expected ExecutableElement but found "+annotatedElement.getClass().getSimpleName());
                     }
                 } else if (typeUtils.isSameType(annotationMirror.getAnnotationType(), syntheticComputerMethodAnnotationType)) {
+                    handlerTypeSpec.addOriginatingElement(annotatedElement);
                     if (annotatedElement instanceof VariableElement fieldElement) {
                         handleAtSyntheticMethod(annotatedName, isPrivate, isStatic, annotationValues, fieldElement);
                     } else {
                         messager.printMessage(Kind.ERROR, "Unable to handle, expected VariableElement but found "+annotatedElement.getClass().getSimpleName());
                     }
                 } else if (typeUtils.isSameType(annotationMirror.getAnnotationType(), wrappingComputerMethodAnnotationType)) {
+                    handlerTypeSpec.addOriginatingElement(annotatedElement);
                     handleAtWrappingComputerMethod(annotatedElement, annotatedName, isPrivate, isStatic, annotationValues);
                 }
             }
@@ -185,6 +188,7 @@ public class ComputerHandlerBuilder {
             messager.printMessage(Diagnostic.Kind.ERROR, "Could not find wrapper Type Element", annotatedElement);
             return;
         }
+        handlerTypeSpec.addOriginatingElement(wrapperTypeEl);
         List<ExecutableElement> wrapperMethods = gatherWrapperMethods(wrapperTypeEl);
 
         //gather the target method names and check we got the same amount
@@ -219,6 +223,7 @@ public class ComputerHandlerBuilder {
         for (int i = 0; i < targetMethodNames.size(); i++) {
             String targetMethodName = targetMethodNames.get(i);
             ExecutableElement wrapperMethod = wrapperMethods.get(i);
+            handlerTypeSpec.addOriginatingElement(wrapperMethod);
             //invoke the wrapper
             CodeBlock targetInvoker = CodeBlock.of("$T.$L($L)", wrapperTypeMirror, wrapperMethod.getSimpleName(), targetReference);
             //convert the wrapper's return value
