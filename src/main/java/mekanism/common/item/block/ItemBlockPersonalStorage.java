@@ -11,7 +11,6 @@ import mekanism.common.lib.inventory.personalstorage.PersonalStorageItemInventor
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
@@ -75,16 +74,13 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
 
     @Override
     public void onDestroyed(@NotNull ItemEntity item, @NotNull DamageSource damageSource) {
+        super.onDestroyed(item, damageSource);
         if (!item.level().isClientSide) {
             ItemStack stack = item.getItem();
-            //Like our super impl, we try to drop the inventory contents if we are a block item that persists our inventory
-            // If we succeeded (as the player who destroyed the item was the owner or if the chest was on public) then we
-            // can delete the inventory from the manager as it has been added to the world
-            if (InventoryUtils.dropItemContents(item, damageSource) ||
-                //Or if we didn't drop the contents check if the inventory was actually empty and if so we can prune
-                // the data from the storage manager (if it isn't empty we want to persist it so that server admins can recover their items)
-                getDroppedSlots(stack).stream().allMatch(IInventorySlot::isEmpty)
-            ) {
+            PersonalStorageItemInventory inventory = PersonalStorageManager.getInventoryIfPresent(stack);
+            if (inventory != null && inventory.getInventorySlots(null).stream().allMatch(IInventorySlot::isEmpty)) {
+                //If the inventory was actually empty we can prune the data from the storage manager
+                // (if it isn't empty we want to persist it so that server admins can recover their items)
                 PersonalStorageManager.deleteInventory(stack);
             }
         }

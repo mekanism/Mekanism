@@ -33,10 +33,8 @@ public final class InventoryUtils {
 
     /**
      * Helper to drop the contents of an inventory when it is destroyed if it is public or the cause of the destruction has access to the inventory.
-     *
-     * @return {@code true} if it was determined the contents should be dropped
      */
-    public static boolean dropItemContents(ItemEntity entity, DamageSource source) {
+    public static void dropItemContents(ItemEntity entity, DamageSource source) {
         ItemStack stack = entity.getItem();
         if (!entity.level().isClientSide && !stack.isEmpty() && stack.getItem() instanceof IDroppableContents inventory && inventory.canContentsDrop(stack)) {
             boolean shouldDrop;
@@ -55,10 +53,8 @@ public final class InventoryUtils {
                         dropStack(slot.getStack().copy(), slotStack -> entity.level().addFreshEntity(new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), slotStack)));
                     }
                 }
-                return true;
             }
         }
-        return false;
     }
 
     /**
