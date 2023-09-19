@@ -516,19 +516,19 @@ public abstract class BaseComputerHelper {
               .build(types);
 
         TableType.builder(MinerFilter.class, "A Digital Miner filter")
-              .extendz(IFilter.class)
+              .extendedFrom(IFilter.class)
               .addField("requiresReplacement", boolean.class, "Whether the filter requires a replacement to be done before it will allow mining")
               .addField("replaceTarget", Item.class, "The name of the item block that will be used to replace a mined block")
               .build(types);
 
         TableType.builder(OredictionificatorItemFilter.class, "An Oredictionificator filter")
-              .extendz(IFilter.class)
+              .extendedFrom(IFilter.class)
               .addField("target", String.class, "The target tag to match (input)")
               .addField("selected", Item.class, "The selected output item's registered name. Optional for adding a filter")
               .build(types);
 
         TableType.builder(SorterFilter.class, "A Logistical Sorter filter")
-              .extendz(IFilter.class)
+              .extendedFrom(IFilter.class)
               .addField("allowDefault", boolean.class, "Allows the filtered item to travel to the default color destination")
               .addField("color", EnumColor.class, "The color configured, nil if none")
               .addField("size", boolean.class, "If Size Mode is enabled")
@@ -537,7 +537,7 @@ public abstract class BaseComputerHelper {
               .build(types);
 
         TableType.builder(QIOFilter.class, "A Quantum Item Orchestration filter")
-              .extendz(IFilter.class)
+              .extendedFrom(IFilter.class)
               .build(types);
 
         buildFilterVariants(types, SorterFilter.class, SorterItemStackFilter.class, SorterModIDFilter.class, SorterTagFilter.class, "Logistical Sorter", true);
@@ -549,7 +549,7 @@ public abstract class BaseComputerHelper {
 
     private static <BASE> void buildFilterVariants(Map<Class<?>, TableType> types, Class<BASE> deviceFilterType, Class<? extends BASE> itemStackFilterClass, Class<? extends BASE> modIDFilterClass, Class<? extends BASE> tagFilterClass, String deviceName, boolean hasFuzzyItem) {
         Builder itemstackBuilder = TableType.builder(itemStackFilterClass, deviceName + " filter with ItemStack filter properties")
-              .extendz(deviceFilterType)
+              .extendedFrom(deviceFilterType)
               .addField("item", Item.class, "The filtered item's registered name")
               .addField("itemNBT", String.class, "The NBT data of the filtered item, optional");
         if (hasFuzzyItem) {
@@ -558,12 +558,12 @@ public abstract class BaseComputerHelper {
         itemstackBuilder.build(types);
 
         TableType.builder(modIDFilterClass, deviceName + " filter with Mod Id filter properties")
-              .extendz(deviceFilterType)
+              .extendedFrom(deviceFilterType)
               .addField("modId", String.class, "The mod id to filter. e.g. mekansim")
               .build(types);
 
         TableType.builder(tagFilterClass, deviceName + " filter with Tag filter properties")
-              .extendz(deviceFilterType)
+              .extendedFrom(deviceFilterType)
               .addField("tag", String.class, "The tag to filter. e.g. forge:ores")
               .build(types);
     }

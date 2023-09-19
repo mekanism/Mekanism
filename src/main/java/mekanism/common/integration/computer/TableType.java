@@ -51,7 +51,7 @@ public record TableType(String description, String humanName, Map<String, FieldT
             this.humanName = MethodHelpData.getHumanType(clazz, ComputerMethodFactory.NO_CLASSES);
         }
 
-        public Builder extendz(Class<?> c) {
+        public Builder extendedFrom(Class<?> c) {
             this.extendz = c;
             return this;
         }
