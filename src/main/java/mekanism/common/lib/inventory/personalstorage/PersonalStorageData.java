@@ -56,7 +56,7 @@ class PersonalStorageData extends MekanismSavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag pCompoundTag) {
+    public CompoundTag save(CompoundTag compoundTag) {
         ListTag entries = new ListTag();
         inventoriesById.forEach((uuid, inv) -> {
             CompoundTag nbtEntry = new CompoundTag();
@@ -64,8 +64,8 @@ class PersonalStorageData extends MekanismSavedData {
             nbtEntry.put(NBTConstants.ITEMS, inv.serializeNBT());
             entries.add(nbtEntry);
         });
-        pCompoundTag.put(NBTConstants.DATA, entries);
-        return pCompoundTag;
+        compoundTag.put(NBTConstants.DATA, entries);
+        return compoundTag;
     }
 
     @Override
