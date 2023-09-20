@@ -78,7 +78,7 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
         if (!item.level().isClientSide) {
             ItemStack stack = item.getItem();
             PersonalStorageManager.getInventoryIfPresent(stack).ifPresent(inventory -> {
-                if (inventory.getInventorySlots(null).stream().allMatch(IInventorySlot::isEmpty)) {
+                if (inventory.isInventoryEmpty()) {
                     //If the inventory was actually empty we can prune the data from the storage manager
                     // (if it isn't empty we want to persist it so that server admins can recover their items)
                     PersonalStorageManager.deleteInventory(stack);

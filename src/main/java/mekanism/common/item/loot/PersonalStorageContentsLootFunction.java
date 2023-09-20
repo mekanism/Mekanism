@@ -45,16 +45,13 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
     @Override
     public ItemStack apply(ItemStack itemStack, LootContext lootContext) {
         BlockEntity blockEntity = lootContext.getParam(LootContextParams.BLOCK_ENTITY);
-        if (blockEntity instanceof TileEntityPersonalStorage personalStorage) {
+        if (blockEntity instanceof TileEntityPersonalStorage personalStorage && !personalStorage.isInventoryEmpty()) {
             List<IInventorySlot> tileSlots = personalStorage.getInventorySlots(null);
-            //only save if it's not empty
-            if (!tileSlots.stream().allMatch(IInventorySlot::isEmpty)) {
-                PersonalStorageItemInventory destInv = PersonalStorageManager.getInventoryFor(itemStack);
-                for (int i = 0; i < tileSlots.size(); i++) {
-                    IInventorySlot tileSlot = tileSlots.get(i);
-                    if (!tileSlot.isEmpty()) {
-                        destInv.setStackInSlot(i, tileSlot.getStack().copy());
-                    }
+            PersonalStorageItemInventory destInv = PersonalStorageManager.getInventoryFor(itemStack);
+            for (int i = 0; i < tileSlots.size(); i++) {
+                IInventorySlot tileSlot = tileSlots.get(i);
+                if (!tileSlot.isEmpty()) {
+                    destInv.setStackInSlot(i, tileSlot.getStack().copy());
                 }
             }
         }

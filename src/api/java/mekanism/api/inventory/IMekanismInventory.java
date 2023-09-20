@@ -100,4 +100,29 @@ public interface IMekanismInventory extends ISidedItemHandler, IContentsListener
         IInventorySlot inventorySlot = getInventorySlot(slot, side);
         return inventorySlot != null && inventorySlot.isItemValid(stack);
     }
+
+    /**
+     * Are all the Slots empty?
+     * @implNote named isInventoryEmpty to avoid clashing with any other isEmpty() method
+     *
+     * @param side the side to query
+     * @return true if completely empty on this side
+     */
+    default boolean isInventoryEmpty(@Nullable Direction side) {
+        for (IInventorySlot slot : getInventorySlots(side)) {
+            if (!slot.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Sided inventory helper for isEmpty
+     *
+     * @return true if completely empty on the default side
+     */
+    default boolean isInventoryEmpty() {
+        return isInventoryEmpty(getInventorySideFor());
+    }
 }
