@@ -13,21 +13,10 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public abstract class AbstractPersonalStorageItemInventory implements IMekanismInventory {
 
-    protected final List<IInventorySlot> slots = Util.make(new ArrayList<>(), this::createInventorySlots);
+    protected final List<IInventorySlot> slots = Util.make(new ArrayList<>(), lst -> PersonalStorageManager.createSlots(lst::add, BasicInventorySlot.alwaysTrueBi, this));
 
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return slots;
-    }
-
-    //todo combine this with the one in the Block Entities?
-    private void createInventorySlots(List<IInventorySlot> slots) {
-        for (int slotY = 0; slotY < 6; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                //Note: we allow access to the slots from all sides as long as it is public, unlike in 1.12 where we always denied the bottom face
-                // We did that to ensure that things like hoppers that could check IInventory did not bypass any restrictions
-                slots.add(BasicInventorySlot.at(this, 8 + slotX * 18, 18 + slotY * 18));
-            }
-        }
     }
 }

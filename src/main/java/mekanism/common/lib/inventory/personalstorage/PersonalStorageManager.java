@@ -5,9 +5,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
+import mekanism.api.AutomationType;
 import mekanism.api.DataHandlerUtils;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
+import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.SecurityUtils;
@@ -94,6 +100,14 @@ public class PersonalStorageManager {
 
     public static void reset() {
         STORAGE_BY_PLAYER_UUID.clear();
+    }
+
+    public static void createSlots(Consumer<IInventorySlot> slotConsumer, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInteract, IContentsListener listener) {
+        for (int slotY = 0; slotY < 6; slotY++) {
+            for (int slotX = 0; slotX < 9; slotX++) {
+                slotConsumer.accept(BasicInventorySlot.at(canInteract, canInteract, listener, 8 + slotX * 18, 18 + slotY * 18));
+            }
+        }
     }
 
 }
