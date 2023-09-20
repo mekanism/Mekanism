@@ -36,8 +36,7 @@ public abstract class BlockPersonalStorage<TILE extends TileEntityPersonalStorag
     public void setPlacedBy(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable LivingEntity placer, @NotNull ItemStack stack) {
         super.setPlacedBy(world, pos, state, placer, stack);
         if (!world.isClientSide) {
-            PersonalStorageItemInventory storageItemInventory = PersonalStorageManager.getInventoryIfPresent(stack);
-            if (storageItemInventory != null) {
+            PersonalStorageManager.getInventoryIfPresent(stack).ifPresent(storageItemInventory -> {
                 TileEntityPersonalStorage tile = WorldUtils.getTileEntity(TileEntityPersonalStorage.class, world, pos);
                 if (tile == null) {
                     return;
@@ -51,7 +50,7 @@ public abstract class BlockPersonalStorage<TILE extends TileEntityPersonalStorag
                     //itemstack will be deleted, remove the stored inventory
                     PersonalStorageManager.deleteInventory(stack);
                 }
-            }
+            });
         }
     }
 }

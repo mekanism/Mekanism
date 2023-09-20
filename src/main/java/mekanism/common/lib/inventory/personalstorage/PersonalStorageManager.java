@@ -3,6 +3,7 @@ package mekanism.common.lib.inventory.personalstorage;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
@@ -58,15 +59,14 @@ public class PersonalStorageManager {
      * The stack will only be modified if it contained a legacy inventory
      *
      * @param stack Personal storage ItemStack
-     * @return the existing or converted inventory
+     * @return the existing or converted inventory, or an empty optional if none exists in saved data nor legacy data
      */
-    @Nullable
-    public static PersonalStorageItemInventory getInventoryIfPresent(ItemStack stack) {
+    public static Optional<PersonalStorageItemInventory> getInventoryIfPresent(ItemStack stack) {
         UUID owner = SecurityUtils.get().getOwnerUUID(stack);
         UUID invId = getInventoryIdNullable(stack);
         //TODO - After 1.20: Remove legacy loading
         boolean hasLegacyData = ItemDataUtils.hasData(stack, NBTConstants.ITEMS, Tag.TAG_LIST);
-        return owner != null && (invId != null || hasLegacyData) ? getInventoryFor(stack) : null;
+        return Optional.ofNullable(owner != null && (invId != null || hasLegacyData) ? getInventoryFor(stack) : null);
     }
 
     public static void deleteInventory(ItemStack stack) {

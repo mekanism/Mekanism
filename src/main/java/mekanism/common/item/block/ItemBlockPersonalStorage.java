@@ -77,21 +77,20 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
         super.onDestroyed(item, damageSource);
         if (!item.level().isClientSide) {
             ItemStack stack = item.getItem();
-            PersonalStorageItemInventory inventory = PersonalStorageManager.getInventoryIfPresent(stack);
-            if (inventory != null && inventory.getInventorySlots(null).stream().allMatch(IInventorySlot::isEmpty)) {
-                //If the inventory was actually empty we can prune the data from the storage manager
-                // (if it isn't empty we want to persist it so that server admins can recover their items)
-                PersonalStorageManager.deleteInventory(stack);
-            }
+            PersonalStorageManager.getInventoryIfPresent(stack).ifPresent(inventory -> {
+                if (inventory.getInventorySlots(null).stream().allMatch(IInventorySlot::isEmpty)) {
+                    //If the inventory was actually empty we can prune the data from the storage manager
+                    // (if it isn't empty we want to persist it so that server admins can recover their items)
+                    PersonalStorageManager.deleteInventory(stack);
+                }
+            });
         }
     }
 
     @Override
     public List<IInventorySlot> getDroppedSlots(ItemStack stack) {
-        PersonalStorageItemInventory inventory = PersonalStorageManager.getInventoryIfPresent(stack);
-        if (inventory == null) {
-            return Collections.emptyList();
-        }
-        return inventory.getInventorySlots(null);
+        return PersonalStorageManager.getInventoryIfPresent(stack)
+              .map(inventory -> inventory.getInventorySlots(null))
+              .orElse(Collections.emptyList());
     }
 }
