@@ -62,7 +62,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
         tooltip.add(MekanismLang.ROBIT_NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getRobitName(stack)));
         tooltip.add(MekanismLang.ROBIT_SKIN.translateColored(EnumColor.INDIGO, EnumColor.GRAY, RobitSkin.getTranslatedName(getRobitSkin(stack))));
         ISecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
-        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
+        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasSustainedInventory(stack))));
     }
 
     @NotNull
@@ -96,7 +96,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
                 } else {
                     robit.setOwnerUUID(ownerUUID);
                 }
-                robit.setInventory(getInventory(stack));
+                robit.setSustainedInventory(getSustainedInventory(stack));
                 robit.setCustomName(getRobitName(stack));
                 robit.setSecurityMode(stack.getCapability(Capabilities.SECURITY_OBJECT).map(ISecurityObject::getSecurityMode).orElse(SecurityMode.PUBLIC));
                 robit.setSkin(getRobitSkin(stack), player);

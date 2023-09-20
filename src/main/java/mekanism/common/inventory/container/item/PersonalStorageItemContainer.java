@@ -2,8 +2,10 @@ package mekanism.common.inventory.container.item;
 
 import java.util.List;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.inventory.InventoryPersonalStorage;
 import mekanism.common.inventory.container.slot.HotBarSlot;
+import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItemInventory;
+import mekanism.common.lib.inventory.personalstorage.ClientSidePersonalStorageInventory;
+import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -15,17 +17,18 @@ import org.jetbrains.annotations.NotNull;
 
 public class PersonalStorageItemContainer extends MekanismItemContainer {
 
-    private InventoryPersonalStorage itemInventory;
+    private final AbstractPersonalStorageItemInventory itemInventory;
 
-    public PersonalStorageItemContainer(int id, Inventory inv, InteractionHand hand, ItemStack stack) {
+    public PersonalStorageItemContainer(int id, Inventory inv, InteractionHand hand, ItemStack stack, boolean isRemote) {
         super(MekanismContainerTypes.PERSONAL_STORAGE_ITEM, id, inv, hand, stack);
+        //We have to initialize this before actually adding the slots
+        itemInventory = !isRemote ? PersonalStorageManager.getInventoryFor(stack) : new ClientSidePersonalStorageInventory();
+        super.addSlotsAndOpen();
     }
 
     @Override
     protected void addSlotsAndOpen() {
-        //We have to initialize this before actually adding the slots
-        itemInventory = new InventoryPersonalStorage(stack);
-        super.addSlotsAndOpen();
+        //no-op, we call super in constructor, as we need the isRemote
     }
 
     @Override

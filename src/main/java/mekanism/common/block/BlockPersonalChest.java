@@ -1,7 +1,6 @@
 package mekanism.common.block;
 
-import mekanism.common.block.interfaces.IPersonalStorage;
-import mekanism.common.block.prefab.BlockTile.BlockTileModel;
+import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityPersonalChest;
@@ -13,7 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 
-public class BlockPersonalChest extends BlockTileModel<TileEntityPersonalChest, BlockTypeTile<TileEntityPersonalChest>> implements IPersonalStorage {
+public class BlockPersonalChest extends BlockPersonalStorage<TileEntityPersonalChest, BlockTypeTile<TileEntityPersonalChest>> implements IStateFluidLoggable {
 
     public BlockPersonalChest() {
         super(MekanismBlockTypes.PERSONAL_CHEST, properties -> properties.mapColor(MapColor.COLOR_GRAY));

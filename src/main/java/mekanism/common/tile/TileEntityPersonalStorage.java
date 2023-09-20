@@ -10,6 +10,7 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -58,15 +59,11 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
         //Note: We always allow manual interaction (even for insertion), as if a player has the GUI open we treat that as they are allowed to interact with it
         // and if the security mode changes we then boot any players who can't interact with it anymore out of the GUI
         //Note: We can just directly pass ourselves as a security object as we know we are present and that we aren't just an owner item
+        //Note: we allow access to the slots from all sides as long as it is public, unlike in 1.12 where we always denied the bottom face
+        // We did that to ensure that things like hoppers that could check IInventory did not bypass any restrictions
         BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInteract = (stack, automationType) ->
               automationType == AutomationType.MANUAL || ISecurityUtils.INSTANCE.getEffectiveSecurityMode(this, isRemote()) == SecurityMode.PUBLIC;
-        for (int slotY = 0; slotY < 6; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                //Note: we allow access to the slots from all sides as long as it is public, unlike in 1.12 where we always denied the bottom face
-                // We did that to ensure that things like hoppers that could check IInventory did not bypass any restrictions
-                builder.addSlot(BasicInventorySlot.at(canInteract, canInteract, listener, 8 + slotX * 18, 18 + slotY * 18));
-            }
-        }
+        PersonalStorageManager.createSlots(builder::addSlot, canInteract, listener);
         return builder.build();
     }
 

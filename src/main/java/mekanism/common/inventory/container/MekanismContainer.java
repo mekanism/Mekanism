@@ -167,13 +167,6 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     }
 
     @Override
-    public boolean stillValid(@NotNull Player player) {
-        //Is this the proper default
-        //TODO: Re-evaluate this and maybe add in some distance based checks??
-        return true;
-    }
-
-    @Override
     public boolean canTakeItemForPickAll(@NotNull ItemStack stack, @NotNull Slot slot) {
         if (slot instanceof IInsertableSlot insertableSlot) {
             if (!insertableSlot.canMergeWith(stack)) {

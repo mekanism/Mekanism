@@ -1,7 +1,5 @@
 package mekanism.common.block;
 
-import mekanism.common.block.interfaces.IPersonalStorage;
-import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityPersonalBarrel;
@@ -13,7 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 
-public class BlockPersonalBarrel extends BlockTile<TileEntityPersonalBarrel, BlockTypeTile<TileEntityPersonalBarrel>> implements IPersonalStorage {
+public class BlockPersonalBarrel extends BlockPersonalStorage<TileEntityPersonalBarrel, BlockTypeTile<TileEntityPersonalBarrel>> {
 
     public BlockPersonalBarrel() {
         super(MekanismBlockTypes.PERSONAL_BARREL, properties -> properties.mapColor(MapColor.COLOR_GRAY));

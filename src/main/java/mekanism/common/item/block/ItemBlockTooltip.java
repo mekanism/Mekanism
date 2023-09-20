@@ -89,7 +89,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
             tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, TextUtils.format(fluidStack.getAmount())));
         }
         if (Attribute.has(getBlock(), AttributeInventory.class) && stack.getItem() instanceof IItemSustainedInventory inventory) {
-            tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(inventory.hasInventory(stack))));
+            tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(inventory.hasSustainedInventory(stack))));
         }
         if (Attribute.has(getBlock(), AttributeUpgradeSupport.class)) {
             MekanismUtils.addUpgradesToTooltip(stack, tooltip);
