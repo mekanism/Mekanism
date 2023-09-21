@@ -1853,7 +1853,7 @@ methods:
   - methodName: setEnabled
     params:
     - javaType: boolean
-      name: enabled
+      name: arg0
       type: boolean
   Filter Wrapper (Digital Miner):
   - methodName: clone
@@ -1895,7 +1895,7 @@ methods:
   - methodName: setItemStack
     params:
     - javaType: net.minecraft.world.item.ItemStack
-      name: stack
+      name: arg0
       type: Table (ItemStack)
   Filter Wrapper (Logistical Sorter):
   - methodName: clone
@@ -1953,7 +1953,7 @@ methods:
   - methodName: setModID
     params:
     - javaType: java.lang.String
-      name: id
+      name: arg0
       type: String
   Filter Wrapper (Oredictionificator Item):
   - methodName: getSelectedOutput
@@ -1992,7 +1992,7 @@ methods:
   - methodName: setTagName
     params:
     - javaType: java.lang.String
-      name: name
+      name: arg0
       type: String
   Fission Reactor Logic Adapter:
   - methodName: getLogicMode
@@ -2748,7 +2748,7 @@ methods:
       javaType: mekanism.api.math.FloatingLong
       type: Number (FloatingLong)
   Induction Matrix Port:
-  - description: true -> output, false -> input. TODO change this to enum
+  - description: true -> output, false -> input.
     methodName: getMode
     returns:
       javaType: boolean
@@ -4266,12 +4266,12 @@ methods:
       javaType: double
       type: Number (double)
   SPS Port:
-  - description: true -> output, false -> input. TODO change this to enum
+  - description: true -> output, false -> input.
     methodName: getMode
     returns:
       javaType: boolean
       type: boolean
-  - description: true -> output, false -> input. TODO change this to enum
+  - description: true -> output, false -> input.
     methodName: setMode
     params:
     - javaType: boolean

@@ -1,0 +1,30 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood"
+        },
+        {
+          "type": "mekanism:condition_exists",
+          "condition": {
+            "type": "ilikewood:config",
+            "config": "chests"
+          }
+        }
+      ]
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:bamboo_chest"
+    }
+  },
+  "mainOutput": {
+    "count": 8,
+    "item": "minecraft:bamboo_planks"
+  }
+}

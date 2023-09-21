@@ -9,12 +9,18 @@
           "modid": "ilikewood"
         },
         {
-          "type": "forge:mod_loaded",
-          "modid": "ilikewood_sticks"
+          "type": "mekanism:condition_exists",
+          "condition": {
+            "type": "ilikewood:config",
+            "config": "sticks"
+          }
         },
         {
-          "type": "forge:mod_loaded",
-          "modid": "ilikewood_torches"
+          "type": "mekanism:condition_exists",
+          "condition": {
+            "type": "ilikewood:config",
+            "config": "torches"
+          }
         }
       ]
     }

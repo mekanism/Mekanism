@@ -5,17 +5,22 @@
       "type": "forge:and",
       "values": [
         {
-          "type": "mekanism:mod_version_loaded",
-          "minVersion": "1.19-9.0.1.0",
+          "type": "forge:mod_loaded",
           "modid": "ilikewood"
         },
         {
-          "type": "forge:mod_loaded",
-          "modid": "ilikewood_item_frames"
+          "type": "mekanism:condition_exists",
+          "condition": {
+            "type": "ilikewood:config",
+            "config": "sticks"
+          }
         },
         {
-          "type": "forge:mod_loaded",
-          "modid": "ilikewood_sticks"
+          "type": "mekanism:condition_exists",
+          "condition": {
+            "type": "ilikewood:config",
+            "config": "item_frames"
+          }
         }
       ]
     }

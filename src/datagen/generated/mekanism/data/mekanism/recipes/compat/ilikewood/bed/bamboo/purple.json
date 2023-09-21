@@ -1,0 +1,35 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood"
+        },
+        {
+          "type": "mekanism:condition_exists",
+          "condition": {
+            "type": "ilikewood:config",
+            "config": "beds"
+          }
+        }
+      ]
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:purple_bamboo_bed"
+    }
+  },
+  "mainOutput": {
+    "count": 3,
+    "item": "minecraft:bamboo_planks"
+  },
+  "secondaryChance": 1.0,
+  "secondaryOutput": {
+    "count": 3,
+    "item": "minecraft:purple_wool"
+  }
+}

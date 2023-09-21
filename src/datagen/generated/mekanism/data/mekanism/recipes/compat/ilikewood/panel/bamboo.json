@@ -1,0 +1,41 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "ilikewood"
+        },
+        {
+          "type": "mekanism:condition_exists",
+          "condition": {
+            "type": "ilikewood:config",
+            "config": "sticks"
+          }
+        },
+        {
+          "type": "mekanism:condition_exists",
+          "condition": {
+            "type": "ilikewood:config",
+            "config": "panels"
+          }
+        }
+      ]
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:bamboo_panels"
+    }
+  },
+  "mainOutput": {
+    "count": 6,
+    "item": "ilikewood:bamboo_stick"
+  },
+  "secondaryChance": 0.25,
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  }
+}

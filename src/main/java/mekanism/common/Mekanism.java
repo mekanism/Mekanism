@@ -68,6 +68,7 @@ import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.PacketHandler;
 import mekanism.common.network.to_client.PacketTransmitterUpdate;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.condition.ConditionExistsCondition;
 import mekanism.common.recipe.condition.ModVersionLoadedCondition;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
@@ -248,6 +249,7 @@ public class Mekanism {
         event.register(MekanismAPI.SLURRY_REGISTRY_NAME, emptyName, () -> MekanismAPI.EMPTY_SLURRY);
         //Register our custom serializer condition
         if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS)) {
+            CraftingHelper.register(ConditionExistsCondition.Serializer.INSTANCE);
             CraftingHelper.register(ModVersionLoadedCondition.Serializer.INSTANCE);
         }
     }
