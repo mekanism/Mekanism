@@ -3,17 +3,20 @@ package mekanism.common.integration.computer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
-import java.util.ServiceLoader.Provider;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import mekanism.common.Mekanism;
 import net.minecraftforge.common.util.Lazy;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 /**
@@ -90,6 +93,21 @@ public class FactoryRegistry {
                 computerMethodFactory.bindTo(subject, holder);
             }
         }
+    }
+
+    public static Map<Class<?>, List<MethodHelpData>> getHelpData() {
+        return Stream.of(
+              factories.entrySet().stream(),
+              interfaceFactories.entrySet().stream()
+        )
+              .flatMap(s->
+                    s.map(entry-> Pair.of(
+                          entry.getKey(),
+                          entry.getValue().get().getHelpData())
+                    )
+              )
+              //nb, this MUST be a TreeMap for the Datagen to use
+              .collect(Collectors.toMap(Pair::getLeft, Pair::getRight, (a,b)->{a.addAll(b); return a;}, ()->new TreeMap<>(Comparator.comparing(Class::getName))));
     }
 
     /**

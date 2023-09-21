@@ -1341,7 +1341,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return stored.divideToLevel(max);
     }
 
-    @ComputerMethod(restriction = MethodRestriction.REDSTONE_CONTROL)
+    @ComputerMethod(restriction = MethodRestriction.REDSTONE_CONTROL, requiresPublicSecurity = true)
     void setRedstoneMode(RedstoneControl type) throws ComputerException {
         validateSecurityIsPublic();
         if (type == RedstoneControl.PULSE && !canPulse()) {

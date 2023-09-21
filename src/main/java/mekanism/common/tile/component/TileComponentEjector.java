@@ -315,7 +315,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     //Computer related methods
-    @ComputerMethod(nameOverride = "setStrictInput")
+    @ComputerMethod(nameOverride = "setStrictInput", requiresPublicSecurity = true)
     void computerSetStrictInput(boolean strict) throws ComputerException {
         tile.validateSecurityIsPublic();
         setStrictInput(strict);
@@ -327,14 +327,14 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         }
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void clearInputColor(RelativeSide side) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateInputSide(side);
         setInputColor(side, null);
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void incrementInputColor(RelativeSide side) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateInputSide(side);
@@ -343,7 +343,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         tile.markForSave();
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void decrementInputColor(RelativeSide side) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateInputSide(side);
@@ -352,7 +352,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         tile.markForSave();
     }
 
-    @ComputerMethod(nameOverride = "setInputColor")
+    @ComputerMethod(nameOverride = "setInputColor", requiresPublicSecurity = true)
     void computerSetInputColor(RelativeSide side, EnumColor color) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateInputSide(side);
@@ -362,27 +362,27 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         setInputColor(side, color);
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void clearOutputColor() throws ComputerException {
         tile.validateSecurityIsPublic();
         setOutputColor(null);
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void incrementOutputColor() throws ComputerException {
         tile.validateSecurityIsPublic();
         outputColor = TransporterUtils.increment(outputColor);
         tile.markForSave();
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void decrementOutputColor() throws ComputerException {
         tile.validateSecurityIsPublic();
         outputColor = TransporterUtils.decrement(outputColor);
         tile.markForSave();
     }
 
-    @ComputerMethod(nameOverride = "setOutputColor")
+    @ComputerMethod(nameOverride = "setOutputColor", requiresPublicSecurity = true)
     void computerSetOutputColor(EnumColor color) throws ComputerException {
         tile.validateSecurityIsPublic();
         if (!TransporterUtils.colors.contains(color)) {

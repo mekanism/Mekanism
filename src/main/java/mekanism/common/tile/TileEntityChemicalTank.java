@@ -68,15 +68,15 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityChemicalTank extends TileEntityConfigurableMachine implements ISustainedData, IHasGasMode {
 
-    @SyntheticComputerMethod(getter = "getDumpingMode")
+    @SyntheticComputerMethod(getter = "getDumpingMode", getterDescription = "Get the current Dumping configuration")
     public GasMode dumping = GasMode.IDLE;
 
     private MergedChemicalTank chemicalTank;
     private ChemicalTankTier tier;
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDrainItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDrainItem", docPlaceholder = "drain slot")
     MergedChemicalInventorySlot<MergedChemicalTank> drainSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFillItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFillItem", docPlaceholder = "fill slot")
     MergedChemicalInventorySlot<MergedChemicalTank> fillSlot;
 
     public TileEntityChemicalTank(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
@@ -192,7 +192,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         return type == SubstanceType.GAS || type == SubstanceType.INFUSION || type == SubstanceType.PIGMENT || type == SubstanceType.SLURRY;
     }
 
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"}, docPlaceholder = "tank")
     IChemicalTank<?, ?> getCurrentTank() {
         Current current = chemicalTank.getCurrent();
         return chemicalTank.getTankFromCurrent(current == Current.EMPTY ? Current.GAS : current);
@@ -273,7 +273,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Set the Dumping mode of the tank")
     void setDumpingMode(GasMode mode) throws ComputerException {
         validateSecurityIsPublic();
         if (dumping != mode) {
@@ -282,13 +282,13 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         }
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Advance the Dumping mode to the next configuration in the list")
     void incrementDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         nextMode(0);
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Descend the Dumping mode to the previous configuration in the list")
     void decrementDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         dumping = dumping.getPrevious();

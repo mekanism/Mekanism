@@ -39,4 +39,14 @@ public @interface SyntheticComputerMethod {
      * Whether the synthetic setter is thread-safe or needs to be queued to run on the main thread.
      */
     boolean threadSafeSetter() default false;
+
+    /**
+     * Method description for getter documentation.
+     */
+    String getterDescription() default "";
+
+    /**
+     * Method description for setter documentation.
+     */
+    String setterDescription() default "";
 }

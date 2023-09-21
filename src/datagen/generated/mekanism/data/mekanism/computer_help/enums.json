@@ -1,0 +1,154 @@
+{
+  "mekanism.api.RelativeSide": [
+    "FRONT",
+    "LEFT",
+    "RIGHT",
+    "BACK",
+    "TOP",
+    "BOTTOM"
+  ],
+  "mekanism.api.Upgrade": [
+    "SPEED",
+    "ENERGY",
+    "FILTER",
+    "GAS",
+    "MUFFLING",
+    "ANCHOR",
+    "STONE_GENERATOR"
+  ],
+  "mekanism.api.security.SecurityMode": [
+    "PUBLIC",
+    "PRIVATE",
+    "TRUSTED"
+  ],
+  "mekanism.api.text.EnumColor": [
+    "BLACK",
+    "DARK_BLUE",
+    "DARK_GREEN",
+    "DARK_AQUA",
+    "DARK_RED",
+    "PURPLE",
+    "ORANGE",
+    "GRAY",
+    "DARK_GRAY",
+    "INDIGO",
+    "BRIGHT_GREEN",
+    "AQUA",
+    "RED",
+    "PINK",
+    "YELLOW",
+    "WHITE",
+    "BROWN",
+    "BRIGHT_PINK"
+  ],
+  "mekanism.common.block.attribute.AttributeStateBoilerValveMode$BoilerValveMode": [
+    "INPUT",
+    "OUTPUT_STEAM",
+    "OUTPUT_COOLANT"
+  ],
+  "mekanism.common.content.filter.FilterType": [
+    "MINER_ITEMSTACK_FILTER",
+    "MINER_MODID_FILTER",
+    "MINER_TAG_FILTER",
+    "SORTER_ITEMSTACK_FILTER",
+    "SORTER_MODID_FILTER",
+    "SORTER_TAG_FILTER",
+    "OREDICTIONIFICATOR_ITEM_FILTER",
+    "QIO_ITEMSTACK_FILTER",
+    "QIO_MODID_FILTER",
+    "QIO_TAG_FILTER"
+  ],
+  "mekanism.common.content.miner.ThreadMinerSearch$State": [
+    "IDLE",
+    "SEARCHING",
+    "PAUSED",
+    "FINISHED"
+  ],
+  "mekanism.common.content.network.transmitter.DiversionTransporter$DiversionControl": [
+    "DISABLED",
+    "HIGH",
+    "LOW"
+  ],
+  "mekanism.common.lib.transmitter.TransmissionType": [
+    "ENERGY",
+    "FLUID",
+    "GAS",
+    "INFUSION",
+    "PIGMENT",
+    "SLURRY",
+    "ITEM",
+    "HEAT"
+  ],
+  "mekanism.common.tile.TileEntityChemicalTank$GasMode": [
+    "IDLE",
+    "DUMPING_EXCESS",
+    "DUMPING"
+  ],
+  "mekanism.common.tile.component.config.DataType": [
+    "NONE",
+    "INPUT",
+    "INPUT_1",
+    "INPUT_2",
+    "OUTPUT",
+    "OUTPUT_1",
+    "OUTPUT_2",
+    "INPUT_OUTPUT",
+    "ENERGY",
+    "EXTRA"
+  ],
+  "mekanism.common.tile.interfaces.IFluidContainerManager$ContainerEditMode": [
+    "BOTH",
+    "FILL",
+    "EMPTY"
+  ],
+  "mekanism.common.tile.interfaces.IRedstoneControl$RedstoneControl": [
+    "DISABLED",
+    "HIGH",
+    "LOW",
+    "PULSE"
+  ],
+  "mekanism.common.tile.laser.TileEntityLaserAmplifier$RedstoneOutput": [
+    "OFF",
+    "ENTITY_DETECTION",
+    "ENERGY_CONTENTS"
+  ],
+  "mekanism.common.tile.qio.TileEntityQIODriveArray$DriveStatus": [
+    "NONE",
+    "OFFLINE",
+    "READY",
+    "NEAR_FULL",
+    "FULL"
+  ],
+  "mekanism.generators.common.block.attribute.AttributeStateFissionPortMode$FissionPortMode": [
+    "INPUT",
+    "OUTPUT_WASTE",
+    "OUTPUT_COOLANT"
+  ],
+  "mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter$FissionReactorLogic": [
+    "DISABLED",
+    "ACTIVATION",
+    "TEMPERATURE",
+    "EXCESS_WASTE",
+    "DAMAGED",
+    "DEPLETED"
+  ],
+  "mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter$RedstoneStatus": [
+    "IDLE",
+    "OUTPUTTING",
+    "POWERED"
+  ],
+  "mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter$FusionReactorLogic": [
+    "DISABLED",
+    "READY",
+    "CAPACITY",
+    "DEPLETED"
+  ],
+  "net.minecraft.core.Direction": [
+    "DOWN",
+    "UP",
+    "NORTH",
+    "SOUTH",
+    "WEST",
+    "EAST"
+  ]
+}

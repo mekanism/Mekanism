@@ -2,6 +2,7 @@ package mekanism.common.tile.machine;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import java.util.Map;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -36,7 +37,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     public int clientPiston;
 
     private MachineEnergyContainer<TileEntitySeismicVibrator> energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
     public TileEntitySeismicVibrator(BlockPos pos, BlockState state) {
@@ -148,8 +149,8 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
         return level.getBlockState(targetPos);
     }
 
-    @ComputerMethod
-    Int2ObjectMap<BlockState> getColumnAt(int chunkRelativeX, int chunkRelativeZ) throws ComputerException {
+    @ComputerMethod(methodDescription = "Get a column info, table key is the Y level")
+    Map<Integer, BlockState> getColumnAt(int chunkRelativeX, int chunkRelativeZ) throws ComputerException {
         validateVibrating();
         Int2ObjectMap<BlockState> blocks = new Int2ObjectOpenHashMap<>();
         BlockPos minPos = getVerticalPos(chunkRelativeX, level.getMinBuildHeight(), chunkRelativeZ);

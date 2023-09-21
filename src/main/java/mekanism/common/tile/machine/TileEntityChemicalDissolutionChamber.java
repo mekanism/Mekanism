@@ -40,6 +40,7 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
+import mekanism.common.integration.computer.computercraft.ComputerConstants;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
@@ -79,7 +80,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     public static final int BASE_TICKS_REQUIRED = 100;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getGasInput", "getGasInputCapacity", "getGasInputNeeded",
-                                                                                        "getGasInputFilledPercentage"})
+                                                                                        "getGasInputFilledPercentage"}, docPlaceholder = "gas input tank")
     public IGasTank injectTank;
     public MergedChemicalTank outputTank;
     public double injectUsage = 1;
@@ -89,13 +90,13 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     private final ILongInputHandler<@NotNull GasStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalDissolutionChamber> energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputGasItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputGasItem", docPlaceholder = "gas input item slot")
     GasInventorySlot gasInputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
     InputInventorySlot inputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
     MergedChemicalInventorySlot<MergedChemicalTank> outputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
     public TileEntityChemicalDissolutionChamber(BlockPos pos, BlockState state) {
@@ -234,12 +235,12 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
+    @ComputerMethod(methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
     FloatingLong getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
     }
 
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"}, docPlaceholder = "output tank")
     IChemicalTank<?, ?> getOutputTank() {
         Current current = outputTank.getCurrent();
         return outputTank.getTankFromCurrent(current == Current.EMPTY ? Current.GAS : current);

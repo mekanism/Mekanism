@@ -214,7 +214,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setRedstoneOutputMode(RedstoneOutput mode) throws ComputerException {
         validateSecurityIsPublic();
         if (outputMode != mode) {
@@ -223,7 +223,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         }
     }
 
-    @ComputerMethod(nameOverride = "setDelay")
+    @ComputerMethod(nameOverride = "setDelay", requiresPublicSecurity = true)
     void computerSetDelay(int delay) throws ComputerException {
         validateSecurityIsPublic();
         if (delay < 0) {
@@ -232,13 +232,13 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         setDelay(delay);
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setMinThreshold(FloatingLong threshold) throws ComputerException {
         validateSecurityIsPublic();
         setMinThresholdFromPacket(threshold);
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true)
     void setMaxThreshold(FloatingLong threshold) throws ComputerException {
         validateSecurityIsPublic();
         setMaxThresholdFromPacket(threshold);

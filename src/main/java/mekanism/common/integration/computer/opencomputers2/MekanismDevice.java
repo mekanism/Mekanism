@@ -161,6 +161,11 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends Bo
         public Optional<RPCMethod> findOverload(RPCInvocation invocation) {
             return Optional.ofNullable(invocation.getParameters().size() == methodData.argumentNames().length ? this : null);
         }
+
+        @Override
+        public Optional<String> getDescription() {
+            return Optional.ofNullable(methodData.method().methodDescription());
+        }
     }
 
     private static class Param implements RPCParameter {

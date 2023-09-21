@@ -1,0 +1,790 @@
+Class,Method Name,Params,Returns,Restriction,Requires Public Security,Description
+API Global: computerEnergyHelper,euToJoules,eu: Number (FloatingLong),Number (FloatingLong),,false,Convert IC2 Energy Units to Mekanism Joules
+API Global: computerEnergyHelper,feToJoules,fe: Number (FloatingLong),Number (FloatingLong),,false,Convert Forge Energy to Mekanism Joules
+API Global: computerEnergyHelper,joulesToEU,joules: Number (FloatingLong),Number (FloatingLong),,false,Convert Mekanism Joules to IC2 Energy Units
+API Global: computerEnergyHelper,joulesToFE,joules: Number (FloatingLong),Number (FloatingLong),,false,Convert Mekanism Joules to Forge Energy
+API Global: computerFilterHelper,createMinerItemFilter,item: String (Item),Table (MinerItemStackFilter),,false,Create a Digital Miner Item Filter from an Item name
+API Global: computerFilterHelper,createMinerModIdFilter,modId: String,Table (MinerModIDFilter),,false,Create a Digital Miner Mod Id Filter from a mod id
+API Global: computerFilterHelper,createMinerTagFilter,tag: String,Table (MinerTagFilter),,false,Create a Digital Miner Tag Filter from a Tag name
+API Global: computerFilterHelper,createOredictionificatorItemFilter,filterTag: String (ResourceLocation),Table (OredictionificatorItemFilter),,false,"Create an Oredictionificator filter from a tag, without specifying an output item"
+API Global: computerFilterHelper,createOredictionificatorItemFilter,"filterTag: String (ResourceLocation), selectedOutput: String (Item)",Table (OredictionificatorItemFilter),,false,Create an Oredictionificator filter from a tag and a selected output. The output is not validated.
+API Global: computerFilterHelper,createQIOItemFilter,item: String (Item),Table (QIOItemStackFilter),,false,Create a QIO Item Filter structure from an Item name
+API Global: computerFilterHelper,createQIOModIdFilter,modId: String,Table (QIOModIDFilter),,false,Create a QIO Mod Id Filter from a mod id
+API Global: computerFilterHelper,createQIOTagFilter,tag: String,Table (QIOTagFilter),,false,Create a QIO Tag Filter from a Tag name
+API Global: computerFilterHelper,createSorterItemFilter,item: String (Item),Table (SorterItemStackFilter),,false,Create a Logistical Sorter Item Filter structure from an Item name
+API Global: computerFilterHelper,createSorterModIdFilter,modId: String,Table (SorterModIDFilter),,false,Create a Logistical Sorter Mod Id Filter structure from a mod id
+API Global: computerFilterHelper,createSorterTagFilter,tag: String,Table (SorterTagFilter),,false,Create a Logistical Sorter Tag Filter from a tag
+Antiprotonic Nucleosynthesizer,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Antiprotonic Nucleosynthesizer,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Antiprotonic Nucleosynthesizer,getInputChemical,,Table (ChemicalStack),,false,Get the contents of the input gas tank.
+Antiprotonic Nucleosynthesizer,getInputChemicalCapacity,,Number (long),,false,Get the capacity of the input gas tank.
+Antiprotonic Nucleosynthesizer,getInputChemicalFilledPercentage,,Number (double),,false,Get the filled percentage of the input gas tank.
+Antiprotonic Nucleosynthesizer,getInputChemicalItem,,Table (ItemStack),,false,Get the contents of the input gas item slot.
+Antiprotonic Nucleosynthesizer,getInputChemicalNeeded,,Number (long),,false,Get the amount needed to fill the input gas tank.
+Antiprotonic Nucleosynthesizer,getInputItem,,Table (ItemStack),,false,Get the contents of the input item slot.
+Antiprotonic Nucleosynthesizer,getOutputItem,,Table (ItemStack),,false,Get the contents of the output slot.
+Bin,getCapacity,,Number (int),,false,Get the maximum number of items the bin can contain.
+Bin,getLock,,Table (ItemStack),,false,Get the type of item the Bin is locked to (or Air if not locked)
+Bin,getStored,,Table (ItemStack),,false,Get the contents of the bin.
+Bin,isLocked,,boolean,,false,"If true, the Bin is locked to a particular item type."
+Bin,lock,,,,false,"Lock the Bin to the currently stored item type. The Bin must not be creative, empty, or already locked"
+Bin,unlock,,,,false,"Unlock the Bin's fixed item type. The Bin must not be creative, or already unlocked"
+Bio Generator,getBioFuel,,Table (FluidStack),,false,Get the contents of the biofuel tank.
+Bio Generator,getBioFuelCapacity,,Number (int),,false,Get the capacity of the biofuel tank.
+Bio Generator,getBioFuelFilledPercentage,,Number (double),,false,Get the filled percentage of the biofuel tank.
+Bio Generator,getBioFuelNeeded,,Number (int),,false,Get the amount needed to fill the biofuel tank.
+Bio Generator,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy item.
+Bio Generator,getFuelItem,,Table (ItemStack),,false,Get the contents of the fuel slot.
+Boiler Multiblock (formed),getBoilCapacity,,Number (long),,false,"Get the maximum possible boil rate for this Boiler, based on the number of Superheating Elements"
+Boiler Multiblock (formed),getBoilRate,,Number (int),,false,Get the rate of boiling (mB/t)
+Boiler Multiblock (formed),getCooledCoolant,,Table (ChemicalStack),,false,Get the contents of the cooled coolant tank.
+Boiler Multiblock (formed),getCooledCoolantCapacity,,Number (long),,false,Get the capacity of the cooled coolant tank.
+Boiler Multiblock (formed),getCooledCoolantFilledPercentage,,Number (double),,false,Get the filled percentage of the cooled coolant tank.
+Boiler Multiblock (formed),getCooledCoolantNeeded,,Number (long),,false,Get the amount needed to fill the cooled coolant tank.
+Boiler Multiblock (formed),getEnvironmentalLoss,,Number (double),,false,Get the amount of heat lost to the environment in the last tick (Kelvin)
+Boiler Multiblock (formed),getHeatedCoolant,,Table (ChemicalStack),,false,Get the contents of the heated coolant tank.
+Boiler Multiblock (formed),getHeatedCoolantCapacity,,Number (long),,false,Get the capacity of the heated coolant tank.
+Boiler Multiblock (formed),getHeatedCoolantFilledPercentage,,Number (double),,false,Get the filled percentage of the heated coolant tank.
+Boiler Multiblock (formed),getHeatedCoolantNeeded,,Number (long),,false,Get the amount needed to fill the heated coolant tank.
+Boiler Multiblock (formed),getMaxBoilRate,,Number (int),,false,Get the maximum rate of boiling seen (mB/t)
+Boiler Multiblock (formed),getSteam,,Table (ChemicalStack),,false,Get the contents of the steam tank.
+Boiler Multiblock (formed),getSteamCapacity,,Number (long),,false,Get the capacity of the steam tank.
+Boiler Multiblock (formed),getSteamFilledPercentage,,Number (double),,false,Get the filled percentage of the steam tank.
+Boiler Multiblock (formed),getSteamNeeded,,Number (long),,false,Get the amount needed to fill the steam tank.
+Boiler Multiblock (formed),getSuperheaters,,Number (int),,false,How many superheaters this Boiler has
+Boiler Multiblock (formed),getTemperature,,Number (double),,false,Get the temperature of the boiler in Kelvin.
+Boiler Multiblock (formed),getWater,,Table (FluidStack),,false,Get the contents of the water tank.
+Boiler Multiblock (formed),getWaterCapacity,,Number (int),,false,Get the capacity of the water tank.
+Boiler Multiblock (formed),getWaterFilledPercentage,,Number (double),,false,Get the filled percentage of the water tank.
+Boiler Multiblock (formed),getWaterNeeded,,Number (int),,false,Get the amount needed to fill the water tank.
+Boiler Valve,decrementMode,,,,false,Toggle the current valve configuration to the previous option in the list
+Boiler Valve,getMode,,String (BoilerValveMode),,false,Get the current configuration of this valve
+Boiler Valve,incrementMode,,,,false,Toggle the current valve configuration to the next option in the list
+Boiler Valve,setMode,mode: String (BoilerValveMode),,,false,Change the configuration of this valve
+Chemical Crystallizer,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Chemical Crystallizer,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Chemical Crystallizer,getInput,,Table (ChemicalStack),,false,Get the contents of the input tank.
+Chemical Crystallizer,getInputCapacity,,Number (long),,false,Get the capacity of the input tank.
+Chemical Crystallizer,getInputFilledPercentage,,Number (double),,false,Get the filled percentage of the input tank.
+Chemical Crystallizer,getInputItem,,Table (ItemStack),,false,Get the contents of the input item slot.
+Chemical Crystallizer,getInputNeeded,,Number (long),,false,Get the amount needed to fill the input tank.
+Chemical Crystallizer,getOutput,,Table (ItemStack),,false,Get the contents of the output slot.
+Chemical Dissolution Chamber,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Chemical Dissolution Chamber,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Chemical Dissolution Chamber,getGasInput,,Table (ChemicalStack),,false,Get the contents of the gas input tank.
+Chemical Dissolution Chamber,getGasInputCapacity,,Number (long),,false,Get the capacity of the gas input tank.
+Chemical Dissolution Chamber,getGasInputFilledPercentage,,Number (double),,false,Get the filled percentage of the gas input tank.
+Chemical Dissolution Chamber,getGasInputNeeded,,Number (long),,false,Get the amount needed to fill the gas input tank.
+Chemical Dissolution Chamber,getInputGasItem,,Table (ItemStack),,false,Get the contents of the gas input item slot.
+Chemical Dissolution Chamber,getInputItem,,Table (ItemStack),,false,Get the contents of the input slot.
+Chemical Dissolution Chamber,getOutput,,Table (ChemicalStack),,false,Get the contents of the output tank.
+Chemical Dissolution Chamber,getOutputCapacity,,Number (long),,false,Get the capacity of the output tank.
+Chemical Dissolution Chamber,getOutputFilledPercentage,,Number (double),,false,Get the filled percentage of the output tank.
+Chemical Dissolution Chamber,getOutputItem,,Table (ItemStack),,false,Get the contents of the output slot.
+Chemical Dissolution Chamber,getOutputNeeded,,Number (long),,false,Get the amount needed to fill the output tank.
+Chemical Infuser,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Chemical Infuser,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Chemical Infuser,getLeftInput,,Table (ChemicalStack),,false,Get the contents of the left input tank.
+Chemical Infuser,getLeftInputCapacity,,Number (long),,false,Get the capacity of the left input tank.
+Chemical Infuser,getLeftInputFilledPercentage,,Number (double),,false,Get the filled percentage of the left input tank.
+Chemical Infuser,getLeftInputItem,,Table (ItemStack),,false,Get the contents of the left input item slot.
+Chemical Infuser,getLeftInputNeeded,,Number (long),,false,Get the amount needed to fill the left input tank.
+Chemical Infuser,getOutput,,Table (ChemicalStack),,false,Get the contents of the output (center) tank.
+Chemical Infuser,getOutputCapacity,,Number (long),,false,Get the capacity of the output (center) tank.
+Chemical Infuser,getOutputFilledPercentage,,Number (double),,false,Get the filled percentage of the output (center) tank.
+Chemical Infuser,getOutputItem,,Table (ItemStack),,false,Get the contents of the output item slot.
+Chemical Infuser,getOutputNeeded,,Number (long),,false,Get the amount needed to fill the output (center) tank.
+Chemical Infuser,getRightInput,,Table (ChemicalStack),,false,Get the contents of the right input tank.
+Chemical Infuser,getRightInputCapacity,,Number (long),,false,Get the capacity of the right input tank.
+Chemical Infuser,getRightInputFilledPercentage,,Number (double),,false,Get the filled percentage of the right input tank.
+Chemical Infuser,getRightInputItem,,Table (ItemStack),,false,Get the contents of the right input item slot.
+Chemical Infuser,getRightInputNeeded,,Number (long),,false,Get the amount needed to fill the right input tank.
+Chemical Oxidizer,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Chemical Oxidizer,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Chemical Oxidizer,getInput,,Table (ItemStack),,false,Get the contents of the input slot.
+Chemical Oxidizer,getOutput,,Table (ChemicalStack),,false,Get the contents of the output tank.
+Chemical Oxidizer,getOutputCapacity,,Number (long),,false,Get the capacity of the output tank.
+Chemical Oxidizer,getOutputFilledPercentage,,Number (double),,false,Get the filled percentage of the output tank.
+Chemical Oxidizer,getOutputItem,,Table (ItemStack),,false,Get the contents of the output item slot.
+Chemical Oxidizer,getOutputNeeded,,Number (long),,false,Get the amount needed to fill the output tank.
+Chemical Tank,decrementDumpingMode,,,,true,Descend the Dumping mode to the previous configuration in the list
+Chemical Tank,getCapacity,,Number (long),,false,Get the capacity of the tank.
+Chemical Tank,getDrainItem,,Table (ItemStack),,false,Get the contents of the drain slot.
+Chemical Tank,getDumpingMode,,String (GasMode),,false,Get the current Dumping configuration
+Chemical Tank,getFillItem,,Table (ItemStack),,false,Get the contents of the fill slot.
+Chemical Tank,getFilledPercentage,,Number (double),,false,Get the filled percentage of the tank.
+Chemical Tank,getNeeded,,Number (long),,false,Get the amount needed to fill the tank.
+Chemical Tank,getStored,,Table (ChemicalStack),,false,Get the contents of the tank.
+Chemical Tank,incrementDumpingMode,,,,true,Advance the Dumping mode to the next configuration in the list
+Chemical Tank,setDumpingMode,mode: String (GasMode),,,true,Set the Dumping mode of the tank
+Chemical Washer,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Chemical Washer,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Chemical Washer,getFluid,,Table (FluidStack),,false,Get the contents of the fluid tank.
+Chemical Washer,getFluidCapacity,,Number (int),,false,Get the capacity of the fluid tank.
+Chemical Washer,getFluidFilledPercentage,,Number (double),,false,Get the filled percentage of the fluid tank.
+Chemical Washer,getFluidItemInput,,Table (ItemStack),,false,Get the contents of the fluid item input slot.
+Chemical Washer,getFluidItemOutput,,Table (ItemStack),,false,Get the contents of the fluid item output slot.
+Chemical Washer,getFluidNeeded,,Number (int),,false,Get the amount needed to fill the fluid tank.
+Chemical Washer,getOutputItem,,Table (ItemStack),,false,Get the contents of the slurry item output slot.
+Chemical Washer,getSlurryInput,,Table (ChemicalStack),,false,Get the contents of the input slurry tank.
+Chemical Washer,getSlurryInputCapacity,,Number (long),,false,Get the capacity of the input slurry tank.
+Chemical Washer,getSlurryInputFilledPercentage,,Number (double),,false,Get the filled percentage of the input slurry tank.
+Chemical Washer,getSlurryInputNeeded,,Number (long),,false,Get the amount needed to fill the input slurry tank.
+Chemical Washer,getSlurryOutput,,Table (ChemicalStack),,false,Get the contents of the output slurry tank.
+Chemical Washer,getSlurryOutputCapacity,,Number (long),,false,Get the capacity of the output slurry tank.
+Chemical Washer,getSlurryOutputFilledPercentage,,Number (double),,false,Get the filled percentage of the output slurry tank.
+Chemical Washer,getSlurryOutputNeeded,,Number (long),,false,Get the amount needed to fill the output slurry tank.
+Combiner,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Combiner,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Combiner,getMainInput,,Table (ItemStack),,false,Get the contents of the main input slot.
+Combiner,getOutput,,Table (ItemStack),,false,Get the contents of the output slot.
+Combiner,getSecondaryInput,,Table (ItemStack),,false,Get the contents of the secondary input slot.
+Combining Factory,getSecondaryInput,,Table (ItemStack),,false,Get the contents of the secondary input slot.
+Compressing/Injecting/Purifying Factory,dumpChemical,,,,true,Empty the contents of the gas tank into the environment
+Compressing/Injecting/Purifying Factory,getChemical,,Table (ChemicalStack),,false,Get the contents of the gas tank.
+Compressing/Injecting/Purifying Factory,getChemicalCapacity,,Number (long),,false,Get the capacity of the gas tank.
+Compressing/Injecting/Purifying Factory,getChemicalFilledPercentage,,Number (double),,false,Get the filled percentage of the gas tank.
+Compressing/Injecting/Purifying Factory,getChemicalItem,,Table (ItemStack),,false,Get the contents of the chemical item (extra) slot.
+Compressing/Injecting/Purifying Factory,getChemicalNeeded,,Number (long),,false,Get the amount needed to fill the gas tank.
+Compressing/Injecting/Purifying Machine,dumpChemical,,,,true,Empty the contents of the gas tank into the environment
+Compressing/Injecting/Purifying Machine,getChemical,,Table (ChemicalStack),,false,Get the contents of the gas tank.
+Compressing/Injecting/Purifying Machine,getChemicalCapacity,,Number (long),,false,Get the capacity of the gas tank.
+Compressing/Injecting/Purifying Machine,getChemicalFilledPercentage,,Number (double),,false,Get the filled percentage of the gas tank.
+Compressing/Injecting/Purifying Machine,getChemicalItem,,Table (ItemStack),,false,Get the contents of the secondary input slot.
+Compressing/Injecting/Purifying Machine,getChemicalNeeded,,Number (long),,false,Get the amount needed to fill the gas tank.
+Compressing/Injecting/Purifying Machine,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Compressing/Injecting/Purifying Machine,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Compressing/Injecting/Purifying Machine,getInput,,Table (ItemStack),,false,Get the contents of the input slot.
+Compressing/Injecting/Purifying Machine,getOutput,,Table (ItemStack),,false,Get the contents of the output slot.
+Digital Miner,addFilter,filter: Table (MinerFilter),boolean,,true,Add a new filter to the miner. Requires miner to be stopped/reset first
+Digital Miner,clearInverseModeReplaceTarget,,,,true,Remove the target for Replacement in Inverse Mode. Requires miner to be stopped/reset first
+Digital Miner,getAutoEject,,boolean,,false,Whether Auto Eject is turned on
+Digital Miner,getAutoPull,,boolean,,false,Whether Auto Pull is turned on
+Digital Miner,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Digital Miner,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Digital Miner,getFilters,,List (Table (MinerFilter)),,false,Get the current list of Miner Filters
+Digital Miner,getInverseMode,,boolean,,false,Whether Inverse Mode is enabled or not
+Digital Miner,getInverseModeReplaceTarget,,String (Item),,false,Get the configured Replacement target item
+Digital Miner,getInverseModeRequiresReplacement,,boolean,,false,Whether Inverse Mode Require Replacement is turned on
+Digital Miner,getItemInSlot,slot: Number (int),Table (ItemStack),,false,Get the contents of the internal inventory slot. 0 based.
+Digital Miner,getMaxRadius,,Number (int),,false,"Get the maximum allowable Radius value, determined from the mod's config"
+Digital Miner,getMaxY,,Number (int),,false,Gets the configured maximum Y level for mining
+Digital Miner,getMinY,,Number (int),,false,Gets the configured minimum Y level for mining
+Digital Miner,getRadius,,Number (int),,false,Get the current radius configured (blocks)
+Digital Miner,getSilkTouch,,boolean,,false,Whether Silk Touch mode is enabled or not
+Digital Miner,getSlotCount,,Number (int),,false,Get the size of the Miner's internal inventory
+Digital Miner,getState,,String (State),,false,Get the state of the Miner's search
+Digital Miner,getToMine,,Number (int),,false,Get the count of block found but not yet mined
+Digital Miner,isRunning,,boolean,,false,Whether the miner is currently running
+Digital Miner,removeFilter,filter: Table (MinerFilter),boolean,,true,Removes the exactly matching filter from the miner. Requires miner to be stopped/reset first
+Digital Miner,reset,,,,true,Stop the mining process and reset the Miner to be able to change settings
+Digital Miner,setAutoEject,eject: boolean,,,true,Update the Auto Eject setting
+Digital Miner,setAutoPull,pull: boolean,,,true,Update the Auto Pull setting
+Digital Miner,setInverseMode,enabled: boolean,,,true,Update the Inverse Mode setting. Requires miner to be stopped/reset first
+Digital Miner,setInverseModeReplaceTarget,target: String (Item),,,true,Update the target for Replacement in Inverse Mode. Requires miner to be stopped/reset first
+Digital Miner,setInverseModeRequiresReplacement,requiresReplacement: boolean,,,true,Update the Inverse Mode Requires Replacement setting. Requires miner to be stopped/reset first
+Digital Miner,setMaxY,maxY: Number (int),,,true,Update the maximum Y level for mining. Requires miner to be stopped/reset first
+Digital Miner,setMinY,minY: Number (int),,,true,Update the minimum Y level for mining. Requires miner to be stopped/reset first
+Digital Miner,setRadius,radius: Number (int),,,true,Update the mining radius (blocks). Requires miner to be stopped/reset first
+Digital Miner,setSilkTouch,silk: boolean,,,true,Update the Silk Touch setting
+Digital Miner,start,,,,true,Attempt to start the mining process
+Digital Miner,stop,,,,true,Attempt to stop the mining process
+Dimensional Stabilizer,disableChunkLoadingFor,radius: Number (int),,,true,"Sets the chunks in the specified radius to not be kept loaded. The chunk the Stabilizer is in is always loaded. Range: [1, 2]"
+Dimensional Stabilizer,enableChunkLoadingFor,radius: Number (int),,,true,"Sets the chunks in the specified radius to be loaded. The chunk the Stabilizer is in is always loaded. Range: [1, 2]"
+Dimensional Stabilizer,getChunksLoaded,,Number (int),,false,Get the number of chunks being loaded.
+Dimensional Stabilizer,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Dimensional Stabilizer,isChunkLoadingAt,"x: Number (int), z: Number (int)",boolean,,false,"Check if the Dimensional Stabilizer is configured to load a the specified relative chunk position at x,y (Stabilizer is at 0,0). Range: [-2, 2]"
+Dimensional Stabilizer,setChunkLoadingAt,"x: Number (int), z: Number (int), load: boolean",,,true,"Set if the Dimensional Stabilizer is configured to load a the specified relative position (Stabilizer is at 0,0). True = load the chunk, false = don't load the chunk. Range: [-2, 2]"
+Dimensional Stabilizer,toggleChunkLoadingAt,"x: Number (int), z: Number (int)",,,true,"Toggle loading the specified relative chunk at the relative x,y position (Stabilizer is at 0,0). Just like clicking the button in the GUI. Range: [-2, 2]"
+Diversion Transporter,decrementMode,side: String (Direction),,,false,
+Diversion Transporter,getMode,side: String (Direction),String (DiversionControl),,false,
+Diversion Transporter,incrementMode,side: String (Direction),,,false,
+Diversion Transporter,setMode,"side: String (Direction), mode: String (DiversionControl)",,,false,
+Dynamic Tank Multiblock (formed),decrementContainerEditMode,,,,false,
+Dynamic Tank Multiblock (formed),getChemicalTankCapacity,,Number (long),,false,
+Dynamic Tank Multiblock (formed),getContainerEditMode,,String (ContainerEditMode),,false,
+Dynamic Tank Multiblock (formed),getFilledPercentage,,Number (double),,false,
+Dynamic Tank Multiblock (formed),getInputItem,,Table (ItemStack),,false,Get the contents of the input slot.
+Dynamic Tank Multiblock (formed),getOutputItem,,Table (ItemStack),,false,Get the contents of the output slot.
+Dynamic Tank Multiblock (formed),getStored,,Table (ChemicalStack) or Table (FluidStack),,false,
+Dynamic Tank Multiblock (formed),getTankCapacity,,Number (int),,false,
+Dynamic Tank Multiblock (formed),incrementContainerEditMode,,,,false,
+Dynamic Tank Multiblock (formed),setContainerEditMode,mode: String (ContainerEditMode),,,false,
+Electric Machine,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Electric Machine,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Electric Machine,getInput,,Table (ItemStack),,false,Get the contents of the input slot.
+Electric Machine,getOutput,,Table (ItemStack),,false,Get the contents of the output slot.
+Electric Pump,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Electric Pump,getFluid,,Table (FluidStack),,false,Get the contents of the buffer tank.
+Electric Pump,getFluidCapacity,,Number (int),,false,Get the capacity of the buffer tank.
+Electric Pump,getFluidFilledPercentage,,Number (double),,false,Get the filled percentage of the buffer tank.
+Electric Pump,getFluidNeeded,,Number (int),,false,Get the amount needed to fill the buffer tank.
+Electric Pump,getInputItem,,Table (ItemStack),,false,Get the contents of the input slot.
+Electric Pump,getOutputItem,,Table (ItemStack),,false,Get the contents of the output slot.
+Electric Pump,reset,,,,true,
+Electrolytic Separator,decrementLeftOutputDumpingMode,,,,true,
+Electrolytic Separator,decrementRightOutputDumpingMode,,,,true,
+Electrolytic Separator,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Electrolytic Separator,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Electrolytic Separator,getInput,,Table (FluidStack),,false,Get the contents of the input tank.
+Electrolytic Separator,getInputCapacity,,Number (int),,false,Get the capacity of the input tank.
+Electrolytic Separator,getInputFilledPercentage,,Number (double),,false,Get the filled percentage of the input tank.
+Electrolytic Separator,getInputItem,,Table (ItemStack),,false,Get the contents of the input item slot.
+Electrolytic Separator,getInputNeeded,,Number (int),,false,Get the amount needed to fill the input tank.
+Electrolytic Separator,getLeftOutput,,Table (ChemicalStack),,false,Get the contents of the left output tank.
+Electrolytic Separator,getLeftOutputCapacity,,Number (long),,false,Get the capacity of the left output tank.
+Electrolytic Separator,getLeftOutputDumpingMode,,String (GasMode),,false,
+Electrolytic Separator,getLeftOutputFilledPercentage,,Number (double),,false,Get the filled percentage of the left output tank.
+Electrolytic Separator,getLeftOutputItem,,Table (ItemStack),,false,Get the contents of the left output item slot.
+Electrolytic Separator,getLeftOutputNeeded,,Number (long),,false,Get the amount needed to fill the left output tank.
+Electrolytic Separator,getRightOutput,,Table (ChemicalStack),,false,Get the contents of the right output tank.
+Electrolytic Separator,getRightOutputCapacity,,Number (long),,false,Get the capacity of the right output tank.
+Electrolytic Separator,getRightOutputDumpingMode,,String (GasMode),,false,
+Electrolytic Separator,getRightOutputFilledPercentage,,Number (double),,false,Get the filled percentage of the right output tank.
+Electrolytic Separator,getRightOutputItem,,Table (ItemStack),,false,Get the contents of the right output item slot.
+Electrolytic Separator,getRightOutputNeeded,,Number (long),,false,Get the amount needed to fill the right output tank.
+Electrolytic Separator,incrementLeftOutputDumpingMode,,,,true,
+Electrolytic Separator,incrementRightOutputDumpingMode,,,,true,
+Electrolytic Separator,setLeftOutputDumpingMode,mode: String (GasMode),,,true,
+Electrolytic Separator,setRightOutputDumpingMode,mode: String (GasMode),,,true,
+Energy Cube,getChargeItem,,Table (ItemStack),,false,Get the contents of the charge slot.
+Energy Cube,getDischargeItem,,Table (ItemStack),,false,Get the contents of the discharge slot.
+Factory Machine,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Factory Machine,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Factory Machine,getInput,process: Number (int),Table (ItemStack),,false,
+Factory Machine,getOutput,process: Number (int),Table (ItemStack),,false,
+Factory Machine,getRecipeProgress,process: Number (int),Number (int),,false,
+Factory Machine,getTicksRequired,,Number (int),,false,Total number of ticks it takes currently for the recipe to complete
+Factory Machine,isAutoSortEnabled,,boolean,,false,
+Factory Machine,setAutoSort,enabled: boolean,,,true,
+Filter Wrapper,getFilterType,,String (FilterType),,false,
+Filter Wrapper,isEnabled,,boolean,,false,
+Filter Wrapper,setEnabled,enabled: boolean,,,false,
+Filter Wrapper (Digital Miner),clone,,Table (MinerFilter),,false,
+Filter Wrapper (Digital Miner),getReplaceTarget,,String (Item),,false,
+Filter Wrapper (Digital Miner),getRequiresReplacement,,boolean,,false,
+Filter Wrapper (Digital Miner),hasBlacklistedElement,,boolean,,false,
+Filter Wrapper (Digital Miner),setReplaceTarget,value: String (Item),,,false,
+Filter Wrapper (Digital Miner),setRequiresReplacement,value: boolean,,,false,
+Filter Wrapper (ItemStack),getItemStack,,Table (ItemStack),,false,
+Filter Wrapper (ItemStack),setItem,item: String (Item),,,false,
+Filter Wrapper (ItemStack),setItemStack,stack: Table (ItemStack),,,false,
+Filter Wrapper (Logistical Sorter),clone,,Table (SorterFilter),,false,
+Filter Wrapper (Logistical Sorter),getAllowDefault,,boolean,,false,
+Filter Wrapper (Logistical Sorter),getColor,,String (EnumColor),,false,
+Filter Wrapper (Logistical Sorter),getMax,,Number (int),,false,
+Filter Wrapper (Logistical Sorter),getMin,,Number (int),,false,
+Filter Wrapper (Logistical Sorter),getSizeMode,,boolean,,false,
+Filter Wrapper (Logistical Sorter),setAllowDefault,value: boolean,,,false,
+Filter Wrapper (Logistical Sorter),setColor,value: String (EnumColor),,,false,
+Filter Wrapper (Logistical Sorter),setMinMax,"min: Number (int), max: Number (int)",,,false,
+Filter Wrapper (Logistical Sorter),setSizeMode,value: boolean,,,false,
+Filter Wrapper (Mod Id),getModID,,String,,false,
+Filter Wrapper (Mod Id),setModID,id: String,,,false,
+Filter Wrapper (Oredictionificator Item),getSelectedOutput,,String (Item),,false,
+Filter Wrapper (Oredictionificator Item),setSelectedOutput,item: String (Item),,,false,
+Filter Wrapper (Oredictionificator),clone,,Table (OredictionificatorFilter),,false,
+Filter Wrapper (Oredictionificator),getFilter,,String,,false,
+Filter Wrapper (Oredictionificator),setFilter,tag: String (ResourceLocation),,,false,
+Filter Wrapper (QIO),clone,,Table (QIOFilter),,false,
+Filter Wrapper (Tag),getTagName,,String,,false,
+Filter Wrapper (Tag),setTagName,name: String,,,false,
+Fission Reactor Logic Adapter,getLogicMode,,String (FissionReactorLogic),,false,
+Fission Reactor Logic Adapter,getRedstoneLogicStatus,,String (RedstoneStatus),,false,
+Fission Reactor Logic Adapter,setLogicMode,logicType: String (FissionReactorLogic),,,false,
+Fission Reactor Multiblock (formed),activate,,,,false,"Must be disabled, and if meltdowns are disabled must not have been force disabled"
+Fission Reactor Multiblock (formed),getActualBurnRate,,Number (double),,false,Actual burn rate as it may be lower if say there is not enough fuel
+Fission Reactor Multiblock (formed),getBoilEfficiency,,Number (double),,false,
+Fission Reactor Multiblock (formed),getBurnRate,,Number (double),,false,Configured burn rate
+Fission Reactor Multiblock (formed),getCoolant,,Table (ChemicalStack) or Table (FluidStack),,false,
+Fission Reactor Multiblock (formed),getCoolantCapacity,,Number (long),,false,
+Fission Reactor Multiblock (formed),getCoolantFilledPercentage,,Number (double),,false,
+Fission Reactor Multiblock (formed),getCoolantNeeded,,Number (long),,false,
+Fission Reactor Multiblock (formed),getDamagePercent,,Number (long),,false,
+Fission Reactor Multiblock (formed),getEnvironmentalLoss,,Number (double),,false,
+Fission Reactor Multiblock (formed),getFuel,,Table (ChemicalStack),,false,Get the contents of the fuel tank.
+Fission Reactor Multiblock (formed),getFuelAssemblies,,Number (int),,false,
+Fission Reactor Multiblock (formed),getFuelCapacity,,Number (long),,false,Get the capacity of the fuel tank.
+Fission Reactor Multiblock (formed),getFuelFilledPercentage,,Number (double),,false,Get the filled percentage of the fuel tank.
+Fission Reactor Multiblock (formed),getFuelNeeded,,Number (long),,false,Get the amount needed to fill the fuel tank.
+Fission Reactor Multiblock (formed),getFuelSurfaceArea,,Number (int),,false,
+Fission Reactor Multiblock (formed),getHeatCapacity,,Number (double),,false,
+Fission Reactor Multiblock (formed),getHeatedCoolant,,Table (ChemicalStack),,false,Get the contents of the heated coolant.
+Fission Reactor Multiblock (formed),getHeatedCoolantCapacity,,Number (long),,false,Get the capacity of the heated coolant.
+Fission Reactor Multiblock (formed),getHeatedCoolantFilledPercentage,,Number (double),,false,Get the filled percentage of the heated coolant.
+Fission Reactor Multiblock (formed),getHeatedCoolantNeeded,,Number (long),,false,Get the amount needed to fill the heated coolant.
+Fission Reactor Multiblock (formed),getHeatingRate,,Number (long),,false,
+Fission Reactor Multiblock (formed),getMaxBurnRate,,Number (long),,false,
+Fission Reactor Multiblock (formed),getStatus,,boolean,,false,"true -> active, false -> off"
+Fission Reactor Multiblock (formed),getTemperature,,Number (double),,false,Get the temperature of the reactor in Kelvin.
+Fission Reactor Multiblock (formed),getWaste,,Table (ChemicalStack),,false,Get the contents of the waste tank.
+Fission Reactor Multiblock (formed),getWasteCapacity,,Number (long),,false,Get the capacity of the waste tank.
+Fission Reactor Multiblock (formed),getWasteFilledPercentage,,Number (double),,false,Get the filled percentage of the waste tank.
+Fission Reactor Multiblock (formed),getWasteNeeded,,Number (long),,false,Get the amount needed to fill the waste tank.
+Fission Reactor Multiblock (formed),isForceDisabled,,boolean,,false,
+Fission Reactor Multiblock (formed),scram,,,,false,Must be enabled
+Fission Reactor Multiblock (formed),setBurnRate,rate: Number (double),,,false,
+Fission Reactor Port,decrementMode,,,,false,
+Fission Reactor Port,getMode,,String (FissionPortMode),,false,
+Fission Reactor Port,incrementMode,,,,false,
+Fission Reactor Port,setMode,mode: String (FissionPortMode),,,false,
+Fluid Tank,decrementContainerEditMode,,,,true,
+Fluid Tank,getCapacity,,Number (int),,false,Get the capacity of the tank.
+Fluid Tank,getContainerEditMode,,String (ContainerEditMode),,false,
+Fluid Tank,getFilledPercentage,,Number (double),,false,Get the filled percentage of the tank.
+Fluid Tank,getInputItem,,Table (ItemStack),,false,Get the contents of the input slot.
+Fluid Tank,getNeeded,,Number (int),,false,Get the amount needed to fill the tank.
+Fluid Tank,getOutputItem,,Table (ItemStack),,false,Get the contents of the output slot.
+Fluid Tank,getStored,,Table (FluidStack),,false,Get the contents of the tank.
+Fluid Tank,incrementContainerEditMode,,,,true,
+Fluid Tank,setContainerEditMode,mode: String (ContainerEditMode),,,true,
+Fluidic Plenisher,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Fluidic Plenisher,getFluid,,Table (FluidStack),,false,Get the contents of the buffer tank.
+Fluidic Plenisher,getFluidCapacity,,Number (int),,false,Get the capacity of the buffer tank.
+Fluidic Plenisher,getFluidFilledPercentage,,Number (double),,false,Get the filled percentage of the buffer tank.
+Fluidic Plenisher,getFluidNeeded,,Number (int),,false,Get the amount needed to fill the buffer tank.
+Fluidic Plenisher,getInputItem,,Table (ItemStack),,false,Get the contents of the input slot.
+Fluidic Plenisher,getOutputItem,,Table (ItemStack),,false,Get the contents of the output slot.
+Fluidic Plenisher,reset,,,,true,
+Formulaic Assemblicator,craftAvailableItems,,,,true,Requires recipe and auto mode to be disabled
+Formulaic Assemblicator,craftSingleItem,,,,true,Requires recipe and auto mode to be disabled
+Formulaic Assemblicator,emptyGrid,,,,true,Requires auto mode to be disabled
+Formulaic Assemblicator,encodeFormula,,,,true,Requires an unencoded formula in the formula slot and a valid recipe
+Formulaic Assemblicator,fillGrid,,,,true,Requires auto mode to be disabled
+Formulaic Assemblicator,getAutoMode,,boolean,,true,Requires valid encoded formula
+Formulaic Assemblicator,getCraftingInputSlot,slot: Number (int),Table (ItemStack),,false,
+Formulaic Assemblicator,getCraftingOutputSlot,slot: Number (int),Table (ItemStack),,false,
+Formulaic Assemblicator,getCraftingOutputSlots,,Number (int),,false,
+Formulaic Assemblicator,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Formulaic Assemblicator,getExcessRemainingItems,,List (Table (ItemStack)),,false,
+Formulaic Assemblicator,getFormulaItem,,Table (ItemStack),,false,Get the contents of the formula slot.
+Formulaic Assemblicator,getItemInSlot,slot: Number (int),Table (ItemStack),,false,
+Formulaic Assemblicator,getRecipeProgress,,Number (int),,false,
+Formulaic Assemblicator,getSlots,,Number (int),,false,
+Formulaic Assemblicator,getStockControl,,boolean,,true,Requires valid encoded formula
+Formulaic Assemblicator,getTicksRequired,,Number (int),,false,
+Formulaic Assemblicator,hasRecipe,,boolean,,false,
+Formulaic Assemblicator,hasValidFormula,,boolean,,false,
+Formulaic Assemblicator,setAutoMode,mode: boolean,,,true,Requires valid encoded formula
+Formulaic Assemblicator,setStockControl,mode: boolean,,,true,Requires valid encoded formula
+Fuelwood Heater,getEnvironmentalLoss,,Number (double),,false,
+Fuelwood Heater,getFuelItem,,Table (ItemStack),,false,Get the contents of the fuel slot.
+Fuelwood Heater,getTemperature,,Number (double),,false,Get the temperature of the heater in Kelvin.
+Fuelwood Heater,getTransferLoss,,Number (double),,false,
+Fusion Reactor Logic Adapter,getLogicMode,,String (FusionReactorLogic),,false,
+Fusion Reactor Logic Adapter,isActiveCooledLogic,,boolean,,false,
+Fusion Reactor Logic Adapter,setActiveCooledLogic,active: boolean,,,false,
+Fusion Reactor Logic Adapter,setLogicMode,logicType: String (FusionReactorLogic),,,false,
+Fusion Reactor Multiblock (formed),getCaseTemperature,,Number (double),,false,
+Fusion Reactor Multiblock (formed),getDTFuel,,Table (ChemicalStack),,false,Get the contents of the fuel tank.
+Fusion Reactor Multiblock (formed),getDTFuelCapacity,,Number (long),,false,Get the capacity of the fuel tank.
+Fusion Reactor Multiblock (formed),getDTFuelFilledPercentage,,Number (double),,false,Get the filled percentage of the fuel tank.
+Fusion Reactor Multiblock (formed),getDTFuelNeeded,,Number (long),,false,Get the amount needed to fill the fuel tank.
+Fusion Reactor Multiblock (formed),getDeuterium,,Table (ChemicalStack),,false,Get the contents of the deuterium tank.
+Fusion Reactor Multiblock (formed),getDeuteriumCapacity,,Number (long),,false,Get the capacity of the deuterium tank.
+Fusion Reactor Multiblock (formed),getDeuteriumFilledPercentage,,Number (double),,false,Get the filled percentage of the deuterium tank.
+Fusion Reactor Multiblock (formed),getDeuteriumNeeded,,Number (long),,false,Get the amount needed to fill the deuterium tank.
+Fusion Reactor Multiblock (formed),getEnvironmentalLoss,,Number (double),,false,
+Fusion Reactor Multiblock (formed),getHohlraum,,Table (ItemStack),,false,Get the contents of the Hohlraum slot.
+Fusion Reactor Multiblock (formed),getIgnitionTemperature,active: boolean,Number (double),,false,"true -> water cooled, false -> air cooled"
+Fusion Reactor Multiblock (formed),getInjectionRate,,Number (int),,false,
+Fusion Reactor Multiblock (formed),getMaxCasingTemperature,active: boolean,Number (double),,false,"true -> water cooled, false -> air cooled"
+Fusion Reactor Multiblock (formed),getMaxPlasmaTemperature,active: boolean,Number (double),,false,"true -> water cooled, false -> air cooled"
+Fusion Reactor Multiblock (formed),getMinInjectionRate,active: boolean,Number (int),,false,"true -> water cooled, false -> air cooled"
+Fusion Reactor Multiblock (formed),getPassiveGeneration,active: boolean,Number (FloatingLong),,false,
+Fusion Reactor Multiblock (formed),getPlasmaTemperature,,Number (double),,false,
+Fusion Reactor Multiblock (formed),getProductionRate,,Number (FloatingLong),,false,
+Fusion Reactor Multiblock (formed),getSteam,,Table (ChemicalStack),,false,Get the contents of the steam tank.
+Fusion Reactor Multiblock (formed),getSteamCapacity,,Number (long),,false,Get the capacity of the steam tank.
+Fusion Reactor Multiblock (formed),getSteamFilledPercentage,,Number (double),,false,Get the filled percentage of the steam tank.
+Fusion Reactor Multiblock (formed),getSteamNeeded,,Number (long),,false,Get the amount needed to fill the steam tank.
+Fusion Reactor Multiblock (formed),getTransferLoss,,Number (double),,false,
+Fusion Reactor Multiblock (formed),getTritium,,Table (ChemicalStack),,false,Get the contents of the tritium tank.
+Fusion Reactor Multiblock (formed),getTritiumCapacity,,Number (long),,false,Get the capacity of the tritium tank.
+Fusion Reactor Multiblock (formed),getTritiumFilledPercentage,,Number (double),,false,Get the filled percentage of the tritium tank.
+Fusion Reactor Multiblock (formed),getTritiumNeeded,,Number (long),,false,Get the amount needed to fill the tritium tank.
+Fusion Reactor Multiblock (formed),getWater,,Table (FluidStack),,false,Get the contents of the water tank.
+Fusion Reactor Multiblock (formed),getWaterCapacity,,Number (int),,false,Get the capacity of the water tank.
+Fusion Reactor Multiblock (formed),getWaterFilledPercentage,,Number (double),,false,Get the filled percentage of the water tank.
+Fusion Reactor Multiblock (formed),getWaterNeeded,,Number (int),,false,Get the amount needed to fill the water tank.
+Fusion Reactor Multiblock (formed),setInjectionRate,rate: Number (int),,,false,
+Fusion Reactor Port,getMode,,boolean,,false,"true -> output, false -> input"
+Fusion Reactor Port,setMode,output: boolean,,,false,"true -> output, false -> input"
+Gas Generator,getBurnRate,,Number (double),,false,
+Gas Generator,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy item slot.
+Gas Generator,getFuel,,Table (ChemicalStack),,false,Get the contents of the fuel tank.
+Gas Generator,getFuelCapacity,,Number (long),,false,Get the capacity of the fuel tank.
+Gas Generator,getFuelFilledPercentage,,Number (double),,false,Get the filled percentage of the fuel tank.
+Gas Generator,getFuelItem,,Table (ItemStack),,false,Get the contents of the fuel item slot.
+Gas Generator,getFuelNeeded,,Number (long),,false,Get the amount needed to fill the fuel tank.
+Generator,getMaxOutput,,Number (FloatingLong),,false,
+Generator,getProductionRate,,Number (FloatingLong),,false,Get the amount of energy produced by this generator in the last tick.
+Generic Mekanism Machine,getComparatorLevel,,Number (int),COMPARATOR,false,
+Generic Mekanism Machine,getDirection,,String (Direction),DIRECTIONAL,false,
+Generic Mekanism Machine,getEnergy,,Number (FloatingLong),ENERGY,false,
+Generic Mekanism Machine,getEnergyFilledPercentage,,Number (double),ENERGY,false,
+Generic Mekanism Machine,getEnergyNeeded,,Number (FloatingLong),ENERGY,false,
+Generic Mekanism Machine,getMaxEnergy,,Number (FloatingLong),ENERGY,false,
+Generic Mekanism Machine,getRedstoneMode,,String (RedstoneControl),REDSTONE_CONTROL,false,
+Generic Mekanism Machine,setRedstoneMode,type: String (RedstoneControl),,REDSTONE_CONTROL,true,
+Heat Generator,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy item slot.
+Heat Generator,getEnvironmentalLoss,,Number (double),,false,
+Heat Generator,getFuelItem,,Table (ItemStack),,false,Get the contents of the fuel item slot.
+Heat Generator,getLava,,Table (FluidStack),,false,Get the contents of the lava tank.
+Heat Generator,getLavaCapacity,,Number (int),,false,Get the capacity of the lava tank.
+Heat Generator,getLavaFilledPercentage,,Number (double),,false,Get the filled percentage of the lava tank.
+Heat Generator,getLavaNeeded,,Number (int),,false,Get the amount needed to fill the lava tank.
+Heat Generator,getTemperature,,Number (double),,false,Get the temperature of the generator in Kelvin.
+Heat Generator,getTransferLoss,,Number (double),,false,
+Induction Matrix Multiblock (formed),getInputItem,,Table (ItemStack),,false,Get the contents of the input slot.
+Induction Matrix Multiblock (formed),getInstalledCells,,Number (int),,false,
+Induction Matrix Multiblock (formed),getInstalledProviders,,Number (int),,false,
+Induction Matrix Multiblock (formed),getLastInput,,Number (FloatingLong),,false,
+Induction Matrix Multiblock (formed),getLastOutput,,Number (FloatingLong),,false,
+Induction Matrix Multiblock (formed),getOutputItem,,Table (ItemStack),,false,Get the contents of the output slot.
+Induction Matrix Multiblock (formed),getTransferCap,,Number (FloatingLong),,false,
+Induction Matrix Port,getMode,,boolean,,false,"true -> output, false -> input. TODO change this to enum"
+Induction Matrix Port,setMode,output: boolean,,,false,"true -> output, false -> input"
+Industrial Turbine Multiblock (formed),decrementDumpingMode,,,,false,
+Industrial Turbine Multiblock (formed),getBlades,,Number (int),,false,
+Industrial Turbine Multiblock (formed),getCoils,,Number (int),,false,
+Industrial Turbine Multiblock (formed),getCondensers,,Number (int),,false,
+Industrial Turbine Multiblock (formed),getDispersers,,Number (int),,false,
+Industrial Turbine Multiblock (formed),getDumpingMode,,String (GasMode),,false,
+Industrial Turbine Multiblock (formed),getFlowRate,,Number (long),,false,
+Industrial Turbine Multiblock (formed),getLastSteamInputRate,,Number (long),,false,
+Industrial Turbine Multiblock (formed),getMaxFlowRate,,Number (long),,false,
+Industrial Turbine Multiblock (formed),getMaxProduction,,Number (FloatingLong),,false,
+Industrial Turbine Multiblock (formed),getMaxWaterOutput,,Number (long),,false,
+Industrial Turbine Multiblock (formed),getProductionRate,,Number (FloatingLong),,false,
+Industrial Turbine Multiblock (formed),getSteam,,Table (ChemicalStack),,false,Get the contents of the steam tank.
+Industrial Turbine Multiblock (formed),getSteamCapacity,,Number (long),,false,Get the capacity of the steam tank.
+Industrial Turbine Multiblock (formed),getSteamFilledPercentage,,Number (double),,false,Get the filled percentage of the steam tank.
+Industrial Turbine Multiblock (formed),getSteamNeeded,,Number (long),,false,Get the amount needed to fill the steam tank.
+Industrial Turbine Multiblock (formed),getVents,,Number (int),,false,
+Industrial Turbine Multiblock (formed),incrementDumpingMode,,,,false,
+Industrial Turbine Multiblock (formed),setDumpingMode,mode: String (GasMode),,,false,
+Isotopic Centrifuge,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Isotopic Centrifuge,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Isotopic Centrifuge,getInput,,Table (ChemicalStack),,false,Get the contents of the input tank.
+Isotopic Centrifuge,getInputCapacity,,Number (long),,false,Get the capacity of the input tank.
+Isotopic Centrifuge,getInputFilledPercentage,,Number (double),,false,Get the filled percentage of the input tank.
+Isotopic Centrifuge,getInputItem,,Table (ItemStack),,false,Get the contents of the input slot.
+Isotopic Centrifuge,getInputNeeded,,Number (long),,false,Get the amount needed to fill the input tank.
+Isotopic Centrifuge,getOutput,,Table (ChemicalStack),,false,Get the contents of the output tank.
+Isotopic Centrifuge,getOutputCapacity,,Number (long),,false,Get the capacity of the output tank.
+Isotopic Centrifuge,getOutputFilledPercentage,,Number (double),,false,Get the filled percentage of the output tank.
+Isotopic Centrifuge,getOutputItem,,Table (ItemStack),,false,Get the contents of the output slot.
+Isotopic Centrifuge,getOutputNeeded,,Number (long),,false,Get the amount needed to fill the output tank.
+Laser,getDiggingPos,,Table (BlockPos),,false,
+Laser Amplifier,getDelay,,Number (int),,false,
+Laser Amplifier,getMaxThreshold,,Number (FloatingLong),,false,
+Laser Amplifier,getMinThreshold,,Number (FloatingLong),,false,
+Laser Amplifier,getRedstoneOutputMode,,String (RedstoneOutput),,false,
+Laser Amplifier,setDelay,delay: Number (int),,,true,
+Laser Amplifier,setMaxThreshold,threshold: Number (FloatingLong),,,true,
+Laser Amplifier,setMinThreshold,threshold: Number (FloatingLong),,,true,
+Laser Amplifier,setRedstoneOutputMode,mode: String (RedstoneOutput),,,true,
+Laser Tractor Beam,getItemInSlot,slot: Number (int),Table (ItemStack),,false,
+Laser Tractor Beam,getSlotCount,,Number (int),,false,
+Logistical Sorter,addFilter,filter: Table (SorterFilter),boolean,,true,
+Logistical Sorter,clearDefaultColor,,,,true,
+Logistical Sorter,decrementDefaultColor,,,,true,
+Logistical Sorter,getAutoMode,,boolean,,false,
+Logistical Sorter,getDefaultColor,,String (EnumColor),,false,
+Logistical Sorter,getFilters,,List (Table (SorterFilter)),,false,
+Logistical Sorter,incrementDefaultColor,,,,true,
+Logistical Sorter,isRoundRobin,,boolean,,false,
+Logistical Sorter,isSingle,,boolean,,false,
+Logistical Sorter,removeFilter,filter: Table (SorterFilter),boolean,,true,
+Logistical Sorter,setAutoMode,value: boolean,,,true,
+Logistical Sorter,setDefaultColor,color: String (EnumColor),,,true,
+Logistical Sorter,setRoundRobin,value: boolean,,,true,
+Logistical Sorter,setSingle,value: boolean,,,true,
+Machine with Ejector Component,clearInputColor,side: String (RelativeSide),,,true,
+Machine with Ejector Component,clearOutputColor,,,,true,
+Machine with Ejector Component,decrementInputColor,side: String (RelativeSide),,,true,
+Machine with Ejector Component,decrementOutputColor,,,,true,
+Machine with Ejector Component,getInputColor,side: String (RelativeSide),String (EnumColor),,false,
+Machine with Ejector Component,getOutputColor,,String (EnumColor),,false,
+Machine with Ejector Component,hasStrictInput,,boolean,,false,
+Machine with Ejector Component,incrementInputColor,side: String (RelativeSide),,,true,
+Machine with Ejector Component,incrementOutputColor,,,,true,
+Machine with Ejector Component,setInputColor,"side: String (RelativeSide), color: String (EnumColor)",,,true,
+Machine with Ejector Component,setOutputColor,color: String (EnumColor),,,true,
+Machine with Ejector Component,setStrictInput,strict: boolean,,,true,
+Machine with Recipe Progress,getRecipeProgress,,Number (int),,false,
+Machine with Recipe Progress,getTicksRequired,,Number (int),,false,
+Machine with Security Component,getOwnerName,,String,,false,
+Machine with Security Component,getOwnerUUID,,String (UUID),,false,
+Machine with Security Component,getSecurityMode,,String (SecurityMode),,false,
+Machine with Side Configuration Component,canEject,type: String (TransmissionType),boolean,,false,
+Machine with Side Configuration Component,decrementMode,"type: String (TransmissionType), side: String (RelativeSide)",,,true,
+Machine with Side Configuration Component,getConfigurableTypes,,List (String (TransmissionType)),,false,
+Machine with Side Configuration Component,getMode,"type: String (TransmissionType), side: String (RelativeSide)",String (DataType),,true,
+Machine with Side Configuration Component,getSupportedModes,type: String (TransmissionType),List (String (DataType)),,true,
+Machine with Side Configuration Component,incrementMode,"type: String (TransmissionType), side: String (RelativeSide)",,,true,
+Machine with Side Configuration Component,isEjecting,type: String (TransmissionType),boolean,,false,
+Machine with Side Configuration Component,setEjecting,"type: String (TransmissionType), ejecting: boolean",,,true,
+Machine with Side Configuration Component,setMode,"type: String (TransmissionType), side: String (RelativeSide), mode: String (DataType)",,,true,
+Machine with Upgrade Component,getInstalledUpgrades,,Table (String (Upgrade) => Number (int)),,false,
+Machine with Upgrade Component,getSupportedUpgrades,,List (String (Upgrade)),,false,
+Mechanical Pipe,getBuffer,,Table (FluidStack),,false,
+Mechanical Pipe,getCapacity,,Number (long),,false,
+Mechanical Pipe,getFilledPercentage,,Number (double),,false,
+Mechanical Pipe,getNeeded,,Number (long),,false,
+Metallurgic Infuser,dumpInfuseType,,,,true,
+Metallurgic Infuser,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Metallurgic Infuser,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Metallurgic Infuser,getInfuseType,,Table (ChemicalStack),,false,Get the contents of the infusion buffer.
+Metallurgic Infuser,getInfuseTypeCapacity,,Number (long),,false,Get the capacity of the infusion buffer.
+Metallurgic Infuser,getInfuseTypeFilledPercentage,,Number (double),,false,Get the filled percentage of the infusion buffer.
+Metallurgic Infuser,getInfuseTypeItem,,Table (ItemStack),,false,Get the contents of the infusion (extra) input slot.
+Metallurgic Infuser,getInfuseTypeNeeded,,Number (long),,false,Get the amount needed to fill the infusion buffer.
+Metallurgic Infuser,getInput,,Table (ItemStack),,false,Get the contents of the input slot.
+Metallurgic Infuser,getOutput,,Table (ItemStack),,false,Get the contents of the output slot.
+Metallurgic Infuser Factory,dumpInfuseType,,,,true,Empty the contents of the infusion buffer into the environment
+Metallurgic Infuser Factory,getInfuseType,,Table (ChemicalStack),,false,Get the contents of the infusion buffer.
+Metallurgic Infuser Factory,getInfuseTypeCapacity,,Number (long),,false,Get the capacity of the infusion buffer.
+Metallurgic Infuser Factory,getInfuseTypeFilledPercentage,,Number (double),,false,Get the filled percentage of the infusion buffer.
+Metallurgic Infuser Factory,getInfuseTypeItem,,Table (ItemStack),,false,Get the contents of the infusion extra input slot.
+Metallurgic Infuser Factory,getInfuseTypeNeeded,,Number (long),,false,Get the amount needed to fill the infusion buffer.
+Modification Station,getContainerItem,,Table (ItemStack),,false,"Get the contents of the module holder slot (suit, tool, etc)."
+Modification Station,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Modification Station,getModuleItem,,Table (ItemStack),,false,Get the contents of the module slot.
+Multiblock,isFormed,,boolean,MULTIBLOCK,false,
+Multiblock (formed),getHeight,,Number (int),,false,
+Multiblock (formed),getLength,,Number (int),,false,
+Multiblock (formed),getMaxPos,,Table (BlockPos),,false,
+Multiblock (formed),getMinPos,,Table (BlockPos),,false,
+Multiblock (formed),getWidth,,Number (int),,false,
+Nutritional Liquifier,getContainerFillItem,,Table (ItemStack),,false,Get the contents of the fillable container slot.
+Nutritional Liquifier,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Nutritional Liquifier,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Nutritional Liquifier,getInput,,Table (ItemStack),,false,Get the contents of the input slot.
+Nutritional Liquifier,getOutput,,Table (FluidStack),,false,Get the contents of the output tank.
+Nutritional Liquifier,getOutputCapacity,,Number (int),,false,Get the capacity of the output tank.
+Nutritional Liquifier,getOutputFilledPercentage,,Number (double),,false,Get the filled percentage of the output tank.
+Nutritional Liquifier,getOutputItem,,Table (ItemStack),,false,Get the contents of the filled container output slot.
+Nutritional Liquifier,getOutputNeeded,,Number (int),,false,Get the amount needed to fill the output tank.
+Oredictionificator,addFilter,filter: Table (OredictionificatorItemFilter),boolean,,true,
+Oredictionificator,getFilters,,List (Table (OredictionificatorItemFilter)),,false,
+Oredictionificator,getInputItem,,Table (ItemStack),,false,Get the contents of the input slot.
+Oredictionificator,getOutputItem,,Table (ItemStack),,false,Get the contents of the output slot.
+Oredictionificator,removeFilter,filter: Table (OredictionificatorItemFilter),boolean,,true,
+Painting Machine,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Painting Machine,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Painting Machine,getInputItem,,Table (ItemStack),,false,Get the contents of the paintable item slot.
+Painting Machine,getInputPigmentItem,,Table (ItemStack),,false,Get the contents of the pigment slot.
+Painting Machine,getOutput,,Table (ItemStack),,false,Get the contents of the painted item slot.
+Painting Machine,getPigmentInput,,Table (ChemicalStack),,false,Get the contents of the pigment tank.
+Painting Machine,getPigmentInputCapacity,,Number (long),,false,Get the capacity of the pigment tank.
+Painting Machine,getPigmentInputFilledPercentage,,Number (double),,false,Get the filled percentage of the pigment tank.
+Painting Machine,getPigmentInputNeeded,,Number (long),,false,Get the amount needed to fill the pigment tank.
+Pigment Extractor,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Pigment Extractor,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Pigment Extractor,getInput,,Table (ItemStack),,false,Get the contents of the input slot.
+Pigment Extractor,getOutput,,Table (ChemicalStack),,false,Get the contents of the pigment tank.
+Pigment Extractor,getOutputCapacity,,Number (long),,false,Get the capacity of the pigment tank.
+Pigment Extractor,getOutputFilledPercentage,,Number (double),,false,Get the filled percentage of the pigment tank.
+Pigment Extractor,getOutputItem,,Table (ItemStack),,false,Get the contents of the output slot.
+Pigment Extractor,getOutputNeeded,,Number (long),,false,Get the amount needed to fill the pigment tank.
+Pigment Mixer,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Pigment Mixer,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Pigment Mixer,getLeftInput,,Table (ChemicalStack),,false,Get the contents of the left pigment tank.
+Pigment Mixer,getLeftInputCapacity,,Number (long),,false,Get the capacity of the left pigment tank.
+Pigment Mixer,getLeftInputFilledPercentage,,Number (double),,false,Get the filled percentage of the left pigment tank.
+Pigment Mixer,getLeftInputItem,,Table (ItemStack),,false,Get the contents of the left input slot.
+Pigment Mixer,getLeftInputNeeded,,Number (long),,false,Get the amount needed to fill the left pigment tank.
+Pigment Mixer,getOutput,,Table (ChemicalStack),,false,Get the contents of the output pigment tank.
+Pigment Mixer,getOutputCapacity,,Number (long),,false,Get the capacity of the output pigment tank.
+Pigment Mixer,getOutputFilledPercentage,,Number (double),,false,Get the filled percentage of the output pigment tank.
+Pigment Mixer,getOutputItem,,Table (ItemStack),,false,Get the contents of the output slot.
+Pigment Mixer,getOutputNeeded,,Number (long),,false,Get the amount needed to fill the output pigment tank.
+Pigment Mixer,getRightInput,,Table (ChemicalStack),,false,Get the contents of the right pigment tank.
+Pigment Mixer,getRightInputCapacity,,Number (long),,false,Get the capacity of the right pigment tank.
+Pigment Mixer,getRightInputFilledPercentage,,Number (double),,false,Get the filled percentage of the right pigment tank.
+Pigment Mixer,getRightInputItem,,Table (ItemStack),,false,Get the contents of the right input slot.
+Pigment Mixer,getRightInputNeeded,,Number (long),,false,Get the amount needed to fill the right pigment tank.
+Precision Sawmill,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Precision Sawmill,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Precision Sawmill,getInput,,Table (ItemStack),,false,Get the contents of the input slot.
+Precision Sawmill,getOutput,,Table (ItemStack),,false,Get the contents of the output slot.
+Precision Sawmill,getSecondaryOutput,,Table (ItemStack),,false,Get the contents of the secondary output slot.
+Pressurized Reaction Chamber,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Pressurized Reaction Chamber,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Pressurized Reaction Chamber,getInputFluid,,Table (FluidStack),,false,Get the contents of the fluid input.
+Pressurized Reaction Chamber,getInputFluidCapacity,,Number (int),,false,Get the capacity of the fluid input.
+Pressurized Reaction Chamber,getInputFluidFilledPercentage,,Number (double),,false,Get the filled percentage of the fluid input.
+Pressurized Reaction Chamber,getInputFluidNeeded,,Number (int),,false,Get the amount needed to fill the fluid input.
+Pressurized Reaction Chamber,getInputGas,,Table (ChemicalStack),,false,Get the contents of the gas input.
+Pressurized Reaction Chamber,getInputGasCapacity,,Number (long),,false,Get the capacity of the gas input.
+Pressurized Reaction Chamber,getInputGasFilledPercentage,,Number (double),,false,Get the filled percentage of the gas input.
+Pressurized Reaction Chamber,getInputGasNeeded,,Number (long),,false,Get the amount needed to fill the gas input.
+Pressurized Reaction Chamber,getInputItem,,Table (ItemStack),,false,Get the contents of the item input slot.
+Pressurized Reaction Chamber,getOutputGas,,Table (ChemicalStack),,false,Get the contents of the gas output.
+Pressurized Reaction Chamber,getOutputGasCapacity,,Number (long),,false,Get the capacity of the gas output.
+Pressurized Reaction Chamber,getOutputGasFilledPercentage,,Number (double),,false,Get the filled percentage of the gas output.
+Pressurized Reaction Chamber,getOutputGasNeeded,,Number (long),,false,Get the amount needed to fill the gas output.
+Pressurized Reaction Chamber,getOutputItem,,Table (ItemStack),,false,Get the contents of the item output slot.
+Pressurized Tube,getBuffer,,Table (ChemicalStack),,false,
+Pressurized Tube,getCapacity,,Number (long),,false,
+Pressurized Tube,getFilledPercentage,,Number (double),,false,
+Pressurized Tube,getNeeded,,Number (long),,false,
+QIO Dashboard,getCraftingInput,"window: Number (int), slot: Number (int)",Table (ItemStack),,false,
+QIO Dashboard,getCraftingOutput,window: Number (int),Table (ItemStack),,false,
+QIO Drive Array,getDrive,slot: Number (int),Table (ItemStack),,false,
+QIO Drive Array,getDriveStatus,slot: Number (int),String (DriveStatus),,false,
+QIO Drive Array,getFrequencyItemCapacity,,Number (long),,false,Requires a frequency to be selected
+QIO Drive Array,getFrequencyItemCount,,Number (long),,false,Requires a frequency to be selected
+QIO Drive Array,getFrequencyItemPercentage,,Number (double),,false,Requires a frequency to be selected
+QIO Drive Array,getFrequencyItemTypeCapacity,,Number (long),,false,Requires a frequency to be selected
+QIO Drive Array,getFrequencyItemTypeCount,,Number (long),,false,Requires a frequency to be selected
+QIO Drive Array,getFrequencyItemTypePercentage,,Number (double),,false,Requires a frequency to be selected
+QIO Drive Array,getSlotCount,,Number (int),,false,
+QIO Exporter,getExportWithoutFilter,,boolean,,false,
+QIO Exporter,setExportsWithoutFilter,value: boolean,,,true,
+QIO Importer,getImportWithoutFilter,,boolean,,false,
+QIO Importer,setImportsWithoutFilter,value: boolean,,,true,
+QIO Machine,createFrequency,name: String,,,true,Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation
+QIO Machine,decrementFrequencyColor,,,,true,Requires a frequency to be selected
+QIO Machine,getFrequencies,,List (Table (QIOFrequency)),,false,Lists public frequencies
+QIO Machine,getFrequency,,Table (QIOFrequency),,false,Requires a frequency to be selected
+QIO Machine,getFrequencyColor,,String (EnumColor),,false,Requires a frequency to be selected
+QIO Machine,hasFrequency,,boolean,,false,
+QIO Machine,incrementFrequencyColor,,,,true,Requires a frequency to be selected
+QIO Machine,setFrequency,name: String,,,true,Requires a public frequency to exist
+QIO Machine,setFrequencyColor,color: String (EnumColor),,,true,Requires a frequency to be selected
+QIO Machine with Filter,addFilter,filter: Table (QIOFilter),boolean,,true,
+QIO Machine with Filter,getFilters,,List (Table (QIOFilter)),,false,
+QIO Machine with Filter,removeFilter,filter: Table (QIOFilter),boolean,,true,
+QIO Redstone Adapter,clearTargetItem,,,,true,
+QIO Redstone Adapter,getFuzzyMode,,boolean,,false,
+QIO Redstone Adapter,getTargetItem,,Table (ItemStack),,false,
+QIO Redstone Adapter,getTriggerAmount,,Number (long),,false,
+QIO Redstone Adapter,setFuzzyMode,fuzzy: boolean,,,true,
+QIO Redstone Adapter,setTargetItem,itemName: String (ResourceLocation),,,true,
+QIO Redstone Adapter,setTriggerAmount,amount: Number (long),,,true,
+QIO Redstone Adapter,toggleFuzzyMode,,,,true,
+Quantum Entangloporter,createFrequency,name: String,,,true,Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation
+Quantum Entangloporter,getBufferFluid,,Table (FluidStack),,false,Get the contents of the fluid buffer.
+Quantum Entangloporter,getBufferFluidCapacity,,Number (int),,false,Get the capacity of the fluid buffer.
+Quantum Entangloporter,getBufferFluidFilledPercentage,,Number (double),,false,Get the filled percentage of the fluid buffer.
+Quantum Entangloporter,getBufferFluidNeeded,,Number (int),,false,Get the amount needed to fill the fluid buffer.
+Quantum Entangloporter,getBufferGas,,Table (ChemicalStack),,false,Get the contents of the gas buffer.
+Quantum Entangloporter,getBufferGasCapacity,,Number (long),,false,Get the capacity of the gas buffer.
+Quantum Entangloporter,getBufferGasFilledPercentage,,Number (double),,false,Get the filled percentage of the gas buffer.
+Quantum Entangloporter,getBufferGasNeeded,,Number (long),,false,Get the amount needed to fill the gas buffer.
+Quantum Entangloporter,getBufferInfuseType,,Table (ChemicalStack),,false,Get the contents of the infusion buffer.
+Quantum Entangloporter,getBufferInfuseTypeCapacity,,Number (long),,false,Get the capacity of the infusion buffer.
+Quantum Entangloporter,getBufferInfuseTypeFilledPercentage,,Number (double),,false,Get the filled percentage of the infusion buffer.
+Quantum Entangloporter,getBufferInfuseTypeNeeded,,Number (long),,false,Get the amount needed to fill the infusion buffer.
+Quantum Entangloporter,getBufferItem,,Table (ItemStack),,false,
+Quantum Entangloporter,getBufferPigment,,Table (ChemicalStack),,false,Get the contents of the pigment buffer.
+Quantum Entangloporter,getBufferPigmentCapacity,,Number (long),,false,Get the capacity of the pigment buffer.
+Quantum Entangloporter,getBufferPigmentFilledPercentage,,Number (double),,false,Get the filled percentage of the pigment buffer.
+Quantum Entangloporter,getBufferPigmentNeeded,,Number (long),,false,Get the amount needed to fill the pigment buffer.
+Quantum Entangloporter,getBufferSlurry,,Table (ChemicalStack),,false,Get the contents of the slurry buffer.
+Quantum Entangloporter,getBufferSlurryCapacity,,Number (long),,false,Get the capacity of the slurry buffer.
+Quantum Entangloporter,getBufferSlurryFilledPercentage,,Number (double),,false,Get the filled percentage of the slurry buffer.
+Quantum Entangloporter,getBufferSlurryNeeded,,Number (long),,false,Get the amount needed to fill the slurry buffer.
+Quantum Entangloporter,getEnvironmentalLoss,,Number (double),,false,May not be accurate if there is no frequency
+Quantum Entangloporter,getFrequencies,,List (Table (InventoryFrequency)),,false,Lists public frequencies
+Quantum Entangloporter,getFrequency,,Table (InventoryFrequency),,false,Requires a frequency to be selected
+Quantum Entangloporter,getTemperature,,Number (double),,false,Requires a frequency to be selected
+Quantum Entangloporter,getTransferLoss,,Number (double),,false,May not be accurate if there is no frequency
+Quantum Entangloporter,hasFrequency,,boolean,,false,
+Quantum Entangloporter,setFrequency,name: String,,,true,Requires a public frequency to exist
+Radioactive Waste Barrel,getCapacity,,Number (long),,false,Get the capacity of the barrel.
+Radioactive Waste Barrel,getFilledPercentage,,Number (double),,false,Get the filled percentage of the barrel.
+Radioactive Waste Barrel,getNeeded,,Number (long),,false,Get the amount needed to fill the barrel.
+Radioactive Waste Barrel,getStored,,Table (ChemicalStack),,false,Get the contents of the barrel.
+Resistive Heater,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Resistive Heater,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Resistive Heater,getEnergyUsed,,Number (FloatingLong),,false,
+Resistive Heater,getEnvironmentalLoss,,Number (double),,false,
+Resistive Heater,getTemperature,,Number (double),,false,Get the temperature of the heater in Kelvin.
+Resistive Heater,getTransferLoss,,Number (double),,false,
+Resistive Heater,setEnergyUsage,usage: Number (FloatingLong),,,true,
+Rotary Condensentrator,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Rotary Condensentrator,getEnergyUsage,,Number (FloatingLong),,false,Get the energy used in the last tick by the machine
+Rotary Condensentrator,getFluid,,Table (FluidStack),,false,Get the contents of the fluid tank.
+Rotary Condensentrator,getFluidCapacity,,Number (int),,false,Get the capacity of the fluid tank.
+Rotary Condensentrator,getFluidFilledPercentage,,Number (double),,false,Get the filled percentage of the fluid tank.
+Rotary Condensentrator,getFluidItemInput,,Table (ItemStack),,false,Get the contents of the fluid item input slot.
+Rotary Condensentrator,getFluidItemOutput,,Table (ItemStack),,false,Get the contents of the fluid item ouput slot.
+Rotary Condensentrator,getFluidNeeded,,Number (int),,false,Get the amount needed to fill the fluid tank.
+Rotary Condensentrator,getGas,,Table (ChemicalStack),,false,Get the contents of the gas tank.
+Rotary Condensentrator,getGasCapacity,,Number (long),,false,Get the capacity of the gas tank.
+Rotary Condensentrator,getGasFilledPercentage,,Number (double),,false,Get the filled percentage of the gas tank.
+Rotary Condensentrator,getGasItemInput,,Table (ItemStack),,false,Get the contents of the gas item input slot.
+Rotary Condensentrator,getGasItemOutput,,Table (ItemStack),,false,Get the contents of the gas item output slot.
+Rotary Condensentrator,getGasNeeded,,Number (long),,false,Get the amount needed to fill the gas tank.
+Rotary Condensentrator,isCondensentrating,,boolean,,false,
+Rotary Condensentrator,setCondensentrating,value: boolean,,,true,
+SPS Multiblock (formed),getCoils,,Number (int),,false,
+SPS Multiblock (formed),getInput,,Table (ChemicalStack),,false,Get the contents of the input tank.
+SPS Multiblock (formed),getInputCapacity,,Number (long),,false,Get the capacity of the input tank.
+SPS Multiblock (formed),getInputFilledPercentage,,Number (double),,false,Get the filled percentage of the input tank.
+SPS Multiblock (formed),getInputNeeded,,Number (long),,false,Get the amount needed to fill the input tank.
+SPS Multiblock (formed),getOutput,,Table (ChemicalStack),,false,Get the contents of the output tank.
+SPS Multiblock (formed),getOutputCapacity,,Number (long),,false,Get the capacity of the output tank.
+SPS Multiblock (formed),getOutputFilledPercentage,,Number (double),,false,Get the filled percentage of the output tank.
+SPS Multiblock (formed),getOutputNeeded,,Number (long),,false,Get the amount needed to fill the output tank.
+SPS Multiblock (formed),getProcessRate,,Number (double),,false,
+SPS Port,getMode,,boolean,,false,"true -> output, false -> input. TODO change this to enum"
+SPS Port,setMode,output: boolean,,,false,"true -> output, false -> input. TODO change this to enum"
+Sawing Factory,getSecondaryOutput,process: Number (int),Table (ItemStack),,false,
+Seismic Vibrator,getBlockAt,"chunkRelativeX: Number (int), y: Number (int), chunkRelativeZ: Number (int)",Table (BlockState),,false,
+Seismic Vibrator,getColumnAt,"chunkRelativeX: Number (int), chunkRelativeZ: Number (int)",Table (Number (int) => Table (BlockState)),,false,"Get a column info, table key is the Y level"
+Seismic Vibrator,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Seismic Vibrator,isVibrating,,boolean,,false,
+Solar Generator,canSeeSun,,boolean,,false,
+Solar Generator,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy item slot.
+Solar Neutron Activator,canSeeSun,,boolean,,false,
+Solar Neutron Activator,getInput,,Table (ChemicalStack),,false,Get the contents of the input tank.
+Solar Neutron Activator,getInputCapacity,,Number (long),,false,Get the capacity of the input tank.
+Solar Neutron Activator,getInputFilledPercentage,,Number (double),,false,Get the filled percentage of the input tank.
+Solar Neutron Activator,getInputItem,,Table (ItemStack),,false,Get the contents of the input slot.
+Solar Neutron Activator,getInputNeeded,,Number (long),,false,Get the amount needed to fill the input tank.
+Solar Neutron Activator,getOutput,,Table (ChemicalStack),,false,Get the contents of the output tank.
+Solar Neutron Activator,getOutputCapacity,,Number (long),,false,Get the capacity of the output tank.
+Solar Neutron Activator,getOutputFilledPercentage,,Number (double),,false,Get the filled percentage of the output tank.
+Solar Neutron Activator,getOutputItem,,Table (ItemStack),,false,Get the contents of the output slot.
+Solar Neutron Activator,getOutputNeeded,,Number (long),,false,Get the amount needed to fill the output tank.
+Solar Neutron Activator,getPeakProductionRate,,Number (float),,false,
+Solar Neutron Activator,getProductionRate,,Number (float),,false,
+Teleporter,createFrequency,name: String,,,true,Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation
+Teleporter,decrementFrequencyColor,,,,true,Requires a frequency to be selected
+Teleporter,getActiveTeleporters,,List (Table (Coord4D)),,false,Requires a frequency to be selected
+Teleporter,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
+Teleporter,getFrequencies,,List (Table (TeleporterFrequency)),,false,Lists public frequencies
+Teleporter,getFrequency,,Table (TeleporterFrequency),,false,Requires a frequency to be selected
+Teleporter,getFrequencyColor,,String (EnumColor),,false,Requires a frequency to be selected
+Teleporter,getStatus,,String,,false,
+Teleporter,hasFrequency,,boolean,,false,
+Teleporter,incrementFrequencyColor,,,,true,Requires a frequency to be selected
+Teleporter,setFrequency,name: String,,,true,Requires a public frequency to exist
+Teleporter,setFrequencyColor,color: String (EnumColor),,,true,Requires a frequency to be selected
+Thermal Evaporation Multiblock (formed),getActiveSolars,,Number (int),,false,
+Thermal Evaporation Multiblock (formed),getEnvironmentalLoss,,Number (double),,false,
+Thermal Evaporation Multiblock (formed),getInput,,Table (FluidStack),,false,Get the contents of the input tank.
+Thermal Evaporation Multiblock (formed),getInputCapacity,,Number (int),,false,Get the capacity of the input tank.
+Thermal Evaporation Multiblock (formed),getInputFilledPercentage,,Number (double),,false,Get the filled percentage of the input tank.
+Thermal Evaporation Multiblock (formed),getInputItemInput,,Table (ItemStack),,false,Get the contents of the input side's input slot.
+Thermal Evaporation Multiblock (formed),getInputItemOutput,,Table (ItemStack),,false,Get the contents of the input side's output slot.
+Thermal Evaporation Multiblock (formed),getInputNeeded,,Number (int),,false,Get the amount needed to fill the input tank.
+Thermal Evaporation Multiblock (formed),getOutput,,Table (FluidStack),,false,Get the contents of the output tank.
+Thermal Evaporation Multiblock (formed),getOutputCapacity,,Number (int),,false,Get the capacity of the output tank.
+Thermal Evaporation Multiblock (formed),getOutputFilledPercentage,,Number (double),,false,Get the filled percentage of the output tank.
+Thermal Evaporation Multiblock (formed),getOutputItemInput,,Table (ItemStack),,false,Get the contents of the output side's input slot.
+Thermal Evaporation Multiblock (formed),getOutputItemOutput,,Table (ItemStack),,false,Get the contents of the output side's output slot.
+Thermal Evaporation Multiblock (formed),getOutputNeeded,,Number (int),,false,Get the amount needed to fill the output tank.
+Thermal Evaporation Multiblock (formed),getProductionAmount,,Number (double),,false,
+Thermal Evaporation Multiblock (formed),getTemperature,,Number (double),,false,
+Universal Cable,getBuffer,,Number (FloatingLong),,false,
+Universal Cable,getCapacity,,Number (FloatingLong),,false,
+Universal Cable,getFilledPercentage,,Number (double),,false,
+Universal Cable,getNeeded,,Number (FloatingLong),,false,
+Wind Generator,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy item slot.
+Wind Generator,isBlacklistedDimension,,boolean,,false,

@@ -39,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
 public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism implements IConfigurable {
 
     private long lastProcessTick;
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"}, docPlaceholder = "barrel")
     StackedWasteBarrel gasTank;
     private float prevScale;
     private int processTicks;

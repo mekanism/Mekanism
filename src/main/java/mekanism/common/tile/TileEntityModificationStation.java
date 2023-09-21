@@ -45,11 +45,11 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     public int ticksRequired = BASE_TICKS_REQUIRED;
     public int operatingTicks;
     private boolean usedEnergy = false;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getModuleItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getModuleItem", docPlaceholder = "module slot")
     InputInventorySlot moduleSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getContainerItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getContainerItem", docPlaceholder = "module holder slot (suit, tool, etc)")
     public InputInventorySlot containerSlot;
     private MachineEnergyContainer<TileEntityModificationStation> energyContainer;
 

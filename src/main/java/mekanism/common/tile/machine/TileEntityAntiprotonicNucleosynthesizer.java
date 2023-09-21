@@ -27,6 +27,7 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
+import mekanism.common.integration.computer.computercraft.ComputerConstants;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
@@ -67,7 +68,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     private static final long MAX_GAS = 10_000;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInputChemical", "getInputChemicalCapacity", "getInputChemicalNeeded",
-                                                                                        "getInputChemicalFilledPercentage"})
+                                                                                        "getInputChemicalFilledPercentage"}, docPlaceholder = "input gas tank")
     public IGasTank gasTank;
 
     protected final IOutputHandler<@NotNull ItemStack> outputHandler;
@@ -75,13 +76,13 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     protected final ILongInputHandler<@NotNull GasStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityAntiprotonicNucleosynthesizer> energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputChemicalItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputChemicalItem", docPlaceholder = "input gas item slot")
     GasInventorySlot gasInputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input item slot")
     InputInventorySlot inputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
     OutputInventorySlot outputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
@@ -141,7 +142,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     }
 
     @NotNull
-    @ComputerMethod(nameOverride = "getEnergyUsage")
+    @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
     public FloatingLong getEnergyUsed() {
         return clientEnergyUsed;
     }

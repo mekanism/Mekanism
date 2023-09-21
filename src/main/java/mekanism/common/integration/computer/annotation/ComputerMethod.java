@@ -29,4 +29,19 @@ public @interface ComputerMethod {
      * Whether this method is thread-safe or needs to be queued to run on the main thread.
      */
     boolean threadSafe() default false;
+
+    /**
+     * Whether this method will fail when security is not public. Documentation property.
+     */
+    boolean requiresPublicSecurity() default false;
+
+    /**
+     * Method description for documentation.
+     */
+    String methodDescription() default "";
+
+    /**
+     * For {@link mekanism.common.integration.computer.Convertable} return types, specifies the possible values for documentation
+     */
+    Class[] possibleReturns() default {};
 }

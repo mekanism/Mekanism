@@ -9,22 +9,22 @@ import java.util.Locale;
 
 public class ComputerEnergyHelper {
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Convert Mekanism Joules to Forge Energy")
     public static FloatingLong joulesToFE(FloatingLong joules) throws ComputerException {
         return convert(EnergyUnit.FORGE_ENERGY, joules, true);
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Convert Forge Energy to Mekanism Joules")
     public static FloatingLong feToJoules(FloatingLong fe) throws ComputerException {
         return convert(EnergyUnit.FORGE_ENERGY, fe, false);
     }
 
-    @ComputerMethod(requiredMods = MekanismHooks.IC2_MOD_ID)
+    @ComputerMethod(requiredMods = MekanismHooks.IC2_MOD_ID, methodDescription = "Convert Mekanism Joules to IC2 Energy Units")
     public static FloatingLong joulesToEU(FloatingLong joules) throws ComputerException {
         return convert(EnergyUnit.ELECTRICAL_UNITS, joules, true);
     }
 
-    @ComputerMethod(requiredMods = MekanismHooks.IC2_MOD_ID)
+    @ComputerMethod(requiredMods = MekanismHooks.IC2_MOD_ID, methodDescription = "Convert IC2 Energy Units to Mekanism Joules")
     public static FloatingLong euToJoules(FloatingLong eu) throws ComputerException {
         return convert(EnergyUnit.ELECTRICAL_UNITS, eu, false);
     }

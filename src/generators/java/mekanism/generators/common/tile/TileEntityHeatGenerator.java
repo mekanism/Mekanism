@@ -64,17 +64,17 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     /**
      * The FluidTank for this generator.
      */
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getLava", "getLavaCapacity", "getLavaNeeded", "getLavaFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getLava", "getLavaCapacity", "getLavaNeeded", "getLavaFilledPercentage"}, docPlaceholder = "lava tank")
     public BasicFluidTank lavaTank;
     private FloatingLong producingEnergy = FloatingLong.ZERO;
     private double lastTransferLoss;
     private double lastEnvironmentLoss;
 
-    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "generator")
     BasicHeatCapacitor heatCapacitor;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem", docPlaceholder = "fuel item slot")
     FluidFuelInventorySlot fuelSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy item slot")
     EnergyInventorySlot energySlot;
 
     public TileEntityHeatGenerator(BlockPos pos, BlockState state) {
@@ -193,8 +193,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         return null;
     }
 
-    @ComputerMethod(nameOverride = "getProductionRate")
-    public FloatingLong getProducingEnergy() {
+    @Override
+    public FloatingLong getProductionRate() {
         return producingEnergy;
     }
 
@@ -221,7 +221,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableFloatingLong.create(this::getProducingEnergy, value -> producingEnergy = value));
+        container.track(SyncableFloatingLong.create(this::getProductionRate, value -> producingEnergy = value));
         container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
         container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }

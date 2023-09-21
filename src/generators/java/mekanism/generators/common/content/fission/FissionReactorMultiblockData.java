@@ -1,5 +1,6 @@
 package mekanism.generators.common.content.fission;
 
+import com.mojang.datafixers.util.Either;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -9,6 +10,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -22,7 +24,6 @@ import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBu
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.integration.computer.ComputerException;
-import mekanism.common.integration.computer.Convertable;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerHeatCapacitorWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -50,6 +51,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.fluids.FluidStack;
 
 public class FissionReactorMultiblockData extends MultiblockData implements IValveHandler {
 
@@ -77,18 +79,18 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @ContainerSync
     public VariableCapacityFluidTank fluidCoolantTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded", "getFuelFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded", "getFuelFilledPercentage"}, docPlaceholder = "fuel tank")
     public IGasTank fuelTank;
 
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getHeatedCoolant", "getHeatedCoolantCapacity", "getHeatedCoolantNeeded",
-                                                                                        "getHeatedCoolantFilledPercentage"})
+                                                                                        "getHeatedCoolantFilledPercentage"}, docPlaceholder = "heated coolant")
     public IGasTank heatedCoolantTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getWaste", "getWasteCapacity", "getWasteNeeded", "getWasteFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getWaste", "getWasteCapacity", "getWasteNeeded", "getWasteFilledPercentage"}, docPlaceholder = "waste tank")
     public IGasTank wasteTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "reactor")
     public VariableHeatCapacitor heatCapacitor;
 
     private double biomeAmbientTemp;
@@ -99,13 +101,13 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @SyntheticComputerMethod(getter = "getHeatingRate")
     public long lastBoilRate = 0;
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getActualBurnRate")
+    @SyntheticComputerMethod(getter = "getActualBurnRate", getterDescription = "Actual burn rate as it may be lower if say there is not enough fuel")
     public double lastBurnRate = 0;
     private boolean clientBurning;
     @ContainerSync
     public double reactorDamage = 0;
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getBurnRate")
+    @SyntheticComputerMethod(getter = "getBurnRate", getterDescription = "Configured burn rate")
     public double rateLimit = MekanismGeneratorsConfig.generators.defaultBurnRate.get();
     public double burnRemaining = 0, partialWaste = 0;
     @ContainerSync
@@ -441,7 +443,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         return forceDisable;
     }
 
-    @ComputerMethod(nameOverride = "getStatus")
+    @ComputerMethod(nameOverride = "getStatus", methodDescription = "true -> active, false -> off")
     public boolean isActive() {
         return active;
     }
@@ -513,7 +515,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     //Computer related methods
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Must be disabled, and if meltdowns are disabled must not have been force disabled")
     void activate() throws ComputerException {
         if (isActive()) {
             throw new ComputerException("Reactor is already active.");
@@ -523,7 +525,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         setActive(true);
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Must be enabled")
     void scram() throws ComputerException {
         if (!isActive()) {
             throw new ComputerException("Scram requires the reactor to be active.");
@@ -544,11 +546,11 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @ComputerMethod
-    Convertable<?> getCoolant() {
+    Either<ChemicalStack<?>, FluidStack> getCoolant() {
         if (fluidCoolantTank.isEmpty() && !gasCoolantTank.isEmpty()) {
-            return Convertable.of(gasCoolantTank.getStack());
+            return Either.left(gasCoolantTank.getStack());
         }
-        return Convertable.of(fluidCoolantTank.getFluid());
+        return Either.right(fluidCoolantTank.getFluid());
     }
 
     @ComputerMethod

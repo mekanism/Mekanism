@@ -70,10 +70,10 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     );
 
     private final ILongInputHandler<@NotNull GasStack> gasInputHandler;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChemicalItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChemicalItem", docPlaceholder = "chemical item (extra) slot")
     GasInventorySlot extraSlot;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getChemical", "getChemicalCapacity", "getChemicalNeeded",
-                                                                                        "getChemicalFilledPercentage"})
+                                                                                        "getChemicalFilledPercentage"}, docPlaceholder = "gas tank")
     IGasTank gasTank;
     private final ChemicalUsageMultiplier gasUsageMultiplier;
     private final long[] usedSoFar;
@@ -276,7 +276,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Empty the contents of the gas tank into the environment")
     void dumpChemical() throws ComputerException {
         validateSecurityIsPublic();
         dump();

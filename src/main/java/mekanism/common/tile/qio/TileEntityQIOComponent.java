@@ -98,7 +98,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Lists public frequencies")
     Collection<QIOFrequency> getFrequencies() {
         return FrequencyType.QIO.getManagerWrapper().getPublicManager().getFrequencies();
     }
@@ -109,7 +109,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         return frequency != null && frequency.isValid() && !frequency.isRemoved();
     }
 
-    @ComputerMethod(nameOverride = "getFrequency")
+    @ComputerMethod(nameOverride = "getFrequency", methodDescription = "Requires a frequency to be selected")
     QIOFrequency computerGetFrequency() throws ComputerException {
         QIOFrequency frequency = getQIOFrequency();
         if (frequency == null || !frequency.isValid() || frequency.isRemoved()) {
@@ -118,7 +118,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         return frequency;
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a public frequency to exist")
     void setFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         QIOFrequency frequency = FrequencyType.QIO.getManagerWrapper().getPublicManager().getFrequency(name);
@@ -128,7 +128,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         setFrequency(FrequencyType.QIO, frequency.getIdentity(), getOwnerUUID());
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation")
     void createFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         QIOFrequency frequency = FrequencyType.QIO.getManagerWrapper().getPublicManager().getFrequency(name);
@@ -138,25 +138,25 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         setFrequency(FrequencyType.QIO, new FrequencyIdentity(name, true), getOwnerUUID());
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
     EnumColor getFrequencyColor() throws ComputerException {
         return computerGetFrequency().getColor();
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a frequency to be selected")
     void setFrequencyColor(EnumColor color) throws ComputerException {
         validateSecurityIsPublic();
         computerGetFrequency().setColor(color);
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a frequency to be selected")
     void incrementFrequencyColor() throws ComputerException {
         validateSecurityIsPublic();
         QIOFrequency frequency = computerGetFrequency();
         frequency.setColor(frequency.getColor().getNext());
     }
 
-    @ComputerMethod
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a frequency to be selected")
     void decrementFrequencyColor() throws ComputerException {
         validateSecurityIsPublic();
         QIOFrequency frequency = computerGetFrequency();

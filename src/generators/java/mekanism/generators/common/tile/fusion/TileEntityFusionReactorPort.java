@@ -131,12 +131,12 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
         return false;
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "true -> output, false -> input")
     boolean getMode() {
         return getActive();
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "true -> output, false -> input")
     void setMode(boolean output) {
         setActive(output);
     }

@@ -4,11 +4,12 @@ import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.invoke.MethodHandle;
@@ -29,6 +30,7 @@ import java.lang.reflect.Method;
 public class ComputerMethodFactory<T>{
     protected static String[] NO_STRINGS = new String[0];
     protected static Class<?>[] NO_CLASSES = new Class[0];
+    private static final Comparator<MethodData<?>> METHODDATA_COMPARATOR = Comparator.<MethodData<?>, String>comparing(MethodData::name).thenComparing(md -> md.argumentNames().length);
 
     protected static MethodHandles.Lookup lookup = MethodHandles.lookup();
 
@@ -60,15 +62,15 @@ public class ComputerMethodFactory<T>{
      */
     private final Set<ObjectIntPair<String>> methodsKnown = new HashSet<>();
 
-    protected void register(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, Class<?> returnType, ComputerFunctionCaller<T> handler, String[] argumentNames, Class<?>[] argClasses) {
-        if (!methodsKnown.add(new ObjectIntImmutablePair<>(name, argumentNames.length))) {
-            throw new RuntimeException("Duplicate method name "+name+"_"+argumentNames.length);
-        }
-        this.methods.add(new MethodData<>(name, restriction, requiredMods, threadSafe, argumentNames, argClasses, returnType, handler));
+    protected void register(MethodData.Builder<T> methodData) {
+        this.register(methodData.build());
     }
 
-    protected void register(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, Class<?> returnType, ComputerFunctionCaller<T> handler) {
-        register(name, restriction, requiredMods, threadSafe, returnType, handler, NO_STRINGS, NO_CLASSES);
+    protected void register(MethodData<T> methodData) {
+        if (!methodsKnown.add(new ObjectIntImmutablePair<>(methodData.name(), methodData.argumentNames().length))) {
+            throw new RuntimeException("Duplicate method name "+methodData.name()+"_"+methodData.argumentNames().length);
+        }
+        this.methods.add(methodData);
     }
 
     void bindTo(@Nullable T subject, BoundMethodHolder holder) {
@@ -78,6 +80,10 @@ public class ComputerMethodFactory<T>{
                 holder.register(methodData, weakSubject);
             }
         }
+    }
+
+    public List<MethodHelpData> getHelpData() {
+        return this.methods.stream().sorted(METHODDATA_COMPARATOR).map(MethodHelpData::from).collect(Collectors.toList());
     }
 
     @FunctionalInterface
@@ -94,19 +100,4 @@ public class ComputerMethodFactory<T>{
         Object apply(@Nullable T t, BaseComputerHelper u) throws ComputerException;
     }
 
-    public record MethodData<T>(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses, Class<?> returnType, ComputerFunctionCaller<T> handler) {
-
-        public boolean supports(@Nullable T subject) {
-            return restriction.test(subject) && modsLoaded(requiredMods);
-        }
-
-        private boolean modsLoaded(String[] mods) {
-            for (String mod : mods) {
-                if (!ModList.get().isLoaded(mod)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
 }

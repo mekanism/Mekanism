@@ -41,16 +41,16 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     /**
      * The tank this block is storing fuel in.
      */
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded", "getFuelFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded", "getFuelFilledPercentage"}, docPlaceholder = "fuel tank")
     public FuelTank fuelTank;
     private long burnTicks;
     private int maxBurnTicks;
     private FloatingLong generationRate = FloatingLong.ZERO;
     private double gasUsedLastTick;
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem", docPlaceholder = "fuel item slot")
     GasInventorySlot fuelSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy item slot")
     EnergyInventorySlot energySlot;
 
     public TileEntityGasGenerator(BlockPos pos, BlockState state) {
@@ -164,7 +164,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
+    @Override
     FloatingLong getProductionRate() {
         return getGenerationRate().multiply(getUsed()).multiply(getMaxBurnTicks());
     }

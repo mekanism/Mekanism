@@ -48,7 +48,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
 
     private final IInputHandler<@NotNull ItemStack> extraInputHandler;
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getSecondaryInput")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getSecondaryInput", docPlaceholder = "secondary input slot")
     InputInventorySlot extraSlot;
 
     public TileEntityCombiningFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {

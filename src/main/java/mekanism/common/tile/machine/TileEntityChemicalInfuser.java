@@ -28,6 +28,7 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
+import mekanism.common.integration.computer.computercraft.ComputerConstants;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -66,12 +67,12 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     public static final long MAX_GAS = 10_000;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getLeftInput", "getLeftInputCapacity", "getLeftInputNeeded",
-                                                                                        "getLeftInputFilledPercentage"})
+                                                                                        "getLeftInputFilledPercentage"}, docPlaceholder = "left input tank")
     public IGasTank leftTank;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getRightInput", "getRightInputCapacity", "getRightInputNeeded",
-                                                                                        "getRightInputFilledPercentage"})
+                                                                                        "getRightInputFilledPercentage"}, docPlaceholder = "right input tank")
     public IGasTank rightTank;
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"}, docPlaceholder = "output (center) tank")
     public IGasTank centerTank;
 
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
@@ -82,13 +83,13 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     private final IInputHandler<@NotNull GasStack> rightInputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalInfuser> energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getLeftInputItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getLeftInputItem", docPlaceholder = "left input item slot")
     GasInventorySlot leftInputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output item slot")
     GasInventorySlot outputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getRightInputItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getRightInputItem", docPlaceholder = "right input item slot")
     GasInventorySlot rightInputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
     public TileEntityChemicalInfuser(BlockPos pos, BlockState state) {
@@ -178,7 +179,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     }
 
     @NotNull
-    @ComputerMethod(nameOverride = "getEnergyUsage")
+    @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
     public FloatingLong getEnergyUsed() {
         return clientEnergyUsed;
     }

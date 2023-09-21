@@ -48,9 +48,9 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     private float prevScale;
 
     private EnergyCubeEnergyContainer energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChargeItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChargeItem", docPlaceholder = "charge slot")
     EnergyInventorySlot chargeSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDischargeItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDischargeItem", docPlaceholder = "discharge slot")
     EnergyInventorySlot dischargeSlot;
 
     /**

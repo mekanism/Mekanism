@@ -1,9 +1,11 @@
 package mekanism.common.content.tank;
 
+import com.mojang.datafixers.util.Either;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
@@ -17,7 +19,6 @@ import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.computer.Convertable;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
@@ -43,9 +44,9 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     @SyntheticComputerMethod(getter = "getContainerEditMode")
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
     HybridInventorySlot inputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
     HybridInventorySlot outputSlot;
     private int tankCapacity;
     private long chemicalTankCapacity;
@@ -207,14 +208,14 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     @ComputerMethod
-    Convertable<?> getStored() {
+    Either<ChemicalStack<?>, FluidStack> getStored() {
         return switch (mergedTank.getCurrentType()) {
-            case FLUID -> Convertable.of(getFluidTank().getFluid());
-            case GAS -> Convertable.of(getGasTank().getStack());
-            case INFUSION -> Convertable.of(getInfusionTank().getStack());
-            case PIGMENT -> Convertable.of(getPigmentTank().getStack());
-            case SLURRY -> Convertable.of(getSlurryTank().getStack());
-            default -> Convertable.of(FluidStack.EMPTY);
+            case FLUID -> Either.right(getFluidTank().getFluid());
+            case GAS -> Either.left(getGasTank().getStack());
+            case INFUSION -> Either.left(getInfusionTank().getStack());
+            case PIGMENT -> Either.left(getPigmentTank().getStack());
+            case SLURRY -> Either.left(getSlurryTank().getStack());
+            default -> Either.right(FluidStack.EMPTY);
         };
     }
 
