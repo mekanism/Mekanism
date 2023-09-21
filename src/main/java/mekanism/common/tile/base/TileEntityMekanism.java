@@ -994,14 +994,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void setInventory(ListTag nbtTags, Object... data) {
+    public void setSustainedInventory(ListTag nbtTags) {
         if (nbtTags != null && !nbtTags.isEmpty() && persistInventory()) {
             DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags);
         }
     }
 
     @Override
-    public ListTag getInventory(Object... data) {
+    public ListTag getSustainedInventory() {
         return persistInventory() ? DataHandlerUtils.writeContainers(getInventorySlots(null)) : new ListTag();
     }
 

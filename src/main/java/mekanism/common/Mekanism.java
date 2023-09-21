@@ -53,12 +53,14 @@ import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicCauldronInteraction;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicDrainCauldronInteraction;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankItemDispenseBehavior;
+import mekanism.common.item.loot.MekanismLootFunctions;
 import mekanism.common.item.predicate.FullCanteenItemPredicate;
 import mekanism.common.item.predicate.MaxedModuleContainerItemPredicate;
 import mekanism.common.lib.MekAnnotationScanner;
 import mekanism.common.lib.Version;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -214,6 +216,7 @@ public class Mekanism {
         MekanismRecipeType.RECIPE_TYPES.register(modEventBus);
         MekanismRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
         MekanismDataSerializers.DATA_SERIALIZERS.register(modEventBus);
+        MekanismLootFunctions.REGISTER.register(modEventBus);
         MekanismGases.GASES.createAndRegisterChemical(modEventBus);
         MekanismInfuseTypes.INFUSE_TYPES.createAndRegisterChemical(modEventBus);
         MekanismPigments.PIGMENTS.createAndRegisterChemical(modEventBus);
@@ -300,6 +303,7 @@ public class Mekanism {
         PathfinderCache.reset();
         TransmitterNetworkRegistry.reset();
         GenHandler.reset();
+        PersonalStorageManager.reset();
     }
 
     private void imcQueue(InterModEnqueueEvent event) {

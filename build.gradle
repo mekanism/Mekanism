@@ -354,6 +354,11 @@ def setupRunConfig(RunConfig runConfig, boolean supportsGameTests, String direct
             if (supportsGameTests) source(extra)
         }
     }
+
+    //if the selected toolchain is a JBR, enable DCEVM
+    if(project.javaToolchains.launcherFor(java.toolchain).map{it.metadata.vendor }.getOrElse("").contains("JetBrains")) {
+        runConfig.jvmArg("-XX:+AllowEnhancedClassRedefinition")
+    }
 }
 
 void exclusiveRepo(RepositoryHandler handler, String url, String... groups) {

@@ -12,7 +12,7 @@ public class MekanismInfuseTypes {
 
     public static final InfuseTypeDeferredRegister INFUSE_TYPES = new InfuseTypeDeferredRegister(Mekanism.MODID);
 
-    public static final InfuseTypeRegistryObject<InfuseType> CARBON = INFUSE_TYPES.register("carbon", 0x404040);
+    public static final InfuseTypeRegistryObject<InfuseType> CARBON = INFUSE_TYPES.register("carbon", 0x2C2C2C);
     public static final InfuseTypeRegistryObject<InfuseType> REDSTONE = INFUSE_TYPES.register("redstone", 0xB30505);
     public static final InfuseTypeRegistryObject<InfuseType> DIAMOND = INFUSE_TYPES.register("diamond", 0x6CEDD8);
     public static final InfuseTypeRegistryObject<InfuseType> REFINED_OBSIDIAN = INFUSE_TYPES.register("refined_obsidian", 0x7C00ED);

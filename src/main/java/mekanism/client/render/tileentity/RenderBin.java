@@ -64,23 +64,22 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
                 matrix.last().normal().set(FAKE_NORMALS);
                 switch (facing) {
                     case NORTH -> {
-                        matrix.translate(0.73, 0.83, -0.0001);
+                        matrix.translate(0.71, 0.8, -0.0001);
                         matrix.mulPose(Axis.YP.rotationDegrees(180));
                     }
-                    case SOUTH -> matrix.translate(0.27, 0.83, 1.0001);
+                    case SOUTH -> matrix.translate(0.29, 0.8, 1.0001);
                     case WEST -> {
-                        matrix.translate(-0.0001, 0.83, 0.27);
+                        matrix.translate(-0.0001, 0.8, 0.29);
                         matrix.mulPose(Axis.YP.rotationDegrees(-90));
                     }
                     case EAST -> {
-                        matrix.translate(1.0001, 0.83, 0.73);
+                        matrix.translate(1.0001, 0.8, 0.71);
                         matrix.mulPose(Axis.YP.rotationDegrees(90));
                     }
                 }
 
-                float scale = 0.03125F;
-                float scaler = 0.9F;
-                matrix.scale(scale * scaler, scale * scaler, 0.0001F);
+                float scale = 0.025F;
+                matrix.scale(scale, scale, 0.0001F);
                 matrix.translate(8, -8, 8);
                 matrix.scale(16, 16, 16);
                 //Calculate lighting based on the light at the block the bin is facing
@@ -110,7 +109,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
     private void renderText(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, Component text, Direction side,
           float maxScale) {
         matrix.pushPose();
-        matrix.translate(0, -0.3725, 0);
+        matrix.translate(0, -0.25, 0);
         switch (side) {
             case SOUTH -> {
                 matrix.translate(0, 1, 0);

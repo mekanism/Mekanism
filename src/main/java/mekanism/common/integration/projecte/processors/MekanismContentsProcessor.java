@@ -42,7 +42,7 @@ public class MekanismContentsProcessor implements INBTProcessor {
         ItemStack stack = info.createStack();
         //Stored items
         if (stack.getItem() instanceof IItemSustainedInventory sustainedInventory) {
-            ListTag storedContents = sustainedInventory.getInventory(stack);
+            ListTag storedContents = sustainedInventory.getSustainedInventory(stack);
             for (IInventorySlot slot : ItemRecipeData.readContents(storedContents)) {
                 if (!slot.isEmpty()) {
                     currentEMC = addEmc(emcProxy, currentEMC, slot.getStack());

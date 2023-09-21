@@ -7,7 +7,7 @@
 		"2": "mekanism:block/models/ports",
 		"3": "mekanism:block/models/ports_led",
 		"4": "mekanism:block/models/leds",
-		"particle": "mekanism:block/steel_casing"
+		"particle": "mekanism:block/energy_cube_particle"
 	},
 	"frame": [
 		{

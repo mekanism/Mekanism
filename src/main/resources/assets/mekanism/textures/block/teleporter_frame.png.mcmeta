@@ -1,20 +1,21 @@
 {
-  "ctm": {
-    "ctm_version": 1,
-    "type": "CTM",
-    "layer": "SOLID",
-    "textures": [
-      "mekanism:block/teleporter_frame-ctm"
-    ],
-    "extra": {
-      "connect_to": [
-        {
-          "block": "mekanism:teleporter_frame"
-        },
-        {
-          "block": "mekanism:teleporter"
+    "ctm": {
+        "ctm_version": 1,
+        "type": "CTM",
+        "layer": "SOLID",
+        "textures": [
+            "mekanism:ctm/teleporter_frame"
+        ],
+        "extra": {
+            "connect_to": [
+                {
+                    "block": "mekanism:teleporter_frame"
+                },
+                {
+                    "block": "mekanism:teleporter"
+                }
+            ],
+            "connect_inside": true
         }
-      ]
     }
-  }
 }

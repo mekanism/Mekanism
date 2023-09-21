@@ -3,9 +3,6 @@ package mekanism.common;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,8 +17,8 @@ import mekanism.common.lib.FieldReflectionHelper;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
+import net.minecraft.data.HashCache.ProviderCache;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -63,38 +60,28 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         return CompletableFuture.runAsync(() -> tryPersist(globalCache));
     }
 
-    private <PROVIDER_CACHE> void tryPersist(HashCache cache) {
+    private void tryPersist(HashCache cache) {
         if (compatRecipesToSkip.isEmpty() && PATHS_TO_SKIP.isEmpty() && FAKE_PROVIDERS.isEmpty()) {
             //Skip if we don't have any things to override and persist
             return;
         }
 
-        FieldReflectionHelper<HashCache, Map<String, PROVIDER_CACHE>> existingCaches = new FieldReflectionHelper<>(HashCache.class, "f_252445_", () -> null);
-        FieldReflectionHelper<HashCache, Map<String, PROVIDER_CACHE>> originalCachesField = new FieldReflectionHelper<>(HashCache.class, "originalCaches", () -> null);
+        FieldReflectionHelper<HashCache, Map<String, ProviderCache>> existingCaches = new FieldReflectionHelper<>(HashCache.class, "f_252445_", () -> null);
+        FieldReflectionHelper<HashCache, Map<String, ProviderCache>> originalCachesField = new FieldReflectionHelper<>(HashCache.class, "originalCaches", () -> null);
         FieldReflectionHelper<HashCache, Set<Path>> cachePaths = new FieldReflectionHelper<>(HashCache.class, "f_236084_", () -> null);
         FieldReflectionHelper<HashCache, Integer> initialCount = new FieldReflectionHelper<>(HashCache.class, "f_236085_", () -> 0);
         FieldReflectionHelper<HashCache, Integer> writes = new FieldReflectionHelper<>(HashCache.class, "f_252434_", () -> 0);
-        Class<PROVIDER_CACHE> providerCache;
-        Constructor<PROVIDER_CACHE> cacheConstructor;
-        Method cacheReader;
-        try {
-            providerCache = (Class<PROVIDER_CACHE>) Class.forName("net.minecraft.data.HashCache$ProviderCache");
-            cacheConstructor = ObfuscationReflectionHelper.findConstructor(providerCache, String.class, ImmutableMap.class);
-            cacheReader = ObfuscationReflectionHelper.findMethod(HashCache.class, "m_236092_", Path.class, Path.class);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        FieldReflectionHelper<PROVIDER_CACHE, ImmutableMap<Path, HashCode>> providerCacheData = new FieldReflectionHelper<>(providerCache, "f_236127_", () -> null);
+        FieldReflectionHelper<ProviderCache, ImmutableMap<Path, HashCode>> providerCacheData = new FieldReflectionHelper<>(ProviderCache.class, "f_236127_", () -> null);
 
-        Map<String, PROVIDER_CACHE> caches = existingCaches.getValue(cache);
-        Map<String, PROVIDER_CACHE> originalCaches = originalCachesField.getValue(cache);
+        Map<String, ProviderCache> caches = existingCaches.getValue(cache);
+        Map<String, ProviderCache> originalCaches = originalCachesField.getValue(cache);
 
         int additionalWrites = 0;
         //Persist data from previous runs that is in the correct format into the current run
-        for (Map.Entry<String, PROVIDER_CACHE> entry : caches.entrySet()) {
+        for (Map.Entry<String, ProviderCache> entry : caches.entrySet()) {
             String id = entry.getKey();
-            PROVIDER_CACHE newCache = caches.get(id);
-            PROVIDER_CACHE oldCache = originalCaches.get(id);
+            ProviderCache newCache = caches.get(id);
+            ProviderCache oldCache = originalCaches.get(id);
             Map<Path, HashCode> newCacheData = new HashMap<>(providerCacheData.getValue(newCache));
             boolean changed = false;
             ImmutableMap<Path, HashCode> oldCacheData = providerCacheData.getValue(oldCache);
@@ -108,11 +95,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
             }
             if (changed) {
                 //Update the value with a new ProvideCache as we cannot mutate fields in records
-                try {
-                    entry.setValue(cacheConstructor.newInstance(id, ImmutableMap.copyOf(newCacheData)));
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException("Unable to create replacement cache", e);
-                }
+                entry.setValue(new ProviderCache(id, ImmutableMap.copyOf(newCacheData)));
             }
         }
 
@@ -122,7 +105,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
 
         FieldReflectionHelper<HashCache, Set<String>> cachesToWrite = new FieldReflectionHelper<>(HashCache.class, "f_236083_", () -> null);
         Set<String> toWrite = cachesToWrite.getValue(cache);
-        Map<String, PROVIDER_CACHE> fakeCaches = new HashMap<>();
+        Map<String, ProviderCache> fakeCaches = new HashMap<>();
         Set<Path> paths = cachePaths.getValue(cache);
         Path cacheDir = baseOutputPath.resolve(".cache");
         //Load and inject any providers we have that are fully disabled into the cache system
@@ -130,25 +113,19 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         int additional = 0;
         for (String fakeProvider : FAKE_PROVIDERS) {
             Path path = getProviderCachePath(cacheDir, fakeProvider);
-            PROVIDER_CACHE provider;
-            try {
-                provider = (PROVIDER_CACHE) cacheReader.invoke(null, baseOutputPath, path);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                Mekanism.logger.error("Failed to manually load fake provider, skipping: {}", fakeProvider);
-                continue;
-            }
+            ProviderCache provider = HashCache.readCache(baseOutputPath, path);
             paths.add(path);
             caches.put(fakeProvider, provider);
             fakeCaches.put(fakeProvider, provider);
             additional += providerCacheData.getValue(provider).size();
             //Initialize the cache as one that should be written when we loop caches to write
-            toWrite.add(fakeProvider);
+            //toWrite.add(fakeProvider);
         }
         if (!fakeCaches.isEmpty()) {
             //Reset the original caches to a fresh copy
             existingCaches.transformValue(cache, ConstantPredicates.alwaysTrue(), value -> {
                 //Add the fake caches as having existed in the original
-                HashMap<String, PROVIDER_CACHE> map = new HashMap<>(caches);
+                HashMap<String, ProviderCache> map = new HashMap<>(caches);
                 map.putAll(fakeCaches);
                 return map;
             });

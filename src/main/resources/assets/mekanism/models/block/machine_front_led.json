@@ -1,0 +1,42 @@
+{
+	"credit": "Made with love by CyanideX using Blockbench",
+	"parent": "block/cube_all",
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"particle": "#sides",
+		"down": "#sides",
+		"up": "#sides",
+		"north": "#front",
+		"north_led": "#front_led",
+		"east": "#sides",
+		"south": "#sides",
+		"west": "#sides"
+	},
+	"elements": [
+		{
+			"name": "machine",
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#north", "cullface": "north"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#east", "cullface": "east"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#south", "cullface": "south"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#west", "cullface": "west"},
+				"up": {"uv": [0, 0, 16, 16], "rotation": 180, "texture": "#up", "cullface": "up"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#down", "cullface": "down"}
+			}
+		},
+		{
+			"name": "machine_front_led",
+			"from": [0, 0, -0.02],
+			"to": [16, 16, -0.02],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#north_led", "cullface": "north"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
+			}
+		}
+	]
+}

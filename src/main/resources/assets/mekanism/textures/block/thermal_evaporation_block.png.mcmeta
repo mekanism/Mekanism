@@ -1,23 +1,25 @@
+
 {
-  "ctm": {
-    "ctm_version": 1,
-    "type": "CTM",
-    "layer": "SOLID",
-    "textures": [
-      "mekanism:block/thermal_evaporation_block-ctm"
-    ],
-    "extra": {
-      "connect_to": [
-        {
-          "block": "mekanism:thermal_evaporation_block"
-        },
-        {
-          "block": "mekanism:thermal_evaporation_controller"
-        },
-        {
-          "block": "mekanism:thermal_evaporation_valve"
+    "ctm": {
+        "ctm_version": 1,
+        "proxy": "mekanism:ctm/thermal_evaporation_block_full",
+        "type": "CTM",
+        "layer": "SOLID",
+        "textures": [
+            "mekanism:ctm/thermal_evaporation_block"
+        ],
+        "extra": {
+            "connect_to": [
+                {
+                    "block": "mekanism:thermal_evaporation_block"
+                },
+                {
+                    "block": "mekanism:thermal_evaporation_controller"
+                },
+                {
+                    "block": "mekanism:thermal_evaporation_valve"
+                }
+            ]
         }
-      ]
     }
-  }
 }

@@ -1,10 +1,11 @@
 {
-  "parent": "mekanism:block/bin/basic",
-  "textures": {
-    "front": "mekanism:block/bin/basic_front_on",
-    "west": "mekanism:block/bin/basic_side_on",
-    "east": "mekanism:block/bin/basic_side_on",
-    "south": "mekanism:block/bin/basic_side_on",
-    "up": "mekanism:block/bin/basic_top_on"
-  }
+    "parent": "mekanism:block/bin/active/base",
+    "textures": {
+        "led": "mekanism:block/bin/basic_led",
+        "front": "mekanism:block/bin/front",
+        "side": "mekanism:block/bin/side",
+        "top": "mekanism:block/bin/top",
+        "back": "mekanism:block/bin/back",
+        "bottom": "mekanism:block/bin/bottom_active"
+    }
 }

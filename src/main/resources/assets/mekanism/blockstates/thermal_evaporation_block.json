@@ -1,7 +1,22 @@
 {
-  "variants": {
-    "": {
-      "model": "mekanism:block/thermal_evaporation/block"
+    "variants": {
+        "": [
+            {
+                "model": "mekanism:block/thermal_evaporation/block",
+                "weight": 10
+            },
+            {
+                "model": "mekanism:block/thermal_evaporation/block_1",
+                "weight": 8
+            },
+            {
+                "model": "mekanism:block/thermal_evaporation/block_2",
+                "weight": 3
+            },
+            {
+                "model": "mekanism:block/thermal_evaporation/block_3",
+                "weight": 1
+            }
+        ]
     }
-  }
 }
