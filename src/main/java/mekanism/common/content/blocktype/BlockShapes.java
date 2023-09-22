@@ -89,28 +89,23 @@ public final class BlockShapes {
         ), Rotation.CLOCKWISE_90), ELECTROLYTIC_SEPARATOR);
 
         VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
-              box(16, 18, -13, 30, 28, -11), // monitor1
-              box(17, 19, -13.01, 29, 27, -13.01), // monitor1_on
-              box(17, 20, -11, 29, 26, -10), // monitor_back1
-              box(17, 17.5, -12.005, 18, 18.5, -11.005), // led1
-              box(1, 18, -13, 15, 28, -11), // monitor2
-              box(2, 19, -13.01, 14, 27, -13.01), // monitor2_on
-              box(2, 20, -11, 14, 26, -10), // monitor_back2
-              box(2, 17.5, -12.005, 3, 18.5, -11.005), // led2
-              box(-14, 18, -13, 0, 28, -11), // monitor3
-              box(-13, 19, -13.01, -1, 27, -13.01), // monitor3_on
-              box(-13, 20, -11, -1, 26, -10), // monitor_back3
-              box(-13, 17.5, -12.005, -12, 18.5, -11.005), // led3
-              box(-2, 22, -11.95, 2, 24, -10.95), // monitorBar1
-              box(14, 22, -11.95, 18, 24, -10.95), // monitorBar2
-              box(4, 22, -11, 6, 24, -9), // monitorMount1
-              box(10, 22, -11, 12, 24, -9), // monitorMount2
-              box(5, 11, -14, 6, 13, -9), // keyboard_support1
-              box(10, 11, -14, 11, 13, -9), // keyboard_support2
-              box(4, 11.5, -13.5, 12, 12.5, -10.5), // keyboardBottom
-              box(3, 12.5, -14.5, 13, 13.5, -9.5), // keyboard
+              box(16, 17, -13, 30, 27, -11), // monitor1
+              box(1, 17, -13, 15, 27, -11), // monitor2
+              box(-14, 17, -13, 0, 27, -11), // monitor3
+              box(17, 19, -11, 29, 25, -10), // monitor_back1
+              box(2, 19, -11, 14, 25, -10), // monitor_back2
+              box(-13, 19, -11, -1, 25, -10), // monitor_back3
+              box(-1, 21, -11, 2, 23, -10), // monitor_bar1
+              box(14, 21, -11, 17, 23, -10), // monitor_bar2
+              box(4, 21, -11, 12, 23, -9), // monitor_mount
+              box(3, 11.3498, -16, 13, 12.3498, -11), // keyboard
+              box(4, 10.3498, -15, 12, 11.3498, -11), // keyboard_bottom
+              box(5, 10, -13.25, 11, 12, -9), // keyboard_support
               box(-8, 3, -9, 24, 32, 3), // frame1
-              box(-8, 26.99, 4, 24, 31.99, 19), // frame2a
+              box(17, 26.99, 4, 24, 31.99, 19), // frame2a_alt
+              box(-8, 26.99, 4, -1, 31.99, 19), // frame2b_alt
+              box(0, 26.99, 3, 16, 31.99, 16), // frame2c_alt
+              box(0, 26.99, 17, 16, 31.99, 20), // frame2d_alt
               box(-8, 21, 4, 24, 26, 19), // frame2b
               box(-8, 15, 4, 24, 20, 19), // frame2c
               box(-8, 9, 4, 24, 14, 19), // frame2d
@@ -132,23 +127,24 @@ public final class BlockShapes {
               box(24, 24, 21, 29, 29, 23), // bracket_north4
               box(5, 2, -6, 11, 4, 5), // power_cable1a
               box(5, 1, 5, 11, 3, 11), // power_cable1b
-              box(4, 0, 4, 12, 1, 12), // port1
               box(23, 5, 5, 31, 11, 11), // power_cable2
-              box(31, 4, 4, 32, 12, 12), // port2a
-              box(24, 4, 4, 25, 12, 12), // port2b
               box(-15, 5, 5, -7, 11, 11), // power_cable3
-              box(-16, 4, 4, -15, 12, 12), // port3a
-              box(-9, 4, 4, -8, 12, 12), // port3b
               box(-14, 2, -7, -10, 30, 1), // beam1
-              box(-15, 0, -8, -8, 2, 2), // foot1
               box(-14, 2, 22, -10, 30, 30), // beam2
+              box(26, 2, 22, 30, 30, 30), // beam3
+              box(26, 2, -7, 30, 30, 1), // beam4
+              box(-15, 0, -8, -8, 2, 2), // foot1
               box(-15, 0, 21, -8, 2, 31), // foot2
-              box(26.5, 2, 22, 30.5, 30, 30), // beam3
-              box(24.5, 0, 21, 31.5, 2, 31), // foot3
-              box(26.5, 2, -7, 30.5, 30, 1), // beam4
-              box(24.5, 0, -8, 31.5, 2, 2), // foot4
-              box(4, 20, 31, 12, 28, 32), // port_back
-              box(4, 31, 4, 12, 32, 12) // port_top
+              box(24, 0, 21, 31, 2, 31), // foot3
+              box(24, 0, -8, 31, 2, 2), // foot4
+              box(-9, 4, 4, -8, 12, 12), // port3b
+              box(-16, 4, 4, -15, 12, 12), // port3a
+              box(24, 4, 4, 25, 12, 12), // port2b
+              box(31, 4, 4, 32, 12, 12), // port2a
+              box(4, 0, 4, 12, 1, 12), // port1
+              box(17, 16.5, -12.005, 18, 17.5, -11.005), // led1
+              box(2, 16.5, -12.005, 3, 17.5, -11.005), // led2
+              box(-13, 16.5, -12.005, -12, 17.5, -11.005) // led3
         ), DIGITAL_MINER);
 
         VoxelShapeUtils.setShape(VoxelShapeUtils.combine(

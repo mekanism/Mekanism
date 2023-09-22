@@ -40,7 +40,6 @@
 			"name": "bin_active_west",
 			"from": [-0.02, 3, 3],
 			"to": [-0.02, 13, 13],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
 				"west": {"uv": [3, 3, 13, 13], "texture": "#side", "cullface": "west"}
 			},
@@ -53,7 +52,6 @@
 			"name": "bin_active_east",
 			"from": [16.02, 3, 3],
 			"to": [16.02, 13, 13],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
 				"east": {"uv": [3, 3, 13, 13], "texture": "#side", "cullface": "east"}
 			},
@@ -66,7 +64,6 @@
 			"name": "bin_active_south",
 			"from": [3, 3, 16.02],
 			"to": [13, 13, 16.02],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
 				"south": {"uv": [3, 3, 13, 13], "texture": "#side", "cullface": "south"}
 			},

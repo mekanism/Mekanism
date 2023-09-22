@@ -40,7 +40,6 @@
 			"name": "cardboard_box_body",
 			"from": [0, 0, 0],
 			"to": [16, 16, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
 				"north": {"uv": [0, 0, 16, 16], "texture": "#side_plain"},
 				"east": {"uv": [0, 0, 16, 16], "texture": "#side_storage"},
@@ -53,7 +52,6 @@
 			"name": "cardboard_box_body inverted",
 			"from": [16, 16, 16],
 			"to": [0, 0, 0],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
 				"north": {"uv": [0, 16, 16, 0], "texture": "#5"},
 				"east": {"uv": [0, 16, 16, 0], "texture": "#5"},

@@ -16,7 +16,6 @@
 			"name": "base",
 			"from": [0, 0, 0],
 			"to": [16, 1, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0.5, 8]},
 			"faces": {
 				"north": {"uv": [0, 1, 16, 0], "texture": "#chargepad", "cullface": "north"},
 				"east": {"uv": [15, 16, 16, 0], "rotation": 90, "texture": "#chargepad", "cullface": "east"},
@@ -77,7 +76,6 @@
 			"name": "base_led",
 			"from": [2, 1.02, 2],
 			"to": [14, 1.02, 14],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0.5, 8]},
 			"faces": {
 				"up": {"uv": [2, 14, 14, 2], "texture": "#chargepad_led"}
 			},
