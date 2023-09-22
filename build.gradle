@@ -460,7 +460,7 @@ dependencies {
     //TODO - 1.20: Re-enable after projecte is updated
     //datagenMainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
 
-    datagenNonMod "com.thiakil:yaml-ops:1.0.2"
+    datagenNonMod "com.thiakil:yaml-ops:${yamlops_version}"
 }
 
 def getManifestAttributes(String title) {
