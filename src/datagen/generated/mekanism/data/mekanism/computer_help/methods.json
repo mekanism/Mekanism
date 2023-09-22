@@ -2330,7 +2330,7 @@
         {
           "type": "boolean",
           "javaType": "boolean",
-          "name": "arg0"
+          "name": "enabled"
         }
       ]
     }
@@ -2409,7 +2409,7 @@
         {
           "type": "Table (ItemStack)",
           "javaType": "net.minecraft.world.item.ItemStack",
-          "name": "arg0"
+          "name": "stack"
         }
       ]
     }
@@ -2517,7 +2517,7 @@
         {
           "type": "String",
           "javaType": "java.lang.String",
-          "name": "arg0"
+          "name": "id"
         }
       ]
     }
@@ -2590,7 +2590,7 @@
         {
           "type": "String",
           "javaType": "java.lang.String",
-          "name": "arg0"
+          "name": "name"
         }
       ]
     }

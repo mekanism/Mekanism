@@ -1853,7 +1853,7 @@ methods:
   - methodName: setEnabled
     params:
     - javaType: boolean
-      name: arg0
+      name: enabled
       type: boolean
   Filter Wrapper (Digital Miner):
   - methodName: clone
@@ -1895,7 +1895,7 @@ methods:
   - methodName: setItemStack
     params:
     - javaType: net.minecraft.world.item.ItemStack
-      name: arg0
+      name: stack
       type: Table (ItemStack)
   Filter Wrapper (Logistical Sorter):
   - methodName: clone
@@ -1953,7 +1953,7 @@ methods:
   - methodName: setModID
     params:
     - javaType: java.lang.String
-      name: arg0
+      name: id
       type: String
   Filter Wrapper (Oredictionificator Item):
   - methodName: getSelectedOutput
@@ -1992,7 +1992,7 @@ methods:
   - methodName: setTagName
     params:
     - javaType: java.lang.String
-      name: arg0
+      name: name
       type: String
   Fission Reactor Logic Adapter:
   - methodName: getLogicMode

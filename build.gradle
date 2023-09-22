@@ -241,7 +241,8 @@ def setupTasks(SourceSet sourceSet) {
         setGroup("compile")
         options.annotationProcessorPath = configurations.annotationProcessor
         options.compilerArgs.addAll([
-                "-AmekanismModule=mekanism${sourceSet == sourceSets.main ? "" : output}"//annotation processor param
+                "-AmekanismModule=mekanism${sourceSet == sourceSets.main ? "" : output}",//annotation processor param
+                "-parameters"
         ])
     }
 }
