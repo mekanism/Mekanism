@@ -390,7 +390,7 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
     exclusiveRepo(handler, 'https://maven.tterrag.com/', 'team.chisel.ctm')
     exclusiveRepo(handler, 'https://squiddev.cc/maven/', 'cc.tweaked', 'org.squiddev')
-    exclusiveRepo(handler, 'https://dogforce-games.com/maven/', 'dev.gigaherz.jsonthings')
+    exclusiveRepo(handler, 'https://dogforce-games.com/maven/', 'dev.gigaherz.jsonthings', 'dev.gigaherz.guidebook')
     exclusiveRepo(handler, 'https://maven2.bai.lol', 'lol.bai', 'mcp.mobius.waila')//WTHIT
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
     exclusiveRepo(handler, 'https://modmaven.dev/', 'appeng', 'mcjty.theoneprobe')
@@ -462,7 +462,7 @@ dependencies {
     //TODO - 1.20: Re-enable after projecte is updated
     //datagenMainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
 
-    implementation fg.deobf("curse.maven:guidebook-253874:4593765")
+    implementation fg.deobf("dev.gigaherz.guidebook:Guidebook-${minecraft_version}:${guidebook_version}")
 
     datagenNonMod "com.thiakil:yaml-ops:${yamlops_version}"
 }
