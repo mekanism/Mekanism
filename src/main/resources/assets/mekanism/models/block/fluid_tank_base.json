@@ -12,7 +12,6 @@
 			"name": "tank_frame",
 			"from": [2, 0, 2],
 			"to": [14, 16, 14],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
 				"north": {"uv": [14, 16, 2, 0], "texture": "#tank_frame"},
 				"east": {"uv": [14, 16, 2, 0], "texture": "#tank_frame"},
@@ -26,7 +25,6 @@
 			"name": "tank_frame inverted",
 			"from": [12.02, 14.02, 15],
 			"to": [3.98, 1.98, 1],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
 				"east": {"uv": [15, 2, 1, 14], "texture": "#tank_frame", "cullface": "north"},
 				"west": {"uv": [15, 2, 1, 14], "texture": "#tank_frame", "cullface": "north"},
@@ -38,7 +36,6 @@
 			"name": "tank_frame inverted",
 			"from": [15, 14.02, 12.02],
 			"to": [1, 1.98, 3.98],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
 				"north": {"uv": [15, 2, 1, 14], "texture": "#tank_frame", "cullface": "north"},
 				"south": {"uv": [15, 2, 1, 14], "texture": "#tank_frame", "cullface": "north"},
@@ -50,7 +47,6 @@
 			"name": "glass",
 			"from": [2, 2, 2],
 			"to": [14, 14, 14],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
 				"north": {"uv": [2, 0, 14, 12], "texture": "#glass", "tintindex": 1},
 				"east": {"uv": [2, 0, 14, 12], "texture": "#glass", "tintindex": 1},
@@ -62,7 +58,6 @@
 			"name": "port_top_led",
 			"from": [3, 14.02, 3],
 			"to": [13, 16, 13],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
 				"up": {"uv": [5, 5, 0, 0], "texture": "#ports_led", "cullface": "up"},
 				"down": {"uv": [5, 0, 0, 5], "texture": "#ports_led"}
@@ -76,7 +71,6 @@
 			"name": "port_bottom_led",
 			"from": [3, 0, 3],
 			"to": [13, 1.98, 13],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
 				"up": {"uv": [5, 5, 0, 0], "texture": "#ports_led"},
 				"down": {"uv": [5, 0, 0, 5], "texture": "#ports_led", "cullface": "down"}

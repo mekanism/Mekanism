@@ -1,6 +1,7 @@
 {
 	"credit": "Made with love by CyanideX using Blockbench",
 	"render_type": "minecraft:cutout",
+	"gui_light": "side",
 	"textures": {
 		"1": "mekanism:block/models/digital_miner_elements1",
 		"2": "mekanism:block/models/digital_miner_elements2",
@@ -17,7 +18,6 @@
 			"name": "monitor1",
 			"from": [16, 17, -13],
 			"to": [30, 27, -11],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 19, -10]},
 			"faces": {
 				"north": {"uv": [0, 0, 7, 5], "texture": "#1"},
 				"east": {"uv": [7, 0, 8, 5], "texture": "#1"},
@@ -31,7 +31,6 @@
 			"name": "monitor2",
 			"from": [1, 17, -13],
 			"to": [15, 27, -11],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 19, -10]},
 			"faces": {
 				"north": {"uv": [0, 0, 7, 5], "texture": "#1"},
 				"east": {"uv": [7, 0, 8, 5], "texture": "#1"},
@@ -45,7 +44,6 @@
 			"name": "monitor3",
 			"from": [-14, 17, -13],
 			"to": [0, 27, -11],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 19, -10]},
 			"faces": {
 				"north": {"uv": [0, 0, 7, 5], "texture": "#1"},
 				"east": {"uv": [7, 0, 8, 5], "texture": "#1"},
@@ -59,7 +57,6 @@
 			"name": "monitor_back1",
 			"from": [17, 19, -11],
 			"to": [29, 25, -10],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 19, -10]},
 			"faces": {
 				"east": {"uv": [5.5, 6, 6, 9], "texture": "#1"},
 				"south": {"uv": [0, 6, 6, 9], "texture": "#1"},
@@ -72,7 +69,6 @@
 			"name": "monitor_back2",
 			"from": [2, 19, -11],
 			"to": [14, 25, -10],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 19, -10]},
 			"faces": {
 				"east": {"uv": [5.5, 6, 6, 9], "texture": "#1"},
 				"south": {"uv": [0, 6, 6, 9], "texture": "#1"},
@@ -85,7 +81,6 @@
 			"name": "monitor_back3",
 			"from": [-13, 19, -11],
 			"to": [-1, 25, -10],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 19, -10]},
 			"faces": {
 				"east": {"uv": [5.5, 6, 6, 9], "texture": "#1"},
 				"south": {"uv": [0, 6, 6, 9], "texture": "#1"},
@@ -98,7 +93,6 @@
 			"name": "monitor_bar1",
 			"from": [-1, 21, -11],
 			"to": [2, 23, -10],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 19, -10]},
 			"faces": {
 				"north": {"uv": [1, 10, 1.5, 10.5], "texture": "#1"},
 				"south": {"uv": [1, 10, 1.5, 10.5], "texture": "#1"},
@@ -110,7 +104,6 @@
 			"name": "monitor_bar2",
 			"from": [14, 21, -11],
 			"to": [17, 23, -10],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 19, -10]},
 			"faces": {
 				"north": {"uv": [1, 10, 1.5, 10.5], "texture": "#1"},
 				"south": {"uv": [1, 10, 1.5, 10.5], "texture": "#1"},
@@ -122,7 +115,6 @@
 			"name": "monitor_mount",
 			"from": [4, 21, -11],
 			"to": [12, 23, -9],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 19, -10]},
 			"faces": {
 				"east": {"uv": [0, 9, 0.5, 9.5], "texture": "#1"},
 				"west": {"uv": [0, 9, 0.5, 9.5], "texture": "#1"},
@@ -161,7 +153,6 @@
 			"name": "keyboard_support",
 			"from": [5, 10, -13.25],
 			"to": [11, 12, -9],
-			"rotation": {"angle": 0, "axis": "y", "origin": [0, -1, 0]},
 			"faces": {
 				"east": {"uv": [12, 14, 14.5, 15], "texture": "#1"},
 				"west": {"uv": [12.5, 14, 15, 15], "texture": "#1"},
@@ -683,13 +674,16 @@
 			"from": [17, 16.5, -12.005],
 			"to": [18, 17.5, -11.005],
 			"shade": false,
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 19, -10]},
 			"faces": {
-				"north": {"uv": [2, 0, 3, 1], "texture": "#5"},
-				"east": {"uv": [2, 0, 3, 1], "texture": "#5"},
-				"south": {"uv": [2, 0, 3, 1], "texture": "#5"},
-				"west": {"uv": [2, 0, 3, 1], "texture": "#5"},
-				"down": {"uv": [2, 0, 3, 1], "texture": "#5"}
+				"north": {"uv": [0, 0, 1, 1], "texture": "#5"},
+				"east": {"uv": [0, 0, 1, 1], "texture": "#5"},
+				"south": {"uv": [0, 0, 1, 1], "texture": "#5"},
+				"west": {"uv": [0, 0, 1, 1], "texture": "#5"},
+				"down": {"uv": [0, 0, 1, 1], "texture": "#5"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{
@@ -697,13 +691,16 @@
 			"from": [2, 16.5, -12.005],
 			"to": [3, 17.5, -11.005],
 			"shade": false,
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 19, -10]},
 			"faces": {
-				"north": {"uv": [2, 0, 3, 1], "texture": "#5"},
-				"east": {"uv": [2, 0, 3, 1], "texture": "#5"},
-				"south": {"uv": [2, 0, 3, 1], "texture": "#5"},
-				"west": {"uv": [2, 0, 3, 1], "texture": "#5"},
-				"down": {"uv": [2, 0, 3, 1], "texture": "#5"}
+				"north": {"uv": [0, 0, 1, 1], "texture": "#5"},
+				"east": {"uv": [0, 0, 1, 1], "texture": "#5"},
+				"south": {"uv": [0, 0, 1, 1], "texture": "#5"},
+				"west": {"uv": [0, 0, 1, 1], "texture": "#5"},
+				"down": {"uv": [0, 0, 1, 1], "texture": "#5"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{
@@ -711,80 +708,112 @@
 			"from": [-13, 16.5, -12.005],
 			"to": [-12, 17.5, -11.005],
 			"shade": false,
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 19, -10]},
 			"faces": {
-				"north": {"uv": [2, 0, 3, 1], "texture": "#5"},
-				"east": {"uv": [2, 0, 3, 1], "texture": "#5"},
-				"south": {"uv": [2, 0, 3, 1], "texture": "#5"},
-				"west": {"uv": [2, 0, 3, 1], "texture": "#5"},
-				"down": {"uv": [2, 0, 3, 1], "texture": "#5"}
+				"north": {"uv": [0, 0, 1, 1], "texture": "#5"},
+				"east": {"uv": [0, 0, 1, 1], "texture": "#5"},
+				"south": {"uv": [0, 0, 1, 1], "texture": "#5"},
+				"west": {"uv": [0, 0, 1, 1], "texture": "#5"},
+				"down": {"uv": [0, 0, 1, 1], "texture": "#5"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{
 			"name": "port3b_led",
-			"from": [-16, 5, 5],
-			"to": [-16, 11, 11],
+			"from": [-16, 4, 4],
+			"to": [-16, 12, 12],
 			"faces": {
-				"west": {"uv": [9, 9, 15, 15], "texture": "#4"}
+				"west": {"uv": [8, 8, 16, 16], "texture": "#4"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{
 			"name": "port2a_led",
-			"from": [32, 5, 5],
-			"to": [32, 11, 11],
+			"from": [32, 4, 4],
+			"to": [32, 12, 12],
 			"faces": {
-				"east": {"uv": [9, 9, 15, 15], "texture": "#4"}
+				"east": {"uv": [8, 8, 16, 16], "texture": "#4"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{
 			"name": "port1_led",
-			"from": [5, 0, 5],
-			"to": [11, 0, 11],
+			"from": [4, 0, 4],
+			"to": [12, 0, 12],
 			"faces": {
-				"down": {"uv": [9, 9, 15, 15], "texture": "#4", "cullface": "down"}
+				"down": {"uv": [8, 8, 16, 16], "texture": "#4", "cullface": "down"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{
 			"name": "port_back_led",
-			"from": [5, 21, 32],
-			"to": [11, 27, 32],
+			"from": [4, 20, 32],
+			"to": [12, 28, 32],
 			"faces": {
-				"south": {"uv": [1, 1, 7, 7], "texture": "#4"}
+				"south": {"uv": [0, 0, 8, 8], "texture": "#4"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{
 			"name": "port_top_led",
-			"from": [5, 32, 5],
-			"to": [11, 32, 11],
+			"from": [4, 32, 4],
+			"to": [12, 32, 12],
 			"faces": {
-				"up": {"uv": [1, 1, 7, 7], "texture": "#4"}
+				"up": {"uv": [0, 0, 8, 8], "texture": "#4"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{
 			"name": "monitor1_on",
 			"from": [17, 18, -13.02],
 			"to": [29, 26, -13.02],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 19, -10]},
 			"faces": {
 				"north": {"uv": [0, 0, 12, 8], "texture": "#7"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{
 			"name": "monitor2_on",
 			"from": [-13, 18, -13.02],
 			"to": [-1, 26, -13.02],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 19, -10]},
 			"faces": {
 				"north": {"uv": [0, 0, 12, 8], "texture": "#6"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		},
 		{
 			"name": "monitor3_on",
 			"from": [2, 18, -13.02],
 			"to": [14, 26, -13.02],
-			"rotation": {"angle": 0, "axis": "x", "origin": [8, 19, -10]},
 			"faces": {
 				"north": {"uv": [0, 0, 12, 8], "texture": "#8"}
+			},
+			"forge_data": {
+				"block_light": 15,
+				"sky_light": 15
 			}
 		}
 	],
@@ -891,6 +920,5 @@
 			"nbt": "{}",
 			"children": [55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65]
 		}
-	],
-	"loader": "mekanism:robit"
+	]
 }

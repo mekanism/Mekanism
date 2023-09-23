@@ -12,7 +12,6 @@
 			"name": "cardboard_box_storage",
 			"from": [0, 0, 0],
 			"to": [16, 16, 16],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
 				"north": {"uv": [0, 0, 16, 16], "texture": "#side"},
 				"east": {"uv": [0, 0, 16, 16], "texture": "#side_storage"},

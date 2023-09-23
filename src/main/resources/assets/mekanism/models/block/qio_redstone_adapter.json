@@ -119,9 +119,9 @@
 				"up": {"uv": [7, 6, 9, 8], "texture": "#1"}
 			},
 			"forge_data": {
+				"ambient_occlusion": false,
 				"block_light": 15,
-				"sky_light": 15,
-				"ambient_occlusion": false
+				"sky_light": 15
 			}
 		},
 		{
