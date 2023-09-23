@@ -80,4 +80,9 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     public ICapabilityProvider getSecurityObject() {
         return stack;
     }
+
+    @Override
+    public boolean stillValid(@NotNull Player player) {
+        return !this.stack.isEmpty() && player.getItemInHand(this.hand).is(this.stack.getItem());
+    }
 }

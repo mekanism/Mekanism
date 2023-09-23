@@ -24,34 +24,30 @@ public class BinExtractRecipe extends BinRecipe {
 
     @Override
     public boolean matches(CraftingContainer inv, Level world) {
-        ItemStack binStack = ItemStack.EMPTY;
-        for (int i = 0; i < inv.getContainerSize(); ++i) {
-            ItemStack stackInSlot = inv.getItem(i);
-            if (!stackInSlot.isEmpty()) {
-                if (stackInSlot.getItem() instanceof ItemBlockBin) {
-                    if (!binStack.isEmpty()) {
-                        //If we already have a bin then this is not a bin recipe
-                        return false;
-                    }
-                    binStack = stackInSlot;
-                } else {
-                    //This recipe only allows extracting from bins, so it has to be only a bin
-                    return false;
-                }
-            }
-        }
+        ItemStack binStack = findBinStack(inv);
         if (binStack.isEmpty()) {
-            //If we didn't find a bin our recipe can't possibly match
+            //If we didn't find a singular bin our recipe can't possibly match
             return false;
         }
-        //Only match the recipe if we have items in the bin that we can extract
+        //Only match the recipe if we have items in the bin that we can extract from
         return !convertToSlot(binStack).isEmpty();
     }
 
     @Override
     public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
+        ItemStack binStack = findBinStack(inv);
+        if (binStack.isEmpty()) {
+            //If we didn't find a singular bin our recipe can't possibly match
+            return ItemStack.EMPTY;
+        }
+        //Display that our output will be the bottom stack
+        return convertToSlot(binStack).getBottomStack();
+    }
+
+    private ItemStack findBinStack(CraftingContainer inv) {
         ItemStack binStack = ItemStack.EMPTY;
-        for (int i = 0; i < inv.getContainerSize(); ++i) {
+        //Note: We don't use inv#getItems as that may do unnecessary copies depending on impl
+        for (int i = 0, slots = inv.getContainerSize(); i < slots; ++i) {
             ItemStack stackInSlot = inv.getItem(i);
             if (!stackInSlot.isEmpty()) {
                 if (stackInSlot.getItem() instanceof ItemBlockBin) {
@@ -66,18 +62,14 @@ public class BinExtractRecipe extends BinRecipe {
                 }
             }
         }
-        if (binStack.isEmpty()) {
-            //If we didn't find a bin our recipe can't possibly match
-            return ItemStack.EMPTY;
-        }
-        //Display that our output will be the bottom stack
-        return convertToSlot(binStack).getBottomStack();
+        return binStack;
     }
 
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
-        NonNullList<ItemStack> remaining = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
-        for (int i = 0; i < remaining.size(); ++i) {
+        int slots = inv.getContainerSize();
+        NonNullList<ItemStack> remaining = NonNullList.withSize(slots, ItemStack.EMPTY);
+        for (int i = 0; i < slots; ++i) {
             ItemStack stackInSlot = inv.getItem(i);
             if (stackInSlot.getItem() instanceof ItemBlockBin) {
                 ItemStack binStack = stackInSlot.copy();

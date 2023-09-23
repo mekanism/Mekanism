@@ -78,14 +78,14 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     private boolean usedEnergy = false;
 
     private MachineEnergyContainer<TileEntityFluidicPlenisher> energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded", "getFluidFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded", "getFluidFilledPercentage"}, docPlaceholder = "buffer tank")
     public BasicFluidTank fluidTank;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private FluidInventorySlot inputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private OutputInventorySlot outputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
+    FluidInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
+    OutputInventorySlot outputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
+    EnergyInventorySlot energySlot;
 
     public TileEntityFluidicPlenisher(BlockPos pos, BlockState state) {
         super(MekanismBlocks.FLUIDIC_PLENISHER, pos, state);
@@ -331,8 +331,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod(nameOverride = "reset")
-    private void resetPlenisher() throws ComputerException {
+    @ComputerMethod(nameOverride = "reset", requiresPublicSecurity = true)
+    void resetPlenisher() throws ComputerException {
         validateSecurityIsPublic();
         reset();
     }

@@ -146,8 +146,8 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private void setImportsWithoutFilter(boolean value) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    void setImportsWithoutFilter(boolean value) throws ComputerException {
         validateSecurityIsPublic();
         if (importWithoutFilter != value) {
             toggleImportWithoutFilter();

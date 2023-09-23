@@ -1,9 +1,11 @@
 package mekanism.common.content.tank;
 
+import com.mojang.datafixers.util.Either;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
@@ -42,10 +44,10 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     @SyntheticComputerMethod(getter = "getContainerEditMode")
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private HybridInventorySlot inputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private HybridInventorySlot outputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
+    HybridInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
+    HybridInventorySlot outputSlot;
     private int tankCapacity;
     private long chemicalTankCapacity;
     public float prevScale;
@@ -196,29 +198,29 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
 
     //Computer related methods
     @ComputerMethod
-    private void incrementContainerEditMode() {
+    void incrementContainerEditMode() {
         setContainerEditMode(editMode.getNext());
     }
 
     @ComputerMethod
-    private void decrementContainerEditMode() {
+    void decrementContainerEditMode() {
         setContainerEditMode(editMode.getPrevious());
     }
 
     @ComputerMethod
-    private Object getStored() {
+    Either<ChemicalStack<?>, FluidStack> getStored() {
         return switch (mergedTank.getCurrentType()) {
-            case FLUID -> getFluidTank().getFluid();
-            case GAS -> getGasTank().getStack();
-            case INFUSION -> getInfusionTank().getStack();
-            case PIGMENT -> getPigmentTank().getStack();
-            case SLURRY -> getSlurryTank().getStack();
-            default -> FluidStack.EMPTY;
+            case FLUID -> Either.right(getFluidTank().getFluid());
+            case GAS -> Either.left(getGasTank().getStack());
+            case INFUSION -> Either.left(getInfusionTank().getStack());
+            case PIGMENT -> Either.left(getPigmentTank().getStack());
+            case SLURRY -> Either.left(getSlurryTank().getStack());
+            default -> Either.right(FluidStack.EMPTY);
         };
     }
 
     @ComputerMethod
-    private double getFilledPercentage() {
+    double getFilledPercentage() {
         long capacity = mergedTank.getCurrentType() == CurrentType.FLUID ? getTankCapacity() : getChemicalTankCapacity();
         return getStoredAmount() / (double) capacity;
     }

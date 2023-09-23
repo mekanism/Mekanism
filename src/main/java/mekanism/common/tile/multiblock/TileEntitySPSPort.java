@@ -35,7 +35,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing implements IMultibloc
 
     public TileEntitySPSPort(BlockPos pos, BlockState state) {
         super(MekanismBlocks.SPS_PORT, pos, state);
-        delaySupplier = () -> 0;
+        delaySupplier = NO_DELAY;
     }
 
     @Override
@@ -96,13 +96,13 @@ public class TileEntitySPSPort extends TileEntitySPSCasing implements IMultibloc
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private boolean getMode() {
+    @ComputerMethod(methodDescription = "true -> output, false -> input.")//TODO change this to enum?
+    boolean getMode() {
         return getActive();
     }
 
-    @ComputerMethod
-    private void setMode(boolean output) {
+    @ComputerMethod(methodDescription = "true -> output, false -> input.")//TODO change this to enum?
+    void setMode(boolean output) {
         setActive(output);
     }
     //End methods IComputerTile

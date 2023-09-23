@@ -192,4 +192,13 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
      */
     @NotNull
     public abstract BUFFER getShare();
+
+    @Override
+    public void validateAndTakeShare() {
+        if (hasTransmitterNetwork()) {
+            //Ensure we save the shares to the tiles so that they can properly take them
+            getTransmitterNetwork().validateSaveShares(getTransmitter());
+        }
+        super.validateAndTakeShare();
+    }
 }

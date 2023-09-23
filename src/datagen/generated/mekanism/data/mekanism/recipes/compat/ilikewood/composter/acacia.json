@@ -9,8 +9,11 @@
           "modid": "ilikewood"
         },
         {
-          "type": "forge:mod_loaded",
-          "modid": "ilikewood_composters"
+          "type": "mekanism:condition_exists",
+          "condition": {
+            "type": "ilikewood:config",
+            "config": "composters"
+          }
         }
       ]
     }
@@ -27,6 +30,6 @@
   "secondaryChance": 1.0,
   "secondaryOutput": {
     "count": 4,
-    "item": "minecraft:acacia_log"
+    "item": "minecraft:acacia_fence"
   }
 }

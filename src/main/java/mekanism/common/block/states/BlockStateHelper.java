@@ -48,6 +48,9 @@ public class BlockStateHelper {
             //Default the blocks to not being waterlogged, they have code to force waterlogging to true if being placed in water
             state = fluidLoggable.setState(state, Fluids.EMPTY);
         }
+        if (block instanceof IStateStorage) {
+            state = state.setValue(storageProperty, false);
+        }
         return state;
     }
 

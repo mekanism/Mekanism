@@ -25,6 +25,7 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
+import mekanism.common.integration.computer.computercraft.ComputerConstants;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
@@ -47,10 +48,10 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
     private ResistiveHeaterEnergyContainer energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
-    private BasicHeatCapacitor heatCapacitor;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "heater")
+    BasicHeatCapacitor heatCapacitor;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
+    EnergyInventorySlot energySlot;
 
     public TileEntityResistiveHeater(BlockPos pos, BlockState state) {
         super(MekanismBlocks.RESISTIVE_HEATER, pos, state);
@@ -171,13 +172,13 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private FloatingLong getEnergyUsage() {
+    @ComputerMethod(methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
+    FloatingLong getEnergyUsage() {
         return energyContainer.getEnergyPerTick();
     }
 
-    @ComputerMethod
-    private void setEnergyUsage(FloatingLong usage) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    void setEnergyUsage(FloatingLong usage) throws ComputerException {
         validateSecurityIsPublic();
         setEnergyUsageFromPacket(usage);
     }

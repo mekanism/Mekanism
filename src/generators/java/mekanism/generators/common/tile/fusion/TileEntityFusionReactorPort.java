@@ -41,7 +41,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
 
     public TileEntityFusionReactorPort(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.FUSION_REACTOR_PORT, pos, state);
-        delaySupplier = () -> 0;
+        delaySupplier = NO_DELAY;
     }
 
     @NotNull
@@ -131,13 +131,13 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
         return false;
     }
 
-    @ComputerMethod
-    private boolean getMode() {
+    @ComputerMethod(methodDescription = "true -> output, false -> input")
+    boolean getMode() {
         return getActive();
     }
 
-    @ComputerMethod
-    private void setMode(boolean output) {
+    @ComputerMethod(methodDescription = "true -> output, false -> input")
+    void setMode(boolean output) {
         setActive(output);
     }
     //End methods IComputerTile

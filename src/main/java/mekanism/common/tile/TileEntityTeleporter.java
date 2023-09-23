@@ -101,8 +101,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     private final TileComponentChunkLoader<TileEntityTeleporter> chunkLoaderComponent;
 
     private MachineEnergyContainer<TileEntityTeleporter> energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
+    EnergyInventorySlot energySlot;
 
     public TileEntityTeleporter(BlockPos pos, BlockState state) {
         super(MekanismBlocks.TELEPORTER, pos, state);
@@ -673,19 +673,19 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private Collection<TeleporterFrequency> getFrequencies() {
+    @ComputerMethod(methodDescription = "Lists public frequencies")
+    Collection<TeleporterFrequency> getFrequencies() {
         return FrequencyType.TELEPORTER.getManagerWrapper().getPublicManager().getFrequencies();
     }
 
     @ComputerMethod
-    private boolean hasFrequency() {
+    boolean hasFrequency() {
         TeleporterFrequency frequency = getFrequency(FrequencyType.TELEPORTER);
         return frequency != null && frequency.isValid() && !frequency.isRemoved();
     }
 
-    @ComputerMethod
-    private TeleporterFrequency getFrequency() throws ComputerException {
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
+    TeleporterFrequency getFrequency() throws ComputerException {
         TeleporterFrequency frequency = getFrequency(FrequencyType.TELEPORTER);
         if (frequency == null || !frequency.isValid() || frequency.isRemoved()) {
             throw new ComputerException("No frequency is currently selected.");
@@ -693,8 +693,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return frequency;
     }
 
-    @ComputerMethod
-    private void setFrequency(String name) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a public frequency to exist")
+    void setFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         TeleporterFrequency frequency = FrequencyType.TELEPORTER.getManagerWrapper().getPublicManager().getFrequency(name);
         if (frequency == null) {
@@ -703,8 +703,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         setFrequency(FrequencyType.TELEPORTER, frequency.getIdentity(), getOwnerUUID());
     }
 
-    @ComputerMethod
-    private void createFrequency(String name) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation")
+    void createFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         TeleporterFrequency frequency = FrequencyType.TELEPORTER.getManagerWrapper().getPublicManager().getFrequency(name);
         if (frequency != null) {
@@ -713,38 +713,38 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         setFrequency(FrequencyType.TELEPORTER, new FrequencyIdentity(name, true), getOwnerUUID());
     }
 
-    @ComputerMethod
-    private EnumColor getFrequencyColor() throws ComputerException {
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
+    EnumColor getFrequencyColor() throws ComputerException {
         return getFrequency().getColor();
     }
 
-    @ComputerMethod
-    private void setFrequencyColor(EnumColor color) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a frequency to be selected")
+    void setFrequencyColor(EnumColor color) throws ComputerException {
         validateSecurityIsPublic();
         getFrequency().setColor(color);
     }
 
-    @ComputerMethod
-    private void incrementFrequencyColor() throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a frequency to be selected")
+    void incrementFrequencyColor() throws ComputerException {
         validateSecurityIsPublic();
         TeleporterFrequency frequency = getFrequency();
         frequency.setColor(frequency.getColor().getNext());
     }
 
-    @ComputerMethod
-    private void decrementFrequencyColor() throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a frequency to be selected")
+    void decrementFrequencyColor() throws ComputerException {
         validateSecurityIsPublic();
         TeleporterFrequency frequency = getFrequency();
         frequency.setColor(frequency.getColor().getPrevious());
     }
 
-    @ComputerMethod
-    private Set<Coord4D> getActiveTeleporters() throws ComputerException {
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
+    Set<Coord4D> getActiveTeleporters() throws ComputerException {
         return getFrequency().getActiveCoords();
     }
 
     @ComputerMethod
-    private String getStatus() {
+    String getStatus() {
         if (hasFrequency()) {
             return switch (status) {
                 case 1 -> "ready";

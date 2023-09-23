@@ -4,6 +4,8 @@ import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
+import mekanism.common.integration.computer.ComputerEnergyHelper;
+import mekanism.common.integration.computer.ComputerFilterHelper;
 import mekanism.common.integration.computer.IComputerTile;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
@@ -21,7 +23,8 @@ public class CCCapabilityHelper {
         return BasicCapabilityResolver.create(CAPABILITY, () -> MekanismPeripheral.create(tile));
     }
 
-    public static void registerCCMathHelper() {
-        ComputerCraftAPI.registerAPIFactory(CCEnergyHelper::create);
+    public static void registerApis() {
+        ComputerCraftAPI.registerAPIFactory(CCApiObject.create(ComputerEnergyHelper.class, "mekanismEnergyHelper"));
+        ComputerCraftAPI.registerAPIFactory(CCApiObject.create(ComputerFilterHelper.class, "mekanismFilterHelper"));
     }
 }

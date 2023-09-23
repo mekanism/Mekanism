@@ -2,6 +2,7 @@ package mekanism.common.tile.machine;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import java.util.Map;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -36,8 +37,8 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     public int clientPiston;
 
     private MachineEnergyContainer<TileEntitySeismicVibrator> energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
+    EnergyInventorySlot energySlot;
 
     public TileEntitySeismicVibrator(BlockPos pos, BlockState state) {
         super(MekanismBlocks.SEISMIC_VIBRATOR, pos, state);
@@ -117,7 +118,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
 
     //Computer related methods
     @ComputerMethod
-    private boolean isVibrating() {
+    boolean isVibrating() {
         return getActive();
     }
 
@@ -139,7 +140,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     }
 
     @ComputerMethod
-    private BlockState getBlockAt(int chunkRelativeX, int y, int chunkRelativeZ) throws ComputerException {
+    BlockState getBlockAt(int chunkRelativeX, int y, int chunkRelativeZ) throws ComputerException {
         validateVibrating();
         if (level.isOutsideBuildHeight(y)) {
             throw new ComputerException("Y '%d' is out of range must be between %d and %d. (Inclusive)", y, level.getMinBuildHeight(), level.getMaxBuildHeight() - 1);
@@ -148,8 +149,8 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
         return level.getBlockState(targetPos);
     }
 
-    @ComputerMethod
-    private Int2ObjectMap<BlockState> getColumnAt(int chunkRelativeX, int chunkRelativeZ) throws ComputerException {
+    @ComputerMethod(methodDescription = "Get a column info, table key is the Y level")
+    Map<Integer, BlockState> getColumnAt(int chunkRelativeX, int chunkRelativeZ) throws ComputerException {
         validateVibrating();
         Int2ObjectMap<BlockState> blocks = new Int2ObjectOpenHashMap<>();
         BlockPos minPos = getVerticalPos(chunkRelativeX, level.getMinBuildHeight(), chunkRelativeZ);

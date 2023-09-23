@@ -16,6 +16,7 @@ import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.block.ItemBlockBin;
+import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISustainedInventory;
@@ -96,12 +97,12 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             stackSlots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, itemStack -> MekanismRecipeType.SMELTING.getInputCache().containsInput(null, itemStack), false));
             //Smelting output slot
             stackSlots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, BasicInventorySlot.alwaysTrue, false));
-        } else if (item instanceof ISustainedInventory sustainedInventory) {
+        } else if (item instanceof IItemSustainedInventory sustainedInventory) {
             //Fallback just save it all
             for (IInventorySlot slot : slots) {
                 if (!slot.isEmpty()) {
                     //We have no information about what our item supports, but we have at least some stacks we want to transfer
-                    sustainedInventory.setInventory(DataHandlerUtils.writeContainers(slots), stack);
+                    sustainedInventory.setSustainedInventory(DataHandlerUtils.writeContainers(slots), stack);
                     return true;
                 }
             }
@@ -109,7 +110,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
         } else {
             return false;
         }
-        return applyToStack(slots, stackSlots, toWrite -> ((ISustainedInventory) stack.getItem()).setInventory(toWrite, stack));
+        return applyToStack(slots, stackSlots, toWrite -> ((IItemSustainedInventory) stack.getItem()).setSustainedInventory(toWrite, stack));
     }
 
     static boolean applyToStack(List<IInventorySlot> dataSlots, List<IInventorySlot> stackSlots, Consumer<ListTag> stackWriter) {

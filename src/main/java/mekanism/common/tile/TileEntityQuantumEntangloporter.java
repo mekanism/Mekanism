@@ -244,12 +244,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         return getFrequency(FrequencyType.INVENTORY);
     }
 
-    @ComputerMethod(nameOverride = "getTransferLoss")
+    @ComputerMethod(nameOverride = "getTransferLoss", methodDescription = "May not be accurate if there is no frequency")
     public double getLastTransferLoss() {
         return lastTransferLoss;
     }
 
-    @ComputerMethod(nameOverride = "getEnvironmentalLoss")
+    @ComputerMethod(nameOverride = "getEnvironmentalLoss", methodDescription = "May not be accurate if there is no frequency")
     public double getLastEnvironmentLoss() {
         return lastEnvironmentLoss;
     }
@@ -262,13 +262,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private Collection<InventoryFrequency> getFrequencies() {
+    @ComputerMethod(methodDescription = "Lists public frequencies")
+    Collection<InventoryFrequency> getFrequencies() {
         return FrequencyType.INVENTORY.getManagerWrapper().getPublicManager().getFrequencies();
     }
 
-    @ComputerMethod
-    private InventoryFrequency getFrequency() throws ComputerException {
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
+    InventoryFrequency getFrequency() throws ComputerException {
         InventoryFrequency frequency = getFreq();
         if (frequency == null || !frequency.isValid() || frequency.isRemoved()) {
             throw new ComputerException("No frequency is currently selected.");
@@ -276,8 +276,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         return frequency;
     }
 
-    @ComputerMethod
-    private void setFrequency(String name) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a public frequency to exist")
+    void setFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         InventoryFrequency frequency = FrequencyType.INVENTORY.getManagerWrapper().getPublicManager().getFrequency(name);
         if (frequency == null) {
@@ -286,8 +286,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         setFrequency(FrequencyType.INVENTORY, frequency.getIdentity(), getOwnerUUID());
     }
 
-    @ComputerMethod
-    private void createFrequency(String name) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation")
+    void createFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         InventoryFrequency frequency = FrequencyType.INVENTORY.getManagerWrapper().getPublicManager().getFrequency(name);
         if (frequency != null) {
@@ -299,42 +299,42 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     //Note: A bunch of the below buffer getters are rather "hardcoded", but they should be fine unless we decide to add support for more buffers at some point
     // in which case we can just add some overloads while we deprecate these
     @ComputerMethod
-    private ItemStack getBufferItem() throws ComputerException {
+    ItemStack getBufferItem() throws ComputerException {
         return getFrequency().getInventorySlots(null).get(0).getStack();
     }
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getBufferFluid", "getBufferFluidCapacity", "getBufferFluidNeeded",
-                                                                                     "getBufferFluidFilledPercentage"})
-    private IExtendedFluidTank getBufferFluidTank() throws ComputerException {
+                                                                                     "getBufferFluidFilledPercentage"}, docPlaceholder = "fluid buffer")
+    IExtendedFluidTank getBufferFluidTank() throws ComputerException {
         return getFrequency().getFluidTanks(null).get(0);
     }
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferGas", "getBufferGasCapacity", "getBufferGasNeeded",
-                                                                                        "getBufferGasFilledPercentage"})
-    private IGasTank getBufferGasTank() throws ComputerException {
+                                                                                        "getBufferGasFilledPercentage"}, docPlaceholder = "gas buffer")
+    IGasTank getBufferGasTank() throws ComputerException {
         return getFrequency().getGasTanks(null).get(0);
     }
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferInfuseType", "getBufferInfuseTypeCapacity", "getBufferInfuseTypeNeeded",
-                                                                                        "getBufferInfuseTypeFilledPercentage"})
-    private IInfusionTank getBufferInfuseTypeTank() throws ComputerException {
+                                                                                        "getBufferInfuseTypeFilledPercentage"}, docPlaceholder = "infusion buffer")
+    IInfusionTank getBufferInfuseTypeTank() throws ComputerException {
         return getFrequency().getInfusionTanks(null).get(0);
     }
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferPigment", "getBufferPigmentCapacity", "getBufferPigmentNeeded",
-                                                                                        "getBufferPigmentFilledPercentage"})
-    private IPigmentTank getBufferPigmentTank() throws ComputerException {
+                                                                                        "getBufferPigmentFilledPercentage"}, docPlaceholder = "pigment buffer")
+    IPigmentTank getBufferPigmentTank() throws ComputerException {
         return getFrequency().getPigmentTanks(null).get(0);
     }
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferSlurry", "getBufferSlurryCapacity", "getBufferSlurryNeeded",
-                                                                                        "getBufferSlurryFilledPercentage"})
-    private ISlurryTank getBufferSlurryTank() throws ComputerException {
+                                                                                        "getBufferSlurryFilledPercentage"}, docPlaceholder = "slurry buffer")
+    ISlurryTank getBufferSlurryTank() throws ComputerException {
         return getFrequency().getSlurryTanks(null).get(0);
     }
 
-    @ComputerMethod
-    private double getTemperature() throws ComputerException {
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
+    double getTemperature() throws ComputerException {
         return getFrequency().getTotalTemperature();
     }
     //End methods IComputerTile

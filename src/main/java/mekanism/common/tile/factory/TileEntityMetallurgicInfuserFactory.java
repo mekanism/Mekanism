@@ -61,11 +61,11 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
 
     private final IInputHandler<@NotNull InfusionStack> infusionInputHandler;
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInfuseTypeItem")
-    private InfusionInventorySlot extraSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInfuseTypeItem", docPlaceholder = "infusion extra input slot")
+    InfusionInventorySlot extraSlot;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInfuseType", "getInfuseTypeCapacity", "getInfuseTypeNeeded",
-                                                                                        "getInfuseTypeFilledPercentage"})
-    private IInfusionTank infusionTank;
+                                                                                        "getInfuseTypeFilledPercentage"}, docPlaceholder = "infusion buffer")
+    IInfusionTank infusionTank;
 
     public TileEntityMetallurgicInfuserFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, GLOBAL_ERROR_TYPES);
@@ -194,8 +194,8 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private void dumpInfuseType() throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Empty the contents of the infusion buffer into the environment")
+    void dumpInfuseType() throws ComputerException {
         validateSecurityIsPublic();
         dump();
     }

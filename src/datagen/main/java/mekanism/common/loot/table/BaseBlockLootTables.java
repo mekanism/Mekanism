@@ -2,6 +2,7 @@ package mekanism.common.loot.table;
 
 import it.unimi.dsi.fastutil.objects.ReferenceArraySet;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -9,6 +10,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 import mekanism.api.NBTConstants;
+import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.attribute.Attribute;
@@ -24,6 +27,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
@@ -44,6 +48,9 @@ import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.CopyNameFunction;
 import net.minecraft.world.level.storage.loot.functions.CopyNbtFunction;
+import net.minecraft.world.level.storage.loot.functions.CopyNbtFunction.MergeStrategy;
+import net.minecraft.world.level.storage.loot.functions.FunctionUserBuilder;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.ConditionUserBuilder;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
@@ -51,6 +58,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePrope
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraft.world.level.storage.loot.providers.nbt.ContextNbtProvider;
+import net.minecraft.world.level.storage.loot.providers.nbt.NbtProvider;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
@@ -146,10 +154,11 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             if (skipBlock(block)) {
                 continue;
             }
-            CopyNbtFunction.Builder nbtBuilder = CopyNbtFunction.copyData(ContextNbtProvider.BLOCK_ENTITY);
-            boolean hasData = false;
+            TrackingNbtBuilder nbtBuilder = new TrackingNbtBuilder(ContextNbtProvider.BLOCK_ENTITY);
             boolean hasContents = false;
-            boolean isNameable = false;
+            LootItem.Builder<?> itemLootPool = LootItem.lootTableItem(block);
+            //delayed items until after NBT copy is added
+            DelayedLootItemBuilder delayedPool = new DelayedLootItemBuilder();
             @Nullable
             BlockEntity tile = null;
             if (block instanceof IHasTileEntity<?> hasTileEntity) {
@@ -157,59 +166,54 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             }
             if (tile instanceof IFrequencyHandler frequencyHandler && frequencyHandler.getFrequencyComponent().hasCustomFrequencies()) {
                 nbtBuilder.copy(NBTConstants.COMPONENT_FREQUENCY, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_FREQUENCY);
-                hasData = true;
             }
             if (Attribute.has(block, AttributeSecurity.class)) {
                 //TODO: Should we just save the entire security component?
                 nbtBuilder.copy(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.OWNER_UUID, NBTConstants.MEK_DATA + "." + NBTConstants.OWNER_UUID);
                 nbtBuilder.copy(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.SECURITY_MODE, NBTConstants.MEK_DATA + "." + NBTConstants.SECURITY_MODE);
-                hasData = true;
             }
             if (Attribute.has(block, AttributeUpgradeSupport.class)) {
                 nbtBuilder.copy(NBTConstants.COMPONENT_UPGRADE, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_UPGRADE);
-                hasData = true;
             }
             if (tile instanceof ISideConfiguration) {
                 nbtBuilder.copy(NBTConstants.COMPONENT_CONFIG, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_CONFIG);
                 nbtBuilder.copy(NBTConstants.COMPONENT_EJECTOR, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_EJECTOR);
-                hasData = true;
             }
             if (tile instanceof ISustainedData sustainedData) {
                 Set<Entry<String, String>> remapEntries = sustainedData.getTileDataRemap().entrySet();
                 for (Entry<String, String> remapEntry : remapEntries) {
                     nbtBuilder.copy(remapEntry.getKey(), NBTConstants.MEK_DATA + "." + remapEntry.getValue());
                 }
-                if (!remapEntries.isEmpty()) {
-                    hasData = true;
-                }
             }
             if (Attribute.has(block, AttributeRedstone.class)) {
                 nbtBuilder.copy(NBTConstants.CONTROL_TYPE, NBTConstants.MEK_DATA + "." + NBTConstants.CONTROL_TYPE);
-                hasData = true;
             }
             if (tile instanceof TileEntityMekanism tileEntity) {
                 if (tileEntity.isNameable()) {
-                    isNameable = true;
+                    itemLootPool.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY));
                 }
                 for (SubstanceType type : EnumUtils.SUBSTANCES) {
                     if (tileEntity.handles(type) && !type.getContainers(tileEntity).isEmpty()) {
                         nbtBuilder.copy(type.getContainerTag(), NBTConstants.MEK_DATA + "." + type.getContainerTag());
-                        hasData = true;
                         if (type != SubstanceType.ENERGY && type != SubstanceType.HEAT) {
                             hasContents = true;
                         }
                     }
                 }
             }
-            if (Attribute.has(block, AttributeInventory.class)) {
-                //If the block has an inventory, copy the inventory slots,
+            @SuppressWarnings("unchecked")
+            AttributeInventory<DelayedLootItemBuilder> attributeInventory = Attribute.get(block, AttributeInventory.class);
+            if (attributeInventory != null) {
+                if (attributeInventory.hasCustomLoot()) {
+                    hasContents = attributeInventory.applyLoot(delayedPool, nbtBuilder);
+                }
+                //If the block has an inventory and no custom loot function, copy the inventory slots,
                 // but if it is an IItemHandler, which for most cases of ours it will be,
                 // then only copy the slots if we actually have any slots because otherwise maybe something just went wrong
-                if (!(tile instanceof IItemHandler handler) || handler.getSlots() > 0) {
+                else if (!(tile instanceof IItemHandler handler) || handler.getSlots() > 0) {
                     //If we don't actually handle saving an inventory (such as the quantum entangloporter, don't actually add it as something to copy)
                     if (!(tile instanceof TileEntityMekanism tileMek) || tileMek.persistInventory()) {
                         nbtBuilder.copy(NBTConstants.ITEMS, NBTConstants.MEK_DATA + "." + NBTConstants.ITEMS);
-                        hasData = true;
                         hasContents = true;
                     }
                 }
@@ -217,27 +221,22 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             if (block instanceof BlockCardboardBox) {
                 //TODO: Do this better so that it doesn't have to be as hard coded to being a cardboard box
                 nbtBuilder.copy(NBTConstants.DATA, NBTConstants.MEK_DATA + "." + NBTConstants.DATA);
-                hasData = true;
             }
-            if (!hasData && !isNameable) {
-                //To keep the json as clean as possible don't bother even registering a blank accept function if we have no
-                // persistent data that we want to copy. Also log a warning so that we don't have to attempt to check against
-                // that block
-                dropSelf(block);
-            } else {
-                LootItem.Builder<?> itemLootPool = LootItem.lootTableItem(block);
-                if (isNameable) {
-                    itemLootPool.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY));
-                }
-                if (hasData) {
-                    itemLootPool.apply(nbtBuilder);
-                }
-                add(block, LootTable.lootTable().withPool(applyExplosionCondition(hasContents, LootPool.lootPool()
-                      .name("main")
-                      .setRolls(ConstantValue.exactly(1))
-                      .add(itemLootPool)
-                )));
+            if (nbtBuilder.hasData()) {
+                itemLootPool.apply(nbtBuilder);
             }
+            //apply the delayed ones last, so that NBT funcs have happened first
+            for (LootItemFunction.Builder function : delayedPool.functions) {
+                itemLootPool.apply(function);
+            }
+            for (LootItemCondition.Builder condition : delayedPool.conditions) {
+                itemLootPool.when(condition);
+            }
+            add(block, LootTable.lootTable().withPool(applyExplosionCondition(hasContents, LootPool.lootPool()
+                  .name("main")
+                  .setRolls(ConstantValue.exactly(1))
+                  .add(itemLootPool)
+            )));
         }
     }
 
@@ -319,5 +318,48 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                     .otherwise(entry)
               )
         );
+    }
+
+    @MethodsReturnNonnullByDefault
+    @ParametersAreNotNullByDefault
+    public static class TrackingNbtBuilder extends CopyNbtFunction.Builder {
+        private boolean hasData = false;
+
+        public TrackingNbtBuilder(NbtProvider pNbtSource){
+            super(pNbtSource);
+        }
+
+        public boolean hasData() {
+            return this.hasData;
+        }
+
+        @Override
+        public CopyNbtFunction.Builder copy(String pSourcePath, String pTargetPath, MergeStrategy pCopyAction) {
+            this.hasData = true;
+            return super.copy(pSourcePath, pTargetPath, pCopyAction);
+        }
+    }
+
+    @NothingNullByDefault
+    public static class DelayedLootItemBuilder implements ConditionUserBuilder<DelayedLootItemBuilder>, FunctionUserBuilder<DelayedLootItemBuilder> {
+        private final List<LootItemFunction.Builder> functions = new ArrayList<>();
+        private final List<LootItemCondition.Builder> conditions = new ArrayList<>();
+
+        @Override
+        public DelayedLootItemBuilder apply(LootItemFunction.Builder pFunctionBuilder) {
+            functions.add(pFunctionBuilder);
+            return this;
+        }
+
+        @Override
+        public DelayedLootItemBuilder when(LootItemCondition.Builder pConditionBuilder) {
+            conditions.add(pConditionBuilder);
+            return this;
+        }
+
+        @Override
+        public DelayedLootItemBuilder unwrap() {
+            return this;
+        }
     }
 }

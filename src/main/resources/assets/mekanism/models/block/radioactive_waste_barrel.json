@@ -1,67 +1,67 @@
 {
 	"credit": "Model by CyanideX",
+	"render_type": "minecraft:cutout",
 	"parent": "block/cube_all",
 	"textures": {
-		"0": "mekanism:block/models/radioactive_waste_barrel",
-		"particle": "mekanism:block/models/radioactive_waste_barrel"
+		"particle": "mekanism:block/models/radioactive_waste_barrel",
+		"barrel": "mekanism:block/models/radioactive_waste_barrel"
 	},
 	"elements": [
 		{
-			"name": "barrel_core",
-			"from": [3, 0, 3],
-			"to": [13, 15, 13],
-			"faces": {
-				"up": {"uv": [9, 1, 15, 7], "texture": "#0"},
-				"down": {"uv": [1.5, 9.5, 6.5, 14.5], "texture": "#0", "cullface": "down"}
-			}
-		},
-		{
-			"name": "barrel_north",
+			"name": "barrel_outside",
 			"from": [2, 0, 2],
-			"to": [14, 16, 3],
-			"faces": {
-				"north": {"uv": [1, 0, 7, 8], "texture": "#0"},
-				"east": {"uv": [6.5, 0, 7, 8], "texture": "#0"},
-				"south": {"uv": [9, 8, 15, 8.5], "texture": "#0"},
-				"west": {"uv": [1, 0, 1.5, 8], "texture": "#0"},
-				"up": {"uv": [9, 1, 15, 1.5], "texture": "#0", "cullface": "up"},
-				"down": {"uv": [1, 9, 7, 9.5], "texture": "#0", "cullface": "down"}
-			}
-		},
-		{
-			"name": "barrel_east",
-			"from": [13, 0, 3],
-			"to": [14, 16, 13],
-			"faces": {
-				"east": {"uv": [9.5, 8, 14.5, 16], "texture": "#0"},
-				"west": {"uv": [1.5, 0, 6.5, 0.5], "texture": "#0"},
-				"up": {"uv": [14.5, 1.5, 15, 6.5], "texture": "#0", "cullface": "up"},
-				"down": {"uv": [1, 9.5, 1.5, 14.5], "texture": "#0", "cullface": "down"}
-			}
-		},
-		{
-			"name": "barrel_south",
-			"from": [2, 0, 13],
 			"to": [14, 16, 14],
 			"faces": {
-				"north": {"uv": [9, 8, 15, 8.5], "texture": "#0"},
-				"east": {"uv": [1, 0, 1.5, 8], "texture": "#0"},
-				"south": {"uv": [1, 0, 7, 8], "texture": "#0"},
-				"west": {"uv": [1, 0, 1.5, 8], "texture": "#0"},
-				"up": {"uv": [9, 6.5, 15, 7], "texture": "#0", "cullface": "up"},
-				"down": {"uv": [1, 9, 7, 9.5], "texture": "#0", "cullface": "down"}
+				"north": {"uv": [1, 0, 7, 8], "texture": "#barrel"},
+				"east": {"uv": [9, 8, 15, 16], "texture": "#barrel"},
+				"south": {"uv": [9, 8, 15, 16], "texture": "#barrel"},
+				"west": {"uv": [9, 8, 15, 16], "texture": "#barrel"},
+				"up": {"uv": [9, 1, 15, 7], "texture": "#barrel", "cullface": "up"},
+				"down": {"uv": [1, 9, 7, 15], "texture": "#barrel", "cullface": "down"}
 			}
 		},
 		{
-			"name": "barrel_west",
-			"from": [2, 0, 3],
-			"to": [3, 16, 13],
+			"name": "barrel_inside",
+			"from": [13.02, 16, 13.02],
+			"to": [2.98, 15, 2.98],
 			"faces": {
-				"east": {"uv": [1, 0, 7, 0.5], "texture": "#0"},
-				"west": {"uv": [9.5, 8, 14.5, 16], "texture": "#0"},
-				"up": {"uv": [9, 1.5, 9.5, 6.5], "texture": "#0", "cullface": "up"},
-				"down": {"uv": [1, 9.5, 1.5, 14.5], "texture": "#0", "cullface": "down"}
+				"north": {"uv": [1.5, 9.5, 6.5, 9], "texture": "#barrel", "cullface": "up"},
+				"east": {"uv": [1.5, 9.5, 6.5, 9], "texture": "#barrel", "cullface": "up"},
+				"south": {"uv": [1.5, 9.5, 6.5, 9], "texture": "#barrel", "cullface": "up"},
+				"west": {"uv": [1.5, 9.5, 6.5, 9], "texture": "#barrel", "cullface": "up"},
+				"up": {"uv": [6.5, 9.5, 1.5, 14.5], "texture": "#barrel", "cullface": "up"}
 			}
 		}
-	]
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, 45, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, 225, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"ground": {
+			"translation": [0, 3, 0],
+			"scale": [0.25, 0.25, 0.25]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"fixed": {
+			"scale": [0.5, 0.5, 0.5]
+		}
+	}
 }

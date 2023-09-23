@@ -81,18 +81,16 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public IHeatCapacitor heatCapacitor;
 
     @ContainerSync(tags = HEAT_TAB)
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded", "getWaterFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded", "getWaterFilledPercentage"}, docPlaceholder = "water tank")
     public IExtendedFluidTank waterTank;
     @ContainerSync(tags = HEAT_TAB)
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded", "getSteamFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded", "getSteamFilledPercentage"}, docPlaceholder = "steam tank")
     public IGasTank steamTank;
 
     private double biomeAmbientTemp;
     @ContainerSync(tags = HEAT_TAB)
-    @SyntheticComputerMethod(getter = "getPlasmaTemperature")
     private double lastPlasmaTemperature;
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getCaseTemperature")
     private double lastCaseTemperature;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getEnvironmentalLoss")
@@ -103,14 +101,14 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     @ContainerSync(tags = FUEL_TAB)
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDeuterium", "getDeuteriumCapacity", "getDeuteriumNeeded",
-                                                                                        "getDeuteriumFilledPercentage"})
+                                                                                        "getDeuteriumFilledPercentage"}, docPlaceholder = "deuterium tank")
     public IGasTank deuteriumTank;
     @ContainerSync(tags = FUEL_TAB)
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getTritium", "getTritiumCapacity", "getTritiumNeeded",
-                                                                                        "getTritiumFilledPercentage"})
+                                                                                        "getTritiumFilledPercentage"}, docPlaceholder = "tritium tank")
     public IGasTank tritiumTank;
     @ContainerSync(tags = FUEL_TAB)
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDTFuel", "getDTFuelCapacity", "getDTFuelNeeded", "getDTFuelFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDTFuel", "getDTFuelCapacity", "getDTFuelNeeded", "getDTFuelFilledPercentage"}, docPlaceholder = "fuel tank")
     public IGasTank fuelTank;
     @ContainerSync(tags = {FUEL_TAB, HEAT_TAB, STATS_TAB}, getter = "getInjectionRate", setter = "setInjectionRate")
     private int injectionRate = 2;
@@ -119,8 +117,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     public double plasmaTemperature;
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getHohlraum")
-    private final ReactorInventorySlot reactorSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getHohlraum", docPlaceholder = "Hohlraum slot")
+    final ReactorInventorySlot reactorSlot;
 
     private boolean clientBurning;
     private double clientTemp;
@@ -345,10 +343,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
         lastPlasmaTemperature = temp;
     }
 
+    @ComputerMethod(nameOverride = "getPlasmaTemperature")
     public double getLastPlasmaTemp() {
         return lastPlasmaTemperature;
     }
 
+    @ComputerMethod(nameOverride = "getCaseTemperature")
     public double getLastCaseTemp() {
         return lastCaseTemperature;
     }
@@ -414,7 +414,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         return MekanismUtils.redstoneLevelFromContents(fuelTank.getStored(), fuelTank.getCapacity());
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "true -> water cooled, false -> air cooled")
     public int getMinInjectionRate(boolean active) {
         double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
         double caseAirConductivity = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get();
@@ -424,7 +424,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         return (int) (2 * Math.ceil(aMin / 2D));
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "true -> water cooled, false -> air cooled")
     public double getMaxPlasmaTemperature(boolean active) {
         double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
         double caseAirConductivity = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get();
@@ -433,7 +433,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
                (plasmaCaseConductivity + k + caseAirConductivity) / (k + caseAirConductivity);
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "true -> water cooled, false -> air cooled")
     public double getMaxCasingTemperature(boolean active) {
         double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
         long injectionRate = Math.max(this.injectionRate, lastBurned);
@@ -441,7 +441,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
               .divide(k + MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get()).doubleValue();
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "true -> water cooled, false -> air cooled")
     public double getIgnitionTemperature(boolean active) {
         double k = active ? MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() : 0;
         double caseAirConductivity = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get();
@@ -467,7 +467,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     //Computer related methods
     @ComputerMethod(nameOverride = "setInjectionRate")
-    private void computerSetInjectionRate(int rate) throws ComputerException {
+    void computerSetInjectionRate(int rate) throws ComputerException {
         if (rate < 0 || rate > MAX_INJECTION) {
             //Validate bounds even though we can clamp
             throw new ComputerException("Injection Rate '%d' is out of range must be an even number between 0 and %d. (Inclusive)", rate, MAX_INJECTION);
@@ -479,12 +479,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     @ComputerMethod
-    private FloatingLong getPassiveGeneration(boolean active) {
+    FloatingLong getPassiveGeneration(boolean active) {
         return getPassiveGeneration(active, false);
     }
 
     @ComputerMethod
-    private FloatingLong getProductionRate() {
+    FloatingLong getProductionRate() {
         return getPassiveGeneration(false, true);
     }
     //End computer related methods

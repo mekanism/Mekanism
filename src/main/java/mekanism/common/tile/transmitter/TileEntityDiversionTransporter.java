@@ -49,23 +49,23 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     }
 
     @ComputerMethod
-    private DiversionControl getMode(Direction side) {
+    DiversionControl getMode(Direction side) {
         return getTransmitter().modes[side.ordinal()];
     }
 
     @ComputerMethod
-    private void setMode(Direction side, DiversionControl mode) {
+    void setMode(Direction side, DiversionControl mode) {
         getTransmitter().updateMode(side, mode);
     }
 
     @ComputerMethod
-    private void incrementMode(Direction side) {
+    void incrementMode(Direction side) {
         DiversionTransporter transmitter = getTransmitter();
         transmitter.updateMode(side, transmitter.modes[side.ordinal()].getNext());
     }
 
     @ComputerMethod
-    private void decrementMode(Direction side) {
+    void decrementMode(Direction side) {
         DiversionTransporter transmitter = getTransmitter();
         transmitter.updateMode(side, transmitter.modes[side.ordinal()].getPrevious());
     }

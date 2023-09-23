@@ -66,18 +66,18 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private List<QIOFilter<?>> getFilters() {
+    List<QIOFilter<?>> getFilters() {
         return filterManager.getFilters();
     }
 
-    @ComputerMethod
-    private boolean addFilter(QIOFilter<?> filter) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    boolean addFilter(QIOFilter<?> filter) throws ComputerException {
         validateSecurityIsPublic();
         return filterManager.addFilter(filter);
     }
 
-    @ComputerMethod
-    private boolean removeFilter(QIOFilter<?> filter) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    boolean removeFilter(QIOFilter<?> filter) throws ComputerException {
         validateSecurityIsPublic();
         return filterManager.removeFilter(filter);
     }

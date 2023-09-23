@@ -17,7 +17,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
 import mekanism.common.Mekanism;
-import mekanism.common.integration.computer.ComputerMethodMapper;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.moddiscovery.ModAnnotation;
@@ -33,7 +32,7 @@ public class MekAnnotationScanner {
         Map<String, Class<?>> classNameCache = new Object2ObjectOpenHashMap<>();
         Map<BaseAnnotationScanner, ScanData> scanners = new Object2ObjectArrayMap<>();
         Map<ElementType, List<ScanData>> elementBasedScanData = new EnumMap<>(ElementType.class);
-        addScanningSupport(scanners, elementBasedScanData, SyncMapper.INSTANCE, ComputerMethodMapper.INSTANCE);
+        addScanningSupport(scanners, elementBasedScanData, SyncMapper.INSTANCE);
         try {
             for (ModFileScanData scanData : ModList.get().getAllScanData()) {
                 for (AnnotationData data : scanData.getAnnotations()) {

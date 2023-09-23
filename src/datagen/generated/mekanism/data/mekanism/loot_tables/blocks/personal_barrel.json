@@ -23,14 +23,12 @@
                   "op": "replace",
                   "source": "componentSecurity.securityMode",
                   "target": "mekData.securityMode"
-                },
-                {
-                  "op": "replace",
-                  "source": "Items",
-                  "target": "mekData.Items"
                 }
               ],
               "source": "block_entity"
+            },
+            {
+              "function": "mekanism:personal_storage_contents"
             }
           ],
           "name": "mekanism:personal_barrel"

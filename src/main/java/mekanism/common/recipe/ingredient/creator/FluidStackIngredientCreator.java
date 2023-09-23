@@ -160,10 +160,14 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     @NothingNullByDefault
     public static class SingleFluidStackIngredient extends FluidStackIngredient {
 
+        private final List<@NotNull FluidStack> representations;
         private final FluidStack fluidInstance;
 
         private SingleFluidStackIngredient(FluidStack fluidInstance) {
             this.fluidInstance = Objects.requireNonNull(fluidInstance);
+            //Note: While callers of getRepresentations aren't supposed to mutate it we copy it anyway so that in case they do
+            // then nothing bad happens to the actual recipe
+            this.representations = Collections.singletonList(this.fluidInstance.copy());
         }
 
         @Override
@@ -193,7 +197,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         @Override
         public List<@NotNull FluidStack> getRepresentations() {
-            return Collections.singletonList(fluidInstance);
+            return representations;
         }
 
         /**
@@ -284,7 +288,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         @Override
         public List<@NotNull FluidStack> getRepresentations() {
-            //TODO: Can this be cached some how
+            //TODO: Can this be cached somehow
             List<@NotNull FluidStack> representations = new ArrayList<>();
             for (Fluid fluid : tag) {
                 representations.add(new FluidStack(fluid, amount));

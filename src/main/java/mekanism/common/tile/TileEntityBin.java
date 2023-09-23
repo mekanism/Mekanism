@@ -46,8 +46,8 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     private BinTier tier;
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getStored")
-    private BinInventorySlot binSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getStored", docPlaceholder = "bin")
+    BinInventorySlot binSlot;
 
     public TileEntityBin(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
@@ -180,23 +180,23 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private int getCapacity() {
+    @ComputerMethod(methodDescription = "Get the maximum number of items the bin can contain.")
+    int getCapacity() {
         return binSlot.getLimit(binSlot.getStack());
     }
 
-    @ComputerMethod
-    private boolean isLocked() {
+    @ComputerMethod(methodDescription = "If true, the Bin is locked to a particular item type.")
+    boolean isLocked() {
         return binSlot.isLocked();
     }
 
-    @ComputerMethod
-    private ItemStack getLock() {
+    @ComputerMethod(methodDescription = "Get the type of item the Bin is locked to (or Air if not locked)")
+    ItemStack getLock() {
         return binSlot.getLockStack();
     }
 
-    @ComputerMethod
-    private void lock() throws ComputerException {
+    @ComputerMethod(methodDescription = "Lock the Bin to the currently stored item type. The Bin must not be creative, empty, or already locked")
+    void lock() throws ComputerException {
         if (getTier() == BinTier.CREATIVE) {
             throw new ComputerException("Creative bins cannot be locked!");
         } else if (binSlot.isEmpty()) {
@@ -206,8 +206,8 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         }
     }
 
-    @ComputerMethod
-    private void unlock() throws ComputerException {
+    @ComputerMethod(methodDescription = "Unlock the Bin's fixed item type. The Bin must not be creative, or already unlocked")
+    void unlock() throws ComputerException {
         if (getTier() == BinTier.CREATIVE) {
             throw new ComputerException("Creative bins cannot be unlocked!");
         } else if (!setLocked(true)) {

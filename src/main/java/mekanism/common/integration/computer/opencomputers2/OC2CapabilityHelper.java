@@ -19,8 +19,4 @@ public class OC2CapabilityHelper {
         }
         return BasicCapabilityResolver.create(CAPABILITY, () -> MekanismDevice.create(tile));
     }
-
-    public static void registerOC2MathHelper() {
-        //TODO - 1.18: How can we do something like CCEnergyHelper
-    }
 }

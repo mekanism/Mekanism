@@ -9,7 +9,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     public TileEntityThermalEvaporationController(BlockPos pos, BlockState state) {
         super(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, pos, state);
-        delaySupplier = () -> 0;
+        delaySupplier = NO_DELAY;
     }
 
     @Override

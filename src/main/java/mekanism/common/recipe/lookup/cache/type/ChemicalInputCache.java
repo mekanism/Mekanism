@@ -14,8 +14,7 @@ public class ChemicalInputCache<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
     @Override
     public boolean mapInputs(RECIPE recipe, ChemicalStackIngredient<CHEMICAL, STACK> inputIngredient) {
         if (inputIngredient instanceof SingleChemicalStackIngredient<CHEMICAL, STACK> single) {
-            CHEMICAL input = single.getInputRaw();
-            addInputCache(input, recipe);
+            addInputCache(single.getInputRaw(), recipe);
         } else if (inputIngredient instanceof TaggedChemicalStackIngredient<CHEMICAL, STACK> tagged) {
             for (CHEMICAL input : tagged.getRawInput()) {
                 addInputCache(input, recipe);

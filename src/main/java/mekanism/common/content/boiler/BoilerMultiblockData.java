@@ -49,35 +49,35 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
 
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getHeatedCoolant", "getHeatedCoolantCapacity", "getHeatedCoolantNeeded",
-                                                                                        "getHeatedCoolantFilledPercentage"})
+                                                                                        "getHeatedCoolantFilledPercentage"}, docPlaceholder = "heated coolant tank")
     public IGasTank superheatedCoolantTank;
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getCooledCoolant", "getCooledCoolantCapacity", "getCooledCoolantNeeded",
-                                                                                        "getCooledCoolantFilledPercentage"})
+                                                                                        "getCooledCoolantFilledPercentage"}, docPlaceholder = "cooled coolant tank")
     public IGasTank cooledCoolantTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded", "getWaterFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded", "getWaterFilledPercentage"}, docPlaceholder = "water tank")
     public VariableCapacityFluidTank waterTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded", "getSteamFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded", "getSteamFilledPercentage"}, docPlaceholder = "steam tank")
     public IGasTank steamTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature", docPlaceholder = "boiler")
     public VariableHeatCapacitor heatCapacitor;
 
     private double biomeAmbientTemp;
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getEnvironmentalLoss")
+    @SyntheticComputerMethod(getter = "getEnvironmentalLoss", getterDescription = "Get the amount of heat lost to the environment in the last tick (Kelvin)")
     public double lastEnvironmentLoss;
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getBoilRate")
+    @SyntheticComputerMethod(getter = "getBoilRate", getterDescription = "Get the rate of boiling (mB/t)")
     public int lastBoilRate;
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getMaxBoilRate")
+    @SyntheticComputerMethod(getter = "getMaxBoilRate", getterDescription = "Get the maximum rate of boiling seen (mB/t)")
     public int lastMaxBoil;
 
     @ContainerSync
-    @SyntheticComputerMethod(getter = "getSuperheaters")
+    @SyntheticComputerMethod(getter = "getSuperheaters", getterDescription = "How many superheaters this Boiler has")
     public int superheatingElements;
 
     @ContainerSync(setter = "setWaterVolume")
@@ -248,7 +248,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         }
     }
 
-    @ComputerMethod
+    @ComputerMethod(methodDescription = "Get the maximum possible boil rate for this Boiler, based on the number of Superheating Elements")
     public long getBoilCapacity() {
         double boilCapacity = MekanismConfig.general.superheatingHeatTransfer.get() * superheatingElements / HeatUtils.getWaterThermalEnthalpy();
         return MathUtils.clampToLong(boilCapacity * HeatUtils.getSteamEnergyEfficiency());

@@ -35,12 +35,12 @@ import org.jetbrains.annotations.Nullable;
 public class TileEntityBioGenerator extends TileEntityGenerator {
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getBioFuel", "getBioFuelCapacity", "getBioFuelNeeded",
-                                                                                     "getBioFuelFilledPercentage"})
+                                                                                     "getBioFuelFilledPercentage"}, docPlaceholder = "biofuel tank")
     public BasicFluidTank bioFuelTank;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem")
-    private FluidFuelInventorySlot fuelSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem", docPlaceholder = "fuel slot")
+    FluidFuelInventorySlot fuelSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy item")
+    EnergyInventorySlot energySlot;
     private float lastFluidScale;
 
     public TileEntityBioGenerator(BlockPos pos, BlockState state) {
@@ -113,8 +113,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private FloatingLong getProductionRate() {
+    @Override
+    FloatingLong getProductionRate() {
         return getActive() ? MekanismGeneratorsConfig.generators.bioGeneration.get() : FloatingLong.ZERO;
     }
     //End methods IComputerTile

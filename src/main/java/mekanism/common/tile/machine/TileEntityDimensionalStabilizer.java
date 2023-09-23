@@ -47,17 +47,19 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     public static final int MAX_LOAD_RADIUS = 2;
     public static final int MAX_LOAD_DIAMETER = 2 * MAX_LOAD_RADIUS + 1;
+    private static final String COMPUTER_RANGE_STR = "Range: [-"+MAX_LOAD_RADIUS+", "+MAX_LOAD_RADIUS+"]";
+    private static final String COMPUTER_RANGE_RAD = "Range: [1, "+MAX_LOAD_RADIUS+"]";
     private static final BiFunction<FloatingLong, TileEntityDimensionalStabilizer, FloatingLong> BASE_ENERGY_CALCULATOR = (base, tile) -> base.multiply(tile.chunksLoaded);
 
     private final ChunkLoader chunkLoaderComponent;
     private final boolean[][] loadingChunks;
-    @SyntheticComputerMethod(getter = "getChunksLoaded")
+    @SyntheticComputerMethod(getter = "getChunksLoaded", getterDescription = "Get the number of chunks being loaded.")
     private int chunksLoaded = 1;
     private boolean clientRendering;
 
     private FixedUsageEnergyContainer<TileEntityDimensionalStabilizer> energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
+    EnergyInventorySlot energySlot;
 
     public TileEntityDimensionalStabilizer(BlockPos pos, BlockState state) {
         super(MekanismBlocks.DIMENSIONAL_STABILIZER, pos, state);
@@ -298,19 +300,19 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         return val + MAX_LOAD_RADIUS;
     }
 
-    @ComputerMethod(nameOverride = "isChunkLoadingAt")
-    private boolean computerIsChunkloadingAt(int x, int z) throws ComputerException {
+    @ComputerMethod(nameOverride = "isChunkLoadingAt", methodDescription = "Check if the Dimensional Stabilizer is configured to load a the specified relative chunk position at x,y (Stabilizer is at 0,0). "+COMPUTER_RANGE_STR)
+    boolean computerIsChunkloadingAt(int x, int z) throws ComputerException {
         return isChunkLoadingAt(validateDimension(x, true), validateDimension(z, false));
     }
 
-    @ComputerMethod(nameOverride = "toggleChunkLoadingAt")
-    private void computerToggleChunkLoadingAt(int x, int z) throws ComputerException {
+    @ComputerMethod(nameOverride = "toggleChunkLoadingAt", requiresPublicSecurity = true, methodDescription = "Toggle loading the specified relative chunk at the relative x,y position (Stabilizer is at 0,0). Just like clicking the button in the GUI. "+COMPUTER_RANGE_STR)
+    void computerToggleChunkLoadingAt(int x, int z) throws ComputerException {
         validateSecurityIsPublic();
         toggleChunkLoadingAt(validateDimension(x, true), validateDimension(z, false));
     }
 
-    @ComputerMethod(nameOverride = "setChunkLoadingAt")
-    private void computerSetChunkLoadingAt(int x, int z, boolean load) throws ComputerException {
+    @ComputerMethod(nameOverride = "setChunkLoadingAt", requiresPublicSecurity = true, methodDescription = "Set if the Dimensional Stabilizer is configured to load a the specified relative position (Stabilizer is at 0,0). True = load the chunk, false = don't load the chunk. "+COMPUTER_RANGE_STR)
+    void computerSetChunkLoadingAt(int x, int z, boolean load) throws ComputerException {
         validateSecurityIsPublic();
         if (setChunkLoadingAt(validateDimension(x, true), validateDimension(z, false), load)) {
             //If it changed we need to mark it as such and update various things
@@ -327,15 +329,15 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         }
     }
 
-    @ComputerMethod
-    private void enableChunkLoadingFor(int radius) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Sets the chunks in the specified radius to be loaded. The chunk the Stabilizer is in is always loaded. "+COMPUTER_RANGE_RAD)
+    void enableChunkLoadingFor(int radius) throws ComputerException {
         validateSecurityIsPublic();
         validateRadius(radius);
         adjustChunkLoadingRadius(radius, true);
     }
 
-    @ComputerMethod
-    private void disableChunkLoadingFor(int radius) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Sets the chunks in the specified radius to not be kept loaded. The chunk the Stabilizer is in is always loaded. "+COMPUTER_RANGE_RAD)
+    void disableChunkLoadingFor(int radius) throws ComputerException {
         validateSecurityIsPublic();
         validateRadius(radius);
         adjustChunkLoadingRadius(radius, false);

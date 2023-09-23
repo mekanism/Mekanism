@@ -1,0 +1,6 @@
+{
+    "parent": "block/cube_all",
+    "textures": {
+        "all": "mekanism:block/thermal_evaporation_block_3"
+    }
+}

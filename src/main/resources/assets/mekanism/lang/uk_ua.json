@@ -189,7 +189,6 @@
   "assemblicator.mekanism.craft_available": "Створити доступні предмети",
   "assemblicator.mekanism.craft_single": "Створити один елемент",
   "assemblicator.mekanism.encode_formula": "Формула кодування",
-  "assemblicator.mekanism.fill_empty": "Заповнити/Опорожнити сітку",
   "assemblicator.mekanism.stock_control": "Керування складом: %1$s",
   "auto.mekanism.eject": "Авто вивантаження",
   "auto.mekanism.pull": "Автозавантаження",

@@ -647,6 +647,10 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     public abstract void takeShare();
 
+    public void validateAndTakeShare() {
+        takeShare();
+    }
+
     public void startUpgrading() {
         isUpgrading = true;
         takeShare();

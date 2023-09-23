@@ -92,7 +92,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @Nullable
     private CraftingRecipe cachedRecipe = null;
     @SyntheticComputerMethod(getter = "getExcessRemainingItems")
-    private NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
+    NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
 
     private ItemStack lastFormulaStack = ItemStack.EMPTY;
     private ItemStack lastOutputStack = ItemStack.EMPTY;
@@ -101,10 +101,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private List<IInventorySlot> craftingGridSlots;
     private List<IInventorySlot> inputSlots;
     private List<IInventorySlot> outputSlots;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFormulaItem")
-    private BasicInventorySlot formulaSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFormulaItem", docPlaceholder = "formula slot")
+    BasicInventorySlot formulaSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
+    EnergyInventorySlot energySlot;
 
     public TileEntityFormulaicAssemblicator(BlockPos pos, BlockState state) {
         super(MekanismBlocks.FORMULAIC_ASSEMBLICATOR, pos, state);
@@ -720,7 +720,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private ItemStack getCraftingInputSlot(int slot) throws ComputerException {
+    ItemStack getCraftingInputSlot(int slot) throws ComputerException {
         if (slot < 0 || slot >= craftingGridSlots.size()) {
             throw new ComputerException("Crafting Input Slot '%d' is out of bounds, must be between 0 and %d.", slot, craftingGridSlots.size());
         }
@@ -728,12 +728,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @ComputerMethod
-    private int getCraftingOutputSlots() {
+    int getCraftingOutputSlots() {
         return outputSlots.size();
     }
 
     @ComputerMethod
-    private ItemStack getCraftingOutputSlot(int slot) throws ComputerException {
+    ItemStack getCraftingOutputSlot(int slot) throws ComputerException {
         int size = getCraftingOutputSlots();
         if (slot < 0 || slot >= size) {
             throw new ComputerException("Crafting Output Slot '%d' is out of bounds, must be between 0 and %d.", slot, size);
@@ -742,17 +742,17 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @ComputerMethod
-    private boolean hasValidFormula() {
+    boolean hasValidFormula() {
         return formula != null && formula.isValidFormula();
     }
 
     @ComputerMethod(nameOverride = "getSlots")
-    private int computerGetSlots() {
+    int computerGetSlots() {
         return inputSlots.size();
     }
 
     @ComputerMethod
-    private ItemStack getItemInSlot(int slot) throws ComputerException {
+    ItemStack getItemInSlot(int slot) throws ComputerException {
         int size = computerGetSlots();
         if (slot < 0 || slot >= size) {
             throw new ComputerException("Slot '%d' is out of bounds, must be between 0 and %d.", slot, size);
@@ -760,8 +760,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return inputSlots.get(slot).getStack();
     }
 
-    @ComputerMethod(nameOverride = "encodeFormula")
-    private void computerEncodeFormula() throws ComputerException {
+    @ComputerMethod(nameOverride = "encodeFormula", requiresPublicSecurity = true, methodDescription = "Requires an unencoded formula in the formula slot and a valid recipe")
+    void computerEncodeFormula() throws ComputerException {
         validateSecurityIsPublic();
         ItemStack formulaStack = formulaSlot.getStack();
         if (formulaStack.isEmpty() || !(formulaStack.getItem() instanceof ItemCraftingFormula craftingFormula)) {
@@ -774,8 +774,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         encodeFormula();
     }
 
-    @ComputerMethod(nameOverride = "emptyGrid")
-    private void computerEmptyGrid() throws ComputerException {
+    @ComputerMethod(nameOverride = "emptyGrid", requiresPublicSecurity = true, methodDescription = "Requires auto mode to be disabled")
+    void computerEmptyGrid() throws ComputerException {
         validateSecurityIsPublic();
         if (autoMode) {
             throw new ComputerException("Emptying the grid requires Auto-Mode to be disabled.");
@@ -783,8 +783,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         emptyGrid();
     }
 
-    @ComputerMethod(nameOverride = "fillGrid")
-    private void computerFillGrid() throws ComputerException {
+    @ComputerMethod(nameOverride = "fillGrid", requiresPublicSecurity = true, methodDescription = "Requires auto mode to be disabled")
+    void computerFillGrid() throws ComputerException {
         validateSecurityIsPublic();
         if (autoMode) {
             throw new ComputerException("Filling the grid requires Auto-Mode to be disabled.");
@@ -801,14 +801,14 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
-    @ComputerMethod
-    private void craftSingleItem() throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires recipe and auto mode to be disabled")
+    void craftSingleItem() throws ComputerException {
         validateCanCraft();
         craftSingle();
     }
 
-    @ComputerMethod
-    private void craftAvailableItems() throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires recipe and auto mode to be disabled")
+    void craftAvailableItems() throws ComputerException {
         validateCanCraft();
         craftAll();
     }
@@ -820,28 +820,28 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
-    @ComputerMethod(nameOverride = "getStockControl")
-    private boolean computerGetStockControl() throws ComputerException {
+    @ComputerMethod(nameOverride = "getStockControl", requiresPublicSecurity = true, methodDescription = "Requires valid encoded formula")
+    boolean computerGetStockControl() throws ComputerException {
         validateHasValidFormula("Stock Control");
         return getStockControl();
     }
 
-    @ComputerMethod
-    private void setStockControl(boolean mode) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires valid encoded formula")
+    void setStockControl(boolean mode) throws ComputerException {
         validateHasValidFormula("Stock Control");
         if (stockControl != mode) {
             toggleStockControl();
         }
     }
 
-    @ComputerMethod(nameOverride = "getAutoMode")
-    private boolean computerGetAutoMode() throws ComputerException {
+    @ComputerMethod(nameOverride = "getAutoMode", requiresPublicSecurity = true, methodDescription = "Requires valid encoded formula")
+    boolean computerGetAutoMode() throws ComputerException {
         validateHasValidFormula("Auto-Mode");
         return getAutoMode();
     }
 
-    @ComputerMethod
-    private void setAutoMode(boolean mode) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires valid encoded formula")
+    void setAutoMode(boolean mode) throws ComputerException {
         validateHasValidFormula("Auto-Mode");
         if (autoMode != mode) {
             nextMode();

@@ -42,6 +42,7 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
+import mekanism.common.integration.computer.computercraft.ComputerConstants;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -98,19 +99,19 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     /**
      * This separator's water slot.
      */
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded", "getInputFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded", "getInputFilledPercentage"}, docPlaceholder = "input tank")
     public BasicFluidTank fluidTank;
     /**
      * The amount of oxygen this block is storing.
      */
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getLeftOutput", "getLeftOutputCapacity", "getLeftOutputNeeded",
-                                                                                        "getLeftOutputFilledPercentage"})
+                                                                                        "getLeftOutputFilledPercentage"}, docPlaceholder = "left output tank")
     public IGasTank leftTank;
     /**
      * The amount of hydrogen this block is storing.
      */
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getRightOutput", "getRightOutputCapacity", "getRightOutputNeeded",
-                                                                                        "getRightOutputFilledPercentage"})
+                                                                                        "getRightOutputFilledPercentage"}, docPlaceholder = "right output tank")
     public IGasTank rightTank;
     @SyntheticComputerMethod(getter = "getLeftOutputDumpingMode")
     public GasMode dumpLeft = GasMode.IDLE;
@@ -124,14 +125,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     private final IInputHandler<@NotNull FluidStack> inputHandler;
 
     private FixedUsageEnergyContainer<TileEntityElectrolyticSeparator> energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private FluidInventorySlot fluidSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getLeftOutputItem")
-    private GasInventorySlot leftOutputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getRightOutputItem")
-    private GasInventorySlot rightOutputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input item slot")
+    FluidInventorySlot fluidSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getLeftOutputItem", docPlaceholder = "left output item slot")
+    GasInventorySlot leftOutputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getRightOutputItem", docPlaceholder = "right output item slot")
+    GasInventorySlot rightOutputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
+    EnergyInventorySlot energySlot;
 
     public TileEntityElectrolyticSeparator(BlockPos pos, BlockState state) {
         super(MekanismBlocks.ELECTROLYTIC_SEPARATOR, pos, state, TRACKED_ERROR_TYPES);
@@ -276,7 +277,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     @NotNull
-    @ComputerMethod(nameOverride = "getEnergyUsage")
+    @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
     public FloatingLong getEnergyUsed() {
         return clientEnergyUsed;
     }
@@ -367,8 +368,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private void setLeftOutputDumpingMode(GasMode mode) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    void setLeftOutputDumpingMode(GasMode mode) throws ComputerException {
         validateSecurityIsPublic();
         if (dumpLeft != mode) {
             dumpLeft = mode;
@@ -376,21 +377,21 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         }
     }
 
-    @ComputerMethod
-    private void incrementLeftOutputDumpingMode() throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    void incrementLeftOutputDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         nextMode(0);
     }
 
-    @ComputerMethod
-    private void decrementLeftOutputDumpingMode() throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    void decrementLeftOutputDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         dumpLeft = dumpLeft.getPrevious();
         markForSave();
     }
 
-    @ComputerMethod
-    private void setRightOutputDumpingMode(GasMode mode) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    void setRightOutputDumpingMode(GasMode mode) throws ComputerException {
         validateSecurityIsPublic();
         if (dumpRight != mode) {
             dumpRight = mode;
@@ -398,14 +399,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         }
     }
 
-    @ComputerMethod
-    private void incrementRightOutputDumpingMode() throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    void incrementRightOutputDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         nextMode(1);
     }
 
-    @ComputerMethod
-    private void decrementRightOutputDumpingMode() throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    void decrementRightOutputDumpingMode() throws ComputerException {
         validateSecurityIsPublic();
         dumpRight = dumpRight.getPrevious();
         markForSave();

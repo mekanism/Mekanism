@@ -388,19 +388,19 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @ComputerMethod
-    private boolean canEject(TransmissionType type) throws ComputerException {
+    boolean canEject(TransmissionType type) throws ComputerException {
         validateSupportedTransmissionType(type);
         return configInfo.get(type).canEject();
     }
 
     @ComputerMethod
-    private boolean isEjecting(TransmissionType type) throws ComputerException {
+    boolean isEjecting(TransmissionType type) throws ComputerException {
         validateSupportedTransmissionType(type);
         return configInfo.get(type).isEjecting();
     }
 
-    @ComputerMethod
-    private void setEjecting(TransmissionType type, boolean ejecting) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    void setEjecting(TransmissionType type, boolean ejecting) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateSupportedTransmissionType(type);
         ConfigInfo config = configInfo.get(type);
@@ -413,20 +413,20 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         }
     }
 
-    @ComputerMethod
-    private Set<DataType> getSupportedModes(TransmissionType type) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    Set<DataType> getSupportedModes(TransmissionType type) throws ComputerException {
         validateSupportedTransmissionType(type);
         return configInfo.get(type).getSupportedDataTypes();
     }
 
-    @ComputerMethod
-    private DataType getMode(TransmissionType type, RelativeSide side) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    DataType getMode(TransmissionType type, RelativeSide side) throws ComputerException {
         validateSupportedTransmissionType(type);
         return configInfo.get(type).getDataType(side);
     }
 
-    @ComputerMethod
-    private void setMode(TransmissionType type, RelativeSide side, DataType mode) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    void setMode(TransmissionType type, RelativeSide side, DataType mode) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateSupportedTransmissionType(type);
         ConfigInfo config = configInfo.get(type);
@@ -440,8 +440,8 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         }
     }
 
-    @ComputerMethod
-    private void incrementMode(TransmissionType type, RelativeSide side) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    void incrementMode(TransmissionType type, RelativeSide side) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateSupportedTransmissionType(type);
         ConfigInfo configInfo = this.configInfo.get(type);
@@ -450,8 +450,8 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         }
     }
 
-    @ComputerMethod
-    private void decrementMode(TransmissionType type, RelativeSide side) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    void decrementMode(TransmissionType type, RelativeSide side) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateSupportedTransmissionType(type);
         ConfigInfo configInfo = this.configInfo.get(type);

@@ -213,23 +213,23 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
     }
 
     @ComputerMethod
-    private ChemicalStack<?> getBuffer() {
+    ChemicalStack<?> getBuffer() {
         return getTransmitter().getBufferWithFallback().getChemicalStack();
     }
 
     @ComputerMethod
-    private long getCapacity() {
+    long getCapacity() {
         BoxedPressurizedTube tube = getTransmitter();
         return tube.hasTransmitterNetwork() ? tube.getTransmitterNetwork().getCapacity() : tube.getCapacity();
     }
 
     @ComputerMethod
-    private long getNeeded() {
+    long getNeeded() {
         return getCapacity() - getBuffer().getAmount();
     }
 
     @ComputerMethod
-    private double getFilledPercentage() {
+    double getFilledPercentage() {
         return getBuffer().getAmount() / (double) getCapacity();
     }
     //End methods IComputerTile

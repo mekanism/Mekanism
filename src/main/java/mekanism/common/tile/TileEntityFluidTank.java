@@ -53,7 +53,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityFluidTank extends TileEntityMekanism implements IConfigurable, IFluidContainerManager, ISustainedData {
 
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"}, docPlaceholder = "tank")
     public FluidTankFluidTank fluidTank;
 
     private ContainerEditMode editMode = ContainerEditMode.BOTH;
@@ -68,10 +68,10 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     private boolean needsPacket;
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private FluidInventorySlot inputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private OutputInventorySlot outputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
+    FluidInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
+    OutputInventorySlot outputSlot;
 
     private boolean updateClientLight = false;
 
@@ -278,8 +278,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private void setContainerEditMode(ContainerEditMode mode) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    void setContainerEditMode(ContainerEditMode mode) throws ComputerException {
         validateSecurityIsPublic();
         if (editMode != mode) {
             editMode = mode;
@@ -287,14 +287,14 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         }
     }
 
-    @ComputerMethod
-    private void incrementContainerEditMode() throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    void incrementContainerEditMode() throws ComputerException {
         validateSecurityIsPublic();
         nextMode();
     }
 
-    @ComputerMethod
-    private void decrementContainerEditMode() throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    void decrementContainerEditMode() throws ComputerException {
         validateSecurityIsPublic();
         previousMode();
     }

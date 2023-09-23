@@ -115,7 +115,7 @@ public class TileComponentSecurity implements ITileComponent {
 
     //Computer related methods
     @ComputerMethod(nameOverride = "getSecurityMode")
-    private SecurityMode getComputerSecurityMode() {
+    SecurityMode getComputerSecurityMode() {
         //Get the effective security mode
         return ISecurityUtils.INSTANCE.getSecurityMode(tile, tile.isRemote());
     }

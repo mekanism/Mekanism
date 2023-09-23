@@ -80,7 +80,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     /**
      * This pump's tank
      */
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded", "getFluidFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded", "getFluidFilledPercentage"}, docPlaceholder = "buffer tank")
     public BasicFluidTank fluidTank;
     /**
      * The type of fluid this pump is pumping
@@ -99,12 +99,12 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     private final Set<BlockPos> recurringNodes = new ObjectOpenHashSet<>();
 
     private MachineEnergyContainer<TileEntityElectricPump> energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private FluidInventorySlot inputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private OutputInventorySlot outputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
+    FluidInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
+    OutputInventorySlot outputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
+    EnergyInventorySlot energySlot;
 
     public TileEntityElectricPump(BlockPos pos, BlockState state) {
         super(MekanismBlocks.ELECTRIC_PUMP, pos, state);
@@ -375,8 +375,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod(nameOverride = "reset")
-    private void resetPump() throws ComputerException {
+    @ComputerMethod(nameOverride = "reset", requiresPublicSecurity = true)
+    void resetPump() throws ComputerException {
         validateSecurityIsPublic();
         reset();
     }

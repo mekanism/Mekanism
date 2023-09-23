@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
@@ -68,12 +67,7 @@ import mekanism.common.capabilities.resolver.manager.HeatHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ItemHandlerManager;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.computer.BoundComputerMethod;
-import mekanism.common.integration.computer.ComputerCapabilityHelper;
-import mekanism.common.integration.computer.ComputerException;
-import mekanism.common.integration.computer.ComputerMethodMapper;
-import mekanism.common.integration.computer.ComputerMethodMapper.MethodRestriction;
-import mekanism.common.integration.computer.IComputerTile;
+import mekanism.common.integration.computer.*;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -1000,14 +994,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void setInventory(ListTag nbtTags, Object... data) {
+    public void setSustainedInventory(ListTag nbtTags) {
         if (nbtTags != null && !nbtTags.isEmpty() && persistInventory()) {
             DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags);
         }
     }
 
     @Override
-    public ListTag getInventory(Object... data) {
+    public ListTag getSustainedInventory() {
         return persistInventory() ? DataHandlerUtils.writeContainers(getInventorySlots(null)) : new ListTag();
     }
 
@@ -1297,12 +1291,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void getComputerMethods(Map<String, BoundComputerMethod> methods) {
-        IComputerTile.super.getComputerMethods(methods);
+    public void getComputerMethods(BoundMethodHolder holder) {
+        IComputerTile.super.getComputerMethods(holder);
         for (ITileComponent component : components) {
             //Allow any supported components to add their computer methods as well
             // For example side config, ejector, and upgrade components
-            ComputerMethodMapper.INSTANCE.getAndBindToHandler(component, methods);
+            FactoryRegistry.bindTo(holder, component);
         }
     }
 
@@ -1312,17 +1306,17 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     // probably make use of our synthetic computer method wrapper to just add extra methods so then have it basically create
     // getEnergy, getEnergyFE for us with us only having to define getEnergy
     @ComputerMethod(nameOverride = "getEnergy", restriction = MethodRestriction.ENERGY)
-    private FloatingLong getTotalEnergy() {
+    FloatingLong getTotalEnergy() {
         return getTotalEnergy(IEnergyContainer::getEnergy);
     }
 
     @ComputerMethod(nameOverride = "getMaxEnergy", restriction = MethodRestriction.ENERGY)
-    private FloatingLong getTotalMaxEnergy() {
+    FloatingLong getTotalMaxEnergy() {
         return getTotalEnergy(IEnergyContainer::getMaxEnergy);
     }
 
     @ComputerMethod(nameOverride = "getEnergyNeeded", restriction = MethodRestriction.ENERGY)
-    private FloatingLong getTotalEnergyNeeded() {
+    FloatingLong getTotalEnergyNeeded() {
         return getTotalEnergy(IEnergyContainer::getNeeded);
     }
 
@@ -1336,7 +1330,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @ComputerMethod(nameOverride = "getEnergyFilledPercentage", restriction = MethodRestriction.ENERGY)
-    private double getTotalEnergyFilledPercentage() {
+    double getTotalEnergyFilledPercentage() {
         FloatingLong stored = FloatingLong.ZERO;
         FloatingLong max = FloatingLong.ZERO;
         List<IEnergyContainer> energyContainers = getEnergyContainers(null);
@@ -1347,8 +1341,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return stored.divideToLevel(max);
     }
 
-    @ComputerMethod(restriction = MethodRestriction.REDSTONE_CONTROL)
-    private void setRedstoneMode(RedstoneControl type) throws ComputerException {
+    @ComputerMethod(restriction = MethodRestriction.REDSTONE_CONTROL, requiresPublicSecurity = true)
+    void setRedstoneMode(RedstoneControl type) throws ComputerException {
         validateSecurityIsPublic();
         if (type == RedstoneControl.PULSE && !canPulse()) {
             throw new ComputerException("Unsupported redstone control mode: %s", RedstoneControl.PULSE);

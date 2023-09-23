@@ -191,7 +191,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             onWorldJoin(true);
         } else {
             //Chunk went from loaded to "unloaded", need to take the share first like normally happens when it unloads
-            getTransmitter().takeShare();
+            getTransmitter().validateAndTakeShare();
             onWorldSeparate(true);
         }
     }

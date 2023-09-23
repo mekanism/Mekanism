@@ -137,7 +137,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private int getSlotCount() {
+    int getSlotCount() {
         return DRIVE_SLOTS;
     }
 
@@ -149,45 +149,45 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     }
 
     @ComputerMethod
-    private ItemStack getDrive(int slot) throws ComputerException {
+    ItemStack getDrive(int slot) throws ComputerException {
         validateSlot(slot);
         return driveSlots.get(slot).getStack();
     }
 
     @ComputerMethod
-    private DriveStatus getDriveStatus(int slot) throws ComputerException {
+    DriveStatus getDriveStatus(int slot) throws ComputerException {
         validateSlot(slot);
         return DriveStatus.byIndexStatic(driveStatus[slot]);
     }
 
-    @ComputerMethod
-    private long getFrequencyItemCount() throws ComputerException {
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
+    long getFrequencyItemCount() throws ComputerException {
         return computerGetFrequency().getTotalItemCount();
     }
 
-    @ComputerMethod
-    private long getFrequencyItemCapacity() throws ComputerException {
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
+    long getFrequencyItemCapacity() throws ComputerException {
         return computerGetFrequency().getTotalItemCountCapacity();
     }
 
-    @ComputerMethod
-    private double getFrequencyItemPercentage() throws ComputerException {
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
+    double getFrequencyItemPercentage() throws ComputerException {
         QIOFrequency frequency = computerGetFrequency();
         return frequency.getTotalItemCount() / (double) frequency.getTotalItemCountCapacity();
     }
 
-    @ComputerMethod
-    private long getFrequencyItemTypeCount() throws ComputerException {
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
+    long getFrequencyItemTypeCount() throws ComputerException {
         return computerGetFrequency().getTotalItemTypes(false);
     }
 
-    @ComputerMethod
-    private long getFrequencyItemTypeCapacity() throws ComputerException {
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
+    long getFrequencyItemTypeCapacity() throws ComputerException {
         return computerGetFrequency().getTotalItemTypeCapacity();
     }
 
-    @ComputerMethod
-    private double getFrequencyItemTypePercentage() throws ComputerException {
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
+    double getFrequencyItemTypePercentage() throws ComputerException {
         QIOFrequency frequency = computerGetFrequency();
         return frequency.getTotalItemTypes(false) / (double) frequency.getTotalItemTypeCapacity();
     }

@@ -88,7 +88,7 @@ public class PrideRobitTextureProvider implements DataProvider {
             } catch (IOException exception) {
                 Mekanism.logger.error("Couldn't create robit textures", exception);
             }
-        }, Util.ioPool());
+        }, Util.backgroundExecutor());
     }
 
     /**

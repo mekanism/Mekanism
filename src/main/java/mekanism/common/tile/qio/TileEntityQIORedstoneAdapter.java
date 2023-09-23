@@ -19,19 +19,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
-    public static final ModelProperty<Void> POWERING_PROPERTY = new ModelProperty<>();
-
-    private boolean prevPowering;
     @Nullable
     private HashedItem itemType = null;
     private boolean fuzzy;
@@ -40,18 +33,11 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
     public TileEntityQIORedstoneAdapter(BlockPos pos, BlockState state) {
         super(MekanismBlocks.QIO_REDSTONE_ADAPTER, pos, state);
+        delaySupplier = NO_DELAY;
     }
 
     public int getRedstoneLevel(Direction side) {
-        return side != getOppositeDirection() && isPowering() ? 15 : 0;
-    }
-
-    private boolean isPowering() {
-        if (isRemote()) {
-            return prevPowering;
-        }
-        long stored = getFreqStored();
-        return stored > 0 && stored >= count;
+        return side != getOppositeDirection() && getActive() ? 15 : 0;
     }
 
     private long getFreqStored() {
@@ -90,21 +76,8 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        boolean powering = isPowering();
-        if (powering != prevPowering) {
-            Level world = getLevel();
-            if (world != null) {
-                world.updateNeighborsAtExceptFromFacing(getBlockPos(), getBlockType(), getOppositeDirection());
-            }
-            prevPowering = powering;
-            sendUpdatePacket();
-        }
-    }
-
-    @NotNull
-    @Override
-    public ModelData getModelData() {
-        return prevPowering ? ModelData.builder().with(POWERING_PROPERTY, null).build() : super.getModelData();
+        long stored = getFreqStored();
+        setActive(stored > 0 && stored >= count);
     }
 
     @Override
@@ -132,23 +105,6 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         remap.put(NBTConstants.AMOUNT, NBTConstants.AMOUNT);
         remap.put(NBTConstants.FUZZY_MODE, NBTConstants.FUZZY_MODE);
         return remap;
-    }
-
-    @NotNull
-    @Override
-    public CompoundTag getReducedUpdateTag() {
-        CompoundTag updateTag = super.getReducedUpdateTag();
-        updateTag.putBoolean(NBTConstants.ACTIVE, prevPowering);
-        return updateTag;
-    }
-
-    @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag) {
-        super.handleUpdateTag(tag);
-        if (prevPowering != tag.getBoolean(NBTConstants.ACTIVE)) {
-            prevPowering = !prevPowering;
-            updateModelData();
-        }
     }
 
     @ComputerMethod(nameOverride = "getTargetItem")
@@ -186,14 +142,14 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private void clearTargetItem() throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    void clearTargetItem() throws ComputerException {
         validateSecurityIsPublic();
         handleStackChange(ItemStack.EMPTY);
     }
 
-    @ComputerMethod
-    private void setTargetItem(ResourceLocation itemName) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    void setTargetItem(ResourceLocation itemName) throws ComputerException {
         validateSecurityIsPublic();
         Item item = ForgeRegistries.ITEMS.getValue(itemName);
         if (item == null || item == Items.AIR) {
@@ -202,8 +158,8 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         handleStackChange(new ItemStack(item));
     }
 
-    @ComputerMethod
-    private void setTriggerAmount(long amount) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    void setTriggerAmount(long amount) throws ComputerException {
         validateSecurityIsPublic();
         if (amount < 0) {
             throw new ComputerException("Trigger amount cannot be negative. Received: %d", amount);
@@ -211,14 +167,14 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         handleCountChange(amount);
     }
 
-    @ComputerMethod(nameOverride = "toggleFuzzyMode")
-    private void computerToggleFuzzyMode() throws ComputerException {
+    @ComputerMethod(nameOverride = "toggleFuzzyMode", requiresPublicSecurity = true)
+    void computerToggleFuzzyMode() throws ComputerException {
         validateSecurityIsPublic();
         toggleFuzzyMode();
     }
 
-    @ComputerMethod(nameOverride = "setFuzzyMode")
-    private void computerSetFuzzyMode(boolean fuzzy) throws ComputerException {
+    @ComputerMethod(nameOverride = "setFuzzyMode", requiresPublicSecurity = true)
+    void computerSetFuzzyMode(boolean fuzzy) throws ComputerException {
         validateSecurityIsPublic();
         setFuzzyMode(fuzzy);
     }

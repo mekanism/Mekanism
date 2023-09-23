@@ -53,12 +53,14 @@ import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicCauldronInteraction;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.BasicDrainCauldronInteraction;
 import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankItemDispenseBehavior;
+import mekanism.common.item.loot.MekanismLootFunctions;
 import mekanism.common.item.predicate.FullCanteenItemPredicate;
 import mekanism.common.item.predicate.MaxedModuleContainerItemPredicate;
 import mekanism.common.lib.MekAnnotationScanner;
 import mekanism.common.lib.Version;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -66,7 +68,7 @@ import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.PacketHandler;
 import mekanism.common.network.to_client.PacketTransmitterUpdate;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.bin.BinInsertRecipe;
+import mekanism.common.recipe.condition.ConditionExistsCondition;
 import mekanism.common.recipe.condition.ModVersionLoadedCondition;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
@@ -189,7 +191,8 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
-        MinecraftForge.EVENT_BUS.addListener(BinInsertRecipe::onCrafting);
+        //TODO - 1.20: Modifying the result doesn't apply properly when "quick crafting". When this gets fixed in Neo re-enable the listener
+        //MinecraftForge.EVENT_BUS.addListener(BinInsertRecipe::onCrafting);
         MinecraftForge.EVENT_BUS.addListener(this::onTagsReload);
         MinecraftForge.EVENT_BUS.addListener(MekanismPermissions::registerPermissionNodes);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -214,6 +217,7 @@ public class Mekanism {
         MekanismRecipeType.RECIPE_TYPES.register(modEventBus);
         MekanismRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
         MekanismDataSerializers.DATA_SERIALIZERS.register(modEventBus);
+        MekanismLootFunctions.REGISTER.register(modEventBus);
         MekanismGases.GASES.createAndRegisterChemical(modEventBus);
         MekanismInfuseTypes.INFUSE_TYPES.createAndRegisterChemical(modEventBus);
         MekanismPigments.PIGMENTS.createAndRegisterChemical(modEventBus);
@@ -245,6 +249,7 @@ public class Mekanism {
         event.register(MekanismAPI.SLURRY_REGISTRY_NAME, emptyName, () -> MekanismAPI.EMPTY_SLURRY);
         //Register our custom serializer condition
         if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS)) {
+            CraftingHelper.register(ConditionExistsCondition.Serializer.INSTANCE);
             CraftingHelper.register(ModVersionLoadedCondition.Serializer.INSTANCE);
         }
     }
@@ -300,6 +305,7 @@ public class Mekanism {
         PathfinderCache.reset();
         TransmitterNetworkRegistry.reset();
         GenHandler.reset();
+        PersonalStorageManager.reset();
     }
 
     private void imcQueue(InterModEnqueueEvent event) {

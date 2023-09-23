@@ -98,19 +98,19 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private Collection<QIOFrequency> getFrequencies() {
+    @ComputerMethod(methodDescription = "Lists public frequencies")
+    Collection<QIOFrequency> getFrequencies() {
         return FrequencyType.QIO.getManagerWrapper().getPublicManager().getFrequencies();
     }
 
     @ComputerMethod
-    private boolean hasFrequency() {
+    boolean hasFrequency() {
         QIOFrequency frequency = getQIOFrequency();
         return frequency != null && frequency.isValid() && !frequency.isRemoved();
     }
 
-    @ComputerMethod(nameOverride = "getFrequency")
-    protected QIOFrequency computerGetFrequency() throws ComputerException {
+    @ComputerMethod(nameOverride = "getFrequency", methodDescription = "Requires a frequency to be selected")
+    QIOFrequency computerGetFrequency() throws ComputerException {
         QIOFrequency frequency = getQIOFrequency();
         if (frequency == null || !frequency.isValid() || frequency.isRemoved()) {
             throw new ComputerException("No frequency is currently selected.");
@@ -118,8 +118,8 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         return frequency;
     }
 
-    @ComputerMethod
-    private void setFrequency(String name) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a public frequency to exist")
+    void setFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         QIOFrequency frequency = FrequencyType.QIO.getManagerWrapper().getPublicManager().getFrequency(name);
         if (frequency == null) {
@@ -128,8 +128,8 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         setFrequency(FrequencyType.QIO, frequency.getIdentity(), getOwnerUUID());
     }
 
-    @ComputerMethod
-    private void createFrequency(String name) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation")
+    void createFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
         QIOFrequency frequency = FrequencyType.QIO.getManagerWrapper().getPublicManager().getFrequency(name);
         if (frequency != null) {
@@ -138,26 +138,26 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         setFrequency(FrequencyType.QIO, new FrequencyIdentity(name, true), getOwnerUUID());
     }
 
-    @ComputerMethod
-    private EnumColor getFrequencyColor() throws ComputerException {
+    @ComputerMethod(methodDescription = "Requires a frequency to be selected")
+    EnumColor getFrequencyColor() throws ComputerException {
         return computerGetFrequency().getColor();
     }
 
-    @ComputerMethod
-    private void setFrequencyColor(EnumColor color) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a frequency to be selected")
+    void setFrequencyColor(EnumColor color) throws ComputerException {
         validateSecurityIsPublic();
         computerGetFrequency().setColor(color);
     }
 
-    @ComputerMethod
-    private void incrementFrequencyColor() throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a frequency to be selected")
+    void incrementFrequencyColor() throws ComputerException {
         validateSecurityIsPublic();
         QIOFrequency frequency = computerGetFrequency();
         frequency.setColor(frequency.getColor().getNext());
     }
 
-    @ComputerMethod
-    private void decrementFrequencyColor() throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a frequency to be selected")
+    void decrementFrequencyColor() throws ComputerException {
         validateSecurityIsPublic();
         QIOFrequency frequency = computerGetFrequency();
         frequency.setColor(frequency.getColor().getPrevious());

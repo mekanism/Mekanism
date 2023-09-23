@@ -39,6 +39,10 @@ public interface QuadTransformation {
         return new LightTransformation(LightTexture.block(light), LightTexture.sky(light));
     }
 
+    static QuadTransformation ambientShade(boolean ambientOcclusion, boolean shade) {
+        return new AmbientShadeTransformation(ambientOcclusion, shade);
+    }
+
     static QuadTransformation translate(double xTranslation, double yTranslation, double zTranslation) {
         return translate(new Vec3(xTranslation, yTranslation, zTranslation));
     }
@@ -192,6 +196,37 @@ public interface QuadTransformation {
         @Override
         public int hashCode() {
             return Objects.hash(lightU, lightV);
+        }
+    }
+
+    class AmbientShadeTransformation implements QuadTransformation {
+
+        private final boolean ambientOcclusion;
+        private final boolean shade;
+
+        public AmbientShadeTransformation(boolean ambientOcclusion, boolean shade) {
+            this.ambientOcclusion = ambientOcclusion;
+            this.shade = shade;
+        }
+
+        @Override
+        public boolean transform(Quad quad) {
+            quad.setHasAmbientOcclusion(ambientOcclusion);
+            quad.setShade(shade);
+            return true;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            }
+            return o instanceof AmbientShadeTransformation other && ambientOcclusion == other.ambientOcclusion && shade == other.shade;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(ambientOcclusion, shade);
         }
     }
 

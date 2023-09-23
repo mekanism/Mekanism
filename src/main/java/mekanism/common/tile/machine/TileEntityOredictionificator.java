@@ -53,10 +53,10 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     private final FilterManager<OredictionificatorItemFilter> filterManager = new FilterManager<>(OredictionificatorItemFilter.class, this::markForSave);
     public boolean didProcess;
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private InputInventorySlot inputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private OutputInventorySlot outputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
+    InputInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
+    OutputInventorySlot outputSlot;
     private final IConfigValueInvalidationListener validFiltersListener = new ODConfigValueInvalidationListener();
 
     public TileEntityOredictionificator(BlockPos pos, BlockState state) {
@@ -212,18 +212,18 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private List<OredictionificatorItemFilter> getFilters() {
+    List<OredictionificatorItemFilter> getFilters() {
         return filterManager.getFilters();
     }
 
-    @ComputerMethod
-    private boolean addFilter(OredictionificatorItemFilter filter) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    boolean addFilter(OredictionificatorItemFilter filter) throws ComputerException {
         validateSecurityIsPublic();
         return filterManager.addFilter(filter);
     }
 
-    @ComputerMethod
-    private boolean removeFilter(OredictionificatorItemFilter filter) throws ComputerException {
+    @ComputerMethod(requiresPublicSecurity = true)
+    boolean removeFilter(OredictionificatorItemFilter filter) throws ComputerException {
         validateSecurityIsPublic();
         return filterManager.removeFilter(filter);
     }

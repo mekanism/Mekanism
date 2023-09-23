@@ -43,11 +43,11 @@ public class MatrixMultiblockData extends MultiblockData {
     private int clientCells;
 
     @NotNull
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
-    private final EnergyInventorySlot energyInputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
+    final EnergyInventorySlot energyInputSlot;
     @NotNull
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
-    private final EnergyInventorySlot energyOutputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
+    final EnergyInventorySlot energyOutputSlot;
 
     public MatrixMultiblockData(TileEntityInductionCasing tile) {
         super(tile);

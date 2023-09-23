@@ -17,7 +17,7 @@ public class TileEntityFusionReactorController extends TileEntityFusionReactorBl
         addDisabledCapabilities(Capabilities.GAS_HANDLER, ForgeCapabilities.FLUID_HANDLER, Capabilities.HEAT_HANDLER);
         addDisabledCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities());
         addSemiDisabledCapability(ForgeCapabilities.ITEM_HANDLER, () -> !getMultiblock().isFormed());
-        delaySupplier = () -> 0;
+        delaySupplier = NO_DELAY;
     }
 
     @Override

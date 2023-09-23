@@ -1,9 +1,97 @@
 {
-  "parent": "mekanism:block/machine",
-  "textures": {
-    "sides": "mekanism:block/cardboard_box_side",
-    "front": "mekanism:block/cardboard_box_side",
-    "up": "mekanism:block/cardboard_box_top",
-    "down": "mekanism:block/cardboard_box_top"
-  }
+	"credit": "Made with love by CyanideX using Blockbench",
+	"textures": {
+		"5": "mekanism:block/cardboard_box_inside",
+		"particle": "mekanism:block/cardboard_box_side_storage",
+		"side_storage": "mekanism:block/cardboard_box_side_storage",
+		"bottom": "mekanism:block/cardboard_box_bottom",
+		"side_plain": "mekanism:block/cardboard_box_side_plain"
+	},
+	"elements": [
+		{
+			"name": "cardboard_box_flap1",
+			"from": [8, 16, 0],
+			"to": [16, 16, 16],
+			"rotation": {"angle": -22.5, "axis": "z", "origin": [16, 16, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 8, 1], "texture": "#side_plain"},
+				"east": {"uv": [0, 0, 16, 1], "rotation": 180, "texture": "#side_plain"},
+				"south": {"uv": [0, 0, 8, 1], "rotation": 180, "texture": "#side_plain"},
+				"west": {"uv": [0, 0, 16, 1], "rotation": 180, "texture": "#side_plain"},
+				"up": {"uv": [8, 0, 16, 16], "rotation": 180, "texture": "#side_plain"},
+				"down": {"uv": [8, 0, 16, 16], "rotation": 180, "texture": "#side_plain"}
+			}
+		},
+		{
+			"name": "cardboard_box_flap2",
+			"from": [0, 16, 0],
+			"to": [8, 16, 16],
+			"rotation": {"angle": 22.5, "axis": "z", "origin": [0, 16, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 8, 1], "rotation": 180, "texture": "#side_plain"},
+				"east": {"uv": [0, 0, 16, 1], "texture": "#side_plain"},
+				"south": {"uv": [0, 0, 8, 1], "texture": "#side_plain"},
+				"west": {"uv": [0, 0, 16, 1], "texture": "#side_plain"},
+				"up": {"uv": [8, 0, 16, 16], "texture": "#side_plain"},
+				"down": {"uv": [8, 0, 16, 16], "texture": "#side_plain"}
+			}
+		},
+		{
+			"name": "cardboard_box_body",
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#side_plain"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#side_storage"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#side_plain"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#side_storage"},
+				"down": {"uv": [0, 0, 16, 16], "rotation": 270, "texture": "#bottom"}
+			}
+		},
+		{
+			"name": "cardboard_box_body inverted",
+			"from": [16, 16, 16],
+			"to": [0, 0, 0],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
+			"faces": {
+				"north": {"uv": [0, 16, 16, 0], "texture": "#5"},
+				"east": {"uv": [0, 16, 16, 0], "texture": "#5"},
+				"south": {"uv": [0, 16, 16, 0], "texture": "#5"},
+				"west": {"uv": [0, 16, 16, 0], "texture": "#5"},
+				"up": {"uv": [0, 16, 16, 0], "rotation": 270, "texture": "#bottom"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, 45, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, 225, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"ground": {
+			"translation": [0, 3, 0],
+			"scale": [0.25, 0.25, 0.25]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"fixed": {
+			"scale": [0.5, 0.5, 0.5]
+		}
+	}
 }

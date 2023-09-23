@@ -32,8 +32,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
 
     private boolean seesSun;
     private FloatingLong lastProductionAmount = FloatingLong.ZERO;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
-    private EnergyInventorySlot energySlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy item slot")
+    EnergyInventorySlot energySlot;
     @Nullable
     protected SolarCheck solarCheck;
 
@@ -121,8 +121,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return MekanismGeneratorsConfig.generators.solarGeneration.get();
     }
 
-    @ComputerMethod(nameOverride = "getProductionRate")
-    public FloatingLong getLastProductionAmount() {
+    @Override
+    public FloatingLong getProductionRate() {
         return lastProductionAmount;
     }
 
@@ -131,7 +131,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(this::canSeeSun, value -> seesSun = value));
         container.track(syncableMaxOutput());
-        container.track(SyncableFloatingLong.create(this::getLastProductionAmount, value -> lastProductionAmount = value));
+        container.track(SyncableFloatingLong.create(this::getProductionRate, value -> lastProductionAmount = value));
     }
 
     protected static class SolarCheck {

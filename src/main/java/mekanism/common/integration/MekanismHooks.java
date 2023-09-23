@@ -2,6 +2,7 @@ package mekanism.common.integration;
 
 import java.util.List;
 import java.util.Optional;
+import mekanism.common.integration.computer.FactoryRegistry;
 import mekanism.common.integration.computer.computercraft.CCCapabilityHelper;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
 import mekanism.common.integration.curios.CuriosIntegration;
@@ -95,8 +96,11 @@ public final class MekanismHooks {
         TOPLoaded = modList.isLoaded(TOP_MOD_ID);
         FluxNetworksLoaded = modList.isLoaded(FLUX_NETWORKS_MOD_ID);
         WildfireGenderModLoaded = modList.isLoaded(WILDFIRE_GENDER_MOD_ID);
-        if (CCLoaded) {
-            CCCapabilityHelper.registerCCMathHelper();
+        if (computerCompatEnabled()) {
+            FactoryRegistry.load();
+            if (CCLoaded) {
+                CCCapabilityHelper.registerApis();
+            }
         }
         EnergyCompatUtils.initLoadedCache();
     }

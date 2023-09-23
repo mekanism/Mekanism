@@ -365,14 +365,11 @@ public final class BlockShapes {
         ), SOLAR_NEUTRON_ACTIVATOR);
 
         VoxelShapeUtils.setShape(VoxelShapeUtils.combine(
-              box(10, 1, 11.99, 12, 8, 13.99),//pillar1
-              box(4, 1, 11.99, 6, 8, 13.99),//pillar2
-              box(0, 0, 0, 16, 1, 16),//base
-              box(5, 5, 14, 11, 11, 15),//connector
-              box(5, 1, 13, 11, 11, 14),//stand
-              box(7, 4, 11, 9, 5, 13),//plug
-              box(4, 4, 15, 12, 12, 16),//port
-              box(5, 5, 15, 11, 11, 16)//port_ring
+              box(0, 0, 0, 16, 1, 16), // base
+              box(9, 1, 12, 10, 5, 15), // stand_left
+              box(6, 1, 12, 7, 5, 15), // stand_right
+              box(5, 5, 12, 11, 11, 15), // port_back
+              box(4, 4, 15, 12, 12, 16) // port
         ), CHARGEPAD);
 
         VoxelShapeUtils.setShape(VoxelShapeUtils.combine(

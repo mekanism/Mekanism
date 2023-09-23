@@ -1,0 +1,16 @@
+{
+    "ctm": {
+        "ctm_version": 1,
+        "type": "ctm:optifine_full"
+    },
+    "extra": {
+        "connect_to": [
+            {
+                "block": "mekanism:boiler_casing"
+            },
+            {
+                "block": "mekanism:boiler_valve"
+            }
+        ]
+    }
+}

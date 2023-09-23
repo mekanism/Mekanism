@@ -27,7 +27,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     public TileEntityInductionPort(BlockPos pos, BlockState state) {
         super(MekanismBlocks.INDUCTION_PORT, pos, state);
-        delaySupplier = () -> 0;
+        delaySupplier = NO_DELAY;
     }
 
     @NotNull
@@ -76,13 +76,13 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private boolean getMode() {
+    @ComputerMethod(methodDescription = "true -> output, false -> input.")// TODO change this to enum?
+    boolean getMode() {
         return getActive();
     }
 
-    @ComputerMethod
-    private void setMode(boolean output) {
+    @ComputerMethod(methodDescription = "true -> output, false -> input")
+    void setMode(boolean output) {
         setActive(output);
     }
     //End methods IComputerTile
