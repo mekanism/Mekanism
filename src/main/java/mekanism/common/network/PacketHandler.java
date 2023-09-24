@@ -1,7 +1,6 @@
 package mekanism.common.network;
 
 import mekanism.common.Mekanism;
-import mekanism.common.network.to_client.PacketFlyingSync;
 import mekanism.common.network.to_client.PacketLaserHitBlock;
 import mekanism.common.network.to_client.PacketLightningRender;
 import mekanism.common.network.to_client.PacketPlayerData;
@@ -82,7 +81,6 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketWindowSelect.class, PacketWindowSelect::decode);
 
         //Server to client messages
-        registerServerToClient(PacketFlyingSync.class, PacketFlyingSync::decode);
         registerServerToClient(PacketLaserHitBlock.class, PacketLaserHitBlock::decode);
         registerServerToClient(PacketLightningRender.class, PacketLightningRender::decode);
         registerServerToClient(PacketPlayerData.class, PacketPlayerData::decode);

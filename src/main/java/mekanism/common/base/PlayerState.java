@@ -16,7 +16,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.lib.radiation.RadiationManager;
-import mekanism.common.network.to_client.PacketFlyingSync;
 import mekanism.common.network.to_client.PacketResetPlayerClient;
 import mekanism.common.network.to_server.PacketGearStateUpdate;
 import mekanism.common.network.to_server.PacketGearStateUpdate.GearType;
@@ -321,9 +320,11 @@ public class PlayerState {
     }
 
     private void updateClientServerFlight(Player player, boolean allowFlying, boolean isFlying) {
-        Mekanism.packetHandler().sendTo(new PacketFlyingSync(allowFlying, isFlying), (ServerPlayer) player);
         player.getAbilities().mayfly = allowFlying;
         player.getAbilities().flying = isFlying;
+        if (player instanceof ServerPlayer) {
+            player.onUpdateAbilities();
+        }
     }
 
     // ----------------------
