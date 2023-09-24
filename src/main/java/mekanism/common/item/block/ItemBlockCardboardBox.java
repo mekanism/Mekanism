@@ -91,7 +91,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                 BlockEntity tile = WorldUtils.getTileEntity(world, pos);
                 if (tile != null) {
                     if (MekanismTags.TileEntityTypes.CARDBOARD_BLACKLIST_LOOKUP.contains(tile.getType()) ||
-                        ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
+                        !ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
                         //If the tile is in the tile entity type blacklist or the player cannot access the tile
                         // don't allow them to pick it up with a cardboard box
                         return InteractionResult.FAIL;
