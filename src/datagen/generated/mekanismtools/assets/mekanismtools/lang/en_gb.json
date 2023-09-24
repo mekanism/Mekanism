@@ -2,5 +2,17 @@
   "advancements.mekanismtools.alternate_armor.description": "Craft any piece of Armour from Mekanism Tools",
   "advancements.mekanismtools.alternate_armor.title": "More Armour Types!",
   "advancements.mekanismtools.better_than_netherite.description": "Protect yourself with a piece of Refined Obsidian Armour",
-  "advancements.mekanismtools.loved_by_piglins.description": "Refined Glowstone Armour glows even brighter than gold!"
+  "advancements.mekanismtools.loved_by_piglins.description": "Refined Glowstone Armour glows even brighter than gold!",
+  "item.mekanismtools.bronze_shield.gray": "Grey Bronze Shield",
+  "item.mekanismtools.bronze_shield.light_gray": "Light Grey Bronze Shield",
+  "item.mekanismtools.lapis_lazuli_shield.gray": "Grey Lapis Lazuli Shield",
+  "item.mekanismtools.lapis_lazuli_shield.light_gray": "Light Grey Lapis Lazuli Shield",
+  "item.mekanismtools.osmium_shield.gray": "Grey Osmium Shield",
+  "item.mekanismtools.osmium_shield.light_gray": "Light Grey Osmium Shield",
+  "item.mekanismtools.refined_glowstone_shield.gray": "Grey Refined Glowstone Shield",
+  "item.mekanismtools.refined_glowstone_shield.light_gray": "Light Grey Refined Glowstone Shield",
+  "item.mekanismtools.refined_obsidian_shield.gray": "Grey Refined Obsidian Shield",
+  "item.mekanismtools.refined_obsidian_shield.light_gray": "Light Grey Refined Obsidian Shield",
+  "item.mekanismtools.steel_shield.gray": "Grey Steel Shield",
+  "item.mekanismtools.steel_shield.light_gray": "Light Grey Steel Shield"
 }

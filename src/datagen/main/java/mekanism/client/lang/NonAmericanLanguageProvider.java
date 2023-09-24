@@ -31,6 +31,7 @@ public class NonAmericanLanguageProvider extends ConvertibleLanguageProvider {
         addEntry(map, "Bodyarmor", "Bodyarmour");
         addEntry(map, "Armor", "Armour");
         addEntry(map, "Armored", "Armoured");
+        addEntry(map, "Gray", "Grey");
     }).entrySet().stream().map(entry -> new WordConversion(entry.getKey(), entry.getValue())).toList();
 
     private static void addEntry(Map<String, String> map, String key, String value) {
