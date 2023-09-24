@@ -502,7 +502,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.ALLOY_UPGRADING, "In Place Transmitter Upgrades", "Upgrade transmitters in world using the next tier of alloy");
         add(MekanismAdvancements.LASER, "Shooting Lasers", "Craft a Laser");
         add(MekanismAdvancements.STOPPING_LASERS, "Stopping Lasers", "Block a Laser with a shield");
-        add(MekanismAdvancements.LASER_DEATH, "Shooting Lasers", "Die to a Laser");
+        add(MekanismAdvancements.LASER_DEATH, "Shooting Lasers", "Die by Laser");
         add(MekanismAdvancements.AUTO_COLLECTION, "A Real Short Trip", "Tractor beams pull in the drops of blocks they break");
 
         add(MekanismAdvancements.ALARM, "Making Noise", "Alarms are loud, especially the industrial kind");
@@ -531,7 +531,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.PERSONAL_RADIATION, "That Wasn't Smart", "Use a Dosimeter to see how badly you irradiated yourself");
         add(MekanismAdvancements.RADIATION_PREVENTION, "Radiation Prevention", "Protect yourself from radiation with a Hazmat Suit");
         add(MekanismAdvancements.RADIATION_POISONING, "Can Really Taste the Radiation", "Take damage from radiation poisoning");
-        add(MekanismAdvancements.RADIATION_POISONING_DEATH, "Not Great, Not Terrible", "Die to radiation poisoning");
+        add(MekanismAdvancements.RADIATION_POISONING_DEATH, "Not Great, Not Terrible", "Die by radiation poisoning");
 
         add(MekanismAdvancements.PLUTONIUM, "Plutonium, Not Polonium", "Refine your Nuclear Waste into Plutonium");
         add(MekanismAdvancements.SPS, "Supercritical Phase Shifting?", "This thing doesn't seem safe");
@@ -546,7 +546,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.QIO_REDSTONE_ADAPTER, "Number Based Automation", "Craft a QIO Redstone Adapter");
         add(MekanismAdvancements.QIO_DASHBOARD, "So Much More Than a Monitor", "Wait this thing has HOW MANY crafting windows?");
         add(MekanismAdvancements.PORTABLE_QIO_DASHBOARD, "Who Needs Backpacks", "Craft a Portable QIO Dashboard");
-        add(MekanismAdvancements.BASIC_QIO_DRIVE, "The Most Basic Drive", "Create a QIO Drive to store your items in");
+        add(MekanismAdvancements.BASIC_QIO_DRIVE, "The Most Basic Drive", "Create a QIO Drive to store your items");
         add(MekanismAdvancements.ADVANCED_QIO_DRIVE, "High Density Storage", "Increase the storage bandwidth of your QIO Drive");
         add(MekanismAdvancements.ELITE_QIO_DRIVE, "It is all Relative", "Use relativity to 'further' increase the bandwidth");
         add(MekanismAdvancements.ULTIMATE_QIO_DRIVE, "Parallel Universe Detected", "Where do all the items go");
@@ -574,9 +574,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.ITEM_TRANSPORT, "Transporting Items", "Craft a Logistical Transporter");
         add(MekanismAdvancements.RESTRICTIVE_ITEM_TRANSPORT, "Restrictive Network", "Lowers the priority of a path for transporting items");
         add(MekanismAdvancements.DIVERSION_ITEM_TRANSPORT, "Network Splitter", "Precise side control");
-        add(MekanismAdvancements.SORTER, "Advanced Item Sorting", "Filter which items you are sending where");
+        add(MekanismAdvancements.SORTER, "Advanced Item Sorting", "Filter which items you are sending to where");
 
-        add(MekanismAdvancements.ENERGY_CUBE, "Save it for Later", "Build an Energy Cube to store your excess power in");
+        add(MekanismAdvancements.ENERGY_CUBE, "Save it for Later", "Build an Energy Cube to store your excess power");
 
         add(MekanismAdvancements.AUTOMATED_CRAFTING, "A Smart Crafting Table", "Craft a machine to do the crafting for you");
         add(MekanismAdvancements.SEISMIC_VIBRATIONS, "Just Vibing", "Craft a Seismic Vibrator and Seismic Reader, and then view the world beneath you");
