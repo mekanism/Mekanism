@@ -1,6 +1,8 @@
 {
+  "advancements.mekanism.auto_collection.title": "A Really Short Trip",
   "advancements.mekanism.chemical_crystallizer.description": "Craft a Chemical Crystalliser, Dissolution Chamber and Washer",
   "advancements.mekanism.chemical_transport.description": "Craft a Pressurised Tube",
+  "advancements.mekanism.full_canteen.description": "Completely fill a Canteen with Nutritional Paste",
   "advancements.mekanism.nucleosynthesizer.description": "Craft an Antiprotonic Nucleosynthesiser and don't worry if you can't pronounce the name",
   "advancements.mekanism.painting_machine.description": "Craft a Painting Machine to change the colour of items",
   "advancements.mekanism.stabilizing_chunks.description": "Craft a Dimensional Stabiliser and an Anchor Upgrade",
