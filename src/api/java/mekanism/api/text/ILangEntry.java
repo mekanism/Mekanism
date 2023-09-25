@@ -27,6 +27,8 @@ public interface ILangEntry extends IHasTranslationKey {
 
     /**
      * Translates this {@link ILangEntry} and applies the {@link net.minecraft.network.chat.TextColor} to the {@link Component}.
+     *
+     * @since 10.4.0
      */
     default MutableComponent translateColored(TextColor color, Object... args) {
         return TextComponentUtil.build(color, translate(args));
