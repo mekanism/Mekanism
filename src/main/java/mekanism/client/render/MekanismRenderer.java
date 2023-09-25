@@ -293,7 +293,10 @@ public class MekanismRenderer {
             return;
         }
         for (int i = 0; i < elements.length; i++) {
-            elements[i].setColorFromAtlas(parsed.get(i).rgbArray());
+            Color color = parsed.get(i);
+            if (color != null) {
+                elements[i].setColorFromAtlas(color.rgbArray());
+            }
         }
     }
 

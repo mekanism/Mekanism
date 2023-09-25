@@ -50,7 +50,7 @@ public class ItemTierInstaller extends Item {
     @NotNull
     @Override
     public Component getName(@NotNull ItemStack stack) {
-        return TextComponentUtil.build(toTier.getTextColor(), super.getName(stack));
+        return TextComponentUtil.build(toTier.getColor(), super.getName(stack));
     }
 
     @NotNull

@@ -142,7 +142,7 @@ public class FluidDeferredRegister {
         return fluidRegistryObject;
     }
 
-    private MapColor getClosestColor(int tint) {
+    private static MapColor getClosestColor(int tint) {
         if (tint == 0xFFFFFFFF) {
             return MapColor.NONE;
         }

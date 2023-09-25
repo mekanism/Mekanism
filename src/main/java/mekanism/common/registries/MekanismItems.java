@@ -5,6 +5,7 @@ import com.google.common.collect.Table;
 import java.util.Locale;
 import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
@@ -51,8 +52,10 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tier.QIODriveTier;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -238,7 +241,13 @@ public class MekanismItems {
 
     private static ItemRegistryObject<Item> registerCircuit(BaseTier tier) {
         //Ensure the name is lower case as with concatenating with values from enums it may not be
-        return ITEMS.register(tier.getLowerName() + "_control_circuit", tier.getTextColor());
+        return ITEMS.register(tier.getLowerName() + "_control_circuit", properties -> new Item(properties) {
+            @NotNull
+            @Override
+            public Component getName(@NotNull ItemStack stack) {
+                return TextComponentUtil.build(tier.getColor(), super.getName(stack));
+            }
+        });
     }
 
     private static ItemRegistryObject<ItemTierInstaller> registerInstaller(@Nullable BaseTier fromTier, @NotNull BaseTier toTier) {

@@ -3,6 +3,7 @@ package mekanism.api.text;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextColor;
 
 /**
  * Helper interface for creating formatted translations in our lang enums
@@ -21,6 +22,13 @@ public interface ILangEntry extends IHasTranslationKey {
      * Translates this {@link ILangEntry} and applies the {@link net.minecraft.network.chat.TextColor} of the given {@link EnumColor} to the {@link Component}.
      */
     default MutableComponent translateColored(EnumColor color, Object... args) {
+        return translateColored(color.getColor(), args);
+    }
+
+    /**
+     * Translates this {@link ILangEntry} and applies the {@link net.minecraft.network.chat.TextColor} to the {@link Component}.
+     */
+    default MutableComponent translateColored(TextColor color, Object... args) {
         return TextComponentUtil.build(color, translate(args));
     }
 }

@@ -60,6 +60,8 @@ public class TextComponentUtil {
                 current = translate(hasTranslationKey.getTranslationKey());
             } else if (component instanceof EnumColor color) {
                 cachedStyle = cachedStyle.withColor(color.getColor());
+            } else if (component instanceof TextColor color) {
+                cachedStyle = cachedStyle.withColor(color);
             } else if (component instanceof Component c) {
                 //Just append if a text component is being passed
                 current = c.copy();
@@ -207,6 +209,10 @@ public class TextComponentUtil {
             else if (component instanceof EnumColor color && cachedStyle.getColor() == null) {
                 //No color set yet in the cached style, apply the color
                 cachedStyle = cachedStyle.withColor(color.getColor());
+                continue;
+            } else if (component instanceof TextColor color && cachedStyle.getColor() == null) {
+                //No color set yet in the cached style, apply the color
+                cachedStyle = cachedStyle.withColor(color);
                 continue;
             } else if (component instanceof ChatFormatting formatting && !hasStyleType(cachedStyle, formatting)) {
                 //Specific formatting not in the cached style yet, apply it

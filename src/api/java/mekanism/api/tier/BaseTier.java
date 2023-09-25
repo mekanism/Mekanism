@@ -3,7 +3,7 @@ package mekanism.api.tier;
 import java.util.Locale;
 import mekanism.api.SupportsColorMap;
 import mekanism.api.math.MathUtils;
-import mekanism.api.text.EnumColor;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
@@ -14,25 +14,23 @@ import org.jetbrains.annotations.NotNull;
  * @author aidancbrady
  */
 public enum BaseTier implements StringRepresentable, SupportsColorMap {
-    BASIC("Basic", EnumColor.BRIGHT_GREEN, EnumColor.BRIGHT_GREEN),
-    ADVANCED("Advanced", EnumColor.DARK_RED, EnumColor.RED),
-    ELITE("Elite", EnumColor.INDIGO, EnumColor.INDIGO),
-    ULTIMATE("Ultimate", EnumColor.PURPLE, EnumColor.PURPLE),
-    CREATIVE("Creative", EnumColor.BLACK, EnumColor.DARK_GRAY);
+    BASIC("Basic", new int[]{95, 255, 184},  MapColor.COLOR_LIGHT_GREEN),
+    ADVANCED("Advanced", new int[]{255, 128, 106}, MapColor.TERRACOTTA_PINK),
+    ELITE("Elite", new int[]{75, 248, 255}, MapColor.DIAMOND),
+    ULTIMATE("Ultimate", new int[]{247, 135, 255}, MapColor.COLOR_MAGENTA),
+    CREATIVE("Creative", new int[]{88, 88, 88}, MapColor.TERRACOTTA_CYAN);
 
     private static final BaseTier[] TIERS = values();
 
     private final String name;
-    private final EnumColor color;
-    private final EnumColor textColor;
+    private final MapColor mapColor;
+    private TextColor textColor;
     private int[] rgbCode;
 
-    BaseTier(String name, EnumColor color, EnumColor textColor) {
+    BaseTier(String name, int[] rgbCode, MapColor mapColor) {
         this.name = name;
-        this.color = color;
-        this.textColor = textColor;
-        //TODO - 1.20: Default this instead via parameter instead of via the enum color
-        setColorFromAtlas(color.getRgbCode());
+        this.mapColor = mapColor;
+        setColorFromAtlas(rgbCode);
     }
 
     /**
@@ -55,8 +53,7 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
      * @since 10.4.0
      */
     public MapColor getMapColor() {
-        //TODO - 1.20: Update the colors?
-        return color.getMapColor();
+        return mapColor;
     }
 
     /**
@@ -78,14 +75,17 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
      */
     @Override
     public void setColorFromAtlas(int[] color) {
-        rgbCode = color;
+        this.rgbCode = color;
+        this.textColor = TextColor.fromRgb(rgbCode[0] << 16 | rgbCode[1] << 8 | rgbCode[2]);
     }
 
     /**
      * Gets the color that corresponds to this tier for use in text messages.
+     *
+     * @since 10.4.0
      */
-    public EnumColor getTextColor() {
-        return textColor;
+    public TextColor getColor() {
+        return this.textColor;
     }
 
     @NotNull
