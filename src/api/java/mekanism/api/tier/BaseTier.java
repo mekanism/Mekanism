@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * @author aidancbrady
  */
 public enum BaseTier implements StringRepresentable, SupportsColorMap {
-    BASIC("Basic", new int[]{95, 255, 184},  MapColor.COLOR_LIGHT_GREEN),
+    BASIC("Basic", new int[]{95, 255, 184}, MapColor.COLOR_LIGHT_GREEN),
     ADVANCED("Advanced", new int[]{255, 128, 106}, MapColor.TERRACOTTA_PINK),
     ELITE("Elite", new int[]{75, 248, 255}, MapColor.DIAMOND),
     ULTIMATE("Ultimate", new int[]{247, 135, 255}, MapColor.COLOR_MAGENTA),

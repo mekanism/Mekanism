@@ -27,21 +27,18 @@
 		},
 		{
 			"name": "port",
-			"from": [4, 4, 4.02],
-			"to": [12, 12, 16.02],
+			"from": [4, 4, 4.01],
+			"to": [12, 12, 16.01],
 			"faces": {
 				"north": {"uv": [0, 8, 8, 16], "texture": "#ports"},
-				"east": {"uv": [7, 0, 9, 8], "texture": "#ports", "cullface": "south"},
 				"south": {"uv": [0, 8, 8, 16], "texture": "#ports", "cullface": "south"},
-				"west": {"uv": [7, 0, 9, 8], "texture": "#ports", "cullface": "south"},
-				"up": {"uv": [4, 1, 12, 13], "texture": "#top"},
-				"down": {"uv": [0, 0, 8, 2], "texture": "#missing", "cullface": "south"}
+				"up": {"uv": [4, 1, 12, 13], "texture": "#top"}
 			}
 		},
 		{
 			"name": "port_led",
-			"from": [4, 4, 16.02],
-			"to": [12, 12, 16.02],
+			"from": [4, 4, 16.01],
+			"to": [12, 12, 16.01],
 			"faces": {
 				"south": {"uv": [8, 8, 16, 16], "texture": "#ports_led", "cullface": "south"}
 			},

@@ -161,7 +161,7 @@ public class Attributes {
 
         private final ToIntBiFunction<TILE, Direction> redstoneFunction;
 
-        public AttributeRedstoneEmitter(ToIntBiFunction<TILE, Direction> redstoneFunction) {//TODO - 1.20: View usages and make some side specific?
+        public AttributeRedstoneEmitter(ToIntBiFunction<TILE, Direction> redstoneFunction) {
             this.redstoneFunction = redstoneFunction;
         }
 
