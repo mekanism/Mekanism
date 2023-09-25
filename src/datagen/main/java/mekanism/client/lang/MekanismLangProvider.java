@@ -558,7 +558,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
         add(MekanismAdvancements.ROBIT, "A New Best Friend!", "Craft and place a Robit on a Chargepad");
         add(MekanismAdvancements.ROBIT_AESTHETICS, "A New Coat of Paint", "Equip a Robit with a new coat of paint");
-        add(MekanismAdvancements.DIGITAL_MINER, "I Thought We Were Friends", "Turn your best friend into a Digital Miner");
+        add(MekanismAdvancements.DIGITAL_MINER, "Trapped Inside", "Turn your best friend into a Digital Miner");
         add(MekanismAdvancements.DICTIONARY, "Time to Learn", "Craft a Dictionary to learn the generic 'tags' of the world around you");
         add(MekanismAdvancements.STONE_GENERATOR, "Replace With Stone", "Preventing holes in the ground since 2021");
 
@@ -572,7 +572,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.ENERGY_TRANSPORT, "Electron Super Highway", "Craft a Universal Cable");
         add(MekanismAdvancements.HEAT_TRANSPORT, "Spread The Warmth", "Craft a Thermodynamic Conductor");
         add(MekanismAdvancements.ITEM_TRANSPORT, "Conveyors Are So Yesterday", "Craft a Logistical Transporter");
-        add(MekanismAdvancements.RESTRICTIVE_ITEM_TRANSPORT, "It's Getting Cosy In Here", "Craft a Restrictive Transporter to lowers the priority of a path for transporting items");
+        add(MekanismAdvancements.RESTRICTIVE_ITEM_TRANSPORT, "It's Getting Cosy In Here", "Craft a Restrictive Transporter to lower the priority of a path for transporting items");
         add(MekanismAdvancements.DIVERSION_ITEM_TRANSPORT, "Green Light, Red Light", "Precise side control");
         add(MekanismAdvancements.SORTER, "Pick and Place", "Filter which items you are sending to where");
 
