@@ -503,7 +503,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.LASER, "Shooting Lasers", "Craft a Laser");
         add(MekanismAdvancements.STOPPING_LASERS, "Stopping Lasers", "Block a Laser with a shield");
         add(MekanismAdvancements.LASER_DEATH, "Shooting Lasers", "Die by Laser");
-        add(MekanismAdvancements.AUTO_COLLECTION, "A Real Short Trip", "Tractor beams pull in the drops of blocks they break");
+        add(MekanismAdvancements.AUTO_COLLECTION, "It's pulling us in!", "Tractor beams pull in the drops of blocks they break");
 
         add(MekanismAdvancements.ALARM, "Making Noise", "Alarms are loud, especially the industrial kind");
         add(MekanismAdvancements.INSTALLER, "In Place Upgrades", "Craft any tier of Installer to upgrade your factories in place");

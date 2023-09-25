@@ -33,7 +33,6 @@ public class NonAmericanLanguageProvider extends ConvertibleLanguageProvider {
         addEntry(map, "Armored", "Armoured");
         addEntry(map, "Gray", "Grey");
         addEntry(map, "Fully fill", "Completely fill");
-        addEntry(map, "A Real Short Trip", "A Really Short Trip");
     }).entrySet().stream().map(entry -> new WordConversion(entry.getKey(), entry.getValue())).toList();
 
     private static void addEntry(Map<String, String> map, String key, String value) {
