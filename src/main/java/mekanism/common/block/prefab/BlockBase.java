@@ -2,7 +2,10 @@ package mekanism.common.block.prefab;
 
 import java.util.function.UnaryOperator;
 import mekanism.api.text.ILangEntry;
+import mekanism.api.text.TextComponentUtil;
+import mekanism.api.tier.BaseTier;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomShape;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.Attributes.AttributeCustomResistance;
@@ -11,6 +14,7 @@ import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.content.blocktype.BlockType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -52,6 +56,16 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     @Override
     public ILangEntry getDescription() {
         return type.getDescription();
+    }
+
+    @NotNull
+    @Override
+    public MutableComponent getName() {
+        BaseTier baseTier = Attribute.getBaseTier(this);
+        if (baseTier == null) {
+            return super.getName();
+        }
+        return TextComponentUtil.build(baseTier.getColor(), super.getName());
     }
 
     @Override

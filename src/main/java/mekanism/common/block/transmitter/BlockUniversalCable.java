@@ -1,5 +1,6 @@
 package mekanism.common.block.transmitter;
 
+import mekanism.api.tier.BaseTier;
 import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.interfaces.ITypeBlock;
@@ -16,6 +17,11 @@ public class BlockUniversalCable extends BlockSmallTransmitter implements ITypeB
     public BlockUniversalCable(CableTier tier) {
         super(properties -> properties.mapColor(tier.getBaseTier().getMapColor()));
         this.tier = tier;
+    }
+
+    @Override
+    protected BaseTier getBaseTier() {
+        return this.tier.getBaseTier();
     }
 
     @Override

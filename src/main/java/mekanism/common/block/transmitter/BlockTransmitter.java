@@ -6,6 +6,8 @@ import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
+import mekanism.api.text.TextComponentUtil;
+import mekanism.api.tier.BaseTier;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.content.network.transmitter.Transmitter;
@@ -20,6 +22,7 @@ import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -49,6 +52,21 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
 
     protected BlockTransmitter(UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
         super(propertiesModifier.apply(BlockBehaviour.Properties.of().strength(1, 6).pushReaction(PushReaction.BLOCK)));
+    }
+
+    @Nullable
+    protected BaseTier getBaseTier() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public MutableComponent getName() {
+        BaseTier baseTier = getBaseTier();
+        if (baseTier == null) {
+            return super.getName();
+        }
+        return TextComponentUtil.build(baseTier.getColor(), super.getName());
     }
 
     @NotNull
