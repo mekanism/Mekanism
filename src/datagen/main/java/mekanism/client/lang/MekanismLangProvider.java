@@ -597,7 +597,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismAdvancements.PLENISHER, "Now in Reverse", "Craft a Fluidic Plenisher to place the fluids back!");
 
         add(MekanismAdvancements.LIQUIFIER, "Liquefy Then Drink", "Craft a Nutritional Liquifier to liquefy your food");
-        add(MekanismAdvancements.FULL_CANTEEN, "Tasty Paste", "Fully fill a Canteen with Nutritional Paste");
+        add(MekanismAdvancements.FULL_CANTEEN, "Tasty Paste", "Completely fill a Canteen with Nutritional Paste");
     }
 
     private void addJade() {
