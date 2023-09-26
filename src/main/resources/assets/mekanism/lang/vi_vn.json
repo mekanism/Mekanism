@@ -1,6 +1,7 @@
 {
   "assemblicator.mekanism.auto_mode_toggle": "Chế độ tự động: %1$s",
   "assemblicator.mekanism.craft_available": "Chế tạo vật phẩm có sẵn",
+  "assemblicator.mekanism.craft_single": "Chế tạo 1 vật phẩm",
   "assemblicator.mekanism.encode_formula": "Xuất công thức",
   "auto.mekanism.eject": "Tự động đẩy",
   "auto.mekanism.pull": "Tự động kéo",
