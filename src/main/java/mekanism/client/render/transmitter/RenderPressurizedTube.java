@@ -41,10 +41,12 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
 
     @Override
     protected boolean shouldRenderTransmitter(TileEntityPressurizedTube tile, Vec3 camera) {
-        BoxedPressurizedTube tube = tile.getTransmitter();
-        if (tube.hasTransmitterNetwork()) {
-            BoxedChemicalNetwork network = tube.getTransmitterNetwork();
-            return !network.lastChemical.isEmpty() && !network.isTankEmpty() && network.currentScale > 0;
+        if (super.shouldRenderTransmitter(tile, camera)) {
+            BoxedPressurizedTube tube = tile.getTransmitter();
+            if (tube.hasTransmitterNetwork()) {
+                BoxedChemicalNetwork network = tube.getTransmitterNetwork();
+                return !network.lastChemical.isEmpty() && !network.isTankEmpty() && network.currentScale > 0;
+            }
         }
         return false;
     }

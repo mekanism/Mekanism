@@ -98,11 +98,11 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
 
     @Override
     public boolean shouldRender(TRANSMITTER tile, Vec3 camera) {
-        return !MekanismConfig.client.opaqueTransmitters.get() && shouldRenderTransmitter(tile, camera) && super.shouldRender(tile, camera);
+        return shouldRenderTransmitter(tile, camera) && super.shouldRender(tile, camera);
     }
 
     protected boolean shouldRenderTransmitter(TRANSMITTER tile, Vec3 camera) {
-        return true;
+        return !MekanismConfig.client.opaqueTransmitters.get();
     }
 
     private record ContentsModelData(List<String> visible, TextureAtlasSprite icon) {

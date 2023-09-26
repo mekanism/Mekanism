@@ -116,10 +116,12 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 
     @Override
     protected boolean shouldRenderTransmitter(TileEntityMechanicalPipe tile, Vec3 camera) {
-        MechanicalPipe pipe = tile.getTransmitter();
-        if (pipe.hasTransmitterNetwork()) {
-            FluidNetwork network = pipe.getTransmitterNetwork();
-            return !network.lastFluid.isEmpty() && !network.fluidTank.isEmpty() && network.currentScale > 0;
+        if (super.shouldRenderTransmitter(tile, camera)) {
+            MechanicalPipe pipe = tile.getTransmitter();
+            if (pipe.hasTransmitterNetwork()) {
+                FluidNetwork network = pipe.getTransmitterNetwork();
+                return !network.lastFluid.isEmpty() && !network.fluidTank.isEmpty() && network.currentScale > 0;
+            }
         }
         return false;
     }

@@ -39,11 +39,13 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
 
     @Override
     protected boolean shouldRenderTransmitter(TileEntityUniversalCable tile, Vec3 camera) {
-        UniversalCable cable = tile.getTransmitter();
-        if (cable.hasTransmitterNetwork()) {
-            EnergyNetwork network = cable.getTransmitterNetwork();
-            //Note: We don't check if the network is empty as we don't actually ever sync the energy value to the client
-            return network.currentScale > 0;
+        if (super.shouldRenderTransmitter(tile, camera)) {
+            UniversalCable cable = tile.getTransmitter();
+            if (cable.hasTransmitterNetwork()) {
+                EnergyNetwork network = cable.getTransmitterNetwork();
+                //Note: We don't check if the network is empty as we don't actually ever sync the energy value to the client
+                return network.currentScale > 0;
+            }
         }
         return false;
     }

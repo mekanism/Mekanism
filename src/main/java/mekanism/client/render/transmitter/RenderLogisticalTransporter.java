@@ -15,11 +15,13 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.MekanismRenderer.Model3D.SpriteInfo;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.transmitter.DiversionTransporter;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.lib.inventory.HashedItem;
+import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
@@ -41,6 +43,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -73,26 +76,28 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     protected void render(TileEntityLogisticalTransporterBase tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
           ProfilerFiller profiler) {
         LogisticalTransporterBase transporter = tile.getTransmitter();
-        Collection<TransporterStack> inTransit = transporter.getTransit();
         BlockPos pos = tile.getBlockPos();
-        if (!inTransit.isEmpty()) {
-            matrix.pushPose();
-            itemRenderer.init(tile.getLevel(), pos);
-
-            float partial = partialTick * transporter.tier.getSpeed();
-            Collection<TransporterStack> reducedTransit = getReducedTransit(inTransit);
-            for (TransporterStack stack : reducedTransit) {
-                float[] stackPos = TransporterUtils.getStackPosition(transporter, stack, partial);
+        if (!MekanismConfig.client.opaqueTransmitters.get()) {
+            Collection<TransporterStack> inTransit = transporter.getTransit();
+            if (!inTransit.isEmpty()) {
                 matrix.pushPose();
-                matrix.translate(stackPos[0], stackPos[1], stackPos[2]);
-                matrix.scale(0.75F, 0.75F, 0.75F);
-                itemRenderer.renderAsStack(matrix, renderer, stack.itemStack, light);
-                matrix.popPose();
-                if (stack.color != null) {
-                    modelBox.render(matrix, renderer, LightTexture.FULL_BRIGHT, overlayLight, stackPos[0], stackPos[1], stackPos[2], stack.color);
+                itemRenderer.init(tile.getLevel(), pos);
+
+                float partial = partialTick * transporter.tier.getSpeed();
+                Collection<TransporterStack> reducedTransit = getReducedTransit(inTransit);
+                for (TransporterStack stack : reducedTransit) {
+                    float[] stackPos = TransporterUtils.getStackPosition(transporter, stack, partial);
+                    matrix.pushPose();
+                    matrix.translate(stackPos[0], stackPos[1], stackPos[2]);
+                    matrix.scale(0.75F, 0.75F, 0.75F);
+                    itemRenderer.renderAsStack(matrix, renderer, stack.itemStack, light);
+                    matrix.popPose();
+                    if (stack.color != null) {
+                        modelBox.render(matrix, renderer, LightTexture.FULL_BRIGHT, overlayLight, stackPos[0], stackPos[1], stackPos[2], stack.color);
+                    }
                 }
+                matrix.popPose();
             }
-            matrix.popPose();
         }
         if (transporter instanceof DiversionTransporter diversionTransporter) {
             Player player = Minecraft.getInstance().player;
@@ -115,6 +120,12 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     @Override
     protected String getProfilerSection() {
         return ProfilerConstants.LOGISTICAL_TRANSPORTER;
+    }
+
+    @Override
+    protected boolean shouldRenderTransmitter(TileEntityLogisticalTransporterBase tile, Vec3 camera) {
+        //Render the transmitter if we normally should (opaque status) or we are a diversion transporter as we will need to render the overlay
+        return super.shouldRenderTransmitter(tile, camera) || tile instanceof TileEntityDiversionTransporter;
     }
 
     /**
