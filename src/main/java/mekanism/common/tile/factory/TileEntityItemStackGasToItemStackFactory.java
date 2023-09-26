@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
+import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
@@ -21,6 +22,8 @@ import mekanism.api.recipes.cache.ItemStackConstantChemicalToItemStackCachedReci
 import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.common.Mekanism;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -84,7 +87,11 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, GLOBAL_ERROR_TYPES);
         gasInputHandler = InputHelper.getConstantInputHandler(gasTank);
         configComponent.addSupported(TransmissionType.GAS);
-        configComponent.setupInputConfig(TransmissionType.GAS, gasTank);
+        if (allowExtractingChemical()) {
+            configComponent.setupIOConfig(TransmissionType.GAS, gasTank, RelativeSide.RIGHT).setCanEject(false);
+        } else {
+            configComponent.setupInputConfig(TransmissionType.GAS, gasTank);
+        }
         baseTotalUsage = BASE_TICKS_REQUIRED;
         usedSoFar = new long[tier.processes];
         if (useStatisticalMechanics()) {
@@ -114,8 +121,14 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         //If the tank's contents change make sure to call our extended content listener that also marks sorting as being needed
         // as maybe the valid recipes have changed, and we need to sort again and have all recipes know they may need to be rechecked
         // if they are not still valid
-        builder.addTank(gasTank = ChemicalTankBuilder.GAS.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this::containsRecipeB,
-              markAllMonitorsChanged(listener)));
+        if (allowExtractingChemical()) {
+            gasTank = ChemicalTankBuilder.GAS.create(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this::containsRecipeB,
+                  markAllMonitorsChanged(listener));
+        } else {
+            gasTank = ChemicalTankBuilder.GAS.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this::containsRecipeB,
+                  markAllMonitorsChanged(listener));
+        }
+        builder.addTank(gasTank);
         return builder.build();
     }
 
@@ -179,6 +192,11 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
             //TODO: Make it so that it throws an error if it is not one of the three types
             default -> MekanismRecipeType.COMPRESSING;
         };
+    }
+
+    private boolean allowExtractingChemical() {
+        //Note: We can't use type directly as when this is being used for creating the chemical tank the type field hasn't been set yet
+        return Attribute.get(blockProvider, AttributeFactoryType.class).getFactoryType() == FactoryType.COMPRESSING;
     }
 
     private boolean useStatisticalMechanics() {

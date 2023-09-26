@@ -1,8 +1,11 @@
 package mekanism.common.tile.prefab;
 
 import java.util.List;
+import java.util.function.BiPredicate;
+import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
+import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
@@ -95,7 +98,11 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, ticksRequired);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, secondarySlot, energySlot);
-        configComponent.setupInputConfig(TransmissionType.GAS, gasTank);
+        if (allowExtractingChemical()) {
+            configComponent.setupIOConfig(TransmissionType.GAS, gasTank, RelativeSide.RIGHT).setCanEject(false);
+        } else {
+            configComponent.setupInputConfig(TransmissionType.GAS, gasTank);
+        }
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
@@ -129,7 +136,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks(IContentsListener listener, IContentsListener recipeCacheListener) {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(gasTank = ChemicalTankBuilder.GAS.input(MAX_GAS, gas -> containsRecipeBA(inputSlot.getStack(), gas), this::containsRecipeB, recipeCacheListener));
+        BiPredicate<@NotNull Gas, @NotNull AutomationType> canExtract = allowExtractingChemical() ? ChemicalTankBuilder.GAS.alwaysTrueBi : ChemicalTankBuilder.GAS.notExternal;
+        builder.addTank(gasTank = ChemicalTankBuilder.GAS.create(MAX_GAS, canExtract, (gas, automationType) -> containsRecipeBA(inputSlot.getStack(), gas),
+              this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }
 
@@ -160,6 +169,10 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         energySlot.fillContainerOrConvert();
         secondarySlot.fillTankOrConvert();
         recipeCacheLookupMonitor.updateAndProcess();
+    }
+
+    protected boolean allowExtractingChemical() {
+        return !useStatisticalMechanics();
     }
 
     protected boolean useStatisticalMechanics() {
