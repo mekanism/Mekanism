@@ -5,13 +5,6 @@
         "layer": "SOLID",
         "textures": [
             "mekanism:ctm/pressure_disperser"
-        ],
-        "extra": {
-            "connect_to": [
-                {
-                    "block": "mekanism:pressure_disperser"
-                }
-            ]
-        }
+        ]
     }
 }
