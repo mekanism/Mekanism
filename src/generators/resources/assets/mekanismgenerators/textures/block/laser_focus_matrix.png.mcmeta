@@ -4,7 +4,7 @@
     "type": "CTM",
     "layer": "TRANSLUCENT",
     "textures": [
-      "mekanismgenerators:block/laser_focus_matrix-ctm"
+      "mekanismgenerators:ctm/laser_focus_matrix"
     ],
     "extra": {
       "connect_to": [

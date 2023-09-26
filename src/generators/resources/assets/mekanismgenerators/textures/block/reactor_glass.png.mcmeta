@@ -4,7 +4,7 @@
     "type": "CTM",
     "layer": "TRANSLUCENT",
     "textures": [
-      "mekanismgenerators:block/reactor_glass-ctm"
+      "mekanismgenerators:ctm/reactor_glass"
     ],
     "extra": {
       "connect_to": [

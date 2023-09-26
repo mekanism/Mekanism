@@ -4,7 +4,7 @@
     "type": "CTM",
     "layer": "SOLID",
     "textures": [
-      "mekanismgenerators:block/turbine_casing-ctm"
+      "mekanismgenerators:ctm/turbine_casing"
     ],
     "extra": {
       "connect_to": [

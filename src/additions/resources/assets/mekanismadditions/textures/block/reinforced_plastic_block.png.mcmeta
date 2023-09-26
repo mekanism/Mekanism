@@ -3,6 +3,6 @@
     "ctm_version": 1,
     "type": "CTM",
     "layer": "SOLID",
-    "textures": ["mekanismadditions:block/reinforced_plastic_block-ctm"]
+    "textures": ["mekanismadditions:ctm/reinforced_plastic_block"]
   }
 }

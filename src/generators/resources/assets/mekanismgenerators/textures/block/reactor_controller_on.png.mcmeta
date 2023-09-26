@@ -4,7 +4,7 @@
     "type": "CTM",
     "layer": "SOLID",
     "textures": [
-      "mekanismgenerators:block/reactor_controller_on-ctm"
+      "mekanismgenerators:ctm/reactor_controller_on"
     ],
     "extra": {
       "connect_to": [

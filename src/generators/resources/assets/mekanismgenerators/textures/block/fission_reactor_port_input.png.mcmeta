@@ -4,7 +4,7 @@
     "type": "CTM",
     "layer": "SOLID",
     "textures": [
-      "mekanismgenerators:block/fission_reactor_port_input-ctm"
+      "mekanismgenerators:ctm/fission_reactor_port_input"
     ],
     "extra": {
       "connect_to": [

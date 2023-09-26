@@ -4,7 +4,7 @@
     "type": "CTM",
     "layer": "SOLID",
     "textures": [
-      "mekanismgenerators:block/fission_reactor_casing-ctm"
+      "mekanismgenerators:ctm/fission_reactor_casing"
     ],
     "extra": {
       "connect_to": [
