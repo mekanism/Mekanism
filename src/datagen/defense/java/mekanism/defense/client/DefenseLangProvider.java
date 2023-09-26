@@ -1,7 +1,6 @@
 package mekanism.defense.client;
 
 import mekanism.client.lang.BaseLanguageProvider;
-import mekanism.common.Mekanism;
 import mekanism.defense.common.DefenseLang;
 import mekanism.defense.common.MekanismDefense;
 import net.minecraft.data.PackOutput;
@@ -9,7 +8,7 @@ import net.minecraft.data.PackOutput;
 public class DefenseLangProvider extends BaseLanguageProvider {
 
     public DefenseLangProvider(PackOutput output) {
-        super(output, MekanismDefense.MODID);
+        super(output, MekanismDefense.MODID, MekanismDefense.instance);
     }
 
     @Override
@@ -18,8 +17,6 @@ public class DefenseLangProvider extends BaseLanguageProvider {
     }
 
     private void addMisc() {
-        String name = Mekanism.MOD_NAME + ": " + MekanismDefense.instance.getName();
-        add(DefenseLang.MEKANISM_DEFENSE, name);
-        add(DefenseLang.PACK_DESCRIPTION, "Resources used for " + name);
+        addPackData(DefenseLang.MEKANISM_DEFENSE, DefenseLang.PACK_DESCRIPTION);
     }
 }

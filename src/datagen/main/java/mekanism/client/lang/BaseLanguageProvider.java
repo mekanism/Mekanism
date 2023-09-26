@@ -7,7 +7,9 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.lang.FormatSplitter.Component;
+import mekanism.common.Mekanism;
 import mekanism.common.advancements.MekanismAdvancement;
+import mekanism.common.base.IModModule;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.registration.impl.FluidRegistryObject;
@@ -22,11 +24,23 @@ import org.jetbrains.annotations.NotNull;
 public abstract class BaseLanguageProvider extends LanguageProvider {
 
     private final ConvertibleLanguageProvider[] altProviders;
+    protected final String modName;
+    protected final String basicModName;
     private final String modid;
 
-    public BaseLanguageProvider(PackOutput output, String modid) {
+    protected BaseLanguageProvider(PackOutput output, String modid) {
+        this(output, modid, Mekanism.MOD_NAME);
+    }
+
+    protected BaseLanguageProvider(PackOutput output, String modid, IModModule module) {
+        this(output, modid, Mekanism.MOD_NAME + ": " + module.getName());
+    }
+
+    private BaseLanguageProvider(PackOutput output, String modid, String modName) {
         super(output, modid, "en_us");
         this.modid = modid;
+        this.modName = modName;
+        this.basicModName = modName.replaceAll(":", "");
         altProviders = new ConvertibleLanguageProvider[]{
               new UpsideDownLanguageProvider(output, modid),
               new NonAmericanLanguageProvider(output, modid, "en_au"),
@@ -38,6 +52,11 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     @Override
     public String getName() {
         return super.getName() + ": " + modid;
+    }
+
+    protected void addPackData(IHasTranslationKey name, IHasTranslationKey packDescription) {
+        add(name, modName);
+        add(packDescription, "Resources used for " + modName);
     }
 
     protected void add(IHasTranslationKey key, String value) {

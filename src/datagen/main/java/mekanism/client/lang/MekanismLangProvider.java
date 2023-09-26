@@ -481,10 +481,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addAdvancements() {
-        add(MekanismAdvancements.ROOT, "Mekanism", "Welcome to " + Mekanism.MOD_NAME + "!");
-        add(MekanismAdvancements.MATERIALS, "First Steps", "Acquire some natural " + Mekanism.MOD_NAME + " resources");
+        add(MekanismAdvancements.ROOT, basicModName, "Welcome to " + basicModName + "!");
+        add(MekanismAdvancements.MATERIALS, "First Steps", "Acquire some natural " + basicModName + " resources");
 
-        add(MekanismAdvancements.CLEANING_GAUGES, "Cleaning Gauges", "Use a Gauge Dropper on any Gauge in a " + Mekanism.MOD_NAME + " GUI");
+        add(MekanismAdvancements.CLEANING_GAUGES, "Cleaning Gauges", "Use a Gauge Dropper on any Gauge in a " + basicModName + " GUI");
 
         add(MekanismAdvancements.METALLURGIC_INFUSER, "A Metallur-what?", "Craft a Metallurgic Infuser");
         add(MekanismAdvancements.STEEL_INGOT, "Industrial Revolution", "Infuse Iron with Carbon and repeat");
@@ -653,14 +653,13 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         for (EnumColor color : EnumUtils.COLORS) {
             add(color.getLangEntry(), color.getEnglishName());
         }
-        add(MekanismLang.MEKANISM, Mekanism.MOD_NAME);
-        add(MekanismLang.DEBUG_TITLE, Mekanism.MOD_NAME + " Debug");
+        addPackData(MekanismLang.MEKANISM, MekanismLang.PACK_DESCRIPTION);
+        add(MekanismLang.DEBUG_TITLE, modName + " Debug");
         add(MekanismLang.LOG_FORMAT, "[%1$s] %2$s");
-        add(MekanismLang.PACK_DESCRIPTION, "Resources used for " + Mekanism.MOD_NAME);
         add(MekanismLang.FORGE, "MinecraftForge");
         add(MekanismLang.IC2, "IndustrialCraft");
         add(MekanismLang.ERROR, "Error");
-        add(MekanismLang.ALPHA_WARNING, "Warning: " + Mekanism.MOD_NAME + " is currently in alpha, and is not recommended for widespread use in modpacks. There are likely to be game breaking bugs, and various other issues that you can read more about %1$s.");
+        add(MekanismLang.ALPHA_WARNING, "Warning: " + modName + " is currently in alpha, and is not recommended for widespread use in modpacks. There are likely to be game breaking bugs, and various other issues that you can read more about %1$s.");
         add(MekanismLang.ALPHA_WARNING_HERE, "here");
         //Equipment
         add(MekanismLang.HEAD, "Head");
@@ -1375,7 +1374,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_DIGITAL_MINER, "A highly-advanced, filter-based, auto-miner that can mine whatever block you tell it to within a 32 block (max) radius.");
         add(MekanismLang.DESCRIPTION_METALLURGIC_INFUSER, "A machine used to infuse various materials into (generally) metals to create metal alloys and other compounds.");
         add(MekanismLang.DESCRIPTION_PURIFICATION_CHAMBER, "An advanced machine capable of processing ores into three clumps, serving as the initial stage of 300% ore processing.");
-        add(MekanismLang.DESCRIPTION_ENERGIZED_SMELTER, "A simple machine that serves as a " + Mekanism.MOD_NAME + "-based furnace that runs off of energy.");
+        add(MekanismLang.DESCRIPTION_ENERGIZED_SMELTER, "A simple machine that serves as a " + modName + "-based furnace that runs off of energy.");
         add(MekanismLang.DESCRIPTION_TELEPORTER, "A machine capable of teleporting players to various locations defined by another teleporter.");
         add(MekanismLang.DESCRIPTION_ELECTRIC_PUMP, "An advanced, upgradeable pump, capable of extracting any type of fluid.");
         add(MekanismLang.DESCRIPTION_PERSONAL_BARREL, "A 54-slot barrel that can be opened anywhere- even from your own inventory.");

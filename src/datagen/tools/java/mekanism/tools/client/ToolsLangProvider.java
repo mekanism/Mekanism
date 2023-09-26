@@ -3,7 +3,6 @@ package mekanism.tools.client;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.lang.BaseLanguageProvider;
-import mekanism.common.Mekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsLang;
@@ -14,7 +13,7 @@ import net.minecraft.data.PackOutput;
 public class ToolsLangProvider extends BaseLanguageProvider {
 
     public ToolsLangProvider(PackOutput output) {
-        super(output, MekanismTools.MODID);
+        super(output, MekanismTools.MODID, MekanismTools.instance);
     }
 
     @Override
@@ -52,17 +51,15 @@ public class ToolsLangProvider extends BaseLanguageProvider {
 
     private void addAdvancements() {
         add(ToolsAdvancements.PAXEL, "Multi-Tool", "Craft any Paxel (Pickaxe, Axe, Shovel)");
-        add(ToolsAdvancements.ALTERNATE_ARMOR, "More Armor Types!", "Craft any piece of Armor from Mekanism Tools");
-        add(ToolsAdvancements.ALTERNATE_TOOLS, "More Tool Types!", "Craft any tool or weapon (except Paxels) from Mekanism Tools");
-        add(ToolsAdvancements.NOT_ENOUGH_SHIELDING, "Not Enough Shielding", "Craft any Shield added by Mekanism Tools");
+        add(ToolsAdvancements.ALTERNATE_ARMOR, "More Armor Types!", "Craft any piece of Armor from " + basicModName);
+        add(ToolsAdvancements.ALTERNATE_TOOLS, "More Tool Types!", "Craft any tool or weapon (except Paxels) from " + basicModName);
+        add(ToolsAdvancements.NOT_ENOUGH_SHIELDING, "Not Enough Shielding", "Craft any Shield added by " + basicModName);
         add(ToolsAdvancements.BETTER_THAN_NETHERITE, "Better Than Netherite", "Protect yourself with a piece of Refined Obsidian Armor");
         add(ToolsAdvancements.LOVED_BY_PIGLINS, "Loved By Piglins", "Refined Glowstone Armor glows even brighter than gold!");
     }
 
     private void addMisc() {
-        String name = Mekanism.MOD_NAME + ": " + MekanismTools.instance.getName();
-        add(ToolsLang.MEKANISM_TOOLS, name);
-        add(ToolsLang.PACK_DESCRIPTION, "Resources used for " + name);
+        addPackData(ToolsLang.MEKANISM_TOOLS, ToolsLang.PACK_DESCRIPTION);
         add(ToolsLang.HP, "HP: %1$s");
     }
 

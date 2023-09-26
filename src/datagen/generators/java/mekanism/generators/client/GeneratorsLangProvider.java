@@ -1,7 +1,6 @@
 package mekanism.generators.client;
 
 import mekanism.client.lang.BaseLanguageProvider;
-import mekanism.common.Mekanism;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.advancements.GeneratorsAdvancements;
@@ -16,7 +15,7 @@ import net.minecraft.data.PackOutput;
 public class GeneratorsLangProvider extends BaseLanguageProvider {
 
     public GeneratorsLangProvider(PackOutput output) {
-        super(output, MekanismGenerators.MODID);
+        super(output, MekanismGenerators.MODID, MekanismGenerators.instance);
     }
 
     @Override
@@ -94,9 +93,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
     }
 
     private void addMisc() {
-        String name = Mekanism.MOD_NAME + ": " + MekanismGenerators.instance.getName();
-        add(GeneratorsLang.MEKANISM_GENERATORS, name);
-        add(GeneratorsLang.PACK_DESCRIPTION, "Resources used for " + name);
+        addPackData(GeneratorsLang.MEKANISM_GENERATORS, GeneratorsLang.PACK_DESCRIPTION);
         add(GeneratorsLang.REACTOR_LOGIC_ACTIVE_COOLING, "Active cooling: %1$s");
         add(GeneratorsLang.GAS_BURN_RATE, "Burn Rate: %1$s mB/t");
         add(GeneratorsLang.STATS_TAB, "Stats");
