@@ -2,7 +2,7 @@
   "animation": {
     "interpolate": false,
     "frametime": 3,
-	"frames": [
+    "frames": [
     ]
   }
 }
