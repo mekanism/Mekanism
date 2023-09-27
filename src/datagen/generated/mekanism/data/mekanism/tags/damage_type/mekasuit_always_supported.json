@@ -19,6 +19,7 @@
     "minecraft:wither",
     "minecraft:freeze",
     "minecraft:falling_stalactite",
-    "minecraft:stalagmite"
+    "minecraft:stalagmite",
+    "minecraft:sonic_boom"
   ]
 }

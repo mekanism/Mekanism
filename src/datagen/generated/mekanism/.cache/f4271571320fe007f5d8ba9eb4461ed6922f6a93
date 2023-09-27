@@ -1,4 +1,4 @@
-// 1.20.1	2023-09-10T15:23:49.8776068	Tags: mekanism
+// 1.20.1	2023-09-27T11:13:09.1750785	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluids/no_infinite_draining.json
 b6ed3f4920042490a8f14b25e1284bb270aafaea data/forge/tags/blocks/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/forge/tags/blocks/barrels/personal.json
@@ -166,7 +166,7 @@ f549715bfd65ed54ca643077696fcff45e31cb72 data/mekanism/tags/blocks/farming_overr
 f38d75ae22ae01d504bba4c88d0d1dd19fa4b485 data/mekanism/tags/blocks/personal_storage.json
 890446b036d7f08c93b84681f06ee9a04f1ccd15 data/mekanism/tags/block_entity_type/cardboard_blacklist.json
 10324698ef50d9ab1c367abd0d46152a26bf5ed5 data/mekanism/tags/damage_type/is_preventable_magic.json
-6d9075db5bb31fd7f651ff23a0ecfd848ad92184 data/mekanism/tags/damage_type/mekasuit_always_supported.json
+bf457102006e4f901e6858ec33bb241e55c4724c data/mekanism/tags/damage_type/mekasuit_always_supported.json
 ab7a3106f18b6b47d54a87a099ddd43adfa77368 data/mekanism/tags/items/alloys.json
 04c1c012b37c20d74587d644525f0beec6b23f5f data/mekanism/tags/items/alloys/atomic.json
 5db69586b6c50b2befacf44de1aedc4a5af092fe data/mekanism/tags/items/alloys/basic.json

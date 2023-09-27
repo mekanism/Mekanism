@@ -100,7 +100,14 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public static final List<ResourceKey<DamageType>> BASE_ALWAYS_SUPPORTED = List.of(DamageTypes.FALLING_ANVIL, DamageTypes.CACTUS, DamageTypes.CRAMMING,
           DamageTypes.DRAGON_BREATH, DamageTypes.DRY_OUT, DamageTypes.FALL, DamageTypes.FALLING_BLOCK, DamageTypes.FLY_INTO_WALL, DamageTypes.GENERIC,
           DamageTypes.HOT_FLOOR, DamageTypes.IN_FIRE, DamageTypes.IN_WALL, DamageTypes.LAVA, DamageTypes.LIGHTNING_BOLT, DamageTypes.ON_FIRE,
-          DamageTypes.SWEET_BERRY_BUSH, DamageTypes.WITHER, DamageTypes.FREEZE, DamageTypes.FALLING_STALACTITE, DamageTypes.STALAGMITE);
+          DamageTypes.SWEET_BERRY_BUSH, DamageTypes.WITHER, DamageTypes.FREEZE, DamageTypes.FALLING_STALACTITE, DamageTypes.STALAGMITE, DamageTypes.SONIC_BOOM);
+
+    public static float getBaseDamageRatio(ResourceKey<DamageType> damageType) {
+        if (damageType == DamageTypes.SONIC_BOOM) {
+            return 0.75F;
+        }
+        return 1F;
+    }
 
     private final AttributeCache attributeCache;
     //TODO: Expand this system so that modules can maybe define needed tanks?

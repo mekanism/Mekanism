@@ -388,7 +388,7 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("unspecifiedDamageReductionRatio", 1D, 0, 1));
         mekaSuitDamageRatios = CachedRL2FloatMapConfigValue.define(this, builder.comment("Map representing the percent of damage from different damage types that can be absorbed by the MekaSuit when there is enough power and a full suit is equipped.",
                     "Values may be in the range [0.0, 1.0].", "See the #mekainsm:mekasuit_always_supported damage type tag for allowing damage that bypasses armor to be blocked."),
-              "damageReductionRatio", () -> ItemMekaSuitArmor.BASE_ALWAYS_SUPPORTED.stream().collect(Collectors.toMap(ResourceKey::location, damageType -> 1F)),
+              "damageReductionRatio", () -> ItemMekaSuitArmor.BASE_ALWAYS_SUPPORTED.stream().collect(Collectors.toMap(ResourceKey::location, ItemMekaSuitArmor::getBaseDamageRatio)),
               f -> f >= 0F && f <= 1F);
         builder.pop(2);
 
