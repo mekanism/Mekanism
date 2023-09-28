@@ -4,6 +4,7 @@ import java.util.Objects;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.CommonInputs;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.NotNull;
@@ -57,12 +58,10 @@ public class MekanismButton extends GuiElement {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         //From AbstractButton with an additional check of validating that it is focused
-        if (this.active && this.visible && this.isFocused()) {
-            if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_SPACE || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
-                playDownSound(minecraft.getSoundManager());
-                onLeftClick.run();
-                return true;
-            }
+        if (this.active && this.visible && this.isFocused() && CommonInputs.selected(keyCode)) {
+            playDownSound(minecraft.getSoundManager());
+            onLeftClick.run();
+            return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }

@@ -79,9 +79,8 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
     public TransmitterBakedModel(ObjModel internal, @Nullable ObjModel glass, IGeometryBakingContext owner, ModelBaker baker,
           Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
         //We define our baked variant to be how the item is. As we should always have model data when we have a state
-        super(internal.bake(new VisibleModelConfiguration(owner, Arrays.stream(EnumUtils.DIRECTIONS).map(side ->
-                    getPartName(side, side.getAxis().isVertical() ? ConnectionType.NORMAL : ConnectionType.NONE)).toList()), baker, spriteGetter,
-              modelTransform, overrides, modelLocation));
+        super(internal.bake(new VisibleModelConfiguration(owner, Arrays.stream(EnumUtils.DIRECTIONS).map(side -> getPartName(side, ConnectionType.NONE)).toList()),
+              baker, spriteGetter, modelTransform, overrides, modelLocation));
         this.owner = owner;
         this.baker = baker;
         this.spriteGetter = spriteGetter;
