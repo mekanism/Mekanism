@@ -97,6 +97,7 @@
   "block.mekanism.elite_bin": "Elite Bin",
   "block.mekanism.elite_chemical_tank": "Elite Chemiese Tank",
   "block.mekanism.elite_combining_factory": "Elite Kombineer Fabriek",
+  "block.mekanism.elite_compressing_factory": "Elite Saampersings Fabriek",
   "block.mekanism.elite_crushing_factory": "Elite Verbrysel Fabriek",
   "block.mekanism.elite_energy_cube": "Elite Energie Kubus",
   "block.mekanism.elite_enriching_factory": "Elite Verrykende Fabriek",
@@ -134,6 +135,8 @@
   "block.mekanism.lead_ore": "Lood Erts",
   "block.mekanism.lithium": "Vloeibare litium",
   "block.mekanism.logistical_sorter": "Logistieke sorteerder",
+  "block.mekanism.metallurgic_infuser": "Metallurgiese Infuser",
+  "block.mekanism.modification_station": "Modifikasie Stasie",
   "key.mekanism.description": "Show description",
   "key.mekanism.details": "Show details"
 }

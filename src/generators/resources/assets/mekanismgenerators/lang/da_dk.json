@@ -13,6 +13,8 @@
   "block.mekanismgenerators.turbine_valve": "Turbineventil",
   "block.mekanismgenerators.turbine_vent": "Turbineventilator",
   "block.mekanismgenerators.wind_generator": "Vindgenerator",
+  "constants.mekanismgenerators.mod_name": "Mekanisme: Generatorer",
+  "constants.mekanismgenerators.pack_description": "Ressourcer brugt til Mekanism: Generatorer",
   "container.mekanismgenerators.advanced_solar_generator": "Avanceret Solgenerator",
   "container.mekanismgenerators.bio_generator": "Bio-generator",
   "container.mekanismgenerators.gas_burning_generator": "Gasbrændende Generator",
