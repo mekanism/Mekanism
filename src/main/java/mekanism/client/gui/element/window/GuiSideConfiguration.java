@@ -40,7 +40,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     private TransmissionType currentType;
 
     public GuiSideConfiguration(IGuiWrapper gui, int x, int y, TILE tile) {
-        super(gui, x, y, 156, 115, WindowType.SIDE_CONFIG);
+        super(gui, x, y, 156, 135, WindowType.SIDE_CONFIG);
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
         List<TransmissionType> transmissions = this.tile.getConfig().getTransmissions();
@@ -72,12 +72,12 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 95, 14, getButtonLocation("clear_sides"),
               () -> Mekanism.packetHandler().sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.CLEAR_ALL, this.tile.getBlockPos(), currentType)),
               getOnHover(MekanismLang.SIDE_CONFIG_CLEAR)));
-        addSideDataButton(RelativeSide.BOTTOM, 71, 74);
-        addSideDataButton(RelativeSide.TOP, 71, 44);
-        addSideDataButton(RelativeSide.FRONT, 71, 59);
-        addSideDataButton(RelativeSide.BACK, 56, 74);
-        addSideDataButton(RelativeSide.LEFT, 56, 59);
-        addSideDataButton(RelativeSide.RIGHT, 86, 59);
+        addSideDataButton(RelativeSide.BOTTOM, 68, 92);
+        addSideDataButton(RelativeSide.TOP, 68, 46);
+        addSideDataButton(RelativeSide.FRONT, 68, 69);
+        addSideDataButton(RelativeSide.BACK, 45, 92);
+        addSideDataButton(RelativeSide.LEFT, 45, 69);
+        addSideDataButton(RelativeSide.RIGHT, 91, 69);
         updateTabs();
         ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).startTracking(MekanismContainer.SIDE_CONFIG_WINDOW, this.tile.getConfig());
         Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_SIDE_CONFIG, tile, MekanismContainer.SIDE_CONFIG_WINDOW));
@@ -143,7 +143,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         drawTitleText(guiGraphics, MekanismLang.CONFIG_TYPE.translate(currentType), 5);
-        drawCenteredText(guiGraphics, MekanismLang.SLOTS.translate(), relativeX + 80, relativeY + 96, subheadingTextColor());
+        drawCenteredText(guiGraphics, MekanismLang.SLOTS.translate(), relativeX + 80, relativeY + 120, subheadingTextColor());
     }
 
     @Override

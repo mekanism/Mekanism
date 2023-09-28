@@ -33,7 +33,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     private final TILE tile;
 
     public GuiTransporterConfig(IGuiWrapper gui, int x, int y, TILE tile) {
-        super(gui, x, y, 156, 95, WindowType.TRANSPORTER_CONFIG);
+        super(gui, x, y, 156, 119, WindowType.TRANSPORTER_CONFIG);
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
         addChild(new GuiInnerScreen(gui, relativeX + 41, relativeY + 15, 74, 12,
@@ -45,12 +45,12 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
               () -> this.tile.getEjector().getOutputColor(),
               () -> Mekanism.packetHandler().sendToServer(new PacketConfigurationUpdate(this.tile.getBlockPos(), Screen.hasShiftDown() ? 2 : 0)),
               () -> Mekanism.packetHandler().sendToServer(new PacketConfigurationUpdate(this.tile.getBlockPos(), 1))));
-        addSideDataButton(RelativeSide.BOTTOM, 44, 64);
-        addSideDataButton(RelativeSide.TOP, 44, 34);
-        addSideDataButton(RelativeSide.FRONT, 44, 49);
-        addSideDataButton(RelativeSide.BACK, 29, 64);
-        addSideDataButton(RelativeSide.LEFT, 29, 49);
-        addSideDataButton(RelativeSide.RIGHT, 59, 49);
+        addSideDataButton(RelativeSide.BOTTOM, 41, 64+16);
+        addSideDataButton(RelativeSide.TOP, 41, 34);
+        addSideDataButton(RelativeSide.FRONT, 41, 57);
+        addSideDataButton(RelativeSide.BACK, 18, 64+16);
+        addSideDataButton(RelativeSide.LEFT, 18, 57);
+        addSideDataButton(RelativeSide.RIGHT, 64, 57);
         ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).startTracking(MekanismContainer.TRANSPORTER_CONFIG_WINDOW, this.tile.getEjector());
         Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_EJECTOR, this.tile, MekanismContainer.TRANSPORTER_CONFIG_WINDOW));
     }
@@ -88,7 +88,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         drawTitleText(guiGraphics, MekanismLang.TRANSPORTER_CONFIG.translate(), 5);
-        drawCenteredText(guiGraphics, MekanismLang.INPUT.translate(), relativeX + 51, relativeY + 81, subheadingTextColor());
+        drawCenteredText(guiGraphics, MekanismLang.INPUT.translate(), relativeX + 51, relativeY + 105, subheadingTextColor());
         drawCenteredText(guiGraphics, MekanismLang.OUTPUT.translate(), relativeX + 121, relativeY + 68, subheadingTextColor());
     }
 
