@@ -35,18 +35,17 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
           int light, int overlayLight, ProfilerFiller profiler) {
         long scaledTemp = Math.round(multiblock.getLastPlasmaTemp() / SCALE);
         float ticks = Minecraft.getInstance().levelRenderer.ticks + partialTicks;
-        float ticksScaledTemp = ticks * scaledTemp;
         VertexConsumer buffer = renderer.getBuffer(core.RENDER_TYPE);
         matrix.pushPose();
         matrix.translate(0.5, -1.5, 0.5);
-        float scale = 1 + 0.7F * sinDegrees(3.14F * ticksScaledTemp + 135);
-        renderPart(matrix, buffer, overlayLight, EnumColor.AQUA, scale, ticksScaledTemp, -6, -7, 0, 36);
+        float scale = 1 + 0.7F * sinDegrees(3.14F * scaledTemp + 135);
+        renderPart(matrix, buffer, overlayLight, EnumColor.RED, scale, ticks, -6, -7, 0, 36);
 
-        scale = 1 + 0.8F * sinDegrees(3 * ticksScaledTemp);
-        renderPart(matrix, buffer, overlayLight, EnumColor.RED, scale, ticksScaledTemp, 4, 4, 0, 36);
+        scale = 1 + 0.8F * sinDegrees(3 * scaledTemp);
+        renderPart(matrix, buffer, overlayLight, EnumColor.PINK, scale, ticks, 4, 4, 0, 36);
 
-        scale = 1 - 0.9F * sinDegrees(4 * ticksScaledTemp + 90);
-        renderPart(matrix, buffer, overlayLight, EnumColor.ORANGE, scale, ticksScaledTemp, 5, -3, -35, 106);
+        scale = 1 - 0.9F * sinDegrees(4 * scaledTemp + 90);
+        renderPart(matrix, buffer, overlayLight, EnumColor.ORANGE, scale, ticks, 5, -3, -35, 106);
 
         matrix.popPose();
         endIfNeeded(renderer, core.RENDER_TYPE);
@@ -61,12 +60,12 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
         return GeneratorsProfilerConstants.FUSION_REACTOR;
     }
 
-    private void renderPart(PoseStack matrix, VertexConsumer buffer, int overlayLight, EnumColor color, float scale, float ticksScaledTemp, int mult1, int mult2,
+    private void renderPart(PoseStack matrix, VertexConsumer buffer, int overlayLight, EnumColor color, float scale, float ticks, int mult1, int mult2,
           int shift1, int shift2) {
         matrix.pushPose();
         matrix.scale(scale, scale, scale);
-        matrix.mulPose(Axis.YP.rotationDegrees(ticksScaledTemp * mult1 + shift1));
-        matrix.mulPose(RenderEnergyCube.coreVec.rotationDegrees(ticksScaledTemp * mult2 + shift2));
+        matrix.mulPose(Axis.YP.rotationDegrees(ticks * mult1 + shift1));
+        matrix.mulPose(RenderEnergyCube.coreVec.rotationDegrees(ticks * mult2 + shift2));
         core.render(matrix, buffer, LightTexture.FULL_BRIGHT, overlayLight, color, 1);
         matrix.popPose();
     }
