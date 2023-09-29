@@ -11,7 +11,7 @@
       "item": "mekanism:energy_tablet"
     },
     "G": {
-      "tag": "forge:glass"
+      "tag": "forge:glass/silica"
     },
     "T": {
       "item": "mekanism:basic_chemical_tank"

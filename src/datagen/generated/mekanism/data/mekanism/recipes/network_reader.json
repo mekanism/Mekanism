@@ -8,7 +8,7 @@
       "item": "mekanism:energy_tablet"
     },
     "G": {
-      "tag": "forge:glass"
+      "tag": "forge:glass/silica"
     },
     "S": {
       "tag": "forge:ingots/steel"

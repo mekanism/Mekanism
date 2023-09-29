@@ -1,4 +1,4 @@
-// 1.20.1	2023-06-15T18:11:14.010158	Recipes
+// 1.20.1	2023-09-29T10:44:43.2309927	Recipes
 0d2fec7f38f694728a3fb6de67610ba154b1899d data/mekanismgenerators/recipes/activating/tritium.json
 685b1c780cb7df144f61bd9a3f678463e661b3cf data/mekanismgenerators/recipes/chemical_infusing/fusion_fuel.json
 baea7fa30eeaff8a30a056d64b98ad76fcad8ab0 data/mekanismgenerators/recipes/electromagnetic_coil.json
@@ -19,7 +19,7 @@ ff17cbe2fbffd341cd9cadb76d7766c88250fa2b data/mekanismgenerators/recipes/module_
 2fe0c781e1c0e0659d2b5e6a3f7f4f8a7a778d69 data/mekanismgenerators/recipes/module_solar_recharging_unit.json
 18e02721e3a60da40f7e3b3ecdaee50be7844c3b data/mekanismgenerators/recipes/reactor/controller.json
 5cf4ee95cab6f7ef4a33793e7170f4fc4679f039 data/mekanismgenerators/recipes/reactor/frame.json
-f35a652848940105bb5cbe46d2e0753254d99cf7 data/mekanismgenerators/recipes/reactor/glass.json
+5e74bce29b77f23b693fe78f195ede8743fa7fb4 data/mekanismgenerators/recipes/reactor/glass.json
 8d28b184c66c762bc196afcaed2dbb05d3bfc383 data/mekanismgenerators/recipes/reactor/logic_adapter.json
 a6848f75f884199a41f81d5c7e9fc5885285c59b data/mekanismgenerators/recipes/reactor/port.json
 b980f0cb4e91002d695f482615eb43afa09a4770 data/mekanismgenerators/recipes/rotary/deuterium.json

@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "G": {
-      "tag": "forge:glass"
+      "tag": "forge:glass/silica"
     },
     "I": {
       "tag": "forge:ingots/lead"

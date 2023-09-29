@@ -11,7 +11,7 @@
       "item": "minecraft:lava_bucket"
     },
     "G": {
-      "tag": "forge:glass"
+      "tag": "forge:glass/silica"
     }
   },
   "pattern": [

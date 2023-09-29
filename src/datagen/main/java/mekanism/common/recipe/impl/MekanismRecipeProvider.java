@@ -431,7 +431,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
                     TripleLine.of(GLASS_CHAR, Pattern.STEEL_CASING, GLASS_CHAR),
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
-              ).key(GLASS_CHAR, Tags.Items.GLASS)
+              ).key(GLASS_CHAR, Tags.Items.GLASS_SILICA)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_BASIC)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
@@ -532,7 +532,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
                     TripleLine.of(GLASS_CHAR, Pattern.CIRCUIT, GLASS_CHAR),
                     TripleLine.of(Pattern.STEEL, Pattern.EMPTY, Pattern.STEEL))
-              ).key(GLASS_CHAR, Tags.Items.GLASS)
+              ).key(GLASS_CHAR, Tags.Items.GLASS_SILICA)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .category(RecipeCategory.TOOLS)
@@ -728,7 +728,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, GLASS_CHAR, Pattern.EMPTY),
                     TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY),
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
-              ).key(GLASS_CHAR, Tags.Items.GLASS)
+              ).key(GLASS_CHAR, Tags.Items.GLASS_SILICA)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
@@ -771,7 +771,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.PREVIOUS, Tags.Items.BARRELS_WOODEN)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
-              .key(GLASS_CHAR, Tags.Items.GLASS)
+              .key(GLASS_CHAR, Tags.Items.GLASS_SILICA)
               .category(RecipeCategory.DECORATIONS)
               .build(consumer);
         //Personal chest
@@ -783,7 +783,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.PREVIOUS, Tags.Items.CHESTS_WOODEN)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
-              .key(GLASS_CHAR, Tags.Items.GLASS)
+              .key(GLASS_CHAR, Tags.Items.GLASS_SILICA)
               .category(RecipeCategory.DECORATIONS)
               .build(consumer);
         //Portable teleporter
@@ -890,7 +890,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(GLASS_CHAR, Pattern.CIRCUIT, GLASS_CHAR),
                     TripleLine.of(Pattern.TANK, Pattern.ENERGY, Pattern.CONSTANT),
                     TripleLine.of(GLASS_CHAR, Pattern.CIRCUIT, GLASS_CHAR))
-              ).key(GLASS_CHAR, Tags.Items.GLASS)
+              ).key(GLASS_CHAR, Tags.Items.GLASS_SILICA)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.TANK, MekanismBlocks.BASIC_CHEMICAL_TANK)
               .key(Pattern.CONSTANT, MekanismBlocks.BASIC_FLUID_TANK)
@@ -914,7 +914,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
                     TripleLine.of(Pattern.STEEL, TELEPORTATION_CORE_CHAR, Pattern.STEEL))
-              ).key(GLASS_CHAR, Tags.Items.GLASS)
+              ).key(GLASS_CHAR, Tags.Items.GLASS_SILICA)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
@@ -959,7 +959,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL),
                     TripleLine.of(GLASS_CHAR, Pattern.OSMIUM, GLASS_CHAR),
                     TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL))
-              ).key(GLASS_CHAR, Tags.Items.GLASS)
+              ).key(GLASS_CHAR, Tags.Items.GLASS_SILICA)
               .key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .build(consumer);
@@ -969,7 +969,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
                     TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL),
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
-              ).key(GLASS_CHAR, Tags.Items.GLASS)
+              ).key(GLASS_CHAR, Tags.Items.GLASS_SILICA)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .build(consumer);
         //Superheating element

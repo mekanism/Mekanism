@@ -8,7 +8,7 @@
       "tag": "mekanism:alloys/infused"
     },
     "G": {
-      "tag": "forge:glass"
+      "tag": "forge:glass/silica"
     }
   },
   "pattern": [

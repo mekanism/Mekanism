@@ -5,7 +5,7 @@
       "tag": "forge:circuits/basic"
     },
     "G": {
-      "tag": "forge:glass"
+      "tag": "forge:glass/silica"
     },
     "P": {
       "tag": "forge:chests/wooden"

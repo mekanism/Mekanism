@@ -296,7 +296,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL),
                     TripleLine.of(Pattern.INGOT, GLASS_CHAR, Pattern.INGOT),
                     TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL))
-              ).key(GLASS_CHAR, Tags.Items.GLASS)
+              ).key(GLASS_CHAR, Tags.Items.GLASS_SILICA)
               .key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
               .key(Pattern.STEEL, MekanismItems.ENRICHED_IRON)
               .build(consumer, MekanismGenerators.rl("reactor/glass"));

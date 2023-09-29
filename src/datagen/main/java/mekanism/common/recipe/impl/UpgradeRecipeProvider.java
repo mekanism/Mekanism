@@ -40,7 +40,7 @@ class UpgradeRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, MekanismRecipeProvider.GLASS_CHAR, Pattern.EMPTY),
                     TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.BUCKET),
                     TripleLine.of(Pattern.EMPTY, MekanismRecipeProvider.GLASS_CHAR, Pattern.EMPTY))
-              ).key(MekanismRecipeProvider.GLASS_CHAR, Tags.Items.GLASS)
+              ).key(MekanismRecipeProvider.GLASS_CHAR, Tags.Items.GLASS_SILICA)
               .key(Pattern.CONSTANT, Items.WATER_BUCKET)
               .key(Pattern.BUCKET, Items.LAVA_BUCKET)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
@@ -50,7 +50,7 @@ class UpgradeRecipeProvider implements ISubRecipeProvider {
     private void addUpgradeRecipe(Consumer<FinishedRecipe> consumer, ItemRegistryObject<ItemUpgrade> upgrade, TagKey<Item> dustTag, String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(upgrade)
               .pattern(UPGRADE_PATTERN)
-              .key(MekanismRecipeProvider.GLASS_CHAR, Tags.Items.GLASS)
+              .key(MekanismRecipeProvider.GLASS_CHAR, Tags.Items.GLASS_SILICA)
               .key(Pattern.CONSTANT, dustTag)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .build(consumer, Mekanism.rl(basePath + getSaveName(upgrade)));

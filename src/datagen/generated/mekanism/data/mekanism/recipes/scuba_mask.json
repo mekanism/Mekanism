@@ -6,7 +6,7 @@
       "tag": "forge:circuits/basic"
     },
     "G": {
-      "tag": "forge:glass"
+      "tag": "forge:glass/silica"
     },
     "S": {
       "tag": "forge:ingots/steel"
