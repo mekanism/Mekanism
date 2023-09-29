@@ -426,6 +426,18 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return getMaterial().getToughness();
     }
 
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        //Ignore NBT for energized items causing re-equip animations
+        return slotChanged || oldStack.getItem() != newStack.getItem();
+    }
+
+    @Override
+    public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
+        //Ignore NBT for energized items causing block break reset
+        return oldStack.getItem() != newStack.getItem();
+    }
+
     public static float getDamageAbsorbed(Player player, DamageSource source, float amount) {
         return getDamageAbsorbed(player, source, amount, null);
     }

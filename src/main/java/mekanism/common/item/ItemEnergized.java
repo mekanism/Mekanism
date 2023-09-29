@@ -93,7 +93,7 @@ public class ItemEnergized extends CapabilityItem implements ICustomCreativeTabC
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         //Ignore NBT for energized items causing re-equip animations
-        return oldStack.getItem() != newStack.getItem();
+        return slotChanged || oldStack.getItem() != newStack.getItem();
     }
 
     @Override

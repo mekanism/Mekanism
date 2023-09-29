@@ -73,7 +73,7 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         if (exposesEnergyCap(oldStack) && exposesEnergyCap(newStack)) {
             //Ignore NBT for energized items causing re-equip animations
-            return oldStack.getItem() != newStack.getItem();
+            return slotChanged || oldStack.getItem() != newStack.getItem();
         }
         return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
     }
