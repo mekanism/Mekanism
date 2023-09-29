@@ -12,6 +12,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.SortableFilterManager;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.SorterFilter;
@@ -157,6 +158,9 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     protected void onUpdateClient() {
         super.onUpdateClient();
+        if (!MekanismConfig.client.enableMachineSounds.get()) {
+            return;
+        }
         if (getActive() && level.getGameTime() >= nextSound) {
             SoundHandler.startTileSound(soundEvent, getSoundCategory(), getInitialVolume(), level.getRandom(), getSoundPos(), false);
             nextSound = level.getGameTime() + 20L * (level.random.nextInt(5,15));
