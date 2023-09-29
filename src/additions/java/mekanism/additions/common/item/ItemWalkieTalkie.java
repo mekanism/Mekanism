@@ -47,7 +47,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, @NotNull ItemStack newStack, boolean slotChanged) {
-        return oldStack.getItem() != newStack.getItem();
+        return slotChanged || oldStack.getItem() != newStack.getItem();
     }
 
     public void setOn(ItemStack itemStack, boolean on) {
