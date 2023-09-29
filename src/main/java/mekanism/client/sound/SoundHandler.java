@@ -181,12 +181,16 @@ public class SoundHandler {
     }
 
     public static SoundInstance startTileSound(SoundEvent soundEvent, SoundSource category, float volume, RandomSource random, BlockPos pos) {
+        return startTileSound(soundEvent, category, volume, random, pos, true);
+    }
+
+    public static SoundInstance startTileSound(SoundEvent soundEvent, SoundSource category, float volume, RandomSource random, BlockPos pos, boolean looping) {
         // First, check to see if there's already a sound playing at the desired location
         SoundInstance s = soundMap.get(pos.asLong());
         if (s == null || !Minecraft.getInstance().getSoundManager().isActive(s)) {
             // No sound playing, start one up - we assume that tile sounds will play until explicitly stopped
             // The TileTickableSound will then periodically poll to see if the volume should be adjusted
-            s = new TileTickableSound(soundEvent, category, random, pos, volume);
+            s = new TileTickableSound(soundEvent, category, random, pos, volume, looping);
 
             if (!isClientPlayerInRange(s)) {
                 //If the player is not in range of the sound the tile would play,
@@ -290,7 +294,7 @@ public class SoundHandler {
         // uneven spikes of CPU usage
         private final int checkInterval = 20 + ThreadLocalRandom.current().nextInt(20);
 
-        TileTickableSound(SoundEvent soundEvent, SoundSource category, RandomSource random, BlockPos pos, float volume) {
+        TileTickableSound(SoundEvent soundEvent, SoundSource category, RandomSource random, BlockPos pos, float volume, boolean looping) {
             super(soundEvent, category, random);
             //Keep track of our original volume
             this.originalVolume = volume * MekanismConfig.client.baseSoundVolume.get();
@@ -299,7 +303,7 @@ public class SoundHandler {
             this.z = pos.getZ() + 0.5F;
             //Hold off on setting volume until after we set the position
             this.volume = this.originalVolume * getTileVolumeFactor();
-            this.looping = true;
+            this.looping = looping;
             this.delay = 0;
         }
 

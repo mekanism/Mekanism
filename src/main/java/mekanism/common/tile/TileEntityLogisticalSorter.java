@@ -7,6 +7,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
+import mekanism.client.sound.SoundHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -60,6 +61,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Nullable
     public SidedBlockPos rrTarget;
     private int delayTicks;
+    private long nextSound = 0;
 
     public TileEntityLogisticalSorter(BlockPos pos, BlockState state) {
         super(MekanismBlocks.LOGISTICAL_SORTER, pos, state);
@@ -144,6 +146,20 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         super.load(nbt);
         if (nbt.contains(NBTConstants.ROUND_ROBIN_TARGET, Tag.TAG_COMPOUND)) {
             rrTarget = SidedBlockPos.deserialize(nbt.getCompound(NBTConstants.ROUND_ROBIN_TARGET));
+        }
+    }
+
+    @Override
+    protected boolean canPlaySound() {
+        return false;//handle own sounds
+    }
+
+    @Override
+    protected void onUpdateClient() {
+        super.onUpdateClient();
+        if (getActive() && level.getGameTime() >= nextSound) {
+            SoundHandler.startTileSound(soundEvent, getSoundCategory(), getInitialVolume(), level.getRandom(), getSoundPos(), false);
+            nextSound = level.getGameTime() + 20L * (level.random.nextInt(5,15));
         }
     }
 

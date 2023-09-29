@@ -252,7 +252,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Variables for handling ITileSound
     @Nullable
-    private final SoundEvent soundEvent;
+    protected final SoundEvent soundEvent;
 
     /**
      * Only used on the client
