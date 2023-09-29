@@ -353,7 +353,7 @@ public class MekanismBlockTypes {
           .withEnergyConfig(MekanismConfig.storage.teleporter)
           .withSupportedUpgrades(EnumSet.of(Upgrade.ANCHOR))
           .without(AttributeStateActive.class, AttributeStateFacing.class, AttributeParticleFX.class)
-          .withLight(10)
+          .withLight(3)
           .withComputerSupport("teleporter")
           .build();
     // Chargepad
@@ -682,7 +682,7 @@ public class MekanismBlockTypes {
     // Teleporter Frame
     public static final BlockType TELEPORTER_FRAME = BlockTypeBuilder
           .createBlock(MekanismLang.DESCRIPTION_TELEPORTER_FRAME)
-          .withLight(10)
+          .withLight(3)
           .build();
     // Steel Casing
     public static final BlockType STEEL_CASING = BlockTypeBuilder
