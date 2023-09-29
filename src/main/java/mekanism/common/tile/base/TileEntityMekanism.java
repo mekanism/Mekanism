@@ -1266,7 +1266,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
     }
 
-    private boolean isFullyMuffled() {
+    protected boolean isFullyMuffled() {
         if (hasSound() && supportsUpgrade(Upgrade.MUFFLING)) {
             return getComponent().getUpgrades(Upgrade.MUFFLING) == Upgrade.MUFFLING.getMax();
         }
