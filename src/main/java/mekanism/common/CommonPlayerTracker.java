@@ -2,7 +2,9 @@ package mekanism.common;
 
 import mekanism.api.text.EnumColor;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
+import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.capability.DefaultRadiationEntity;
@@ -10,6 +12,7 @@ import mekanism.common.network.to_client.PacketPlayerData;
 import mekanism.common.network.to_client.PacketRadiationData;
 import mekanism.common.network.to_client.PacketResetPlayerClient;
 import mekanism.common.network.to_client.PacketSecurityUpdate;
+import mekanism.common.tags.MekanismTags.Items;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.ClickEvent.Action;
@@ -18,6 +21,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -105,14 +109,18 @@ public class CommonPlayerTracker {
 
     /**
      * If the player is sneaking and the dest block is a cardboard box, ensure onBlockActivated is called, and that the item use is not.
-     *
-     * @param blockEvent event
      */
     @SubscribeEvent
-    public void rightClickEvent(RightClickBlock blockEvent) {
-        if (blockEvent.getEntity().isShiftKeyDown() && blockEvent.getLevel().getBlockState(blockEvent.getPos()).getBlock() instanceof BlockCardboardBox) {
-            blockEvent.setUseBlock(Event.Result.ALLOW);
-            blockEvent.setUseItem(Event.Result.DENY);
+    public void rightClickEvent(RightClickBlock event) {
+        if (event.getEntity().getItemInHand(event.getHand()).is(Items.CONFIGURATORS)) {
+            //it's a wrench, see if it's our block
+            Block block = event.getLevel().getBlockState(event.getPos()).getBlock();
+            if (block instanceof BlockMekanism || block instanceof BlockBounding) {
+                event.setUseBlock(Event.Result.ALLOW);//force it to use the item on the block
+            }
+        } else if (event.getEntity().isShiftKeyDown() && event.getLevel().getBlockState(event.getPos()).getBlock() instanceof BlockCardboardBox) {
+            event.setUseBlock(Event.Result.ALLOW);
+            event.setUseItem(Event.Result.DENY);
         }
     }
 }
