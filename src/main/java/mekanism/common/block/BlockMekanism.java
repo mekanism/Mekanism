@@ -28,6 +28,7 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.radiation.Meltdown.MeltdownExplosion;
 import mekanism.common.network.to_client.PacketSecurityUpdate;
 import mekanism.common.registries.MekanismParticleTypes;
+import mekanism.common.tags.MekanismTags.Items;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.base.SubstanceType;
@@ -73,10 +74,26 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.extensions.common.IClientBlockExtensions;
 import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.eventbus.api.Event.Result;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@EventBusSubscriber(modid = Mekanism.MODID)
 public abstract class BlockMekanism extends Block {
+
+    @SubscribeEvent
+    public static void blockRightClicked(RightClickBlock event) {
+        if (event.getEntity().getItemInHand(event.getHand()).is(Items.CONFIGURATORS)) {
+            //it's a wrench, see if it's our block
+            Block block = event.getEntity().level().getBlockState(event.getPos()).getBlock();
+            if (block instanceof BlockMekanism || block instanceof BlockBounding) {
+                event.setUseBlock(Result.ALLOW);//force it to use the item on the block
+            }
+        }
+    }
 
     protected BlockMekanism(BlockBehaviour.Properties properties) {
         super(BlockStateHelper.applyLightLevelAdjustments(properties));
