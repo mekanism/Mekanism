@@ -24,17 +24,15 @@ body:
       label: Minecraft version
       description: What version of Minecraft are you using?
       options:
-        - 1.20.1 (Not yet released, manually compiled)
-        - 1.19.2 (Latest)
-        - 1.19.0 or 1.19.1 (No longer being developed)
-        - 1.18.x or earlier (No longer being developed)
+        - 1.20.1 (Latest)
+        - 1.19.x or earlier (No longer being developed)
     validations:
       required: true
   - type: input
     attributes:
-      label: Forge version
-      description: What version of Forge are you using?
-      placeholder: e.g. 43.2.8
+      label: (Neo)Forge version
+      description: What version of (Neo)Forge are you using? (Please specify whether you are using Forge or NeoForge)
+      placeholder: e.g. 47.1.35 NeoForge
     validations:
       required: true
   - type: dropdown
@@ -44,10 +42,7 @@ body:
       description: What version of Mekanism are you using?
       options:
         - Current Dev Branch (Manually Compiled)
-        - 10.3.9 (Latest)
-        - 10.3.8
-        - 10.3.7
-        - 10.3.6
+        - 10.4.0 (Latest)
         - Older
     validations:
       required: true

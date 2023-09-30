@@ -15,13 +15,6 @@ world by using tier installers.
 After using Mekanism for a while, players can obtain a near-indestructible suit of Refined Obsidian Armor, receive five 
 ingots for each ore mined, fly with hydrogen-powered jetpacks, and have cute robotic friends following them around while they mine. :)
 
-# Alpha Status #
-
-Mekanism for 1.20 is currently in an alpha state. There may be crashes or game-breaking bugs, as well as,
-the potential for us making breaking changes where APIs may change slightly or how data is saved to the world
-changes. For this reason we do not recommend including Mekanism in any "large" packs that players may expect
-things to work properly/upgrade safely from one version to the next.
-
 # Discord #
 
 Mekanism has a [discord server](https://discord.gg/nmSjMGc) where you can chat with other Mekanism users and the developers. Join us!

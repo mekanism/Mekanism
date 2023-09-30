@@ -48,7 +48,7 @@ public class CommonPlayerTracker {
         if (!player.level().isClientSide) {
             ServerPlayer serverPlayer = (ServerPlayer) player;
             Mekanism.packetHandler().sendTo(new PacketSecurityUpdate(), serverPlayer);
-            serverPlayer.sendSystemMessage(ALPHA_WARNING);
+            //serverPlayer.sendSystemMessage(ALPHA_WARNING);
             MekanismCriteriaTriggers.LOGGED_IN.trigger(serverPlayer);
         }
     }
