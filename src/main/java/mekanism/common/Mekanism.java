@@ -191,8 +191,6 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
-        //TODO - 1.20: Modifying the result doesn't apply properly when "quick crafting". When this gets fixed in Neo re-enable the listener
-        //MinecraftForge.EVENT_BUS.addListener(BinInsertRecipe::onCrafting);
         MinecraftForge.EVENT_BUS.addListener(this::onTagsReload);
         MinecraftForge.EVENT_BUS.addListener(MekanismPermissions::registerPermissionNodes);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();

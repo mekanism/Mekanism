@@ -10,6 +10,8 @@ import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.integration.jsonthings.JsonThingsIntegration;
 import mekanism.common.integration.lookingat.theoneprobe.TOPProvider;
 import mekanism.common.integration.projecte.NSSHelper;
+import mekanism.common.recipe.bin.BinInsertRecipe;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.loading.DatagenModLoader;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -103,6 +105,12 @@ public final class MekanismHooks {
             }
         }
         EnergyCompatUtils.initLoadedCache();
+
+        //TODO - 1.20: Move this out of here and back to always being registered whenever it gets fixed in Neo.
+        // Modifying the result doesn't apply properly when "quick crafting"
+        if (modList.isLoaded("fastbench")) {
+            MinecraftForge.EVENT_BUS.addListener(BinInsertRecipe::onCrafting);
+        }
     }
 
     public void sendIMCMessages(InterModEnqueueEvent event) {
