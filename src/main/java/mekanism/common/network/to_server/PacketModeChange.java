@@ -1,6 +1,7 @@
 package mekanism.common.network.to_server;
 
 import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.item.interfaces.IModeItem.DisplayChange;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -34,7 +35,13 @@ public class PacketModeChange implements IMekanismPacket {
         if (player != null) {
             ItemStack stack = player.getItemBySlot(slot);
             if (!stack.isEmpty() && stack.getItem() instanceof IModeItem modeItem) {
-                modeItem.changeMode(player, stack, shift, displayChangeMessage);
+                DisplayChange displayChange;
+                if (displayChangeMessage) {
+                    displayChange = slot == EquipmentSlot.MAINHAND ? DisplayChange.MAIN_HAND : DisplayChange.OTHER;
+                } else {
+                    displayChange = DisplayChange.NONE;
+                }
+                modeItem.changeMode(player, stack, shift, displayChange);
             }
         }
     }

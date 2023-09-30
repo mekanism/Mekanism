@@ -27,6 +27,7 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.ModuleConfigItem.DisableableModuleConfigItem;
+import mekanism.common.item.interfaces.IModeItem.DisplayChange;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -315,8 +316,8 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         return customModule.getModeScrollComponent(this, stack);
     }
 
-    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, boolean displayChangeMessage) {
-        customModule.changeMode(this, player, stack, shift, displayChangeMessage);
+    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
+        customModule.changeMode(this, player, stack, shift, displayChange != DisplayChange.NONE);
     }
 
     @Override

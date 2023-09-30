@@ -255,14 +255,12 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
     }
 
     @Override
-    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
         if (Math.abs(shift) % 2 == 1) {
             //We are changing by an odd amount, so toggle the mode
             boolean newState = !getBucketMode(stack);
             setBucketMode(stack, newState);
-            if (displayChangeMessage) {
-                player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.BUCKET_MODE.translate(OnOff.of(newState, true))));
-            }
+            displayChange.sendMessage(player, () -> MekanismLang.BUCKET_MODE.translate(OnOff.of(newState, true)));
         }
     }
 

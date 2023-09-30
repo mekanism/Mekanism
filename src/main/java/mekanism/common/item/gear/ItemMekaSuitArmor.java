@@ -321,10 +321,10 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
         for (Module<?> module : getModules(stack)) {
             if (module.handlesModeChange()) {
-                module.changeMode(player, stack, shift, displayChangeMessage);
+                module.changeMode(player, stack, shift, displayChange);
                 return;
             }
         }

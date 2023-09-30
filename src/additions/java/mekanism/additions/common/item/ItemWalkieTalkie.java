@@ -7,7 +7,6 @@ import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -72,15 +71,13 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
     }
 
     @Override
-    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
         if (getOn(stack)) {
             int channel = getChannel(stack);
             int newChannel = Math.floorMod(channel + shift - 1, 8) + 1;
             if (channel != newChannel) {
                 setChannel(stack, newChannel);
-                if (displayChangeMessage) {
-                    player.sendSystemMessage(MekanismUtils.logFormat(AdditionsLang.CHANNEL_CHANGE.translate(newChannel)));
-                }
+                displayChange.sendMessage(player, () -> AdditionsLang.CHANNEL_CHANGE.translate(newChannel));
             }
         }
     }
@@ -88,6 +85,6 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
     @NotNull
     @Override
     public Component getScrollTextComponent(@NotNull ItemStack stack) {
-        return AdditionsLang.CHANNEL.translateColored(EnumColor.GRAY, getChannel(stack));
+        return AdditionsLang.CHANNEL.translateColored(EnumColor.GRAY, EnumColor.WHITE, getChannel(stack));
     }
 }

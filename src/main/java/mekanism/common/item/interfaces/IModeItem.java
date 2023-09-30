@@ -1,7 +1,13 @@
 package mekanism.common.item.interfaces;
 
+import java.util.function.Supplier;
+import mekanism.client.render.hud.MekanismStatusOverlay;
+import mekanism.common.Mekanism;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
+import mekanism.common.network.to_client.PacketShowModeChange;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -13,12 +19,12 @@ public interface IModeItem {
     /**
      * Changes the current mode of the item
      *
-     * @param player               The player who made the mode change.
-     * @param stack                The stack to change the mode of
-     * @param shift                The amount to shift the mode by, may be negative for indicating the mode should decrease.
-     * @param displayChangeMessage {@code true} if a message should be displayed when the mode changes
+     * @param player        The player who made the mode change.
+     * @param stack         The stack to change the mode of
+     * @param shift         The amount to shift the mode by, may be negative for indicating the mode should decrease.
+     * @param displayChange {@code true} if a message should be displayed when the mode changes
      */
-    void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, boolean displayChangeMessage);
+    void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange);
 
     default boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
         return slotType == EquipmentSlot.MAINHAND || slotType == EquipmentSlot.OFFHAND;
@@ -46,5 +52,28 @@ public interface IModeItem {
             return allowRadial || !(modeItem instanceof IGenericRadialModeItem radialModeItem) || radialModeItem.getRadialData(stack) == null;
         }
         return false;
+    }
+
+    static void displayModeChange(Player player) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            Mekanism.packetHandler().sendTo(PacketShowModeChange.INSTANCE, serverPlayer);
+        } else {
+            MekanismStatusOverlay.INSTANCE.setTimer();
+        }
+    }
+
+    enum DisplayChange {
+        NONE,
+        MAIN_HAND,
+        OTHER;
+
+        public void sendMessage(Player player, Supplier<Component> message) {
+            if (this == MAIN_HAND) {
+                //TODO: Eventually decide if we want to make it so that it checks if IModeItem#getScrollTextComponent is null and otherwise just make it a system message
+                displayModeChange(player);
+            } else if (this == OTHER) {
+                player.sendSystemMessage(MekanismUtils.logFormat(message.get()));
+            }
+        }
     }
 }

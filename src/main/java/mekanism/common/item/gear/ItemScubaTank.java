@@ -20,7 +20,6 @@ import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.network.chat.Component;
@@ -95,14 +94,12 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
     }
 
     @Override
-    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
         if (Math.abs(shift) % 2 == 1) {
             //We are changing by an odd amount, so toggle the mode
             boolean newState = !getFlowing(stack);
             setFlowing(stack, newState);
-            if (displayChangeMessage) {
-                player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.FLOWING.translate(OnOff.of(newState, true))));
-            }
+            displayChange.sendMessage(player, () -> MekanismLang.FLOWING.translate(OnOff.of(newState, true)));
         }
     }
 

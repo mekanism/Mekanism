@@ -104,8 +104,8 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
                         RelativeSide relativeSide = RelativeSide.fromDirections(config.getDirection(), side);
                         DataType dataType = info.getDataType(relativeSide);
                         if (!player.isShiftKeyDown()) {
-                            player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURATOR_VIEW_MODE.translate(transmissionType, dataType.getColor(), dataType,
-                                  dataType.getColor().getColoredName())));
+                            player.displayClientMessage(MekanismLang.CONFIGURATOR_VIEW_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(),
+                                  dataType, dataType.getColor().getColoredName()), true);
                         } else if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
                             return InteractionResult.FAIL;
                         } else {
@@ -120,8 +120,8 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
                             DataType old = dataType;
                             dataType = info.incrementDataType(relativeSide);
                             if (dataType != old) {
-                                player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURATOR_TOGGLE_MODE.translate(transmissionType, dataType.getColor(), dataType,
-                                      dataType.getColor().getColoredName())));
+                                player.displayClientMessage(MekanismLang.CONFIGURATOR_TOGGLE_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(),
+                                      dataType, dataType.getColor().getColoredName()), true);
                                 config.getConfig().sideChanged(transmissionType, relativeSide);
                             }
                         }
@@ -207,14 +207,12 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
     }
 
     @Override
-    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
         ConfiguratorMode mode = getMode(stack);
         ConfiguratorMode newMode = mode.adjust(shift);
         if (mode != newMode) {
             setMode(stack, player, newMode);
-            if (displayChangeMessage) {
-                player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURE_STATE.translate(newMode)));
-            }
+            displayChange.sendMessage(player, () -> MekanismLang.CONFIGURE_STATE.translate(newMode));
         }
     }
 

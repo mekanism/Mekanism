@@ -9,6 +9,7 @@ import mekanism.common.network.to_client.PacketQIOItemViewerGuiSync;
 import mekanism.common.network.to_client.PacketRadiationData;
 import mekanism.common.network.to_client.PacketResetPlayerClient;
 import mekanism.common.network.to_client.PacketSecurityUpdate;
+import mekanism.common.network.to_client.PacketShowModeChange;
 import mekanism.common.network.to_client.PacketTransmitterUpdate;
 import mekanism.common.network.to_client.PacketTransporterUpdate;
 import mekanism.common.network.to_client.PacketUpdateTile;
@@ -89,6 +90,7 @@ public class PacketHandler extends BasePacketHandler {
         registerServerToClient(PacketRadiationData.class, PacketRadiationData::decode);
         registerServerToClient(PacketResetPlayerClient.class, PacketResetPlayerClient::decode);
         registerServerToClient(PacketSecurityUpdate.class, PacketSecurityUpdate::decode);
+        registerServerToClient(PacketShowModeChange.class, PacketShowModeChange::decode);
         registerServerToClient(PacketTransmitterUpdate.class, PacketTransmitterUpdate::decode);
         registerServerToClient(PacketTransporterUpdate.class, PacketTransporterUpdate::decode);
         registerServerToClient(PacketUpdateContainer.class, PacketUpdateContainer::decode);
