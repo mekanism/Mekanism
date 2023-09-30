@@ -42,7 +42,7 @@ public class SideDataButton extends BasicColorButton {
             BlockPos otherBlockPos = tile.getTilePos().relative(globalSide);
             BlockState blockOnSide = tileWorld.getBlockState(otherBlockPos);
             if (!blockOnSide.isAir()) {
-                otherBlockItem = blockOnSide.getCloneItemStack(new BlockHitResult(Vec3.ZERO, globalSide.getOpposite(), otherBlockPos, false), tileWorld, otherBlockPos, Minecraft.getInstance().player);
+                otherBlockItem = blockOnSide.getCloneItemStack(new BlockHitResult(Vec3.atCenterOf(otherBlockPos).relative(globalSide.getOpposite(), 0.5), globalSide.getOpposite(), otherBlockPos, false), tileWorld, otherBlockPos, Minecraft.getInstance().player);
             } else {
                 otherBlockItem = ItemStack.EMPTY;
             }
