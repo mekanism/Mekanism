@@ -59,7 +59,7 @@ dependencies {
 Add the following to your `gradle.properties` file (see [Maven](https://modmaven.dev/mekanism/Mekanism/) for the list of available versions):
 
 ```properties
-mekanism_version=1.19.2-10.3.2.469
+mekanism_version=1.20.1-10.4.0.14
 ```
 
 # Credits #
