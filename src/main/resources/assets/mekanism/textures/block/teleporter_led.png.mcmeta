@@ -1,0 +1,21 @@
+{
+    "ctm": {
+        "ctm_version": 1,
+        "type": "CTM",
+        "layer": "CUTOUT",
+        "textures": [
+            "mekanism:ctm/teleporter_led"
+        ],
+        "extra": {
+            "connect_to": [
+                {
+                    "block": "mekanism:teleporter_frame"
+                },
+                {
+                    "block": "mekanism:teleporter"
+                }
+            ],
+            "connect_inside": true
+        }
+    }
+}
