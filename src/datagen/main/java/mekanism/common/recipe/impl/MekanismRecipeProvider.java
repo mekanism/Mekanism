@@ -602,14 +602,6 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT))
               ).key(Pattern.CONSTANT, MekanismItems.HDPE_PELLET)
               .build(consumer);
-        //HDPE sheet
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HDPE_SHEET)
-              .pattern(RecipePattern.createPattern(
-                    TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT),
-                    TripleLine.of(Pattern.CONSTANT, Pattern.EMPTY, Pattern.CONSTANT),
-                    TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT))
-              ).key(Pattern.CONSTANT, MekanismItems.HDPE_PELLET)
-              .build(consumer);
         //HDPE stick
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HDPE_STICK)
               .pattern(RecipePattern.createPattern(

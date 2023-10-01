@@ -1,4 +1,4 @@
-// Recipes	2023-09-30T22:09:56.4300934	Recipes
+// Recipes	2023-10-01T20:43:15.2974912	Recipes
 76d04fb8c6d3843742c65aa81fc27c7baf08a732 data/mekanism/recipes/antiprotonic_nucleosynthesizer.json
 6be89827224a18f3aef522df254ae09cfe93304f data/mekanism/recipes/atomic_disassembler.json
 b8659417402b744db4a14e2d085d5111877ab4a4 data/mekanism/recipes/bin/advanced.json
@@ -3162,7 +3162,6 @@ e5e4b5fe954d93ad2b19379159871f7de1e592f3 data/mekanism/recipes/hazmat_boots.json
 e22442819e81b92e2898c4428f35b251a2b1528c data/mekanism/recipes/hazmat_pants.json
 281bd76afb82b05292c4f046b243903d22a650ff data/mekanism/recipes/hdpe_elytra.json
 7be85efdca62224c6850c4377881e95078d0ad39 data/mekanism/recipes/hdpe_rod.json
-bbdbdd9abd462506c88438db4f30ef49439cf90e data/mekanism/recipes/hdpe_sheet.json
 98fdc88338a42277ca62142b74c7be623c00ba08 data/mekanism/recipes/hdpe_stick.json
 d3c6aca1d725ee375d63bd8fabad2112f44b9831 data/mekanism/recipes/induction/casing.json
 0269cbca415640b868e52de7c45b1191c2ab7de3 data/mekanism/recipes/induction/cell/advanced.json
