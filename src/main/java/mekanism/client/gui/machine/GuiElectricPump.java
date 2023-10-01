@@ -38,7 +38,12 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
             list.add(EnergyDisplay.of(tile.getEnergyContainer()).getTextComponent());
             FluidStack fluidStack = tile.fluidTank.getFluid();
             if (fluidStack.isEmpty()) {
-                list.add(MekanismLang.NO_FLUID.translate());
+                FluidStack fallBack = tile.getActiveType();
+                if (fallBack.isEmpty()) {
+                    list.add(MekanismLang.NO_FLUID.translate());
+                } else {
+                    list.add(fallBack.getDisplayName());
+                }
             } else {
                 list.add(MekanismLang.GENERIC_STORED_MB.translate(fluidStack, TextUtils.format(fluidStack.getAmount())));
             }
