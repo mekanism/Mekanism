@@ -1,4 +1,4 @@
-// Recipes	2023-09-29T10:44:41.6971432	Recipes
+// Recipes	2023-09-30T22:09:56.4300934	Recipes
 76d04fb8c6d3843742c65aa81fc27c7baf08a732 data/mekanism/recipes/antiprotonic_nucleosynthesizer.json
 6be89827224a18f3aef522df254ae09cfe93304f data/mekanism/recipes/atomic_disassembler.json
 b8659417402b744db4a14e2d085d5111877ab4a4 data/mekanism/recipes/bin/advanced.json
@@ -3260,6 +3260,8 @@ d3d9d4f7979277126fafa145197a4bc5e2359a33 data/mekanism/recipes/metallurgic_infus
 c4942b996223076455f530e829dd6cb1f9e94738 data/mekanism/recipes/metallurgic_infusing/crimson_nylium_to_warped_nylium.json
 d916f01b3b09641616b4f4a4cae7dd467d9c0139 data/mekanism/recipes/metallurgic_infusing/dirt_to_mycelium.json
 49b41f9c773bdcf299cbe1c13f21c61f509d9cd2 data/mekanism/recipes/metallurgic_infusing/dirt_to_podzol.json
+9bdd68241f8fde6c92d1c3d8490a919e6b4ba0ce data/mekanism/recipes/metallurgic_infusing/mossy/clay_slime_ball.json
+e43da9a8213a92d594d1b66b234b1060771e6c02 data/mekanism/recipes/metallurgic_infusing/mossy/clay_slime_block.json
 21a49b86f09d3df28602a4a13e19554705b0ed7c data/mekanism/recipes/metallurgic_infusing/mossy/cobblestone.json
 85901880d36a89221618190606319dbe967b2667 data/mekanism/recipes/metallurgic_infusing/mossy/cobblestone_slab.json
 78f355989993f1ed48cc4ca7967a896a016a7705 data/mekanism/recipes/metallurgic_infusing/mossy/cobblestone_stairs.json

@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemicalInput": {
+    "amount": 10,
+    "tag": "mekanism:bio"
+  },
+  "itemInput": {
+    "ingredient": {
+      "item": "minecraft:clay_ball"
+    }
+  },
+  "output": {
+    "item": "minecraft:slime_ball"
+  }
+}
