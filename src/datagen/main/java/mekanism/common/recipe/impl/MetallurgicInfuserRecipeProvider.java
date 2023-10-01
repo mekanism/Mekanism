@@ -9,6 +9,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 
@@ -129,5 +130,17 @@ class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.infusion().from(MekanismTags.InfuseTypes.BIO, 10),
               new ItemStack(Blocks.MOSSY_STONE_BRICK_WALL)
         ).build(consumer, Mekanism.rl(basePath + "stone_brick_wall"));
+        //slime ball
+        ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
+              IngredientCreatorAccess.item().from(Items.CLAY_BALL),
+              IngredientCreatorAccess.infusion().from(MekanismTags.InfuseTypes.BIO, 10),
+              new ItemStack(Items.SLIME_BALL)
+        ).build(consumer, Mekanism.rl(basePath + "clay_slime_ball"));
+        //slime block
+        ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
+              IngredientCreatorAccess.item().from(Blocks.CLAY),
+              IngredientCreatorAccess.infusion().from(MekanismTags.InfuseTypes.BIO, 40),
+              new ItemStack(Items.SLIME_BALL, 4)
+        ).build(consumer, Mekanism.rl(basePath + "clay_slime_block"));
     }
 }
