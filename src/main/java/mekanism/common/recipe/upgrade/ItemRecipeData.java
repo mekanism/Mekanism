@@ -40,7 +40,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
         this(readContents(slots));
     }
 
-    private ItemRecipeData(List<IInventorySlot> slots) {
+    ItemRecipeData(List<IInventorySlot> slots) {
         this.slots = slots;
     }
 

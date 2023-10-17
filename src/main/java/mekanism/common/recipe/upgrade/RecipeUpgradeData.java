@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.security.ISecurityObject;
@@ -19,7 +20,9 @@ import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.IQIODriveItem.DriveMetadata;
 import mekanism.common.inventory.BinMekanismInventory;
 import mekanism.common.item.block.ItemBlockBin;
+import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
+import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.recipe.upgrade.chemical.GasRecipeData;
 import mekanism.common.recipe.upgrade.chemical.InfusionRecipeData;
 import mekanism.common.recipe.upgrade.chemical.PigmentRecipeData;
@@ -136,8 +139,17 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             case PIGMENT -> getContainerUpgradeData(stack, NBTConstants.PIGMENT_TANKS, PigmentRecipeData::new);
             case SLURRY -> getContainerUpgradeData(stack, NBTConstants.SLURRY_TANKS, SlurryRecipeData::new);
             case ITEM -> {
-                ListTag inventory = ((IItemSustainedInventory) item).getSustainedInventory(stack);
-                yield inventory == null || inventory.isEmpty() ? null : new ItemRecipeData(inventory);
+                if (item instanceof IItemSustainedInventory) {
+                    ListTag inventory = ((IItemSustainedInventory) item).getSustainedInventory(stack);
+                    yield inventory == null || inventory.isEmpty() ? null : new ItemRecipeData(inventory);
+                } else if (item instanceof ItemBlockPersonalStorage<?>) {
+                    yield PersonalStorageManager.getInventoryIfPresent(stack).map(inv->new ItemRecipeData(inv.getInventorySlots(null))).orElse(null);
+                } else {
+                    if (MekanismAPI.debug) {
+                        throw new IllegalStateException("Requested ITEM upgrade data, but unable to handle");
+                    }
+                    yield null;
+                }
             }
             case LOCK -> {
                 BinMekanismInventory inventory = BinMekanismInventory.create(stack);
