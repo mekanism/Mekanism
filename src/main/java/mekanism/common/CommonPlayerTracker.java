@@ -12,6 +12,7 @@ import mekanism.common.network.to_client.PacketPlayerData;
 import mekanism.common.network.to_client.PacketRadiationData;
 import mekanism.common.network.to_client.PacketResetPlayerClient;
 import mekanism.common.network.to_client.PacketSecurityUpdate;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags.Items;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
@@ -21,6 +22,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -112,8 +114,9 @@ public class CommonPlayerTracker {
      */
     @SubscribeEvent
     public void rightClickEvent(RightClickBlock event) {
-        if (event.getEntity().getItemInHand(event.getHand()).is(Items.CONFIGURATORS)) {
-            //it's a wrench, see if it's our block
+        ItemStack itemInHand = event.getEntity().getItemInHand(event.getHand());
+        if (itemInHand.is(Items.CONFIGURATORS) && !itemInHand.is(MekanismItems.CONFIGURATOR.asItem())) {
+            //it's a wrench, see if it's our block. Not the configurator, as it handles bypass correctly
             Block block = event.getLevel().getBlockState(event.getPos()).getBlock();
             if (block instanceof BlockMekanism || block instanceof BlockBounding) {
                 event.setUseBlock(Event.Result.ALLOW);//force it to use the item on the block
