@@ -2,18 +2,18 @@ package mekanism.common.lib.inventory.personalstorage;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.MekanismSavedData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 class PersonalStorageData extends MekanismSavedData {
@@ -21,6 +21,18 @@ class PersonalStorageData extends MekanismSavedData {
 
     PersonalStorageItemInventory getOrAddInventory(UUID id) {
         return inventoriesById.computeIfAbsent(id, unused->createInventory());
+    }
+
+    PersonalStorageItemInventory addInventory(UUID id, List<IInventorySlot> contents) {
+        return inventoriesById.computeIfAbsent(id, unused -> {
+            PersonalStorageItemInventory inventory = createInventory();
+            List<IInventorySlot> inventorySlots = inventory.getInventorySlots(null);
+            for (int i = 0, slots = contents.size(); i < slots; i++) {
+                inventorySlots.get(i).deserializeNBT(contents.get(i).serializeNBT());
+            }
+            setDirty();
+            return inventory;
+        });
     }
 
     void removeInventory(UUID id) {

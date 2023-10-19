@@ -139,17 +139,16 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             case PIGMENT -> getContainerUpgradeData(stack, NBTConstants.PIGMENT_TANKS, PigmentRecipeData::new);
             case SLURRY -> getContainerUpgradeData(stack, NBTConstants.SLURRY_TANKS, SlurryRecipeData::new);
             case ITEM -> {
-                if (item instanceof IItemSustainedInventory) {
-                    ListTag inventory = ((IItemSustainedInventory) item).getSustainedInventory(stack);
+                if (item instanceof IItemSustainedInventory sustainedInventory) {
+                    ListTag inventory = sustainedInventory.getSustainedInventory(stack);
                     yield inventory == null || inventory.isEmpty() ? null : new ItemRecipeData(inventory);
                 } else if (item instanceof ItemBlockPersonalStorage<?>) {
-                    yield PersonalStorageManager.getInventoryIfPresent(stack).map(inv->new ItemRecipeData(inv.getInventorySlots(null))).orElse(null);
-                } else {
-                    if (MekanismAPI.debug) {
-                        throw new IllegalStateException("Requested ITEM upgrade data, but unable to handle");
-                    }
-                    yield null;
+                    yield PersonalStorageManager.getInventoryIfPresent(stack).map(inv -> new ItemRecipeData(inv.getInventorySlots(null))).orElse(null);
                 }
+                if (MekanismAPI.debug) {
+                    throw new IllegalStateException("Requested ITEM upgrade data, but unable to handle");
+                }
+                yield null;
             }
             case LOCK -> {
                 BinMekanismInventory inventory = BinMekanismInventory.create(stack);

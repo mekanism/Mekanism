@@ -2,6 +2,7 @@ package mekanism.common.lib.inventory.personalstorage;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,7 +22,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,6 +56,18 @@ public class PersonalStorageManager {
         }
 
         return storageItemInventory;
+    }
+
+    public static boolean createInventoryFor(ItemStack stack, List<IInventorySlot> contents) {
+        UUID owner = SecurityUtils.get().getOwnerUUID(stack);
+        if (owner == null || contents.size() != 54) {
+            //No owner or wrong number of slots, something went wrong
+            return false;
+        }
+        //Get a new inventory id
+        UUID invId = getInventoryId(stack);
+        forOwner(owner).addInventory(invId, contents);
+        return true;
     }
 
     /**
@@ -102,7 +114,8 @@ public class PersonalStorageManager {
         STORAGE_BY_PLAYER_UUID.clear();
     }
 
-    public static void createSlots(Consumer<IInventorySlot> slotConsumer, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInteract, IContentsListener listener) {
+    public static void createSlots(Consumer<IInventorySlot> slotConsumer, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInteract,
+          @Nullable IContentsListener listener) {
         for (int slotY = 0; slotY < 6; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 slotConsumer.accept(BasicInventorySlot.at(canInteract, canInteract, listener, 8 + slotX * 18, 18 + slotY * 18));
