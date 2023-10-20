@@ -1646,6 +1646,7 @@
   "upgrade.mekanism.filter.description": "Un filtre qui sépare l'eau lourde de l'eau ordinaire.",
   "upgrade.mekanism.gas": "Gaz",
   "upgrade.mekanism.gas.description": "Augmente l'efficacité des machines à gaz.",
+  "upgrade.mekanism.max_installed": "Maximum installé : %1$s",
   "upgrade.mekanism.muffling": "Étouffement",
   "upgrade.mekanism.muffling.description": "Réduit le bruit généré par les machines.",
   "upgrade.mekanism.speed": "Vitesse",
