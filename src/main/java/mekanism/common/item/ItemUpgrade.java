@@ -2,6 +2,7 @@ package mekanism.common.item;
 
 import java.util.List;
 import mekanism.api.Upgrade;
+import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
@@ -27,14 +28,16 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
     private final Upgrade upgrade;
 
     public ItemUpgrade(Upgrade type, Properties properties) {
-        super(properties.stacksTo(type.getMax()).rarity(Rarity.UNCOMMON));
+        super(properties.rarity(Rarity.UNCOMMON));
         upgrade = type;
     }
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
-            tooltip.add(getUpgradeType(stack).getDescription());
+            Upgrade upgradeType = getUpgradeType(stack);
+            tooltip.add(upgradeType.getDescription());
+            tooltip.add(APILang.UPGRADE_MAX_INSTALLED.translate(upgradeType.getMax()));
         } else {
             tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
         }

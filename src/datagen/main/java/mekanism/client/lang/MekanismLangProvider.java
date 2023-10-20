@@ -634,6 +634,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(APILang.UPGRADE_ANCHOR_DESCRIPTION, "Keeps a machine's chunk loaded.");
         add(APILang.UPGRADE_STONE_GENERATOR, "Stone Generator");
         add(APILang.UPGRADE_STONE_GENERATOR_DESCRIPTION, "Generates stone or cobblestone as needed.");
+        add(APILang.UPGRADE_MAX_INSTALLED, "Maximum Installed: %1$s");
         //Transmission types
         add(MekanismLang.TRANSMISSION_TYPE_ENERGY, "Energy");
         add(MekanismLang.TRANSMISSION_TYPE_FLUID, "Fluids");
