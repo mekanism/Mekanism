@@ -98,5 +98,4 @@ jobs:
         MEK_MAVEN_PW: ${{ secrets.MEK_MAVEN_PW }}
         BUILD_NUMBER: ${{ github.run_number }}
         GIT_COMMIT: ${{ github.sha }}
-        GIT_PREVIOUS_SUCCESSFUL_COMMIT: e03758fb
-        #GIT_PREVIOUS_SUCCESSFUL_COMMIT: ${{ steps.last_success_build.outputs.sha != github.sha && steps.last_success_build.outputs.sha || steps.last_success_build_any.outputs.sha }}
+        GIT_PREVIOUS_SUCCESSFUL_COMMIT: ${{ steps.last_success_build.outputs.sha != github.sha && steps.last_success_build.outputs.sha || steps.last_success_build_any.outputs.sha }}
