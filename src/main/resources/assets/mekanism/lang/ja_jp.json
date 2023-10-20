@@ -1646,6 +1646,7 @@
   "upgrade.mekanism.filter.description": "普通の水から重水を分離するフィルターです。",
   "upgrade.mekanism.gas": "ガス",
   "upgrade.mekanism.gas.description": "ガスの使用効率を上昇させます。",
+  "upgrade.mekanism.max_installed": "最大までインストール済み: %1$s",
   "upgrade.mekanism.muffling": "消音",
   "upgrade.mekanism.muffling.description": "マシンの騒音を減らします。",
   "upgrade.mekanism.speed": "スピード",
