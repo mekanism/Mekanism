@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class BoundMethodHolder {
+
     private static final Comparator<BoundMethodData<?>> METHODDATA_COMPARATOR = Comparator.<BoundMethodData<?>, String>comparing(BoundMethodData::name).thenComparing(md -> md.argumentNames().length);
     private static final MethodData<ListMultimap<String, BoundMethodData<?>>> HELP_METHOD = MethodData.builder("help", BoundMethodHolder::generateHelp)
           .returnType(Map.class)
@@ -35,21 +36,21 @@ public abstract class BoundMethodHolder {
      */
     private final Set<ObjectIntPair<String>> methodsKnown = new HashSet<>();
 
-    protected Lazy<String[]> methodNames = Lazy.of(()->this.methods.keys().toArray(new String[0]));
+    protected Lazy<String[]> methodNames = Lazy.of(() -> this.methods.keys().toArray(new String[0]));
 
     protected BoundMethodHolder() {
-        register(HELP_METHOD, new WeakReference<>(this.methods));
-        register(HELP_METHOD_WITH_NAME, new WeakReference<>(this.methods));
+        register(HELP_METHOD, new WeakReference<>(this.methods), true);
+        register(HELP_METHOD_WITH_NAME, new WeakReference<>(this.methods), true);
     }
 
-    public <T> void register(MethodData<T> method, @Nullable WeakReference<T> subject) {
+    public <T> void register(MethodData<T> method, @Nullable WeakReference<T> subject, boolean isHelpMethod) {
         if (!methodsKnown.add(new ObjectIntImmutablePair<>(method.name(), method.argumentNames().length))) {
-            throw new RuntimeException("Duplicate method name "+method.name()+"_"+method.argumentNames().length);
+            throw new RuntimeException("Duplicate method name " + method.name() + "_" + method.argumentNames().length);
         }
-        this.methods.put(method.name(), new BoundMethodData<>(method, subject));
+        this.methods.put(method.name(), new BoundMethodData<>(method, subject, isHelpMethod));
     }
 
-    public record BoundMethodData<T>(MethodData<T> method, @Nullable WeakReference<T> subject) {
+    public record BoundMethodData<T>(MethodData<T> method, @Nullable WeakReference<T> subject, boolean isHelpMethod) {
 
         public Object call(BaseComputerHelper helper) throws ComputerException {
             return method.handler().apply(unwrappedSubject(), helper);
@@ -89,7 +90,16 @@ public abstract class BoundMethodHolder {
             if (this == o) {
                 return true;
             }
-            return o instanceof BoundMethodData<?> that && method.equals(that.method) && Objects.equals(unwrappedSubject(), that.unwrappedSubject());
+            return o instanceof BoundMethodData<?> that && method.equals(that.method) && subjectEquals(that);
+        }
+
+        private boolean subjectEquals(BoundMethodData<?> that) {
+            T mySubject = unwrappedSubject();
+            Object otherSubject = that.unwrappedSubject();
+            if (isHelpMethod) {//compare helps by reference, to avoid a Stack Overflow
+                return mySubject == otherSubject;
+            }
+            return Objects.equals(mySubject, otherSubject);
         }
 
         @Override
@@ -106,8 +116,8 @@ public abstract class BoundMethodHolder {
             return helper.voidResult();
         }
         Map<String, MethodHelpData> helpItems = new HashMap<>();
-        methods.values().stream().sorted(METHODDATA_COMPARATOR).forEach(md->
-              helpItems.put(md.name()+"("+String.join(", ", md.argumentNames())+")", MethodHelpData.from(md))
+        methods.values().stream().sorted(METHODDATA_COMPARATOR).forEach(md ->
+              helpItems.put(md.name() + "(" + String.join(", ", md.argumentNames()) + ")", MethodHelpData.from(md))
         );
         return helper.convert(helpItems, helper::convert, helper::convert);
     }
@@ -118,11 +128,11 @@ public abstract class BoundMethodHolder {
         }
         String methodName = helper.getString(0);
         Map<String, MethodHelpData> helpItems = new HashMap<>();
-        methods.values().stream().sorted(METHODDATA_COMPARATOR).filter(md->md.name().equalsIgnoreCase(methodName)).forEach(md->
-              helpItems.put(md.name()+"("+String.join(", ", md.argumentNames())+")", MethodHelpData.from(md))
+        methods.values().stream().sorted(METHODDATA_COMPARATOR).filter(md -> md.name().equalsIgnoreCase(methodName)).forEach(md ->
+              helpItems.put(md.name() + "(" + String.join(", ", md.argumentNames()) + ")", MethodHelpData.from(md))
         );
         if (helpItems.isEmpty()) {
-            return helper.convert("Method name not found: "+methodName);
+            return helper.convert("Method name not found: " + methodName);
         }
         return helper.convert(helpItems, helper::convert, helper::convert);
     }

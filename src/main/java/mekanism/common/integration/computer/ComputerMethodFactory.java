@@ -77,7 +77,7 @@ public class ComputerMethodFactory<T>{
         WeakReference<T> weakSubject = subject != null ? new WeakReference<>(subject) : null;
         for (MethodData<T> methodData : this.methods) {
             if (methodData.supports(subject)) {
-                holder.register(methodData, weakSubject);
+                holder.register(methodData, weakSubject, false);
             }
         }
     }
