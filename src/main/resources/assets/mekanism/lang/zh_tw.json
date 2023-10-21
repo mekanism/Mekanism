@@ -1646,6 +1646,7 @@
   "upgrade.mekanism.filter.description": "將重水從普通水中分離出來的過濾器.",
   "upgrade.mekanism.gas": "氣體",
   "upgrade.mekanism.gas.description": "提升機器氣體的使用效率.",
+  "upgrade.mekanism.max_installed": "最大安裝數: %1$s",
   "upgrade.mekanism.muffling": "降噪",
   "upgrade.mekanism.muffling.description": "減少機器噪音.",
   "upgrade.mekanism.speed": "速度",
