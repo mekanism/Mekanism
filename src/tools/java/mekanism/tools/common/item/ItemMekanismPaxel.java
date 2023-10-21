@@ -18,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -26,39 +27,38 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemMekanismPaxel extends DiggerItem implements IHasRepairType, IAttributeRefresher {
+public class ItemMekanismPaxel extends AxeItem implements IHasRepairType, IAttributeRefresher {
 
     private static final ToolAction PAXEL_DIG = ToolAction.get("paxel_dig");
 
     private final IPaxelMaterial material;
     private final AttributeCache attributeCache;
+    private static final TagKey<Block> MINEABLE_WITH_PAXEL = ToolsTags.Blocks.MINEABLE_WITH_PAXEL;
 
     public ItemMekanismPaxel(MaterialCreator material, Item.Properties properties) {
-        super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material, ToolsTags.Blocks.MINEABLE_WITH_PAXEL, properties);
+        super(material, material.getPaxelDamage(), material.getPaxelAtkSpeed(), properties);
         this.material = material;
         this.attributeCache = new AttributeCache(this, material.attackDamage, material.paxelDamage, material.paxelAtkSpeed);
     }
 
     public ItemMekanismPaxel(VanillaPaxelMaterialCreator material, Item.Properties properties) {
-        super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material.getVanillaTier(), ToolsTags.Blocks.MINEABLE_WITH_PAXEL, properties);
+        super(material.getVanillaTier(), material.getPaxelDamage(), material.getPaxelAtkSpeed(), properties);
         this.material = material;
         //Don't add the material's damage as a listener as the vanilla component is not configurable
         this.attributeCache = new AttributeCache(this, material.paxelDamage, material.paxelAtkSpeed);
@@ -83,7 +83,7 @@ public class ItemMekanismPaxel extends DiggerItem implements IHasRepairType, IAt
 
     @Override
     public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
-        return super.getDestroySpeed(stack, state) == 1 ? 1 : material.getPaxelEfficiency();
+        return state.is(MINEABLE_WITH_PAXEL) ? material.getPaxelEfficiency() : 1;
     }
 
     /**
@@ -193,10 +193,13 @@ public class ItemMekanismPaxel extends DiggerItem implements IHasRepairType, IAt
     }
 
     @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        // Axe enchantments specifically check if the item is an instanceof AxeItem
-        // Paxel cannot extend AxeItem without replacing all methods relating to tag calls
-        // Easier to check an actual instanceof AxeItem to see if it can be applied
-        return enchantment.canEnchant(new ItemStack(Items.WOODEN_AXE)) || super.canApplyAtEnchantingTable(stack, enchantment);
+    public boolean isCorrectToolForDrops(BlockState state) {
+        // Some modded items may not check the stack sensitive version
+        return state.is(MINEABLE_WITH_PAXEL) && TierSortingRegistry.isCorrectTierForDrops(getTier(), state);
+    }
+
+    @Override
+    public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
+        return state.is(MINEABLE_WITH_PAXEL) && TierSortingRegistry.isCorrectTierForDrops(getTier(), state);
     }
 }
