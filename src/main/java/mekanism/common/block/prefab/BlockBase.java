@@ -13,14 +13,21 @@ import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.content.blocktype.BlockType;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
@@ -98,6 +105,20 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
             return bounds[index];
         }
         return super.getShape(state, world, pos, context);
+    }
+
+    @NotNull
+    @Override
+    @Deprecated
+    public InteractionResult use(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand,
+          @NotNull BlockHitResult hit) {
+        if (player.isShiftKeyDown() && MekanismUtils.canUseAsWrench(player.getItemInHand(hand))) {
+            if (!world.isClientSide) {
+                WorldUtils.dismantleBlock(state, world, pos);
+            }
+            return InteractionResult.SUCCESS;
+        }
+        return InteractionResult.PASS;
     }
 
     public static class BlockBaseModel<BLOCK extends BlockType> extends BlockBase<BLOCK> implements IStateFluidLoggable {
