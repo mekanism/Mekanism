@@ -18,7 +18,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -49,7 +48,6 @@ public class ItemMekanismPaxel extends AxeItem implements IHasRepairType, IAttri
 
     private final IPaxelMaterial material;
     private final AttributeCache attributeCache;
-    private static final TagKey<Block> MINEABLE_WITH_PAXEL = ToolsTags.Blocks.MINEABLE_WITH_PAXEL;
 
     public ItemMekanismPaxel(MaterialCreator material, Item.Properties properties) {
         super(material, material.getPaxelDamage(), material.getPaxelAtkSpeed(), properties);
@@ -83,7 +81,7 @@ public class ItemMekanismPaxel extends AxeItem implements IHasRepairType, IAttri
 
     @Override
     public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
-        return state.is(MINEABLE_WITH_PAXEL) ? material.getPaxelEfficiency() : 1;
+        return state.is(ToolsTags.Blocks.MINEABLE_WITH_PAXEL) ? material.getPaxelEfficiency() : 1;
     }
 
     /**
@@ -195,11 +193,6 @@ public class ItemMekanismPaxel extends AxeItem implements IHasRepairType, IAttri
     @Override
     public boolean isCorrectToolForDrops(BlockState state) {
         // Some modded items may not check the stack sensitive version
-        return state.is(MINEABLE_WITH_PAXEL) && TierSortingRegistry.isCorrectTierForDrops(getTier(), state);
-    }
-
-    @Override
-    public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        return state.is(MINEABLE_WITH_PAXEL) && TierSortingRegistry.isCorrectTierForDrops(getTier(), state);
+        return state.is(ToolsTags.Blocks.MINEABLE_WITH_PAXEL) && TierSortingRegistry.isCorrectTierForDrops(getTier(), state);
     }
 }
