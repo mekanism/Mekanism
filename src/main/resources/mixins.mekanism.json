@@ -1,0 +1,7 @@
+{
+  "package": "mekanism.mixin",
+  "refmap": "mixins.mekanism.refmap.json",
+  "mixins": [
+    "MixinLivingEntity"
+  ]
+}

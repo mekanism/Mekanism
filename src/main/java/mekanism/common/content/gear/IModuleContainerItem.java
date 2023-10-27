@@ -104,4 +104,15 @@ public interface IModuleContainerItem extends IItemHUDProvider {
         }
         return ret;
     }
+
+    /**
+     * Hook of {@link net.minecraft.world.entity.LivingEntity#equipmentHasChanged(ItemStack, ItemStack)}.
+     *
+     * @param oldItem the previous stack in the slot
+     * @param newItem the current stack in the slot. Item will be the same as oldItem param
+     * @return true if the equipment has changed and needs to trigger attribute modifier calculations and the {@link net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent event}
+     */
+    default boolean hasEquipmentChanged(ItemStack oldItem, ItemStack newItem) {
+        return false;//modules can't change while in an equipment slot
+    }
 }

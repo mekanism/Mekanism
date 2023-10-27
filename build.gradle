@@ -21,6 +21,7 @@ plugins {
     id 'maven-publish'
     id 'net.neoforged.gradle' version '[6.0.18,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'org.spongepowered.mixin' version '0.7.+'
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -327,11 +328,18 @@ minecraft {
     }
 }
 
+mixin {
+    // MixinGradle Settings
+    add sourceSets.main, 'mixins.mekanism.refmap.json'
+    config 'mixins.mekanism.json'
+}
+
 def setupRunConfig(RunConfig runConfig, boolean supportsGameTests, String directory = "run") {
     runConfig.workingDirectory(file(directory))
     //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
-    runConfig.property 'mixin.env.remapRefMap', 'true'
-    runConfig.property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+    //handled by mixin plugin
+    //runConfig.property 'mixin.env.remapRefMap', 'true'
+    //runConfig.property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
     if (supportsGameTests) {
         //Specify all our mods as domains to look for game tests
         runConfig.property 'forge.enabledGameTestNamespaces', 'mekanism,mekanismadditions,mekanismdefense,mekanismgenerators,mekanismtools'
@@ -406,6 +414,7 @@ dependencies {
     minecraft "net.neoforged:forge:${minecraft_version}-${forge_version}"
 
     annotationProcessor project(":annotation-processor")
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_version}"
