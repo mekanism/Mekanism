@@ -3,6 +3,7 @@ package mekanism.client.gui.element.button;
 import java.util.function.Supplier;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -60,7 +61,7 @@ public class SideDataButton extends BasicColorButton {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
 
         if (!otherBlockItem.isEmpty()) {
-            guiGraphics.renderItem(otherBlockItem, this.getRelativeX()+3, this.getRelativeY()+3);
+            GuiUtils.renderItem(guiGraphics, otherBlockItem, this.getRelativeX()+3, this.getRelativeY()+3, 1, getFont(), null, true);
         }
     }
 }
