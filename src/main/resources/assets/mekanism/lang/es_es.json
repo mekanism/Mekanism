@@ -1,6 +1,6 @@
 {
   "advancements.mekanism.advanced_control_circuit.description": "Fabrica un circuito de control avanzado",
-  "advancements.mekanism.advanced_control_circuit.title": "Él está realmente avanzado para su edad",
+  "advancements.mekanism.advanced_control_circuit.title": "Es muy listo para su edad",
   "advancements.mekanism.advanced_qio_drive.description": "Aumenta el almacenamiento de tu Unidad OEC",
   "advancements.mekanism.advanced_qio_drive.title": "Almacenamiento de Alta Densidad",
   "advancements.mekanism.alarm.description": "Las alarmas son ruidosas, especialmente las de tipo industrial",
@@ -1646,6 +1646,7 @@
   "upgrade.mekanism.filter.description": "Un filtro que separa el agua pesada del agua normal.",
   "upgrade.mekanism.gas": "Gas",
   "upgrade.mekanism.gas.description": "Aumenta la eficiencia de la maquinaria que utiliza gas.",
+  "upgrade.mekanism.max_installed": "Máximo instalado: %1$s",
   "upgrade.mekanism.muffling": "Silenciador",
   "upgrade.mekanism.muffling.description": "Reduce el ruido generado por la maquinaria.",
   "upgrade.mekanism.speed": "Velocidad",
