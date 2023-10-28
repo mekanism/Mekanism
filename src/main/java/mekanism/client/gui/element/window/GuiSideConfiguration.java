@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -103,8 +104,10 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
             if (onHover instanceof SideDataButton button) {
                 DataType dataType = button.getDataType();
                 if (dataType != null) {
-                    displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.GENERIC_WITH_TWO_PARENTHESIS.translateColored(dataType.getColor(), dataType,
-                          dataType.getColor().getName(), side));
+                    displayTooltips(guiGraphics, mouseX, mouseY,
+                          TextComponentUtil.translate(side.getTranslationKey()),
+                          TextComponentUtil.build(dataType.getColor(), dataType)
+                    );
                 }
             }
         };

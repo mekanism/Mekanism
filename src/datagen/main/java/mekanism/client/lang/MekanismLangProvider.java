@@ -750,7 +750,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.GENERIC_SQUARE_BRACKET, "[%1$s]");
         add(MekanismLang.GENERIC_PARENTHESIS, "(%1$s)");
         add(MekanismLang.GENERIC_WITH_PARENTHESIS, "%1$s (%2$s)");
-        add(MekanismLang.GENERIC_WITH_TWO_PARENTHESIS, "%1$s (%2$s) (%3$s)");
         add(MekanismLang.GENERIC_FRACTION, "%1$s/%2$s");
         add(MekanismLang.GENERIC_TRANSFER, "- %1$s (%2$s)");
         add(MekanismLang.GENERIC_PER_TICK, "%1$s/t");

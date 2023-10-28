@@ -3,6 +3,7 @@ package mekanism.client.gui.element.window;
 import java.util.Collections;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -78,7 +79,10 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
                 if (dataType != null) {
                     EnumColor color = button.getColor();
                     Component colorComponent = color == null ? MekanismLang.NONE.translate() : color.getColoredName();
-                    displayTooltips(guiGraphics, mouseX, mouseY, MekanismLang.GENERIC_WITH_PARENTHESIS.translate(colorComponent, side));
+                    displayTooltips(guiGraphics, mouseX, mouseY,
+                          TextComponentUtil.translate(side.getTranslationKey()),
+                          colorComponent
+                         );
                 }
             }
         };
