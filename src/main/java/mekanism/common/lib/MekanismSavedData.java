@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -33,7 +34,11 @@ public abstract class MekanismSavedData extends SavedData {
      * Note: This should only be called from the server side
      */
     public static <DATA extends MekanismSavedData> DATA createSavedData(Supplier<DATA> createFunction, String name) {
-        DimensionDataStorage dataStorage = ServerLifecycleHooks.getCurrentServer().overworld().getDataStorage();
+        MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
+        if (currentServer == null) {
+            throw new IllegalStateException("Current server is null");
+        }
+        DimensionDataStorage dataStorage = currentServer.overworld().getDataStorage();
         return createSavedData(dataStorage, createFunction, name);
     }
 
