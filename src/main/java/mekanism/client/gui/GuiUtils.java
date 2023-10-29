@@ -1,13 +1,24 @@
 package mekanism.client.gui;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexBuffer;
+import com.mojang.blaze3d.vertex.VertexBuffer.Usage;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.mojang.math.Divisor;
+import it.unimi.dsi.fastutil.ints.IntIterator;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.common.Mekanism;
@@ -21,6 +32,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
+import net.minecraft.util.Mth;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,22 +44,38 @@ public class GuiUtils {
     private GuiUtils() {
     }
 
+    private static MethodHandle bindImmediateBufferMH;
+
+    static {
+        try {
+            bindImmediateBufferMH = MethodHandles.privateLookupIn(BufferUploader.class, MethodHandles.lookup()).findStatic(BufferUploader.class, "bindImmediateBuffer", MethodType.methodType(void.class, VertexBuffer.class));
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void bindImmediateBuffer(VertexBuffer buffer) {
+        try {
+            bindImmediateBufferMH.invokeExact(buffer);
+        } catch (Throwable e) {
+            buffer.bind();//fallback to just binding anyway
+        }
+    }
+
     // Note: Does not validate that the passed in dimensions are valid
     // this strategy starts with a small texture and will expand it (by scaling) to meet the size requirements. good for small widgets
     // where the background texture is a single color
     public static void renderExtendedTexture(GuiGraphics guiGraphics, ResourceLocation resource, int sideWidth, int sideHeight, int left, int top, int width, int height) {
         int textureWidth = 2 * sideWidth + 1;
         int textureHeight = 2 * sideHeight + 1;
-        guiGraphics.blitNineSlicedSized(resource, left, top, width, height, sideWidth, sideHeight, textureWidth, textureHeight, 0, 0, textureWidth,
-              textureHeight);
+        blitNineSlicedSized(guiGraphics, resource, left, top, width, height, sideWidth, sideHeight, textureWidth, textureHeight, 0, 0, textureWidth, textureHeight);
     }
 
     // this strategy starts with a large texture and will scale it down or tile it if necessary. good for larger widgets, but requires a large texture;
     // small textures will tank FPS due to tiling
     public static void renderBackgroundTexture(GuiGraphics guiGraphics, ResourceLocation resource, int texSideWidth, int texSideHeight, int left, int top, int width,
           int height, int textureWidth, int textureHeight) {
-        guiGraphics.blitNineSlicedSized(resource, left, top, width, height, texSideWidth, texSideHeight, textureWidth, textureHeight, 0, 0, textureWidth,
-              textureHeight);
+        blitNineSlicedSized(guiGraphics, resource, left, top, width, height, texSideWidth, texSideHeight, textureWidth, textureHeight, 0, 0, textureWidth, textureHeight);
     }
 
     public static void drawOutline(GuiGraphics guiGraphics, int x, int y, int width, int height, int color) {
@@ -232,5 +261,125 @@ public class GuiUtils {
             this.down = down;
             this.right = right;
         }
+    }
+
+    private record NineSliceCache(ResourceLocation texture, int x, int y, int width, int height, int sliceWidth, int sliceHeight, int uWidth, int vHeight, int uOffset,
+                                  int vOffset, int textureWidth, int textureHeight) {}
+
+    private static final Cache<NineSliceCache, VertexBuffer> VERTEX_BUFFER_CACHE = CacheBuilder.newBuilder()
+          //.maximumSize(10)
+          .expireAfterAccess(5, TimeUnit.MINUTES)
+          .<NineSliceCache, VertexBuffer>removalListener(notification -> notification.getValue().close())
+          .build();
+
+    // like guiGraphics.blitNineSlicedSized but uses one BufferBuilder
+    public static void blitNineSlicedSized(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height, int sliceWidth, int sliceHeight, int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
+        ProfilerFiller profiler = Minecraft.getInstance().getProfiler();
+        profiler.push("blit setup");
+        RenderSystem.setShaderTexture(0, texture);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        Matrix4f matrix4f = guiGraphics.pose().last().pose();
+        profiler.pop();
+
+        VertexBuffer cachedBuffer;
+        try {
+            cachedBuffer = VERTEX_BUFFER_CACHE.get(new NineSliceCache(texture, x, y, width, height, sliceWidth, sliceHeight, uWidth, vHeight, uOffset, vOffset, textureWidth, textureHeight), () -> {
+                BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+                bufferbuilder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+
+                profiler.push("blitting");
+
+                int cornerWidth = sliceWidth;
+                int cornerHeight = sliceHeight;
+                int edgeWidth = sliceWidth;
+                int edgeHeight = sliceHeight;
+                cornerWidth = Math.min(cornerWidth, width / 2);
+                edgeWidth = Math.min(edgeWidth, width / 2);
+                cornerHeight = Math.min(cornerHeight, height / 2);
+                edgeHeight = Math.min(edgeHeight, height / 2);
+                if (width == uWidth && height == vHeight) {
+                    blit(bufferbuilder, matrix4f, x, y, uOffset, vOffset, width, height, textureWidth, textureHeight);
+                } else if (height == vHeight) {
+                    blit(bufferbuilder, matrix4f, x, y, uOffset, vOffset, cornerWidth, height, textureWidth, textureHeight);
+                    blitRepeating(bufferbuilder, matrix4f, x + cornerWidth, y, width - edgeWidth - cornerWidth, height, uOffset + cornerWidth, vOffset, uWidth - edgeWidth - cornerWidth, vHeight, textureWidth, textureHeight);
+                    blit(bufferbuilder, matrix4f, x + width - edgeWidth, y, uOffset + uWidth - edgeWidth, vOffset, edgeWidth, height, textureWidth, textureHeight);
+                } else if (width == uWidth) {
+                    blit(bufferbuilder, matrix4f, x, y, uOffset, vOffset, width, cornerHeight, textureWidth, textureHeight);
+                    blitRepeating(bufferbuilder, matrix4f, x, y + cornerHeight, width, height - edgeHeight - cornerHeight, uOffset, vOffset + cornerHeight, uWidth, vHeight - edgeHeight - cornerHeight, textureWidth, textureHeight);
+                    blit(bufferbuilder, matrix4f, x, y + height - edgeHeight, uOffset, vOffset + vHeight - edgeHeight, width, edgeHeight, textureWidth, textureHeight);
+                } else {
+                    blit(bufferbuilder, matrix4f, x, y, uOffset, vOffset, cornerWidth, cornerHeight, textureWidth, textureHeight);
+                    blitRepeating(bufferbuilder, matrix4f, x + cornerWidth, y, width - edgeWidth - cornerWidth, cornerHeight, uOffset + cornerWidth, vOffset, uWidth - edgeWidth - cornerWidth, cornerHeight, textureWidth, textureHeight);
+                    blit(bufferbuilder, matrix4f, x + width - edgeWidth, y, uOffset + uWidth - edgeWidth, vOffset, edgeWidth, cornerHeight, textureWidth, textureHeight);
+                    blit(bufferbuilder, matrix4f, x, y + height - edgeHeight, uOffset, vOffset + vHeight - edgeHeight, cornerWidth, edgeHeight, textureWidth, textureHeight);
+                    blitRepeating(bufferbuilder, matrix4f, x + cornerWidth, y + height - edgeHeight, width - edgeWidth - cornerWidth, edgeHeight, uOffset + cornerWidth, vOffset + vHeight - edgeHeight, uWidth - edgeWidth - cornerWidth, edgeHeight, textureWidth, textureHeight);
+                    blit(bufferbuilder, matrix4f, x + width - edgeWidth, y + height - edgeHeight, uOffset + uWidth - edgeWidth, vOffset + vHeight - edgeHeight, edgeWidth, edgeHeight, textureWidth, textureHeight);
+                    blitRepeating(bufferbuilder, matrix4f, x, y + cornerHeight, cornerWidth, height - edgeHeight - cornerHeight, uOffset, vOffset + cornerHeight, cornerWidth, vHeight - edgeHeight - cornerHeight, textureWidth, textureHeight);
+                    blitRepeating(bufferbuilder, matrix4f, x + cornerWidth, y + cornerHeight, width - edgeWidth - cornerWidth, height - edgeHeight - cornerHeight, uOffset + cornerWidth, vOffset + cornerHeight, uWidth - edgeWidth - cornerWidth, vHeight - edgeHeight - cornerHeight, textureWidth, textureHeight);
+                    blitRepeating(bufferbuilder, matrix4f, x + width - edgeWidth, y + cornerHeight, cornerWidth, height - edgeHeight - cornerHeight, uOffset + uWidth - edgeWidth, vOffset + cornerHeight, edgeWidth, vHeight - edgeHeight - cornerHeight, textureWidth, textureHeight);
+                }
+                profiler.pop();
+
+                profiler.push("upload");
+                VertexBuffer vertexBuffer = new VertexBuffer(Usage.STATIC);
+                //vertexBuffer.bind();
+                bindImmediateBuffer(vertexBuffer);
+                vertexBuffer.upload(bufferbuilder.end());
+                profiler.pop();
+                return vertexBuffer;
+            });
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+
+        profiler.push("drawing");
+        //cachedBuffer.bind();
+        bindImmediateBuffer(cachedBuffer);
+        cachedBuffer.drawWithShader(RenderSystem.getModelViewMatrix(), RenderSystem.getProjectionMatrix(), RenderSystem.getShader());
+
+        profiler.pop();
+    }
+
+    public static void blitNineSlicedSized(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height, int sliceSize, int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
+        blitNineSlicedSized(guiGraphics, texture, x, y, width, height, sliceSize, sliceSize, uWidth, vHeight, uOffset, vOffset, textureWidth, textureHeight);
+    }
+
+    private static void blit(BufferBuilder bufferbuilder, Matrix4f matrix4f, int pX, int pY, float pUOffset, float pVOffset, int pWidth, int pHeight, int pTextureWidth, int pTextureHeight) {
+        bufferbuilder.vertex(matrix4f, (float) pX, (float) pY, (float) 0).uv((pUOffset + 0.0F) / (float) pTextureWidth, (pVOffset + 0.0F) / (float) pTextureHeight).endVertex();
+        bufferbuilder.vertex(matrix4f, (float) pX, (float) (pY + pHeight), (float) 0).uv((pUOffset + 0.0F) / (float) pTextureWidth, (pVOffset + (float) pHeight) / (float) pTextureHeight).endVertex();
+        bufferbuilder.vertex(matrix4f, (float) (pX + pWidth), (float) (pY + pHeight), (float) 0).uv((pUOffset + (float) pWidth) / (float) pTextureWidth, (pVOffset + (float) pHeight) / (float) pTextureHeight).endVertex();
+        bufferbuilder.vertex(matrix4f, (float) (pX + pWidth), (float) pY, (float) 0).uv((pUOffset + (float) pWidth) / (float) pTextureWidth, (pVOffset + 0.0F) / (float) pTextureHeight).endVertex();
+    }
+
+    private static void blitRepeating(BufferBuilder bufferbuilder, Matrix4f matrix4f, int pX, int pY, int pWidth, int pHeight, int pUOffset, int pVOffset, int pSourceWidth, int pSourceHeight, int textureWidth, int textureHeight) {
+        int i = pX;
+
+        int j;
+        for (IntIterator intiterator = slices(pWidth, pSourceWidth); intiterator.hasNext(); i += j) {
+            j = intiterator.nextInt();
+            int k = (pSourceWidth - j) / 2;
+            int l = pY;
+
+            int i1;
+            for (IntIterator intiterator1 = slices(pHeight, pSourceHeight); intiterator1.hasNext(); l += i1) {
+                i1 = intiterator1.nextInt();
+                int j1 = (pSourceHeight - i1) / 2;
+                blit(bufferbuilder, matrix4f, i, l, pUOffset + k, pVOffset + j1, j, i1, textureWidth, textureHeight);
+            }
+        }
+    }
+
+    /**
+     * Returns an iterator for dividing a value into slices of a specified size.
+     * <p>
+     *
+     * @param pTarget the value to be divided.
+     * @param pTotal  the size of each slice.
+     *
+     * @return An iterator for iterating over the slices.
+     */
+    private static IntIterator slices(int pTarget, int pTotal) {
+        int i = Mth.positiveCeilDiv(pTarget, pTotal);
+        return new Divisor(pTarget, i);
     }
 }

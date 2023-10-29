@@ -1,6 +1,7 @@
 package mekanism.client.gui.element;
 
 import mekanism.client.SpecialColors;
+import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
@@ -64,7 +65,7 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
 
     private void draw(@NotNull GuiGraphics guiGraphics) {
         colorTab(guiGraphics);
-        guiGraphics.blitNineSlicedSized(getResource(), relativeX, relativeY, width, height, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        GuiUtils.blitNineSlicedSized(guiGraphics, getResource(), relativeX, relativeY, width, height, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         MekanismRenderer.resetColor(guiGraphics);
     }
 }
