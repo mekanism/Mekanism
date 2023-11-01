@@ -3,7 +3,7 @@ package mekanism.common.content.gear;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ICustomModule.ModuleDispenseResult;
 import mekanism.api.gear.IModule;
-import net.minecraft.core.BlockSource;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.OptionalDispenseItemBehavior;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;

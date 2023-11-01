@@ -1,22 +1,31 @@
 package mekanism.api.datagen.recipe;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.JsonOps;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRequirements.Strategy;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.conditions.ConditionalOps;
 import net.neoforged.neoforge.common.crafting.CraftingHelper;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.registries.ForgeRegistries;
@@ -35,10 +44,13 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
 
     protected final List<ICondition> conditions = new ArrayList<>();
     protected final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
+    protected boolean hasCritereon = false;
     protected final ResourceLocation serializerName;
+    private final Provider registries;
 
-    protected MekanismRecipeBuilder(ResourceLocation serializerName) {
+    protected MekanismRecipeBuilder(ResourceLocation serializerName, HolderLookup.Provider registries) {
         this.serializerName = serializerName;
+        this.registries = registries;
         //TODO: We may also want to validate inputs, currently we are not validating our input ingredients as being valid, and are just validating the other parameters
     }
 
@@ -57,8 +69,9 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * @param name      Name of the criterion.
      * @param criterion Criterion to add.
      */
-    public BUILDER addCriterion(String name, CriterionTriggerInstance criterion) {
+    public BUILDER addCriterion(String name, Criterion<?> criterion) {
         advancementBuilder.addCriterion(name, criterion);
+        hasCritereon = true;
         return (BUILDER) this;
     }
 
@@ -78,7 +91,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * @return {@code true} if this recipe has any criteria.
      */
     protected boolean hasCriteria() {
-        return !advancementBuilder.getCriteria().isEmpty();
+        return hasCritereon;
     }
 
     /**
@@ -142,11 +155,8 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty(JsonConstants.TYPE, serializerName.toString());
             if (!conditions.isEmpty()) {
-                JsonArray conditionsArray = new JsonArray();
-                for (ICondition condition : conditions) {
-                    conditionsArray.add(CraftingHelper.serialize(condition));
-                }
-                jsonObject.add(JsonConstants.CONDITIONS, conditionsArray);
+                final DynamicOps<JsonElement> dynamicOps = ConditionalOps.create(RegistryOps.create(JsonOps.INSTANCE, registries), ICondition.IContext.EMPTY);
+                ICondition.LIST_CODEC.fieldOf(JsonConstants.CONDITIONS).codec().encode(conditions, dynamicOps, jsonObject);
             }
             this.serializeRecipeData(jsonObject);
             return jsonObject;
@@ -154,29 +164,24 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
 
         @NotNull
         @Override
-        public RecipeSerializer<?> getType() {
+        public RecipeSerializer<?> type() {
             //Note: This may be null if something is screwed up but this method isn't actually used, so it shouldn't matter
             // and in fact it will probably be null if only the API is included. But again, as we manually just use
             // the serializer's name this should not affect us
-            return ForgeRegistries.RECIPE_SERIALIZERS.getValue(serializerName);
+            return Objects.requireNonNull(ForgeRegistries.RECIPE_SERIALIZERS.getValue(serializerName));
         }
 
         @NotNull
         @Override
-        public ResourceLocation getId() {
+        public ResourceLocation id() {
             return this.id;
         }
 
         @Nullable
         @Override
-        public JsonObject serializeAdvancement() {
-            return hasCriteria() ? advancementBuilder.serializeToJson() : null;
+        public AdvancementHolder advancement() {
+            return advancementBuilder.build(new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()));
         }
 
-        @Nullable
-        @Override
-        public ResourceLocation getAdvancementId() {
-            return new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath());
-        }
     }
 }

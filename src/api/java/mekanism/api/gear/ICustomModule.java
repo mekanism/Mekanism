@@ -10,7 +10,7 @@ import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
 import mekanism.api.radial.mode.NestedRadialMode;
 import mekanism.api.text.IHasTextComponent;
-import net.minecraft.core.BlockSource;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

@@ -32,7 +32,6 @@ public abstract class MekanismRecipe implements Recipe<IgnoredIInventory> {//TOD
     public abstract void write(FriendlyByteBuf buffer);
 
     @NotNull
-    @Override
     public ResourceLocation getId() {
         return id;
     }

@@ -5,6 +5,7 @@ import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
@@ -98,7 +99,7 @@ public class ExtendedAdvancementBuilder {
         return this;
     }
 
-    public ExtendedAdvancementBuilder addCriterion(String key, CriterionTriggerInstance criterion) {
+    public ExtendedAdvancementBuilder addCriterion(String key, Criterion<?> criterion) {
         return runInternal(builder -> builder.addCriterion(key, criterion));
     }
 

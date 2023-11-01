@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -54,7 +55,7 @@ public record AdvancementBasedRobitSkin(List<ResourceLocation> textures, @Nullab
             MinecraftServer server = serverPlayer.getServer();
             if (server != null) {
                 //TODO: Do we eventually want to make a system for announcing unlocks, maybe using toast notifications
-                Advancement advancement = server.getAdvancements().getAdvancement(advancement());
+                AdvancementHolder advancement = server.getAdvancements().get(advancement());
                 return advancement != null && serverPlayer.getAdvancements().getOrStartProgress(advancement).isDone();
             }
         }
