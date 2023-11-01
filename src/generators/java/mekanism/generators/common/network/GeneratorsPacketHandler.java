@@ -4,7 +4,7 @@ import mekanism.common.network.BasePacketHandler;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiButtonPress;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.neoforged.neoforge.network.simple.SimpleChannel;
 
 public class GeneratorsPacketHandler extends BasePacketHandler {
 

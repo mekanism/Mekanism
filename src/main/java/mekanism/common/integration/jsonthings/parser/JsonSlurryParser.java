@@ -9,7 +9,7 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryBuilder;
 import mekanism.common.integration.jsonthings.builder.JsonSlurryBuilder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.neoforged.bus.api.IEventBus;
 
 @NothingNullByDefault
 public class JsonSlurryParser extends JsonChemicalParser<Slurry, SlurryBuilder, JsonSlurryBuilder> {

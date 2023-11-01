@@ -3,7 +3,7 @@ package mekanism.common.recipe.upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.inventory.BinMekanismInventory;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault

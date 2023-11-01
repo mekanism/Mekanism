@@ -26,7 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReactorCasing implements IReactorLogic<FissionReactorLogic> {
@@ -49,7 +49,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
                 if (side == null) {
                     //Not formed, just update all sides
                     world.updateNeighborsAt(getBlockPos(), getBlockType());
-                } else if (!ForgeEventFactory.onNeighborNotify(world, worldPosition, getBlockState(), EnumSet.of(side), false).isCanceled()) {
+                } else if (!EventHooks.onNeighborNotify(world, worldPosition, getBlockState(), EnumSet.of(side), false).isCanceled()) {
                     world.neighborChanged(worldPosition.relative(side), getBlockType(), worldPosition);
                 }
             }

@@ -5,7 +5,7 @@ import mekanism.common.integration.jsonthings.parser.JsonGasParser;
 import mekanism.common.integration.jsonthings.parser.JsonInfuseTypeParser;
 import mekanism.common.integration.jsonthings.parser.JsonPigmentParser;
 import mekanism.common.integration.jsonthings.parser.JsonSlurryParser;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.neoforged.bus.api.IEventBus;
 
 public class JsonThingsIntegration {
 

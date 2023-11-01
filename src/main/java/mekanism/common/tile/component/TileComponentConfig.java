@@ -45,8 +45,7 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -84,12 +83,12 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     private void sideChangedBasic(TransmissionType transmissionType, Direction direction) {
         switch (transmissionType) {
             case ENERGY -> tile.invalidateCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities(), direction);
-            case FLUID -> tile.invalidateCapability(ForgeCapabilities.FLUID_HANDLER, direction);
+            case FLUID -> tile.invalidateCapability(net.neoforged.neoforge.common.capabilities.Capabilities.FLUID_HANDLER, direction);
             case GAS -> tile.invalidateCapability(Capabilities.GAS_HANDLER, direction);
             case INFUSION -> tile.invalidateCapability(Capabilities.INFUSION_HANDLER, direction);
             case PIGMENT -> tile.invalidateCapability(Capabilities.PIGMENT_HANDLER, direction);
             case SLURRY -> tile.invalidateCapability(Capabilities.SLURRY_HANDLER, direction);
-            case ITEM -> tile.invalidateCapability(ForgeCapabilities.ITEM_HANDLER, direction);
+            case ITEM -> tile.invalidateCapability(net.neoforged.neoforge.common.capabilities.Capabilities.ITEM_HANDLER, direction);
             case HEAT -> tile.invalidateCapability(Capabilities.HEAT_HANDLER, direction);
         }
         tile.markForSave();
@@ -117,7 +116,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
 
     public boolean isCapabilityDisabled(@NotNull Capability<?> capability, Direction side) {
         TransmissionType type = null;
-        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+        if (capability == net.neoforged.neoforge.common.capabilities.Capabilities.ITEM_HANDLER) {
             type = TransmissionType.ITEM;
         } else if (capability == Capabilities.GAS_HANDLER) {
             type = TransmissionType.GAS;
@@ -129,7 +128,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             type = TransmissionType.SLURRY;
         } else if (capability == Capabilities.HEAT_HANDLER) {
             type = TransmissionType.HEAT;
-        } else if (capability == ForgeCapabilities.FLUID_HANDLER) {
+        } else if (capability == net.neoforged.neoforge.common.capabilities.Capabilities.FLUID_HANDLER) {
             type = TransmissionType.FLUID;
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
             type = TransmissionType.ENERGY;

@@ -5,9 +5,9 @@ import com.google.gson.JsonParseException;
 import mekanism.common.Mekanism;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
+import net.neoforged.neoforge.common.crafting.CraftingHelper;
+import net.neoforged.neoforge.common.crafting.conditions.ICondition;
+import net.neoforged.neoforge.common.crafting.conditions.IConditionSerializer;
 import org.jetbrains.annotations.Nullable;
 
 public record ConditionExistsCondition(@Nullable ICondition condition) implements ICondition {

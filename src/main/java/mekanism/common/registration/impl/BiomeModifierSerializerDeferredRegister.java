@@ -3,8 +3,8 @@ package mekanism.common.registration.impl;
 import com.mojang.serialization.Codec;
 import java.util.function.Supplier;
 import mekanism.common.registration.WrappedDatapackDeferredRegister;
-import net.minecraftforge.common.world.BiomeModifier;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 
 public class BiomeModifierSerializerDeferredRegister extends WrappedDatapackDeferredRegister<BiomeModifier> {
 

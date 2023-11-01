@@ -31,8 +31,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.level.BlockEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.BlockEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -81,7 +81,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
         //Check if the player is allowed to use the cardboard box in the given position
         if (world.mayInteract(player, pos)) {
             //If they are then check if they can "break" the cardboard block that is in that spot
-            if (!MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(world, pos, state, player))) {
+            if (!NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(world, pos, state, player))) {
                 //If they can then we need to see if they are allowed to "place" the unboxed block in the given position
                 //TODO: Once forge fixes https://github.com/MinecraftForge/MinecraftForge/issues/7609 use block snapshots
                 // and fire a place event to see if the player is able to "place" the cardboard box

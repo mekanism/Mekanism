@@ -10,7 +10,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.NeoForgeConfigSpec;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -49,7 +49,7 @@ public class MaterialCreator extends BaseMekanismMaterial {
     public final CachedIntValue chestplateArmor;
     public final CachedIntValue helmetArmor;
 
-    public MaterialCreator(IMekanismConfig config, ForgeConfigSpec.Builder builder, BaseMekanismMaterial materialDefaults) {
+    public MaterialCreator(IMekanismConfig config, NeoForgeConfigSpec.Builder builder, BaseMekanismMaterial materialDefaults) {
         fallBack = materialDefaults;
         String toolKey = getRegistryPrefix();
         String name = getConfigCommentName();

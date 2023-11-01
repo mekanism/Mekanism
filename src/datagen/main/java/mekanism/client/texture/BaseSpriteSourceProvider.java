@@ -12,9 +12,9 @@ import net.minecraft.client.renderer.texture.atlas.sources.DirectoryLister;
 import net.minecraft.client.renderer.texture.atlas.sources.SingleFile;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.common.data.SpriteSourceProvider;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.SpriteSourceProvider;
+import net.neoforged.neoforge.registries.IForgeRegistry;
 
 public abstract class BaseSpriteSourceProvider extends SpriteSourceProvider {
 

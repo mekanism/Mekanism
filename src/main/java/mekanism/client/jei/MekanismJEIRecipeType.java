@@ -33,7 +33,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraftforge.common.util.Lazy;
+import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 
 //Note: Do not use any classes from JEI here as this is to allow us to safely keep JEI optional while referencing from our GUIs

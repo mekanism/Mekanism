@@ -43,9 +43,9 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.fml.ModList;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.fml.ModList;
 
 @NothingNullByDefault
 public class MekanismRecipeProvider extends BaseRecipeProvider {

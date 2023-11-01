@@ -44,12 +44,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.BlockSnapshot;
-import net.minecraftforge.entity.IEntityAdditionalSpawnData;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.util.BlockSnapshot;
+import net.neoforged.neoforge.entity.IEntityAdditionalSpawnData;
+import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -192,7 +192,7 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
     private boolean tryPlace(@Nullable Entity shooter, BlockPos pos, Direction hitSide, BlockState newState) {
         BlockSnapshot blockSnapshot = BlockSnapshot.create(level().dimension(), level(), pos);
         level().setBlockAndUpdate(pos, newState);
-        if (ForgeEventFactory.onBlockPlace(shooter, blockSnapshot, hitSide)) {
+        if (EventHooks.onBlockPlace(shooter, blockSnapshot, hitSide)) {
             level().restoringBlockSnapshots = true;
             blockSnapshot.restore(true, false);
             level().restoringBlockSnapshots = false;
@@ -234,7 +234,7 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
         }
         if (recipe.isPresent()) {
             if (!level().isClientSide) {
-                if (MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level(), blockPos, hitState, shooter))) {
+                if (NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level(), blockPos, hitState, shooter))) {
                     //We can't break the block exit
                     return;
                 }

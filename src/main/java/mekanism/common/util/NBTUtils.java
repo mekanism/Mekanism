@@ -32,8 +32,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.registries.IForgeRegistry;
 
 @ParametersAreNotNullByDefault
 public class NBTUtils {

@@ -2,8 +2,9 @@ package mekanism.common.config;
 
 import java.nio.file.Path;
 import mekanism.common.Mekanism;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.fml.config.ConfigTracker;
 
 public class MekanismConfigHelper {
 
@@ -13,7 +14,7 @@ public class MekanismConfigHelper {
     public static final Path CONFIG_DIR = FMLPaths.getOrCreateGameRelativePath(FMLPaths.CONFIGDIR.get().resolve(Mekanism.MOD_NAME));
 
     /**
-     * Creates a mod config so that {@link net.minecraftforge.fml.config.ConfigTracker} will track it and sync server configs from server to client.
+     * Creates a mod config so that {@link ConfigTracker} will track it and sync server configs from server to client.
      */
     public static void registerConfig(ModContainer modContainer, IMekanismConfig config) {
         MekanismModConfig modConfig = new MekanismModConfig(modContainer, config);

@@ -1,6 +1,6 @@
 package mekanism.api.lasers;
 
-import net.minecraftforge.common.capabilities.AutoRegisterCapability;
+import net.neoforged.neoforge.common.capabilities.AutoRegisterCapability;
 
 /**
  * Expose as a capability on armor items to allow lasers to be dissipated and/or refracted through entities wearing your armor.

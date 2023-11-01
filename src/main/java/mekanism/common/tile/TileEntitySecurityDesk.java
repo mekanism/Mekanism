@@ -23,9 +23,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntitySecurityDesk extends TileEntityMekanism implements IBoundingBlock {
@@ -38,7 +37,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         //Even though there are inventory slots make this return none as accessible by automation, as then people could lock items to other
         // people unintentionally. We also disable the security object capability so that we only provide access to the security desk as an
         // "owner object" which means that all access checks will be handled as requiring the owner
-        addDisabledCapabilities(ForgeCapabilities.ITEM_HANDLER, Capabilities.SECURITY_OBJECT);
+        addDisabledCapabilities(net.neoforged.neoforge.common.capabilities.Capabilities.ITEM_HANDLER, Capabilities.SECURITY_OBJECT);
     }
 
     @NotNull

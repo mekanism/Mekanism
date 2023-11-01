@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 
 public class RecipeSerializerDeferredRegister extends WrappedDeferredRegister<RecipeSerializer<?>> {
 

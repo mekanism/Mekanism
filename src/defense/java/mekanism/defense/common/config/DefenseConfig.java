@@ -1,15 +1,15 @@
 package mekanism.defense.common.config;
 
 import mekanism.common.config.BaseMekanismConfig;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig.Type;
+import net.neoforged.fml.config.ModConfig.Type;
+import net.neoforged.neoforge.common.NeoForgeConfigSpec;
 
 public class DefenseConfig extends BaseMekanismConfig {
 
-    private final ForgeConfigSpec configSpec;
+    private final NeoForgeConfigSpec configSpec;
 
     DefenseConfig() {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        NeoForgeConfigSpec.Builder builder = new NeoForgeConfigSpec.Builder();
         builder.comment("Mekanism Defense Config. This config is synced between server and client.").push("defense");
 
         builder.pop();
@@ -22,7 +22,7 @@ public class DefenseConfig extends BaseMekanismConfig {
     }
 
     @Override
-    public ForgeConfigSpec getConfigSpec() {
+    public NeoForgeConfigSpec getConfigSpec() {
         return configSpec;
     }
 

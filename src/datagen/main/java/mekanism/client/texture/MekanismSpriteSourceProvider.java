@@ -3,7 +3,7 @@ package mekanism.client.texture;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismFluids;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class MekanismSpriteSourceProvider extends BaseSpriteSourceProvider {
 

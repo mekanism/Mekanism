@@ -17,12 +17,12 @@ import mekanism.common.resource.ore.OreType.OreVeinType;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.world.height.ConfigurableHeightRange;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig.Type;
+import net.neoforged.fml.config.ModConfig.Type;
+import net.neoforged.neoforge.common.NeoForgeConfigSpec;
 
 public class WorldConfig extends BaseMekanismConfig {
 
-    private final ForgeConfigSpec configSpec;
+    private final NeoForgeConfigSpec configSpec;
     public final CachedBooleanValue enableRegeneration;
     public final CachedIntValue userGenVersion;
 
@@ -30,7 +30,7 @@ public class WorldConfig extends BaseMekanismConfig {
     public final SaltConfig salt;
 
     WorldConfig() {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        NeoForgeConfigSpec.Builder builder = new NeoForgeConfigSpec.Builder();
         builder.comment("World generation settings for Mekanism. This config is synced from server to client").push("world_generation");
         enableRegeneration = CachedBooleanValue.wrap(this, builder.comment("Allows chunks to retrogen Mekanism ore blocks.")
               .define("enableRegeneration", false));
@@ -50,7 +50,7 @@ public class WorldConfig extends BaseMekanismConfig {
     }
 
     @Override
-    public ForgeConfigSpec getConfigSpec() {
+    public NeoForgeConfigSpec getConfigSpec() {
         return configSpec;
     }
 
@@ -77,7 +77,7 @@ public class WorldConfig extends BaseMekanismConfig {
         private final CachedBooleanValue shouldGenerate;
         private final List<OreVeinConfig> veinConfigs;
 
-        private OreConfig(IMekanismConfig config, ForgeConfigSpec.Builder builder, OreType oreType) {
+        private OreConfig(IMekanismConfig config, NeoForgeConfigSpec.Builder builder, OreType oreType) {
             String ore = oreType.getResource().getRegistrySuffix();
             builder.comment("Generation Settings for " + ore + " ore.").push(ore);
             this.shouldGenerate = CachedBooleanValue.wrap(config, builder.comment("Determines if " + ore + " ore should be added to world generation.")
@@ -114,7 +114,7 @@ public class WorldConfig extends BaseMekanismConfig {
         public final CachedIntValue maxRadius;
         public final CachedIntValue halfHeight;
 
-        private SaltConfig(IMekanismConfig config, ForgeConfigSpec.Builder builder, int perChunk, int baseRadius, int spread, int ySize) {
+        private SaltConfig(IMekanismConfig config, NeoForgeConfigSpec.Builder builder, int perChunk, int baseRadius, int spread, int ySize) {
             builder.comment("Generation Settings for salt.").push("salt");
             this.shouldGenerate = CachedBooleanValue.wrap(config, builder.comment("Determines if salt should be added to world generation.")
                   .define("shouldGenerate", true));

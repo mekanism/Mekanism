@@ -2,8 +2,8 @@ package mekanism.common.network.to_client.container.property.list;
 
 import java.util.List;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegistryManager;
+import net.neoforged.neoforge.registries.IForgeRegistry;
+import net.neoforged.neoforge.registries.RegistryManager;
 import org.jetbrains.annotations.NotNull;
 
 public class RegistryEntryListPropertyData<V> extends ListPropertyData<V> {

@@ -37,7 +37,7 @@ import net.minecraft.advancements.critereon.UsingItemTrigger;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
 public class MekanismAdvancementProvider extends BaseAdvancementProvider {

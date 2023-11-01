@@ -40,7 +40,7 @@ import mekanism.common.network.to_server.PacketRobit;
 import mekanism.common.network.to_server.PacketSecurityMode;
 import mekanism.common.network.to_server.PacketUpdateModuleSettings;
 import mekanism.common.network.to_server.PacketWindowSelect;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.neoforged.neoforge.network.simple.SimpleChannel;
 
 public class PacketHandler extends BasePacketHandler {
 

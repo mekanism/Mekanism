@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.item.block.machine.ItemBlockMachine;
 import mekanism.generators.client.render.GeneratorsRenderPropertiesProvider;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockWindGenerator extends ItemBlockMachine {

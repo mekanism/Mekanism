@@ -1,7 +1,7 @@
 package mekanism.api.chemical.infuse;
 
 import java.util.Optional;
-import net.minecraftforge.registries.tags.IReverseTag;
+import net.neoforged.neoforge.registries.tags.IReverseTag;
 import org.jetbrains.annotations.NotNull;
 
 public final class EmptyInfuseType extends InfuseType {

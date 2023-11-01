@@ -4,7 +4,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.client.model.data.ModelProperty;
 
 //TODO: Eventually make use of the commented out code in this class which is required to get model data working properly for use of the FuelAssemblyBakedModel
 public class TileEntityFissionAssembly extends TileEntityInternalMultiblock {

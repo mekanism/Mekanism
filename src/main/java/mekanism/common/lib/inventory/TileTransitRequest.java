@@ -12,7 +12,7 @@ import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public class TileTransitRequest extends TransitRequest {
 

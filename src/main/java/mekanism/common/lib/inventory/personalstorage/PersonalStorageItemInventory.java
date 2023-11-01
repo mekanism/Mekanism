@@ -4,7 +4,7 @@ import mekanism.api.DataHandlerUtils;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.nbt.ListTag;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 /**
  * Inventory for Personal Storages when an item. Handled by the Block when placed in world.

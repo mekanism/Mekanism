@@ -18,7 +18,7 @@ import mekanism.common.config.listener.ConfigBasedCachedFLSupplier;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.common.util.Lazy;
+import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

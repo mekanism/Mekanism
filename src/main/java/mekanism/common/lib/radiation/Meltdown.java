@@ -25,7 +25,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.event.EventHooks;
 
 public class Meltdown {
 
@@ -138,7 +138,7 @@ public class Meltdown {
             }
         }
         //Try to make the explosion actually happen
-        if (!ForgeEventFactory.onExplosionStart(world, explosion)) {
+        if (!EventHooks.onExplosionStart(world, explosion)) {
             explosion.explode();
             explosion.finalizeExplosion(true);
         }

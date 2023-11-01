@@ -1,7 +1,8 @@
 package mekanism.api;
 
 import mekanism.api.providers.IModuleDataProvider;
-import net.minecraftforge.fml.InterModComms;
+import net.neoforged.fml.InterModComms;
+import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 
 /**
  * Class containing various helpers for sending IMC messages to Mekanism.
@@ -43,7 +44,7 @@ public class MekanismIMC {
      *
      * @param moduleDataProviders Modules to register as supported.
      *
-     * @apiNote Call this method during the {@link net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent}.
+     * @apiNote Call this method during the {@link InterModEnqueueEvent}.
      */
     public static void addModulesToAll(IModuleDataProvider<?>... moduleDataProviders) {
         addMekaToolModules(moduleDataProviders);
@@ -55,7 +56,7 @@ public class MekanismIMC {
      *
      * @param moduleDataProviders Modules to register as supported.
      *
-     * @apiNote Call this method during the {@link net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent}.
+     * @apiNote Call this method during the {@link InterModEnqueueEvent}.
      */
     public static void addMekaSuitModules(IModuleDataProvider<?>... moduleDataProviders) {
         addMekaSuitHelmetModules(moduleDataProviders);
@@ -69,7 +70,7 @@ public class MekanismIMC {
      *
      * @param moduleDataProviders Modules to register as supported.
      *
-     * @apiNote Call this method during the {@link net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent}.
+     * @apiNote Call this method during the {@link InterModEnqueueEvent}.
      */
     public static void addMekaToolModules(IModuleDataProvider<?>... moduleDataProviders) {
         sendModuleIMC(ADD_MEKA_TOOL_MODULES, moduleDataProviders);
@@ -80,7 +81,7 @@ public class MekanismIMC {
      *
      * @param moduleDataProviders Modules to register as supported.
      *
-     * @apiNote Call this method during the {@link net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent}.
+     * @apiNote Call this method during the {@link InterModEnqueueEvent}.
      */
     public static void addMekaSuitHelmetModules(IModuleDataProvider<?>... moduleDataProviders) {
         sendModuleIMC(ADD_MEKA_SUIT_HELMET_MODULES, moduleDataProviders);
@@ -91,7 +92,7 @@ public class MekanismIMC {
      *
      * @param moduleDataProviders Modules to register as supported.
      *
-     * @apiNote Call this method during the {@link net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent}.
+     * @apiNote Call this method during the {@link InterModEnqueueEvent}.
      */
     public static void addMekaSuitBodyarmorModules(IModuleDataProvider<?>... moduleDataProviders) {
         sendModuleIMC(ADD_MEKA_SUIT_BODYARMOR_MODULES, moduleDataProviders);
@@ -102,7 +103,7 @@ public class MekanismIMC {
      *
      * @param moduleDataProviders Modules to register as supported.
      *
-     * @apiNote Call this method during the {@link net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent}.
+     * @apiNote Call this method during the {@link InterModEnqueueEvent}.
      */
     public static void addMekaSuitPantsModules(IModuleDataProvider<?>... moduleDataProviders) {
         sendModuleIMC(ADD_MEKA_SUIT_PANTS_MODULES, moduleDataProviders);
@@ -113,7 +114,7 @@ public class MekanismIMC {
      *
      * @param moduleDataProviders Modules to register as supported.
      *
-     * @apiNote Call this method during the {@link net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent}.
+     * @apiNote Call this method during the {@link InterModEnqueueEvent}.
      */
     public static void addMekaSuitBootsModules(IModuleDataProvider<?>... moduleDataProviders) {
         sendModuleIMC(ADD_MEKA_SUIT_BOOTS_MODULES, moduleDataProviders);

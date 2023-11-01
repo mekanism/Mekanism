@@ -8,7 +8,7 @@ import mekanism.common.network.to_client.container.property.PropertyData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public class PacketUpdateContainer implements IMekanismPacket {
 

@@ -3,7 +3,7 @@ package mekanism.common.registration.impl;
 import com.mojang.serialization.Codec;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.registration.WrappedRegistryObject;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.RegistryObject;
 
 public class RobitSkinSerializerRegistryObject<ROBIT_SKIN extends RobitSkin> extends WrappedRegistryObject<Codec<? extends ROBIT_SKIN>> {
 

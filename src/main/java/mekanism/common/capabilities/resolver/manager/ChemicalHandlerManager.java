@@ -31,7 +31,7 @@ import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxyGasHandler;
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxyInfusionHandler;
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxyPigmentHandler;
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxySlurryHandler;
-import net.minecraftforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.capabilities.Capability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

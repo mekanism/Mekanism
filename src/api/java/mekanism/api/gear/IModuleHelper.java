@@ -14,6 +14,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -41,7 +43,7 @@ public interface IModuleHelper {
      * @return A new item that should be registered during item registration.
      *
      * @apiNote This method specifically uses {@link IModuleDataProvider} rather than {@link java.util.function.Supplier<ModuleData>} to make it harder to accidentally
-     * have a {@code null} reference when using {@link net.minecraftforge.registries.DeferredRegister}s where both the {@link ModuleData} and the {@link Item} need
+     * have a {@code null} reference when using {@link DeferredRegister}s where both the {@link ModuleData} and the {@link Item} need
      * references of each other.
      */
     Item createModuleItem(IModuleDataProvider<?> moduleDataProvider, Item.Properties properties);
@@ -161,7 +163,7 @@ public interface IModuleHelper {
      * @param location Asset location assumed to be for an obj file. The {@link ResourceLocation} for the modules Mekanism adds is
      *                 {@code mekanism:models/entity/mekasuit_modules.obj}
      *
-     * @apiNote Must only be called on the client side and from {@link net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent}.
+     * @apiNote Must only be called on the client side and from {@link FMLClientSetupEvent}.
      */
     void addMekaSuitModuleModels(ResourceLocation location);
 
@@ -173,7 +175,7 @@ public interface IModuleHelper {
      * @param moduleDataProvider {@link ModuleData} to associate this spec with.
      * @param slotType           Equipment position the spec will be used for.
      *
-     * @apiNote Must only be called on the client side and from {@link net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent}.
+     * @apiNote Must only be called on the client side and from {@link FMLClientSetupEvent}.
      * @see #addMekaSuitModuleModelSpec(String, IModuleDataProvider, EquipmentSlot, Predicate)
      */
     default void addMekaSuitModuleModelSpec(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlot slotType) {
@@ -188,7 +190,7 @@ public interface IModuleHelper {
      * @param slotType           Equipment position the spec will be used for.
      * @param isActive           Predicate to check if an entity should use the active or inactive model.
      *
-     * @apiNote Must only be called on the client side and from {@link net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent}.
+     * @apiNote Must only be called on the client side and from {@link FMLClientSetupEvent}.
      */
     void addMekaSuitModuleModelSpec(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlot slotType, Predicate<LivingEntity> isActive);
 }

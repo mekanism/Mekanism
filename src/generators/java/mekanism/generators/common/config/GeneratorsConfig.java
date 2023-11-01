@@ -13,9 +13,9 @@ import mekanism.common.config.value.CachedResourceLocationListValue;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fml.config.ModConfig.Type;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.fml.config.ModConfig.Type;
+import net.neoforged.neoforge.common.NeoForgeConfigSpec;
 
 public class GeneratorsConfig extends BaseMekanismConfig {
 
@@ -28,7 +28,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     private static final String FUSION_CATEGORY = "fusion_reactor";
     private static final String FISSION_CATEGORY = "fission_reactor";
 
-    private final ForgeConfigSpec configSpec;
+    private final NeoForgeConfigSpec configSpec;
 
     public final CachedFloatingLongValue advancedSolarGeneration;
 
@@ -86,7 +86,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedLongValue fusionSteamPerInjection;
 
     GeneratorsConfig() {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        NeoForgeConfigSpec.Builder builder = new NeoForgeConfigSpec.Builder();
         builder.comment("Mekanism Generators Config. This config is synced between server and client.").push("generators");
 
         energyPerFusionFuel = CachedFloatingLongValue.define(this, builder, "Affects the Injection Rate, Max Temp, and Ignition Temp.",
@@ -224,7 +224,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     }
 
     @Override
-    public ForgeConfigSpec getConfigSpec() {
+    public NeoForgeConfigSpec getConfigSpec() {
         return configSpec;
     }
 

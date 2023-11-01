@@ -16,8 +16,8 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraftforge.common.ForgeSpawnEggItem;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.DeferredSpawnEggItem;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
@@ -69,9 +69,9 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
         return registeredItem;
     }
 
-    public <ENTITY extends Mob> ItemRegistryObject<ForgeSpawnEggItem> registerSpawnEgg(EntityTypeRegistryObject<ENTITY> entityTypeProvider,
+    public <ENTITY extends Mob> ItemRegistryObject<DeferredSpawnEggItem> registerSpawnEgg(EntityTypeRegistryObject<ENTITY> entityTypeProvider,
           int primaryColor, int secondaryColor) {
-        return register(entityTypeProvider.getInternalRegistryName() + "_spawn_egg", props -> new ForgeSpawnEggItem(entityTypeProvider, primaryColor,
+        return register(entityTypeProvider.getInternalRegistryName() + "_spawn_egg", props -> new DeferredSpawnEggItem(entityTypeProvider, primaryColor,
               secondaryColor, props));
     }
 

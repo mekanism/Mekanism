@@ -2,7 +2,7 @@ package mekanism.defense.common.network;
 
 import mekanism.common.network.BasePacketHandler;
 import mekanism.defense.common.MekanismDefense;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.neoforged.neoforge.network.simple.SimpleChannel;
 
 public class DefensePacketHandler extends BasePacketHandler {
 

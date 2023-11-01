@@ -7,7 +7,7 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
 public class GeneratorsAdvancementProvider extends BaseAdvancementProvider {

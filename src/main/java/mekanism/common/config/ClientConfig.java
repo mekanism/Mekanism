@@ -11,8 +11,8 @@ import mekanism.common.inventory.container.QIOItemViewerContainer.ListSortType;
 import mekanism.common.inventory.container.QIOItemViewerContainer.SortDirection;
 import mekanism.common.inventory.container.SelectedWindowData.CachedWindowPosition;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig.Type;
+import net.neoforged.fml.config.ModConfig.Type;
+import net.neoforged.neoforge.common.NeoForgeConfigSpec;
 
 public class ClientConfig extends BaseMekanismConfig {
 
@@ -21,7 +21,7 @@ public class ClientConfig extends BaseMekanismConfig {
     private static final String GUI_WINDOW_CATEGORY = "window";
     private static final String QIO_CATEGORY = "qio";
 
-    private final ForgeConfigSpec configSpec;
+    private final NeoForgeConfigSpec configSpec;
 
     public final CachedBooleanValue enablePlayerSounds;
     public final CachedBooleanValue enableMachineSounds;
@@ -57,7 +57,7 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedIntValue qioItemViewerSlotsY;
 
     ClientConfig() {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        NeoForgeConfigSpec.Builder builder = new NeoForgeConfigSpec.Builder();
         builder.comment("Client Config. This config only exists on the client").push("client");
 
         enablePlayerSounds = CachedBooleanValue.wrap(this, builder.comment("Play sounds for Jetpack/Gas Mask/Flamethrower/Radiation (all players).")
@@ -147,7 +147,7 @@ public class ClientConfig extends BaseMekanismConfig {
     }
 
     @Override
-    public ForgeConfigSpec getConfigSpec() {
+    public NeoForgeConfigSpec getConfigSpec() {
         return configSpec;
     }
 

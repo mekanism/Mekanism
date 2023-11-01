@@ -7,7 +7,7 @@ import moze_intel.projecte.api.imc.NSSCreatorInfo;
 import moze_intel.projecte.api.nss.NSSCreator;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.InterModComms;
+import net.neoforged.fml.InterModComms;
 
 //TODO: Convert various things ingredient representation to being able to also do it via tags?
 //TODO: Factor energy into the equation of how much EMC something costs?

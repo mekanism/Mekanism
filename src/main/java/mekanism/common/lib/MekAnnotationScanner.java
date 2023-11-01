@@ -18,11 +18,11 @@ import java.util.Set;
 import java.util.function.Predicate;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.moddiscovery.ModAnnotation;
-import net.minecraftforge.forgespi.language.IModFileInfo;
-import net.minecraftforge.forgespi.language.ModFileScanData;
-import net.minecraftforge.forgespi.language.ModFileScanData.AnnotationData;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.moddiscovery.ModAnnotation;
+import net.neoforged.neoforgespi.language.IModFileInfo;
+import net.neoforged.neoforgespi.language.ModFileScanData;
+import net.neoforged.neoforgespi.language.ModFileScanData.AnnotationData;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Type;
 

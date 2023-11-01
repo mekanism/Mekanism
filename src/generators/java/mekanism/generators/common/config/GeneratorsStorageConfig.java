@@ -3,12 +3,12 @@ package mekanism.generators.common.config;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.value.CachedFloatingLongValue;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig.Type;
+import net.neoforged.neoforge.common.NeoForgeConfigSpec;
+import net.neoforged.fml.config.ModConfig.Type;
 
 public class GeneratorsStorageConfig extends BaseMekanismConfig {
 
-    private final ForgeConfigSpec configSpec;
+    private final NeoForgeConfigSpec configSpec;
 
     public final CachedFloatingLongValue heatGenerator;
     public final CachedFloatingLongValue bioGenerator;
@@ -17,7 +17,7 @@ public class GeneratorsStorageConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue windGenerator;
 
     GeneratorsStorageConfig() {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        NeoForgeConfigSpec.Builder builder = new NeoForgeConfigSpec.Builder();
         builder.comment("Generator Energy Storage Config. This config is synced from server to client.").push("storage");
 
         heatGenerator = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "heatGenerator",
@@ -41,7 +41,7 @@ public class GeneratorsStorageConfig extends BaseMekanismConfig {
     }
 
     @Override
-    public ForgeConfigSpec getConfigSpec() {
+    public NeoForgeConfigSpec getConfigSpec() {
         return configSpec;
     }
 

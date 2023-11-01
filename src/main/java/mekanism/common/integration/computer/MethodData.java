@@ -1,7 +1,7 @@
 package mekanism.common.integration.computer;
 
 import mekanism.common.integration.computer.ComputerMethodFactory.ComputerFunctionCaller;
-import net.minecraftforge.fml.ModList;
+import net.neoforged.fml.ModList;
 import org.jetbrains.annotations.Nullable;
 
 public record MethodData<T>(String name, MethodRestriction restriction, String[] requiredMods, boolean threadSafe, String[] argumentNames, Class<?>[] argClasses,

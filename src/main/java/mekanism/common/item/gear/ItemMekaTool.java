@@ -81,8 +81,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour.BlockStateBase;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.ToolAction;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.ToolAction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -386,7 +386,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                         double targetY = pos.getY() + 1.5;
                         double targetZ = pos.getZ() + 0.5;
                         MekanismTeleportEvent.MekaTool event = new MekanismTeleportEvent.MekaTool(player, targetX, targetY, targetZ, stack, result);
-                        if (MinecraftForge.EVENT_BUS.post(event)) {
+                        if (NeoForge.EVENT_BUS.post(event)) {
                             //Fail if the event was cancelled
                             return InteractionResultHolder.fail(stack);
                         }

@@ -12,8 +12,9 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.tags.ITagManager;
+import net.neoforged.neoforge.registries.IForgeRegistry;
+import net.neoforged.neoforge.registries.tags.ITagManager;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
 
@@ -37,7 +38,7 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
      *
      * @return Tag reference.
      *
-     * @apiNote For statically initializing optional tags, {@link net.minecraftforge.registries.DeferredRegister#createOptionalTagKey(String, Set)} must be used instead.
+     * @apiNote For statically initializing optional tags, {@link DeferredRegister#createOptionalTagKey(String, Set)} must be used instead.
      */
     public TagKey<CHEMICAL> tag(ResourceLocation name) {
         return getManager().map(manager -> manager.createTagKey(name))

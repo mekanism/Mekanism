@@ -16,13 +16,13 @@ import mekanism.common.config.value.CachedResourceLocationListValue;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig.Type;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.NeoForgeConfigSpec;
+import net.neoforged.fml.config.ModConfig.Type;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 
 public class AdditionsConfig extends BaseMekanismConfig {
 
-    private final ForgeConfigSpec configSpec;
+    private final NeoForgeConfigSpec configSpec;
 
     public final CachedIntValue obsidianTNTDelay;
     public final CachedFloatValue obsidianTNTBlastRadius;
@@ -31,7 +31,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
     private final Map<BabyType, SpawnConfig> spawnConfigs = new EnumMap<>(BabyType.class);
 
     AdditionsConfig() {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        NeoForgeConfigSpec.Builder builder = new NeoForgeConfigSpec.Builder();
         builder.comment("Mekanism Additions Config. This config is synced between server and client.").push("additions");
 
         obsidianTNTDelay = CachedIntValue.wrap(this, builder.comment("Fuse time for Obsidian TNT.")
@@ -54,7 +54,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
         configSpec = builder.build();
     }
 
-    private void addBabyTypeConfig(BabyType type, ForgeConfigSpec.Builder builder, IEntityTypeProvider entityTypeProvider, IEntityTypeProvider parentTypeProvider) {
+    private void addBabyTypeConfig(BabyType type, NeoForgeConfigSpec.Builder builder, IEntityTypeProvider entityTypeProvider, IEntityTypeProvider parentTypeProvider) {
         spawnConfigs.put(type, new SpawnConfig(this, builder, "baby " + type.getSerializedName().replace('_', ' '),
               entityTypeProvider, parentTypeProvider));
     }
@@ -65,7 +65,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
     }
 
     @Override
-    public ForgeConfigSpec getConfigSpec() {
+    public NeoForgeConfigSpec getConfigSpec() {
         return configSpec;
     }
 
@@ -91,7 +91,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
         public final IEntityTypeProvider entityTypeProvider;
         public final IEntityTypeProvider parentTypeProvider;
 
-        private SpawnConfig(IMekanismConfig config, ForgeConfigSpec.Builder builder, String name, IEntityTypeProvider entityTypeProvider,
+        private SpawnConfig(IMekanismConfig config, NeoForgeConfigSpec.Builder builder, String name, IEntityTypeProvider entityTypeProvider,
               IEntityTypeProvider parentTypeProvider) {
             this.entityTypeProvider = entityTypeProvider;
             this.parentTypeProvider = parentTypeProvider;

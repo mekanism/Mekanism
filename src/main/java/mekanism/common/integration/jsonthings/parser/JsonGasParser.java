@@ -13,7 +13,7 @@ import mekanism.common.integration.LazyGasProvider;
 import mekanism.common.integration.jsonthings.builder.JsonGasBuilder;
 import mekanism.common.lib.radiation.RadiationManager;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.neoforged.bus.api.IEventBus;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault

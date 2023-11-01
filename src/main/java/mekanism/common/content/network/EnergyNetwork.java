@@ -22,8 +22,8 @@ import mekanism.common.util.EmitUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -151,7 +151,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     public void onUpdate() {
         super.onUpdate();
         if (needsUpdate) {
-            MinecraftForge.EVENT_BUS.post(new EnergyTransferEvent(this));
+            NeoForge.EVENT_BUS.post(new EnergyTransferEvent(this));
             needsUpdate = false;
         }
         if (energyContainer.isEmpty()) {

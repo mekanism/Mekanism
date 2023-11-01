@@ -3,7 +3,7 @@ package mekanism.common.network.to_client;
 import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public class PacketShowModeChange implements IMekanismPacket {
 

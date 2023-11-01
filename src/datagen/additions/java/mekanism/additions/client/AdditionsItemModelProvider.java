@@ -7,8 +7,8 @@ import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.model.BaseItemModelProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class AdditionsItemModelProvider extends BaseItemModelProvider {
 

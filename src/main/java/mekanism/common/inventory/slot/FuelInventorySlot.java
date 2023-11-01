@@ -9,7 +9,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.ForgeHooks;
+import net.neoforged.neoforge.common.CommonHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +31,7 @@ public class FuelInventorySlot extends BasicInventorySlot {
         if (isEmpty()) {
             return 0;
         }
-        int burnTime = ForgeHooks.getBurnTime(current, null) / 2;
+        int burnTime = CommonHooks.getBurnTime(current, null) / 2;
         if (burnTime > 0) {
             if (current.hasCraftingRemainingItem()) {
                 if (current.getCount() > 1) {

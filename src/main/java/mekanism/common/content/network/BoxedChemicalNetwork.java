@@ -39,8 +39,8 @@ import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -265,7 +265,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     public void onUpdate() {
         super.onUpdate();
         if (needsUpdate) {
-            MinecraftForge.EVENT_BUS.post(new ChemicalTransferEvent(this, lastChemical));
+            NeoForge.EVENT_BUS.post(new ChemicalTransferEvent(this, lastChemical));
             needsUpdate = false;
         }
         Current current = chemicalTank.getCurrent();

@@ -11,8 +11,8 @@ import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.bus.api.IEventBus;
 
 public class CreativeTabDeferredRegister extends WrappedDeferredRegister<CreativeModeTab> {
 

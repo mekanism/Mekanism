@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.resources.ResourceKey;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.RegistryObject;
 
 @NothingNullByDefault
 public class WrappedRegistryObject<T> implements Supplier<T>, INamedEntry {

@@ -14,8 +14,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterials;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig.Type;
+import net.neoforged.fml.config.ModConfig.Type;
+import net.neoforged.neoforge.common.NeoForgeConfigSpec;
 
 public class GearConfig extends BaseMekanismConfig {
 
@@ -36,7 +36,7 @@ public class GearConfig extends BaseMekanismConfig {
     private static final String MEKASUIT_CATEGORY = "mekasuit";
     private static final String MEKASUIT_DAMAGE_CATEGORY = "damage_absorption";
 
-    private final ForgeConfigSpec configSpec;
+    private final NeoForgeConfigSpec configSpec;
 
     //Atomic Disassembler
     public final CachedFloatingLongValue disassemblerEnergyUsage;
@@ -151,7 +151,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatValue mekaSuitUnspecifiedDamageRatio;
 
     GearConfig() {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        NeoForgeConfigSpec.Builder builder = new NeoForgeConfigSpec.Builder();
         builder.comment("Gear Config. This config is synced from server to client.").push("gear");
 
         builder.comment("Atomic Disassembler Settings").push(DISASSEMBLER_CATEGORY);
@@ -402,7 +402,7 @@ public class GearConfig extends BaseMekanismConfig {
     }
 
     @Override
-    public ForgeConfigSpec getConfigSpec() {
+    public NeoForgeConfigSpec getConfigSpec() {
         return configSpec;
     }
 

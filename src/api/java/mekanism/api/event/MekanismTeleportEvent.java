@@ -4,10 +4,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityTeleportEvent;
-import net.minecraftforge.eventbus.api.Cancelable;
-import net.minecraftforge.fml.LogicalSide;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
+import net.neoforged.bus.api.Cancelable;
+import net.neoforged.fml.LogicalSide;
 
 /**
  * Base Mekanism extension of the {@link EntityTeleportEvent}.
@@ -36,7 +36,7 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
      * <br>
      * This event <strong>does not</strong> allow changing the target position.
      * <br>
-     * This event is fired on the {@link MinecraftForge#EVENT_BUS}.
+     * This event is fired on the {@link NeoForge#EVENT_BUS}.
      * <br>
      * This event is only fired on the {@link LogicalSide#SERVER} side.
      */

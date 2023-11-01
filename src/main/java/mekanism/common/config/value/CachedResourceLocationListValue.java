@@ -9,8 +9,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.neoforged.neoforge.common.NeoForgeConfigSpec;
+import net.neoforged.neoforge.common.NeoForgeConfigSpec.ConfigValue;
 import org.jetbrains.annotations.NotNull;
 
 public class CachedResourceLocationListValue extends CachedResolvableConfigValue<List<ResourceLocation>, List<? extends String>> {
@@ -21,7 +21,7 @@ public class CachedResourceLocationListValue extends CachedResolvableConfigValue
         super(config, internal);
     }
 
-    public static CachedResourceLocationListValue define(IMekanismConfig config, ForgeConfigSpec.Builder builder, String path,
+    public static CachedResourceLocationListValue define(IMekanismConfig config, NeoForgeConfigSpec.Builder builder, String path,
           Predicate<@NotNull ResourceLocation> rlValidator) {
         return new CachedResourceLocationListValue(config, builder.defineListAllowEmpty(Collections.singletonList(path), EMPTY, o -> {
             if (o instanceof String string) {

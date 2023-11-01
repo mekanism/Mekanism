@@ -12,7 +12,7 @@ import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraftforge.registries.tags.ITag;
+import net.neoforged.neoforge.registries.tags.ITag;
 import org.jetbrains.annotations.NotNull;
 
 /**

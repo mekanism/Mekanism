@@ -3,7 +3,7 @@ package mekanism.additions.client;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.client.texture.BaseSpriteSourceProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class AdditionsSpriteSourceProvider extends BaseSpriteSourceProvider {
 

@@ -7,20 +7,20 @@ import mekanism.common.config.value.CachedEnumValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.resource.ore.OreAnchor;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.neoforged.neoforge.common.NeoForgeConfigSpec;
+import net.neoforged.neoforge.common.NeoForgeConfigSpec.ConfigValue;
 import org.jetbrains.annotations.Nullable;
 
 public record ConfigurableVerticalAnchor(Supplier<AnchorType> anchorType, IntSupplier value) {
 
-    public static ConfigurableVerticalAnchor create(IMekanismConfig config, ForgeConfigSpec.Builder builder, String path, String comment, OreAnchor defaultAnchor,
+    public static ConfigurableVerticalAnchor create(IMekanismConfig config, NeoForgeConfigSpec.Builder builder, String path, String comment, OreAnchor defaultAnchor,
           @Nullable ConfigurableVerticalAnchor minAnchor) {
         builder.comment(comment).push(path);
         CachedEnumValue<AnchorType> type = CachedEnumValue.wrap(config, builder.comment("Type of anchor.",
               "Absolute -> y = value",
               "Above Bottom -> y = minY + value",
               "Below Top -> y = depth - 1 + minY - value").defineEnum("type", defaultAnchor.type()));
-        ForgeConfigSpec.Builder valueBuilder = builder.comment("Value used for calculating y for the anchor based on the type.");
+        NeoForgeConfigSpec.Builder valueBuilder = builder.comment("Value used for calculating y for the anchor based on the type.");
         ConfigValue<Integer> value;
         if (minAnchor == null) {
             value = valueBuilder.define("value", defaultAnchor.value());

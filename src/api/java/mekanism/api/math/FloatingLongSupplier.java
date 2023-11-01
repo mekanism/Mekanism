@@ -1,7 +1,7 @@
 package mekanism.api.math;
 
 import java.util.function.Supplier;
-import net.minecraftforge.common.util.NonNullSupplier;
+import net.neoforged.neoforge.common.util.NonNullSupplier;
 import org.jetbrains.annotations.NotNull;
 
 /**

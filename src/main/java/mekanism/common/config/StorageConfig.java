@@ -2,12 +2,12 @@ package mekanism.common.config;
 
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.value.CachedFloatingLongValue;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig.Type;
+import net.neoforged.neoforge.common.NeoForgeConfigSpec;
+import net.neoforged.fml.config.ModConfig.Type;
 
 public class StorageConfig extends BaseMekanismConfig {
 
-    private final ForgeConfigSpec configSpec;
+    private final NeoForgeConfigSpec configSpec;
 
     public final CachedFloatingLongValue enrichmentChamber;
     public final CachedFloatingLongValue osmiumCompressor;
@@ -47,7 +47,7 @@ public class StorageConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue dimensionalStabilizer;
 
     StorageConfig() {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        NeoForgeConfigSpec.Builder builder = new NeoForgeConfigSpec.Builder();
         builder.comment("Machine Energy Storage Config. This config is synced from server to client.").push("storage");
 
         enrichmentChamber = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "enrichmentChamber",
@@ -132,7 +132,7 @@ public class StorageConfig extends BaseMekanismConfig {
     }
 
     @Override
-    public ForgeConfigSpec getConfigSpec() {
+    public NeoForgeConfigSpec getConfigSpec() {
         return configSpec;
     }
 

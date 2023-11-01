@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.common.network.to_client.container.property.list.ListPropertyData;
 import mekanism.common.network.to_client.container.property.list.RegistryEntryListPropertyData;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.NotNull;
 
 /**

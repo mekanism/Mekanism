@@ -8,7 +8,7 @@ import mekanism.common.registries.BaseDatapackRegistryProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 
 public class AdditionsDatapackRegistryProvider extends BaseDatapackRegistryProvider {
 

@@ -9,7 +9,7 @@ import mekanism.api.gear.ModuleData.ModuleDataBuilder;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraftforge.common.util.NonNullSupplier;
+import net.neoforged.neoforge.common.util.NonNullSupplier;
 import org.jetbrains.annotations.NotNull;
 
 public class ModuleDeferredRegister extends WrappedDeferredRegister<ModuleData<?>> {

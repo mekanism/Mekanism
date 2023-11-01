@@ -7,7 +7,7 @@ import mekanism.common.integration.lookingat.LookingAtHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public class JadeLookingAtHelper implements LookingAtHelper {
 

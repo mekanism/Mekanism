@@ -18,12 +18,12 @@ import mekanism.tools.common.material.impl.vanilla.IronPaxelMaterialDefaults;
 import mekanism.tools.common.material.impl.vanilla.NetheritePaxelMaterialDefaults;
 import mekanism.tools.common.material.impl.vanilla.StonePaxelMaterialDefaults;
 import mekanism.tools.common.material.impl.vanilla.WoodPaxelMaterialDefaults;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig.Type;
+import net.neoforged.neoforge.common.NeoForgeConfigSpec;
+import net.neoforged.fml.config.ModConfig.Type;
 
 public class ToolsConfig extends BaseMekanismConfig {
 
-    private final ForgeConfigSpec configSpec;
+    private final NeoForgeConfigSpec configSpec;
 
     public final CachedFloatValue armorSpawnChance;
     public final CachedFloatValue weaponSpawnChance;
@@ -48,7 +48,7 @@ public class ToolsConfig extends BaseMekanismConfig {
     public final MaterialCreator steel;
 
     ToolsConfig() {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        NeoForgeConfigSpec.Builder builder = new NeoForgeConfigSpec.Builder();
         builder.comment("Mekanism Tools Config. This config is synced from server to client.").push("tools");
 
         builder.push("mobArmorSpawnRate");
@@ -90,7 +90,7 @@ public class ToolsConfig extends BaseMekanismConfig {
     }
 
     @Override
-    public ForgeConfigSpec getConfigSpec() {
+    public NeoForgeConfigSpec getConfigSpec() {
         return configSpec;
     }
 
@@ -114,11 +114,11 @@ public class ToolsConfig extends BaseMekanismConfig {
         public final CachedFloatValue weaponEnchantmentChance;
         public final CachedFloatValue armorEnchantmentChance;
 
-        private ArmorSpawnChanceConfig(IMekanismConfig config, ForgeConfigSpec.Builder builder, String armorKey, String armor) {
+        private ArmorSpawnChanceConfig(IMekanismConfig config, NeoForgeConfigSpec.Builder builder, String armorKey, String armor) {
             this(config, builder, armorKey, armor, 0.33, 1, 1, 1, 1, 0.25, 0.5);
         }
 
-        private ArmorSpawnChanceConfig(IMekanismConfig config, ForgeConfigSpec.Builder builder, String armorKey, String armor, double swordChance, double helmetChance,
+        private ArmorSpawnChanceConfig(IMekanismConfig config, NeoForgeConfigSpec.Builder builder, String armorKey, String armor, double swordChance, double helmetChance,
               double chestplateChance, double leggingsChance, double bootsChance, double weaponEnchantmentChance, double armorEnchantmentChance) {
             builder.comment("Spawn chances for pieces of " + armor + " gear. Note: These values are after the general mobArmorSpawnRate (or corresponding weapon rate) has been checked, "
                             + "and after an even split between material types has been done.").push(armorKey);

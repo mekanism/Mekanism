@@ -1,7 +1,7 @@
 package mekanism.defense.common.config;
 
 import mekanism.common.config.MekanismConfigHelper;
-import net.minecraftforge.fml.ModLoadingContext;
+import net.neoforged.fml.ModLoadingContext;
 
 public class MekanismDefenseConfig {
 

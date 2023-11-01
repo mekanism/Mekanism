@@ -5,6 +5,8 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongTransferUtils;
 import net.minecraft.core.Direction;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -142,8 +144,8 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      * Inserts energy into a given container and return the remainder. The {@link FloatingLong} <em>should not</em> be modified in this function!
      * </p>
      * Note: This behaviour is subtly different from
-     * {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
-     * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
+     * {@link IFluidHandler#fill(FluidStack,
+     * IFluidHandler.FluidAction)}
      *
      * @param container Container to insert to.
      * @param amount    Energy to insert. This must not be modified by the container.
@@ -191,8 +193,8 @@ public interface ISidedStrictEnergyHandler extends IStrictEnergyHandler {
      * be modified in this function!
      * </p>
      * Note: This behaviour is subtly different from
-     * {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
-     * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
+     * {@link IFluidHandler#fill(FluidStack,
+     * IFluidHandler.FluidAction)}
      *
      * @param amount Energy to insert. This must not be modified by the handler.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}

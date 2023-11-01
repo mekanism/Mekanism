@@ -1,8 +1,8 @@
 package mekanism.additions.common.config;
 
 import mekanism.common.config.MekanismConfigHelper;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.ModLoadingContext;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModLoadingContext;
 
 public class MekanismAdditionsConfig {
 

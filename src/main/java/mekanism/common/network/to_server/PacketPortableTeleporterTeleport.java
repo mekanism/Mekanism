@@ -23,8 +23,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.network.NetworkEvent;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 public class PacketPortableTeleporterTeleport implements IMekanismPacket {
 

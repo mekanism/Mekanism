@@ -56,12 +56,12 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.ToolActions;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.event.entity.living.ShieldBlockEvent;
-import net.minecraftforge.event.level.BlockEvent;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.ToolActions;
+import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.event.entity.living.ShieldBlockEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
 import org.jetbrains.annotations.NotNull;
 
 //TODO - V11: Make the laser "shrink" the further distance it goes, If above a certain energy level and in water makes it make a bubble stream
@@ -300,7 +300,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                                 MekFakePlayer.withFakePlayer((ServerLevel) level, to.x(), to.y(), to.z(), dummy -> {
                                     dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
                                     BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, hitPos, hitState, dummy);
-                                    if (!MinecraftForge.EVENT_BUS.post(event)) {
+                                    if (!NeoForge.EVENT_BUS.post(event)) {
                                         if (hitState.getBlock() instanceof TntBlock && hitState.isFlammable(level, hitPos, result.getDirection())) {
                                             //Convert TNT that can be lit on fire into a tnt entity
                                             //Note: We don't mark the fake player as the igniter as then when the tnt explodes if it hits a player
@@ -345,7 +345,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         float effectiveDamage = damage / absorptionRatio;
         if (effectiveDamage >= 1) {
             //Allow the shield to absorb sub single unit damage values for free
-            ShieldBlockEvent event = ForgeHooks.onShieldBlock(livingEntity, MekanismDamageTypes.LASER.source(level), effectiveDamage);
+            ShieldBlockEvent event = CommonHooks.onShieldBlock(livingEntity, MekanismDamageTypes.LASER.source(level), effectiveDamage);
             if (event.isCanceled()) {
                 //Blocking was not allowed, return we didn't block any damage
                 return 0;
@@ -357,7 +357,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 activeStack.hurtAndBreak(durabilityNeeded, livingEntity, entity -> {
                     entity.broadcastBreakEvent(hand);
                     if (livingEntity instanceof Player player) {
-                        ForgeEventFactory.onPlayerDestroyItem(player, activeStack, hand);
+                        EventHooks.onPlayerDestroyItem(player, activeStack, hand);
                     }
                 });
                 if (activeStack.isEmpty()) {

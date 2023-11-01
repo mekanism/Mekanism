@@ -6,7 +6,7 @@ import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public enum SubstanceType {
     ENERGY(NBTConstants.ENERGY_CONTAINERS, tile -> tile.getEnergyContainers(null)),

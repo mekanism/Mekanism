@@ -7,7 +7,7 @@ import mekanism.client.model.baked.ModelDataBakedModel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelData;
 
 @NothingNullByDefault
 public class RobitModelDataBakedModel extends ModelDataBakedModel {

@@ -6,7 +6,7 @@ import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfuseTypeBuilder;
 import mekanism.common.integration.jsonthings.builder.JsonInfuseTypeBuilder;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.neoforged.bus.api.IEventBus;
 
 @NothingNullByDefault
 public class JsonInfuseTypeParser extends SimpleJsonChemicalParser<InfuseType, InfuseTypeBuilder, JsonInfuseTypeBuilder> {

@@ -7,7 +7,7 @@ import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 
 public class CapabilityItem extends Item {
 

@@ -7,7 +7,9 @@ import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 @NothingNullByDefault
 public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IContentsListener {
@@ -43,8 +45,8 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
      * Inserts energy into this {@link IEnergyContainer} and return the remainder. The {@link FloatingLong} <em>should not</em> be modified in this function!
      * </p>
      * Note: This behaviour is subtly different from
-     * {@link net.minecraftforge.fluids.capability.IFluidHandler#fill(net.minecraftforge.fluids.FluidStack,
-     * net.minecraftforge.fluids.capability.IFluidHandler.FluidAction)}
+     * {@link IFluidHandler#fill(FluidStack,
+     * IFluidHandler.FluidAction)}
      *
      * @param amount         Energy to insert. This must not be modified by the container.
      * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}

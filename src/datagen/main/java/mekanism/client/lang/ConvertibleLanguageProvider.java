@@ -3,7 +3,7 @@ package mekanism.client.lang;
 import java.util.List;
 import mekanism.client.lang.FormatSplitter.Component;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.LanguageProvider;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 
 public abstract class ConvertibleLanguageProvider extends LanguageProvider {
 

@@ -15,9 +15,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.level.ChunkEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.ChunkEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 
 public class ChunkCommand {
 
@@ -27,7 +27,7 @@ public class ChunkCommand {
     private static final LongSet chunkWatchers = new LongOpenHashSet();
 
     static ArgumentBuilder<CommandSourceStack, ?> register() {
-        MinecraftForge.EVENT_BUS.register(ChunkCommand.class);
+        NeoForge.EVENT_BUS.register(ChunkCommand.class);
         return Commands.literal("chunk")
               .requires(MekanismPermissions.COMMAND_CHUNK)
               .then(WatchCommand.register())

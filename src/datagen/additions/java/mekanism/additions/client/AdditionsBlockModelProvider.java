@@ -3,7 +3,7 @@ package mekanism.additions.client;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.client.model.BaseBlockModelProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class AdditionsBlockModelProvider extends BaseBlockModelProvider {
 

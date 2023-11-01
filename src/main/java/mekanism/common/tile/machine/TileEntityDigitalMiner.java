@@ -102,13 +102,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -163,7 +162,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         radius = DEFAULT_RADIUS;
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
         //Return some capabilities as disabled, and handle them with offset capabilities instead
-        addDisabledCapabilities(ForgeCapabilities.ITEM_HANDLER);
+        addDisabledCapabilities(net.neoforged.neoforge.common.capabilities.Capabilities.ITEM_HANDLER);
     }
 
     @NotNull
@@ -570,7 +569,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private boolean canMine(BlockState state, BlockPos pos) {
-        return withFakePlayer(dummy -> !MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, pos, state, dummy)));
+        return withFakePlayer(dummy -> !NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, pos, state, dummy)));
     }
 
     private <R> R withFakePlayer(Function<MekFakePlayer, R> fakePlayerConsumer) {
@@ -1073,7 +1072,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @NotNull
     @Override
     public <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@NotNull Capability<T> capability, Direction side, @NotNull Vec3i offset) {
-        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+        if (capability == net.neoforged.neoforge.common.capabilities.Capabilities.ITEM_HANDLER) {
             //Get item handler cap directly from here as we disable it entirely for the main block as we only have it enabled from ports
             return itemHandlerManager.resolve(capability, side);
         }
@@ -1086,7 +1085,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         if (!capability.isRegistered()) {
             //Short circuit if a capability that is not registered is being queried
             return true;
-        } else if (capability == ForgeCapabilities.ITEM_HANDLER) {
+        } else if (capability == net.neoforged.neoforge.common.capabilities.Capabilities.ITEM_HANDLER) {
             return notItemPort(side, offset);
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
             return notEnergyPort(side, offset);

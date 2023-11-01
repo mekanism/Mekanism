@@ -2,14 +2,14 @@ package mekanism.common.config;
 
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.value.CachedFloatingLongValue;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig.Type;
+import net.neoforged.neoforge.common.NeoForgeConfigSpec;
+import net.neoforged.fml.config.ModConfig.Type;
 
 public class UsageConfig extends BaseMekanismConfig {
 
     private static final String TELEPORTER_CATEGORY = "teleporter";
 
-    private final ForgeConfigSpec configSpec;
+    private final NeoForgeConfigSpec configSpec;
 
     public final CachedFloatingLongValue enrichmentChamber;
     public final CachedFloatingLongValue osmiumCompressor;
@@ -48,7 +48,7 @@ public class UsageConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue teleporterDimensionPenalty;
 
     UsageConfig() {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        NeoForgeConfigSpec.Builder builder = new NeoForgeConfigSpec.Builder();
         builder.comment("Machine Energy Usage Config. This config is synced from server to client.").push("usage");
 
         enrichmentChamber = CachedFloatingLongValue.define(this, builder, "Energy per operation tick (Joules).", "enrichmentChamber",
@@ -131,7 +131,7 @@ public class UsageConfig extends BaseMekanismConfig {
     }
 
     @Override
-    public ForgeConfigSpec getConfigSpec() {
+    public NeoForgeConfigSpec getConfigSpec() {
         return configSpec;
     }
 

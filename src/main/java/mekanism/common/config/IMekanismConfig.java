@@ -1,14 +1,14 @@
 package mekanism.common.config;
 
 import mekanism.common.config.value.CachedValue;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig;
+import net.neoforged.neoforge.common.NeoForgeConfigSpec;
+import net.neoforged.fml.config.ModConfig;
 
 public interface IMekanismConfig {
 
     String getFileName();
 
-    ForgeConfigSpec getConfigSpec();
+    NeoForgeConfigSpec getConfigSpec();
 
     default boolean isLoaded() {
         return getConfigSpec().isLoaded();

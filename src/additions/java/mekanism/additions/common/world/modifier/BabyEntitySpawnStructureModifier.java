@@ -14,10 +14,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraftforge.common.world.ModifiableStructureInfo.StructureInfo;
-import net.minecraftforge.common.world.StructureModifier;
-import net.minecraftforge.common.world.StructureSettingsBuilder;
-import net.minecraftforge.common.world.StructureSettingsBuilder.StructureSpawnOverrideBuilder;
+import net.neoforged.neoforge.common.world.ModifiableStructureInfo.StructureInfo;
+import net.neoforged.neoforge.common.world.StructureModifier;
+import net.neoforged.neoforge.common.world.StructureSettingsBuilder;
+import net.neoforged.neoforge.common.world.StructureSettingsBuilder.StructureSpawnOverrideBuilder;
 
 public record BabyEntitySpawnStructureModifier(BabyType babyType, AdditionsConfig.SpawnConfig spawnConfig) implements StructureModifier {
 

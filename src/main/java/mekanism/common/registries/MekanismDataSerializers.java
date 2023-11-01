@@ -11,8 +11,8 @@ import mekanism.common.registration.impl.DataSerializerRegistryObject;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
-import net.minecraftforge.common.extensions.IForgeFriendlyByteBuf;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.neoforged.neoforge.common.extensions.IFriendlyByteBufExtension;
+import net.neoforged.neoforge.registries.IForgeRegistry;
 
 public class MekanismDataSerializers {
 
@@ -24,7 +24,7 @@ public class MekanismDataSerializers {
 
     private static <TYPE> DataSerializerRegistryObject<TYPE> registerRegistryEntry(String name, Supplier<IForgeRegistry<TYPE>> registrySupplier) {
         return DATA_SERIALIZERS.registerSimple(name, (buf, entry) -> buf.writeRegistryId(registrySupplier.get(), entry),
-              IForgeFriendlyByteBuf::readRegistryId);
+              IFriendlyByteBufExtension::readRegistryId);
     }
 
     private static <TYPE> DataSerializerRegistryObject<ResourceKey<TYPE>> registerResourceKey(String name, ResourceKey<? extends Registry<TYPE>> registryName) {

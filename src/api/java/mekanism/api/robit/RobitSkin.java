@@ -10,11 +10,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Represents a skin for a robit. Register these during datagen using {@link net.minecraftforge.common.data.DatapackBuiltinEntriesProvider}.
+ * Represents a skin for a robit. Register these during datagen using {@link DatapackBuiltinEntriesProvider}.
  * <br>
  * See also the <a href="https://github.com/mekanism/Mekanism/wiki/Robit-Skins">Mekanism GitHub wiki</a> for the syntax of creating these manually.
  */

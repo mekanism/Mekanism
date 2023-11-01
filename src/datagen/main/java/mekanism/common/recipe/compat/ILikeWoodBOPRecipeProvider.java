@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.RegistryObject;
 import yamahari.ilikewood.plugin.biomesoplenty.BiomesOPlentyWoodTypes;
 import yamahari.ilikewood.registry.woodtype.IWoodType;
 

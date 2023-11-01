@@ -13,7 +13,7 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.Tags;
+import net.neoforged.neoforge.common.Tags;
 
 //TODO: Try to cleanup some of the duplicate code in this class?
 class InfusionConversionRecipeProvider implements ISubRecipeProvider {

@@ -26,9 +26,9 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,7 +67,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             return applyToStack(slots, stackSlots, (ListTag toWrite) -> PersonalStorageManager.createInventoryFor(stack, stackSlots));
         }
         boolean isBin = item instanceof ItemBlockBin;
-        Optional<IItemHandler> capability = stack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve();
+        Optional<IItemHandler> capability = stack.getCapability(Capabilities.ITEM_HANDLER).resolve();
         if (capability.isPresent()) {
             IItemHandler itemHandler = capability.get();
             for (int i = 0, slots = itemHandler.getSlots(); i < slots; i++) {

@@ -3,7 +3,7 @@ package mekanism.common.registration.impl;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.registration.WrappedRegistryObject;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemRegistryObject<ITEM extends Item> extends WrappedRegistryObject<ITEM> implements IItemProvider {

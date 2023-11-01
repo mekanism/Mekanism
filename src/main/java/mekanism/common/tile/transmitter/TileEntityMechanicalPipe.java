@@ -23,8 +23,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -100,7 +100,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
     public void sideChanged(@NotNull Direction side, @NotNull ConnectionType old, @NotNull ConnectionType type) {
         super.sideChanged(side, old, type);
         if (type == ConnectionType.NONE) {
-            invalidateCapability(ForgeCapabilities.FLUID_HANDLER, side);
+            invalidateCapability(Capabilities.FLUID_HANDLER, side);
             //Notify the neighbor on that side our state changed and we no longer have a capability
             WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         } else if (old == ConnectionType.NONE) {
@@ -116,7 +116,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
             //The transmitter now is powered by redstone and previously was not
             //Note: While at first glance the below invalidation may seem over aggressive, it is not actually that aggressive as
             // if a cap has not been initialized yet on a side then invalidating it will just NO-OP
-            invalidateCapability(ForgeCapabilities.FLUID_HANDLER, EnumUtils.DIRECTIONS);
+            invalidateCapability(Capabilities.FLUID_HANDLER, EnumUtils.DIRECTIONS);
         }
         //Note: We do not have to invalidate any caps if we are going from powered to unpowered as all the caps would already be "empty"
     }

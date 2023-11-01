@@ -6,7 +6,7 @@ import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentBuilder;
 import mekanism.common.integration.jsonthings.builder.JsonPigmentBuilder;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.neoforged.bus.api.IEventBus;
 
 @NothingNullByDefault
 public class JsonPigmentParser extends SimpleJsonChemicalParser<Pigment, PigmentBuilder, JsonPigmentBuilder> {
