@@ -53,6 +53,7 @@ public class HeatAPI {
      * @implNote This method is a helper to call {@link #getAmbientTemp(double)} using the temperature of the biome at the location specified.
      * @see #AMBIENT_TEMP
      */
+    @SuppressWarnings("deprecation")
     public static double getAmbientTemp(@Nullable LevelReader world, BlockPos pos) {
         if (world == null) {
             return AMBIENT_TEMP;

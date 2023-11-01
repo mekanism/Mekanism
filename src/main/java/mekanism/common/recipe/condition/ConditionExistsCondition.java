@@ -6,8 +6,8 @@ import mekanism.common.Mekanism;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.neoforged.neoforge.common.crafting.CraftingHelper;
-import net.neoforged.neoforge.common.crafting.conditions.ICondition;
-import net.neoforged.neoforge.common.crafting.conditions.IConditionSerializer;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.neoforge.common.conditions.IConditionSerializer;
 import org.jetbrains.annotations.Nullable;
 
 public record ConditionExistsCondition(@Nullable ICondition condition) implements ICondition {

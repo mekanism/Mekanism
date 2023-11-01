@@ -6,7 +6,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
-import net.neoforged.bus.api.Cancelable;
 import net.neoforged.fml.LogicalSide;
 
 /**
@@ -14,7 +13,6 @@ import net.neoforged.fml.LogicalSide;
  *
  * @since 10.3.9
  */
-@Cancelable
 public class MekanismTeleportEvent extends EntityTeleportEvent {
 
     /**
@@ -30,7 +28,7 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
     /**
      * This event is fired before a player teleports using the Meka-Tool's Teleportation Unit.
      * <br>
-     * This event is {@link Cancelable}.
+     * This event is Cancelable.
      * <br>
      * If the event is not canceled, the entity will be teleported.
      * <br>
@@ -40,7 +38,6 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
      * <br>
      * This event is only fired on the {@link LogicalSide#SERVER} side.
      */
-    @Cancelable
     public static class MekaTool extends MekanismTeleportEvent {
 
         private final BlockHitResult targetBlock;

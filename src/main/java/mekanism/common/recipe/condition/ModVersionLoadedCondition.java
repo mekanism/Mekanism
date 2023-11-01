@@ -4,8 +4,8 @@ import com.google.gson.JsonObject;
 import mekanism.common.Mekanism;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.neoforged.neoforge.common.crafting.conditions.ICondition;
-import net.neoforged.neoforge.common.crafting.conditions.IConditionSerializer;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.neoforge.common.conditions.IConditionSerializer;
 import net.neoforged.fml.ModList;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
