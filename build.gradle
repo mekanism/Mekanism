@@ -6,8 +6,8 @@ import groovy.json.JsonSlurper
 import mekanism.MergeJars
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.darkhax.curseforgegradle.UploadArtifact
-import net.minecraftforge.gradle.common.util.RunConfig
-import net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace
+//import net.minecraftforge.gradle.common.util.RunConfig
+//import net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace
 
 import java.util.function.Consumer
 
@@ -19,8 +19,8 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle' version '[6.0.18,6.2)'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'net.neoforged.gradle.userdev' version '7.0.5'
+    //id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -269,99 +269,107 @@ def datagenExtraClasspath = {
     return paths.join(File.pathSeparator)
 }
 
-minecraft {
-    if (mappings_channel == "parchment_previous") {
-        mappings channel: 'parchment', version: "${previous_minecraft_version}-${mappings_version}"
-    } else {
-        mappings channel: "${mappings_channel}", version: "${mappings_version}"
-    }
+//minecraft {
+//    if (mappings_channel == "parchment_previous") {
+//        mappings channel: 'parchment', version: "${previous_minecraft_version}-${mappings_version}"
+//    } else {
+//        mappings channel: "${mappings_channel}", version: "${mappings_version}"
+//    }
+//
 
-    accessTransformers.from(file('src/main/resources/META-INF/accesstransformer.cfg'),
-            file('src/additions/resources/META-INF/accesstransformer.cfg'))
+minecraft.accessTransformers.files(file('src/main/resources/META-INF/accesstransformer.cfg'),
+        file('src/additions/resources/META-INF/accesstransformer.cfg'))
 
-    runs {
-        client {
-            setupRunConfig(it, true)
-            //The below if statements are to add args to your gradle.properties file in user home
-            // (DO NOT add them directly to the gradle.properties file for this project)
-            // Setting the below properties allows use of your normal Minecraft account in the
-            // dev environment including having your skin load. Each property also has a comment
-            // explaining what information to set the value to/format it expects
-            // One thing to note is because of the caching that goes on, after changing these
-            // variables, you need to refresh the project and rerun genIntellijRuns/genEclipseRuns
-            if (project.hasProperty('mc_uuid')) {
-                //Your uuid without any dashes in the middle
-                args '--uuid', project.getProperty('mc_uuid')
-            }
-            if (project.hasProperty('mc_username')) {
-                //Your username/display name, this is the name that shows up in chat
-                // Note: This is not your email, even if you have a Mojang account
-                args '--username', project.getProperty('mc_username')
-            }
-            if (project.hasProperty('mc_accessToken')) {
-                //Your access token, you can find it in your '.minecraft/launcher_accounts.json' file
-                args '--accessToken', project.getProperty('mc_accessToken')
-            }
+runs {
+    configureEach {
+        workingDirectory file("run")
+
+
+        //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
+        systemProperty  'mixin.env.remapRefMap', 'true'
+        systemProperty  'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+        boolean supportsGameTests = !isDataGenerator
+        if (supportsGameTests) {
+            //Specify all our mods as domains to look for game tests
+            systemProperty  'forge.enabledGameTestNamespaces', 'mekanism,mekanismadditions,mekanismdefense,mekanismgenerators,mekanismtools'
         }
-        server { setupRunConfig(it, true) }
-        gameTestServer { setupRunConfig(it, true, "runGameTests") }
-        data {
-            setupRunConfig(it, false)
-            environment 'target', 'fmluserdevdata'
 
-            args '--all', '--output', file('src/datagen/generated/'),
-                    '--mod', 'mekanism', '--existing', file('src/main/resources/')
+        if (project.hasProperty('forge_force_ansi')) {
+            //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
+            // or eclipse's plugin that adds support for ansi escape in console
+            jvmArgument "-Dterminal.ansi=${project.getProperty('forge_force_ansi')}"
+        }
 
-            mods.named("mekanism").configure { source((SourceSet) sourceSets.datagenMain) }
-            for (String name : secondaryModules) {
-                def modName = "mekanism${name}"
-                def extra = getExtraSourceSet(name, 'datagen')
-                mods.named(modName).configure { source(extra) }
-                args '--mod', modName, '--existing', file("src/${name}/resources/")
+        modSource sourceSets.main
+        modSource sourceSets.api
+
+        if (supportsGameTests) modSource sourceSets.gameTestMain
+
+        for (String name : secondaryModules) {
+            def base = project.sourceSets.getByName(name)
+            def extra = supportsGameTests ? getExtraSourceSet(base, 'gameTest') : null
+
+            modSource(base)
+            if (supportsGameTests)  {
+                modSource extra
             }
 
-            project.afterEvaluate {
-                //After the project has been evaluated so our dependencies has been populated,
-                // add all the extra non-mod files to runData's minecraft classpath so that they can be
-                // access from the game module layer at runtime
-                lazyToken("minecraft_classpath", datagenExtraClasspath)
-            }
+        }
+
+        //if the selected toolchain is a JBR, enable DCEVM
+        if(project.javaToolchains.launcherFor(java.toolchain).map{it.metadata.vendor }.getOrElse("").contains("JetBrains")) {
+            jvmArgument "-XX:+AllowEnhancedClassRedefinition"
         }
     }
-}
-
-def setupRunConfig(RunConfig runConfig, boolean supportsGameTests, String directory = "run") {
-    runConfig.workingDirectory(file(directory))
-    //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
-    runConfig.property 'mixin.env.remapRefMap', 'true'
-    runConfig.property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-    if (supportsGameTests) {
-        //Specify all our mods as domains to look for game tests
-        runConfig.property 'forge.enabledGameTestNamespaces', 'mekanism,mekanismadditions,mekanismdefense,mekanismgenerators,mekanismtools'
-    }
-
-    if (project.hasProperty('forge_force_ansi')) {
-        //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
-        // or eclipse's plugin that adds support for ansi escape in console
-        runConfig.jvmArg("-Dterminal.ansi=${project.getProperty('forge_force_ansi')}")
-    }
-
-    runConfig.mods.register("mekanism").configure {
-        sources((SourceSet[]) [sourceSets.main, sourceSets.api])
-        if (supportsGameTests) source((SourceSet) sourceSets.gameTestMain)
-    }
-    for (String name : secondaryModules) {
-        def base = sourceSets.getByName(name)
-        def extra = supportsGameTests ? getExtraSourceSet(base, 'gameTest') : null
-        runConfig.mods.register("mekanism${name}").configure {
-            source(base)
-            if (supportsGameTests) source(extra)
+    client {
+        //The below if statements are to add args to your gradle.properties file in user home
+        // (DO NOT add them directly to the gradle.properties file for this project)
+        // Setting the below properties allows use of your normal Minecraft account in the
+        // dev environment including having your skin load. Each property also has a comment
+        // explaining what information to set the value to/format it expects
+        // One thing to note is because of the caching that goes on, after changing these
+        // variables, you need to refresh the project and rerun genIntellijRuns/genEclipseRuns
+        if (project.hasProperty('mc_uuid')) {
+            //Your uuid without any dashes in the middle
+            programArguments.addAll  '--uuid', project.getProperty('mc_uuid')
+        }
+        if (project.hasProperty('mc_username')) {
+            //Your username/display name, this is the name that shows up in chat
+            // Note: This is not your email, even if you have a Mojang account
+            programArguments.addAll  '--username', project.getProperty('mc_username')
+        }
+        if (project.hasProperty('mc_accessToken')) {
+            //Your access token, you can find it in your '.minecraft/launcher_accounts.json' file
+            programArguments.addAll  '--accessToken', project.getProperty('mc_accessToken')
         }
     }
+    //server {  }
+    gameTestServer {
+        workingDirectory file ("runGameTests")
+    }
+    data {
+        //environment 'target', 'fmluserdevdata'
 
-    //if the selected toolchain is a JBR, enable DCEVM
-    if(project.javaToolchains.launcherFor(java.toolchain).map{it.metadata.vendor }.getOrElse("").contains("JetBrains")) {
-        runConfig.jvmArg("-XX:+AllowEnhancedClassRedefinition")
+        programArguments.addAll '--all', '--output', file('src/datagen/generated/').getAbsolutePath(),
+                '--mod', 'mekanism', '--existing', file('src/main/resources/').getAbsolutePath()
+
+        modSource sourceSets.datagenMain
+
+        for (String name : secondaryModules) {
+            def modName = "mekanism${name}"
+            def extra = getExtraSourceSet(name, 'datagen')
+            modSource extra
+            programArguments.addAll '--mod', modName, '--existing', file("src/${name}/resources/").getAbsolutePath()
+        }
+
+        classpath.from(project.configurations.datagenNonMod)//todo remove datafixerupper?
+
+        project.afterEvaluate {
+            //After the project has been evaluated so our dependencies has been populated,
+            // add all the extra non-mod files to runData's minecraft classpath so that they can be
+            // access from the game module layer at runtime
+            //lazyToken("minecraft_classpath", datagenExtraClasspath)
+        }
     }
 }
 
@@ -379,7 +387,7 @@ void exclusiveRepo(RepositoryHandler handler, String url, Consumer<InclusiveRepo
     handler.exclusiveContent {
         it.forRepositories(handler.maven {
             setUrl(url)
-        }, fg.repository)//Add FG's repo so we make sure we are able to then find the mapped deps
+        }/*, fg.repository*/)//Add FG's repo so we make sure we are able to then find the mapped deps
         it.filter { f -> filterSetup.accept(f) }
     }
 }
@@ -406,7 +414,7 @@ test {
 }
 
 dependencies {
-    minecraft "net.neoforged:forge:${minecraft_version}-${forge_version}"
+    implementation "net.neoforged:neoforge:${forge_version}"
 
     annotationProcessor project(":annotation-processor")
 
@@ -415,53 +423,53 @@ dependencies {
     //We use https://github.com/quicktheories/QuickTheories to allow for implementing property based testing
     testImplementation "org.quicktheories:quicktheories:${quicktheories_version}"
 
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    compileOnly ("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
+    compileOnly ("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
+    runtimeOnly ("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
     //TODO - 1.19: Re-enable once https://github.com/Chisel-Team/ConnectedTexturesMod/pull/204 is merged
     //runtimeOnly fg.deobf("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
 
     //TODO: Remove having to specify these as non transitive once https://github.com/McJtyMods/TheOneProbe/issues/548 is fixed
-    compileOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
+    compileOnly ("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
         transitive = false
     }
-    runtimeOnly fg.deobf("mcjty.theoneprobe:theoneprobe:${top_version}") {
+    runtimeOnly ("mcjty.theoneprobe:theoneprobe:${top_version}") {
         transitive = false
     }
-    compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
-    runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
-    compileOnly fg.deobf("mcp.mobius.waila:wthit-api:forge-${wthit_version}")
+    compileOnly ("curse.maven:jade-api-324717:${jade_api_id}")
+    runtimeOnly ("curse.maven:jade-324717:${jade_id}")
+    compileOnly ("mcp.mobius.waila:wthit-api:forge-${wthit_version}")
 
-    implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
-    implementation fg.deobf("com.blamejared.jeitweaker:JeiTweaker-forge-${minecraft_version}:${jeitweaker_version}")
+    implementation ("com.blamejared.crafttweaker:CraftTweaker-forge-${previous_minecraft_version}:${crafttweaker_version}")
+    implementation ("com.blamejared.jeitweaker:JeiTweaker-forge-${previous_minecraft_version}:${jeitweaker_version}")
 
-    compileOnly fg.deobf("dev.gigaherz.jsonthings:JsonThings-${minecraft_version}:${json_things_version}")
+    compileOnly ("dev.gigaherz.jsonthings:JsonThings-${previous_minecraft_version}:${json_things_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
-    compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
-    compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
-    compileOnly fg.deobf("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
-    compileOnly fg.deobf("curse.maven:opencomputers2-437654:${oc2_id}")
-    compileOnly fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
-    compileOnly fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-core-api:${cc_tweaked_version}")
+    compileOnly ("curse.maven:projecte-api-226410:${projecte_api_id}")
+    compileOnly ("curse.maven:flux-networks-248020:${flux_networks_id}")
+    compileOnly ("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+    compileOnly ("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
+    compileOnly ("curse.maven:opencomputers2-437654:${oc2_id}")
+    compileOnly ("cc.tweaked:cc-tweaked-${previous_minecraft_version}-forge-api:${cc_tweaked_version}")
+    compileOnly ("cc.tweaked:cc-tweaked-${previous_minecraft_version}-core-api:${cc_tweaked_version}")
     //runtimeOnly fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
-    compileOnly fg.deobf("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
+    compileOnly ("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
 
     //Dependencies for data generators for mod compat reference
-    datagenMainImplementation fg.deobf("appeng:appliedenergistics2-forge:${ae2_version}")
-    datagenMainCompileOnly fg.deobf("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
-    datagenMainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
-    datagenMainRuntimeOnly fg.deobf("curse.maven:terrablender-563928:${terrablender_id}")
+    datagenMainImplementation ("appeng:appliedenergistics2-forge:${ae2_version}")
+    datagenMainCompileOnly ("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
+    datagenMainRuntimeOnly ("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
+    datagenMainRuntimeOnly ("curse.maven:terrablender-563928:${terrablender_id}")
     //TODO - 1.20: Switch back to datagenMainImplementation
-    datagenMainCompileOnly fg.deobf("curse.maven:biomes-youll-go-247560:${byg_id}")
-    datagenMainImplementation fg.deobf("curse.maven:farmers-delight-398521:${farmers_delight_id}")
-    datagenMainImplementation fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
+    datagenMainCompileOnly ("curse.maven:biomes-youll-go-247560:${byg_id}")
+    datagenMainImplementation ("curse.maven:farmers-delight-398521:${farmers_delight_id}")
+    datagenMainImplementation ("curse.maven:i-like-wood-324164:${ilikewood_id}")
     //TODO - 1.20: Switch back to datagenMainImplementation
-    datagenMainCompileOnly fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
+    datagenMainCompileOnly ("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
     //TODO - 1.20: Switch back to datagenMainImplementation
-    datagenMainCompileOnly fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
+    datagenMainCompileOnly ("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
     //TODO - 1.20: Re-enable after projecte is updated
     //datagenMainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
 
@@ -586,21 +594,21 @@ for (String name : secondaryModules) {
 def reobfAllJar = createReobf('allJar')
 
 def createReobf(SourceSet sourceSet) {
-    def reobfTask = createReobf(sourceSet.getJarTaskName())
-    reobfTask.configure { libraries.from(sourceSet.compileClasspath) }
-    tasks.named(sourceSet.getJarTaskName()).configure(task -> task.finalizedBy(reobfTask))
-    return reobfTask
+    //TODO def reobfTask = createReobf(sourceSet.getJarTaskName())
+    //TODO reobfTask.configure { libraries.from(sourceSet.compileClasspath) }
+    //TODO tasks.named(sourceSet.getJarTaskName()).configure(task -> task.finalizedBy(reobfTask))
+    //TODO return reobfTask
 }
 
 def createReobf(String name) {
-    def reobfExtension = (NamedDomainObjectContainer<RenameJarInPlace>) extensions.getByName("reobf")
-    return reobfExtension.register(name)
+    //def reobfExtension = (NamedDomainObjectContainer) extensions.getByName("reobf")
+    //return reobfExtension.register(name)
 }
 
-allJar.configure { finalizedBy(reobfAllJar) }
-afterEvaluate {
-    tasks.named('jar', Jar).configure { finalizedBy(tasks.named('reobfJar', RenameJarInPlace)) }
-}
+//TODO allJar.configure { finalizedBy(reobfAllJar) }
+//TODO afterEvaluate {
+//TODO     tasks.named('jar', Jar).configure { finalizedBy(tasks.named('reobfJar', RenameJarInPlace)) }
+//TODO }
 
 //Minimize/optimize all png files, requires optipng on the PATH
 // Credits: BrainStone
