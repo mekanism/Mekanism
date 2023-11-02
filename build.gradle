@@ -6,8 +6,6 @@ import groovy.json.JsonSlurper
 import mekanism.MergeJars
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.darkhax.curseforgegradle.UploadArtifact
-//import net.minecraftforge.gradle.common.util.RunConfig
-//import net.minecraftforge.gradle.userdev.tasks.RenameJarInPlace
 
 import java.util.function.Consumer
 
@@ -387,7 +385,7 @@ void exclusiveRepo(RepositoryHandler handler, String url, Consumer<InclusiveRepo
     handler.exclusiveContent {
         it.forRepositories(handler.maven {
             setUrl(url)
-        }/*, fg.repository*/)//Add FG's repo so we make sure we are able to then find the mapped deps
+        })
         it.filter { f -> filterSetup.accept(f) }
     }
 }
@@ -586,29 +584,6 @@ artifacts {
     archives allJar
     archives sourcesJar
 }
-
-createReobf(sourceSets.api)
-for (String name : secondaryModules) {
-    createReobf(sourceSets.getByName(name))
-}
-def reobfAllJar = createReobf('allJar')
-
-def createReobf(SourceSet sourceSet) {
-    //TODO def reobfTask = createReobf(sourceSet.getJarTaskName())
-    //TODO reobfTask.configure { libraries.from(sourceSet.compileClasspath) }
-    //TODO tasks.named(sourceSet.getJarTaskName()).configure(task -> task.finalizedBy(reobfTask))
-    //TODO return reobfTask
-}
-
-def createReobf(String name) {
-    //def reobfExtension = (NamedDomainObjectContainer) extensions.getByName("reobf")
-    //return reobfExtension.register(name)
-}
-
-//TODO allJar.configure { finalizedBy(reobfAllJar) }
-//TODO afterEvaluate {
-//TODO     tasks.named('jar', Jar).configure { finalizedBy(tasks.named('reobfJar', RenameJarInPlace)) }
-//TODO }
 
 //Minimize/optimize all png files, requires optipng on the PATH
 // Credits: BrainStone
