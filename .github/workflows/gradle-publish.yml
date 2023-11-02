@@ -60,10 +60,17 @@ jobs:
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
+    - name: Clean Gradle
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: clean
+        gradle-version: wrapper
+        cache-read-only: false
+
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: clean build outputChangelog
+        arguments: build outputChangelog
         gradle-version: wrapper
         cache-read-only: false
       env:
