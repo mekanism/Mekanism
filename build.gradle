@@ -17,7 +17,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.5'
+    id 'net.neoforged.gradle.userdev' version '7.0.26'//https://maven.neoforged.net/#/releases/net/neoforged/gradle/userdev
     //id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
