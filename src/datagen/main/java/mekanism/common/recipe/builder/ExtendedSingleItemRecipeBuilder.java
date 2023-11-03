@@ -3,8 +3,10 @@ package mekanism.common.recipe.builder;
 import com.google.gson.JsonObject;
 import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.util.RegistryUtils;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -29,20 +31,20 @@ public class ExtendedSingleItemRecipeBuilder extends BaseRecipeBuilder<ExtendedS
     }
 
     @Override
-    protected RecipeResult getResult(ResourceLocation id) {
-        return new Result(id);
+    protected MekanismRecipeBuilder<ExtendedSingleItemRecipeBuilder>.RecipeResult getResult(ResourceLocation id, Provider registries) {
+        return new Result(id, registries);
     }
 
     public class Result extends BaseRecipeResult {
 
-        public Result(ResourceLocation id) {
-            super(id);
+        public Result(ResourceLocation id, Provider registries) {
+            super(id, registries);
         }
 
         @Override
         public void serializeRecipeData(JsonObject json) {
             super.serializeRecipeData(json);
-            json.add(JsonConstants.INGREDIENT, ingredient.toJson());
+            json.add(JsonConstants.INGREDIENT, ingredient.toJson(false);
         }
 
         @Override

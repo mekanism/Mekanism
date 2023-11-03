@@ -4,11 +4,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.advancements.Advancement.Builder;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.tags.TagKey;
@@ -24,20 +27,38 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
 
     private final ExistingFileHelper existingFileHelper;
 
-    protected BaseRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper, String modid) {
-        super(output);
+    protected BaseRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper, String modid, CompletableFuture<Provider> lookupProvider) {
+        super(output, lookupProvider);
         this.existingFileHelper = existingFileHelper;
     }
 
+    private record WrapperRecipeOutput(RecipeOutput parent, ExistingFileHelper existingFileHelper) implements RecipeOutput {
+
+        @Override
+        public void accept(FinishedRecipe finishedRecipe) {
+            parent.accept(finishedRecipe);
+            existingFileHelper.trackGenerated(finishedRecipe.id(), PackType.SERVER_DATA, ".json", "recipes");
+        }
+
+        @Override
+        public Builder advancement() {
+            return parent.advancement();
+        }
+
+        @Override
+        public Provider provider() {
+            return parent.provider();
+        }
+    }
+
     @Override
-    protected final void buildRecipes(Consumer<FinishedRecipe> consumer) {
-        Consumer<FinishedRecipe> trackingConsumer = consumer.andThen(recipe ->
-              existingFileHelper.trackGenerated(recipe.getId(), PackType.SERVER_DATA, ".json", "recipes"));
+    protected final void buildRecipes(RecipeOutput output) {
+        WrapperRecipeOutput trackingConsumer = new WrapperRecipeOutput(output, existingFileHelper);
         addRecipes(trackingConsumer);
         getSubRecipeProviders().forEach(subRecipeProvider -> subRecipeProvider.addRecipes(trackingConsumer));
     }
 
-    protected abstract void addRecipes(Consumer<FinishedRecipe> consumer);
+    protected abstract void addRecipes(RecipeOutput output);
 
     /**
      * Gets all the sub/offloaded recipe providers that this recipe provider has.

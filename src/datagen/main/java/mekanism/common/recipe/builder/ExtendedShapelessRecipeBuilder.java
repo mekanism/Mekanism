@@ -5,7 +5,9 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.common.DataGenJsonConstants;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -65,14 +67,14 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
     }
 
     @Override
-    protected RecipeResult getResult(ResourceLocation id) {
-        return new Result(id);
+    protected MekanismRecipeBuilder<ExtendedShapelessRecipeBuilder>.RecipeResult getResult(ResourceLocation id, Provider registries) {
+        return new Result(id, registries);
     }
 
     public class Result extends BaseRecipeResult {
 
-        public Result(ResourceLocation id) {
-            super(id);
+        public Result(ResourceLocation id, Provider registries) {
+            super(id, registries);
         }
 
         @Override
@@ -80,7 +82,7 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
             super.serializeRecipeData(json);
             JsonArray jsonIngredients = new JsonArray();
             for (Ingredient ingredient : ingredients) {
-                jsonIngredients.add(ingredient.toJson());
+                jsonIngredients.add(ingredient.toJson(false));
             }
             json.add(DataGenJsonConstants.INGREDIENTS, jsonIngredients);
         }

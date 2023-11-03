@@ -1,14 +1,14 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
-import java.util.function.Consumer;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -41,23 +41,23 @@ public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<Che
     }
 
     @Override
-    protected ChemicalCrystallizerRecipeResult getResult(ResourceLocation id) {
-        return new ChemicalCrystallizerRecipeResult(id);
+    protected MekanismRecipeBuilder<ChemicalCrystallizerRecipeBuilder>.RecipeResult getResult(ResourceLocation id, Provider registries) {
+        return new ChemicalCrystallizerRecipeResult(id, registries);
     }
 
     /**
      * Builds this recipe using the output item's name as the recipe name.
      *
-     * @param consumer Finished Recipe Consumer.
+     * @param recipeOutput Finished Recipe Consumer.
      */
-    public void build(Consumer<FinishedRecipe> consumer) {
-        build(consumer, output.getItem());
+    public void build(RecipeOutput recipeOutput) {
+        build(recipeOutput, output.getItem());
     }
 
     public class ChemicalCrystallizerRecipeResult extends RecipeResult {
 
-        protected ChemicalCrystallizerRecipeResult(ResourceLocation id) {
-            super(id);
+        protected ChemicalCrystallizerRecipeResult(ResourceLocation id, Provider registries) {
+            super(id, registries);
         }
 
         @Override

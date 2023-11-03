@@ -9,6 +9,7 @@ import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,14 +43,14 @@ public class ChemicalDissolutionRecipeBuilder extends MekanismRecipeBuilder<Chem
     }
 
     @Override
-    protected ChemicalDissolutionRecipeResult getResult(ResourceLocation id) {
-        return new ChemicalDissolutionRecipeResult(id);
+    protected MekanismRecipeBuilder<ChemicalDissolutionRecipeBuilder>.RecipeResult getResult(ResourceLocation id, Provider registries) {
+        return new ChemicalDissolutionRecipeResult(id, registries);
     }
 
     public class ChemicalDissolutionRecipeResult extends RecipeResult {
 
-        protected ChemicalDissolutionRecipeResult(ResourceLocation id) {
-            super(id);
+        protected ChemicalDissolutionRecipeResult(ResourceLocation id, Provider registries) {
+            super(id, registries);
         }
 
         @Override

@@ -34,6 +34,7 @@ import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
+//TODO see what can be removed/replaced by codecs
 public class SerializerHelper {
 
     private SerializerHelper() {
@@ -104,9 +105,11 @@ public class SerializerHelper {
      *
      * @return Item Stack.
      */
+    @Deprecated(forRemoval = true)
     public static ItemStack getItemStack(@NotNull JsonObject json, @NotNull String key) {
         validateKey(json, key);
-        return ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, key));
+        throw new IllegalStateException("method no longer exists");
+        //return CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, key), true, true);
     }
 
     /**
@@ -117,6 +120,7 @@ public class SerializerHelper {
      *
      * @return Fluid Stack.
      */
+    @Deprecated(forRemoval = true)
     public static FluidStack getFluidStack(@NotNull JsonObject json, @NotNull String key) {
         validateKey(json, key);
         return deserializeFluid(GsonHelper.getAsJsonObject(json, key));

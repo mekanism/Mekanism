@@ -9,7 +9,7 @@ import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.providers.IEntityTypeProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.advancements.BaseAdvancementProvider;
-import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.DamagePredicate;
@@ -28,7 +28,7 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
     }
 
     @Override
-    protected void registerAdvancements(@NotNull Consumer<Advancement> consumer) {
+    protected void registerAdvancements(@NotNull Consumer<AdvancementHolder> consumer) {
         advancement(AdditionsAdvancements.BALLOON)
               .display(AdditionsItems.BALLOONS.get(EnumColor.AQUA), FrameType.TASK, false)
               .addCriterion("balloon", hasItems(AdditionsTags.Items.BALLOONS))

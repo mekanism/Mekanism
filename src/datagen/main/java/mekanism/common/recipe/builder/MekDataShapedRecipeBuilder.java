@@ -2,6 +2,7 @@ package mekanism.common.recipe.builder;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.registries.MekanismRecipeSerializers;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.world.level.ItemLike;
 
 @NothingNullByDefault

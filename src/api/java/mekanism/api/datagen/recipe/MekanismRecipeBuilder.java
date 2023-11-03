@@ -1,6 +1,5 @@
 package mekanism.api.datagen.recipe;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.DynamicOps;
@@ -8,7 +7,6 @@ import com.mojang.serialization.JsonOps;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -18,15 +16,14 @@ import net.minecraft.advancements.AdvancementRequirements.Strategy;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.conditions.ConditionalOps;
-import net.neoforged.neoforge.common.crafting.CraftingHelper;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -46,11 +43,9 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
     protected final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
     protected boolean hasCritereon = false;
     protected final ResourceLocation serializerName;
-    private final Provider registries;
 
-    protected MekanismRecipeBuilder(ResourceLocation serializerName, HolderLookup.Provider registries) {
+    protected MekanismRecipeBuilder(ResourceLocation serializerName) {
         this.serializerName = serializerName;
-        this.registries = registries;
         //TODO: We may also want to validate inputs, currently we are not validating our input ingredients as being valid, and are just validating the other parameters
     }
 
@@ -99,7 +94,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      *
      * @param id ID of the recipe being built.
      */
-    protected abstract RecipeResult getResult(ResourceLocation id);
+    protected abstract RecipeResult getResult(ResourceLocation id, Provider registries);
 
     /**
      * Performs any extra validation.
@@ -112,31 +107,32 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
     /**
      * Builds this recipe.
      *
-     * @param consumer Finished Recipe Consumer.
+     * @param recipeOutput Finished Recipe Consumer.
      * @param id       Name of the recipe being built.
      */
-    public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
+    public void build(RecipeOutput recipeOutput, ResourceLocation id) {
         validate(id);
         if (hasCriteria()) {
             //If there is a way to "unlock" this recipe then add an advancement with the criteria
+            //todo while this is deprecated, it's basically what mojang does, see if we can delay the criteria until this point
             advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
                   .rewards(AdvancementRewards.Builder.recipe(id)).requirements(Strategy.OR);
         }
-        consumer.accept(getResult(id));
+        recipeOutput.accept(getResult(id, recipeOutput.provider()));
     }
 
     /**
      * Builds this recipe basing the name on the output item.
      *
-     * @param consumer Finished Recipe Consumer.
+     * @param recipeOutput Finished Recipe Consumer.
      * @param output   Output to base the recipe name off of.
      */
-    protected void build(Consumer<FinishedRecipe> consumer, ItemLike output) {
+    protected void build(RecipeOutput recipeOutput, ItemLike output) {
         ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(output.asItem());
         if (registryName == null) {
             throw new IllegalStateException("Could not retrieve registry name for output.");
         }
-        build(consumer, registryName);
+        build(recipeOutput, registryName);
     }
 
     /**
@@ -145,9 +141,11 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
     protected abstract class RecipeResult implements FinishedRecipe {
 
         private final ResourceLocation id;
+        private final Provider registries;
 
-        public RecipeResult(ResourceLocation id) {
+        public RecipeResult(ResourceLocation id, Provider registries) {
             this.id = id;
+            this.registries = registries;
         }
 
         @Override

@@ -9,8 +9,10 @@ import it.unimi.dsi.fastutil.chars.CharSet;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.recipe.pattern.RecipePattern;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -96,14 +98,14 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
     }
 
     @Override
-    protected RecipeResult getResult(ResourceLocation id) {
-        return new Result(id);
+    protected MekanismRecipeBuilder<ExtendedShapedRecipeBuilder>.RecipeResult getResult(ResourceLocation id, Provider registries) {
+        return new Result(id, registries);
     }
 
     public class Result extends BaseRecipeResult {
 
-        protected Result(ResourceLocation id) {
-            super(id);
+        protected Result(ResourceLocation id, Provider registries) {
+            super(id, registries);
         }
 
         @Override

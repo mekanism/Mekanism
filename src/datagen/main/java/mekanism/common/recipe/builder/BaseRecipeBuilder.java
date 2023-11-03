@@ -1,14 +1,14 @@
 package mekanism.common.recipe.builder;
 
 import com.google.gson.JsonObject;
-import java.util.function.Consumer;
 import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.util.RegistryUtils;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
@@ -48,8 +48,8 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
         return self();
     }
 
-    public void build(Consumer<FinishedRecipe> consumer) {
-        build(consumer, result);
+    public void build(RecipeOutput recipeOutput) {
+        build(recipeOutput, result);
     }
 
     //Copied from CraftingRecipeBuilder#determineBookCategory
@@ -64,8 +64,8 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
 
     protected abstract class BaseRecipeResult extends RecipeResult {
 
-        protected BaseRecipeResult(ResourceLocation id) {
-            super(id);
+        protected BaseRecipeResult(ResourceLocation id, Provider registries) {
+            super(id, registries);
         }
 
         @Override

@@ -13,7 +13,7 @@ import mekanism.tools.common.item.ItemMekanismShield;
 import mekanism.tools.common.item.ItemMekanismShovel;
 import mekanism.tools.common.item.ItemMekanismSword;
 import mekanism.tools.common.registries.ToolsItems;
-import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
@@ -28,7 +28,7 @@ public class ToolsAdvancementProvider extends BaseAdvancementProvider {
     }
 
     @Override
-    protected void registerAdvancements(@NotNull Consumer<Advancement> consumer) {
+    protected void registerAdvancements(@NotNull Consumer<AdvancementHolder> consumer) {
         advancement(ToolsAdvancements.PAXEL)
               .display(ToolsItems.DIAMOND_PAXEL, FrameType.TASK, true)
               .orCriteria("any_paxel", getItems(item -> item instanceof ItemMekanismPaxel))

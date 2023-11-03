@@ -12,7 +12,7 @@ import mekanism.common.base.IChemicalConstant;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockSource;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
@@ -56,9 +56,9 @@ public class FluidDeferredRegister {
         @NotNull
         @Override
         public ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
-            Level world = source.getLevel();
+            Level world = source.level();
             DispensibleContainerItem bucket = (DispensibleContainerItem) stack.getItem();
-            BlockPos pos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
+            BlockPos pos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
             if (bucket.emptyContents(null, world, pos, null, stack)) {
                 bucket.checkExtraContent(null, world, stack, pos);
                 return new ItemStack(Items.BUCKET);

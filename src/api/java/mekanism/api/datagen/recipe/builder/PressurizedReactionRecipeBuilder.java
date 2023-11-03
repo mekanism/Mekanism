@@ -10,6 +10,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -108,14 +109,14 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
     }
 
     @Override
-    protected PressurizedReactionRecipeResult getResult(ResourceLocation id) {
-        return new PressurizedReactionRecipeResult(id);
+    protected MekanismRecipeBuilder<PressurizedReactionRecipeBuilder>.RecipeResult getResult(ResourceLocation id, Provider registries) {
+        return new PressurizedReactionRecipeResult(id, registries);
     }
 
     public class PressurizedReactionRecipeResult extends RecipeResult {
 
-        protected PressurizedReactionRecipeResult(ResourceLocation id) {
-            super(id);
+        protected PressurizedReactionRecipeResult(ResourceLocation id, Provider registries) {
+            super(id, registries);
         }
 
         @Override

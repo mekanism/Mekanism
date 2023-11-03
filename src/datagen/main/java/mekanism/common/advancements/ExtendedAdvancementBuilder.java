@@ -4,12 +4,12 @@ import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementRequirements.Strategy;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
-import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.resources.ResourceLocation;
@@ -77,7 +77,7 @@ public class ExtendedAdvancementBuilder {
 
     public ExtendedAdvancementBuilder orCriteria(RecipeCriterion... criteria) {
         if (criteria.length > 1) {
-            internal.requirements(RequirementsStrategy.OR);
+            internal.requirements(Strategy.OR);
         }
         return andCriteria(criteria);
     }
@@ -116,9 +116,9 @@ public class ExtendedAdvancementBuilder {
         return this;
     }
 
-    public Advancement save(Consumer<Advancement> consumer) {
-        Advancement built = internal.save(consumer, advancement.name(), existingFileHelper);
-        existingFileHelper.trackGenerated(built.getId(), PackType.SERVER_DATA, ".json", "advancements");
+    public AdvancementHolder save(Consumer<AdvancementHolder> consumer) {
+        AdvancementHolder built = internal.save(consumer, advancement.name(), existingFileHelper);
+        existingFileHelper.trackGenerated(built.id(), PackType.SERVER_DATA, ".json", "advancements");
         return built;
     }
 }

@@ -7,6 +7,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,14 +50,14 @@ public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipeB
     }
 
     @Override
-    protected GasToGasRecipeResult getResult(ResourceLocation id) {
-        return new GasToGasRecipeResult(id);
+    protected MekanismRecipeBuilder<GasToGasRecipeBuilder>.RecipeResult getResult(ResourceLocation id, Provider registries) {
+        return new GasToGasRecipeResult(id, registries);
     }
 
     public class GasToGasRecipeResult extends RecipeResult {
 
-        protected GasToGasRecipeResult(ResourceLocation id) {
-            super(id);
+        protected GasToGasRecipeResult(ResourceLocation id, Provider registries) {
+            super(id, registries);
         }
 
         @Override

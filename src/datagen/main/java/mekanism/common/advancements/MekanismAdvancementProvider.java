@@ -26,7 +26,7 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
-import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
@@ -48,7 +48,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
     //TODO - 1.19: xp rewards for any of these?
     @Override
-    protected void registerAdvancements(@NotNull Consumer<Advancement> consumer) {
+    protected void registerAdvancements(@NotNull Consumer<AdvancementHolder> consumer) {
         advancement(MekanismAdvancements.ROOT)
               .display(MekanismItems.ATOMIC_DISASSEMBLER, Mekanism.rl("textures/block/block_osmium.png"), FrameType.GOAL, false, false, false)
               .addCriterion("automatic", new PlayerTrigger.TriggerInstance(MekanismCriteriaTriggers.LOGGED_IN.getId(), ContextAwarePredicate.ANY))

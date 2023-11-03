@@ -1,7 +1,6 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
-import java.util.function.Consumer;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -19,7 +18,8 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredie
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -115,23 +115,23 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
     }
 
     @Override
-    protected ItemStackChemicalToItemStackRecipeResult getResult(ResourceLocation id) {
-        return new ItemStackChemicalToItemStackRecipeResult(id);
+    protected MekanismRecipeBuilder<ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL, STACK, INGREDIENT>>.RecipeResult getResult(ResourceLocation id, Provider registries) {
+        return new ItemStackChemicalToItemStackRecipeResult(id, registries);
     }
 
     /**
      * Builds this recipe using the output item's name as the recipe name.
      *
-     * @param consumer Finished Recipe Consumer.
+     * @param recipeOutput Finished Recipe Consumer.
      */
-    public void build(Consumer<FinishedRecipe> consumer) {
-        build(consumer, output.getItem());
+    public void build(RecipeOutput recipeOutput) {
+        build(recipeOutput, output.getItem());
     }
 
     public class ItemStackChemicalToItemStackRecipeResult extends RecipeResult {
 
-        protected ItemStackChemicalToItemStackRecipeResult(ResourceLocation id) {
-            super(id);
+        protected ItemStackChemicalToItemStackRecipeResult(ResourceLocation id, Provider registries) {
+            super(id, registries);
         }
 
         @Override

@@ -2,7 +2,9 @@ package mekanism.common.recipe.builder;
 
 import com.google.gson.JsonObject;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.common.DataGenJsonConstants;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -31,22 +33,22 @@ public class ExtendedSmithingRecipeBuilder extends BaseRecipeBuilder<ExtendedSmi
     }
 
     @Override
-    protected RecipeResult getResult(ResourceLocation id) {
-        return new Result(id);
+    protected MekanismRecipeBuilder<ExtendedSmithingRecipeBuilder>.RecipeResult getResult(ResourceLocation id, Provider registries) {
+        return new Result(id, registries);
     }
 
     public class Result extends BaseRecipeResult {
 
-        public Result(ResourceLocation id) {
-            super(id);
+        public Result(ResourceLocation id, Provider registries) {
+            super(id, registries);
         }
 
         @Override
         public void serializeRecipeData(JsonObject json) {
             super.serializeRecipeData(json);
-            json.add(DataGenJsonConstants.TEMPLATE, template.toJson());
-            json.add(DataGenJsonConstants.BASE, base.toJson());
-            json.add(DataGenJsonConstants.ADDITION, addition.toJson());
+            json.add(DataGenJsonConstants.TEMPLATE, template.toJson(false));
+            json.add(DataGenJsonConstants.BASE, base.toJson(false));
+            json.add(DataGenJsonConstants.ADDITION, addition.toJson(false));
         }
     }
 }

@@ -6,6 +6,7 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -79,14 +80,14 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBui
     }
 
     @Override
-    protected SawmillRecipeResult getResult(ResourceLocation id) {
-        return new SawmillRecipeResult(id);
+    protected MekanismRecipeBuilder<SawmillRecipeBuilder>.RecipeResult getResult(ResourceLocation id, Provider registries) {
+        return new SawmillRecipeResult(id, registries);
     }
 
     public class SawmillRecipeResult extends RecipeResult {
 
-        protected SawmillRecipeResult(ResourceLocation id) {
-            super(id);
+        protected SawmillRecipeResult(ResourceLocation id, Provider registries) {
+            super(id, registries);
         }
 
         @Override

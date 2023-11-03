@@ -11,9 +11,11 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.DataGenJsonConstants;
-import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -50,12 +52,12 @@ public abstract class BaseAdvancementProvider implements DataProvider {
     public CompletableFuture<?> run(@NotNull CachedOutput cache) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
         registerAdvancements(advancement -> {
-            ResourceLocation id = advancement.getId();
+            ResourceLocation id = advancement.id();
             if (existingFileHelper.exists(id, PackType.SERVER_DATA, ".json", "advancements")) {
                 throw new IllegalStateException("Duplicate advancement " + id);
             }
             Path path = this.pathProvider.json(id);
-            JsonObject json = advancement.deconstruct().serializeToJson();
+            JsonObject json = advancement.value().serializeToJson();
             cleanAdvancementJson(json);
             existingFileHelper.trackGenerated(id, PackType.SERVER_DATA, ".json", "advancements");
             futures.add(DataProvider.saveStable(cache, json, path));
@@ -76,17 +78,17 @@ public abstract class BaseAdvancementProvider implements DataProvider {
         json.remove(DataGenJsonConstants.REQUIREMENTS);
     }
 
-    protected abstract void registerAdvancements(@NotNull Consumer<Advancement> consumer);
+    protected abstract void registerAdvancements(@NotNull Consumer<AdvancementHolder> consumer);
 
     protected ExtendedAdvancementBuilder advancement(MekanismAdvancement advancement) {
         return ExtendedAdvancementBuilder.advancement(advancement, existingFileHelper);
     }
 
-    public static InventoryChangeTrigger.TriggerInstance hasItems(ItemPredicate... predicates) {
+    public static Criterion<TriggerInstance> hasItems(ItemPredicate... predicates) {
         return InventoryChangeTrigger.TriggerInstance.hasItems(predicates);
     }
 
-    public static InventoryChangeTrigger.TriggerInstance hasAllItems(ItemLike... items) {
+    public static Criterion<InventoryChangeTrigger.TriggerInstance> hasAllItems(ItemLike... items) {
         return InventoryChangeTrigger.TriggerInstance.hasItems(items);
     }
 
@@ -95,7 +97,7 @@ public abstract class BaseAdvancementProvider implements DataProvider {
     }
 
     @SafeVarargs
-    protected static CriterionTriggerInstance hasItems(TagKey<Item>... tags) {
+    protected static Criterion<TriggerInstance> hasItems(TagKey<Item>... tags) {
         return hasItems(Arrays.stream(tags)
               .map(tag -> ItemPredicate.Builder.item().of(tag).build())
               .toArray(ItemPredicate[]::new));

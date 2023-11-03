@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 import mekanism.common.advancements.BaseAdvancementProvider;
 import mekanism.generators.common.advancements.GeneratorsAdvancements;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -17,7 +17,7 @@ public class GeneratorsAdvancementProvider extends BaseAdvancementProvider {
     }
 
     @Override
-    protected void registerAdvancements(@NotNull Consumer<Advancement> consumer) {
+    protected void registerAdvancements(@NotNull Consumer<AdvancementHolder> consumer) {
         advancement(GeneratorsAdvancements.HEAT_GENERATOR)
               .displayAndCriterion(GeneratorsBlocks.HEAT_GENERATOR, FrameType.TASK, true)
               .save(consumer);

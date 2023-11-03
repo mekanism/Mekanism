@@ -3,8 +3,10 @@ package mekanism.common.recipe.builder;
 import com.google.gson.JsonObject;
 import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.util.RegistryUtils;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.BlockItem;
@@ -70,8 +72,8 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
     }
 
     @Override
-    protected RecipeResult getResult(ResourceLocation id) {
-        return new Result(id);
+    protected MekanismRecipeBuilder<ExtendedCookingRecipeBuilder>.RecipeResult getResult(ResourceLocation id, Provider registries) {
+        return new Result(id, registries);
     }
 
     @Override//Copy of #determineRecipeCategory
@@ -91,14 +93,14 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
 
     public class Result extends BaseRecipeResult {
 
-        public Result(ResourceLocation id) {
-            super(id);
+        public Result(ResourceLocation id, Provider registries) {
+            super(id, registries);
         }
 
         @Override
         public void serializeRecipeData(JsonObject json) {
             super.serializeRecipeData(json);
-            json.add(JsonConstants.INGREDIENT, ingredient.toJson());
+            json.add(JsonConstants.INGREDIENT, ingredient.toJson(false));
             json.addProperty(DataGenJsonConstants.COOKING_TIME, cookingTime);
             if (experience > 0) {
                 json.addProperty(DataGenJsonConstants.EXPERIENCE, experience);

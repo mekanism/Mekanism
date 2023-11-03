@@ -3,6 +3,7 @@ package mekanism.tools.common.recipe;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.level.ItemLike;
 
