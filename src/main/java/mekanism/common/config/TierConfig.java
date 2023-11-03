@@ -17,7 +17,7 @@ import mekanism.common.tier.PipeTier;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.util.EnumUtils;
-import net.neoforged.neoforge.common.NeoForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.fml.config.ModConfig.Type;
 
 public class TierConfig extends BaseMekanismConfig {
@@ -34,10 +34,10 @@ public class TierConfig extends BaseMekanismConfig {
     private static final String ITEMS_CATEGORY = "items";
     private static final String HEAT_CATEGORY = "heat";
 
-    private final NeoForgeConfigSpec configSpec;
+    private final ModConfigSpec configSpec;
 
     TierConfig() {
-        NeoForgeConfigSpec.Builder builder = new NeoForgeConfigSpec.Builder();
+        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.comment("Tier Config. This config is synced from server to client.").push("tier");
         addEnergyCubeCategory(builder);
         addFluidTankCategory(builder);
@@ -50,7 +50,7 @@ public class TierConfig extends BaseMekanismConfig {
         configSpec = builder.build();
     }
 
-    private void addEnergyCubeCategory(NeoForgeConfigSpec.Builder builder) {
+    private void addEnergyCubeCategory(ModConfigSpec.Builder builder) {
         builder.comment("Energy Cubes").push(ENERGY_CUBE_CATEGORY);
         for (EnergyCubeTier tier : EnumUtils.ENERGY_CUBE_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
@@ -65,7 +65,7 @@ public class TierConfig extends BaseMekanismConfig {
         builder.pop();
     }
 
-    private void addFluidTankCategory(NeoForgeConfigSpec.Builder builder) {
+    private void addFluidTankCategory(ModConfigSpec.Builder builder) {
         builder.comment("Fluid Tanks").push(FLUID_TANK_CATEGORY);
         for (FluidTankTier tier : EnumUtils.FLUID_TANK_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
@@ -78,7 +78,7 @@ public class TierConfig extends BaseMekanismConfig {
         builder.pop();
     }
 
-    private void addGasTankCategory(NeoForgeConfigSpec.Builder builder) {
+    private void addGasTankCategory(ModConfigSpec.Builder builder) {
         builder.comment("Chemical Tanks").push(CHEMICAL_TANK_CATEGORY);
         for (ChemicalTankTier tier : EnumUtils.CHEMICAL_TANK_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
@@ -91,7 +91,7 @@ public class TierConfig extends BaseMekanismConfig {
         builder.pop();
     }
 
-    private void addBinCategory(NeoForgeConfigSpec.Builder builder) {
+    private void addBinCategory(ModConfigSpec.Builder builder) {
         builder.comment("Bins").push(BIN_CATEGORY);
         for (BinTier tier : EnumUtils.BIN_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
@@ -102,7 +102,7 @@ public class TierConfig extends BaseMekanismConfig {
         builder.pop();
     }
 
-    private void addInductionCategory(NeoForgeConfigSpec.Builder builder) {
+    private void addInductionCategory(ModConfigSpec.Builder builder) {
         builder.comment("Induction").push(INDUCTION_CATEGORY);
         for (InductionCellTier tier : EnumUtils.INDUCTION_CELL_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
@@ -119,7 +119,7 @@ public class TierConfig extends BaseMekanismConfig {
         builder.pop();
     }
 
-    private void addTransmittersCategory(NeoForgeConfigSpec.Builder builder) {
+    private void addTransmittersCategory(ModConfigSpec.Builder builder) {
         builder.comment("Transmitters").push(TRANSMITTER_CATEGORY);
         addUniversalCableCategory(builder);
         addMechanicalPipeCategory(builder);
@@ -129,7 +129,7 @@ public class TierConfig extends BaseMekanismConfig {
         builder.pop();
     }
 
-    private void addUniversalCableCategory(NeoForgeConfigSpec.Builder builder) {
+    private void addUniversalCableCategory(ModConfigSpec.Builder builder) {
         builder.comment("Universal Cables").push(ENERGY_CATEGORY);
         for (CableTier tier : EnumUtils.CABLE_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
@@ -140,7 +140,7 @@ public class TierConfig extends BaseMekanismConfig {
         builder.pop();
     }
 
-    private void addMechanicalPipeCategory(NeoForgeConfigSpec.Builder builder) {
+    private void addMechanicalPipeCategory(ModConfigSpec.Builder builder) {
         builder.comment("Mechanical Pipes").push(FLUID_CATEGORY);
         for (PipeTier tier : EnumUtils.PIPE_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
@@ -153,7 +153,7 @@ public class TierConfig extends BaseMekanismConfig {
         builder.pop();
     }
 
-    private void addPressurizedTubesCategory(NeoForgeConfigSpec.Builder builder) {
+    private void addPressurizedTubesCategory(ModConfigSpec.Builder builder) {
         builder.comment("Pressurized Tubes").push(CHEMICAL_CATEGORY);
         for (TubeTier tier : EnumUtils.TUBE_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
@@ -166,7 +166,7 @@ public class TierConfig extends BaseMekanismConfig {
         builder.pop();
     }
 
-    private void addLogisticalTransportersCategory(NeoForgeConfigSpec.Builder builder) {
+    private void addLogisticalTransportersCategory(ModConfigSpec.Builder builder) {
         builder.comment("Logistical Transporters").push(ITEMS_CATEGORY);
         for (TransporterTier tier : EnumUtils.TRANSPORTER_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
@@ -179,7 +179,7 @@ public class TierConfig extends BaseMekanismConfig {
         builder.pop();
     }
 
-    private void addThermodynamicConductorsCategory(NeoForgeConfigSpec.Builder builder) {
+    private void addThermodynamicConductorsCategory(ModConfigSpec.Builder builder) {
         builder.comment("Thermodynamic Conductors").push(HEAT_CATEGORY);
         for (ConductorTier tier : EnumUtils.CONDUCTOR_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
@@ -200,7 +200,7 @@ public class TierConfig extends BaseMekanismConfig {
     }
 
     @Override
-    public NeoForgeConfigSpec getConfigSpec() {
+    public ModConfigSpec getConfigSpec() {
         return configSpec;
     }
 

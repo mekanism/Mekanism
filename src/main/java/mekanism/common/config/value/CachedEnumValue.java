@@ -1,7 +1,7 @@
 package mekanism.common.config.value;
 
 import mekanism.common.config.IMekanismConfig;
-import net.neoforged.neoforge.common.NeoForgeConfigSpec.EnumValue;
+import net.neoforged.neoforge.common.ModConfigSpec.EnumValue;
 
 public class CachedEnumValue<T extends Enum<T>> extends CachedConfigValue<T> {
 

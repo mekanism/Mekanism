@@ -5,18 +5,18 @@ import mekanism.common.config.value.CachedEnumValue;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.neoforged.fml.config.ModConfig.Type;
-import net.neoforged.neoforge.common.NeoForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CommonConfig extends BaseMekanismConfig {
 
-    private final NeoForgeConfigSpec configSpec;
+    private final ModConfigSpec configSpec;
 
     public final CachedEnumValue<EnergyUnit> energyUnit;
     public final CachedEnumValue<TemperatureUnit> tempUnit;
     public final CachedBooleanValue enableDecayTimers;
 
     CommonConfig() {
-        NeoForgeConfigSpec.Builder builder = new NeoForgeConfigSpec.Builder();
+        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.comment("Mekanism Common Config. This config is not synced between server and client.").push("common");
         energyUnit = CachedEnumValue.wrap(this, builder.comment("Displayed energy type in Mekanism GUIs and network reader readings.")
               .defineEnum("energyType", EnergyUnit.FORGE_ENERGY));
@@ -34,7 +34,7 @@ public class CommonConfig extends BaseMekanismConfig {
     }
 
     @Override
-    public NeoForgeConfigSpec getConfigSpec() {
+    public ModConfigSpec getConfigSpec() {
         return configSpec;
     }
 

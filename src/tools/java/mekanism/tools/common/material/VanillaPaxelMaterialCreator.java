@@ -5,7 +5,7 @@ import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
 import net.minecraft.world.item.Tiers;
-import net.neoforged.neoforge.common.NeoForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 @NothingNullByDefault
 public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
@@ -18,7 +18,7 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
     private final CachedIntValue paxelEnchantability;
     private final CachedIntValue paxelMaxUses;
 
-    public VanillaPaxelMaterialCreator(IMekanismConfig config, NeoForgeConfigSpec.Builder builder, VanillaPaxelMaterial materialDefaults) {
+    public VanillaPaxelMaterialCreator(IMekanismConfig config, ModConfigSpec.Builder builder, VanillaPaxelMaterial materialDefaults) {
         this.fallback = materialDefaults;
         String toolKey = getRegistryPrefix();
         String name = getConfigCommentName();

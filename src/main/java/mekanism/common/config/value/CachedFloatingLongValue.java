@@ -5,9 +5,9 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraft.Util;
-import net.neoforged.neoforge.common.NeoForgeConfigSpec;
-import net.neoforged.neoforge.common.NeoForgeConfigSpec.Builder;
-import net.neoforged.neoforge.common.NeoForgeConfigSpec.ConfigValue;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec.Builder;
+import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -49,15 +49,15 @@ public class CachedFloatingLongValue extends CachedResolvableConfigValue<Floatin
         super(config, internal);
     }
 
-    public static CachedFloatingLongValue define(IMekanismConfig config, NeoForgeConfigSpec.Builder builder, String comment, String path, FloatingLong defaultValue) {
+    public static CachedFloatingLongValue define(IMekanismConfig config, ModConfigSpec.Builder builder, String comment, String path, FloatingLong defaultValue) {
         return define(config, builder, comment, path, defaultValue, false);
     }
 
-    public static CachedFloatingLongValue define(IMekanismConfig config, NeoForgeConfigSpec.Builder builder, String comment, String path, FloatingLong defaultValue, boolean worldRestart) {
+    public static CachedFloatingLongValue define(IMekanismConfig config, ModConfigSpec.Builder builder, String comment, String path, FloatingLong defaultValue, boolean worldRestart) {
         return define(config, builder, comment, path, defaultValue, worldRestart, VALIDATOR);
     }
 
-    public static CachedFloatingLongValue define(IMekanismConfig config, NeoForgeConfigSpec.Builder builder, String comment, String path, FloatingLong defaultValue,
+    public static CachedFloatingLongValue define(IMekanismConfig config, ModConfigSpec.Builder builder, String comment, String path, FloatingLong defaultValue,
           Predicate<Object> validator) {
         return define(config, builder, comment, path, defaultValue, false, validator);
     }

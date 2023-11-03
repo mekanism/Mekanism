@@ -17,7 +17,7 @@ import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FluidTankTier;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.common.NeoForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.fml.config.ModConfig.Type;
 
@@ -40,7 +40,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     private static final String PREFILLED_CATEGORY = "prefilled";
     private static final String NUTRITIONAL_PASTE_CATEGORY = "nutritional_paste";
 
-    private final NeoForgeConfigSpec configSpec;
+    private final ModConfigSpec configSpec;
 
     public final CachedBooleanValue logPackets;
     public final CachedBooleanValue allowChunkloading;
@@ -129,7 +129,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue spsEnergyPerInput;
 
     GeneralConfig() {
-        NeoForgeConfigSpec.Builder builder = new NeoForgeConfigSpec.Builder();
+        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.comment("General Config. This config is synced from server to client.").push("general");
 
         logPackets = CachedBooleanValue.wrap(this, builder.comment("Log Mekanism packet names. Debug setting.")
@@ -336,7 +336,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     }
 
     @Override
-    public NeoForgeConfigSpec getConfigSpec() {
+    public ModConfigSpec getConfigSpec() {
         return configSpec;
     }
 

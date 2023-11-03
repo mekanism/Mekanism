@@ -5,21 +5,21 @@ import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import net.neoforged.fml.config.ModConfig.Type;
-import net.neoforged.neoforge.common.NeoForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class GeneratorsGearConfig extends BaseMekanismConfig {
 
     private static final String MEKASUIT_CATEGORY = "mekasuit";
     private static final String MEKASUIT_DAMAGE_CATEGORY = "damage_absorption";
 
-    private final NeoForgeConfigSpec configSpec;
+    private final ModConfigSpec configSpec;
 
     //MekaSuit
     public final CachedFloatingLongValue mekaSuitGeothermalChargingRate;
     public final CachedFloatValue mekaSuitHeatDamageReductionRatio;
 
     GeneratorsGearConfig() {
-        NeoForgeConfigSpec.Builder builder = new NeoForgeConfigSpec.Builder();
+        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.comment("Mekanism Generators Gear Config. This config is synced from server to client.").push("generators-gear");
 
         builder.comment("MekaSuit Settings").push(MEKASUIT_CATEGORY);
@@ -40,7 +40,7 @@ public class GeneratorsGearConfig extends BaseMekanismConfig {
     }
 
     @Override
-    public NeoForgeConfigSpec getConfigSpec() {
+    public ModConfigSpec getConfigSpec() {
         return configSpec;
     }
 

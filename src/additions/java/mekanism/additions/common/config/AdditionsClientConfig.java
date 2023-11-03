@@ -3,16 +3,16 @@ package mekanism.additions.common.config;
 import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
 import net.neoforged.fml.config.ModConfig.Type;
-import net.neoforged.neoforge.common.NeoForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class AdditionsClientConfig extends BaseMekanismConfig {
 
-    private final NeoForgeConfigSpec configSpec;
+    private final ModConfigSpec configSpec;
 
     public final CachedBooleanValue voiceKeyIsToggle;
 
     AdditionsClientConfig() {
-        NeoForgeConfigSpec.Builder builder = new NeoForgeConfigSpec.Builder();
+        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         builder.comment("Mekanism Additions Client Config. This config only exists on the client.").push("additions-client");
 
         voiceKeyIsToggle = CachedBooleanValue.wrap(this, builder.comment("If the voice server is enabled and voiceKeyIsToggle is also enabled, the voice key will "
@@ -28,7 +28,7 @@ public class AdditionsClientConfig extends BaseMekanismConfig {
     }
 
     @Override
-    public NeoForgeConfigSpec getConfigSpec() {
+    public ModConfigSpec getConfigSpec() {
         return configSpec;
     }
 

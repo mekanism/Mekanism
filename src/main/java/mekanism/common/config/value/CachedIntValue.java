@@ -2,7 +2,7 @@ package mekanism.common.config.value;
 
 import java.util.function.IntSupplier;
 import mekanism.common.config.IMekanismConfig;
-import net.neoforged.neoforge.common.NeoForgeConfigSpec.ConfigValue;
+import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 
 public class CachedIntValue extends CachedValue<Integer> implements IntSupplier {
 

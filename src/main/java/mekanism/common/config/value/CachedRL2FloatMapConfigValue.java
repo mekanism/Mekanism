@@ -8,8 +8,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.common.NeoForgeConfigSpec;
-import net.neoforged.neoforge.common.NeoForgeConfigSpec.ConfigValue;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec.ConfigValue;
 
 public class CachedRL2FloatMapConfigValue extends CachedMapConfigValue<ResourceLocation, Float> {
 
@@ -17,11 +17,11 @@ public class CachedRL2FloatMapConfigValue extends CachedMapConfigValue<ResourceL
         super(config, internal);
     }
 
-    public static CachedRL2FloatMapConfigValue define(IMekanismConfig config, NeoForgeConfigSpec.Builder builder, String path, Supplier<Map<ResourceLocation, Float>> defaults) {
+    public static CachedRL2FloatMapConfigValue define(IMekanismConfig config, ModConfigSpec.Builder builder, String path, Supplier<Map<ResourceLocation, Float>> defaults) {
         return define(config, builder, path, defaults, f -> true);
     }
 
-    public static CachedRL2FloatMapConfigValue define(IMekanismConfig config, NeoForgeConfigSpec.Builder builder, String path, Supplier<Map<ResourceLocation, Float>> defaults,
+    public static CachedRL2FloatMapConfigValue define(IMekanismConfig config, ModConfigSpec.Builder builder, String path, Supplier<Map<ResourceLocation, Float>> defaults,
           FloatPredicate range) {
         return new CachedRL2FloatMapConfigValue(config, builder.defineListAllowEmpty(path,
               () -> encodeStatic(defaults.get(), CachedRL2FloatMapConfigValue::encodeStatic),
