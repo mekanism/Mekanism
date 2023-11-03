@@ -33,7 +33,8 @@ public abstract class ChemicalChemicalToChemicalRecipeHandler<CHEMICAL extends C
 
     @Override
     public String dumpToCommandString(IRecipeManager<? super RECIPE> manager, RECIPE recipe) {
-        return buildCommandString(manager, recipe, recipe.getLeftInput(), recipe.getRightInput(), recipe.getOutputDefinition());
+        throw new IllegalStateException("Needs update");//todo CraftTweaker update
+        //return buildCommandString(manager, recipe, recipe.getLeftInput(), recipe.getRightInput(), recipe.getOutputDefinition());
     }
 
     @Override

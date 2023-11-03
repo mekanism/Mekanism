@@ -3,6 +3,7 @@ package mekanism.common.content.assemblicator;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.List;
+import java.util.Objects;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
@@ -11,6 +12,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +21,7 @@ public class RecipeFormula {
 
     public final NonNullList<ItemStack> input = NonNullList.withSize(9, ItemStack.EMPTY);
     @Nullable
-    public CraftingRecipe recipe;
+    public RecipeHolder<CraftingRecipe> recipe;
     private final CraftingContainer dummy = MekanismUtils.getDummyCraftingInv();
 
     public RecipeFormula(Level world, NonNullList<ItemStack> inv) {
@@ -60,18 +62,18 @@ public class RecipeFormula {
         for (int i = 0; i < craftingGridSlots.size(); i++) {
             dummy.setItem(i, craftingGridSlots.get(i).getStack().copyWithCount(1));
         }
-        return recipe.matches(dummy, world);
+        return recipe.value().matches(dummy, world);
     }
 
     //Must have matches be called before this and be true as it assumes that the dummy inventory was set by it
     public ItemStack assemble(RegistryAccess registryAccess) {
-        return recipe == null ? ItemStack.EMPTY : recipe.assemble(dummy, registryAccess);
+        return recipe == null ? ItemStack.EMPTY : recipe.value().assemble(dummy, registryAccess);
     }
 
     //Must have matches be called before this and be true as it assumes that the dummy inventory was set by it
     public NonNullList<ItemStack> getRemainingItems() {
         //Should never be null given the assumption matches is called first
-        return recipe == null ? NonNullList.create() : recipe.getRemainingItems(dummy);
+        return recipe == null ? NonNullList.create() : recipe.value().getRemainingItems(dummy);
     }
 
     public boolean isIngredientInPos(Level world, ItemStack stack, int i) {
@@ -84,7 +86,7 @@ public class RecipeFormula {
         }
         resetToRecipe();
         dummy.setItem(i, stack);
-        return recipe.matches(dummy, world);
+        return recipe.value().matches(dummy, world);
     }
 
     public IntList getIngredientIndices(Level world, ItemStack stack) {
@@ -92,7 +94,7 @@ public class RecipeFormula {
         if (recipe != null) {
             for (int i = 0; i < 9; i++) {
                 dummy.setItem(i, stack);
-                if (recipe.matches(dummy, world)) {
+                if (recipe.value().matches(dummy, world)) {
                     ret.add(i);
                 }
                 dummy.setItem(i, input.get(i));
@@ -106,12 +108,12 @@ public class RecipeFormula {
     }
 
     @Nullable
-    public CraftingRecipe getRecipe() {
+    public RecipeHolder<CraftingRecipe> getRecipe() {
         return recipe;
     }
 
     public boolean isFormulaEqual(RecipeFormula formula) {
-        return formula.getRecipe() == getRecipe();
+        return Objects.equals(formula.getRecipe(), getRecipe());
     }
 
     public void setStack(Level world, int index, ItemStack stack) {
@@ -121,7 +123,7 @@ public class RecipeFormula {
     }
 
     @Nullable
-    private static CraftingRecipe getRecipeFromGrid(CraftingContainer inv, Level world) {
+    private static RecipeHolder<CraftingRecipe> getRecipeFromGrid(CraftingContainer inv, Level world) {
         return MekanismRecipeType.getRecipeFor(RecipeType.CRAFTING, inv, world).orElse(null);
     }
 }

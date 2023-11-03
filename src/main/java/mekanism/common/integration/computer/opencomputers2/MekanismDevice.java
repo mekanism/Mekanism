@@ -24,7 +24,8 @@ import java.lang.ref.WeakReference;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNotNullByDefault
-public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends BoundMethodHolder implements RPCDevice {
+//TODO reimplement RPCDevice if OC updates to NF
+public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends BoundMethodHolder /*implements RPCDevice*/ {
     public static <TILE extends BlockEntity & IComputerTile> MekanismDevice<TILE> create(TILE tile) {
         MekanismDevice<TILE> device = new MekanismDevice<>(tile);
         //add helper apis first
@@ -44,12 +45,12 @@ public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends Bo
         this.attachedTile = new WeakReference<>(tile);
     }
 
-    @Override
+    //@Override
     public List<String> getTypeNames() {
         return name;
     }
 
-    @Override
+    //@Override
     public List<RPCMethodGroup> getMethodGroups() {
         return methodGroups.get();
     }

@@ -51,7 +51,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
     protected void registerAdvancements(@NotNull Consumer<AdvancementHolder> consumer) {
         advancement(MekanismAdvancements.ROOT)
               .display(MekanismItems.ATOMIC_DISASSEMBLER, Mekanism.rl("textures/block/block_osmium.png"), FrameType.GOAL, false, false, false)
-              .addCriterion("automatic", new PlayerTrigger.TriggerInstance(MekanismCriteriaTriggers.LOGGED_IN.getId(), ContextAwarePredicate.ANY))
+              .addCriterion("automatic", new PlayerTrigger.TriggerInstance(MekanismCriteriaTriggers.LOGGED_IN.getId(), Optional.empty()))
               .save(consumer);
         advancement(MekanismAdvancements.MATERIALS)
               .display(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM), FrameType.TASK, false)
@@ -193,11 +193,11 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.ENVIRONMENTAL_RADIATION)
               .display(MekanismItems.GEIGER_COUNTER, FrameType.TASK, false)
-              .addCriterion("use_geiger_counter", new UsingItemTrigger.TriggerInstance(ContextAwarePredicate.ANY, predicate(MekanismItems.GEIGER_COUNTER)))
+              .addCriterion("use_geiger_counter", new UsingItemTrigger.TriggerInstance(Optional.empty(), predicate(MekanismItems.GEIGER_COUNTER)))
               .save(consumer);
         advancement(MekanismAdvancements.PERSONAL_RADIATION)
               .display(MekanismItems.DOSIMETER, FrameType.TASK, false)
-              .addCriterion("use_dosimeter", new UsingItemTrigger.TriggerInstance(ContextAwarePredicate.ANY, predicate(MekanismItems.DOSIMETER)))
+              .addCriterion("use_dosimeter", new UsingItemTrigger.TriggerInstance(Optional.empty(), predicate(MekanismItems.DOSIMETER)))
               .save(consumer);
         advancement(MekanismAdvancements.RADIATION_PREVENTION)
               .display(MekanismItems.HAZMAT_GOWN, FrameType.TASK, true)
@@ -275,7 +275,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.TELEPORTER)
               .displayAndCriterion(MekanismBlocks.TELEPORTER, FrameType.TASK, true)
-              .addCriterion("teleport", new PlayerTrigger.TriggerInstance(MekanismCriteriaTriggers.TELEPORT.getId(), ContextAwarePredicate.ANY))
+              .addCriterion("teleport", new PlayerTrigger.TriggerInstance(MekanismCriteriaTriggers.TELEPORT.getId(), Optional.empty()))
               .save(consumer);
         advancement(MekanismAdvancements.PORTABLE_TELEPORTER)
               .displayAndCriterion(MekanismItems.PORTABLE_TELEPORTER, FrameType.TASK, true)

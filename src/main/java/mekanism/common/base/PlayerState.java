@@ -180,7 +180,7 @@ public class PlayerState {
     // ----------------------
 
     public void updateStepAssist(Player player) {
-        updateAttribute(player, NeoForgeMod.STEP_HEIGHT_ADDITION.get(), STEP_ASSIST_MODIFIER_UUID, "Step Assist", () -> CommonPlayerTickHandler.getStepBoost(player));
+        updateAttribute(player, NeoForgeMod.STEP_HEIGHT.get(), STEP_ASSIST_MODIFIER_UUID, "Step Assist", () -> CommonPlayerTickHandler.getStepBoost(player));
     }
 
     // ----------------------
@@ -205,7 +205,7 @@ public class PlayerState {
                     return;
                 }
                 //Otherwise, remove the no longer valid value, so we can add it again properly
-                attributeInstance.removeModifier(existing);
+                attributeInstance.removeModifier(uuid);
             }
             if (additional > 0) {
                 //If we should have the attribute, but we don't have it set yet, or our stored amount was different, update

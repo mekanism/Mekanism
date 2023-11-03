@@ -1,6 +1,7 @@
 package mekanism.common.advancements.triggers;
 
 import com.google.gson.JsonObject;
+import java.util.Optional;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
@@ -12,22 +13,9 @@ import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockLaserTrigger extends SimpleCriterionTrigger<BlockLaserTrigger.TriggerInstance> {
-
-    private final ResourceLocation id;
-
-    public BlockLaserTrigger(ResourceLocation id) {
-        this.id = id;
-    }
-
     @NotNull
     @Override
-    public ResourceLocation getId() {
-        return id;
-    }
-
-    @NotNull
-    @Override
-    protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull ContextAwarePredicate playerPredicate, @NotNull DeserializationContext context) {
+    protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull Optional<ContextAwarePredicate> playerPredicate, @NotNull DeserializationContext context) {
         return new TriggerInstance(playerPredicate);
     }
 
@@ -37,12 +25,12 @@ public class BlockLaserTrigger extends SimpleCriterionTrigger<BlockLaserTrigger.
 
     public static class TriggerInstance extends AbstractCriterionTriggerInstance {
 
-        public TriggerInstance(ContextAwarePredicate playerPredicate) {
-            super(MekanismCriteriaTriggers.BLOCK_LASER.getId(), playerPredicate);
+        public TriggerInstance(Optional<ContextAwarePredicate> playerPredicate) {
+            super(playerPredicate);
         }
 
         public static BlockLaserTrigger.TriggerInstance block() {
-            return new BlockLaserTrigger.TriggerInstance(ContextAwarePredicate.ANY);
+            return new BlockLaserTrigger.TriggerInstance(Optional.empty());
         }
     }
 }

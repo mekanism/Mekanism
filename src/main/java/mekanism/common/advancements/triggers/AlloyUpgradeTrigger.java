@@ -1,6 +1,7 @@
 package mekanism.common.advancements.triggers;
 
 import com.google.gson.JsonObject;
+import java.util.Optional;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
@@ -12,22 +13,9 @@ import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
 public class AlloyUpgradeTrigger extends SimpleCriterionTrigger<AlloyUpgradeTrigger.TriggerInstance> {
-
-    private final ResourceLocation id;
-
-    public AlloyUpgradeTrigger(ResourceLocation id) {
-        this.id = id;
-    }
-
     @NotNull
     @Override
-    public ResourceLocation getId() {
-        return id;
-    }
-
-    @NotNull
-    @Override
-    protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull ContextAwarePredicate playerPredicate, @NotNull DeserializationContext context) {
+    protected TriggerInstance createInstance(@NotNull JsonObject json, @NotNull Optional<ContextAwarePredicate> playerPredicate, @NotNull DeserializationContext context) {
         return new TriggerInstance(playerPredicate);
     }
 
@@ -37,12 +25,13 @@ public class AlloyUpgradeTrigger extends SimpleCriterionTrigger<AlloyUpgradeTrig
 
     public static class TriggerInstance extends AbstractCriterionTriggerInstance {
 
-        public TriggerInstance(ContextAwarePredicate playerPredicate) {
-            super(MekanismCriteriaTriggers.ALLOY_UPGRADE.getId(), playerPredicate);
+        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+        public TriggerInstance(Optional<ContextAwarePredicate> playerPredicate) {
+            super(playerPredicate);
         }
 
         public static AlloyUpgradeTrigger.TriggerInstance upgraded() {
-            return new AlloyUpgradeTrigger.TriggerInstance(ContextAwarePredicate.ANY);
+            return new AlloyUpgradeTrigger.TriggerInstance(Optional.empty());
         }
     }
 }

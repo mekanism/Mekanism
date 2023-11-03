@@ -43,20 +43,20 @@ public class MetallurgicInfuserRecipeMapper implements IRecipeTypeMapper {
         boolean handled = false;
         List<@NotNull InfusionStack> infuseTypeRepresentations = recipe.getChemicalInput().getRepresentations();
         List<@NotNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
-        for (InfusionStack infuseTypeRepresentation : infuseTypeRepresentations) {
-            NormalizedSimpleStack nssInfuseType = NSSInfuseType.createInfuseType(infuseTypeRepresentation);
-            for (ItemStack itemRepresentation : itemRepresentations) {
-                ItemStack output = recipe.getOutput(itemRepresentation, infuseTypeRepresentation);
-                if (!output.isEmpty()) {
-                    IngredientHelper ingredientHelper = new IngredientHelper(mapper);
-                    ingredientHelper.put(nssInfuseType, infuseTypeRepresentation.getAmount());
-                    ingredientHelper.put(itemRepresentation);
-                    if (ingredientHelper.addAsConversion(output)) {
-                        handled = true;
-                    }
-                }
-            }
-        }
+        //for (InfusionStack infuseTypeRepresentation : infuseTypeRepresentations) {
+        //    NormalizedSimpleStack nssInfuseType = NSSInfuseType.createInfuseType(infuseTypeRepresentation);
+        //    for (ItemStack itemRepresentation : itemRepresentations) {
+        //        ItemStack output = recipe.getOutput(itemRepresentation, infuseTypeRepresentation);
+        //        if (!output.isEmpty()) {
+        //            IngredientHelper ingredientHelper = new IngredientHelper(mapper);
+        //            ingredientHelper.put(nssInfuseType, infuseTypeRepresentation.getAmount());
+        //            ingredientHelper.put(itemRepresentation);
+        //            if (ingredientHelper.addAsConversion(output)) {
+        //                handled = true;
+        //            }
+        //        }
+        //    }
+        //}
         return handled;
     }
 }

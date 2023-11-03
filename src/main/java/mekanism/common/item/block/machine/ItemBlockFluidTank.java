@@ -29,7 +29,7 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockSource;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
@@ -165,7 +165,7 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
                         } else if (block instanceof BucketPickup bucketPickup && validFluid(fluidTank, fluidStack)) {
                             //If it can be picked up by a bucket, and we actually want to pick it up, do so to update the fluid type we are doing
                             // otherwise we assume the type from the fluid state is correct
-                            ItemStack pickedUpStack = bucketPickup.pickupBlock(world, pos, blockState);
+                            ItemStack pickedUpStack = bucketPickup.pickupBlock(player, world, pos, blockState);
                             if (pickedUpStack.isEmpty()) {
                                 //If the fluid can't be picked up, pass on doing anything
                                 return InteractionResultHolder.pass(stack);
@@ -290,8 +290,8 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
                     //If there isn't one then there is something wrong with the stack, treat it as a normal stack and just eject it
                     return super.execute(source, stack);
                 }
-                Level world = source.getLevel();
-                BlockPos pos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
+                Level world = source.level();
+                BlockPos pos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
                 //Note: we get the block state from the world so that we can get the proper block in case it is fluid logged
                 BlockState blockState = world.getBlockState(pos);
                 FluidState fluidState = blockState.getFluidState();
@@ -314,7 +314,7 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
                     } else if (block instanceof BucketPickup bucketPickup && validFluid(fluidTank, fluidStack)) {
                         //If it can be picked up by a bucket, and we actually want to pick it up, do so to update the fluid type we are doing
                         // otherwise we assume the type from the fluid state is correct
-                        ItemStack pickedUpStack = bucketPickup.pickupBlock(world, pos, blockState);
+                        ItemStack pickedUpStack = bucketPickup.pickupBlock(null, world, pos, blockState);
                         if (pickedUpStack.isEmpty()) {
                             //If the fluid cannot be picked up, then eject the stack similar to how vanilla does for buckets
                             return super.execute(source, stack);

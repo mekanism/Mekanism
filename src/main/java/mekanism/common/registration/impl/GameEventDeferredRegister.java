@@ -19,7 +19,7 @@ public class GameEventDeferredRegister extends WrappedDeferredRegister<GameEvent
     }
 
     public GameEventRegistryObject<GameEvent> register(String name, int notificationRadius) {
-        return register(name, () -> new GameEvent(modid + ":" + name, notificationRadius));
+        return register(name, () -> new GameEvent(notificationRadius));
     }
 
     public <GAME_EVENT extends GameEvent> GameEventRegistryObject<GAME_EVENT> register(String name, Supplier<? extends GAME_EVENT> sup) {

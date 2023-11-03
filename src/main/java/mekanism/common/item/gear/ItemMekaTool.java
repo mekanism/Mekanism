@@ -386,7 +386,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                         double targetY = pos.getY() + 1.5;
                         double targetZ = pos.getZ() + 0.5;
                         MekanismTeleportEvent.MekaTool event = new MekanismTeleportEvent.MekaTool(player, targetX, targetY, targetZ, stack, result);
-                        if (NeoForge.EVENT_BUS.post(event)) {
+                        if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
                             //Fail if the event was cancelled
                             return InteractionResultHolder.fail(stack);
                         }

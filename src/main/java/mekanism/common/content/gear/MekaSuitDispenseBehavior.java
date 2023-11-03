@@ -1,7 +1,7 @@
 package mekanism.common.content.gear;
 
 import mekanism.api.gear.ICustomModule.ModuleDispenseResult;
-import net.minecraft.core.BlockSource;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;

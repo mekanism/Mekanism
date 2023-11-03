@@ -184,6 +184,7 @@ import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.resources.PlayerSkin.Model;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.core.registries.Registries;
@@ -593,8 +594,8 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void addLayers(EntityRenderersEvent.AddLayers event) {
         //Add our own custom armor layer to the various player renderers
-        for (String skinName : event.getSkins()) {
-            addCustomLayers(EntityType.PLAYER, (PlayerRenderer) event.getSkin(skinName), event.getContext().getModelManager());
+        for (Model skin : event.getSkins()) {
+            addCustomLayers(EntityType.PLAYER, (PlayerRenderer) event.getSkin(skin.id()), event.getContext().getModelManager());
         }
         //Add our own custom armor layer to everything that has an armor layer
         //Note: This includes any modded mobs that have vanilla's BipedArmorLayer added to them

@@ -172,11 +172,11 @@ public class GuiTextField extends GuiElement {
         updateTextField();
     }
 
-    @Override
-    public void tick() {
-        super.tick();
-        textField.tick();
-    }
+    //@Override
+    //public void tick() {
+    //    super.tick();
+    //    textField.tick();
+    //}
 
     @Nullable
     @Override

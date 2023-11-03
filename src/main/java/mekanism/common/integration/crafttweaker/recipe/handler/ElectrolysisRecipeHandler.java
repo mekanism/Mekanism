@@ -19,8 +19,9 @@ public class ElectrolysisRecipeHandler extends MekanismRecipeHandler<Electrolysi
 
     @Override
     public String dumpToCommandString(IRecipeManager<? super ElectrolysisRecipe> manager, ElectrolysisRecipe recipe) {
-        return buildCommandString(manager, recipe, recipe.getInput(), recipe.getOutputDefinition(),
-              recipe.getEnergyMultiplier().equals(FloatingLong.ONE) ? SKIP_OPTIONAL_PARAM : recipe.getEnergyMultiplier());
+        throw new IllegalStateException("Needs update");//todo CraftTweaker update
+        //return buildCommandString(manager, recipe, recipe.getInput(), recipe.getOutputDefinition(),
+        //      recipe.getEnergyMultiplier().equals(FloatingLong.ONE) ? SKIP_OPTIONAL_PARAM : recipe.getEnergyMultiplier());
     }
 
     @Override

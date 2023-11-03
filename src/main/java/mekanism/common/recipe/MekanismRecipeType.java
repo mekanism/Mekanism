@@ -64,6 +64,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
@@ -224,15 +225,15 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
         if (cachedRecipes.isEmpty()) {
             RecipeManager recipeManager = world.getRecipeManager();
             //Note: This is a fresh mutable list that gets returned
-            List<RECIPE> recipes = recipeManager.getAllRecipesFor(this);
+            List<RecipeHolder<RECIPE>> recipes = recipeManager.getAllRecipesFor(this);
             if (this == SMELTING.get()) {
                 //Ensure the recipes can be modified
                 recipes = new ArrayList<>(recipes);
-                for (SmeltingRecipe smeltingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
-                    ItemStack recipeOutput = smeltingRecipe.getResultItem(world.registryAccess());
-                    if (!smeltingRecipe.isSpecial() && !smeltingRecipe.isIncomplete() && !recipeOutput.isEmpty()) {
+                for (RecipeHolder<SmeltingRecipe> smeltingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
+                    ItemStack recipeOutput = smeltingRecipe.value().getResultItem(world.registryAccess());
+                    if (!smeltingRecipe.value().isSpecial() && !smeltingRecipe.value().isIncomplete() && !recipeOutput.isEmpty()) {
                         //TODO: Can Smelting recipes even be "special", if so can we add some sort of checker to make getOutput return the correct result
-                        NonNullList<Ingredient> ingredients = smeltingRecipe.getIngredients();
+                        NonNullList<Ingredient> ingredients = smeltingRecipe.value().getIngredients();
                         ItemStackIngredient input;
                         if (ingredients.isEmpty()) {
                             //Something went wrong
@@ -241,7 +242,8 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
                             IItemStackIngredientCreator ingredientCreator = IngredientCreatorAccess.item();
                             input = ingredientCreator.from(ingredients.stream().map(ingredientCreator::from));
                         }
-                        recipes.add((RECIPE) new SmeltingIRecipe(smeltingRecipe.getId(), input, recipeOutput));
+                        //todo remove unchecked cast
+                        recipes.add(new RecipeHolder<>(smeltingRecipe.id(), (RECIPE) new SmeltingIRecipe(smeltingRecipe.id(), input, recipeOutput)));
                     }
                 }
             }
@@ -249,7 +251,8 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
             // as there is no reason to potentially look the partial complete piece up if
             // the other portion of the recipe is incomplete
             cachedRecipes = recipes.stream()
-                  .filter(recipe -> !recipe.isIncomplete())
+                  .filter(recipe -> !recipe.value().isIncomplete())
+                  .map(RecipeHolder::value)//todo are the ids used?
                   .toList();
         }
         return cachedRecipes;
@@ -258,20 +261,20 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
     /**
      * Helper for getting a recipe from a world's recipe manager.
      */
-    public static <C extends Container, RECIPE_TYPE extends Recipe<C>> Optional<RECIPE_TYPE> getRecipeFor(RecipeType<RECIPE_TYPE> recipeType, C inventory, Level level) {
+    public static <C extends Container, RECIPE_TYPE extends Recipe<C>> Optional<RecipeHolder<RECIPE_TYPE>> getRecipeFor(RecipeType<RECIPE_TYPE> recipeType, C inventory, Level level) {
         //Only allow looking up complete recipes or special recipes as we only use this method for vanilla recipe types
         // and special recipes return that they are not complete
         return level.getRecipeManager().getRecipeFor(recipeType, inventory, level)
-              .filter(recipe -> recipe.isSpecial() || !recipe.isIncomplete());
+              .filter(recipe -> recipe.value().isSpecial() || !recipe.value().isIncomplete());
     }
 
     /**
      * Helper for getting a recipe from a world's recipe manager.
      */
-    public static Optional<? extends Recipe<?>> byKey(Level level, ResourceLocation id) {
+    public static Optional<RecipeHolder<?>> byKey(Level level, ResourceLocation id) {
         //Only allow looking up complete recipes or special recipes as we only use this method for vanilla recipe types
         // and special recipes return that they are not complete
         return level.getRecipeManager().byKey(id)
-              .filter(recipe -> recipe.isSpecial() || !recipe.isIncomplete());
+              .filter(recipe -> recipe.value().isSpecial() || !recipe.value().isIncomplete());
     }
 }

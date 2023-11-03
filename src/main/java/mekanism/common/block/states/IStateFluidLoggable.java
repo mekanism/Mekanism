@@ -1,9 +1,11 @@
 package mekanism.common.block.states;
 
 import java.util.Optional;
+import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
@@ -69,7 +71,7 @@ public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer 
     }
 
     @Override
-    default boolean canPlaceLiquid(@NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid fluid) {
+    default boolean canPlaceLiquid(@Nullable Player p_294682_, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid fluid) {
         return state.getValue(getFluidLoggedProperty()).isEmpty() && isValidFluid(fluid);
     }
 
@@ -92,7 +94,7 @@ public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer 
     @Override
     default boolean placeLiquid(@NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull FluidState fluidState) {
         Fluid fluid = fluidState.getType();
-        if (canPlaceLiquid(world, pos, state, fluid)) {
+        if (canPlaceLiquid(null, world, pos, state, fluid)) {
             if (!world.isClientSide()) {
                 world.setBlock(pos, setState(state, fluid), Block.UPDATE_ALL);
                 world.scheduleTick(pos, fluid, fluid.getTickDelay(world));
@@ -104,7 +106,7 @@ public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer 
 
     @NotNull
     @Override
-    default ItemStack pickupBlock(@NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockState state) {
+    default ItemStack pickupBlock(@Nullable Player p_294682_, @NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockState state) {
         IFluidLogType fluidLogged = state.getValue(getFluidLoggedProperty());
         if (!fluidLogged.isEmpty()) {
             Fluid fluid = fluidLogged.getFluid();

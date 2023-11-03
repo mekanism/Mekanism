@@ -300,7 +300,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                                 MekFakePlayer.withFakePlayer((ServerLevel) level, to.x(), to.y(), to.z(), dummy -> {
                                     dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
                                     BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, hitPos, hitState, dummy);
-                                    if (!NeoForge.EVENT_BUS.post(event)) {
+                                    if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
                                         if (hitState.getBlock() instanceof TntBlock && hitState.isFlammable(level, hitPos, result.getDirection())) {
                                             //Convert TNT that can be lit on fire into a tnt entity
                                             //Note: We don't mark the fake player as the igniter as then when the tnt explodes if it hits a player

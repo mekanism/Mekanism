@@ -77,11 +77,6 @@ public abstract class WrappedShapedRecipe implements CraftingRecipe, IShapedReci
     }
 
     @Override
-    public ResourceLocation getId() {
-        return internal.getId();
-    }
-
-    @Override
     public int getRecipeWidth() {
         return internal.getRecipeWidth();
     }

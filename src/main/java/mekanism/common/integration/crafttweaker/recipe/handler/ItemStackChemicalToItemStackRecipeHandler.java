@@ -32,7 +32,8 @@ public abstract class ItemStackChemicalToItemStackRecipeHandler<CHEMICAL extends
 
     @Override
     public String dumpToCommandString(IRecipeManager<? super RECIPE> manager, RECIPE recipe) {
-        return buildCommandString(manager, recipe, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition());
+        throw new IllegalStateException("Needs update");//todo CraftTweaker update
+        //return buildCommandString(manager, recipe, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition());
     }
 
     @Override

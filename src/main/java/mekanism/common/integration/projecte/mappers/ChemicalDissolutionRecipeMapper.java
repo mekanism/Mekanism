@@ -53,7 +53,7 @@ public class ChemicalDissolutionRecipeMapper implements IRecipeTypeMapper {
                 if (!output.isEmpty()) {
                     IngredientHelper ingredientHelper = new IngredientHelper(mapper);
                     ingredientHelper.put(itemRepresentation);
-                    ingredientHelper.put(nssGas, gasAmount);
+                    //TODO ProjectE ingredientHelper.put(nssGas, gasAmount);
                     if (ingredientHelper.addAsConversion(output.getChemicalStack())) {
                         handled = true;
                     }

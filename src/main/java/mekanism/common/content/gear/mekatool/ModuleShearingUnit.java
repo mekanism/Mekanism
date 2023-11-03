@@ -13,7 +13,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemMekaTool;
 import mekanism.common.registries.MekanismModules;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockSource;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -87,9 +87,9 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
     @NotNull
     @Override
     public ModuleDispenseResult onDispense(IModule<ModuleShearingUnit> module, BlockSource source) {
-        ServerLevel world = source.getLevel();
-        Direction facing = source.getBlockState().getValue(DispenserBlock.FACING);
-        BlockPos pos = source.getPos().relative(facing);
+        ServerLevel world = source.level();
+        Direction facing = source.state().getValue(DispenserBlock.FACING);
+        BlockPos pos = source.pos().relative(facing);
         if (tryShearBlock(world, pos, facing.getOpposite()) || tryShearLivingEntity(module.getEnergyContainer(), world, pos, module.getContainer())) {
             return ModuleDispenseResult.HANDLED;
         }

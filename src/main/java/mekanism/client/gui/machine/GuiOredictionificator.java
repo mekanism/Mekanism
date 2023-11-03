@@ -84,7 +84,7 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        return super.mouseScrolled(mouseX, mouseY, delta) || scrollBar.adjustScroll(delta);
+    public boolean mouseScrolled(double mouseX, double mouseY, double xDelta, double yDelta) {
+        return super.mouseScrolled(mouseX, mouseY, xDelta, yDelta) || scrollBar.adjustScroll(xDelta);
     }
 }

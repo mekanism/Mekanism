@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.network.NetworkEvent;
 
 public class PacketQIOFillCraftingWindow implements IMekanismPacket {
@@ -41,9 +42,9 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
             if (selectedCraftingGrid == -1) {
                 Mekanism.logger.warn("Received transfer request from: {}, but they do not currently have a crafting window open.", player);
             } else {
-                Optional<? extends Recipe<?>> optionalRecipe = MekanismRecipeType.byKey(player.level(), recipeID);
+                Optional<RecipeHolder<?>> optionalRecipe = MekanismRecipeType.byKey(player.level(), recipeID);
                 if (optionalRecipe.isPresent()) {
-                    Recipe<?> recipe = optionalRecipe.get();
+                    Recipe<?> recipe = optionalRecipe.get().value();
                     if (recipe instanceof CraftingRecipe craftingRecipe) {
                         QIOServerCraftingTransferHandler.tryTransfer(container, selectedCraftingGrid, player, recipeID, craftingRecipe, sources);
                     } else {

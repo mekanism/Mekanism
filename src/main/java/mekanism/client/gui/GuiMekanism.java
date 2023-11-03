@@ -322,18 +322,18 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double xDelta, double yDelta) {
         // first try to send the mouse event to our focused window
         GuiWindow top = windows.isEmpty() ? null : windows.iterator().next();
         if (top != null) {
-            boolean windowScroll = top.mouseScrolled(mouseX, mouseY, delta);
+            boolean windowScroll = top.mouseScrolled(mouseX, mouseY, xDelta, yDelta);
             if (windowScroll || !top.getInteractionStrategy().allowAll()) {
                 //If our focused window was able to handle the scroll or doesn't allow interacting with
                 // things outside the window, return our scroll result
                 return windowScroll;
             }
         }
-        return super.mouseScrolled(mouseX, mouseY, delta);
+        return super.mouseScrolled(mouseX, mouseY, xDelta, yDelta);
     }
 
     @Override
@@ -575,7 +575,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         // shift back a whole lot so we can stack more windows
         //TODO - 1.20: Validate this, used to translate the modelViewStack
         pose.translate(0, 0, -500);
-        renderBackground(guiGraphics);
+        renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         pose.popPose();
     }

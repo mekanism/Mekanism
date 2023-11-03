@@ -424,7 +424,7 @@ public class WorldUtils {
         }
         BlockState state = world.getBlockState(pos);
         boolean isReplaceable = state.canBeReplaced(fluid);
-        boolean canContainFluid = state.getBlock() instanceof LiquidBlockContainer liquidBlockContainer && liquidBlockContainer.canPlaceLiquid(world, pos, state, fluid);
+        boolean canContainFluid = state.getBlock() instanceof LiquidBlockContainer liquidBlockContainer && liquidBlockContainer.canPlaceLiquid(player, world, pos, state, fluid);
         if (state.isAir() || isReplaceable || canContainFluid) {
             if (world.dimensionType().ultraWarm() && fluidType.isVaporizedOnPlacement(world, pos, fluidStack)) {
                 fluidType.onVaporize(player, world, pos, fluidStack);

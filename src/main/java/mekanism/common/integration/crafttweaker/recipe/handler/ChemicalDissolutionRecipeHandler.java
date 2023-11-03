@@ -17,7 +17,8 @@ public class ChemicalDissolutionRecipeHandler extends MekanismRecipeHandler<Chem
 
     @Override
     public String dumpToCommandString(IRecipeManager<? super ChemicalDissolutionRecipe> manager, ChemicalDissolutionRecipe recipe) {
-        return buildCommandString(manager, recipe, recipe.getItemInput(), recipe.getGasInput(), recipe.getOutputDefinition());
+        throw new IllegalStateException("Needs update");//todo CraftTweaker update
+        //return buildCommandString(manager, recipe, recipe.getItemInput(), recipe.getGasInput(), recipe.getOutputDefinition());
     }
 
     @Override

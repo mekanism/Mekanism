@@ -569,7 +569,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private boolean canMine(BlockState state, BlockPos pos) {
-        return withFakePlayer(dummy -> !NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, pos, state, dummy)));
+        return withFakePlayer(dummy -> !NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, pos, state, dummy)).isCanceled());
     }
 
     private <R> R withFakePlayer(Function<MekFakePlayer, R> fakePlayerConsumer) {

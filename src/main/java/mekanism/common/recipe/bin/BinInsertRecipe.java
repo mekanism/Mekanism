@@ -28,8 +28,8 @@ import net.neoforged.neoforge.items.ItemHandlerHelper;
 @NothingNullByDefault
 public class BinInsertRecipe extends BinRecipe {
 
-    public BinInsertRecipe(ResourceLocation id, CraftingBookCategory category) {
-        super(id, category);
+    public BinInsertRecipe(CraftingBookCategory category) {
+        super(category);
     }
 
     @Override

@@ -68,6 +68,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.crafting.CraftingHelper;
 import net.neoforged.neoforge.common.crafting.StrictNBTIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -93,17 +94,17 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
         return ChemicalType.getTypeFor(a) == ChemicalType.getTypeFor(b) && ingredientConflicts(a, (ChemicalStackIngredient<CHEMICAL, STACK>) b);
     }
 
-    protected String buildCommandString(IRecipeManager<? super RECIPE> manager, RECIPE recipe, Object... params) {
+    protected String buildCommandString(IRecipeManager<? super RECIPE> manager, RecipeHolder<RECIPE> recipe, Object... params) {
         return buildCommandString(manager, "addRecipe", recipe, params);
     }
 
-    protected String buildCommandString(IRecipeManager<? super RECIPE> manager, String method, RECIPE recipe, Object... params) {
+    protected String buildCommandString(IRecipeManager<? super RECIPE> manager, String method, RecipeHolder<RECIPE> recipe, Object... params) {
         StringBuilder commandString = new StringBuilder(manager.getCommandString())
               .append('.')
               .append(method)
               .append("(\"")
               //Note: Uses path rather than entire location as we only allow adding recipes to the CrT namespace
-              .append(recipe.getId().getPath())
+              .append(recipe.id().getPath())
               .append('"');
         for (Object param : params) {
             if (param != SKIP_OPTIONAL_PARAM) {
@@ -176,7 +177,8 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
 
     @Nullable
     public static String basicImplicitIngredient(Ingredient vanillaIngredient, int amount, JsonElement serialized, boolean handleTags) {
-        if (serialized.isJsonObject()) {
+        throw new IllegalStateException("CT not updated");//todo CraftTweaker porting
+        /*if (serialized.isJsonObject()) {
             JsonObject serializedIngredient = serialized.getAsJsonObject();
             if (vanillaIngredient.isVanilla()) {
                 if (serializedIngredient.has(JsonConstants.ITEM)) {
@@ -192,7 +194,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
                 return ItemStackUtil.getCommandString(stack);
             }
         }
-        return null;
+        return null;*/
     }
 
     private String convertIngredient(ItemStackIngredient ingredient) {

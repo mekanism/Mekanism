@@ -29,6 +29,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.ClipContext;
@@ -205,9 +206,9 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
         ItemStack stack = item.getItem();
         if (!stack.isEmpty()) {//This probably should never be empty but validate it in case
             Level level = level();
-            Optional<SmeltingRecipe> recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level);
+            Optional<RecipeHolder<SmeltingRecipe>> recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level);
             if (recipe.isPresent()) {
-                ItemStack result = recipe.get().getResultItem(level.registryAccess());
+                ItemStack result = recipe.get().value().getResultItem(level.registryAccess());
                 item.setItem(result.copyWithCount(result.getCount() * stack.getCount()));
                 item.tickCount = 0;
                 spawnParticlesAt(item.blockPosition());
@@ -226,7 +227,7 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
         if (stack.isEmpty()) {
             return;
         }
-        Optional<SmeltingRecipe> recipe;
+        Optional<RecipeHolder<SmeltingRecipe>> recipe;
         try {
             recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level());
         } catch (Exception e) {
@@ -234,11 +235,11 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
         }
         if (recipe.isPresent()) {
             if (!level().isClientSide) {
-                if (NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level(), blockPos, hitState, shooter))) {
+                if (NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level(), blockPos, hitState, shooter)).isCanceled()) {
                     //We can't break the block exit
                     return;
                 }
-                ItemStack result = recipe.get().getResultItem(level().registryAccess());
+                ItemStack result = recipe.get().value().getResultItem(level().registryAccess());
                 if (!(result.getItem() instanceof BlockItem) || !tryPlace(shooter, blockPos, hitSide, Block.byItem(result.getItem()).defaultBlockState())) {
                     level().removeBlock(blockPos, false);
                     ItemEntity item = new ItemEntity(level(), blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, result.copy());

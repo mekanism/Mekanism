@@ -15,7 +15,8 @@ public class GasToGasRecipeHandler extends MekanismRecipeHandler<GasToGasRecipe>
 
     @Override
     public String dumpToCommandString(IRecipeManager<? super GasToGasRecipe> manager, GasToGasRecipe recipe) {
-        return buildCommandString(manager, recipe, recipe.getInput(), recipe.getOutputDefinition());
+        throw new IllegalStateException("Needs update");//todo CraftTweaker update
+        //return buildCommandString(manager, recipe, recipe.getInput(), recipe.getOutputDefinition());
     }
 
     @Override

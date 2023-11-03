@@ -56,46 +56,47 @@ public class PressurizedReactionRecipeMapper implements IRecipeTypeMapper {
         for (ItemStack itemRepresentation : itemRepresentations) {
             NormalizedSimpleStack nssItem = NSSItem.createItem(itemRepresentation);
             for (FluidStack fluidRepresentation : fluidRepresentations) {
-                NormalizedSimpleStack nssFluid = NSSFluid.createFluid(fluidRepresentation);
-                for (GasStack gasRepresentation : gasRepresentations) {
-                    NormalizedSimpleStack nssGas = NSSGas.createGas(gasRepresentation);
-                    PressurizedReactionRecipeOutput output = recipe.getOutput(itemRepresentation, fluidRepresentation, gasRepresentation);
-                    ItemStack itemOutput = output.item();
-                    GasStack gasOutput = output.gas();
-                    IngredientHelper ingredientHelper = new IngredientHelper(mapper);
-                    ingredientHelper.put(nssItem, itemRepresentation.getCount());
-                    ingredientHelper.put(nssFluid, fluidRepresentation.getAmount());
-                    ingredientHelper.put(nssGas, gasRepresentation.getAmount());
-                    if (itemOutput.isEmpty()) {
-                        //We only have a gas output
-                        if (!gasOutput.isEmpty() && ingredientHelper.addAsConversion(gasOutput)) {
-                            handled = true;
-                        }
-                    } else if (gasOutput.isEmpty()) {
-                        //We only have an item output
-                        if (ingredientHelper.addAsConversion(itemOutput)) {
-                            handled = true;
-                        }
-                    } else {
-                        NormalizedSimpleStack nssItemOutput = NSSItem.createItem(itemOutput);
-                        NormalizedSimpleStack nssGasOutput = NSSGas.createGas(gasOutput);
-                        //We have both so do our best guess
-                        //Add trying to calculate the item output (using it as if we needed negative of gas output)
-                        ingredientHelper.put(nssGasOutput, -gasOutput.getAmount());
-                        if (ingredientHelper.addAsConversion(nssItemOutput, itemOutput.getCount())) {
-                            handled = true;
-                        }
-                        //Add trying to calculate gas output (using it as if we needed negative of item output)
-                        ingredientHelper.resetHelper();
-                        ingredientHelper.put(nssItem, itemRepresentation.getCount());
-                        ingredientHelper.put(nssFluid, fluidRepresentation.getAmount());
-                        ingredientHelper.put(nssGas, gasRepresentation.getAmount());
-                        ingredientHelper.put(nssItemOutput, -itemOutput.getCount());
-                        if (ingredientHelper.addAsConversion(nssGasOutput, gasOutput.getAmount())) {
-                            handled = true;
-                        }
-                    }
-                }
+                NormalizedSimpleStack nssFluid = NSSFluid.createFluid(fluidRepresentation.getFluid(), fluidRepresentation.getTag());
+                //TODO ProjectE
+                //for (GasStack gasRepresentation : gasRepresentations) {
+                //    NSSGas nssGas = NSSGas.createGas(gasRepresentation);
+                //    PressurizedReactionRecipeOutput output = recipe.getOutput(itemRepresentation, fluidRepresentation, gasRepresentation);
+                //    ItemStack itemOutput = output.item();
+                //    GasStack gasOutput = output.gas();
+                //    IngredientHelper ingredientHelper = new IngredientHelper(mapper);
+                //    ingredientHelper.put(nssItem, itemRepresentation.getCount());
+                //    ingredientHelper.put(nssFluid, fluidRepresentation.getAmount());
+                //    ingredientHelper.put(nssGas, gasRepresentation.getAmount());
+                //    if (itemOutput.isEmpty()) {
+                //        //We only have a gas output
+                //        if (!gasOutput.isEmpty() && ingredientHelper.addAsConversion(gasOutput)) {
+                //            handled = true;
+                //        }
+                //    } else if (gasOutput.isEmpty()) {
+                //        //We only have an item output
+                //        if (ingredientHelper.addAsConversion(itemOutput)) {
+                //            handled = true;
+                //        }
+                //    } else {
+                //        NormalizedSimpleStack nssItemOutput = NSSItem.createItem(itemOutput);
+                //        NormalizedSimpleStack nssGasOutput = NSSGas.createGas(gasOutput);
+                //        //We have both so do our best guess
+                //        //Add trying to calculate the item output (using it as if we needed negative of gas output)
+                //        ingredientHelper.put(nssGasOutput, -gasOutput.getAmount());
+                //        if (ingredientHelper.addAsConversion(nssItemOutput, itemOutput.getCount())) {
+                //            handled = true;
+                //        }
+                //        //Add trying to calculate gas output (using it as if we needed negative of item output)
+                //        ingredientHelper.resetHelper();
+                //        ingredientHelper.put(nssItem, itemRepresentation.getCount());
+                //        ingredientHelper.put(nssFluid, fluidRepresentation.getAmount());
+                //        ingredientHelper.put(nssGas, gasRepresentation.getAmount());
+                //        ingredientHelper.put(nssItemOutput, -itemOutput.getCount());
+                //        if (ingredientHelper.addAsConversion(nssGasOutput, gasOutput.getAmount())) {
+                //            handled = true;
+                //        }
+                //    }
+                //}
             }
         }
         return handled;

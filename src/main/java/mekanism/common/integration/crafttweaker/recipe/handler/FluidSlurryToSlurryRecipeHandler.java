@@ -15,7 +15,8 @@ public class FluidSlurryToSlurryRecipeHandler extends MekanismRecipeHandler<Flui
 
     @Override
     public String dumpToCommandString(IRecipeManager<? super FluidSlurryToSlurryRecipe> manager, FluidSlurryToSlurryRecipe recipe) {
-        return buildCommandString(manager, recipe, recipe.getFluidInput(), recipe.getChemicalInput(), recipe.getOutputDefinition());
+        throw new IllegalStateException("Needs update");//todo CraftTweaker update
+        //return buildCommandString(manager, recipe, recipe.getFluidInput(), recipe.getChemicalInput(), recipe.getOutputDefinition());
     }
 
     @Override

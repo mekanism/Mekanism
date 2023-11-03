@@ -15,7 +15,8 @@ public class ItemStackToItemStackRecipeHandler extends MekanismRecipeHandler<Ite
 
     @Override
     public String dumpToCommandString(IRecipeManager<? super ItemStackToItemStackRecipe> manager, ItemStackToItemStackRecipe recipe) {
-        return buildCommandString(manager, recipe, recipe.getInput(), recipe.getOutputDefinition());
+        throw new IllegalStateException("Needs update");//todo CraftTweaker update
+        //return buildCommandString(manager, recipe, recipe.getInput(), recipe.getOutputDefinition());
     }
 
     @Override

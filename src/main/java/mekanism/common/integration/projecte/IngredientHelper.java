@@ -69,7 +69,8 @@ public class IngredientHelper {
     }
 
     public void put(GasStack stack) {
-        put(NSSGas.createGas(stack), stack.getAmount());
+        throw new IllegalStateException("TODO");//todo ProjectE
+        //put(NSSGas.createGas(stack), stack.getAmount());
     }
 
     public void put(InfusionStack stack) {
@@ -85,7 +86,8 @@ public class IngredientHelper {
     }
 
     public void put(FluidStack stack) {
-        put(NSSFluid.createFluid(stack), stack.getAmount());
+        //TODO ProjectE
+        //put(NSSFluid.createFluid(stack.getFluid()), stack.getAmount());
     }
 
     public void put(ItemStack stack) {
@@ -121,7 +123,8 @@ public class IngredientHelper {
     }
 
     public boolean addAsConversion(GasStack stack) {
-        return addAsConversion(NSSGas.createGas(stack), stack.getAmount());
+        throw new IllegalStateException("TODO");//TODO ProjectE
+        //return addAsConversion(NSSGas.createGas(stack), stack.getAmount());
     }
 
     public boolean addAsConversion(InfusionStack stack) {
@@ -137,7 +140,7 @@ public class IngredientHelper {
     }
 
     public boolean addAsConversion(FluidStack stack) {
-        return addAsConversion(NSSFluid.createFluid(stack), stack.getAmount());
+        return addAsConversion(NSSFluid.createFluid(stack.getFluid(), stack.getTag()), stack.getAmount());
     }
 
     public boolean addAsConversion(ItemStack stack) {

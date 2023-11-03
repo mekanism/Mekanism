@@ -18,8 +18,8 @@ import net.minecraft.world.level.Level;
 @NothingNullByDefault
 public class BinExtractRecipe extends BinRecipe {
 
-    public BinExtractRecipe(ResourceLocation id, CraftingBookCategory category) {
-        super(id, category);
+    public BinExtractRecipe(CraftingBookCategory category) {
+        super(category);
     }
 
     @Override

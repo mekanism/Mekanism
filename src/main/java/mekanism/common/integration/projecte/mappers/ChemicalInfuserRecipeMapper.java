@@ -42,20 +42,21 @@ public class ChemicalInfuserRecipeMapper implements IRecipeTypeMapper {
         boolean handled = false;
         List<@NotNull GasStack> leftInputRepresentations = recipe.getLeftInput().getRepresentations();
         List<@NotNull GasStack> rightInputRepresentations = recipe.getRightInput().getRepresentations();
-        for (GasStack leftRepresentation : leftInputRepresentations) {
-            NormalizedSimpleStack nssLeft = NSSGas.createGas(leftRepresentation);
-            for (GasStack rightRepresentation : rightInputRepresentations) {
-                GasStack output = recipe.getOutput(leftRepresentation, rightRepresentation);
-                if (!output.isEmpty()) {
-                    IngredientHelper ingredientHelper = new IngredientHelper(mapper);
-                    ingredientHelper.put(nssLeft, leftRepresentation.getAmount());
-                    ingredientHelper.put(rightRepresentation);
-                    if (ingredientHelper.addAsConversion(output)) {
-                        handled = true;
-                    }
-                }
-            }
-        }
+        //TODO ProjectE
+        //for (GasStack leftRepresentation : leftInputRepresentations) {
+        //    NormalizedSimpleStack nssLeft = NSSGas.createGas(leftRepresentation);
+        //    for (GasStack rightRepresentation : rightInputRepresentations) {
+        //        GasStack output = recipe.getOutput(leftRepresentation, rightRepresentation);
+        //        if (!output.isEmpty()) {
+        //            IngredientHelper ingredientHelper = new IngredientHelper(mapper);
+        //            ingredientHelper.put(nssLeft, leftRepresentation.getAmount());
+        //            ingredientHelper.put(rightRepresentation);
+        //            if (ingredientHelper.addAsConversion(output)) {
+        //                handled = true;
+        //            }
+        //        }
+        //    }
+        //}
         return handled;
     }
 }

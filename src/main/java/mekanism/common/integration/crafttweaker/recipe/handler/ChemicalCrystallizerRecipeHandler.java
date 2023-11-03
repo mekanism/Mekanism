@@ -17,7 +17,8 @@ public class ChemicalCrystallizerRecipeHandler extends MekanismRecipeHandler<Che
 
     @Override
     public String dumpToCommandString(IRecipeManager<? super ChemicalCrystallizerRecipe> manager, ChemicalCrystallizerRecipe recipe) {
-        return buildCommandString(manager, recipe, recipe.getInput(), recipe.getOutputDefinition());
+        throw new IllegalStateException("Needs update");//todo CraftTweaker update
+        //return buildCommandString(manager, recipe, recipe.getInput(), recipe.getOutputDefinition());
     }
 
     @Override

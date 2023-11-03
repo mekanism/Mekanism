@@ -273,18 +273,15 @@ public class ClientTickHandler {
     @SubscribeEvent
     public void onMouseEvent(MouseScrollingEvent event) {
         if (MekanismConfig.client.allowModeScroll.get() && minecraft.player != null && minecraft.player.isShiftKeyDown()) {
-            handleModeScroll(event, EquipmentSlot.MAINHAND, event.getScrollDelta());
-        }
-    }
-
-    private void handleModeScroll(Event event, EquipmentSlot slot, double delta) {
-        if (delta != 0 && IModeItem.isModeItem(minecraft.player, slot)) {
-            int shift = scrollIncrementer.scroll(delta);
-            if (shift != 0) {
-                MekanismStatusOverlay.INSTANCE.setTimer();
-                Mekanism.packetHandler().sendToServer(new PacketModeChange(slot, shift));
+            double delta = event.getScrollDelta();
+            if (delta != 0 && IModeItem.isModeItem(minecraft.player, EquipmentSlot.MAINHAND)) {
+                int shift = scrollIncrementer.scroll(delta);
+                if (shift != 0) {
+                    MekanismStatusOverlay.INSTANCE.setTimer();
+                    Mekanism.packetHandler().sendToServer(new PacketModeChange(EquipmentSlot.MAINHAND, shift));
+                }
+                event.setCanceled(true);
             }
-            event.setCanceled(true);
         }
     }
 

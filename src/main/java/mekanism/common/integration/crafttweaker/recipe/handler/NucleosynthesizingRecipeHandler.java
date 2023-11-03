@@ -16,7 +16,8 @@ public class NucleosynthesizingRecipeHandler extends MekanismRecipeHandler<Nucle
 
     @Override
     public String dumpToCommandString(IRecipeManager<? super NucleosynthesizingRecipe> manager, NucleosynthesizingRecipe recipe) {
-        return buildCommandString(manager, recipe, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.getDuration());
+        throw new IllegalStateException("Needs update");//todo CraftTweaker update
+        //return buildCommandString(manager, recipe, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.getDuration());
     }
 
     @Override

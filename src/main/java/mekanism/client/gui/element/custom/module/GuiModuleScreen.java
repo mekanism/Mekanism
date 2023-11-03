@@ -138,8 +138,8 @@ public class GuiModuleScreen extends GuiScrollableElement {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        return isMouseOver(mouseX, mouseY) && adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
+    public boolean mouseScrolled(double mouseX, double mouseY, double xDelta, double yDelta) {
+        return isMouseOver(mouseX, mouseY) && adjustScroll(xDelta) || super.mouseScrolled(mouseX, mouseY, xDelta, yDelta);
     }
 
     @Override

@@ -231,7 +231,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                         if (sourceFluid != Fluids.WATER || MekanismConfig.general.pumpWaterSources.get()) {
                             //Note we only attempt taking if it is not water, or we want to pump water sources
                             // otherwise we assume the type from the fluid state is correct
-                            ItemStack pickedUpStack = bucketPickup.pickupBlock(level, pos, blockState);
+                            ItemStack pickedUpStack = bucketPickup.pickupBlock(null, level, pos, blockState);
                             if (pickedUpStack.isEmpty()) {
                                 //Couldn't actually pick it up, exit
                                 return false;

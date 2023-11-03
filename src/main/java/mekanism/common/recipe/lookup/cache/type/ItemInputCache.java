@@ -26,7 +26,8 @@ public class ItemInputCache<RECIPE extends MekanismRecipe> extends NBTSensitiveI
     }
 
     private boolean mapIngredient(RECIPE recipe, Ingredient input) {
-        if (input.isVanilla() || input.isSimple()) {
+        //todo see if this was changed or removed
+        if (/*input.isVanilla() || */input.isSimple()) {
             //Vanilla ingredients and simple ingredients don't actually check anything related to NBT,
             // so we can add the items to our base/raw input cache directly
             for (ItemStack item : input.getItems()) {

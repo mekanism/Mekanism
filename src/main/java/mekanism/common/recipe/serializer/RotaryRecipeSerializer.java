@@ -66,7 +66,7 @@ public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> implements Reci
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             FluidStackIngredient fluidInputIngredient = null;
             GasStackIngredient gasInputIngredient = null;
@@ -83,11 +83,11 @@ public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> implements Reci
                 fluidOutput = FluidStack.readFromPacket(buffer);
             }
             if (hasFluidToGas && hasGasToFluid) {
-                return this.factory.create(recipeId, fluidInputIngredient, gasInputIngredient, gasOutput, fluidOutput);
+                return this.factory.create(fluidInputIngredient, gasInputIngredient, gasOutput, fluidOutput);
             } else if (hasFluidToGas) {
-                return this.factory.create(recipeId, fluidInputIngredient, gasOutput);
+                return this.factory.create(fluidInputIngredient, gasOutput);
             } else if (hasGasToFluid) {
-                return this.factory.create(recipeId, gasInputIngredient, fluidOutput);
+                return this.factory.create(gasInputIngredient, fluidOutput);
             }
             //Should never happen, but if we somehow get here log it
             Mekanism.logger.error("Error reading rotary recipe from packet. A recipe got sent with no conversion in either direction.");

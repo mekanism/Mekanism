@@ -232,7 +232,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         //If we have no max (no fluids or just an empty fluid) we want to ensure the fluid renderer doesn't throw errors,
         // so we just return a capacity for the render of a bucket
         int max = stacks.stream().mapToInt(FluidStack::getAmount).filter(stackSize -> stackSize > 0).max().orElse(FluidType.BUCKET_VOLUME);
-        return init(builder, ForgeTypes.FLUID_STACK, role, gauge, stacks)
+        return init(builder, /* TODO remove erasing cast when JEI ported/updated*/(IIngredientType) ForgeTypes.FLUID_STACK, role, gauge, stacks)
               .setFluidRenderer(max, false, width, height);
     }
 

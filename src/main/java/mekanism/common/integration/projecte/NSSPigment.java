@@ -18,10 +18,10 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link moze_intel.projecte.api.nss.NSSTag} for representing {@link Pigment}s.
  */
-public final class NSSPigment extends AbstractNSSTag<Pigment> {
+public final class NSSPigment/* extends AbstractNSSTag<Pigment>*/ {
 
     private NSSPigment(@NotNull ResourceLocation resourceLocation, boolean isTag) {
-        super(resourceLocation, isTag);
+        //super(resourceLocation, isTag);
     }
 
     /**
@@ -77,31 +77,32 @@ public final class NSSPigment extends AbstractNSSTag<Pigment> {
         return createTag(tag.location());
     }
 
-    @Override
-    protected boolean isInstance(AbstractNSSTag o) {
-        return o instanceof NSSPigment;
-    }
-
-    @NotNull
-    @Override
-    public String getJsonPrefix() {
-        return "PIGMENT|";
-    }
-
-    @NotNull
-    @Override
-    public String getType() {
-        return "Pigment";
-    }
-
-    @NotNull
-    @Override
-    protected Optional<Either<Named<Pigment>, ITag<Pigment>>> getTag() {
-        return getTag(MekanismAPI.pigmentRegistry());
-    }
-
-    @Override
-    protected Function<Pigment, NormalizedSimpleStack> createNew() {
-        return NSSPigment::createPigment;
-    }
+    //@Override
+    //protected boolean isInstance(AbstractNSSTag o) {
+    //    return o instanceof NSSPigment;
+    //}
+//
+    //@NotNull
+    //@Override
+    //public String getJsonPrefix() {
+    //    return "PIGMENT|";
+    //}
+//
+    //@NotNull
+    //@Override
+    //public String getType() {
+    //    return "Pigment";
+    //}
+//
+    //@NotNull
+    //@Override
+    //protected Optional getTag() {
+    //    throw new IllegalStateException("Requires update");//todo ProjectE update
+    //    //return getTag(MekanismAPI.pigmentRegistry());
+    //}
+//
+    //@Override
+    //protected Function<Pigment, NormalizedSimpleStack> createNew() {
+    //    return NSSPigment::createPigment;
+    //}
 }

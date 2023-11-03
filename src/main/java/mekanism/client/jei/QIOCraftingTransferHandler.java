@@ -130,7 +130,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
             //I don't believe this ever will happen with a normal crafting recipe but just in case it does, error
             // if we have more than nine inputs, as there should never be
             // a case where this actually happens except potentially with some really obscure modded recipe
-            Mekanism.logger.warn("Error evaluating recipe transfer handler for recipe: {}, had more than 9 inputs: {}", recipe.getId(), maxInputCount);
+            Mekanism.logger.warn("Error evaluating recipe transfer handler for recipe: {}, had more than 9 inputs: {}", recipe/*.getId() TODO when JEI updates maybe restore Id*/, maxInputCount);
             return handlerHelper.createInternalError();
         }
         int inputCount = 0;
@@ -334,7 +334,8 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                 // things may not fully be accurate on the client side with the stacks that JEI lets us know match the recipe, as
                 // they may require extra NBT that is server side only.
                 //TODO: If the sources are all from the crafting window and are already in the correct spots, there is no need to send this packet
-                Mekanism.packetHandler().sendToServer(new PacketQIOFillCraftingWindow(recipe.getId(), maxTransfer, sources));
+                throw new IllegalStateException("old jei code, needs RecipeHolder");//todo JEI update
+                //Mekanism.packetHandler().sendToServer(new PacketQIOFillCraftingWindow(recipe.getId(), maxTransfer, sources));
             }
         }
         return null;

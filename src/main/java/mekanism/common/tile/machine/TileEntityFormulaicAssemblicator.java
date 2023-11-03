@@ -62,6 +62,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -90,7 +91,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     public RecipeFormula formula;
     @Nullable
-    private CraftingRecipe cachedRecipe = null;
+    private RecipeHolder<CraftingRecipe> cachedRecipe = null;
     @SyntheticComputerMethod(getter = "getExcessRemainingItems")
     NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
 
@@ -306,14 +307,14 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     dummyInv.setItem(i, craftingGridSlots.get(i).getStack().copyWithCount(1));
                 }
                 lastRemainingItems = EMPTY_LIST;
-                if (cachedRecipe == null || !cachedRecipe.matches(dummyInv, level)) {
+                if (cachedRecipe == null || !cachedRecipe.value().matches(dummyInv, level)) {
                     cachedRecipe = MekanismRecipeType.getRecipeFor(RecipeType.CRAFTING, dummyInv, level).orElse(null);
                 }
                 if (cachedRecipe == null) {
                     lastOutputStack = ItemStack.EMPTY;
                 } else {
-                    lastOutputStack = cachedRecipe.assemble(dummyInv, level.registryAccess());
-                    lastRemainingItems = cachedRecipe.getRemainingItems(dummyInv);
+                    lastOutputStack = cachedRecipe.value().assemble(dummyInv, level.registryAccess());
+                    lastRemainingItems = cachedRecipe.value().getRemainingItems(dummyInv);
                 }
                 isRecipe = !lastOutputStack.isEmpty();
             } else {

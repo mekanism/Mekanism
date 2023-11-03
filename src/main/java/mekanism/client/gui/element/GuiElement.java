@@ -310,8 +310,8 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        return GuiUtils.checkChildren(children, child -> child.mouseScrolled(mouseX, mouseY, delta)) || super.mouseScrolled(mouseX, mouseY, delta);
+    public boolean mouseScrolled(double mouseX, double mouseY, double xDelta, double yDelta) {
+        return GuiUtils.checkChildren(children, child -> child.mouseScrolled(mouseX, mouseY, xDelta, yDelta)) || super.mouseScrolled(mouseX, mouseY, xDelta, yDelta);
     }
 
     @Override

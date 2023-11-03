@@ -39,17 +39,17 @@ public abstract class MekanismSavedData extends SavedData {
             throw new IllegalStateException("Current server is null");
         }
         DimensionDataStorage dataStorage = currentServer.overworld().getDataStorage();
-        return createSavedData(dataStorage, createFunction, name);
+        return createSavedData(dataStorage, new Factory<>(createFunction, tag -> {
+            DATA handler = createFunction.get();
+            handler.load(tag);
+            return handler;
+        }), name);
     }
 
     /**
      * Note: This should only be called from the server side
      */
-    public static <DATA extends MekanismSavedData> DATA createSavedData(DimensionDataStorage dataStorage, Supplier<DATA> createFunction, String name) {
-        return dataStorage.computeIfAbsent(tag -> {
-            DATA handler = createFunction.get();
-            handler.load(tag);
-            return handler;
-        }, createFunction, Mekanism.MODID + "_" + name);
+    public static <DATA extends MekanismSavedData> DATA createSavedData(DimensionDataStorage dataStorage, SavedData.Factory<DATA> factory, String name) {
+        return dataStorage.computeIfAbsent(factory, Mekanism.MODID + "_" + name);
     }
 }

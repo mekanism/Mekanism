@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.IntFunction;
 import java.util.function.UnaryOperator;
 import mekanism.api.Action;
@@ -42,6 +43,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
@@ -72,7 +74,7 @@ public class QIOCraftingWindow implements IContentsListener {
     private final SelectedWindowData windowData;
     private final byte windowIndex;
     @Nullable
-    private CraftingRecipe lastRecipe;
+    private RecipeHolder<CraftingRecipe> lastRecipe;
     private boolean isCrafting;
     private boolean changedWhileCrafting;
 
@@ -151,18 +153,18 @@ public class QIOCraftingWindow implements IContentsListener {
                 if (!outputSlot.isEmpty()) {
                     outputSlot.setEmpty();
                 }
-            } else if (lastRecipe != null && lastRecipe.matches(craftingInventory, world)) {
+            } else if (lastRecipe != null && lastRecipe.value().matches(craftingInventory, world)) {
                 //If the recipe matches make sure we update the output anyway, as the output may have changed based on NBT
                 // If the output slot was empty, then setting the slot to the recipe result fixes it not properly updating
                 // when we remove a single item recipe such as for buttons, and put it back in;
                 // and otherwise we update so that cases like bin upgrade recipes that the inputs match the recipe but the
                 // output is dependent on the specific inputs gets updated properly
                 //Note: We make sure to only call updateOutputSlot if we believe our inputs have changed type
-                outputSlot.setStack(assembleRecipe(lastRecipe, world.registryAccess()));
+                outputSlot.setStack(assembleRecipe(lastRecipe.value(), world.registryAccess()));
             } else {
                 //If we don't have a cached recipe, or our cached recipe doesn't match our inventory contents, lookup the recipe
-                CraftingRecipe recipe = MekanismRecipeType.getRecipeFor(RecipeType.CRAFTING, craftingInventory, world).orElse(null);
-                if (recipe != lastRecipe) {
+                RecipeHolder<CraftingRecipe> recipe = MekanismRecipeType.getRecipeFor(RecipeType.CRAFTING, craftingInventory, world).orElse(null);
+                if (!Objects.equals(recipe, lastRecipe)) {
                     if (recipe == null) {
                         //If there is no found recipe, clear the output, but don't update our last recipe
                         // as we can start by checking if they are doing the same recipe as we last found
@@ -172,7 +174,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     } else {
                         //If the recipe is different, update the output
                         lastRecipe = recipe;
-                        outputSlot.setStack(assembleRecipe(lastRecipe, world.registryAccess()));
+                        outputSlot.setStack(assembleRecipe(lastRecipe.value(), world.registryAccess()));
                     }
                 }
             }
@@ -198,23 +200,23 @@ public class QIOCraftingWindow implements IContentsListener {
         }
         if (Mekanism.hooks.RecipeStagesLoaded) {
             //If recipe stages is loaded check if the player has access to the recipe
-            if (!RecipeStagesUtil.hasStageForRecipe(lastRecipe, player)) {
+            if (!RecipeStagesUtil.hasStageForRecipe(lastRecipe.value(), player)) {
                 return false;
             }
         }
         //If the recipe is dynamic, doLimitedCrafting is disabled, or the recipe is unlocked
         // allow viewing the recipe
-        return lastRecipe.isSpecial() || !player.level().getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING) || player.getRecipeBook().contains(lastRecipe);
+        return lastRecipe.value().isSpecial() || !player.level().getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING) || player.getRecipeBook().contains(lastRecipe);
     }
 
     @Contract("null, _ -> false")
     private boolean validateAndUnlockRecipe(@Nullable Level world, @NotNull Player player) {
-        if (world == null || lastRecipe == null || !lastRecipe.matches(craftingInventory, world)) {
+        if (world == null || lastRecipe == null || !lastRecipe.value().matches(craftingInventory, world)) {
             //If the recipe isn't valid for the inputs, fail
             //Note: lastRecipe shouldn't be null here, but we validate it just in case
             return false;
         }
-        if (lastRecipe != null && !lastRecipe.isSpecial()) {
+        if (lastRecipe != null && !lastRecipe.value().isSpecial()) {
             if (player instanceof ServerPlayer serverPlayer && world.getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING) &&
                 !serverPlayer.getRecipeBook().contains(lastRecipe)) {
                 //If the player cannot use the recipe, don't allow crafting
@@ -347,7 +349,7 @@ public class QIOCraftingWindow implements IContentsListener {
         replacementHelper.reset();
         boolean recheckOutput = false;
         LastInsertTarget lastInsertTarget = new LastInsertTarget();
-        NonNullList<ItemStack> remaining = lastRecipe.getRemainingItems(craftingInventory);
+        NonNullList<ItemStack> remaining = lastRecipe.value().getRemainingItems(craftingInventory);
         for (; crafted < maxToCraft; crafted += amountPerCraft) {
             if (recheckOutput && changedWhileCrafting) {
                 //If our inputs changed while crafting, and we are supposed to recheck the output,
@@ -355,9 +357,9 @@ public class QIOCraftingWindow implements IContentsListener {
                 // if there is an NBT sensitive recipe, the output may have changed
                 recheckOutput = false;
                 changedWhileCrafting = false;
-                CraftingRecipe oldRecipe = lastRecipe;
+                RecipeHolder<CraftingRecipe> oldRecipe = lastRecipe;
                 updateOutputSlot(world);
-                if (oldRecipe != lastRecipe) {
+                if (!Objects.equals(oldRecipe, lastRecipe)) {
                     //If the recipe changed, exit regardless of if the new recipe will produce the same output as the old one
                     // as there is a good chance something odd is going on or potentially even the doLimitedCrafting GameRule
                     // is enabled, and they only have access to one of the crafting recipes
@@ -382,7 +384,7 @@ public class QIOCraftingWindow implements IContentsListener {
                 //We also need to make sure to update the remaining items as even though the recipe still outputs the same result
                 // the remaining items may have changed such as durability of a container item, and we want to make sure to use
                 // the proper remaining stacks
-                remaining = lastRecipe.getRemainingItems(craftingInventory);
+                remaining = lastRecipe.value().getRemainingItems(craftingInventory);
             }
             //Simulate insertion into hotbar and then main inventory, allowing for inserting into empty slots,
             // as we just want to do a quick general check to see if there is room for the result, we will do
@@ -493,7 +495,7 @@ public class QIOCraftingWindow implements IContentsListener {
         //TODO: If this ends up causing major issues with some weird way another mod ends up doing crafting
         // we can evaluate how we want to handle it then/try to integrate support for firing it.
         //BasicEventHooks.firePlayerCraftingEvent(player, result, craftingInventory);
-        NonNullList<ItemStack> remaining = lastRecipe.getRemainingItems(craftingInventory);
+        NonNullList<ItemStack> remaining = lastRecipe.value().getRemainingItems(craftingInventory);
         remainderHelper.reset();
         replacementHelper.reset();
         //Update slots with remaining contents
@@ -780,7 +782,7 @@ public class QIOCraftingWindow implements IContentsListener {
             updateInputs(stack);
             ItemStack old = dummy.getItem(index);
             dummy.setItem(index, stack.copyWithCount(1));
-            if (lastRecipe != null && lastRecipe.matches(dummy, world)) {
+            if (lastRecipe != null && lastRecipe.value().matches(dummy, world)) {
                 //If the remaining item is still valid in the recipe in that position return that it is still valid.
                 // Note: The recipe should never actually be null here
                 return true;
@@ -824,7 +826,8 @@ public class QIOCraftingWindow implements IContentsListener {
                     }
                     //If the ingredient is not vanilla, we start by checking against the exact stack it has stored as an item
                     // Note: We can use a raw hashed item here as we don't store it anywhere, and just use it as a lookup
-                    if (!usedIngredient.isVanilla() && testEquivalentItem(world, frequency, slot, index, usedIngredient, HashedItem.raw(item))) {
+                    //todo no more isVanilla?
+                    if (/*!usedIngredient.isVanilla() && */testEquivalentItem(world, frequency, slot, index, usedIngredient, HashedItem.raw(item))) {
                         //Match found, we can exit
                         return;
                     }
@@ -887,14 +890,14 @@ public class QIOCraftingWindow implements IContentsListener {
             //If the remainder is empty we don't actually need to update what our inputs are
             if (!mapped) {
                 mapped = true;
-                if (lastRecipe == null || lastRecipe.isSpecial()) {
+                if (lastRecipe == null || lastRecipe.value().isSpecial()) {
                     //The recipe should never be null, but we check it anyway. We also check if the recipe is
                     // special, because if it is then there are no "known" ingredients that we can use to try
                     // and figure out replacements
                     invalid = true;
                     return;
                 }
-                NonNullList<Ingredient> ingredients = lastRecipe.getIngredients();
+                NonNullList<Ingredient> ingredients = lastRecipe.value().getIngredients();
                 if (ingredients.isEmpty()) {
                     //Something went wrong
                     invalid = true;
@@ -910,7 +913,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     }
                     return ItemStack.EMPTY;
                 };
-                if (lastRecipe instanceof IShapedRecipe<?> shapedRecipe) {
+                if (lastRecipe.value() instanceof IShapedRecipe<?> shapedRecipe) {
                     //It is a shaped recipe, make use of this information to attempt to find the proper match
                     mapShapedRecipe(shapedRecipe, ingredients, itemGetter);
                 } else {

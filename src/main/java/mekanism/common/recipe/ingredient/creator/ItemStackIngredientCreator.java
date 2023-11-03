@@ -94,7 +94,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         }
         JsonElement jsonelement = GsonHelper.isArrayNode(jsonObject, JsonConstants.INGREDIENT) ? GsonHelper.getAsJsonArray(jsonObject, JsonConstants.INGREDIENT) :
                                   GsonHelper.getAsJsonObject(jsonObject, JsonConstants.INGREDIENT);
-        Ingredient ingredient = Ingredient.fromJson(jsonelement);
+        Ingredient ingredient = Ingredient.fromJson(jsonelement, false);
         return from(ingredient, amount);
     }
 
@@ -215,7 +215,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
             if (amount > 1) {
                 json.addProperty(JsonConstants.AMOUNT, amount);
             }
-            json.add(JsonConstants.INGREDIENT, ingredient.toJson());
+            json.add(JsonConstants.INGREDIENT, ingredient.toJson(false));
             return json;
         }
     }

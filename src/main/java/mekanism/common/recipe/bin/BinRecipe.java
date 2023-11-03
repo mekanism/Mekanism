@@ -13,8 +13,8 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 @NothingNullByDefault
 public abstract class BinRecipe extends CustomRecipe {
 
-    protected BinRecipe(ResourceLocation id, CraftingBookCategory category) {
-        super(id, category);
+    protected BinRecipe(CraftingBookCategory category) {
+        super(category);
     }
 
     protected static BinInventorySlot convertToSlot(ItemStack binStack) {

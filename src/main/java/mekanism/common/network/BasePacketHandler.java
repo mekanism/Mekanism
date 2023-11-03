@@ -26,9 +26,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.FakePlayer;
-import net.neoforged.neoforge.network.NetworkDirection;
+import net.neoforged.neoforge.network.INetworkDirection;
 import net.neoforged.neoforge.network.NetworkRegistry;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PlayNetworkDirection;
+import net.neoforged.neoforge.network.simple.MessageFunctions.MessageDecoder;
 import net.neoforged.neoforge.network.simple.SimpleChannel;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
@@ -121,15 +123,15 @@ public abstract class BasePacketHandler {
 
     public abstract void initialize();
 
-    protected <MSG extends IMekanismPacket> void registerClientToServer(Class<MSG> type, Function<FriendlyByteBuf, MSG> decoder) {
-        registerMessage(type, decoder, NetworkDirection.PLAY_TO_SERVER);
+    protected <MSG extends IMekanismPacket> void registerClientToServer(Class<MSG> type, MessageDecoder<MSG> decoder) {
+        registerMessage(type, decoder, PlayNetworkDirection.PLAY_TO_SERVER);
     }
 
-    protected <MSG extends IMekanismPacket> void registerServerToClient(Class<MSG> type, Function<FriendlyByteBuf, MSG> decoder) {
-        registerMessage(type, decoder, NetworkDirection.PLAY_TO_CLIENT);
+    protected <MSG extends IMekanismPacket> void registerServerToClient(Class<MSG> type, MessageDecoder<MSG> decoder) {
+        registerMessage(type, decoder, PlayNetworkDirection.PLAY_TO_CLIENT);
     }
 
-    private <MSG extends IMekanismPacket> void registerMessage(Class<MSG> type, Function<FriendlyByteBuf, MSG> decoder, NetworkDirection networkDirection) {
+    private <MSG extends IMekanismPacket> void registerMessage(Class<MSG> type, MessageDecoder<MSG> decoder, INetworkDirection<?> networkDirection) {
         getChannel().registerMessage(index++, type, IMekanismPacket::encode, decoder, IMekanismPacket::handle, Optional.of(networkDirection));
     }
 

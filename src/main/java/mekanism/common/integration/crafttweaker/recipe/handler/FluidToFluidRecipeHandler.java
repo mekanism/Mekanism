@@ -15,7 +15,8 @@ public class FluidToFluidRecipeHandler extends MekanismRecipeHandler<FluidToFlui
 
     @Override
     public String dumpToCommandString(IRecipeManager<? super FluidToFluidRecipe> manager, FluidToFluidRecipe recipe) {
-        return buildCommandString(manager, recipe, recipe.getInput(), recipe.getOutputDefinition());
+        throw new IllegalStateException("Needs update");//todo CraftTweaker update
+        //return buildCommandString(manager, recipe, recipe.getInput(), recipe.getOutputDefinition());
     }
 
     @Override

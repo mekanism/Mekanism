@@ -18,10 +18,10 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link moze_intel.projecte.api.nss.NSSTag} for representing {@link Slurry}.
  */
-public final class NSSSlurry extends AbstractNSSTag<Slurry> {
+public final class NSSSlurry/* extends AbstractNSSTag<Slurry>*/ {
 
     private NSSSlurry(@NotNull ResourceLocation resourceLocation, boolean isTag) {
-        super(resourceLocation, isTag);
+        //super(resourceLocation, isTag);
     }
 
     /**
@@ -77,31 +77,32 @@ public final class NSSSlurry extends AbstractNSSTag<Slurry> {
         return createTag(tag.location());
     }
 
-    @Override
-    protected boolean isInstance(AbstractNSSTag o) {
-        return o instanceof NSSSlurry;
-    }
-
-    @NotNull
-    @Override
-    public String getJsonPrefix() {
-        return "SLURRY|";
-    }
-
-    @NotNull
-    @Override
-    public String getType() {
-        return "Slurry";
-    }
-
-    @NotNull
-    @Override
-    protected Optional<Either<Named<Slurry>, ITag<Slurry>>> getTag() {
-        return getTag(MekanismAPI.slurryRegistry());
-    }
-
-    @Override
-    protected Function<Slurry, NormalizedSimpleStack> createNew() {
-        return NSSSlurry::createSlurry;
-    }
+    //@Override
+    //protected boolean isInstance(AbstractNSSTag o) {
+    //    return o instanceof NSSSlurry;
+    //}
+//
+    //@NotNull
+    //@Override
+    //public String getJsonPrefix() {
+    //    return "SLURRY|";
+    //}
+//
+    //@NotNull
+    //@Override
+    //public String getType() {
+    //    return "Slurry";
+    //}
+//
+    //@NotNull
+    //@Override
+    //protected Optional getTag() {
+    //    throw new IllegalStateException("Requires update");//todo ProjectE update
+    //    //return getTag(MekanismAPI.slurryRegistry());
+    //}
+//
+    //@Override
+    //protected Function<Slurry, NormalizedSimpleStack> createNew() {
+    //    return NSSSlurry::createSlurry;
+    //}
 }

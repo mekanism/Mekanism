@@ -3,6 +3,7 @@ package mekanism.common.advancements;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import mekanism.common.advancements.triggers.AlloyUpgradeTrigger;
 import mekanism.common.advancements.triggers.BlockLaserTrigger;
@@ -16,13 +17,14 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class MekanismCriteriaTriggers {
 
     private MekanismCriteriaTriggers() {
     }
 
-    private static final List<CriterionTrigger<?>> lazyToRegister = new ArrayList<>();
+    private static final List<Pair<ResourceLocation, CriterionTrigger<?>>> lazyToRegister = new ArrayList<>();
 
     //TODO: Eventually we may want to require parent advancements to be unlocked as one of the "and" conditions. So that then once the parent unlocks
     // if they already completed all the other requirements it auto unlocks as well, but then they can't skip things
@@ -37,18 +39,19 @@ public class MekanismCriteriaTriggers {
     public static final UnboxCardboardBoxTrigger UNBOX_CARDBOARD_BOX = lazyRegister("unbox_cardboard_box", UnboxCardboardBoxTrigger::new);
     public static final ViewVibrationsTrigger VIEW_VIBRATIONS = lazyRegister("view_vibrations", ViewVibrationsTrigger::new);
 
-    private static <TRIGGER extends CriterionTrigger<?>> TRIGGER lazyRegister(String name, Function<ResourceLocation, TRIGGER> constructor) {
-        return lazyRegister(constructor.apply(Mekanism.rl(name)));
+    private static <TRIGGER extends CriterionTrigger<?>> TRIGGER lazyRegister(String name, Supplier<TRIGGER> constructor) {
+        return lazyRegister(Mekanism.rl(name), constructor.get());
     }
 
-    private static <TRIGGER extends CriterionTrigger<?>> TRIGGER lazyRegister(TRIGGER criterion) {
-        lazyToRegister.add(criterion);
+    private static <TRIGGER extends CriterionTrigger<?>> TRIGGER lazyRegister(ResourceLocation name, TRIGGER criterion) {
+        lazyToRegister.add(Pair.of(name, criterion));
         return criterion;
     }
 
     public static void init() {
-        for (CriterionTrigger<?> trigger : lazyToRegister) {
-            CriteriaTriggers.register(trigger);
+        for (Pair<ResourceLocation, CriterionTrigger<?>> pair : lazyToRegister) {
+            //todo see if we can get a RL version?
+            CriteriaTriggers.register(pair.getLeft().toString(), pair.getRight());
         }
         lazyToRegister.clear();
     }

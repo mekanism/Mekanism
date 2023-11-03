@@ -18,7 +18,8 @@ public class CombinerRecipeHandler extends MekanismRecipeHandler<CombinerRecipe>
 
     @Override
     public String dumpToCommandString(IRecipeManager<? super CombinerRecipe> manager, CombinerRecipe recipe) {
-        return buildCommandString(manager, recipe, recipe.getMainInput(), recipe.getExtraInput(), recipe.getOutputDefinition());
+        throw new IllegalStateException("Needs update");//todo CraftTweaker update
+        //return buildCommandString(manager, recipe, recipe.getMainInput(), recipe.getExtraInput(), recipe.getOutputDefinition());
     }
 
     @Override

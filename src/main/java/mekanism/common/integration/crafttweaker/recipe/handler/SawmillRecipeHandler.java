@@ -25,11 +25,12 @@ public class SawmillRecipeHandler extends MekanismRecipeHandler<SawmillRecipe> {
         // as if they were optional
         boolean hasSecondary = recipe.getSecondaryChance() > 0;
         List<ItemStack> mainOutputDefinition = recipe.getMainOutputDefinition();
-        return buildCommandString(manager, recipe, recipe.getInput(),
-              mainOutputDefinition.isEmpty() ? SKIP_OPTIONAL_PARAM : mainOutputDefinition,
-              hasSecondary ? recipe.getSecondaryOutputDefinition() : SKIP_OPTIONAL_PARAM,
-              hasSecondary ? recipe.getSecondaryChance() : SKIP_OPTIONAL_PARAM
-        );
+        throw new IllegalStateException("Needs update");//todo CraftTweaker update
+        //return buildCommandString(manager, recipe, recipe.getInput(),
+        //      mainOutputDefinition.isEmpty() ? SKIP_OPTIONAL_PARAM : mainOutputDefinition,
+        //      hasSecondary ? recipe.getSecondaryOutputDefinition() : SKIP_OPTIONAL_PARAM,
+        //      hasSecondary ? recipe.getSecondaryChance() : SKIP_OPTIONAL_PARAM
+        //);
     }
 
     @Override
