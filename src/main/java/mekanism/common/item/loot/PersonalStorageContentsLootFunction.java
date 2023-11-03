@@ -15,7 +15,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.Serializer;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParam;
@@ -29,7 +28,7 @@ import net.neoforged.fml.util.thread.EffectiveSide;
 @ParametersAreNotNullByDefault
 public class PersonalStorageContentsLootFunction implements LootItemFunction {
 
-    private static final PersonalStorageContentsLootFunction INSTANCE = new PersonalStorageContentsLootFunction();
+    public static final PersonalStorageContentsLootFunction INSTANCE = new PersonalStorageContentsLootFunction();
     private static final Set<LootContextParam<?>> REFERENCED_PARAMS = Set.of(LootContextParams.BLOCK_ENTITY);
 
     private PersonalStorageContentsLootFunction() {
@@ -68,18 +67,5 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
     @Override
     public Set<LootContextParam<?>> getReferencedContextParams() {
         return REFERENCED_PARAMS;
-    }
-
-    public static class PersonalStorageLootFunctionSerializer implements Serializer<PersonalStorageContentsLootFunction> {
-
-        @Override
-        public void serialize(JsonObject pJson, PersonalStorageContentsLootFunction pValue, JsonSerializationContext pSerializationContext) {
-            //no-op
-        }
-
-        @Override
-        public PersonalStorageContentsLootFunction deserialize(JsonObject pJson, JsonDeserializationContext pSerializationContext) {
-            return INSTANCE;
-        }
     }
 }

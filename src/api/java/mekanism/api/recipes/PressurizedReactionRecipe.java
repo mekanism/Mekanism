@@ -55,7 +55,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
      */
     public PressurizedReactionRecipe(ResourceLocation id, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
           FloatingLong energyRequired, int duration, ItemStack outputItem, GasStack outputGas) {
-        super(id);
+        super();
         this.inputSolid = Objects.requireNonNull(inputSolid, "Item input cannot be null.");
         this.inputFluid = Objects.requireNonNull(inputFluid, "Fluid input cannot be null.");
         this.inputGas = Objects.requireNonNull(inputGas, "Gas input cannot be null.");

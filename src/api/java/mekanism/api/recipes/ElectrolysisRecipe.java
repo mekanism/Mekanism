@@ -39,7 +39,7 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
      * @param rightGasOutput   Right output.
      */
     public ElectrolysisRecipe(ResourceLocation id, FluidStackIngredient input, FloatingLong energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput) {
-        super(id);
+        super();
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.energyMultiplier = Objects.requireNonNull(energyMultiplier, "Energy multiplier cannot be null.").copyAsConst();
         if (energyMultiplier.smallerThan(FloatingLong.ONE)) {

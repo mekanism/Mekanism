@@ -8,7 +8,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
@@ -37,16 +36,14 @@ public abstract class RotaryRecipe extends MekanismRecipe {
     /**
      * Rotary recipe that converts a fluid into a gas.
      *
-     * @param id         Recipe name.
      * @param fluidInput Fluid input.
      * @param gasOutput  Gas output.
      *
-     * @apiNote It is recommended to use {@link #RotaryRecipe(ResourceLocation, FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this constructor in
-     * combination with {@link #RotaryRecipe(ResourceLocation, GasStackIngredient, FluidStack)} and making two separate recipes if the conversion will be possible in both
+     * @apiNote It is recommended to use {@link #RotaryRecipe(FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this constructor in
+     * combination with {@link #RotaryRecipe(GasStackIngredient, FluidStack)} and making two separate recipes if the conversion will be possible in both
      * directions.
      */
-    public RotaryRecipe(ResourceLocation id, FluidStackIngredient fluidInput, GasStack gasOutput) {
-        super(id);
+    public RotaryRecipe(FluidStackIngredient fluidInput, GasStack gasOutput) {
         this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
         Objects.requireNonNull(gasOutput, "Gas output cannot be null.");
         if (gasOutput.isEmpty()) {
@@ -63,16 +60,14 @@ public abstract class RotaryRecipe extends MekanismRecipe {
     /**
      * Rotary recipe that converts a gas into a fluid.
      *
-     * @param id          Recipe name.
      * @param gasInput    Gas input.
      * @param fluidOutput Fluid output.
      *
-     * @apiNote It is recommended to use {@link #RotaryRecipe(ResourceLocation, FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this constructor in
-     * combination with {@link #RotaryRecipe(ResourceLocation, FluidStackIngredient, GasStack)} and making two separate recipes if the conversion will be possible in both
-     * directions.
+     * @apiNote It is recommended to use {@link #RotaryRecipe(FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this constructor in combination with
+     * {@link #RotaryRecipe(FluidStackIngredient, GasStack)} and making two separate recipes if the conversion will be possible in both directions.
      */
-    public RotaryRecipe(ResourceLocation id, GasStackIngredient gasInput, FluidStack fluidOutput) {
-        super(id);
+    public RotaryRecipe(GasStackIngredient gasInput, FluidStack fluidOutput) {
+        super();
         this.gasInput = Objects.requireNonNull(gasInput, "Gas input cannot be null.");
         Objects.requireNonNull(fluidOutput, "Fluid output cannot be null.");
         if (fluidOutput.isEmpty()) {
@@ -89,18 +84,16 @@ public abstract class RotaryRecipe extends MekanismRecipe {
     /**
      * Rotary recipe that is capable of converting a fluid into a gas and a gas into a fluid.
      *
-     * @param id          Recipe name.
      * @param fluidInput  Fluid input.
      * @param gasInput    Gas input.
      * @param gasOutput   Gas output.
      * @param fluidOutput Fluid output.
      *
-     * @apiNote It is recommended to use this constructor over using {@link #RotaryRecipe(ResourceLocation, FluidStackIngredient, GasStack)} and
-     * {@link #RotaryRecipe(ResourceLocation, GasStackIngredient, FluidStack)} in combination and creating two recipes if the conversion will be possible in both
+     * @apiNote It is recommended to use this constructor over using {@link #RotaryRecipe(FluidStackIngredient, GasStack)} and
+     * {@link #RotaryRecipe(GasStackIngredient, FluidStack)} in combination and creating two recipes if the conversion will be possible in both
      * directions.
      */
-    public RotaryRecipe(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput) {
-        super(id);
+    public RotaryRecipe(FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput) {
         this.gasInput = Objects.requireNonNull(gasInput, "Gas input cannot be null.");
         this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
         Objects.requireNonNull(gasOutput, "Gas output cannot be null.");

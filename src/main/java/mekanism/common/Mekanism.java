@@ -56,6 +56,7 @@ import mekanism.common.item.block.machine.ItemBlockFluidTank.FluidTankItemDispen
 import mekanism.common.item.loot.MekanismLootFunctions;
 import mekanism.common.item.predicate.FullCanteenItemPredicate;
 import mekanism.common.item.predicate.MaxedModuleContainerItemPredicate;
+import mekanism.common.item.predicate.MekanismItemPredicates;
 import mekanism.common.lib.MekAnnotationScanner;
 import mekanism.common.lib.Version;
 import mekanism.common.lib.frequency.FrequencyManager;
@@ -69,6 +70,7 @@ import mekanism.common.network.PacketHandler;
 import mekanism.common.network.to_client.PacketTransmitterUpdate;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.condition.ConditionExistsCondition;
+import mekanism.common.recipe.condition.MekanismRecipeConditions;
 import mekanism.common.recipe.condition.ModVersionLoadedCondition;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
@@ -222,6 +224,8 @@ public class Mekanism {
         MekanismSlurries.SLURRIES.createAndRegisterChemical(modEventBus);
         MekanismRobitSkins.createAndRegisterDatapack(modEventBus);
         MekanismModules.MODULES.createAndRegister(modEventBus);
+        MekanismRecipeConditions.CONDITION_CODECS.register(modEventBus);
+        MekanismItemPredicates.PREDICATES.register(modEventBus);
         modEventBus.addListener(this::registerEventListener);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
@@ -245,11 +249,6 @@ public class Mekanism {
         event.register(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, emptyName, () -> MekanismAPI.EMPTY_INFUSE_TYPE);
         event.register(MekanismAPI.PIGMENT_REGISTRY_NAME, emptyName, () -> MekanismAPI.EMPTY_PIGMENT);
         event.register(MekanismAPI.SLURRY_REGISTRY_NAME, emptyName, () -> MekanismAPI.EMPTY_SLURRY);
-        //Register our custom serializer condition
-        if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS)) {
-            CraftingHelper.register(ConditionExistsCondition.Serializer.INSTANCE);
-            CraftingHelper.register(ModVersionLoadedCondition.Serializer.INSTANCE);
-        }
     }
 
     public static ResourceLocation rl(String path) {
@@ -349,9 +348,6 @@ public class Mekanism {
             registerDispenseBehavior(new ModuleDispenseBehavior(), MekanismItems.MEKA_TOOL);
             registerDispenseBehavior(new MekaSuitDispenseBehavior(), MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS,
                   MekanismItems.MEKASUIT_BOOTS);
-            //Register custom item predicates
-            ItemPredicate.register(FullCanteenItemPredicate.ID, json -> FullCanteenItemPredicate.INSTANCE);
-            ItemPredicate.register(MaxedModuleContainerItemPredicate.ID, MaxedModuleContainerItemPredicate::fromJson);
             //Add any extra game event frequencies
             MekanismGameEvents.addFrequencies();
         });

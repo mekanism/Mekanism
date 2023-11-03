@@ -40,7 +40,7 @@ public abstract class ChemicalChemicalToChemicalRecipe<CHEMICAL extends Chemical
      * @apiNote The order of the inputs does not matter.
      */
     public ChemicalChemicalToChemicalRecipe(ResourceLocation id, INGREDIENT leftInput, INGREDIENT rightInput, STACK output) {
-        super(id);
+        super();
         this.leftInput = Objects.requireNonNull(leftInput, "Left input cannot be null.");
         this.rightInput = Objects.requireNonNull(rightInput, "Right input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");

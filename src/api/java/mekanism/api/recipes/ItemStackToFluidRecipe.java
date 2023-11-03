@@ -37,7 +37,7 @@ public abstract class ItemStackToFluidRecipe extends MekanismRecipe implements P
      * @param output Output.
      */
     public ItemStackToFluidRecipe(ResourceLocation id, ItemStackIngredient input, FluidStack output) {
-        super(id);
+        super();
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {

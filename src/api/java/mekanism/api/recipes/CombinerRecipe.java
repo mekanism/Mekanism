@@ -36,7 +36,7 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
      * @param output     Output.
      */
     public CombinerRecipe(ResourceLocation id, ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack output) {
-        super(id);
+        super();
         this.mainInput = Objects.requireNonNull(mainInput, "Main input cannot be null.");
         this.extraInput = Objects.requireNonNull(extraInput, "Secondary/Extra input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");

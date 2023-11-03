@@ -79,7 +79,7 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipe> {
      * @param gasOutput  {@link ICrTGasStack} representing the output of the recipe. Will be validated as not empty.
      */
     public final RotaryRecipe makeRecipe(ResourceLocation id, FluidStackIngredient fluidInput, ICrTGasStack gasOutput) {
-        return new RotaryIRecipe(id, fluidInput, getAndValidateNotEmpty(gasOutput));
+        return new RotaryIRecipe(fluidInput, getAndValidateNotEmpty(gasOutput));
     }
 
     /**
@@ -90,7 +90,7 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipe> {
      * @param fluidOutput {@link IFluidStack} representing the output of the recipe. Will be validated as not empty.
      */
     public final RotaryRecipe makeRecipe(ResourceLocation id, GasStackIngredient gasInput, IFluidStack fluidOutput) {
-        return new RotaryIRecipe(id, gasInput, getAndValidateNotEmpty(fluidOutput));
+        return new RotaryIRecipe(gasInput, getAndValidateNotEmpty(fluidOutput));
     }
 
     /**
@@ -103,7 +103,7 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipe> {
      * @param fluidOutput {@link IFluidStack} representing the output of the recipe when converting from a gas to a fluid. Will be validated as not empty.
      */
     public final RotaryRecipe makeRecipe(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, ICrTGasStack gasOutput, IFluidStack fluidOutput) {
-        return new RotaryIRecipe(id, fluidInput, gasInput, getAndValidateNotEmpty(gasOutput), getAndValidateNotEmpty(fluidOutput));
+        return new RotaryIRecipe(fluidInput, gasInput, getAndValidateNotEmpty(gasOutput), getAndValidateNotEmpty(fluidOutput));
     }
 
     @Override

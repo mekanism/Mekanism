@@ -1,6 +1,7 @@
 package mekanism.api.recipes.ingredients.creator;
 
 import com.google.gson.JsonElement;
+import com.mojang.serialization.Codec;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.InputIngredient;
@@ -61,6 +62,8 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      * @throws com.google.gson.JsonSyntaxException if the ingredient failed to deserialize or was invalid.
      */
     INGREDIENT deserialize(@Nullable JsonElement json);
+
+    Codec<INGREDIENT> codec();
 
     /**
      * Combines multiple Ingredients into a single Ingredient.

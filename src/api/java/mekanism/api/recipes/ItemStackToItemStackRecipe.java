@@ -37,7 +37,7 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implemen
      * @param output Output.
      */
     public ItemStackToItemStackRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
-        super(id);
+        super();
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {

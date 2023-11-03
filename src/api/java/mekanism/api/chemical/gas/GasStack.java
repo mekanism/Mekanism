@@ -1,5 +1,7 @@
 package mekanism.api.chemical.gas;
 
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -17,6 +19,11 @@ import org.jetbrains.annotations.Nullable;
  */
 @NothingNullByDefault
 public final class GasStack extends ChemicalStack<Gas> {
+
+    public static final Codec<GasStack> CODEC = Codec.pair(Gas.CODEC, Codec.LONG).xmap(
+          pair->new GasStack(pair.getFirst(), pair.getSecond()),
+          stack-> Pair.of(stack.getRaw(), stack.getAmount())
+          );
 
     /**
      * Empty GasStack instance.

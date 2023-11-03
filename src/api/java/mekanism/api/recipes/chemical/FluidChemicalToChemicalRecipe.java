@@ -42,7 +42,7 @@ public abstract class FluidChemicalToChemicalRecipe<CHEMICAL extends Chemical<CH
      * @param output        Output.
      */
     public FluidChemicalToChemicalRecipe(ResourceLocation id, FluidStackIngredient fluidInput, INGREDIENT chemicalInput, STACK output) {
-        super(id);
+        super();
         this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
         this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");

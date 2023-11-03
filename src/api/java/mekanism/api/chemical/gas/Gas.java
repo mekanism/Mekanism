@@ -1,5 +1,6 @@
 package mekanism.api.chemical.gas;
 
+import com.mojang.serialization.Codec;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -20,6 +21,8 @@ import org.jetbrains.annotations.Nullable;
  */
 @NothingNullByDefault
 public class Gas extends Chemical<Gas> implements IGasProvider {
+
+    public static final Codec<Gas> CODEC = MekanismAPI.gasRegistry().getCodec();
 
     public Gas(GasBuilder builder) {
         super(builder, ChemicalTags.GAS);

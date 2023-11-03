@@ -37,11 +37,13 @@ public class CuriosIntegration {
     }
 
     public static Optional<? extends IItemHandler> getCuriosInventory(LivingEntity entity) {
-        return CuriosApi.getCuriosHelper().getEquippedCurios(entity).resolve();
+        return Optional.empty();//TODO Curios update
+        //return CuriosApi.getCuriosHelper().getEquippedCurios(entity).resolve();
     }
 
     public static Optional<SlotResult> findFirstCurioAsResult(@NotNull LivingEntity entity, Predicate<ItemStack> filter) {
-        return CuriosApi.getCuriosHelper().findFirstCurio(entity, filter);
+        return Optional.empty();//TODO Curios update
+        //return CuriosApi.getCuriosHelper().findFirstCurio(entity, filter);
     }
 
     public static ItemStack findFirstCurio(@NotNull LivingEntity entity, Predicate<ItemStack> filter) {
@@ -51,10 +53,11 @@ public class CuriosIntegration {
     }
 
     public static ItemStack getCurioStack(@NotNull LivingEntity entity, String slotType, int slot) {
-        return CuriosApi.getCuriosHelper().getCuriosHandler(entity)
-              .resolve()
-              .flatMap(handler -> handler.getStacksHandler(slotType))
-              .map(handler -> handler.getStacks().getStackInSlot(slot))
-              .orElse(ItemStack.EMPTY);
+        return ItemStack.EMPTY;//todo Curios update
+        //return CuriosApi.getCuriosHelper().getCuriosHandler(entity)
+        //      .resolve()
+        //      .flatMap(handler -> handler.getStacksHandler(slotType))
+        //      .map(handler -> handler.getStacks().getStackInSlot(slot))
+        //      .orElse(ItemStack.EMPTY);
     }
 }

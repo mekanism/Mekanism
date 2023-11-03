@@ -37,7 +37,7 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
      * @param output Output.
      */
     public ChemicalCrystallizerRecipe(ResourceLocation id, ChemicalStackIngredient<?, ?> input, ItemStack output) {
-        super(id);
+        super();
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.chemicalType = ChemicalType.getTypeFor(input);
         Objects.requireNonNull(output, "Output cannot be null.");

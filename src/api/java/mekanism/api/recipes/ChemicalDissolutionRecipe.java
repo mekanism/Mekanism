@@ -39,7 +39,7 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implement
      * @param output    Output.
      */
     public ChemicalDissolutionRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ChemicalStack<?> output) {
-        super(id);
+        super();
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
         this.gasInput = Objects.requireNonNull(gasInput, "Gas input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");

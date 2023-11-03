@@ -31,7 +31,7 @@ public abstract class FluidToFluidRecipe extends MekanismRecipe implements Predi
      * @param output Output.
      */
     public FluidToFluidRecipe(ResourceLocation id, FluidStackIngredient input, FluidStack output) {
-        super(id);
+        super();
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {

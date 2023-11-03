@@ -74,15 +74,15 @@ public class IngredientHelper {
     }
 
     public void put(InfusionStack stack) {
-        put(NSSInfuseType.createInfuseType(stack), stack.getAmount());
+        //put(NSSInfuseType.createInfuseType(stack), stack.getAmount());
     }
 
     public void put(PigmentStack stack) {
-        put(NSSPigment.createPigment(stack), stack.getAmount());
+        //put(NSSPigment.createPigment(stack), stack.getAmount());
     }
 
     public void put(SlurryStack stack) {
-        put(NSSSlurry.createSlurry(stack), stack.getAmount());
+        //put(NSSSlurry.createSlurry(stack), stack.getAmount());
     }
 
     public void put(FluidStack stack) {
@@ -128,15 +128,18 @@ public class IngredientHelper {
     }
 
     public boolean addAsConversion(InfusionStack stack) {
-        return addAsConversion(NSSInfuseType.createInfuseType(stack), stack.getAmount());
+        throw new IllegalStateException("TODO");//TODO ProjectE
+        //return addAsConversion(NSSInfuseType.createInfuseType(stack), stack.getAmount());
     }
 
     public boolean addAsConversion(PigmentStack stack) {
-        return addAsConversion(NSSPigment.createPigment(stack), stack.getAmount());
+        throw new IllegalStateException("TODO");//TODO ProjectE
+        //return addAsConversion(NSSPigment.createPigment(stack), stack.getAmount());
     }
 
     public boolean addAsConversion(SlurryStack stack) {
-        return addAsConversion(NSSSlurry.createSlurry(stack), stack.getAmount());
+        throw new IllegalStateException("TODO");//TODO ProjectE
+        //return addAsConversion(NSSSlurry.createSlurry(stack), stack.getAmount());
     }
 
     public boolean addAsConversion(FluidStack stack) {

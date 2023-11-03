@@ -36,7 +36,7 @@ public abstract class ChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICA
      * @param output Output.
      */
     public ChemicalToChemicalRecipe(ResourceLocation id, INGREDIENT input, STACK output) {
-        super(id);
+        super();
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {

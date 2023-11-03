@@ -43,7 +43,7 @@ public abstract class ItemStackChemicalToItemStackRecipe<CHEMICAL extends Chemic
      * @param output        Output.
      */
     public ItemStackChemicalToItemStackRecipe(ResourceLocation id, ItemStackIngredient itemInput, INGREDIENT chemicalInput, ItemStack output) {
-        super(id);
+        super();
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
         this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");

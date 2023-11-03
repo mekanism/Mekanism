@@ -9,7 +9,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.serializer.RotaryRecipeSerializer;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -18,16 +17,16 @@ import net.neoforged.neoforge.fluids.FluidStack;
 @NothingNullByDefault
 public class RotaryIRecipe extends RotaryRecipe {
 
-    public RotaryIRecipe(ResourceLocation id, FluidStackIngredient fluidInput, GasStack gasOutput) {
-        super(id, fluidInput, gasOutput);
+    public RotaryIRecipe(FluidStackIngredient fluidInput, GasStack gasOutput) {
+        super(fluidInput, gasOutput);
     }
 
-    public RotaryIRecipe(ResourceLocation id, GasStackIngredient gasInput, FluidStack fluidOutput) {
-        super(id, gasInput, fluidOutput);
+    public RotaryIRecipe(GasStackIngredient gasInput, FluidStack fluidOutput) {
+        super(gasInput, fluidOutput);
     }
 
-    public RotaryIRecipe(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput) {
-        super(id, fluidInput, gasInput, gasOutput, fluidOutput);
+    public RotaryIRecipe(FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput) {
+        super(fluidInput, gasInput, gasOutput, fluidOutput);
     }
 
     @Override
@@ -53,18 +52,18 @@ public class RotaryIRecipe extends RotaryRecipe {
     public static class Factory implements RotaryRecipeSerializer.IFactory<RotaryRecipe> {
 
         @Override
-        public RotaryRecipe create(ResourceLocation id, FluidStackIngredient fluidInput, GasStack gasOutput) {
-            return new RotaryIRecipe(id, fluidInput, gasOutput);
+        public RotaryRecipe create(FluidStackIngredient fluidInput, GasStack gasOutput) {
+            return new RotaryIRecipe(fluidInput, gasOutput);
         }
 
         @Override
-        public RotaryRecipe create(ResourceLocation id, GasStackIngredient gasInput, FluidStack fluidOutput) {
-            return new RotaryIRecipe(id, gasInput, fluidOutput);
+        public RotaryRecipe create(GasStackIngredient gasInput, FluidStack fluidOutput) {
+            return new RotaryIRecipe(gasInput, fluidOutput);
         }
 
         @Override
-        public RotaryRecipe create(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput) {
-            return new RotaryIRecipe(id, fluidInput, gasInput, gasOutput, fluidOutput);
+        public RotaryRecipe create(FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput) {
+            return new RotaryIRecipe(fluidInput, gasInput, gasOutput, fluidOutput);
         }
     }
 }

@@ -2,6 +2,9 @@ package mekanism.common.item.predicate;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import java.util.Set;
 import mekanism.api.JsonConstants;
@@ -15,13 +18,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.advancements.critereon.ICustomItemPredicate;
 import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
-public class MaxedModuleContainerItemPredicate<ITEM extends Item & IModuleContainerItem> extends CustomItemPredicate {
-
-    public static final ResourceLocation ID = Mekanism.rl("maxed_module_container");
-
+public class MaxedModuleContainerItemPredicate<ITEM extends Item & IModuleContainerItem> implements ICustomItemPredicate {
     private final Set<ModuleData<?>> supportedModules;
     private final ITEM item;
 
@@ -31,12 +32,7 @@ public class MaxedModuleContainerItemPredicate<ITEM extends Item & IModuleContai
     }
 
     @Override
-    protected ResourceLocation getID() {
-        return ID;
-    }
-
-    @Override
-    public boolean matches(@NotNull ItemStack stack) {
+    public boolean test(@NotNull ItemStack stack) {
         if (stack.getItem() == item) {
             Reference2IntMap<ModuleData<?>> installedCounts = ModuleHelper.get().loadAllCounts(stack);
             if (installedCounts.keySet().containsAll(supportedModules)) {
@@ -51,20 +47,17 @@ public class MaxedModuleContainerItemPredicate<ITEM extends Item & IModuleContai
         return false;
     }
 
-    @NotNull
     @Override
-    public JsonObject serializeToJson() {
-        JsonObject object = super.serializeToJson();
-        object.addProperty(JsonConstants.ITEM, RegistryUtils.getName(item).toString());
-        return object;
+    public Codec<? extends ICustomItemPredicate> codec() {
+        return MekanismItemPredicates.MAXED_MODULE_CONTAINER_ITEM.get();
     }
 
-    public static MaxedModuleContainerItemPredicate<?> fromJson(JsonObject json) {
-        String itemName = GsonHelper.getAsString(json, JsonConstants.ITEM);
-        Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName));
-        if (item instanceof IModuleContainerItem) {
-            return new MaxedModuleContainerItemPredicate<>((Item & IModuleContainerItem) item);
-        }
-        throw new JsonParseException("Specified item is not a module container item.");
+    static Codec<MaxedModuleContainerItemPredicate<?>> makeCodec() {
+        return ForgeRegistries.ITEMS.getCodec().comapFlatMap(item->{
+            if (item instanceof IModuleContainerItem) {
+                return DataResult.success(new MaxedModuleContainerItemPredicate<>((Item & IModuleContainerItem) item));
+            }
+            return DataResult.error(()->"Specified item is not a module container item.");
+        }, pred->pred.item);
     }
 }

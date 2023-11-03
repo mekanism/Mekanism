@@ -31,7 +31,7 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe implements 
      * @param output Output, must be greater than zero.
      */
     public ItemStackToEnergyRecipe(ResourceLocation id, ItemStackIngredient input, FloatingLong output) {
-        super(id);
+        super();
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isZero()) {
