@@ -21,6 +21,7 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,10 +61,10 @@ public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> implements Reci
     public RotaryRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
         this.codec = Lazy.of(this::makeCodec);
-    }
+        }
 
     private Codec<RECIPE> makeCodec() {
-        return ExtraCodecs.withAlternative(bothWaysCodec(), ExtraCodecs.withAlternative(fluidToGasCodec(), gasToFluidCodec()));
+        return NeoForgeExtraCodecs.withAlternative(bothWaysCodec(), NeoForgeExtraCodecs.withAlternative(fluidToGasCodec(), gasToFluidCodec()));
     }
 
     public RECIPE fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
