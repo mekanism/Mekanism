@@ -3,11 +3,8 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.Optional;
-import mekanism.api.IMekanismAccess;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.GasStack;
@@ -16,8 +13,11 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredie
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator;
+import mekanism.common.recipe.ingredient.creator.GasStackIngredientCreator;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -25,8 +25,34 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> implements RecipeSerializer<RECIPE> {
-    private static final Codec<Pair<FluidStackIngredient, GasStack>> FLUID_TO_GAS_CODEC = Codec.pair(IMekanismAccess.INSTANCE.fluidStackIngredientCreator().codec(), GasStack.CODEC);
-    public static final Codec<Pair<GasStackIngredient, FluidStack>> GAS_TO_FLUID_CODEC = Codec.pair(IMekanismAccess.INSTANCE.gasStackIngredientCreator().codec(), FluidStack.CODEC);
+
+    private final  RecordCodecBuilder<RECIPE, FluidStackIngredient> FLUID_INPUT_FIELD = RecordCodecBuilder.of(RotaryRecipe::getFluidInput, JsonConstants.FLUID_INPUT, FluidStackIngredientCreator.INSTANCE.codec());
+    private final  RecordCodecBuilder<RECIPE, FluidStack> FLUID_OUTPUT_FIELD = RecordCodecBuilder.of(r->r.getFluidOutput(GasStack.EMPTY), JsonConstants.FLUID_OUTPUT, FluidStack.CODEC);
+    private final RecordCodecBuilder<RECIPE, GasStackIngredient> GAS_INPUT_FIELD = RecordCodecBuilder.of(RotaryRecipe::getGasInput, JsonConstants.GAS_INPUT, GasStackIngredientCreator.INSTANCE.codec());
+    private final RecordCodecBuilder<RECIPE, GasStack> GAS_OUTPUT_FIELD = RecordCodecBuilder.of(rotaryRecipe -> rotaryRecipe.getGasOutput(FluidStack.EMPTY), JsonConstants.GAS_INPUT, GasStack.CODEC);
+
+    private Codec<RECIPE> bothWaysCodec() {
+        return RecordCodecBuilder.create(i -> i.group(
+              FLUID_INPUT_FIELD,
+              GAS_INPUT_FIELD,
+              GAS_OUTPUT_FIELD,
+              FLUID_OUTPUT_FIELD
+        ).apply(i, this.factory::create));
+    }
+
+    private Codec<RECIPE> fluidToGasCodec() {
+        return RecordCodecBuilder.create(i -> i.group(
+              FLUID_INPUT_FIELD,
+              GAS_OUTPUT_FIELD
+        ).apply(i, this.factory::create));
+    }
+
+    private Codec<RECIPE> gasToFluidCodec() {
+        return RecordCodecBuilder.create(i -> i.group(
+              GAS_INPUT_FIELD,
+              FLUID_OUTPUT_FIELD
+        ).apply(i, this.factory::create));
+    }
 
     private final IFactory<RECIPE> factory;
     private final Lazy<Codec<RECIPE>> codec;
@@ -37,31 +63,7 @@ public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> implements Reci
     }
 
     private Codec<RECIPE> makeCodec() {
-        return RecordCodecBuilder.create(i->i.group(
-              FLUID_TO_GAS_CODEC.optionalFieldOf("f2g").forGetter(recipe-> {
-                  if (recipe.hasFluidToGas()) {
-                      return Optional.of(Pair.of(recipe.getFluidInput(), recipe.getGasOutput(FluidStack.EMPTY)));
-                  }
-                  return Optional.empty();
-              }),
-              GAS_TO_FLUID_CODEC.optionalFieldOf("g2f").forGetter(recipe -> {
-                  if (recipe.hasGasToFluid()) {
-                      return Optional.of(Pair.of(recipe.getGasInput(), recipe.getFluidOutput(GasStack.EMPTY)));
-                  }
-                  return Optional.empty();
-              })
-        ).apply(i, (f2g, g2f)->{
-            if (f2g.isPresent() && g2f.isPresent()) {
-                return factory.create(f2g.get().getFirst(), g2f.get().getFirst(), f2g.get().getSecond(), g2f.get().getSecond());
-            }
-            if (f2g.isPresent()) {
-                return factory.create(f2g.get().getFirst(), f2g.get().getSecond());
-            }
-            if (g2f.isPresent()) {
-                return factory.create(g2f.get().getFirst(), g2f.get().getSecond());
-            }
-            throw new IllegalStateException("Rotary recipes require at least a gas to fluid or fluid to gas conversion.");
-        }));
+        return ExtraCodecs.withAlternative(bothWaysCodec(), ExtraCodecs.withAlternative(fluidToGasCodec(), gasToFluidCodec()));
     }
 
     @Override
