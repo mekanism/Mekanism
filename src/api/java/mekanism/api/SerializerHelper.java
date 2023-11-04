@@ -6,6 +6,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.codecs.PrimitiveCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Optional;
 import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
@@ -21,12 +27,14 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
+import net.minecraft.Util;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -41,6 +49,53 @@ public class SerializerHelper {
     }
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+
+    public static final Codec<Integer> POSITIVE_INT_CODEC = Codec.intRange(0, Integer.MAX_VALUE);
+
+    public static final Codec<Long> POSITIVE_LONG_CODEC = Util.make(()->{
+        final Function<Long, DataResult<Long>> checker = Codec.checkRange(0L, Long.MAX_VALUE);
+        return Codec.LONG.flatXmap(checker, checker);
+    });
+
+    /**
+     * Codec version of the old CraftingHelper.getItemStack
+     */
+    public static final Codec<ItemStack> ITEMSTACK_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+          BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(ItemStack::getItem),
+          POSITIVE_INT_CODEC.fieldOf("Count").forGetter(ItemStack::getCount),
+          CompoundTag.CODEC.optionalFieldOf("nbt").forGetter(stack -> Optional.ofNullable(stack.getTag()))
+    ).apply(instance, ItemStack::new));
+
+    private static final Codec<Fluid> NON_EMPTY_FLUID_CODEC = ExtraCodecs.validate(BuiltInRegistries.FLUID.byNameCodec(), fluid -> fluid == Fluids.EMPTY ? DataResult.error(()->"Invalid fluid type") : DataResult.success(fluid));
+
+    public static final Codec<FluidStack> FLUIDSTACK_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+          NON_EMPTY_FLUID_CODEC.fieldOf(JsonConstants.FLUID).forGetter(FluidStack::getFluid),
+          POSITIVE_INT_CODEC.fieldOf(JsonConstants.AMOUNT).forGetter(FluidStack::getAmount),
+          TagParser.AS_CODEC.optionalFieldOf(JsonConstants.NBT).forGetter(stack -> Optional.ofNullable(stack.getTag()))
+    ).apply(instance, (fluid, amount, tag) -> {
+        FluidStack stack = new FluidStack(fluid, amount);
+        tag.ifPresent(stack::setTag);
+        return stack;
+    }));
+
+    public static final Codec<ChemicalStack<?>> BOXED_CHEMICALSTACK_CODEC = ChemicalType.CODEC.dispatch(JsonConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor, type->switch (type){
+        case GAS -> GasStack.CODEC;
+        case INFUSION -> InfusionStack.CODEC;
+        case PIGMENT -> PigmentStack.CODEC;
+        case SLURRY -> SlurryStack.CODEC;
+    });
+
+    public static final Codec<FloatingLong> FLOATING_LONG_CODEC = new PrimitiveCodec<FloatingLong>() {
+        @Override
+        public <T> DataResult<FloatingLong> read(DynamicOps<T> ops, T input) {
+            return ops.getNumberValue(input).map(number -> FloatingLong.fromNumber(number, true));
+        }
+
+        @Override
+        public <T> T write(DynamicOps<T> ops, FloatingLong value) {
+            return ops.createNumeric(value);
+        }
+    };
 
     /**
      * Deserializes a FloatingLong that is stored in a specific key in a Json Object.

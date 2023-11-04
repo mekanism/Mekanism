@@ -1,5 +1,6 @@
 package mekanism.api.chemical;
 
+import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -35,6 +36,8 @@ public enum ChemicalType implements StringRepresentable {
             nameToType.put(type.getSerializedName(), type);
         }
     }
+
+    public static final Codec<ChemicalType> CODEC = StringRepresentable.fromEnum(ChemicalType::values);
 
     private final Predicate<Chemical<?>> instanceCheck;
     private final String name;

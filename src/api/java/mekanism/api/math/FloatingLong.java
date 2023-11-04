@@ -1,6 +1,7 @@
 package mekanism.api.math;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -1128,6 +1129,22 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         }
         short decimal = parseDecimal(string, index);
         return isConstant ? createConst(value, decimal) : create(value, decimal);
+    }
+
+    public static FloatingLong fromNumber(Number number, boolean isConstant) {
+        if (number instanceof Integer || number instanceof Long || number instanceof Short || number instanceof Byte || number instanceof BigInteger) {
+            long longValue = number.longValue();
+            if (longValue < 0) {
+                throw new NumberFormatException("Number must be positive");
+            }
+            return isConstant ? createConst(longValue, (short) 0) : create(longValue, (short) 0);
+        } else if (number instanceof BigDecimal decimal) {
+            try {
+                long longValue = decimal.longValueExact();
+                return isConstant ? createConst(longValue, (short) 0) : create(longValue, (short) 0);
+            } catch (ArithmeticException ignored){}
+        }
+        return parseFloatingLong(number.toString(), isConstant);
     }
 
     /**

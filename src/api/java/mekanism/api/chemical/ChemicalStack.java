@@ -8,6 +8,7 @@ import java.util.function.BiFunction;
 import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.attribute.IChemicalAttributeContainer;
@@ -27,7 +28,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     protected static <STACK extends ChemicalStack<CHEMICAL>, CHEMICAL extends Chemical<CHEMICAL>> Codec<STACK> codec(Codec<CHEMICAL> chemicalCodec, String chemicalField, BiFunction<CHEMICAL, Long, STACK> constructor) {
         return RecordCodecBuilder.create(i -> i.group(
               chemicalCodec.fieldOf(chemicalField).forGetter(ChemicalStack::getRaw),
-              Codec.LONG.fieldOf(JsonConstants.AMOUNT).forGetter(ChemicalStack::getAmount)
+              SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(JsonConstants.AMOUNT).forGetter(ChemicalStack::getAmount)
         ).apply(i, constructor));
     }
 
