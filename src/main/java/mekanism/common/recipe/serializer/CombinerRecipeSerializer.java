@@ -41,12 +41,12 @@ public class CombinerRecipeSerializer<RECIPE extends CombinerRecipe> implements 
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             ItemStackIngredient mainInput = IngredientCreatorAccess.item().read(buffer);
             ItemStackIngredient extraInput = IngredientCreatorAccess.item().read(buffer);
             ItemStack output = buffer.readItem();
-            return this.factory.create(recipeId, mainInput, extraInput, output);
+            return this.factory.create(mainInput, extraInput, output);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading combiner recipe from packet.", e);
             throw e;
@@ -66,6 +66,6 @@ public class CombinerRecipeSerializer<RECIPE extends CombinerRecipe> implements 
     @FunctionalInterface
     public interface IFactory<RECIPE extends CombinerRecipe> {
 
-        RECIPE create(ResourceLocation id, ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack output);
+        RECIPE create(ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack output);
     }
 }

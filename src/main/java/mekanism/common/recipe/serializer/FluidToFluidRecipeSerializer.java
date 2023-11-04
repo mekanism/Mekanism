@@ -38,11 +38,11 @@ public class FluidToFluidRecipeSerializer<RECIPE extends FluidToFluidRecipe> imp
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             FluidStackIngredient inputIngredient = IngredientCreatorAccess.fluid().read(buffer);
             FluidStack output = FluidStack.readFromPacket(buffer);
-            return this.factory.create(recipeId, inputIngredient, output);
+            return this.factory.create(inputIngredient, output);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading fluid to fluid recipe from packet.", e);
             throw e;
@@ -62,6 +62,6 @@ public class FluidToFluidRecipeSerializer<RECIPE extends FluidToFluidRecipe> imp
     @FunctionalInterface
     public interface IFactory<RECIPE extends FluidToFluidRecipe> {
 
-        RECIPE create(ResourceLocation id, FluidStackIngredient input, FluidStack output);
+        RECIPE create(FluidStackIngredient input, FluidStack output);
     }
 }

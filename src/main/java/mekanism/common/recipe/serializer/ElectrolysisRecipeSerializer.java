@@ -47,13 +47,13 @@ public class ElectrolysisRecipeSerializer<RECIPE extends ElectrolysisRecipe> imp
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             FluidStackIngredient input = IngredientCreatorAccess.fluid().read(buffer);
             FloatingLong energyMultiplier = FloatingLong.readFromBuffer(buffer);
             GasStack leftGasOutput = GasStack.readFromPacket(buffer);
             GasStack rightGasOutput = GasStack.readFromPacket(buffer);
-            return this.factory.create(recipeId, input, energyMultiplier, leftGasOutput, rightGasOutput);
+            return this.factory.create(input, energyMultiplier, leftGasOutput, rightGasOutput);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading electrolysis recipe from packet.", e);
             throw e;
@@ -73,6 +73,6 @@ public class ElectrolysisRecipeSerializer<RECIPE extends ElectrolysisRecipe> imp
     @FunctionalInterface
     public interface IFactory<RECIPE extends ElectrolysisRecipe> {
 
-        RECIPE create(ResourceLocation id, FluidStackIngredient input, FloatingLong energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput);
+        RECIPE create(FluidStackIngredient input, FloatingLong energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput);
     }
 }

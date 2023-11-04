@@ -15,12 +15,12 @@ public class ItemStackToPigmentRecipeSerializer<RECIPE extends ItemStackToPigmen
     }
 
     @Override
-    protected PigmentStack fromJson(@NotNull JsonObject json, @NotNull String key) {
+    protected PigmentStack stackFromJson(@NotNull JsonObject json, @NotNull String key) {
         return SerializerHelper.getPigmentStack(json, key);
     }
 
     @Override
-    protected PigmentStack fromBuffer(@NotNull FriendlyByteBuf buffer) {
+    protected PigmentStack stackFromBuffer(@NotNull FriendlyByteBuf buffer) {
         return PigmentStack.readFromPacket(buffer);
     }
 }

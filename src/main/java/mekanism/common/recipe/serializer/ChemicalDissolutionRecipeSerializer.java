@@ -47,7 +47,7 @@ public class ChemicalDissolutionRecipeSerializer<RECIPE extends ChemicalDissolut
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             ItemStackIngredient itemInput = IngredientCreatorAccess.item().read(buffer);
             GasStackIngredient gasInput = IngredientCreatorAccess.gas().read(buffer);
@@ -58,7 +58,7 @@ public class ChemicalDissolutionRecipeSerializer<RECIPE extends ChemicalDissolut
                 case PIGMENT -> PigmentStack.readFromPacket(buffer);
                 case SLURRY -> SlurryStack.readFromPacket(buffer);
             };
-            return this.factory.create(recipeId, itemInput, gasInput, output);
+            return this.factory.create(itemInput, gasInput, output);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading itemstack gas to gas recipe from packet.", e);
             throw e;
@@ -78,6 +78,6 @@ public class ChemicalDissolutionRecipeSerializer<RECIPE extends ChemicalDissolut
     @FunctionalInterface
     public interface IFactory<RECIPE extends ChemicalDissolutionRecipe> {
 
-        RECIPE create(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ChemicalStack<?> output);
+        RECIPE create(ItemStackIngredient itemInput, GasStackIngredient gasInput, ChemicalStack<?> output);
     }
 }

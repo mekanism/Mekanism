@@ -42,12 +42,12 @@ public class FluidSlurryToSlurryRecipeSerializer<RECIPE extends FluidSlurryToSlu
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             FluidStackIngredient fluidInput = IngredientCreatorAccess.fluid().read(buffer);
             SlurryStackIngredient slurryInput = IngredientCreatorAccess.slurry().read(buffer);
             SlurryStack output = SlurryStack.readFromPacket(buffer);
-            return this.factory.create(recipeId, fluidInput, slurryInput, output);
+            return this.factory.create(fluidInput, slurryInput, output);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading fluid slurry to slurry recipe from packet.", e);
             throw e;
@@ -67,6 +67,6 @@ public class FluidSlurryToSlurryRecipeSerializer<RECIPE extends FluidSlurryToSlu
     @FunctionalInterface
     public interface IFactory<RECIPE extends FluidSlurryToSlurryRecipe> {
 
-        RECIPE create(ResourceLocation id, FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output);
+        RECIPE create(FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output);
     }
 }

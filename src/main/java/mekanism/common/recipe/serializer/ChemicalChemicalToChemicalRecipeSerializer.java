@@ -45,16 +45,16 @@ public abstract class ChemicalChemicalToChemicalRecipeSerializer<CHEMICAL extend
         if (output.isEmpty()) {
             throw new JsonSyntaxException("Recipe output must not be empty.");
         }
-        return this.factory.create(recipeId, leftInput, rightInput, output);
+        return this.factory.create(leftInput, rightInput, output);
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             INGREDIENT leftInput = getDeserializer().read(buffer);
             INGREDIENT rightInput = getDeserializer().read(buffer);
             STACK output = fromBuffer(buffer);
-            return this.factory.create(recipeId, leftInput, rightInput, output);
+            return this.factory.create(leftInput, rightInput, output);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading chemical chemical to chemical recipe from packet.", e);
             throw e;
@@ -75,6 +75,6 @@ public abstract class ChemicalChemicalToChemicalRecipeSerializer<CHEMICAL extend
     public interface IFactory<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
           INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>> {
 
-        RECIPE create(ResourceLocation id, INGREDIENT leftInput, INGREDIENT rightInput, STACK output);
+        RECIPE create(INGREDIENT leftInput, INGREDIENT rightInput, STACK output);
     }
 }

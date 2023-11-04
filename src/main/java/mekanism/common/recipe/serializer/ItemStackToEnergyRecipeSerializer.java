@@ -38,11 +38,11 @@ public class ItemStackToEnergyRecipeSerializer<RECIPE extends ItemStackToEnergyR
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().read(buffer);
             FloatingLong output = FloatingLong.readFromBuffer(buffer);
-            return this.factory.create(recipeId, inputIngredient, output);
+            return this.factory.create(inputIngredient, output);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading itemstack to energy recipe from packet.", e);
             throw e;
@@ -62,6 +62,6 @@ public class ItemStackToEnergyRecipeSerializer<RECIPE extends ItemStackToEnergyR
     @FunctionalInterface
     public interface IFactory<RECIPE extends ItemStackToEnergyRecipe> {
 
-        RECIPE create(ResourceLocation id, ItemStackIngredient input, FloatingLong output);
+        RECIPE create(ItemStackIngredient input, FloatingLong output);
     }
 }

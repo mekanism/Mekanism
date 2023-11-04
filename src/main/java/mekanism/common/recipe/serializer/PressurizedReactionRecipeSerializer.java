@@ -78,7 +78,7 @@ public class PressurizedReactionRecipeSerializer<RECIPE extends PressurizedReact
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             ItemStackIngredient inputSolid = IngredientCreatorAccess.item().read(buffer);
             FluidStackIngredient inputFluid = IngredientCreatorAccess.fluid().read(buffer);
@@ -87,7 +87,7 @@ public class PressurizedReactionRecipeSerializer<RECIPE extends PressurizedReact
             int duration = buffer.readVarInt();
             ItemStack outputItem = buffer.readItem();
             GasStack outputGas = GasStack.readFromPacket(buffer);
-            return this.factory.create(recipeId, inputSolid, inputFluid, inputGas, energyRequired, duration, outputItem, outputGas);
+            return this.factory.create(inputSolid, inputFluid, inputGas, energyRequired, duration, outputItem, outputGas);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading pressurized reaction recipe from packet.", e);
             throw e;
@@ -107,7 +107,7 @@ public class PressurizedReactionRecipeSerializer<RECIPE extends PressurizedReact
     @FunctionalInterface
     public interface IFactory<RECIPE extends PressurizedReactionRecipe> {
 
-        RECIPE create(ResourceLocation id, ItemStackIngredient itemInput, FluidStackIngredient fluidInput, GasStackIngredient gasInput, FloatingLong energyRequired, int duration,
+        RECIPE create(ItemStackIngredient itemInput, FluidStackIngredient fluidInput, GasStackIngredient gasInput, FloatingLong energyRequired, int duration,
               ItemStack outputItem, GasStack outputGas);
     }
 }

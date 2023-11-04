@@ -38,11 +38,11 @@ public class GasToGasRecipeSerializer<RECIPE extends GasToGasRecipe> implements 
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             GasStackIngredient inputIngredient = IngredientCreatorAccess.gas().read(buffer);
             GasStack output = GasStack.readFromPacket(buffer);
-            return this.factory.create(recipeId, inputIngredient, output);
+            return this.factory.create(inputIngredient, output);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading gas to gas recipe from packet.", e);
             throw e;
@@ -62,6 +62,6 @@ public class GasToGasRecipeSerializer<RECIPE extends GasToGasRecipe> implements 
     @FunctionalInterface
     public interface IFactory<RECIPE extends GasToGasRecipe> {
 
-        RECIPE create(ResourceLocation id, GasStackIngredient input, GasStack output);
+        RECIPE create(GasStackIngredient input, GasStack output);
     }
 }

@@ -25,9 +25,9 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
         this.factory = factory;
     }
 
-    protected abstract STACK fromJson(@NotNull JsonObject json, @NotNull String key);
+    protected abstract STACK stackFromJson(@NotNull JsonObject json, @NotNull String key);
 
-    protected abstract STACK fromBuffer(@NotNull FriendlyByteBuf buffer);
+    protected abstract STACK stackFromBuffer(@NotNull FriendlyByteBuf buffer);
 
     @NotNull
     @Override
@@ -35,7 +35,7 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
         JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
                             GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
         ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().deserialize(input);
-        STACK output = fromJson(json, JsonConstants.OUTPUT);
+        STACK output = stackFromJson(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
             throw new JsonSyntaxException("Recipe output must not be empty.");
         }
@@ -43,10 +43,10 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().read(buffer);
-            STACK output = fromBuffer(buffer);
+            STACK output = stackFromBuffer(buffer);
             return this.factory.create(recipeId, inputIngredient, output);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading itemstack to chemical recipe from packet.", e);

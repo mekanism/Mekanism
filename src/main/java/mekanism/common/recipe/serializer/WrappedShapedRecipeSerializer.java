@@ -25,9 +25,9 @@ public class WrappedShapedRecipeSerializer<RECIPE extends WrappedShapedRecipe> i
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
-            return wrapper.apply(RecipeSerializer.SHAPED_RECIPE.fromNetwork(recipeId, buffer));
+            return wrapper.apply(RecipeSerializer.SHAPED_RECIPE.fromNetwork(buffer));
         } catch (Exception e) {
             Mekanism.logger.error("Error reading wrapped shaped recipe from packet.", e);
             throw e;

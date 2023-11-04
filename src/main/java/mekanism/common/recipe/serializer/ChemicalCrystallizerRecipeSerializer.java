@@ -40,12 +40,12 @@ public class ChemicalCrystallizerRecipeSerializer<RECIPE extends ChemicalCrystal
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
             ChemicalStackIngredient<?, ?> inputIngredient = IngredientCreatorAccess.getCreatorForType(chemicalType).read(buffer);
             ItemStack output = buffer.readItem();
-            return this.factory.create(recipeId, inputIngredient, output);
+            return this.factory.create(inputIngredient, output);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading boxed chemical to itemstack recipe from packet.", e);
             throw e;
@@ -65,6 +65,6 @@ public class ChemicalCrystallizerRecipeSerializer<RECIPE extends ChemicalCrystal
     @FunctionalInterface
     public interface IFactory<RECIPE extends ChemicalCrystallizerRecipe> {
 
-        RECIPE create(ResourceLocation id, ChemicalStackIngredient<?, ?> input, ItemStack output);
+        RECIPE create(ChemicalStackIngredient<?, ?> input, ItemStack output);
     }
 }

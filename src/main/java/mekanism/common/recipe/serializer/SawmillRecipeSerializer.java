@@ -65,13 +65,13 @@ public class SawmillRecipeSerializer<RECIPE extends SawmillRecipe> implements Re
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().read(buffer);
             ItemStack mainOutput = buffer.readItem();
             ItemStack secondaryOutput = buffer.readItem();
             double secondaryChance = buffer.readDouble();
-            return this.factory.create(recipeId, inputIngredient, mainOutput, secondaryOutput, secondaryChance);
+            return this.factory.create(inputIngredient, mainOutput, secondaryOutput, secondaryChance);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading sawmill recipe from packet.", e);
             throw e;
@@ -91,6 +91,6 @@ public class SawmillRecipeSerializer<RECIPE extends SawmillRecipe> implements Re
     @FunctionalInterface
     public interface IFactory<RECIPE extends SawmillRecipe> {
 
-        RECIPE create(ResourceLocation id, ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance);
+        RECIPE create(ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance);
     }
 }

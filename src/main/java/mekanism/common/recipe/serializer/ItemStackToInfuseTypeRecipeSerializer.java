@@ -15,12 +15,12 @@ public class ItemStackToInfuseTypeRecipeSerializer<RECIPE extends ItemStackToInf
     }
 
     @Override
-    protected InfusionStack fromJson(@NotNull JsonObject json, @NotNull String key) {
+    protected InfusionStack stackFromJson(@NotNull JsonObject json, @NotNull String key) {
         return SerializerHelper.getInfusionStack(json, key);
     }
 
     @Override
-    protected InfusionStack fromBuffer(@NotNull FriendlyByteBuf buffer) {
+    protected InfusionStack stackFromBuffer(@NotNull FriendlyByteBuf buffer) {
         return InfusionStack.readFromPacket(buffer);
     }
 }

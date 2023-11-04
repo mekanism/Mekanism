@@ -49,12 +49,12 @@ public abstract class ItemStackChemicalToItemStackRecipeSerializer<CHEMICAL exte
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             ItemStackIngredient itemInput = IngredientCreatorAccess.item().read(buffer);
             INGREDIENT chemicalInput = getDeserializer().read(buffer);
             ItemStack output = buffer.readItem();
-            return this.factory.create(recipeId, itemInput, chemicalInput, output);
+            return this.factory.create(itemInput, chemicalInput, output);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading itemstack chemical to itemstack recipe from packet.", e);
             throw e;
@@ -75,6 +75,6 @@ public abstract class ItemStackChemicalToItemStackRecipeSerializer<CHEMICAL exte
     public interface IFactory<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
           INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>> {
 
-        RECIPE create(ResourceLocation id, ItemStackIngredient itemInput, INGREDIENT chemicalInput, ItemStack output);
+        RECIPE create(ItemStackIngredient itemInput, INGREDIENT chemicalInput, ItemStack output);
     }
 }

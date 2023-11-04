@@ -51,13 +51,13 @@ public class NucleosynthesizingRecipeSerializer<RECIPE extends Nucleosynthesizin
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             ItemStackIngredient inputSolid = IngredientCreatorAccess.item().read(buffer);
             GasStackIngredient inputGas = IngredientCreatorAccess.gas().read(buffer);
             ItemStack outputItem = buffer.readItem();
             int duration = buffer.readVarInt();
-            return this.factory.create(recipeId, inputSolid, inputGas, outputItem, duration);
+            return this.factory.create(inputSolid, inputGas, outputItem, duration);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading nucleosynthesizing recipe from packet.", e);
             throw e;
@@ -77,6 +77,6 @@ public class NucleosynthesizingRecipeSerializer<RECIPE extends Nucleosynthesizin
     @FunctionalInterface
     public interface IFactory<RECIPE extends NucleosynthesizingRecipe> {
 
-        RECIPE create(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack outputItem, int duration);
+        RECIPE create(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack outputItem, int duration);
     }
 }

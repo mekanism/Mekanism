@@ -15,12 +15,12 @@ public class ItemStackToGasRecipeSerializer<RECIPE extends ItemStackToGasRecipe>
     }
 
     @Override
-    protected GasStack fromJson(@NotNull JsonObject json, @NotNull String key) {
+    protected GasStack stackFromJson(@NotNull JsonObject json, @NotNull String key) {
         return SerializerHelper.getGasStack(json, key);
     }
 
     @Override
-    protected GasStack fromBuffer(@NotNull FriendlyByteBuf buffer) {
+    protected GasStack stackFromBuffer(@NotNull FriendlyByteBuf buffer) {
         return GasStack.readFromPacket(buffer);
     }
 }
