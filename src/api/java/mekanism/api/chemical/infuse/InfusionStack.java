@@ -1,5 +1,7 @@
 package mekanism.api.chemical.infuse;
 
+import com.mojang.serialization.Codec;
+import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -12,6 +14,8 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public final class InfusionStack extends ChemicalStack<InfuseType> {
+
+    public static final Codec<InfusionStack> CODEC = codec(InfuseType.CODEC, JsonConstants.INFUSE_TYPE, InfusionStack::new);
 
     /**
      * Empty InfusionStack instance.

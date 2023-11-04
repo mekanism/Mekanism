@@ -1,7 +1,11 @@
 package mekanism.api.chemical;
 
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Collection;
+import java.util.function.BiFunction;
+import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -19,6 +23,13 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> implements IHasTextComponent, IHasTranslationKey, IChemicalAttributeContainer<ChemicalStack<CHEMICAL>> {
+
+    protected static <STACK extends ChemicalStack<CHEMICAL>, CHEMICAL extends Chemical<CHEMICAL>> Codec<STACK> codec(Codec<CHEMICAL> chemicalCodec, String chemicalField, BiFunction<CHEMICAL, Long, STACK> constructor) {
+        return RecordCodecBuilder.create(i -> i.group(
+              chemicalCodec.fieldOf(chemicalField).forGetter(ChemicalStack::getRaw),
+              Codec.LONG.fieldOf(JsonConstants.AMOUNT).forGetter(ChemicalStack::getAmount)
+        ).apply(i, constructor));
+    }
 
     private boolean isEmpty;
     private long amount;

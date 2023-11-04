@@ -1,5 +1,6 @@
 package mekanism.api.chemical.slurry;
 
+import com.mojang.serialization.Codec;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -11,6 +12,7 @@ import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
  */
 @NothingNullByDefault
 public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
+
+    public static final Codec<Slurry> CODEC = ExtraCodecs.lazyInitializedCodec(() -> MekanismAPI.slurryRegistry().getCodec());
 
     @Nullable
     private final TagKey<Item> oreTag;

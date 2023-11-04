@@ -1,5 +1,6 @@
 package mekanism.api.chemical.pigment;
 
+import com.mojang.serialization.Codec;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -10,6 +11,7 @@ import mekanism.api.providers.IPigmentProvider;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,6 +20,8 @@ import org.jetbrains.annotations.Nullable;
  */
 @NothingNullByDefault
 public class Pigment extends Chemical<Pigment> implements IPigmentProvider {
+
+    public static final Codec<Pigment> CODEC = ExtraCodecs.lazyInitializedCodec(() -> MekanismAPI.pigmentRegistry().getCodec());
 
     public Pigment(PigmentBuilder builder) {
         super(builder, ChemicalTags.PIGMENT);
