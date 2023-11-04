@@ -5,11 +5,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import mekanism.api.JsonConstants;
@@ -26,10 +30,12 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.ForgeRegistries.Keys;
 import net.neoforged.neoforge.registries.tags.ITag;
 import net.neoforged.neoforge.registries.tags.ITagManager;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +46,38 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
     public static final FluidStackIngredientCreator INSTANCE = new FluidStackIngredientCreator();
 
+    private static final Codec<FluidStackIngredient> SINGLE_CODEC = Codec.either(SingleFluidStackIngredient.CODEC, TaggedFluidStackIngredient.CODEC).xmap(
+          either->either.map(Function.identity(), Function.identity()),
+          input->{
+              if (input instanceof SingleFluidStackIngredient stack) {
+                  return Either.left(stack);
+              }
+              return Either.right((TaggedFluidStackIngredient) input);
+          }
+    );
+
+    private static final Codec<FluidStackIngredient> CODEC = Codec.either(SINGLE_CODEC, MultiFluidStackIngredient.CODEC).xmap(
+          either->either.map(Function.identity(), multi->{
+              //unbox if we only got one
+              if (multi.ingredients.length == 1) {
+                  return multi.ingredients[0];
+              }
+              return multi;
+          }),
+          input->{
+              if (input instanceof MultiFluidStackIngredient multi) {
+                  return Either.right(multi);
+              }
+              return Either.left(input);
+          }
+    );
+
     private FluidStackIngredientCreator() {
+    }
+
+    @Override
+    public Codec<FluidStackIngredient> codec() {
+        return CODEC;
     }
 
     @Override
@@ -70,59 +107,6 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             case TAGGED -> from(FluidTags.create(buffer.readResourceLocation()), buffer.readVarInt());
             case MULTI -> createMulti(BasePacketHandler.readArray(buffer, FluidStackIngredient[]::new, this::read));
         };
-    }
-
-    @Override
-    public FluidStackIngredient deserialize(@Nullable JsonElement json) {
-        if (json == null || json.isJsonNull()) {
-            throw new JsonSyntaxException("Ingredient cannot be null.");
-        }
-        if (json.isJsonArray()) {
-            JsonArray jsonArray = json.getAsJsonArray();
-            int size = jsonArray.size();
-            if (size == 0) {
-                throw new JsonSyntaxException("Ingredient array cannot be empty, at least one ingredient must be defined.");
-            } else if (size > 1) {
-                FluidStackIngredient[] ingredients = new FluidStackIngredient[size];
-                for (int i = 0; i < size; i++) {
-                    //Read all the ingredients
-                    ingredients[i] = deserialize(jsonArray.get(i));
-                }
-                return createMulti(ingredients);
-            }
-            //If we only have a single element, just set our json as that so that we don't have to use Multi for efficiency reasons
-            json = jsonArray.get(0);
-        }
-        if (!json.isJsonObject()) {
-            throw new JsonSyntaxException("Expected fluid to be object or array of objects.");
-        }
-        JsonObject jsonObject = json.getAsJsonObject();
-        if (jsonObject.has(JsonConstants.FLUID) && jsonObject.has(JsonConstants.TAG)) {
-            throw new JsonParseException("An ingredient entry is either a tag or an fluid, not both.");
-        } else if (jsonObject.has(JsonConstants.FLUID)) {
-            FluidStack stack = SerializerHelper.deserializeFluid(jsonObject);
-            if (stack.isEmpty()) {
-                throw new JsonSyntaxException("Unable to create an ingredient from an empty stack.");
-            }
-            return from(stack);
-        } else if (jsonObject.has(JsonConstants.TAG)) {
-            if (!jsonObject.has(JsonConstants.AMOUNT)) {
-                throw new JsonSyntaxException("Expected to receive a amount that is greater than zero.");
-            }
-            JsonElement count = jsonObject.get(JsonConstants.AMOUNT);
-            if (!GsonHelper.isNumberValue(count)) {
-                throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
-            }
-            int amount = count.getAsJsonPrimitive().getAsInt();
-            if (amount < 1) {
-                throw new JsonSyntaxException("Expected amount to be greater than zero.");
-            }
-            ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(jsonObject, JsonConstants.TAG));
-            ITagManager<Fluid> tagManager = TagUtils.manager(ForgeRegistries.FLUIDS);
-            TagKey<Fluid> key = tagManager.createTagKey(resourceLocation);
-            return from(key, amount);
-        }
-        throw new JsonSyntaxException("Expected to receive a resource location representing either a tag or a fluid.");
     }
 
     /**
@@ -159,6 +143,8 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
     @NothingNullByDefault
     public static class SingleFluidStackIngredient extends FluidStackIngredient {
+
+        static final Codec<SingleFluidStackIngredient> CODEC = SerializerHelper.FLUIDSTACK_CODEC.xmap(SingleFluidStackIngredient::new, SingleFluidStackIngredient::getInputRaw);
 
         private final List<@NotNull FluidStack> representations;
         private final FluidStack fluidInstance;
@@ -214,17 +200,6 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         }
 
         @Override
-        public JsonElement serialize() {
-            JsonObject json = new JsonObject();
-            json.addProperty(JsonConstants.AMOUNT, fluidInstance.getAmount());
-            json.addProperty(JsonConstants.FLUID, RegistryUtils.getName(fluidInstance.getFluid()).toString());
-            if (fluidInstance.hasTag()) {
-                json.addProperty(JsonConstants.NBT, fluidInstance.getTag().toString());
-            }
-            return json;
-        }
-
-        @Override
         public boolean equals(Object o) {
             if (this == o) {
                 return true;
@@ -244,6 +219,11 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
     @NothingNullByDefault
     public static class TaggedFluidStackIngredient extends FluidStackIngredient {
+
+        static final Codec<TaggedFluidStackIngredient> CODEC = RecordCodecBuilder.create(instance->instance.group(
+              TagKey.hashedCodec(Keys.FLUIDS).fieldOf(JsonConstants.TAG).forGetter(TaggedFluidStackIngredient::getTag),
+              SerializerHelper.POSITIVE_NONZERO_INT_CODEC.fieldOf(JsonConstants.AMOUNT).forGetter(TaggedFluidStackIngredient::getRawAmount)
+        ).apply(instance, TaggedFluidStackIngredient::new));
 
         private final ITag<Fluid> tag;
         private final int amount;
@@ -319,14 +299,6 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         }
 
         @Override
-        public JsonElement serialize() {
-            JsonObject json = new JsonObject();
-            json.addProperty(JsonConstants.AMOUNT, amount);
-            json.addProperty(JsonConstants.TAG, tag.getKey().location().toString());
-            return json;
-        }
-
-        @Override
         public boolean equals(Object o) {
             if (this == o) {
                 return true;
@@ -345,6 +317,8 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
     @NothingNullByDefault
     public static class MultiFluidStackIngredient extends FluidStackIngredient implements IMultiIngredient<FluidStack, FluidStackIngredient> {
+
+        static final Codec<MultiFluidStackIngredient> CODEC = ExtraCodecs.nonEmptyList(SINGLE_CODEC.listOf()).xmap(lst->new MultiFluidStackIngredient(lst.toArray(new FluidStackIngredient[0])), MultiFluidStackIngredient::getIngredients);
 
         private final FluidStackIngredient[] ingredients;
 
@@ -416,15 +390,6 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         public void write(FriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.MULTI);
             BasePacketHandler.writeArray(buffer, ingredients, InputIngredient::write);
-        }
-
-        @Override
-        public JsonElement serialize() {
-            JsonArray json = new JsonArray();
-            for (FluidStackIngredient ingredient : ingredients) {
-                json.add(ingredient.serialize());
-            }
-            return json;
         }
 
         @Override

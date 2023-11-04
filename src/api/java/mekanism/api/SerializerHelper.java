@@ -51,6 +51,7 @@ public class SerializerHelper {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     public static final Codec<Integer> POSITIVE_INT_CODEC = Codec.intRange(0, Integer.MAX_VALUE);
+    public static final Codec<Integer> POSITIVE_NONZERO_INT_CODEC = Codec.intRange(1, Integer.MAX_VALUE);
 
     public static final Codec<Long> POSITIVE_LONG_CODEC = Util.make(()->{
         final Function<Long, DataResult<Long>> checker = Codec.checkRange(0L, Long.MAX_VALUE);

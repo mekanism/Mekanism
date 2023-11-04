@@ -1,5 +1,8 @@
 package mekanism.api.recipes.ingredients;
 
+import com.google.gson.JsonElement;
+import com.mojang.serialization.JsonOps;
+import mekanism.api.IMekanismAccess;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.Gas;
@@ -32,6 +35,11 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#gas()}.
      */
     interface GasStackIngredient extends ChemicalStackIngredient<Gas, GasStack> {
+        @Override
+        @Deprecated(forRemoval = true)
+        default JsonElement serialize() {
+            return IMekanismAccess.INSTANCE.gasStackIngredientCreator().codec().encodeStart(JsonOps.INSTANCE, this).getOrThrow(false, e->{});
+        }
     }
 
     /**
@@ -40,6 +48,11 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#infusion()}.
      */
     interface InfusionStackIngredient extends ChemicalStackIngredient<InfuseType, InfusionStack> {
+        @Override
+        @Deprecated(forRemoval = true)
+        default JsonElement serialize() {
+            return IMekanismAccess.INSTANCE.infusionStackIngredientCreator().codec().encodeStart(JsonOps.INSTANCE, this).getOrThrow(false, e->{});
+        }
     }
 
     /**
@@ -48,6 +61,11 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#pigment()}.
      */
     interface PigmentStackIngredient extends ChemicalStackIngredient<Pigment, PigmentStack> {
+        @Override
+        @Deprecated(forRemoval = true)
+        default JsonElement serialize() {
+            return IMekanismAccess.INSTANCE.pigmentStackIngredientCreator().codec().encodeStart(JsonOps.INSTANCE, this).getOrThrow(false, e->{});
+        }
     }
 
     /**
@@ -56,5 +74,10 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#slurry()}.
      */
     interface SlurryStackIngredient extends ChemicalStackIngredient<Slurry, SlurryStack> {
+        @Override
+        @Deprecated(forRemoval = true)
+        default JsonElement serialize() {
+            return IMekanismAccess.INSTANCE.slurryStackIngredientCreator().codec().encodeStart(JsonOps.INSTANCE, this).getOrThrow(false, e->{});
+        }
     }
 }

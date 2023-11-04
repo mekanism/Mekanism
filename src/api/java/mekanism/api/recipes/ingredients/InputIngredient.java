@@ -73,5 +73,6 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      *
      * @return JsonElement representation of this ingredient.
      */
+    @Deprecated(forRemoval = true)
     JsonElement serialize();
 }

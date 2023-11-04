@@ -4,14 +4,19 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import mekanism.api.JsonConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -20,10 +25,12 @@ import mekanism.common.network.BasePacketHandler;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.contents.LiteralContents;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +39,29 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
 
     public static final ItemStackIngredientCreator INSTANCE = new ItemStackIngredientCreator();
 
+    private final Codec<ItemStackIngredient> CODEC = Codec.either(SingleItemStackIngredient.CODEC, MultiItemStackIngredient.CODEC)
+          .xmap(
+                either->either.map(Function.identity(), multi->{
+                    //unbox if we only got one
+                    if (multi.ingredients.length == 1) {
+                        return multi.ingredients[0];
+                    }
+                    return multi;
+                }),
+                iStackIngredient -> {
+                    if (iStackIngredient instanceof SingleItemStackIngredient single) {
+                        return Either.left(single);
+                    }
+                    return Either.right((MultiItemStackIngredient)iStackIngredient);
+                }
+          );
+
     private ItemStackIngredientCreator() {
+    }
+
+    @Override
+    public Codec<ItemStackIngredient> codec() {
+        return CODEC;
     }
 
     @Override
@@ -56,48 +85,6 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         };
     }
 
-    @Override
-    public ItemStackIngredient deserialize(@Nullable JsonElement json) {
-        if (json == null || json.isJsonNull()) {
-            throw new JsonSyntaxException("Ingredient cannot be null.");
-        }
-        if (json.isJsonArray()) {
-            JsonArray jsonArray = json.getAsJsonArray();
-            int size = jsonArray.size();
-            if (size == 0) {
-                throw new JsonSyntaxException("Ingredient array cannot be empty, at least one ingredient must be defined.");
-            } else if (size > 1) {
-                ItemStackIngredient[] ingredients = new ItemStackIngredient[size];
-                for (int i = 0; i < size; i++) {
-                    //Read all the ingredients
-                    ingredients[i] = deserialize(jsonArray.get(i));
-                }
-                return createMulti(ingredients);
-            }
-            //If we only have a single element, just set our json as that so that we don't have to use Multi for efficiency reasons
-            json = jsonArray.get(0);
-        }
-        if (!json.isJsonObject()) {
-            throw new JsonSyntaxException("Expected item to be object or array of objects.");
-        }
-        JsonObject jsonObject = json.getAsJsonObject();
-        int amount = 1;
-        if (jsonObject.has(JsonConstants.AMOUNT)) {
-            JsonElement count = jsonObject.get(JsonConstants.AMOUNT);
-            if (!GsonHelper.isNumberValue(count)) {
-                throw new JsonSyntaxException("Expected amount to be a number that is one or larger.");
-            }
-            amount = count.getAsJsonPrimitive().getAsInt();
-            if (amount < 1) {
-                throw new JsonSyntaxException("Expected amount to larger than or equal to one.");
-            }
-        }
-        JsonElement jsonelement = GsonHelper.isArrayNode(jsonObject, JsonConstants.INGREDIENT) ? GsonHelper.getAsJsonArray(jsonObject, JsonConstants.INGREDIENT) :
-                                  GsonHelper.getAsJsonObject(jsonObject, JsonConstants.INGREDIENT);
-        Ingredient ingredient = Ingredient.fromJson(jsonelement, false);
-        return from(ingredient, amount);
-    }
-
     /**
      * {@inheritDoc}
      *
@@ -111,18 +98,20 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         } else if (ingredients.length == 1) {
             return ingredients[0];
         }
-        List<ItemStackIngredient> cleanedIngredients = new ArrayList<>();
+        List<SingleItemStackIngredient> cleanedIngredients = new ArrayList<>();
         for (ItemStackIngredient ingredient : ingredients) {
             if (ingredient instanceof MultiItemStackIngredient multi) {
                 //Don't worry about if our inner ingredients are multi as well, as if this is the only external method for
                 // creating a multi ingredient, then we are certified they won't be of a higher depth
                 Collections.addAll(cleanedIngredients, multi.ingredients);
+            } else if (ingredient instanceof SingleItemStackIngredient single) {
+                cleanedIngredients.add(single);
             } else {
-                cleanedIngredients.add(ingredient);
+                throw new IllegalStateException("Unknown ingredient class: "+ingredient);
             }
         }
         //There should be more than a single item, or we would have split out earlier
-        return new MultiItemStackIngredient(cleanedIngredients.toArray(new ItemStackIngredient[0]));
+        return new MultiItemStackIngredient(cleanedIngredients.toArray(new SingleItemStackIngredient[0]));
     }
 
     @Override
@@ -132,6 +121,10 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
 
     @NothingNullByDefault
     public static class SingleItemStackIngredient extends ItemStackIngredient {
+        static final Codec<SingleItemStackIngredient> CODEC = RecordCodecBuilder.create(i->i.group(
+              Ingredient.CODEC.fieldOf(JsonConstants.INGREDIENT).forGetter(SingleItemStackIngredient::getInputRaw),
+              SerializerHelper.POSITIVE_NONZERO_INT_CODEC.optionalFieldOf(JsonConstants.AMOUNT, 1).forGetter(SingleItemStackIngredient::getAmountRaw)
+        ).apply(i, SingleItemStackIngredient::new));
 
         private final Ingredient ingredient;
         private final int amount;
@@ -208,24 +201,16 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
             ingredient.toNetwork(buffer);
             buffer.writeVarInt(amount);
         }
-
-        @Override
-        public JsonElement serialize() {
-            JsonObject json = new JsonObject();
-            if (amount > 1) {
-                json.addProperty(JsonConstants.AMOUNT, amount);
-            }
-            json.add(JsonConstants.INGREDIENT, ingredient.toJson(false));
-            return json;
-        }
     }
 
     @NothingNullByDefault
-    public static class MultiItemStackIngredient extends ItemStackIngredient implements IMultiIngredient<ItemStack, ItemStackIngredient> {
+    public static class MultiItemStackIngredient extends ItemStackIngredient implements IMultiIngredient<ItemStack, SingleItemStackIngredient> {
 
-        private final ItemStackIngredient[] ingredients;
+        static final Codec<MultiItemStackIngredient> CODEC = ExtraCodecs.nonEmptyList(SingleItemStackIngredient.CODEC.listOf()).xmap(lst-> new MultiItemStackIngredient(lst.toArray(new SingleItemStackIngredient[0])), MultiItemStackIngredient::getIngredients);
 
-        private MultiItemStackIngredient(ItemStackIngredient... ingredients) {
+        private final SingleItemStackIngredient[] ingredients;
+
+        private MultiItemStackIngredient(SingleItemStackIngredient... ingredients) {
             this.ingredients = ingredients;
         }
 
@@ -276,16 +261,16 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         }
 
         @Override
-        public boolean forEachIngredient(Predicate<ItemStackIngredient> checker) {
+        public boolean forEachIngredient(Predicate<SingleItemStackIngredient> checker) {
             boolean result = false;
-            for (ItemStackIngredient ingredient : ingredients) {
+            for (SingleItemStackIngredient ingredient : ingredients) {
                 result |= checker.test(ingredient);
             }
             return result;
         }
 
         @Override
-        public final List<ItemStackIngredient> getIngredients() {
+        public final List<SingleItemStackIngredient> getIngredients() {
             return List.of(ingredients);
         }
 
@@ -293,15 +278,6 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         public void write(FriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.MULTI);
             BasePacketHandler.writeArray(buffer, ingredients, InputIngredient::write);
-        }
-
-        @Override
-        public JsonElement serialize() {
-            JsonArray json = new JsonArray();
-            for (ItemStackIngredient ingredient : ingredients) {
-                json.add(ingredient.serialize());
-            }
-            return json;
         }
 
         @Override
