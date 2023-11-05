@@ -1,5 +1,6 @@
 package mekanism.common.recipe.ingredient.creator;
 
+import com.mojang.serialization.Codec;
 import java.util.Objects;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -10,6 +11,7 @@ import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientInfo;
+import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiInfusionStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
 import net.minecraft.tags.TagKey;
@@ -20,6 +22,7 @@ public class InfusionStackIngredientCreator extends ChemicalStackIngredientCreat
     public static final InfusionStackIngredientCreator INSTANCE = new InfusionStackIngredientCreator();
 
     private InfusionStackIngredientCreator() {
+        super(SingleInfusionStackIngredient.CODEC, TaggedInfusionStackIngredient.CODEC, codec->MultiInfusionStackIngredient.makeCodec(codec, MultiInfusionStackIngredient::new), SingleInfusionStackIngredient.class, TaggedInfusionStackIngredient.class, MultiInfusionStackIngredient.class, InfusionStackIngredient.class);
     }
 
     @Override
@@ -56,6 +59,8 @@ public class InfusionStackIngredientCreator extends ChemicalStackIngredientCreat
 
     public static class SingleInfusionStackIngredient extends SingleChemicalStackIngredient<InfuseType, InfusionStack> implements InfusionStackIngredient {
 
+        static Codec<SingleInfusionStackIngredient> CODEC = makeCodec(InfusionStack.CODEC, SingleInfusionStackIngredient::new);
+
         private SingleInfusionStackIngredient(InfusionStack stack) {
             super(stack);
         }
@@ -67,6 +72,8 @@ public class InfusionStackIngredientCreator extends ChemicalStackIngredientCreat
     }
 
     public static class TaggedInfusionStackIngredient extends TaggedChemicalStackIngredient<InfuseType, InfusionStack> implements InfusionStackIngredient {
+
+        static Codec<TaggedInfusionStackIngredient> CODEC = makeCodec(ChemicalTags.INFUSE_TYPE, TaggedInfusionStackIngredient::new);
 
         private TaggedInfusionStackIngredient(TagKey<InfuseType> tag, long amount) {
             super(ChemicalTags.INFUSE_TYPE, tag, amount);

@@ -2,9 +2,11 @@ package mekanism.common.recipe.ingredient.chemical;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.mojang.serialization.Codec;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -22,10 +24,22 @@ import mekanism.common.network.BasePacketHandler;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer.IngredientType;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.ExtraCodecs;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> implements ChemicalStackIngredient<CHEMICAL, STACK>, IMultiIngredient<STACK, INGREDIENT> {
+
+    public static <
+              CHEMICAL extends Chemical<CHEMICAL>,
+              STACK extends ChemicalStack<CHEMICAL>,
+              INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>,
+              MULTI extends MultiChemicalStackIngredient<CHEMICAL, STACK, INGREDIENT>
+          >
+    Codec<MULTI> makeCodec(Codec<INGREDIENT> singleJoinedCodec, Function<List<INGREDIENT>, MULTI> multiConstructor) {
+        return ExtraCodecs.nonEmptyList(singleJoinedCodec.listOf()).xmap(multiConstructor, MultiChemicalStackIngredient::getIngredients);
+    }
 
     private final INGREDIENT[] ingredients;
 
@@ -126,7 +140,7 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
         } else if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        return Arrays.equals(ingredients, ((MultiChemicalStackIngredient<CHEMICAL, STACK, INGREDIENT>) o).ingredients);
+        return Arrays.equals(ingredients, ((MultiChemicalStackIngredient<?, ?, ?>) o).ingredients);
     }
 
     @Override
@@ -138,6 +152,11 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
 
         MultiGasStackIngredient(GasStackIngredient... ingredients) {
             super(ingredients);
+        }
+
+        @Internal
+        public MultiGasStackIngredient(List<GasStackIngredient> ingredients) {
+            this(ingredients.toArray(new GasStackIngredient[0]));
         }
 
         @Override
@@ -152,6 +171,11 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
             super(ingredients);
         }
 
+        @Internal
+        public MultiInfusionStackIngredient(List<InfusionStackIngredient> ingredients) {
+            this(ingredients.toArray(new InfusionStackIngredient[0]));
+        }
+
         @Override
         protected ChemicalIngredientInfo<InfuseType, InfusionStack> getIngredientInfo() {
             return ChemicalIngredientInfo.INFUSION;
@@ -164,6 +188,11 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
             super(ingredients);
         }
 
+        @Internal
+        public MultiPigmentStackIngredient(List<PigmentStackIngredient> ingredients) {
+            this(ingredients.toArray(new PigmentStackIngredient[0]));
+        }
+
         @Override
         protected ChemicalIngredientInfo<Pigment, PigmentStack> getIngredientInfo() {
             return ChemicalIngredientInfo.PIGMENT;
@@ -174,6 +203,11 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
 
         MultiSlurryStackIngredient(SlurryStackIngredient... ingredients) {
             super(ingredients);
+        }
+
+        @Internal
+        public MultiSlurryStackIngredient(List<SlurryStackIngredient> ingredients) {
+            this(ingredients.toArray(new SlurryStackIngredient[0]));
         }
 
         @Override

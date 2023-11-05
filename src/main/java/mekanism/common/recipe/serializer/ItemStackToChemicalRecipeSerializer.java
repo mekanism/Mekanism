@@ -47,7 +47,7 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
         try {
             ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().read(buffer);
             STACK output = stackFromBuffer(buffer);
-            return this.factory.create(recipeId, inputIngredient, output);
+            return this.factory.create(inputIngredient, output);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading itemstack to chemical recipe from packet.", e);
             throw e;
@@ -67,6 +67,6 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
     @FunctionalInterface
     public interface IFactory<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> {
 
-        RECIPE create(ResourceLocation id, ItemStackIngredient input, STACK output);
+        RECIPE create(ItemStackIngredient input, STACK output);
     }
 }

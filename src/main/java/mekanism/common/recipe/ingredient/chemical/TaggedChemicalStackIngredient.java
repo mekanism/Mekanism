@@ -2,10 +2,14 @@ package mekanism.common.recipe.ingredient.chemical;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import mekanism.api.JsonConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTags;
@@ -18,6 +22,13 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>>
       implements ChemicalStackIngredient<CHEMICAL, STACK> {
+
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, CLAZZ extends TaggedChemicalStackIngredient<CHEMICAL, STACK>> Codec<CLAZZ> makeCodec(ChemicalTags<CHEMICAL> tags, BiFunction<TagKey<CHEMICAL>,Long, CLAZZ> constructor) {
+        return RecordCodecBuilder.create(instance->instance.group(
+              TagKey.hashedCodec(tags.getResourceKey()).fieldOf(JsonConstants.TAG).forGetter(TaggedChemicalStackIngredient::getTag),
+              SerializerHelper.POSITIVE_NONZERO_LONG_CODEC.fieldOf(JsonConstants.AMOUNT).forGetter(TaggedChemicalStackIngredient::getRawAmount)
+        ).apply(instance, constructor));
+    }
 
     @NotNull
     private final ITag<CHEMICAL> tag;
@@ -64,6 +75,10 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
         return testType(stack) ? amount : 0;
     }
 
+    public long getRawAmount() {
+        return this.amount;
+    }
+
     @Override
     public boolean hasNoMatchingInstances() {
         return tag.isEmpty();
@@ -86,6 +101,10 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
      */
     public Iterable<CHEMICAL> getRawInput() {
         return tag;
+    }
+
+    public TagKey<CHEMICAL> getTag() {
+        return tag.getKey();
     }
 
     @Override

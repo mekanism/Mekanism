@@ -1,5 +1,6 @@
 package mekanism.common.recipe.ingredient.creator;
 
+import com.mojang.serialization.Codec;
 import java.util.Objects;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -10,6 +11,7 @@ import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientInfo;
+import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiPigmentStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
 import net.minecraft.tags.TagKey;
@@ -20,6 +22,7 @@ public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreato
     public static final PigmentStackIngredientCreator INSTANCE = new PigmentStackIngredientCreator();
 
     private PigmentStackIngredientCreator() {
+        super(SinglePigmentStackIngredient.CODEC, TaggedPigmentStackIngredient.CODEC, codec-> MultiPigmentStackIngredient.makeCodec(codec, MultiPigmentStackIngredient::new), SinglePigmentStackIngredient.class, TaggedPigmentStackIngredient.class, MultiPigmentStackIngredient.class, PigmentStackIngredient.class);
     }
 
     @Override
@@ -56,6 +59,8 @@ public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreato
 
     public static class SinglePigmentStackIngredient extends SingleChemicalStackIngredient<Pigment, PigmentStack> implements PigmentStackIngredient {
 
+        static Codec<SinglePigmentStackIngredient> CODEC = makeCodec(PigmentStack.CODEC, SinglePigmentStackIngredient::new);
+
         private SinglePigmentStackIngredient(PigmentStack stack) {
             super(stack);
         }
@@ -67,6 +72,8 @@ public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreato
     }
 
     public static class TaggedPigmentStackIngredient extends TaggedChemicalStackIngredient<Pigment, PigmentStack> implements PigmentStackIngredient {
+
+        static Codec<TaggedPigmentStackIngredient> CODEC = makeCodec(ChemicalTags.PIGMENT, TaggedPigmentStackIngredient::new);
 
         private TaggedPigmentStackIngredient(TagKey<Pigment> tag, long amount) {
             super(ChemicalTags.PIGMENT, tag, amount);

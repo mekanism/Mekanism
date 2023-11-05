@@ -1,5 +1,6 @@
 package mekanism.common.recipe.ingredient.creator;
 
+import com.mojang.serialization.Codec;
 import java.util.Objects;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -10,6 +11,7 @@ import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientInfo;
+import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiSlurryStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
 import net.minecraft.tags.TagKey;
@@ -20,6 +22,7 @@ public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator
     public static final SlurryStackIngredientCreator INSTANCE = new SlurryStackIngredientCreator();
 
     private SlurryStackIngredientCreator() {
+        super(SingleSlurryStackIngredient.CODEC, TaggedSlurryStackIngredient.CODEC, codec-> MultiSlurryStackIngredient.makeCodec(codec, MultiSlurryStackIngredient::new), SingleSlurryStackIngredient.class, TaggedSlurryStackIngredient.class, MultiSlurryStackIngredient.class, SlurryStackIngredient.class);
     }
 
     @Override
@@ -56,6 +59,8 @@ public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator
 
     public static class SingleSlurryStackIngredient extends SingleChemicalStackIngredient<Slurry, SlurryStack> implements SlurryStackIngredient {
 
+        static Codec<SingleSlurryStackIngredient> CODEC = makeCodec(SlurryStack.CODEC, SingleSlurryStackIngredient::new);
+
         private SingleSlurryStackIngredient(SlurryStack stack) {
             super(stack);
         }
@@ -67,6 +72,8 @@ public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator
     }
 
     public static class TaggedSlurryStackIngredient extends TaggedChemicalStackIngredient<Slurry, SlurryStack> implements SlurryStackIngredient {
+
+        static Codec<TaggedSlurryStackIngredient> CODEC = makeCodec(ChemicalTags.SLURRY, TaggedSlurryStackIngredient::new);
 
         private TaggedSlurryStackIngredient(TagKey<Slurry> tag, long amount) {
             super(ChemicalTags.SLURRY, tag, amount);

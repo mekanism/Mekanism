@@ -2,9 +2,11 @@ package mekanism.common.recipe.ingredient.chemical;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import mekanism.api.JsonConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -17,8 +19,13 @@ import org.jetbrains.annotations.NotNull;
 public abstract class SingleChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>>
       implements ChemicalStackIngredient<CHEMICAL, STACK> {
 
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, CLAZZ extends SingleChemicalStackIngredient<CHEMICAL, STACK>> Codec<CLAZZ> makeCodec(Codec<STACK> stackCodec, Function<STACK, CLAZZ> constructor) {
+        return stackCodec.xmap(constructor, SingleChemicalStackIngredient::getChemicalInstance);
+    }
+
     @NotNull
     private final List<STACK> representations;
+
     @NotNull
     private final STACK chemicalInstance;
 
@@ -77,6 +84,11 @@ public abstract class SingleChemicalStackIngredient<CHEMICAL extends Chemical<CH
      */
     public CHEMICAL getInputRaw() {
         return chemicalInstance.getType();
+    }
+
+    @NotNull
+    protected STACK getChemicalInstance() {
+        return chemicalInstance;
     }
 
     @Override

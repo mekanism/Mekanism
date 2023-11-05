@@ -55,4 +55,9 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
         }
         return Optional.ofNullable(registry.tags());
     }
+
+    public ResourceKey<? extends Registry<CHEMICAL>> getResourceKey() {
+        return registryKeySupplier;
+    }
+
 }

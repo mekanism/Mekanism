@@ -58,6 +58,11 @@ public class SerializerHelper {
         return Codec.LONG.flatXmap(checker, checker);
     });
 
+    public static final Codec<Long> POSITIVE_NONZERO_LONG_CODEC = Util.make(()->{
+        final Function<Long, DataResult<Long>> checker = Codec.checkRange(1L, Long.MAX_VALUE);
+        return Codec.LONG.flatXmap(checker, checker);
+    });
+
     /**
      * Codec version of the old CraftingHelper.getItemStack
      */

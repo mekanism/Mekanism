@@ -1,5 +1,6 @@
 package mekanism.common.recipe.ingredient.creator;
 
+import com.mojang.serialization.Codec;
 import java.util.Objects;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -10,6 +11,7 @@ import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientInfo;
+import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiGasStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
 import net.minecraft.tags.TagKey;
@@ -20,6 +22,7 @@ public class GasStackIngredientCreator extends ChemicalStackIngredientCreator<Ga
     public static final GasStackIngredientCreator INSTANCE = new GasStackIngredientCreator();
 
     private GasStackIngredientCreator() {
+        super(SingleGasStackIngredient.CODEC, TaggedGasStackIngredient.CODEC, codec->MultiGasStackIngredient.makeCodec(codec, MultiGasStackIngredient::new), SingleGasStackIngredient.class, TaggedGasStackIngredient.class, MultiGasStackIngredient.class, GasStackIngredient.class);
     }
 
     @Override
@@ -55,6 +58,8 @@ public class GasStackIngredientCreator extends ChemicalStackIngredientCreator<Ga
 
     public static class SingleGasStackIngredient extends SingleChemicalStackIngredient<Gas, GasStack> implements GasStackIngredient {
 
+        static Codec<SingleGasStackIngredient> CODEC = makeCodec(GasStack.CODEC, SingleGasStackIngredient::new);
+
         private SingleGasStackIngredient(GasStack stack) {
             super(stack);
         }
@@ -66,6 +71,8 @@ public class GasStackIngredientCreator extends ChemicalStackIngredientCreator<Ga
     }
 
     public static class TaggedGasStackIngredient extends TaggedChemicalStackIngredient<Gas, GasStack> implements GasStackIngredient {
+
+        static Codec<TaggedGasStackIngredient> CODEC = makeCodec(ChemicalTags.GAS, TaggedGasStackIngredient::new);
 
         private TaggedGasStackIngredient(TagKey<Gas> tag, long amount) {
             super(ChemicalTags.GAS, tag, amount);
