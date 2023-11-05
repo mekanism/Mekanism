@@ -1,5 +1,9 @@
 package mekanism.api.math;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.codecs.PrimitiveCodec;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -16,6 +20,17 @@ import net.minecraft.network.FriendlyByteBuf;
 @NothingNullByDefault
 public class FloatingLong extends Number implements Comparable<FloatingLong> {
 
+    public static final Codec<FloatingLong> FLOATING_LONG_CODEC = new PrimitiveCodec<FloatingLong>() {
+        @Override
+        public <T> DataResult<FloatingLong> read(DynamicOps<T> ops, T input) {
+            return ops.getNumberValue(input).map(number -> fromNumber(number, true));
+        }
+
+        @Override
+        public <T> T write(DynamicOps<T> ops, FloatingLong value) {
+            return ops.createNumeric(value);
+        }
+    };
     private static final DecimalFormat df = new DecimalFormat("0.0000", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
     //TODO: Eventually we should define a way of doing a set of operations all at once, and outputting a new value

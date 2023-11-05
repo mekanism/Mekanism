@@ -8,8 +8,6 @@ import com.google.gson.JsonSyntaxException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.codecs.PrimitiveCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
 import java.util.function.Function;
@@ -90,18 +88,6 @@ public class SerializerHelper {
         case PIGMENT -> PigmentStack.CODEC;
         case SLURRY -> SlurryStack.CODEC;
     });
-
-    public static final Codec<FloatingLong> FLOATING_LONG_CODEC = new PrimitiveCodec<FloatingLong>() {
-        @Override
-        public <T> DataResult<FloatingLong> read(DynamicOps<T> ops, T input) {
-            return ops.getNumberValue(input).map(number -> FloatingLong.fromNumber(number, true));
-        }
-
-        @Override
-        public <T> T write(DynamicOps<T> ops, FloatingLong value) {
-            return ops.createNumeric(value);
-        }
-    };
 
     /**
      * Deserializes a FloatingLong that is stored in a specific key in a Json Object.
