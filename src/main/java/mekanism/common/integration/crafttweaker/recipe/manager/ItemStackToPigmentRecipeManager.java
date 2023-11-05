@@ -33,7 +33,7 @@ public abstract class ItemStackToPigmentRecipeManager extends ItemStackToChemica
 
         @Override
         protected ItemStackToPigmentRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, PigmentStack output) {
-            return new PigmentExtractingIRecipe(id, input, output);
+            return new PigmentExtractingIRecipe(input, output);
         }
     }
 }

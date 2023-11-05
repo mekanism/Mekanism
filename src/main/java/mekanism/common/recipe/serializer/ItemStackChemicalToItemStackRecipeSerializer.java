@@ -3,6 +3,8 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.Chemical;
@@ -25,6 +27,7 @@ public abstract class ItemStackChemicalToItemStackRecipeSerializer<CHEMICAL exte
       implements RecipeSerializer<RECIPE> {
 
     private final IFactory<CHEMICAL, STACK, INGREDIENT, RECIPE> factory;
+    private Codec<RECIPE> codec;
 
     protected ItemStackChemicalToItemStackRecipeSerializer(IFactory<CHEMICAL, STACK, INGREDIENT, RECIPE> factory) {
         this.factory = factory;
@@ -32,20 +35,17 @@ public abstract class ItemStackChemicalToItemStackRecipeSerializer<CHEMICAL exte
 
     protected abstract ChemicalIngredientDeserializer<CHEMICAL, STACK, INGREDIENT> getDeserializer();
 
-    @NotNull
     @Override
-    public RECIPE fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
-        JsonElement itemInput = GsonHelper.isArrayNode(json, JsonConstants.ITEM_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.ITEM_INPUT) :
-                                GsonHelper.getAsJsonObject(json, JsonConstants.ITEM_INPUT);
-        ItemStackIngredient itemIngredient = IngredientCreatorAccess.item().deserialize(itemInput);
-        JsonElement chemicalInput = GsonHelper.isArrayNode(json, JsonConstants.CHEMICAL_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.CHEMICAL_INPUT) :
-                                    GsonHelper.getAsJsonObject(json, JsonConstants.CHEMICAL_INPUT);
-        INGREDIENT chemicalIngredient = getDeserializer().deserialize(chemicalInput);
-        ItemStack output = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
-        if (output.isEmpty()) {
-            throw new JsonSyntaxException("Recipe output must not be empty.");
+    @NotNull
+    public Codec<RECIPE> codec() {
+        if (codec == null) {
+            codec = RecordCodecBuilder.create(instance->instance.group(
+                  IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.ITEM_INPUT).forGetter(ItemStackChemicalToItemStackRecipe::getItemInput),
+                  getDeserializer().getIngredientCreator().codec().fieldOf(JsonConstants.CHEMICAL_INPUT).forGetter(ItemStackChemicalToItemStackRecipe::getChemicalInput),
+                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(ItemStackChemicalToItemStackRecipe::getOutputRaw)
+            ).apply(instance, factory::create));
         }
-        return this.factory.create(recipeId, itemIngredient, chemicalIngredient, output);
+        return codec;
     }
 
     @Override

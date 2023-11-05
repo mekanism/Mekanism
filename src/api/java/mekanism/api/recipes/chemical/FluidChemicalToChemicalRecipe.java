@@ -11,7 +11,6 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -36,12 +35,11 @@ public abstract class FluidChemicalToChemicalRecipe<CHEMICAL extends Chemical<CH
     protected final STACK output;
 
     /**
-     * @param id            Recipe name.
      * @param fluidInput    Fluid input.
      * @param chemicalInput Chemical input.
      * @param output        Output.
      */
-    public FluidChemicalToChemicalRecipe(ResourceLocation id, FluidStackIngredient fluidInput, INGREDIENT chemicalInput, STACK output) {
+    public FluidChemicalToChemicalRecipe(FluidStackIngredient fluidInput, INGREDIENT chemicalInput, STACK output) {
         super();
         this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
         this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
@@ -95,6 +93,10 @@ public abstract class FluidChemicalToChemicalRecipe<CHEMICAL extends Chemical<CH
     @Contract(value = "_, _ -> new", pure = true)
     public STACK getOutput(FluidStack fluidStack, STACK chemicalStack) {
         return (STACK) output.copy();
+    }
+
+    public STACK getOutputRaw() {
+        return output;
     }
 
     @Override

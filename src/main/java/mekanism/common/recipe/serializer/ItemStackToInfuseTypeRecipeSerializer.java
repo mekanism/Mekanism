@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemStackToInfuseTypeRecipeSerializer<RECIPE extends ItemStackToInfuseTypeRecipe> extends ItemStackToChemicalRecipeSerializer<InfuseType, InfusionStack, RECIPE> {
 
     public ItemStackToInfuseTypeRecipeSerializer(IFactory<InfuseType, InfusionStack, RECIPE> factory) {
-        super(factory);
+        super(factory, InfusionStack.CODEC);
     }
 
     @Override

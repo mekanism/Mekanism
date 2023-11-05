@@ -15,8 +15,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class NucleosynthesizingIRecipe extends NucleosynthesizingRecipe {
 
-    public NucleosynthesizingIRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output, int duration) {
-        super(id, itemInput, gasInput, output, duration);
+    public NucleosynthesizingIRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output, int duration) {
+        super(itemInput, gasInput, output, duration);
     }
 
     @Override

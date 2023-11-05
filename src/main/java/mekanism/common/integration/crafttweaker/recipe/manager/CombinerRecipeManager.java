@@ -44,7 +44,7 @@ public class CombinerRecipeManager extends MekanismRecipeManager<CombinerRecipe>
      * @param output     {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
      */
     public final CombinerRecipe makeRecipe(ResourceLocation id, ItemStackIngredient mainInput, ItemStackIngredient extraInput, IItemStack output) {
-        return new CombinerIRecipe(id, mainInput, extraInput, getAndValidateNotEmpty(output));
+        return new CombinerIRecipe(mainInput, extraInput, getAndValidateNotEmpty(output));
     }
 
     @Override

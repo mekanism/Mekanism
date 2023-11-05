@@ -14,7 +14,7 @@ public class ChemicalInfuserRecipeSerializer<RECIPE extends ChemicalInfuserRecip
       ChemicalChemicalToChemicalRecipeSerializer<Gas, GasStack, GasStackIngredient, RECIPE> {
 
     public ChemicalInfuserRecipeSerializer(IFactory<Gas, GasStack, GasStackIngredient, RECIPE> factory) {
-        super(factory);
+        super(factory, GasStack.CODEC);
     }
 
     @Override

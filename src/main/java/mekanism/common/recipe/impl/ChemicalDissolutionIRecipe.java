@@ -16,8 +16,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class ChemicalDissolutionIRecipe extends ChemicalDissolutionRecipe {
 
-    public ChemicalDissolutionIRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ChemicalStack<?> output) {
-        super(id, itemInput, gasInput, output);
+    public ChemicalDissolutionIRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ChemicalStack<?> output) {
+        super(itemInput, gasInput, output);
     }
 
     @Override

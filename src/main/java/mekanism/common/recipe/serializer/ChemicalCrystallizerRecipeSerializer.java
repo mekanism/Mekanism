@@ -3,6 +3,8 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalType;
@@ -20,23 +22,22 @@ import org.jetbrains.annotations.NotNull;
 public class ChemicalCrystallizerRecipeSerializer<RECIPE extends ChemicalCrystallizerRecipe> implements RecipeSerializer<RECIPE> {
 
     private final IFactory<RECIPE> factory;
+    private Codec<RECIPE> codec;
 
     public ChemicalCrystallizerRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
-    @NotNull
     @Override
-    public RECIPE fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
-        ChemicalType chemicalType = SerializerHelper.getChemicalType(json);
-        JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
-                            GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
-        ChemicalStackIngredient<?, ?> inputIngredient = IngredientCreatorAccess.getCreatorForType(chemicalType).deserialize(input);
-        ItemStack output = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
-        if (output.isEmpty()) {
-            throw new JsonSyntaxException("Recipe output must not be empty.");
+    @NotNull
+    public Codec<RECIPE> codec() {
+        if (codec == null) {
+            codec = RecordCodecBuilder.create(instance->instance.group(
+                  SerializerHelper.BOXED_CHEMICALSTACK_INGREDIENT_CODEC.fieldOf(JsonConstants.INPUT).forGetter(ChemicalCrystallizerRecipe::getInput),
+                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(ChemicalCrystallizerRecipe::getOutputRaw)
+            ).apply(instance, factory::create));
         }
-        return this.factory.create(recipeId, inputIngredient, output);
+        return codec;
     }
 
     @Override

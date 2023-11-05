@@ -15,8 +15,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class GasConversionIRecipe extends ItemStackToGasRecipe {
 
-    public GasConversionIRecipe(ResourceLocation id, ItemStackIngredient input, GasStack output) {
-        super(id, input, output);
+    public GasConversionIRecipe(ItemStackIngredient input, GasStack output) {
+        super(input, output);
     }
 
     @Override

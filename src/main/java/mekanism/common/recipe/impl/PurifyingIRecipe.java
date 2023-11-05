@@ -15,8 +15,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class PurifyingIRecipe extends ItemStackGasToItemStackRecipe {
 
-    public PurifyingIRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
-        super(id, itemInput, gasInput, output);
+    public PurifyingIRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
+        super(itemInput, gasInput, output);
     }
 
     @Override

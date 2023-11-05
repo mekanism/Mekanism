@@ -15,8 +15,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class PaintingIRecipe extends PaintingRecipe {
 
-    public PaintingIRecipe(ResourceLocation id, ItemStackIngredient itemInput, PigmentStackIngredient pigmentInput, ItemStack output) {
-        super(id, itemInput, pigmentInput, output);
+    public PaintingIRecipe(ItemStackIngredient itemInput, PigmentStackIngredient pigmentInput, ItemStack output) {
+        super(itemInput, pigmentInput, output);
     }
 
     @Override

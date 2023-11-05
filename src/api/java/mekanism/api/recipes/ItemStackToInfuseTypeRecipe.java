@@ -5,7 +5,6 @@ import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * Input: ItemStack
@@ -19,11 +18,10 @@ import net.minecraft.resources.ResourceLocation;
 public abstract class ItemStackToInfuseTypeRecipe extends ItemStackToChemicalRecipe<InfuseType, InfusionStack> {
 
     /**
-     * @param id     Recipe name.
      * @param input  Input.
      * @param output Output.
      */
-    public ItemStackToInfuseTypeRecipe(ResourceLocation id, ItemStackIngredient input, InfusionStack output) {
-        super(id, input, output);
+    public ItemStackToInfuseTypeRecipe(ItemStackIngredient input, InfusionStack output) {
+        super(input, output);
     }
 }

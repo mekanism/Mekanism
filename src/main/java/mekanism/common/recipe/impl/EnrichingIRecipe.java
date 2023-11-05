@@ -14,8 +14,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class EnrichingIRecipe extends ItemStackToItemStackRecipe {
 
-    public EnrichingIRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
-        super(id, input, output);
+    public EnrichingIRecipe(ItemStackIngredient input, ItemStack output) {
+        super(input, output);
     }
 
     @Override

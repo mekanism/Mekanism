@@ -15,8 +15,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class CentrifugingIRecipe extends GasToGasRecipe {
 
-    public CentrifugingIRecipe(ResourceLocation id, GasStackIngredient input, GasStack output) {
-        super(id, input, output);
+    public CentrifugingIRecipe(GasStackIngredient input, GasStack output) {
+        super(input, output);
     }
 
     @Override

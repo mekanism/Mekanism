@@ -42,7 +42,7 @@ public class ChemicalCrystallizerRecipeManager extends MekanismRecipeManager<Che
      * @param output {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
      */
     public final ChemicalCrystallizerRecipe makeRecipe(ResourceLocation id, ChemicalStackIngredient<?, ?> input, IItemStack output) {
-        return new ChemicalCrystallizerIRecipe(id, input, getAndValidateNotEmpty(output));
+        return new ChemicalCrystallizerIRecipe(input, getAndValidateNotEmpty(output));
     }
 
     @Override

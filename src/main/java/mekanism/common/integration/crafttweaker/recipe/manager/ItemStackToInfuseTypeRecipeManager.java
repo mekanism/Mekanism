@@ -33,7 +33,7 @@ public abstract class ItemStackToInfuseTypeRecipeManager extends ItemStackToChem
 
         @Override
         protected ItemStackToInfuseTypeRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, InfusionStack output) {
-            return new InfusionConversionIRecipe(id, input, output);
+            return new InfusionConversionIRecipe(input, output);
         }
     }
 }

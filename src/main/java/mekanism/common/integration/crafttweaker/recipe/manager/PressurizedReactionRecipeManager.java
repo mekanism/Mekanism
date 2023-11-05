@@ -164,7 +164,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Pres
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be positive! Duration: " + duration);
         }
-        return new PressurizedReactionIRecipe(id, inputSolid, inputFluid, inputGas, energyRequired.copyAsConst(), duration, outputItem, outputGas);
+        return new PressurizedReactionIRecipe(inputSolid, inputFluid, inputGas, energyRequired.copyAsConst(), duration, outputItem, outputGas);
     }
 
     @Override

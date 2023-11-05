@@ -68,7 +68,7 @@ public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeMan
 
         @Override
         protected FluidSlurryToSlurryRecipe makeRecipe(ResourceLocation id, FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output) {
-            return new FluidSlurryToSlurryIRecipe(id, fluidInput, slurryInput, output);
+            return new FluidSlurryToSlurryIRecipe(fluidInput, slurryInput, output);
         }
     }
 }

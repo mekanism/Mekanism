@@ -10,7 +10,6 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -18,9 +17,17 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class PressurizedReactionIRecipe extends PressurizedReactionRecipe {
 
-    public PressurizedReactionIRecipe(ResourceLocation id, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
+    public PressurizedReactionIRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
           FloatingLong energyRequired, int duration, ItemStack outputItem, GasStack outputGas) {
-        super(id, inputSolid, inputFluid, inputGas, energyRequired, duration, outputItem, outputGas);
+        super(inputSolid, inputFluid, inputGas, energyRequired, duration, outputItem, outputGas);
+    }
+
+    public ItemStack getOutputItem() {
+        return outputItem;
+    }
+
+    public GasStack getOutputGas() {
+        return outputGas;
     }
 
     @Override
@@ -29,7 +36,7 @@ public class PressurizedReactionIRecipe extends PressurizedReactionRecipe {
     }
 
     @Override
-    public RecipeSerializer<PressurizedReactionRecipe> getSerializer() {
+    public RecipeSerializer<PressurizedReactionIRecipe> getSerializer() {
         return MekanismRecipeSerializers.REACTION.get();
     }
 

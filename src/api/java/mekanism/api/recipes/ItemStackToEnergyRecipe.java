@@ -8,7 +8,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,12 +25,10 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe implements 
     protected final FloatingLong output;
 
     /**
-     * @param id     Recipe name.
      * @param input  Input.
      * @param output Output, must be greater than zero.
      */
-    public ItemStackToEnergyRecipe(ResourceLocation id, ItemStackIngredient input, FloatingLong output) {
-        super();
+    public ItemStackToEnergyRecipe(ItemStackIngredient input, FloatingLong output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isZero()) {

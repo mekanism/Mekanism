@@ -9,7 +9,6 @@ import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +33,6 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
     private final double secondaryChance;
 
     /**
-     * @param id              Recipe name.
      * @param input           Input.
      * @param mainOutput      Main Output.
      * @param secondaryOutput Secondary Output (chance based).
@@ -42,7 +40,7 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
      *
      * @apiNote At least one output must not be empty.
      */
-    public SawmillRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance) {
+    public SawmillRecipe(ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance) {
         super();
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(mainOutput, "Main output cannot be null.");

@@ -14,8 +14,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class SawmillIRecipe extends SawmillRecipe {
 
-    public SawmillIRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance) {
-        super(id, input, mainOutput, secondaryOutput, secondaryChance);
+    public SawmillIRecipe(ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance) {
+        super(input, mainOutput, secondaryOutput, secondaryChance);
     }
 
     @Override

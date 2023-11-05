@@ -3,6 +3,8 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.slurry.SlurryStack;
@@ -20,25 +22,23 @@ import org.jetbrains.annotations.NotNull;
 public class FluidSlurryToSlurryRecipeSerializer<RECIPE extends FluidSlurryToSlurryRecipe> implements RecipeSerializer<RECIPE> {
 
     private final IFactory<RECIPE> factory;
+    private Codec<RECIPE> codec;
 
     public FluidSlurryToSlurryRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
-    @NotNull
     @Override
-    public RECIPE fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
-        JsonElement fluidInput = GsonHelper.isArrayNode(json, JsonConstants.FLUID_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.FLUID_INPUT) :
-                                 GsonHelper.getAsJsonObject(json, JsonConstants.FLUID_INPUT);
-        FluidStackIngredient fluidIngredient = IngredientCreatorAccess.fluid().deserialize(fluidInput);
-        JsonElement slurryInput = GsonHelper.isArrayNode(json, JsonConstants.SLURRY_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.SLURRY_INPUT) :
-                                  GsonHelper.getAsJsonObject(json, JsonConstants.SLURRY_INPUT);
-        SlurryStackIngredient slurryIngredient = IngredientCreatorAccess.slurry().deserialize(slurryInput);
-        SlurryStack output = SerializerHelper.getSlurryStack(json, JsonConstants.OUTPUT);
-        if (output.isEmpty()) {
-            throw new JsonSyntaxException("Recipe output must not be empty.");
+    @NotNull
+    public Codec<RECIPE> codec() {
+        if (codec == null) {
+            codec = RecordCodecBuilder.create(instance->instance.group(
+                  IngredientCreatorAccess.fluid().codec().fieldOf(JsonConstants.FLUID_INPUT).forGetter(FluidSlurryToSlurryRecipe::getFluidInput),
+                  IngredientCreatorAccess.slurry().codec().fieldOf(JsonConstants.SLURRY_INPUT).forGetter(FluidSlurryToSlurryRecipe::getChemicalInput),
+                  SlurryStack.CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(FluidSlurryToSlurryRecipe::getOutputRaw)
+            ).apply(instance, factory::create));
         }
-        return this.factory.create(recipeId, fluidIngredient, slurryIngredient, output);
+        return codec;
     }
 
     @Override

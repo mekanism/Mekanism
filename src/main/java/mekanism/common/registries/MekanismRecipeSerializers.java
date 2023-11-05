@@ -21,6 +21,7 @@ import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.bin.BinExtractRecipe;
 import mekanism.common.recipe.bin.BinInsertRecipe;
@@ -77,6 +78,7 @@ import mekanism.common.recipe.upgrade.MekanismShapedRecipe;
 import mekanism.common.registration.impl.RecipeSerializerDeferredRegister;
 import mekanism.common.registration.impl.RecipeSerializerRegistryObject;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public class MekanismRecipeSerializers {
 
@@ -97,7 +99,7 @@ public class MekanismRecipeSerializers {
 
     public static final RecipeSerializerRegistryObject<FluidSlurryToSlurryRecipe> WASHING = RECIPE_SERIALIZERS.register("washing", () -> new FluidSlurryToSlurryRecipeSerializer<>(FluidSlurryToSlurryIRecipe::new));
 
-    public static final RecipeSerializerRegistryObject<FluidToFluidRecipe> EVAPORATING = RECIPE_SERIALIZERS.register("evaporating", () -> new FluidToFluidRecipeSerializer<>(FluidToFluidIRecipe::new));
+    public static final RecipeSerializerRegistryObject<FluidToFluidIRecipe> EVAPORATING = RECIPE_SERIALIZERS.register("evaporating", () -> new FluidToFluidRecipeSerializer<>(FluidToFluidIRecipe::new));
 
     public static final RecipeSerializerRegistryObject<GasToGasRecipe> ACTIVATING = RECIPE_SERIALIZERS.register("activating", () -> new GasToGasRecipeSerializer<>(ActivatingIRecipe::new));
     public static final RecipeSerializerRegistryObject<GasToGasRecipe> CENTRIFUGING = RECIPE_SERIALIZERS.register("centrifuging", () -> new GasToGasRecipeSerializer<>(CentrifugingIRecipe::new));
@@ -127,7 +129,7 @@ public class MekanismRecipeSerializers {
 
     public static final RecipeSerializerRegistryObject<PaintingRecipe> PAINTING = RECIPE_SERIALIZERS.register("painting", () -> new PaintingRecipeSerializer<>(PaintingIRecipe::new));
 
-    public static final RecipeSerializerRegistryObject<PressurizedReactionRecipe> REACTION = RECIPE_SERIALIZERS.register("reaction", () -> new PressurizedReactionRecipeSerializer<>(PressurizedReactionIRecipe::new));
+    public static final RecipeSerializerRegistryObject<PressurizedReactionIRecipe> REACTION = RECIPE_SERIALIZERS.register("reaction", () -> new PressurizedReactionRecipeSerializer(PressurizedReactionIRecipe::new));
 
     public static final RecipeSerializerRegistryObject<RotaryRecipe> ROTARY = RECIPE_SERIALIZERS.register("rotary", () -> new RotaryRecipeSerializer<>(new RotaryIRecipe.Factory()));
 

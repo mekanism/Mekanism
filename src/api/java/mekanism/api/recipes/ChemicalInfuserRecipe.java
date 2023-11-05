@@ -5,7 +5,6 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * Input: Two gases. The order of them does not matter.
@@ -18,14 +17,13 @@ import net.minecraft.resources.ResourceLocation;
 public abstract class ChemicalInfuserRecipe extends ChemicalChemicalToChemicalRecipe<Gas, GasStack, GasStackIngredient> {
 
     /**
-     * @param id         Recipe name.
      * @param leftInput  Left input.
      * @param rightInput Right input.
      * @param output     Output.
      *
      * @apiNote The order of the inputs does not matter.
      */
-    public ChemicalInfuserRecipe(ResourceLocation id, GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
-        super(id, leftInput, rightInput, output);
+    public ChemicalInfuserRecipe(GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
+        super(leftInput, rightInput, output);
     }
 }

@@ -85,7 +85,7 @@ public abstract class ChemicalChemicalToChemicalRecipeManager<CHEMICAL extends C
 
         @Override
         protected ChemicalInfuserRecipe makeRecipe(ResourceLocation id, GasStackIngredient left, GasStackIngredient right, GasStack output) {
-            return new ChemicalInfuserIRecipe(id, left, right, output);
+            return new ChemicalInfuserIRecipe(left, right, output);
         }
     }
 
@@ -101,7 +101,7 @@ public abstract class ChemicalChemicalToChemicalRecipeManager<CHEMICAL extends C
 
         @Override
         protected PigmentMixingRecipe makeRecipe(ResourceLocation id, PigmentStackIngredient left, PigmentStackIngredient right, PigmentStack output) {
-            return new PigmentMixingIRecipe(id, left, right, output);
+            return new PigmentMixingIRecipe(left, right, output);
         }
     }
 }

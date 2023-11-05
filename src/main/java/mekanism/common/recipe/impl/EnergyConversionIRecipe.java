@@ -15,8 +15,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class EnergyConversionIRecipe extends ItemStackToEnergyRecipe {
 
-    public EnergyConversionIRecipe(ResourceLocation id, ItemStackIngredient input, FloatingLong output) {
-        super(id, input, output);
+    public EnergyConversionIRecipe(ItemStackIngredient input, FloatingLong output) {
+        super(input, output);
     }
 
     @Override

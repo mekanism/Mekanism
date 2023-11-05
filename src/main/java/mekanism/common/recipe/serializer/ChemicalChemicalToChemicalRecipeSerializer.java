@@ -3,6 +3,8 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -12,6 +14,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
@@ -21,9 +24,12 @@ public abstract class ChemicalChemicalToChemicalRecipeSerializer<CHEMICAL extend
       implements RecipeSerializer<RECIPE> {
 
     private final IFactory<CHEMICAL, STACK, INGREDIENT, RECIPE> factory;
+    private final Codec<STACK> stackCodec;
+    private Codec<RECIPE> codec;
 
-    protected ChemicalChemicalToChemicalRecipeSerializer(IFactory<CHEMICAL, STACK, INGREDIENT, RECIPE> factory) {
+    protected ChemicalChemicalToChemicalRecipeSerializer(IFactory<CHEMICAL, STACK, INGREDIENT, RECIPE> factory, Codec<STACK> stackCodec) {
         this.factory = factory;
+        this.stackCodec = stackCodec;
     }
 
     protected abstract ChemicalIngredientDeserializer<CHEMICAL, STACK, INGREDIENT> getDeserializer();
@@ -32,20 +38,18 @@ public abstract class ChemicalChemicalToChemicalRecipeSerializer<CHEMICAL extend
 
     protected abstract STACK fromBuffer(@NotNull FriendlyByteBuf buffer);
 
-    @NotNull
     @Override
-    public RECIPE fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
-        JsonElement leftIngredients = GsonHelper.isArrayNode(json, JsonConstants.LEFT_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.LEFT_INPUT) :
-                                      GsonHelper.getAsJsonObject(json, JsonConstants.LEFT_INPUT);
-        INGREDIENT leftInput = getDeserializer().deserialize(leftIngredients);
-        JsonElement rightIngredients = GsonHelper.isArrayNode(json, JsonConstants.RIGHT_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.RIGHT_INPUT) :
-                                       GsonHelper.getAsJsonObject(json, JsonConstants.RIGHT_INPUT);
-        INGREDIENT rightInput = getDeserializer().deserialize(rightIngredients);
-        STACK output = fromJson(json, JsonConstants.OUTPUT);
-        if (output.isEmpty()) {
-            throw new JsonSyntaxException("Recipe output must not be empty.");
+    @NotNull
+    public Codec<RECIPE> codec() {
+        if (codec == null) {
+            Codec<INGREDIENT> ingredientCodec = getDeserializer().getIngredientCreator().codec();
+            codec = RecordCodecBuilder.create(instance->instance.group(
+                  ingredientCodec.fieldOf(JsonConstants.LEFT_INPUT).forGetter(ChemicalChemicalToChemicalRecipe::getLeftInput),
+                  ingredientCodec.fieldOf(JsonConstants.RIGHT_INPUT).forGetter(ChemicalChemicalToChemicalRecipe::getLeftInput),
+                  stackCodec.fieldOf(JsonConstants.OUTPUT).forGetter(ChemicalChemicalToChemicalRecipe::getOutputRaw)
+            ).apply(instance, factory::create));
         }
-        return this.factory.create(leftInput, rightInput, output);
+        return codec;
     }
 
     @Override

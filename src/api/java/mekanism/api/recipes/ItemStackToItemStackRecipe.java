@@ -8,7 +8,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -32,11 +31,10 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implemen
     private final ItemStack output;
 
     /**
-     * @param id     Recipe name.
      * @param input  Input.
      * @param output Output.
      */
-    public ItemStackToItemStackRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
+    public ItemStackToItemStackRecipe(ItemStackIngredient input, ItemStack output) {
         super();
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");

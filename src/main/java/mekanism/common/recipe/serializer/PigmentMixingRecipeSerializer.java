@@ -14,7 +14,7 @@ public class PigmentMixingRecipeSerializer<RECIPE extends PigmentMixingRecipe> e
       ChemicalChemicalToChemicalRecipeSerializer<Pigment, PigmentStack, PigmentStackIngredient, RECIPE> {
 
     public PigmentMixingRecipeSerializer(IFactory<Pigment, PigmentStack, PigmentStackIngredient, RECIPE> factory) {
-        super(factory);
+        super(factory, PigmentStack.CODEC);
     }
 
     @Override

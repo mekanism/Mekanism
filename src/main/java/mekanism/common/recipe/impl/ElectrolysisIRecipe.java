@@ -16,8 +16,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class ElectrolysisIRecipe extends ElectrolysisRecipe {
 
-    public ElectrolysisIRecipe(ResourceLocation id, FluidStackIngredient input, FloatingLong energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput) {
-        super(id, input, energyMultiplier, leftGasOutput, rightGasOutput);
+    public ElectrolysisIRecipe(FluidStackIngredient input, FloatingLong energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput) {
+        super(input, energyMultiplier, leftGasOutput, rightGasOutput);
     }
 
     @Override

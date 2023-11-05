@@ -217,6 +217,10 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
         return stackParser.apply(json);
     }
 
+    public IChemicalStackIngredientCreator<CHEMICAL, STACK, INGREDIENT> getIngredientCreator() {
+        return ingredientCreator;
+    }
+
     enum IngredientType {
         SINGLE,
         TAGGED,

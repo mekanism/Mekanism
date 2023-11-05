@@ -15,8 +15,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class PigmentMixingIRecipe extends PigmentMixingRecipe {
 
-    public PigmentMixingIRecipe(ResourceLocation id, PigmentStackIngredient leftInput, PigmentStackIngredient rightInput, PigmentStack output) {
-        super(id, leftInput, rightInput, output);
+    public PigmentMixingIRecipe(PigmentStackIngredient leftInput, PigmentStackIngredient rightInput, PigmentStack output) {
+        super(leftInput, rightInput, output);
     }
 
     @Override

@@ -51,7 +51,7 @@ public class NucleosynthesizingRecipeManager extends MekanismRecipeManager<Nucle
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be a number greater than zero! Duration: " + duration);
         }
-        return new NucleosynthesizingIRecipe(id, itemInput, gasInput, getAndValidateNotEmpty(output), duration);
+        return new NucleosynthesizingIRecipe(itemInput, gasInput, getAndValidateNotEmpty(output), duration);
     }
 
     @Override

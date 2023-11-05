@@ -15,8 +15,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class ChemicalOxidizerIRecipe extends ItemStackToGasRecipe {
 
-    public ChemicalOxidizerIRecipe(ResourceLocation id, ItemStackIngredient input, GasStack output) {
-        super(id, input, output);
+    public ChemicalOxidizerIRecipe(ItemStackIngredient input, GasStack output) {
+        super(input, output);
     }
 
     @Override

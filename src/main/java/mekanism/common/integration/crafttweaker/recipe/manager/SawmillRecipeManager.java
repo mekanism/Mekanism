@@ -101,7 +101,7 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SawmillRecipe> {
      * @param mainOutput {@link IItemStack} representing the main output of the recipe. Will be validated as not empty.
      */
     public final SawmillRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, IItemStack mainOutput) {
-        return new SawmillIRecipe(id, input, getAndValidateNotEmpty(mainOutput), ItemStack.EMPTY, 0);
+        return new SawmillIRecipe(input, getAndValidateNotEmpty(mainOutput), ItemStack.EMPTY, 0);
     }
 
     /**
@@ -113,7 +113,7 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SawmillRecipe> {
      * @param secondaryChance Chance of the secondary output being produced. Will be validated to be a number greater than zero and at most one.
      */
     public final SawmillRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, IItemStack secondaryOutput, double secondaryChance) {
-        return new SawmillIRecipe(id, input, ItemStack.EMPTY, getAndValidateNotEmpty(secondaryOutput), getAndValidateSecondaryChance(secondaryChance));
+        return new SawmillIRecipe(input, ItemStack.EMPTY, getAndValidateNotEmpty(secondaryOutput), getAndValidateSecondaryChance(secondaryChance));
     }
 
     /**
@@ -126,7 +126,7 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SawmillRecipe> {
      * @param secondaryChance Chance of the secondary output being produced. Will be validated to be a number greater than zero and at most one.
      */
     public final SawmillRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, IItemStack mainOutput, IItemStack secondaryOutput, double secondaryChance) {
-        return new SawmillIRecipe(id, input, getAndValidateNotEmpty(mainOutput), getAndValidateNotEmpty(secondaryOutput), getAndValidateSecondaryChance(secondaryChance));
+        return new SawmillIRecipe(input, getAndValidateNotEmpty(mainOutput), getAndValidateNotEmpty(secondaryOutput), getAndValidateSecondaryChance(secondaryChance));
     }
 
     private double getAndValidateSecondaryChance(double secondaryChance) {

@@ -3,6 +3,8 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.math.FloatingLong;
@@ -13,28 +15,29 @@ import mekanism.common.Mekanism;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemStackToEnergyRecipeSerializer<RECIPE extends ItemStackToEnergyRecipe> implements RecipeSerializer<RECIPE> {
 
     private final IFactory<RECIPE> factory;
+    private Codec<RECIPE> codec;
 
     public ItemStackToEnergyRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
-    @NotNull
     @Override
-    public RECIPE fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
-        JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
-                            GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
-        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().deserialize(input);
-        FloatingLong output = SerializerHelper.getFloatingLong(json, JsonConstants.OUTPUT);
-        if (output.isZero()) {
-            throw new JsonSyntaxException("Expected output to be greater than zero.");
+    @NotNull
+    public Codec<RECIPE> codec() {
+        if (codec == null) {
+            codec = RecordCodecBuilder.create(instance->instance.group(
+                  IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.INPUT).forGetter(ItemStackToEnergyRecipe::getInput),
+                  FloatingLong.NONZERO_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(r->r.getOutput(ItemStack.EMPTY))
+            ).apply(instance, factory::create));
         }
-        return this.factory.create(recipeId, inputIngredient, output);
+        return codec;
     }
 
     @Override

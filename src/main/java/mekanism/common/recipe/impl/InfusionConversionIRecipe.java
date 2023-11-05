@@ -15,8 +15,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class InfusionConversionIRecipe extends ItemStackToInfuseTypeRecipe {
 
-    public InfusionConversionIRecipe(ResourceLocation id, ItemStackIngredient input, InfusionStack output) {
-        super(id, input, output);
+    public InfusionConversionIRecipe(ItemStackIngredient input, InfusionStack output) {
+        super(input, output);
     }
 
     @Override

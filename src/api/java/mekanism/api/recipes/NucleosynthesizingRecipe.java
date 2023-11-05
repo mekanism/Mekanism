@@ -4,7 +4,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -22,14 +21,13 @@ public abstract class NucleosynthesizingRecipe extends ItemStackGasToItemStackRe
     private final int duration;
 
     /**
-     * @param id        Recipe name.
      * @param itemInput Item input.
      * @param gasInput  Gas input.
      * @param output    Output.
      * @param duration  Duration in ticks that it takes the recipe to complete. Must be greater than zero.
      */
-    public NucleosynthesizingRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output, int duration) {
-        super(id, itemInput, gasInput, output);
+    public NucleosynthesizingRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output, int duration) {
+        super(itemInput, gasInput, output);
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be a number greater than zero.");
         }

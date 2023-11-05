@@ -3,6 +3,8 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalStack;
@@ -25,25 +27,23 @@ import org.jetbrains.annotations.NotNull;
 public class ChemicalDissolutionRecipeSerializer<RECIPE extends ChemicalDissolutionRecipe> implements RecipeSerializer<RECIPE> {
 
     private final IFactory<RECIPE> factory;
+    private Codec<RECIPE> codec;
 
     public ChemicalDissolutionRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
-    @NotNull
     @Override
-    public RECIPE fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
-        JsonElement itemInput = GsonHelper.isArrayNode(json, JsonConstants.ITEM_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.ITEM_INPUT) :
-                                GsonHelper.getAsJsonObject(json, JsonConstants.ITEM_INPUT);
-        ItemStackIngredient itemIngredient = IngredientCreatorAccess.item().deserialize(itemInput);
-        JsonElement gasInput = GsonHelper.isArrayNode(json, JsonConstants.GAS_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.GAS_INPUT) :
-                               GsonHelper.getAsJsonObject(json, JsonConstants.GAS_INPUT);
-        GasStackIngredient gasIngredient = IngredientCreatorAccess.gas().deserialize(gasInput);
-        ChemicalStack<?> output = SerializerHelper.getBoxedChemicalStack(json, JsonConstants.OUTPUT);
-        if (output.isEmpty()) {
-            throw new JsonSyntaxException("Recipe output must not be empty.");
+    @NotNull
+    public Codec<RECIPE> codec() {
+        if (codec == null) {
+            codec = RecordCodecBuilder.create(instance->instance.group(
+                  IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.ITEM_INPUT).forGetter(ChemicalDissolutionRecipe::getItemInput),
+                  IngredientCreatorAccess.gas().codec().fieldOf(JsonConstants.GAS_INPUT).forGetter(ChemicalDissolutionRecipe::getGasInput),
+                  SerializerHelper.BOXED_CHEMICALSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(r->r.getOutputRaw().getChemicalStack())
+            ).apply(instance, factory::create));
         }
-        return this.factory.create(recipeId, itemIngredient, gasIngredient, output);
+        return codec;
     }
 
     @Override

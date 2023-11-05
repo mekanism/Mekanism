@@ -3,6 +3,8 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.GasStack;
@@ -19,22 +21,22 @@ import org.jetbrains.annotations.NotNull;
 public class GasToGasRecipeSerializer<RECIPE extends GasToGasRecipe> implements RecipeSerializer<RECIPE> {
 
     private final IFactory<RECIPE> factory;
+    private Codec<RECIPE> codec;
 
     public GasToGasRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
-    @NotNull
     @Override
-    public RECIPE fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
-        JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
-                            GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
-        GasStackIngredient inputIngredient = IngredientCreatorAccess.gas().deserialize(input);
-        GasStack output = SerializerHelper.getGasStack(json, JsonConstants.OUTPUT);
-        if (output.isEmpty()) {
-            throw new JsonSyntaxException("Recipe output must not be empty.");
+    @NotNull
+    public Codec<RECIPE> codec() {
+        if (codec == null) {
+            codec = RecordCodecBuilder.create(instance->instance.group(
+                  IngredientCreatorAccess.gas().codec().fieldOf(JsonConstants.INPUT).forGetter(GasToGasRecipe::getInput),
+                  GasStack.CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(GasToGasRecipe::getOutputRaw)
+            ).apply(instance, factory::create));
         }
-        return this.factory.create(recipeId, inputIngredient, output);
+        return codec;
     }
 
     @Override

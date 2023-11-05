@@ -69,7 +69,7 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<Electrolysi
         if (energyMultiplier.smallerThan(FloatingLong.ONE)) {
             throw new IllegalArgumentException("Energy multiplier must be at least one! Multiplier: " + energyMultiplier);
         }
-        return new ElectrolysisIRecipe(id, input, energyMultiplier.copyAsConst(), getAndValidateNotEmpty(leftGasOutput), getAndValidateNotEmpty(rightGasOutput));
+        return new ElectrolysisIRecipe(input, energyMultiplier.copyAsConst(), getAndValidateNotEmpty(leftGasOutput), getAndValidateNotEmpty(rightGasOutput));
     }
 
     @Override

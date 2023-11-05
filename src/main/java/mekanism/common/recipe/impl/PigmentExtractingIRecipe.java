@@ -15,8 +15,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class PigmentExtractingIRecipe extends ItemStackToPigmentRecipe {
 
-    public PigmentExtractingIRecipe(ResourceLocation id, ItemStackIngredient input, PigmentStack output) {
-        super(id, input, output);
+    public PigmentExtractingIRecipe(ItemStackIngredient input, PigmentStack output) {
+        super(input, output);
     }
 
     @Override

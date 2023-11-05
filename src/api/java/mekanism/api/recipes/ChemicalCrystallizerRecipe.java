@@ -12,8 +12,8 @@ import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,11 +32,10 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
     private final ItemStack output;
 
     /**
-     * @param id     Recipe name.
      * @param input  Input.
      * @param output Output.
      */
-    public ChemicalCrystallizerRecipe(ResourceLocation id, ChemicalStackIngredient<?, ?> input, ItemStack output) {
+    public ChemicalCrystallizerRecipe(ChemicalStackIngredient<?, ?> input, ItemStack output) {
         super();
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.chemicalType = ChemicalType.getTypeFor(input);
@@ -135,6 +134,11 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
      */
     public ChemicalStackIngredient<?, ?> getInput() {
         return input;
+    }
+
+    @Internal
+    public ItemStack getOutputRaw() {
+        return this.output;
     }
 
     @Override

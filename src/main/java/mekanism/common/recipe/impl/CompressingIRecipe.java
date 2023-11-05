@@ -15,8 +15,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class CompressingIRecipe extends ItemStackGasToItemStackRecipe {
 
-    public CompressingIRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
-        super(id, itemInput, gasInput, output);
+    public CompressingIRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
+        super(itemInput, gasInput, output);
     }
 
     @Override

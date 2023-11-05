@@ -25,6 +25,8 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -88,6 +90,8 @@ public class SerializerHelper {
         case PIGMENT -> PigmentStack.CODEC;
         case SLURRY -> SlurryStack.CODEC;
     });
+
+    public static Codec<ChemicalStackIngredient<?, ?>> BOXED_CHEMICALSTACK_INGREDIENT_CODEC = ChemicalType.CODEC.dispatch(JsonConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor, type-> IngredientCreatorAccess.getCreatorForType(type).codec());
 
     /**
      * Deserializes a FloatingLong that is stored in a specific key in a Json Object.

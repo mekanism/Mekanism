@@ -10,7 +10,6 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,15 +31,13 @@ public abstract class ChemicalChemicalToChemicalRecipe<CHEMICAL extends Chemical
     protected final STACK output;
 
     /**
-     * @param id         Recipe name.
      * @param leftInput  Left input.
      * @param rightInput Right input.
      * @param output     Output.
      *
      * @apiNote The order of the inputs does not matter.
      */
-    public ChemicalChemicalToChemicalRecipe(ResourceLocation id, INGREDIENT leftInput, INGREDIENT rightInput, STACK output) {
-        super();
+    public ChemicalChemicalToChemicalRecipe(INGREDIENT leftInput, INGREDIENT rightInput, STACK output) {
         this.leftInput = Objects.requireNonNull(leftInput, "Left input cannot be null.");
         this.rightInput = Objects.requireNonNull(rightInput, "Right input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
@@ -72,6 +69,10 @@ public abstract class ChemicalChemicalToChemicalRecipe<CHEMICAL extends Chemical
     @Contract(value = "_, _ -> new", pure = true)
     public STACK getOutput(STACK input1, STACK input2) {
         return (STACK) output.copy();
+    }
+
+    public STACK getOutputRaw() {
+        return output;
     }
 
     /**

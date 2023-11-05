@@ -3,8 +3,11 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -20,34 +23,24 @@ import org.jetbrains.annotations.NotNull;
 public class NucleosynthesizingRecipeSerializer<RECIPE extends NucleosynthesizingRecipe> implements RecipeSerializer<RECIPE> {
 
     private final IFactory<RECIPE> factory;
+    private Codec<RECIPE> codec;
 
     public NucleosynthesizingRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
-    @NotNull
     @Override
-    public RECIPE fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
-        JsonElement itemInput = GsonHelper.isArrayNode(json, JsonConstants.ITEM_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.ITEM_INPUT) :
-                                GsonHelper.getAsJsonObject(json, JsonConstants.ITEM_INPUT);
-        ItemStackIngredient itemIngredient = IngredientCreatorAccess.item().deserialize(itemInput);
-        JsonElement gasInput = GsonHelper.isArrayNode(json, JsonConstants.GAS_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.GAS_INPUT) :
-                               GsonHelper.getAsJsonObject(json, JsonConstants.GAS_INPUT);
-        GasStackIngredient gasIngredient = IngredientCreatorAccess.gas().deserialize(gasInput);
-
-        JsonElement ticks = json.get(JsonConstants.DURATION);
-        if (!GsonHelper.isNumberValue(ticks)) {
-            throw new JsonSyntaxException("Expected duration to be a number greater than zero.");
+    @NotNull
+    public Codec<RECIPE> codec() {
+        if (codec == null) {
+            codec = RecordCodecBuilder.create(instance->instance.group(
+                  IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.ITEM_INPUT).forGetter(NucleosynthesizingRecipe::getItemInput),
+                  IngredientCreatorAccess.gas().codec().fieldOf(JsonConstants.GAS_INPUT).forGetter(NucleosynthesizingRecipe::getChemicalInput),
+                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(r->r.getOutput(ItemStack.EMPTY, GasStack.EMPTY)),
+                  SerializerHelper.POSITIVE_INT_CODEC.fieldOf(JsonConstants.DURATION).forGetter(NucleosynthesizingRecipe::getDuration)
+            ).apply(instance, factory::create));
         }
-        int duration = ticks.getAsJsonPrimitive().getAsInt();
-        if (duration <= 0) {
-            throw new JsonSyntaxException("Expected duration to be a number greater than zero.");
-        }
-        ItemStack itemOutput = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
-        if (itemOutput.isEmpty()) {
-            throw new JsonSyntaxException("Nucleosynthesizing item output must not be empty.");
-        }
-        return this.factory.create(recipeId, itemIngredient, gasIngredient, itemOutput, duration);
+        return codec;
     }
 
     @Override

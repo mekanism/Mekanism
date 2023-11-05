@@ -15,8 +15,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class ChemicalInfuserIRecipe extends ChemicalInfuserRecipe {
 
-    public ChemicalInfuserIRecipe(ResourceLocation id, GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
-        super(id, leftInput, rightInput, output);
+    public ChemicalInfuserIRecipe(GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
+        super(leftInput, rightInput, output);
     }
 
     @Override

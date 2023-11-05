@@ -7,7 +7,6 @@ import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -22,16 +21,14 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class FluidToFluidRecipe extends MekanismRecipe implements Predicate<@NotNull FluidStack> {
 
-    private final FluidStackIngredient input;
-    private final FluidStack output;
+    protected final FluidStackIngredient input;
+    protected final FluidStack output;
 
     /**
-     * @param id     Recipe name.
      * @param input  Input.
      * @param output Output.
      */
-    public FluidToFluidRecipe(ResourceLocation id, FluidStackIngredient input, FluidStack output) {
-        super();
+    public FluidToFluidRecipe(FluidStackIngredient input, FluidStack output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {

@@ -105,7 +105,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
 
         @Override
         protected ItemStackGasToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
-            return new CompressingIRecipe(id, itemInput, gasInput, output);
+            return new CompressingIRecipe(itemInput, gasInput, output);
         }
     }
 
@@ -121,7 +121,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
 
         @Override
         protected ItemStackGasToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
-            return new InjectingIRecipe(id, itemInput, gasInput, output);
+            return new InjectingIRecipe(itemInput, gasInput, output);
         }
     }
 
@@ -137,7 +137,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
 
         @Override
         protected ItemStackGasToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
-            return new PurifyingIRecipe(id, itemInput, gasInput, output);
+            return new PurifyingIRecipe(itemInput, gasInput, output);
         }
     }
 
@@ -154,7 +154,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
 
         @Override
         protected MetallurgicInfuserRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output) {
-            return new MetallurgicInfuserIRecipe(id, itemInput, infusionInput, output);
+            return new MetallurgicInfuserIRecipe(itemInput, infusionInput, output);
         }
     }
 
@@ -170,7 +170,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
 
         @Override
         protected PaintingRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, PigmentStackIngredient pigmentInput, ItemStack output) {
-            return new PaintingIRecipe(id, itemInput, pigmentInput, output);
+            return new PaintingIRecipe(itemInput, pigmentInput, output);
         }
     }
 }

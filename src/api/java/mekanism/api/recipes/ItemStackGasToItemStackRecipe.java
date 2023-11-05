@@ -6,7 +6,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -27,12 +26,11 @@ import net.minecraft.world.item.ItemStack;
 public abstract class ItemStackGasToItemStackRecipe extends ItemStackChemicalToItemStackRecipe<Gas, GasStack, GasStackIngredient> {
 
     /**
-     * @param id        Recipe name.
      * @param itemInput Item input.
      * @param gasInput  Gas input.
      * @param output    Output.
      */
-    public ItemStackGasToItemStackRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
-        super(id, itemInput, gasInput, output);
+    public ItemStackGasToItemStackRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
+        super(itemInput, gasInput, output);
     }
 }

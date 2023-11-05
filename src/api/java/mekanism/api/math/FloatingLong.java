@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.ExtraCodecs;
 
 /**
  * A class representing a positive number with an internal value defined by an unsigned long, and a floating point number stored in a short
@@ -20,7 +21,7 @@ import net.minecraft.network.FriendlyByteBuf;
 @NothingNullByDefault
 public class FloatingLong extends Number implements Comparable<FloatingLong> {
 
-    public static final Codec<FloatingLong> FLOATING_LONG_CODEC = new PrimitiveCodec<FloatingLong>() {
+    public static final Codec<FloatingLong> CODEC = new PrimitiveCodec<FloatingLong>() {
         @Override
         public <T> DataResult<FloatingLong> read(DynamicOps<T> ops, T input) {
             return ops.getNumberValue(input).map(number -> fromNumber(number, true));
@@ -31,6 +32,12 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
             return ops.createNumeric(value);
         }
     };
+    public static final Codec<FloatingLong> NONZERO_CODEC = ExtraCodecs.validate(CODEC, f->{
+        if (f.isZero()) {
+            return DataResult.error(()->"Value must be greater than zero");
+        }
+        return DataResult.success(f);
+    });
     private static final DecimalFormat df = new DecimalFormat("0.0000", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
 
     //TODO: Eventually we should define a way of doing a set of operations all at once, and outputting a new value

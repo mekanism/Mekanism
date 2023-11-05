@@ -15,8 +15,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class InjectingIRecipe extends ItemStackGasToItemStackRecipe {
 
-    public InjectingIRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
-        super(id, itemInput, gasInput, output);
+    public InjectingIRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
+        super(itemInput, gasInput, output);
     }
 
     @Override

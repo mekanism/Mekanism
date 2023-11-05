@@ -8,7 +8,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -30,12 +29,11 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
     private final ItemStack output;
 
     /**
-     * @param id         Recipe name.
      * @param mainInput  Main input.
      * @param extraInput Secondary/extra input.
      * @param output     Output.
      */
-    public CombinerRecipe(ResourceLocation id, ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack output) {
+    public CombinerRecipe(ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack output) {
         super();
         this.mainInput = Objects.requireNonNull(mainInput, "Main input cannot be null.");
         this.extraInput = Objects.requireNonNull(extraInput, "Secondary/Extra input cannot be null.");
@@ -80,6 +78,10 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
     @Contract(value = "_, _ -> new", pure = true)
     public ItemStack getOutput(@NotNull ItemStack input, @NotNull ItemStack extra) {
         return output.copy();
+    }
+
+    public ItemStack getOutputRaw() {
+        return output;
     }
 
     @NotNull

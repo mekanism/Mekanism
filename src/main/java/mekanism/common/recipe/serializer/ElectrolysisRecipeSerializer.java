@@ -1,10 +1,9 @@
 package mekanism.common.recipe.serializer;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ElectrolysisRecipe;
@@ -12,38 +11,32 @@ import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
 public class ElectrolysisRecipeSerializer<RECIPE extends ElectrolysisRecipe> implements RecipeSerializer<RECIPE> {
 
+    private static final Codec<FloatingLong> FLOAT_LONG_AT_LEAST_ONE = ExtraCodecs.validate(FloatingLong.CODEC, fl -> fl.smallerThan(FloatingLong.ONE) ? DataResult.error(() -> "Expected energyMultiplier to be at least one.") : DataResult.success(fl));
     private final IFactory<RECIPE> factory;
+    private Codec<RECIPE> codec;
 
     public ElectrolysisRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
     }
 
-    @NotNull
     @Override
-    public RECIPE fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
-        JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
-                            GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
-        FluidStackIngredient inputIngredient = IngredientCreatorAccess.fluid().deserialize(input);
-        GasStack leftGasOutput = SerializerHelper.getGasStack(json, JsonConstants.LEFT_GAS_OUTPUT);
-        GasStack rightGasOutput = SerializerHelper.getGasStack(json, JsonConstants.RIGHT_GAS_OUTPUT);
-        FloatingLong energyMultiplier = FloatingLong.ONE;
-        if (json.has(JsonConstants.ENERGY_MULTIPLIER)) {
-            energyMultiplier = SerializerHelper.getFloatingLong(json, JsonConstants.ENERGY_MULTIPLIER);
-            if (energyMultiplier.smallerThan(FloatingLong.ONE)) {
-                throw new JsonSyntaxException("Expected energyMultiplier to be at least one.");
-            }
+    @NotNull
+    public Codec<RECIPE> codec() {
+        if (codec == null) {
+            codec = RecordCodecBuilder.create(instance->instance.group(
+                  IngredientCreatorAccess.fluid().codec().fieldOf(JsonConstants.INPUT).forGetter(ElectrolysisRecipe::getInput),
+                  FLOAT_LONG_AT_LEAST_ONE.optionalFieldOf(JsonConstants.ENERGY_MULTIPLIER, FloatingLong.ONE).forGetter(ElectrolysisRecipe::getEnergyMultiplier),
+                  GasStack.CODEC.fieldOf(JsonConstants.LEFT_GAS_OUTPUT).forGetter(ElectrolysisRecipe::getLeftGasOutput),
+                  GasStack.CODEC.fieldOf(JsonConstants.RIGHT_GAS_OUTPUT).forGetter(ElectrolysisRecipe::getRightGasOutput)
+            ).apply(instance, factory::create));
         }
-        if (leftGasOutput.isEmpty() || rightGasOutput.isEmpty()) {
-            throw new JsonSyntaxException("Electrolysis recipe outputs must not be empty.");
-        }
-        return this.factory.create(recipeId, inputIngredient, energyMultiplier, leftGasOutput, rightGasOutput);
+        return codec;
     }
 
     @Override

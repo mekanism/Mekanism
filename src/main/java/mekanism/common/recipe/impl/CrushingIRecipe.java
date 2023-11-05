@@ -14,8 +14,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class CrushingIRecipe extends ItemStackToItemStackRecipe {
 
-    public CrushingIRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
-        super(id, input, output);
+    public CrushingIRecipe(ItemStackIngredient input, ItemStack output) {
+        super(input, output);
     }
 
     @Override

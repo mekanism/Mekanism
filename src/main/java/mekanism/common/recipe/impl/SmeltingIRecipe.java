@@ -14,8 +14,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 @NothingNullByDefault
 public class SmeltingIRecipe extends ItemStackToItemStackRecipe {
 
-    public SmeltingIRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
-        super(id, input, output);
+    public SmeltingIRecipe(ItemStackIngredient input, ItemStack output) {
+        super(input, output);
     }
 
     @Override

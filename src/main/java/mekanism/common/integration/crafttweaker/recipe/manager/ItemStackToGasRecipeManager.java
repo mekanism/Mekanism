@@ -34,7 +34,7 @@ public abstract class ItemStackToGasRecipeManager extends ItemStackToChemicalRec
 
         @Override
         protected ItemStackToGasRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, GasStack output) {
-            return new GasConversionIRecipe(id, input, output);
+            return new GasConversionIRecipe(input, output);
         }
     }
 
@@ -50,7 +50,7 @@ public abstract class ItemStackToGasRecipeManager extends ItemStackToChemicalRec
 
         @Override
         protected ItemStackToGasRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, GasStack output) {
-            return new ChemicalOxidizerIRecipe(id, input, output);
+            return new ChemicalOxidizerIRecipe(input, output);
         }
     }
 }

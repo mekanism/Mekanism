@@ -13,6 +13,7 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,12 +34,11 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implement
     private final BoxedChemicalStack output;
 
     /**
-     * @param id        Recipe name.
      * @param itemInput Item input.
      * @param gasInput  Gas input.
      * @param output    Output.
      */
-    public ChemicalDissolutionRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ChemicalStack<?> output) {
+    public ChemicalDissolutionRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ChemicalStack<?> output) {
         super();
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
         this.gasInput = Objects.requireNonNull(gasInput, "Gas input cannot be null.");
@@ -78,6 +78,10 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implement
     @Contract(value = "_, _ -> new", pure = true)
     public BoxedChemicalStack getOutput(ItemStack inputItem, GasStack inputGas) {
         return output.copy();
+    }
+
+    public BoxedChemicalStack getOutputRaw() {
+        return output;
     }
 
     @Override

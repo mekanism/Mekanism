@@ -10,7 +10,6 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredie
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.TriPredicate;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -33,16 +32,15 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class PressurizedReactionRecipe extends MekanismRecipe implements TriPredicate<@NotNull ItemStack, @NotNull FluidStack, @NotNull GasStack> {
 
-    private final ItemStackIngredient inputSolid;
-    private final FluidStackIngredient inputFluid;
-    private final GasStackIngredient inputGas;
-    private final FloatingLong energyRequired;
-    private final int duration;
-    private final ItemStack outputItem;
-    private final GasStack outputGas;
+    protected final ItemStackIngredient inputSolid;
+    protected final FluidStackIngredient inputFluid;
+    protected final GasStackIngredient inputGas;
+    protected final FloatingLong energyRequired;
+    protected final int duration;
+    protected final ItemStack outputItem;
+    protected final GasStack outputGas;
 
     /**
-     * @param id             Recipe name.
      * @param inputSolid     Item input.
      * @param inputFluid     Fluid input.
      * @param inputGas       Gas input.
@@ -53,7 +51,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
      *
      * @apiNote At least one output must not be empty.
      */
-    public PressurizedReactionRecipe(ResourceLocation id, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
+    public PressurizedReactionRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
           FloatingLong energyRequired, int duration, ItemStack outputItem, GasStack outputGas) {
         super();
         this.inputSolid = Objects.requireNonNull(inputSolid, "Item input cannot be null.");

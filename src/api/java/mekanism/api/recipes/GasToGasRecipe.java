@@ -5,7 +5,6 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.chemical.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * Input: Gas
@@ -22,11 +21,10 @@ import net.minecraft.resources.ResourceLocation;
 public abstract class GasToGasRecipe extends ChemicalToChemicalRecipe<Gas, GasStack, GasStackIngredient> {
 
     /**
-     * @param id     Recipe name.
      * @param input  Input.
      * @param output Output.
      */
-    public GasToGasRecipe(ResourceLocation id, GasStackIngredient input, GasStack output) {
-        super(id, input, output);
+    public GasToGasRecipe(GasStackIngredient input, GasStack output) {
+        super(input, output);
     }
 }

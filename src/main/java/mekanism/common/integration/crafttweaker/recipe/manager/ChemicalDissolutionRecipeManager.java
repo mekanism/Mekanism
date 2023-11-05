@@ -44,7 +44,7 @@ public class ChemicalDissolutionRecipeManager extends MekanismRecipeManager<Chem
      * @param output    {@link ICrTChemicalStack} representing the output of the recipe. Will be validated as not empty.
      */
     public final ChemicalDissolutionRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ICrTChemicalStack<?, ?, ?> output) {
-        return new ChemicalDissolutionIRecipe(id, itemInput, gasInput, getAndValidateNotEmpty(output));
+        return new ChemicalDissolutionIRecipe(itemInput, gasInput, getAndValidateNotEmpty(output));
     }
 
     @Override

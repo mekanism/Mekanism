@@ -9,7 +9,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -32,13 +31,12 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
     private final FloatingLong energyMultiplier;
 
     /**
-     * @param id               Recipe name.
      * @param input            Input.
      * @param energyMultiplier Multiplier to the energy cost in relation to the configured hydrogen separating energy cost. Must be at least one.
      * @param leftGasOutput    Left output.
      * @param rightGasOutput   Right output.
      */
-    public ElectrolysisRecipe(ResourceLocation id, FluidStackIngredient input, FloatingLong energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput) {
+    public ElectrolysisRecipe(FluidStackIngredient input, FloatingLong energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput) {
         super();
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.energyMultiplier = Objects.requireNonNull(energyMultiplier, "Energy multiplier cannot be null.").copyAsConst();
@@ -91,6 +89,14 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
     @Contract(value = "_ -> new", pure = true)
     public ElectrolysisRecipeOutput getOutput(FluidStack input) {
         return new ElectrolysisRecipeOutput(leftGasOutput.copy(), rightGasOutput.copy());
+    }
+
+    public GasStack getLeftGasOutput() {
+        return leftGasOutput;
+    }
+
+    public GasStack getRightGasOutput() {
+        return rightGasOutput;
     }
 
     /**

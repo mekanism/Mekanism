@@ -68,7 +68,7 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager<GasToG
 
         @Override
         protected GasToGasRecipe makeRecipe(ResourceLocation id, GasStackIngredient ingredient, GasStack output) {
-            return new ActivatingIRecipe(id, ingredient, output);
+            return new ActivatingIRecipe(ingredient, output);
         }
     }
 
@@ -84,7 +84,7 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager<GasToG
 
         @Override
         protected GasToGasRecipe makeRecipe(ResourceLocation id, GasStackIngredient ingredient, GasStack output) {
-            return new CentrifugingIRecipe(id, ingredient, output);
+            return new CentrifugingIRecipe(ingredient, output);
         }
     }
 }

@@ -13,6 +13,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.inventory.IgnoredIInventory;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
@@ -242,8 +243,7 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
                             IItemStackIngredientCreator ingredientCreator = IngredientCreatorAccess.item();
                             input = ingredientCreator.from(ingredients.stream().map(ingredientCreator::from));
                         }
-                        //todo remove unchecked cast
-                        recipes.add(new RecipeHolder<>(smeltingRecipe.id(), (RECIPE) new SmeltingIRecipe(smeltingRecipe.id(), input, recipeOutput)));
+                        recipes.add(new RecipeHolder<>(smeltingRecipe.id(), castRecipe(new SmeltingIRecipe(input, recipeOutput))));
                     }
                 }
             }
@@ -256,6 +256,14 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
                   .toList();
         }
         return cachedRecipes;
+    }
+
+    @SuppressWarnings("unchecked")
+    private RECIPE castRecipe(MekanismRecipe o) {
+        if (o.getType() != this) {
+            throw new IllegalArgumentException("Wrong recipe type");
+        }
+        return (RECIPE) o;
     }
 
     /**

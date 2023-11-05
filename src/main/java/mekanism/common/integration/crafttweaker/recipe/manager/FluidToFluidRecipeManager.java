@@ -65,7 +65,7 @@ public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<Fl
 
         @Override
         protected FluidToFluidIRecipe makeRecipe(ResourceLocation id, FluidStackIngredient input, FluidStack output) {
-            return new FluidToFluidIRecipe(id, input, output);
+            return new FluidToFluidIRecipe(input, output);
         }
     }
 }

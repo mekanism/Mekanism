@@ -73,7 +73,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
 
         @Override
         protected ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
-            return new CrushingIRecipe(id, input, output);
+            return new CrushingIRecipe(input, output);
         }
     }
 
@@ -89,7 +89,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
 
         @Override
         protected ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
-            return new EnrichingIRecipe(id, input, output);
+            return new EnrichingIRecipe(input, output);
         }
     }
 
@@ -105,7 +105,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
 
         @Override
         protected ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
-            return new SmeltingIRecipe(id, input, output);
+            return new SmeltingIRecipe(input, output);
         }
     }
 }

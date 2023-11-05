@@ -68,7 +68,7 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
 
         @Override
         protected ItemStackToEnergyRecipe makeRecipeInternal(ResourceLocation id, ItemStackIngredient input, FloatingLong output) {
-            return new EnergyConversionIRecipe(id, input, output);
+            return new EnergyConversionIRecipe(input, output);
         }
     }
 }
