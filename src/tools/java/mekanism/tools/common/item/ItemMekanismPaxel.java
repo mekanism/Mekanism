@@ -75,8 +75,8 @@ public class ItemMekanismPaxel extends AxeItem implements IHasRepairType, IAttri
 
     @Override
     public boolean canPerformAction(ItemStack stack, ToolAction action) {
-        return action == PAXEL_DIG || ToolActions.DEFAULT_AXE_ACTIONS.contains(action) || ToolActions.DEFAULT_PICKAXE_ACTIONS.contains(action) ||
-               ToolActions.DEFAULT_SHOVEL_ACTIONS.contains(action);
+        return action == PAXEL_DIG || ToolActions.DEFAULT_PICKAXE_ACTIONS.contains(action) ||
+               ToolActions.DEFAULT_SHOVEL_ACTIONS.contains(action) || super.canPerformAction(stack, action);
     }
 
     @Override
@@ -96,28 +96,33 @@ public class ItemMekanismPaxel extends AxeItem implements IHasRepairType, IAttri
         BlockPos blockpos = context.getClickedPos();
         Player player = context.getPlayer();
         BlockState blockstate = world.getBlockState(blockpos);
-        BlockState resultToSet = useAsAxe(blockstate, context);
+
+        // Attempt to use the paxel as an axe
+        InteractionResult axeResult = super.useOn(context);
+        if (axeResult != InteractionResult.PASS) {
+            return axeResult;
+        }
+
+        BlockState resultToSet = null;
+        //We cannot strip the item that was right-clicked, so attempt to use the paxel as a shovel
+        if (context.getClickedFace() == Direction.DOWN) {
+            return InteractionResult.PASS;
+        }
+        BlockState foundResult = blockstate.getToolModifiedState(context, ToolActions.SHOVEL_FLATTEN, false);
+        if (foundResult != null && world.isEmptyBlock(blockpos.above())) {
+            //We can flatten the item as a shovel
+            world.playSound(player, blockpos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
+            resultToSet = foundResult;
+        } else if (blockstate.getBlock() instanceof CampfireBlock && blockstate.getValue(CampfireBlock.LIT)) {
+            //We can use the paxel as a shovel to extinguish a campfire
+            if (!world.isClientSide) {
+                world.levelEvent(null, LevelEvent.SOUND_EXTINGUISH_FIRE, blockpos, 0);
+            }
+            CampfireBlock.dowse(player, world, blockpos, blockstate);
+            resultToSet = blockstate.setValue(CampfireBlock.LIT, false);
+        }
         if (resultToSet == null) {
-            //We cannot strip the item that was right-clicked, so attempt to use the paxel as a shovel
-            if (context.getClickedFace() == Direction.DOWN) {
-                return InteractionResult.PASS;
-            }
-            BlockState foundResult = blockstate.getToolModifiedState(context, ToolActions.SHOVEL_FLATTEN, false);
-            if (foundResult != null && world.isEmptyBlock(blockpos.above())) {
-                //We can flatten the item as a shovel
-                world.playSound(player, blockpos, SoundEvents.SHOVEL_FLATTEN, SoundSource.BLOCKS, 1.0F, 1.0F);
-                resultToSet = foundResult;
-            } else if (blockstate.getBlock() instanceof CampfireBlock && blockstate.getValue(CampfireBlock.LIT)) {
-                //We can use the paxel as a shovel to extinguish a campfire
-                if (!world.isClientSide) {
-                    world.levelEvent(null, LevelEvent.SOUND_EXTINGUISH_FIRE, blockpos, 0);
-                }
-                CampfireBlock.dowse(player, world, blockpos, blockstate);
-                resultToSet = blockstate.setValue(CampfireBlock.LIT, false);
-            }
-            if (resultToSet == null) {
-                return InteractionResult.PASS;
-            }
+            return InteractionResult.PASS;
         }
         if (!world.isClientSide) {
             ItemStack stack = context.getItemInHand();
@@ -130,31 +135,6 @@ public class ItemMekanismPaxel extends AxeItem implements IHasRepairType, IAttri
             }
         }
         return InteractionResult.sidedSuccess(world.isClientSide);
-    }
-
-    @Nullable
-    private BlockState useAsAxe(BlockState state, UseOnContext context) {
-        Level world = context.getLevel();
-        BlockPos blockpos = context.getClickedPos();
-        Player player = context.getPlayer();
-        BlockState resultToSet = state.getToolModifiedState(context, ToolActions.AXE_STRIP, false);
-        if (resultToSet != null) {
-            world.playSound(player, blockpos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1.0F, 1.0F);
-            return resultToSet;
-        }
-        resultToSet = state.getToolModifiedState(context, ToolActions.AXE_SCRAPE, false);
-        if (resultToSet != null) {
-            world.playSound(player, blockpos, SoundEvents.AXE_SCRAPE, SoundSource.BLOCKS, 1.0F, 1.0F);
-            world.levelEvent(player, LevelEvent.PARTICLES_SCRAPE, blockpos, 0);
-            return resultToSet;
-        }
-        resultToSet = state.getToolModifiedState(context, ToolActions.AXE_WAX_OFF, false);
-        if (resultToSet != null) {
-            world.playSound(player, blockpos, SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0F, 1.0F);
-            world.levelEvent(player, LevelEvent.PARTICLES_WAX_OFF, blockpos, 0);
-            return resultToSet;
-        }
-        return null;
     }
 
     @Override
@@ -190,9 +170,14 @@ public class ItemMekanismPaxel extends AxeItem implements IHasRepairType, IAttri
         builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", material.getPaxelAtkSpeed(), Operation.ADDITION));
     }
 
+    // Need to override both method as DiggerItem performs two different behaviors
     @Override
     public boolean isCorrectToolForDrops(BlockState state) {
-        // Some modded items may not check the stack sensitive version
+        return state.is(ToolsTags.Blocks.MINEABLE_WITH_PAXEL) && TierSortingRegistry.isCorrectTierForDrops(getTier(), state);
+    }
+
+    @Override
+    public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
         return state.is(ToolsTags.Blocks.MINEABLE_WITH_PAXEL) && TierSortingRegistry.isCorrectTierForDrops(getTier(), state);
     }
 }
