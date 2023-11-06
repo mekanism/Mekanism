@@ -17,8 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class MekBannerShieldRecipe extends CustomRecipe {
 
-    public MekBannerShieldRecipe(ResourceLocation id, CraftingBookCategory category) {
-        super(id, category);
+    public MekBannerShieldRecipe(CraftingBookCategory category) {
+        super(category);
     }
 
     @Override

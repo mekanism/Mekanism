@@ -1,6 +1,7 @@
 package mekanism.common.recipe.serializer;
 
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import java.util.function.Function;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.WrappedShapedRecipe;
@@ -13,15 +14,19 @@ import org.jetbrains.annotations.NotNull;
 public class WrappedShapedRecipeSerializer<RECIPE extends WrappedShapedRecipe> implements RecipeSerializer<RECIPE> {
 
     private final Function<ShapedRecipe, RECIPE> wrapper;
+    private Codec<RECIPE> codec;
 
     public WrappedShapedRecipeSerializer(Function<ShapedRecipe, RECIPE> wrapper) {
         this.wrapper = wrapper;
     }
 
-    @NotNull
     @Override
-    public RECIPE fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
-        return wrapper.apply(RecipeSerializer.SHAPED_RECIPE.fromJson(recipeId, json));
+    @NotNull
+    public Codec<RECIPE> codec() {
+        if (codec == null) {
+            codec = RecipeSerializer.SHAPED_RECIPE.codec().xmap(wrapper, WrappedShapedRecipe::getInternal);
+        }
+        return codec;
     }
 
     @Override

@@ -44,7 +44,7 @@ public class ExtendedSingleItemRecipeBuilder extends BaseRecipeBuilder<ExtendedS
         @Override
         public void serializeRecipeData(JsonObject json) {
             super.serializeRecipeData(json);
-            json.add(JsonConstants.INGREDIENT, ingredient.toJson(false);
+            json.add(JsonConstants.INGREDIENT, ingredient.toJson(false));
         }
 
         @Override

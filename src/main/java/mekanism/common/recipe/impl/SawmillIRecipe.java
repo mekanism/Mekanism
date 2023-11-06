@@ -1,5 +1,6 @@
 package mekanism.common.recipe.impl;
 
+import java.util.Optional;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -24,7 +25,7 @@ public class SawmillIRecipe extends SawmillRecipe {
     }
 
     @Override
-    public RecipeSerializer<SawmillRecipe> getSerializer() {
+    public RecipeSerializer<SawmillIRecipe> getSerializer() {
         return MekanismRecipeSerializers.SAWING.get();
     }
 
@@ -36,5 +37,13 @@ public class SawmillIRecipe extends SawmillRecipe {
     @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.PRECISION_SAWMILL.getItemStack();
+    }
+
+    public Optional<ItemStack> getMainOutputRaw() {
+        return this.mainOutput .isEmpty() ? Optional.empty() : Optional.of(this.mainOutput);
+    }
+
+    public Optional<ItemStack> getSecondaryOutputRaw() {
+        return this.secondaryOutput .isEmpty() ? Optional.empty() : Optional.of(this.secondaryOutput);
     }
 }

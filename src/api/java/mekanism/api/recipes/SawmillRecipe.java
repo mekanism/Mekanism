@@ -27,10 +27,10 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
 
     protected static final Random RANDOM = new Random();
 
-    private final ItemStackIngredient input;
-    private final ItemStack mainOutput;
-    private final ItemStack secondaryOutput;
-    private final double secondaryChance;
+    protected final ItemStackIngredient input;
+    protected final ItemStack mainOutput;
+    protected final ItemStack secondaryOutput;
+    protected final double secondaryChance;
 
     /**
      * @param input           Input.
