@@ -34,8 +34,6 @@ public abstract class ChemicalChemicalToChemicalRecipeSerializer<CHEMICAL extend
 
     protected abstract ChemicalIngredientDeserializer<CHEMICAL, STACK, INGREDIENT> getDeserializer();
 
-    protected abstract STACK fromJson(@NotNull JsonObject json, @NotNull String key);
-
     protected abstract STACK fromBuffer(@NotNull FriendlyByteBuf buffer);
 
     @Override
