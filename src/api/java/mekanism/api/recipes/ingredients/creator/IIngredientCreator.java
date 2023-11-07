@@ -67,6 +67,11 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
         return codec().parse(JsonOps.INSTANCE, json).getOrThrow(false, e->{});
     }
 
+    /**
+     * Retrieve a codec which can (de)encode a single or multi ingredient of this type.
+     *
+     * @return a codec for this ingredient type
+     */
     Codec<INGREDIENT> codec();
 
     /**

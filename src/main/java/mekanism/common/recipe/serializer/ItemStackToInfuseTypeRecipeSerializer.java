@@ -1,7 +1,5 @@
 package mekanism.common.recipe.serializer;
 
-import com.google.gson.JsonObject;
-import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
@@ -12,11 +10,6 @@ public class ItemStackToInfuseTypeRecipeSerializer<RECIPE extends ItemStackToInf
 
     public ItemStackToInfuseTypeRecipeSerializer(IFactory<InfuseType, InfusionStack, RECIPE> factory) {
         super(factory, InfusionStack.CODEC);
-    }
-
-    @Override
-    protected InfusionStack stackFromJson(@NotNull JsonObject json, @NotNull String key) {
-        return SerializerHelper.getInfusionStack(json, key);
     }
 
     @Override

@@ -30,8 +30,6 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
         this.stackCodec = stackCodec;
     }
 
-    protected abstract STACK stackFromJson(@NotNull JsonObject json, @NotNull String key);
-
     protected abstract STACK stackFromBuffer(@NotNull FriendlyByteBuf buffer);
 
     @Override

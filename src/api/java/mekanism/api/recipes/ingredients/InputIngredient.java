@@ -2,8 +2,10 @@ package mekanism.api.recipes.ingredients;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import java.util.List;
 import java.util.function.Predicate;
+import mekanism.api.recipes.ingredients.creator.IIngredientCreator;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
@@ -73,6 +75,9 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      *
      * @return JsonElement representation of this ingredient.
      */
-    @Deprecated(forRemoval = true)
-    JsonElement serialize();
+    default JsonElement serialize() {
+        return getIngredientCreator().codec().encodeStart(JsonOps.INSTANCE, this).getOrThrow(false, e->{});
+    }
+
+    IIngredientCreator<?, TYPE, SPECIFIC> getIngredientCreator();
 }

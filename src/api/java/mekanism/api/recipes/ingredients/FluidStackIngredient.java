@@ -3,6 +3,8 @@ package mekanism.api.recipes.ingredients;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import mekanism.api.IMekanismAccess;
+import mekanism.api.recipes.ingredients.creator.IIngredientCreator;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,8 +16,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class FluidStackIngredient implements InputIngredient<@NotNull FluidStack> {
 
     @Override
-    @Deprecated(forRemoval = true)
-    public JsonElement serialize() {
-        return IMekanismAccess.INSTANCE.fluidStackIngredientCreator().codec().encodeStart(JsonOps.INSTANCE, this).getOrThrow(false, e->{});
+    public <SPECIFIC extends InputIngredient<@NotNull FluidStack>> IIngredientCreator<?, @NotNull FluidStack, SPECIFIC> getIngredientCreator() {
+        return IngredientCreatorAccess.fluid();
     }
 }

@@ -36,7 +36,6 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      */
     interface GasStackIngredient extends ChemicalStackIngredient<Gas, GasStack> {
         @Override
-        @Deprecated(forRemoval = true)
         default JsonElement serialize() {
             return IMekanismAccess.INSTANCE.gasStackIngredientCreator().codec().encodeStart(JsonOps.INSTANCE, this).getOrThrow(false, e->{});
         }
@@ -49,7 +48,6 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      */
     interface InfusionStackIngredient extends ChemicalStackIngredient<InfuseType, InfusionStack> {
         @Override
-        @Deprecated(forRemoval = true)
         default JsonElement serialize() {
             return IMekanismAccess.INSTANCE.infusionStackIngredientCreator().codec().encodeStart(JsonOps.INSTANCE, this).getOrThrow(false, e->{});
         }
@@ -62,7 +60,6 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      */
     interface PigmentStackIngredient extends ChemicalStackIngredient<Pigment, PigmentStack> {
         @Override
-        @Deprecated(forRemoval = true)
         default JsonElement serialize() {
             return IMekanismAccess.INSTANCE.pigmentStackIngredientCreator().codec().encodeStart(JsonOps.INSTANCE, this).getOrThrow(false, e->{});
         }
@@ -75,7 +72,6 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
      */
     interface SlurryStackIngredient extends ChemicalStackIngredient<Slurry, SlurryStack> {
         @Override
-        @Deprecated(forRemoval = true)
         default JsonElement serialize() {
             return IMekanismAccess.INSTANCE.slurryStackIngredientCreator().codec().encodeStart(JsonOps.INSTANCE, this).getOrThrow(false, e->{});
         }

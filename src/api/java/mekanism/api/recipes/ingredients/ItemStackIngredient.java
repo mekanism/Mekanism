@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class ItemStackIngredient implements InputIngredient<@NotNull ItemStack> {
     @Override
-    @Deprecated(forRemoval = true)
     public JsonElement serialize() {
         return IMekanismAccess.INSTANCE.itemStackIngredientCreator().codec().encodeStart(JsonOps.INSTANCE, this).getOrThrow(false, e->{});
     }

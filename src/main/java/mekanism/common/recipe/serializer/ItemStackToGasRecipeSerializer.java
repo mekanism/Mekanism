@@ -1,7 +1,5 @@
 package mekanism.common.recipe.serializer;
 
-import com.google.gson.JsonObject;
-import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackToGasRecipe;
@@ -12,11 +10,6 @@ public class ItemStackToGasRecipeSerializer<RECIPE extends ItemStackToGasRecipe>
 
     public ItemStackToGasRecipeSerializer(IFactory<Gas, GasStack, RECIPE> factory) {
         super(factory, GasStack.CODEC);
-    }
-
-    @Override
-    protected GasStack stackFromJson(@NotNull JsonObject json, @NotNull String key) {
-        return SerializerHelper.getGasStack(json, key);
     }
 
     @Override

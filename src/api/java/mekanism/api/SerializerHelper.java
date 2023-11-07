@@ -108,6 +108,7 @@ public class SerializerHelper {
      *
      * @return FloatingLong.
      */
+    @Deprecated(forRemoval = true)
     public static FloatingLong getFloatingLong(@NotNull JsonObject json, @NotNull String key) {
         if (!json.has(key)) {
             throw new JsonSyntaxException("Missing '" + key + "', expected to find an object");
@@ -192,6 +193,7 @@ public class SerializerHelper {
      *
      * @return Chemical Stack.
      */
+    @Deprecated(forRemoval = true)
     public static ChemicalStack<?> getBoxedChemicalStack(@NotNull JsonObject json, @NotNull String key) {
         validateKey(json, key);
         JsonObject jsonObject = GsonHelper.getAsJsonObject(json, key);
@@ -212,6 +214,7 @@ public class SerializerHelper {
      *
      * @return Gas Stack.
      */
+    @Deprecated(forRemoval = true)
     public static GasStack getGasStack(@NotNull JsonObject json, @NotNull String key) {
         validateKey(json, key);
         return deserializeGas(GsonHelper.getAsJsonObject(json, key));
@@ -225,6 +228,7 @@ public class SerializerHelper {
      *
      * @return Infusion Stack.
      */
+    @Deprecated(forRemoval = true)
     public static InfusionStack getInfusionStack(@NotNull JsonObject json, @NotNull String key) {
         validateKey(json, key);
         return deserializeInfuseType(GsonHelper.getAsJsonObject(json, key));
@@ -238,6 +242,7 @@ public class SerializerHelper {
      *
      * @return Pigment Stack.
      */
+    @Deprecated(forRemoval = true)
     public static PigmentStack getPigmentStack(@NotNull JsonObject json, @NotNull String key) {
         validateKey(json, key);
         return deserializePigment(GsonHelper.getAsJsonObject(json, key));
@@ -251,6 +256,7 @@ public class SerializerHelper {
      *
      * @return Slurry Stack.
      */
+    @Deprecated(forRemoval = true)
     public static SlurryStack getSlurryStack(@NotNull JsonObject json, @NotNull String key) {
         validateKey(json, key);
         return deserializeSlurry(GsonHelper.getAsJsonObject(json, key));
@@ -263,6 +269,7 @@ public class SerializerHelper {
      *
      * @return Fluid Stack.
      */
+    @Deprecated(forRemoval = true)
     public static FluidStack deserializeFluid(@NotNull JsonObject json) {
         if (!json.has(JsonConstants.AMOUNT)) {
             throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");

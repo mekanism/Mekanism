@@ -1,7 +1,5 @@
 package mekanism.common.recipe.serializer;
 
-import com.google.gson.JsonObject;
-import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
@@ -12,11 +10,6 @@ public class ItemStackToPigmentRecipeSerializer<RECIPE extends ItemStackToPigmen
 
     public ItemStackToPigmentRecipeSerializer(IFactory<Pigment, PigmentStack, RECIPE> factory) {
         super(factory, PigmentStack.CODEC);
-    }
-
-    @Override
-    protected PigmentStack stackFromJson(@NotNull JsonObject json, @NotNull String key) {
-        return SerializerHelper.getPigmentStack(json, key);
     }
 
     @Override

@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
  * Base recipe builder that declares various common methods between our different builders.
  */
 @NothingNullByDefault
+@SuppressWarnings("UnusedReturnValue")
 public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilder<BUILDER>> {
 
     protected static ResourceLocation mekSerializer(String name) {
@@ -64,6 +65,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * @param name      Name of the criterion.
      * @param criterion Criterion to add.
      */
+    @SuppressWarnings("unchecked")
     public BUILDER addCriterion(String name, Criterion<?> criterion) {
         advancementBuilder.addCriterion(name, criterion);
         hasCritereon = true;
@@ -75,6 +77,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      *
      * @param condition Condition to add.
      */
+    @SuppressWarnings("unchecked")
     public BUILDER addCondition(ICondition condition) {
         conditions.add(condition);
         return (BUILDER) this;
