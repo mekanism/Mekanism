@@ -68,6 +68,17 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
     }
 
     /**
+     * Helper to serialize into a Json object
+     *
+     * @param ingredient the ingredient to serialize
+     * @return the serialized ingredient
+     * @throws RuntimeException if encoding failed
+     */
+    default JsonElement serialize(INGREDIENT ingredient) {
+        return codec().encodeStart(JsonOps.INSTANCE, ingredient).getOrThrow(false, unused->{});
+    }
+
+    /**
      * Retrieve a codec which can (de)encode a single or multi ingredient of this type.
      *
      * @return a codec for this ingredient type

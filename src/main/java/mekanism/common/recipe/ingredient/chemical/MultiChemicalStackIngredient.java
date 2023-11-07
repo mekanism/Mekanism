@@ -123,16 +123,6 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
         BasePacketHandler.writeArray(buffer, ingredients, InputIngredient::write);
     }
 
-    @NotNull
-    @Override
-    public JsonElement serialize() {
-        JsonArray json = new JsonArray();
-        for (INGREDIENT ingredient : ingredients) {
-            json.add(ingredient.serialize());
-        }
-        return json;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

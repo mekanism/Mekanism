@@ -97,15 +97,6 @@ public abstract class SingleChemicalStackIngredient<CHEMICAL extends Chemical<CH
         chemicalInstance.writeToPacket(buffer);
     }
 
-    @NotNull
-    @Override
-    public JsonElement serialize() {
-        JsonObject json = new JsonObject();
-        json.addProperty(JsonConstants.AMOUNT, chemicalInstance.getAmount());
-        json.addProperty(getIngredientInfo().getSerializationKey(), chemicalInstance.getTypeRegistryName().toString());
-        return json;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

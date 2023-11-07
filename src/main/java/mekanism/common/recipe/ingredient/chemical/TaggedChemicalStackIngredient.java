@@ -114,15 +114,6 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
         buffer.writeVarLong(amount);
     }
 
-    @NotNull
-    @Override
-    public JsonElement serialize() {
-        JsonObject json = new JsonObject();
-        json.addProperty(JsonConstants.AMOUNT, amount);
-        json.addProperty(JsonConstants.TAG, tag.getKey().location().toString());
-        return json;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

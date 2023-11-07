@@ -75,9 +75,5 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      *
      * @return JsonElement representation of this ingredient.
      */
-    default JsonElement serialize() {
-        return getIngredientCreator().codec().encodeStart(JsonOps.INSTANCE, this).getOrThrow(false, e->{});
-    }
-
-    IIngredientCreator<?, TYPE, SPECIFIC> getIngredientCreator();
+    JsonElement serialize();
 }
