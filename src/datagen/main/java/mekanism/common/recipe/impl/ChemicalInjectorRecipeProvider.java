@@ -12,6 +12,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -23,7 +24,7 @@ import net.neoforged.neoforge.common.Tags;
 class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "injecting/";
         //Brick -> clay ball
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
@@ -54,7 +55,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         addChemicalInjectorOxidizingRecipe(consumer, basePath + "oxidizing/");
     }
 
-    private void addChemicalInjectorConcreteRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addChemicalInjectorConcreteRecipes(RecipeOutput consumer, String basePath) {
         addChemicalInjectorConcreteRecipe(consumer, basePath, Blocks.BLACK_CONCRETE_POWDER, Blocks.BLACK_CONCRETE, "black");
         addChemicalInjectorConcreteRecipe(consumer, basePath, Blocks.BLUE_CONCRETE_POWDER, Blocks.BLUE_CONCRETE, "blue");
         addChemicalInjectorConcreteRecipe(consumer, basePath, Blocks.BROWN_CONCRETE_POWDER, Blocks.BROWN_CONCRETE, "brown");
@@ -73,7 +74,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         addChemicalInjectorConcreteRecipe(consumer, basePath, Blocks.YELLOW_CONCRETE_POWDER, Blocks.YELLOW_CONCRETE, "yellow");
     }
 
-    private void addChemicalInjectorConcreteRecipe(Consumer<FinishedRecipe> consumer, String basePath, ItemLike powder, ItemLike concrete, String name) {
+    private void addChemicalInjectorConcreteRecipe(RecipeOutput consumer, String basePath, ItemLike powder, ItemLike concrete, String name) {
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(powder),
               IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, 1),
@@ -81,7 +82,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + name));
     }
 
-    private void addChemicalInjectorCoralRevivalRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addChemicalInjectorCoralRevivalRecipes(RecipeOutput consumer, String basePath) {
         addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_BRAIN_CORAL_BLOCK, Blocks.BRAIN_CORAL_BLOCK, 5);
         addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_BUBBLE_CORAL_BLOCK, Blocks.BUBBLE_CORAL_BLOCK, 5);
         addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_FIRE_CORAL_BLOCK, Blocks.FIRE_CORAL_BLOCK, 5);
@@ -99,7 +100,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Items.DEAD_TUBE_CORAL_FAN, Items.TUBE_CORAL_FAN, 3);
     }
 
-    private void addChemicalInjectorCoralRevivalRecipe(Consumer<FinishedRecipe> consumer, String basePath, ItemLike dead, ItemLike living, int water) {
+    private void addChemicalInjectorCoralRevivalRecipe(RecipeOutput consumer, String basePath, ItemLike dead, ItemLike living, int water) {
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               IngredientCreatorAccess.item().from(dead),
               IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, water),
@@ -107,7 +108,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(living.asItem())));
     }
 
-    private void addChemicalInjectorOxidizingRecipe(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addChemicalInjectorOxidizingRecipe(RecipeOutput consumer, String basePath) {
         //Generate baseline recipes from weathering recipe set
         GasStackIngredient oxygen = IngredientCreatorAccess.gas().from(MekanismGases.OXYGEN, 1);
         for (Map.Entry<Block, Block> entry : WeatheringCopper.NEXT_BY_BLOCK.get().entrySet()) {

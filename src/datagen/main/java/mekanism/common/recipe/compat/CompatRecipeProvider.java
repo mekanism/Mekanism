@@ -1,9 +1,12 @@
 package mekanism.common.recipe.compat;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.ISubRecipeProvider;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -26,20 +29,21 @@ public abstract class CompatRecipeProvider implements ISubRecipeProvider {
         if (secondaryMods.length == 0) {
             allModsLoaded = modLoaded;
         } else {
-            ICondition combined = modLoaded;
+            List<ICondition> combined = new ArrayList<>();
+            combined.add(modLoaded);
             for (String secondaryMod : secondaryMods) {
-                combined = new AndCondition(combined, new ModLoadedCondition(secondaryMod));
+                combined.add(new ModLoadedCondition(secondaryMod));
             }
-            allModsLoaded = combined;
+            allModsLoaded = new AndCondition(combined);
         }
     }
 
     @Override
-    public final void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public final void addRecipes(RecipeOutput consumer) {
         registerRecipes(consumer, getBasePath());
     }
 
-    protected abstract void registerRecipes(Consumer<FinishedRecipe> consumer, String basePath);
+    protected abstract void registerRecipes(RecipeOutput consumer, String basePath);
 
     protected String getBasePath() {
         return "compat/" + modid + "/";

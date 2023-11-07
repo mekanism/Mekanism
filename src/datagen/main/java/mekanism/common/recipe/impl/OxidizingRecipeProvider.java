@@ -8,11 +8,12 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 
 class OxidizingRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "oxidizing/";
         //Brine
         ItemStackToChemicalRecipeBuilder.oxidizing(

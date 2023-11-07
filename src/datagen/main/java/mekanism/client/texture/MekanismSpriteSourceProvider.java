@@ -1,18 +1,20 @@
 package mekanism.client.texture;
 
+import java.util.concurrent.CompletableFuture;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismFluids;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class MekanismSpriteSourceProvider extends BaseSpriteSourceProvider {
 
-    public MekanismSpriteSourceProvider(PackOutput output, ExistingFileHelper fileHelper) {
-        super(output, Mekanism.MODID, fileHelper);
+    public MekanismSpriteSourceProvider(PackOutput output, ExistingFileHelper fileHelper, CompletableFuture<Provider> lookupProvider) {
+        super(output, Mekanism.MODID, fileHelper, lookupProvider);
     }
 
     @Override
-    protected void addSources() {
+    protected void gather() {
         SourceList atlas = atlas(BLOCKS_ATLAS);
         addFiles(atlas, Mekanism.rl("liquid/energy"));
         addFiles(atlas, Mekanism.rl("liquid/heat"));

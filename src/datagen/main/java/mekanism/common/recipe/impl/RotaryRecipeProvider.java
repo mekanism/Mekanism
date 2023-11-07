@@ -11,6 +11,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
@@ -19,7 +20,7 @@ import net.minecraft.world.level.material.Fluids;
 class RotaryRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "rotary/";
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.BRINE, MekanismFluids.BRINE, MekanismTags.Fluids.BRINE);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.CHLORINE, MekanismFluids.CHLORINE, MekanismTags.Fluids.CHLORINE);
@@ -40,7 +41,7 @@ class RotaryRecipeProvider implements ISubRecipeProvider {
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.WATER_VAPOR, () -> Fluids.WATER, FluidTags.WATER);
     }
 
-    private void addRotaryCondensentratorRecipe(Consumer<FinishedRecipe> consumer, String basePath, IGasProvider gas, IFluidProvider fluidOutput, TagKey<Fluid> fluidInput) {
+    private void addRotaryCondensentratorRecipe(RecipeOutput consumer, String basePath, IGasProvider gas, IFluidProvider fluidOutput, TagKey<Fluid> fluidInput) {
         RotaryRecipeBuilder.rotary(
               IngredientCreatorAccess.fluid().from(fluidInput, 1),
               IngredientCreatorAccess.gas().from(gas, 1),

@@ -10,6 +10,7 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +25,7 @@ import net.neoforged.neoforge.common.Tags;
 class CrusherRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "crushing/";
         addCrusherBioFuelRecipes(consumer, basePath + "biofuel/");
         addCrusherDewaxingRecipes(consumer, basePath + "dewax/");
@@ -113,7 +114,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "nether_bricks_to_cracked_nether_bricks"));
     }
 
-    private void addCrusherStoneRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addCrusherStoneRecipes(RecipeOutput consumer, String basePath) {
         //Stone -> Cobblestone
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Blocks.STONE),
@@ -146,7 +147,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "from_cracked_bricks"));
     }
 
-    private void addCrusherDeepslateRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addCrusherDeepslateRecipes(RecipeOutput consumer, String basePath) {
         //Deepslate -> Cobbled Deepslate
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Blocks.DEEPSLATE),
@@ -235,7 +236,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "from_chiseled"));
     }
 
-    private void addCrusherBlackstoneRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addCrusherBlackstoneRecipes(RecipeOutput consumer, String basePath) {
         //Polished Blackstone -> Blackstone
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Blocks.POLISHED_BLACKSTONE),
@@ -273,7 +274,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "from_cracked_bricks"));
     }
 
-    private void addCrusherQuartzRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addCrusherQuartzRecipes(RecipeOutput consumer, String basePath) {
         //Quartz Block -> Smooth Quartz Block
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Tags.Items.STORAGE_BLOCKS_QUARTZ),
@@ -311,7 +312,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "from_pillar"));
     }
 
-    private void addCrusherGraniteRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addCrusherGraniteRecipes(RecipeOutput consumer, String basePath) {
         //Polished Granite -> Granite
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Blocks.POLISHED_GRANITE),
@@ -329,7 +330,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "slab_from_polished_slab"));
     }
 
-    private void addCrusherDioriteRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addCrusherDioriteRecipes(RecipeOutput consumer, String basePath) {
         //Polished Diorite -> Diorite
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Blocks.POLISHED_DIORITE),
@@ -347,7 +348,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "slab_from_polished_slab"));
     }
 
-    private void addCrusherAndesiteRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addCrusherAndesiteRecipes(RecipeOutput consumer, String basePath) {
         //Polished Andesite -> Andesite
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Blocks.POLISHED_ANDESITE),
@@ -365,7 +366,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "slab_from_polished_slab"));
     }
 
-    private void addCrusherPrismarineRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addCrusherPrismarineRecipes(RecipeOutput consumer, String basePath) {
         //Prismarine -> Prismarine Shards
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Blocks.PRISMARINE),
@@ -405,7 +406,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "shard_from_brick_stairs"));
     }
 
-    private void addCrusherDewaxingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addCrusherDewaxingRecipes(RecipeOutput consumer, String basePath) {
         //Generate baseline recipes from de-waxing recipe set
         for (Map.Entry<Block, Block> entry : HoneycombItem.WAX_OFF_BY_BLOCK.get().entrySet()) {
             Block result = entry.getValue();
@@ -416,7 +417,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         }
     }
 
-    private void addCrusherBioFuelRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addCrusherBioFuelRecipes(RecipeOutput consumer, String basePath) {
         //Generate baseline recipes from Composter recipe set
         for (Object2FloatMap.Entry<ItemLike> chance : ComposterBlock.COMPOSTABLES.object2FloatEntrySet()) {
             ItemLike input = chance.getKey();

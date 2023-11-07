@@ -15,6 +15,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -23,12 +24,12 @@ import net.minecraft.world.level.ItemLike;
 class StorageRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         addNuggetRecipes(consumer);
         addStorageBlockRecipes(consumer);
     }
 
-    private void addNuggetRecipes(Consumer<FinishedRecipe> consumer) {
+    private void addNuggetRecipes(RecipeOutput consumer) {
         String basePath = "nuggets/";
         addNuggetRecipe(consumer, MekanismItems.BRONZE_NUGGET, MekanismTags.Items.INGOTS_BRONZE, basePath, "bronze");
         addNuggetRecipe(consumer, MekanismItems.REFINED_GLOWSTONE_NUGGET, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE, basePath, "refined_glowstone");
@@ -36,13 +37,13 @@ class StorageRecipeProvider implements ISubRecipeProvider {
         addNuggetRecipe(consumer, MekanismItems.STEEL_NUGGET, MekanismTags.Items.INGOTS_STEEL, basePath, "steel");
     }
 
-    private void addNuggetRecipe(Consumer<FinishedRecipe> consumer, IItemProvider nugget, TagKey<Item> ingotTag, String basePath, String name) {
+    private void addNuggetRecipe(RecipeOutput consumer, IItemProvider nugget, TagKey<Item> ingotTag, String basePath, String name) {
         ExtendedShapelessRecipeBuilder.shapelessRecipe(nugget, 9)
               .addIngredient(ingotTag)
               .build(consumer, Mekanism.rl(basePath + name));
     }
 
-    private void addStorageBlockRecipes(Consumer<FinishedRecipe> consumer) {
+    private void addStorageBlockRecipes(RecipeOutput consumer) {
         String basePath = "storage_blocks/";
         addStorageBlockRecipe(consumer, MekanismBlocks.BRONZE_BLOCK, MekanismItems.BRONZE_INGOT, MekanismTags.Items.INGOTS_BRONZE, basePath);
         addStorageBlockRecipe(consumer, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismItems.REFINED_GLOWSTONE_INGOT, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE, basePath);
@@ -63,7 +64,7 @@ class StorageRecipeProvider implements ISubRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "salt"));
     }
 
-    private void addStorageBlockRecipe(Consumer<FinishedRecipe> consumer, BlockRegistryObject<BlockResource, ?> block, ItemLike ingot, TagKey<Item> ingotTag,
+    private void addStorageBlockRecipe(RecipeOutput consumer, BlockRegistryObject<BlockResource, ?> block, ItemLike ingot, TagKey<Item> ingotTag,
           String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(block)
               .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)

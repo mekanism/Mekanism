@@ -4,6 +4,7 @@ import biomesoplenty.api.block.BOPBlocks;
 import java.util.function.Consumer;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.RegistryObject;
 import yamahari.ilikewood.plugin.biomesoplenty.BiomesOPlentyWoodTypes;
@@ -17,7 +18,7 @@ public class ILikeWoodBOPRecipeProvider extends CompatRecipeProvider {
     }
 
     @Override
-    protected void registerRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    protected void registerRecipes(RecipeOutput consumer, String basePath) {
         addWoodType(consumer, basePath, BOPBlocks.DEAD_PLANKS, BOPBlocks.DEAD_LOG, BOPBlocks.DEAD_FENCE, BiomesOPlentyWoodTypes.DEAD);
         addWoodType(consumer, basePath, BOPBlocks.FIR_PLANKS, BOPBlocks.FIR_LOG, BOPBlocks.FIR_FENCE, BiomesOPlentyWoodTypes.FIR);
         addWoodType(consumer, basePath, BOPBlocks.HELLBARK_PLANKS, BOPBlocks.HELLBARK_LOG, BOPBlocks.HELLBARK_FENCE, BiomesOPlentyWoodTypes.HELLBARK);
@@ -30,7 +31,7 @@ public class ILikeWoodBOPRecipeProvider extends CompatRecipeProvider {
         addWoodType(consumer, basePath, BOPBlocks.WILLOW_PLANKS, BOPBlocks.WILLOW_LOG, BOPBlocks.WILLOW_FENCE, BiomesOPlentyWoodTypes.WILLOW);
     }
 
-    private void addWoodType(Consumer<FinishedRecipe> consumer, String basePath, RegistryObject<Block> planks, RegistryObject<Block> log, RegistryObject<Block> fences,
+    private void addWoodType(RecipeOutput consumer, String basePath, RegistryObject<Block> planks, RegistryObject<Block> log, RegistryObject<Block> fences,
           IWoodType woodType) {
         ILikeWoodRecipeProvider.addWoodType(consumer, allModsLoaded, basePath, planks.get(), log.get(), fences.get(), woodType);
     }

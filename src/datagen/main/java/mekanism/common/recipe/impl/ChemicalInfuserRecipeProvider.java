@@ -7,11 +7,12 @@ import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismGases;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 
 class ChemicalInfuserRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "chemical_infusing/";
         //Hydrogen Chloride
         ChemicalChemicalToChemicalRecipeBuilder.chemicalInfusing(

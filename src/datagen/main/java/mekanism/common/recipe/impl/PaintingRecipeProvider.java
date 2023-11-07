@@ -15,6 +15,7 @@ import mekanism.common.registries.MekanismPigments;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -56,7 +57,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "painting/";
         addDyeRecipes(consumer, basePath);
         long oneAtATime = PigmentExtractingRecipeProvider.DYE_RATE;
@@ -78,7 +79,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_BANNERS, oneAtATime, BannerBlock::byColor, basePath + "banner/");
     }
 
-    private static void addDyeRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private static void addDyeRecipes(RecipeOutput consumer, String basePath) {
         basePath += "dye/";
         addDyeRecipe(consumer, EnumColor.WHITE, Items.WHITE_DYE, basePath);
         addDyeRecipe(consumer, EnumColor.ORANGE, Items.ORANGE_DYE, basePath);
@@ -98,7 +99,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         addDyeRecipe(consumer, EnumColor.BLACK, Items.BLACK_DYE, basePath);
     }
 
-    private static void addDyeRecipe(Consumer<FinishedRecipe> consumer, EnumColor color, ItemLike dye, String basePath) {
+    private static void addDyeRecipe(RecipeOutput consumer, EnumColor color, ItemLike dye, String basePath) {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(MekanismItems.DYE_BASE),
               IngredientCreatorAccess.pigment().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
@@ -106,7 +107,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
     }
 
-    private static void addRecoloringRecipes(Consumer<FinishedRecipe> consumer, TagKey<Item> input, long rate, Function<DyeColor, ItemLike> output, String basePath) {
+    private static void addRecoloringRecipes(RecipeOutput consumer, TagKey<Item> input, long rate, Function<DyeColor, ItemLike> output, String basePath) {
         for (EnumColor color : EnumUtils.COLORS) {
             DyeColor dye = color.getDyeColor();
             if (dye != null) {
@@ -115,13 +116,13 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         }
     }
 
-    private static void addRecoloringRecipes(Consumer<FinishedRecipe> consumer, TagKey<Item> input, long rate, Map<EnumColor, ItemLike> outputs, String basePath) {
+    private static void addRecoloringRecipes(RecipeOutput consumer, TagKey<Item> input, long rate, Map<EnumColor, ItemLike> outputs, String basePath) {
         for (Map.Entry<EnumColor, ItemLike> entry : outputs.entrySet()) {
             addRecoloringRecipe(consumer, entry.getKey(), input, entry.getValue(), rate, basePath);
         }
     }
 
-    private static void addRecoloringRecipe(Consumer<FinishedRecipe> consumer, EnumColor color, TagKey<Item> input, ItemLike result, long rate, String basePath) {
+    private static void addRecoloringRecipe(RecipeOutput consumer, EnumColor color, TagKey<Item> input, ItemLike result, long rate, String basePath) {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(BaseRecipeProvider.difference(input, result)),
               IngredientCreatorAccess.pigment().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), rate),

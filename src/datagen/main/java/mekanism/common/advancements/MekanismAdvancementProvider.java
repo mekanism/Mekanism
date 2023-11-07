@@ -1,5 +1,6 @@
 package mekanism.common.advancements;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import mekanism.api.datagen.recipe.RecipeCriterion;
@@ -27,6 +28,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
@@ -51,7 +53,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
     protected void registerAdvancements(@NotNull Consumer<AdvancementHolder> consumer) {
         advancement(MekanismAdvancements.ROOT)
               .display(MekanismItems.ATOMIC_DISASSEMBLER, Mekanism.rl("textures/block/block_osmium.png"), FrameType.GOAL, false, false, false)
-              .addCriterion("automatic", new PlayerTrigger.TriggerInstance(MekanismCriteriaTriggers.LOGGED_IN.getId(), Optional.empty()))
+              .addCriterion("automatic", MekanismCriteriaTriggers.LOGGED_IN.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty())))
               .save(consumer);
         advancement(MekanismAdvancements.MATERIALS)
               .display(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM), FrameType.TASK, false)
@@ -64,7 +66,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
         advancement(MekanismAdvancements.CLEANING_GAUGES)
               .display(MekanismItems.GAUGE_DROPPER, FrameType.GOAL, true)
-              .addCriterion("use_dropper", UseGaugeDropperTrigger.TriggerInstance.any())
+              .addCriterion("use_dropper", MekanismCriteriaTriggers.USE_GAUGE_DROPPER.createCriterion(UseGaugeDropperTrigger.TriggerInstance.any()))
               .save(consumer);
 
         advancement(MekanismAdvancements.METALLURGIC_INFUSER)
@@ -102,18 +104,18 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
         advancement(MekanismAdvancements.ALLOY_UPGRADING)
               .display(MekanismItems.INFUSED_ALLOY, FrameType.GOAL, false)
-              .addCriterion("upgrade", AlloyUpgradeTrigger.TriggerInstance.upgraded())
+              .addCriterion("upgrade", MekanismCriteriaTriggers.ALLOY_UPGRADE.createCriterion(AlloyUpgradeTrigger.TriggerInstance.upgraded()))
               .save(consumer);
         advancement(MekanismAdvancements.LASER)
               .displayAndCriterion(MekanismBlocks.LASER, FrameType.TASK, false)
               .save(consumer);
         advancement(MekanismAdvancements.LASER_DEATH)
               .display(Items.SKELETON_SKULL, null, FrameType.TASK, true, true, true)
-              .addCriterion("death", MekanismDamageTrigger.TriggerInstance.killed(MekanismDamageTypes.LASER))
+              .addCriterion("death", MekanismCriteriaTriggers.DAMAGE.createCriterion(MekanismDamageTrigger.TriggerInstance.killed(MekanismDamageTypes.LASER)))
               .save(consumer);
         advancement(MekanismAdvancements.STOPPING_LASERS)
               .display(Items.SHIELD, FrameType.TASK, true)
-              .addCriterion("block", BlockLaserTrigger.TriggerInstance.block())
+              .addCriterion("block", MekanismCriteriaTriggers.BLOCK_LASER.createCriterion(BlockLaserTrigger.TriggerInstance.block()))
               .save(consumer);
         advancement(MekanismAdvancements.AUTO_COLLECTION)
               .displayAndCriterion(MekanismBlocks.LASER_TRACTOR_BEAM, FrameType.TASK, false)
@@ -136,8 +138,8 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         advancement(MekanismAdvancements.CONFIGURATION_COPYING)
               .display(MekanismItems.CONFIGURATION_CARD, FrameType.TASK, false)
               .andCriteria(
-                    new RecipeCriterion("copy", ConfigurationCardTrigger.TriggerInstance.copy()),
-                    new RecipeCriterion("paste", ConfigurationCardTrigger.TriggerInstance.paste())
+                    new RecipeCriterion("copy", MekanismCriteriaTriggers.CONFIGURATION_CARD.createCriterion(ConfigurationCardTrigger.TriggerInstance.copy())),
+                    new RecipeCriterion("paste", MekanismCriteriaTriggers.CONFIGURATION_CARD.createCriterion(ConfigurationCardTrigger.TriggerInstance.paste()))
               ).save(consumer);
 
         advancement(MekanismAdvancements.RUNNING_FREE)
@@ -193,11 +195,11 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.ENVIRONMENTAL_RADIATION)
               .display(MekanismItems.GEIGER_COUNTER, FrameType.TASK, false)
-              .addCriterion("use_geiger_counter", new UsingItemTrigger.TriggerInstance(Optional.empty(), predicate(MekanismItems.GEIGER_COUNTER)))
+              .addCriterion("use_geiger_counter", CriteriaTriggers.USING_ITEM.createCriterion(new UsingItemTrigger.TriggerInstance(Optional.empty(), predicate(MekanismItems.GEIGER_COUNTER))))
               .save(consumer);
         advancement(MekanismAdvancements.PERSONAL_RADIATION)
               .display(MekanismItems.DOSIMETER, FrameType.TASK, false)
-              .addCriterion("use_dosimeter", new UsingItemTrigger.TriggerInstance(Optional.empty(), predicate(MekanismItems.DOSIMETER)))
+              .addCriterion("use_dosimeter", CriteriaTriggers.USING_ITEM.createCriterion(new UsingItemTrigger.TriggerInstance(Optional.empty(), predicate(MekanismItems.DOSIMETER))))
               .save(consumer);
         advancement(MekanismAdvancements.RADIATION_PREVENTION)
               .display(MekanismItems.HAZMAT_GOWN, FrameType.TASK, true)
@@ -209,11 +211,11 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               )).save(consumer);
         advancement(MekanismAdvancements.RADIATION_POISONING)
               .display(MekanismBlocks.RADIOACTIVE_WASTE_BARREL, FrameType.TASK, true)
-              .addCriterion("poisoned", MekanismDamageTrigger.TriggerInstance.damaged(MekanismDamageTypes.RADIATION))
+              .addCriterion("poisoned", MekanismCriteriaTriggers.DAMAGE.createCriterion(MekanismDamageTrigger.TriggerInstance.damaged(MekanismDamageTypes.RADIATION)))
               .save(consumer);
         advancement(MekanismAdvancements.RADIATION_POISONING_DEATH)
               .display(Items.PLAYER_HEAD, null, FrameType.TASK, true, true, true)
-              .addCriterion("death", MekanismDamageTrigger.TriggerInstance.killed(MekanismDamageTypes.RADIATION))
+              .addCriterion("death", MekanismCriteriaTriggers.DAMAGE.createCriterion(MekanismDamageTrigger.TriggerInstance.killed(MekanismDamageTypes.RADIATION)))
               .save(consumer);
 
         advancement(MekanismAdvancements.PLUTONIUM)
@@ -275,7 +277,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.TELEPORTER)
               .displayAndCriterion(MekanismBlocks.TELEPORTER, FrameType.TASK, true)
-              .addCriterion("teleport", new PlayerTrigger.TriggerInstance(MekanismCriteriaTriggers.TELEPORT.getId(), Optional.empty()))
+              .addCriterion("teleport", MekanismCriteriaTriggers.TELEPORT.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty())))
               .save(consumer);
         advancement(MekanismAdvancements.PORTABLE_TELEPORTER)
               .displayAndCriterion(MekanismItems.PORTABLE_TELEPORTER, FrameType.TASK, true)
@@ -289,7 +291,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         MekanismItems.ROBIT.get().setSkin(skinnedRobit, MekanismRobitSkins.PRIDE_SKINS.get(RobitPrideSkinData.TRANS));
         advancement(MekanismAdvancements.ROBIT_AESTHETICS)
               .display(skinnedRobit, null, FrameType.TASK, true, false, true)
-              .addCriterion("change_skin", ChangeRobitSkinTrigger.TriggerInstance.toAny())
+              .addCriterion("change_skin", MekanismCriteriaTriggers.CHANGE_ROBIT_SKIN.createCriterion(ChangeRobitSkinTrigger.TriggerInstance.toAny()))
               .save(consumer);
         advancement(MekanismAdvancements.DIGITAL_MINER)
               .displayAndCriterion(MekanismBlocks.DIGITAL_MINER, FrameType.GOAL, true)
@@ -364,7 +366,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         advancement(MekanismAdvancements.SEISMIC_VIBRATIONS)
               .displayAndCriterion(MekanismBlocks.SEISMIC_VIBRATOR, FrameType.TASK, false)
               .addCriterion(MekanismItems.SEISMIC_READER)
-              .addCriterion("view_vibrations", ViewVibrationsTrigger.TriggerInstance.view())
+              .addCriterion("view_vibrations", MekanismCriteriaTriggers.VIEW_VIBRATIONS.createCriterion(ViewVibrationsTrigger.TriggerInstance.view()))
               .save(consumer);
         advancement(MekanismAdvancements.PAINTING_MACHINE)
               .displayAndCriterion(MekanismBlocks.PAINTING_MACHINE, FrameType.TASK, false)
@@ -397,7 +399,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.MOVING_BLOCKS)
               .displayAndCriterion(MekanismBlocks.CARDBOARD_BOX, FrameType.TASK, true)
-              .addCriterion("unbox", UnboxCardboardBoxTrigger.TriggerInstance.unbox())
+              .addCriterion("unbox", MekanismCriteriaTriggers.UNBOX_CARDBOARD_BOX.createCriterion(UnboxCardboardBoxTrigger.TriggerInstance.unbox()))
               .save(consumer);
 
         advancement(MekanismAdvancements.PUMP)
@@ -412,7 +414,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.FULL_CANTEEN)
               .display(MekanismItems.CANTEEN, null, FrameType.GOAL, true, true, true)
-              .addCriterion("full_canteen", hasItems(FullCanteenItemPredicate.INSTANCE))
+              .addCriterion("full_canteen", hasItems(FullCanteenItemPredicate.INSTANCE.toVanilla()))
               .save(consumer);
     }
 }

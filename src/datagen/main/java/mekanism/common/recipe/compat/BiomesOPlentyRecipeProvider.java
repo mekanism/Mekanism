@@ -15,6 +15,7 @@ import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registries.MekanismPigments;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -31,14 +32,14 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     }
 
     @Override
-    protected void registerRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    protected void registerRecipes(RecipeOutput consumer, String basePath) {
         addDyeRecipes(consumer, basePath);
         addPrecisionSawmillRecipes(consumer, basePath + "sawing/");
         addSandRecipes(consumer, basePath + "sandstone_to_sand/");
         //TODO: Bio-fuel recipes?
     }
 
-    private void addPrecisionSawmillRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addPrecisionSawmillRecipes(RecipeOutput consumer, String basePath) {
         addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.DEAD_PLANKS, BOPItems.DEAD_BOAT, BOPItems.DEAD_CHEST_BOAT, BOPBlocks.DEAD_DOOR,
               BOPBlocks.DEAD_FENCE_GATE, BOPBlocks.DEAD_PRESSURE_PLATE, BOPBlocks.DEAD_TRAPDOOR, BOPBlocks.DEAD_HANGING_SIGN, "dead");
         addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.FIR_PLANKS, BOPItems.FIR_BOAT, BOPItems.FIR_CHEST_BOAT, BOPBlocks.FIR_DOOR,
@@ -61,14 +62,14 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               BOPBlocks.WILLOW_FENCE_GATE, BOPBlocks.WILLOW_PRESSURE_PLATE, BOPBlocks.WILLOW_TRAPDOOR, BOPBlocks.WILLOW_HANGING_SIGN, "willow");
     }
 
-    private void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, RegistryObject<Block> planks, RegistryObject<Item> boat,
+    private void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, String basePath, RegistryObject<Block> planks, RegistryObject<Item> boat,
           RegistryObject<Item> chestBoat, RegistryObject<Block> door, RegistryObject<Block> fenceGate, RegistryObject<Block> pressurePlate, RegistryObject<Block> trapdoor,
           RegistryObject<Block> hangingSign, String name) {
         RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks.get(), boat.get(), chestBoat.get(), door.get(), fenceGate.get(),
               tag(name + "_logs"), pressurePlate.get(), trapdoor.get(), hangingSign.get(), name, modLoaded);
     }
 
-    private void addSandRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addSandRecipes(RecipeOutput consumer, String basePath) {
         //Black Sandstone -> Sand
         addSandStoneToSandRecipe(consumer, basePath + "black", BOPBlocks.BLACK_SAND, BOPBlocks.BLACK_SANDSTONE, BOPBlocks.CHISELED_BLACK_SANDSTONE,
               BOPBlocks.CUT_BLACK_SANDSTONE, BOPBlocks.SMOOTH_BLACK_SANDSTONE);
@@ -81,11 +82,11 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     }
 
     @SafeVarargs
-    private void addSandStoneToSandRecipe(Consumer<FinishedRecipe> consumer, String path, RegistryObject<Block> sand, RegistryObject<Block>... sandstones) {
+    private void addSandStoneToSandRecipe(RecipeOutput consumer, String path, RegistryObject<Block> sand, RegistryObject<Block>... sandstones) {
         RecipeProviderUtil.addSandStoneToSandRecipe(consumer, path, modLoaded, sand.get(), toItemLike(sandstones));
     }
 
-    private void addDyeRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addDyeRecipes(RecipeOutput consumer, String basePath) {
         //Red
         dye(consumer, basePath, Items.RED_DYE, EnumColor.RED, BOPBlocks.ROSE);
         //Purple
@@ -107,7 +108,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     }
 
     @SafeVarargs
-    private void dye(Consumer<FinishedRecipe> consumer, String basePath, ItemLike output, EnumColor color, RegistryObject<Block>... inputs) {
+    private void dye(RecipeOutput consumer, String basePath, ItemLike output, EnumColor color, RegistryObject<Block>... inputs) {
         ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(Ingredient.of(toItemLike(inputs)));
         ItemStackToItemStackRecipeBuilder.enriching(
                     inputIngredient,

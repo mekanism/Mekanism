@@ -11,6 +11,7 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
@@ -19,7 +20,7 @@ import net.neoforged.neoforge.common.Tags;
 class InfusionConversionRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "infusion_conversion/";
         addInfusionConversionBioRecipes(consumer, basePath + "bio/");
         addInfusionConversionCarbonRecipes(consumer, basePath + "carbon/");
@@ -31,7 +32,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         addInfusionConversionTinRecipes(consumer, basePath + "tin/");
     }
 
-    private void addInfusionConversionBioRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addInfusionConversionBioRecipes(RecipeOutput consumer, String basePath) {
         //Bio fuel
         ItemStackToChemicalRecipeBuilder.infusionConversion(
               IngredientCreatorAccess.item().from(MekanismTags.Items.FUELS_BIO),
@@ -39,7 +40,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "from_bio_fuel"));
     }
 
-    private void addInfusionConversionCarbonRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addInfusionConversionCarbonRecipes(RecipeOutput consumer, String basePath) {
         //Charcoal Block
         ItemStackToChemicalRecipeBuilder.infusionConversion(
               IngredientCreatorAccess.item().from(MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL),
@@ -75,7 +76,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "from_enriched"));
     }
 
-    private void addInfusionConversionDiamondRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addInfusionConversionDiamondRecipes(RecipeOutput consumer, String basePath) {
         //Dust
         ItemStackToChemicalRecipeBuilder.infusionConversion(
               IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_DIAMOND),
@@ -88,7 +89,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "from_enriched"));
     }
 
-    private void addInfusionConversionFungiRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addInfusionConversionFungiRecipes(RecipeOutput consumer, String basePath) {
         //Mushrooms
         ItemStackToChemicalRecipeBuilder.infusionConversion(
               IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
@@ -101,7 +102,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "from_mushrooms"));
     }
 
-    private void addInfusionConversionRedstoneRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addInfusionConversionRedstoneRecipes(RecipeOutput consumer, String basePath) {
         //Block
         ItemStackToChemicalRecipeBuilder.infusionConversion(
               IngredientCreatorAccess.item().from(Tags.Items.STORAGE_BLOCKS_REDSTONE),
@@ -119,7 +120,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "from_enriched"));
     }
 
-    private void addInfusionConversionRefinedObsidianRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addInfusionConversionRefinedObsidianRecipes(RecipeOutput consumer, String basePath) {
         //Dust
         ItemStackToChemicalRecipeBuilder.infusionConversion(
               IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_REFINED_OBSIDIAN),
@@ -132,7 +133,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "from_enriched"));
     }
 
-    private void addInfusionConversionGoldRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addInfusionConversionGoldRecipes(RecipeOutput consumer, String basePath) {
         //Dust
         ItemStackToChemicalRecipeBuilder.infusionConversion(
               IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD)),
@@ -145,7 +146,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "from_enriched"));
     }
 
-    private void addInfusionConversionTinRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addInfusionConversionTinRecipes(RecipeOutput consumer, String basePath) {
         //Dust
         ItemStackToChemicalRecipeBuilder.infusionConversion(
               IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.TIN)),

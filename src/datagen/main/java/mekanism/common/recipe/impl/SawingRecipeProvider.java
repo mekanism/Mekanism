@@ -8,6 +8,7 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -18,7 +19,7 @@ import net.neoforged.neoforge.common.Tags;
 class SawingRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "sawing/";
         addPrecisionSawmillBedRecipes(consumer, basePath + "bed/");
         RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, Blocks.ACACIA_PLANKS, Items.ACACIA_BOAT, Items.ACACIA_CHEST_BOAT, Items.ACACIA_DOOR,
@@ -209,7 +210,7 @@ class SawingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "bamboo_block"));
     }
 
-    private void addPrecisionSawmillBedRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addPrecisionSawmillBedRecipes(RecipeOutput consumer, String basePath) {
         RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BLACK_BED, DyeColor.BLACK);
         RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BLUE_BED, DyeColor.BLUE);
         RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, Items.BROWN_BED, DyeColor.BROWN);

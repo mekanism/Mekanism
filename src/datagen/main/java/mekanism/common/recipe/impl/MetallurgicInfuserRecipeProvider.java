@@ -8,6 +8,7 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -16,7 +17,7 @@ import net.neoforged.neoforge.common.Tags;
 class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "metallurgic_infusing/";
         addMetallurgicInfuserAlloyRecipes(consumer, basePath + "alloy/");
         addMetallurgicInfuserMossyRecipes(consumer, basePath + "mossy/");
@@ -48,7 +49,7 @@ class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "blackstone_to_gilded_blackstone"));
     }
 
-    private void addMetallurgicInfuserAlloyRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addMetallurgicInfuserAlloyRecipes(RecipeOutput consumer, String basePath) {
         //Infused
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Tags.Items.INGOTS_IRON),
@@ -69,7 +70,7 @@ class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "atomic"));
     }
 
-    private void addMetallurgicInfuserMossyRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addMetallurgicInfuserMossyRecipes(RecipeOutput consumer, String basePath) {
         //Cobblestone
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Blocks.COBBLESTONE),
@@ -121,7 +122,7 @@ class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "stone_brick_wall"));
     }
 
-    private void addMiscBioRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addMiscBioRecipes(RecipeOutput consumer, String basePath) {
         //Dirt -> podzol
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Blocks.DIRT),

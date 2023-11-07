@@ -5,7 +5,9 @@ import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.registration.impl.RecipeSerializerRegistryObject;
 import mekanism.common.util.RegistryUtils;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Nullable;
@@ -19,16 +21,16 @@ public class SpecialRecipeBuilder implements FinishedRecipe {
         this.serializer = serializer;
     }
 
-    public static void build(Consumer<FinishedRecipe> consumer, RecipeSerializerRegistryObject<?> serializer) {
+    public static void build(RecipeOutput consumer, RecipeSerializerRegistryObject<?> serializer) {
         build(consumer, serializer.get());
     }
 
-    public static void build(Consumer<FinishedRecipe> consumer, RecipeSerializer<?> serializer) {
+    public static void build(RecipeOutput consumer, RecipeSerializer<?> serializer) {
         consumer.accept(new SpecialRecipeBuilder(serializer));
     }
 
     @Override
-    public RecipeSerializer<?> getType() {
+    public RecipeSerializer<?> type() {
         return serializer;
     }
 
@@ -38,19 +40,13 @@ public class SpecialRecipeBuilder implements FinishedRecipe {
     }
 
     @Override
-    public ResourceLocation getId() {
-        return RegistryUtils.getName(getType());
+    public ResourceLocation id() {
+        return RegistryUtils.getName(type());
     }
 
     @Nullable
     @Override
-    public JsonObject serializeAdvancement() {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public ResourceLocation getAdvancementId() {
+    public AdvancementHolder advancement() {
         return null;
     }
 }

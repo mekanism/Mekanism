@@ -8,6 +8,7 @@ import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
@@ -20,7 +21,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
     }
 
     @Override
-    protected void registerRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    protected void registerRecipes(RecipeOutput consumer, String basePath) {
         //Certus Crystal -> Certus Dust
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(ItemTags.create(new ResourceLocation("forge", "gems/certus_quartz"))),
@@ -52,17 +53,17 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
         addDecorativeRecipes(consumer, basePath + "decorative/");
     }
 
-    private void addDecorativeRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addDecorativeRecipes(RecipeOutput consumer, String basePath) {
         addDecorativeQuartzRecipes(consumer, basePath + "certus_quartz/");
         addDecorativeSkyStoneRecipes(consumer, basePath + "sky_stone/");
     }
 
-    private void addDecorativeSkyStoneRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addDecorativeSkyStoneRecipes(RecipeOutput consumer, String basePath) {
         addDecorativeCrushingSkyStoneRecipes(consumer, basePath + "crushing/");
         addDecorativeEnrichingSkyStoneRecipes(consumer, basePath + "enriching/");
     }
 
-    private void addDecorativeCrushingSkyStoneRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addDecorativeCrushingSkyStoneRecipes(RecipeOutput consumer, String basePath) {
         //Smooth Sky Stone Chest -> Sky Stone Chest
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(AEBlocks.SMOOTH_SKY_STONE_CHEST),
@@ -146,7 +147,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "small_brick_wall_to_brick_wall"));
     }
 
-    private void addDecorativeEnrichingSkyStoneRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addDecorativeEnrichingSkyStoneRecipes(RecipeOutput consumer, String basePath) {
         //Sky Stone Chest -> Smooth Sky Stone Chest
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(AEBlocks.SKY_STONE_CHEST),
@@ -224,12 +225,12 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "brick_wall_to_small_brick_wall"));
     }
 
-    private void addDecorativeQuartzRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addDecorativeQuartzRecipes(RecipeOutput consumer, String basePath) {
         addDecorativeQuartzCrushingRecipes(consumer, basePath + "crushing/");
         addDecorativeQuartzEnrichingRecipes(consumer, basePath + "enriching/");
     }
 
-    private void addDecorativeQuartzCrushingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addDecorativeQuartzCrushingRecipes(RecipeOutput consumer, String basePath) {
         //Certus Quartz Block -> Chiseled Certus Quartz Block
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(AEBlocks.QUARTZ_BLOCK),
@@ -306,7 +307,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "pillar_wall_to_wall"));
     }
 
-    private void addDecorativeQuartzEnrichingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addDecorativeQuartzEnrichingRecipes(RecipeOutput consumer, String basePath) {
         //Chiseled Certus Quartz Block -> Certus Quartz Block
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(AEBlocks.CHISELED_QUARTZ_BLOCK),

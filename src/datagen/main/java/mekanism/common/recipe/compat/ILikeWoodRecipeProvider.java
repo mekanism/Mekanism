@@ -19,6 +19,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismPigments;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -51,7 +52,7 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
     }
 
     @Override
-    protected void registerRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    protected void registerRecipes(RecipeOutput consumer, String basePath) {
         addWoodType(consumer, basePath, Blocks.ACACIA_PLANKS, Blocks.ACACIA_LOG, Blocks.ACACIA_FENCE, VanillaWoodTypes.ACACIA);
         addWoodType(consumer, basePath, Blocks.BAMBOO_PLANKS, Blocks.BAMBOO_BLOCK, Blocks.BAMBOO_FENCE, VanillaWoodTypes.BAMBOO);
         addWoodType(consumer, basePath, Blocks.BIRCH_PLANKS, Blocks.BIRCH_LOG, Blocks.BIRCH_FENCE, VanillaWoodTypes.BIRCH);
@@ -66,12 +67,12 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
         addWoodType(consumer, basePath, Blocks.WARPED_PLANKS, Blocks.WARPED_STEM, Blocks.WARPED_FENCE, VanillaWoodTypes.WARPED);
     }
 
-    private void addWoodType(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, ItemLike log, ItemLike fences, IWoodType woodType) {
+    private void addWoodType(RecipeOutput consumer, String basePath, ItemLike planks, ItemLike log, ItemLike fences, IWoodType woodType) {
         addWoodType(consumer, modLoaded, basePath, planks, log, fences, woodType);
     }
 
     //TODO: Maybe move some of these into RecipeProviderUtil, so that we make sure the numbers stay consistent
-    public static void addWoodType(Consumer<FinishedRecipe> consumer, ICondition condition, String basePath, ItemLike planks, ItemLike log,
+    public static void addWoodType(RecipeOutput consumer, ICondition condition, String basePath, ItemLike planks, ItemLike log,
           ItemLike fences, IWoodType woodType) {
         String name = woodType.getName();
         Item stick = ILikeWood.getItem(woodType, WoodenItemType.STICK);
@@ -177,7 +178,7 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
         addBedRecipes(consumer, condition, planks, woodType, basePath + "bed/" + name + "/");
     }
 
-    private static void addBedRecipes(Consumer<FinishedRecipe> consumer, ICondition condition, ItemLike planks, IWoodType woodType, String basePath) {
+    private static void addBedRecipes(RecipeOutput consumer, ICondition condition, ItemLike planks, IWoodType woodType, String basePath) {
         //All beds share the same config so just use the white bed for condition lookup
         condition = compoundCondition(condition, ILikeWoodConfig.BEDS_CONFIG);
         for (EnumColor color : EnumUtils.COLORS) {
@@ -185,7 +186,7 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
         }
     }
 
-    private static void addBedRecipe(Consumer<FinishedRecipe> consumer, ICondition condition, ItemLike planks, IWoodType woodType, EnumColor color, String basePath) {
+    private static void addBedRecipe(RecipeOutput consumer, ICondition condition, ItemLike planks, IWoodType woodType, EnumColor color, String basePath) {
         DyeColor dye = color.getDyeColor();
         if (dye != null) {
             WoodenBlockType bedType = getBedType(dye);

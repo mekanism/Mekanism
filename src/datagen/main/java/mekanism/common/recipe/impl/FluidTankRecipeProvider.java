@@ -15,6 +15,7 @@ import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.Tags;
@@ -27,7 +28,7 @@ class FluidTankRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(Pattern.ALLOY, Pattern.INGOT, Pattern.ALLOY));
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "fluid_tank/";
         //Note: For the basic fluid tank, we have to handle the empty slot differently than batching it against our fluid tank pattern
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.BASIC_FLUID_TANK)
@@ -43,7 +44,7 @@ class FluidTankRecipeProvider implements ISubRecipeProvider {
         addTieredFluidTank(consumer, basePath, MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismTags.Items.ALLOYS_ATOMIC);
     }
 
-    private void addTieredFluidTank(Consumer<FinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockFluidTank, ?> tank, IItemProvider previousTank,
+    private void addTieredFluidTank(RecipeOutput consumer, String basePath, BlockRegistryObject<BlockFluidTank, ?> tank, IItemProvider previousTank,
           TagKey<Item> alloyTag) {
         String tierName = Attribute.getBaseTier(tank.getBlock()).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(tank)

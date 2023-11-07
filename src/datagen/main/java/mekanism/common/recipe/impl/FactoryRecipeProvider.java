@@ -19,6 +19,7 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.Tags;
@@ -26,7 +27,7 @@ import net.neoforged.neoforge.common.Tags;
 class FactoryRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "factory/";
         String basicPath = basePath + "basic/";
         String advancedPath = basePath + "advanced/";
@@ -44,7 +45,7 @@ class FactoryRecipeProvider implements ISubRecipeProvider {
         }
     }
 
-    private void addFactoryRecipe(Consumer<FinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockFactory<?>, ?> factory, IItemProvider toUpgrade,
+    private void addFactoryRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<BlockFactory<?>, ?> factory, IItemProvider toUpgrade,
           TagKey<Item> ingotTag, TagKey<Item> alloyTag, TagKey<Item> circuitTag) {
         MekDataShapedRecipeBuilder.shapedRecipe(factory)
               .pattern(MekanismRecipeProvider.TIER_PATTERN)

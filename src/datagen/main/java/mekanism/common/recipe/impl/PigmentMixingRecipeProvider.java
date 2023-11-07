@@ -8,11 +8,12 @@ import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismPigments;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 
 class PigmentMixingRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "pigment_mixing/";
         //blue + red -> 2 purple
         addMix(consumer, EnumColor.DARK_BLUE, 1, EnumColor.RED, 1, EnumColor.PURPLE, basePath);
@@ -48,7 +49,7 @@ class PigmentMixingRecipeProvider implements ISubRecipeProvider {
         addMix(consumer, EnumColor.INDIGO, 1, EnumColor.RED, 1, EnumColor.PINK, basePath);
     }
 
-    private static void addMix(Consumer<FinishedRecipe> consumer, EnumColor leftInput, long leftInputAmount, EnumColor rightInput, long rightInputAmount,
+    private static void addMix(RecipeOutput consumer, EnumColor leftInput, long leftInputAmount, EnumColor rightInput, long rightInputAmount,
           EnumColor output, String basePath) {
         ChemicalChemicalToChemicalRecipeBuilder.pigmentMixing(
               IngredientCreatorAccess.pigment().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(leftInput), leftInputAmount),

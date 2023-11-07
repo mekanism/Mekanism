@@ -11,6 +11,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.recipe.builder.ExtendedCookingRecipeBuilder;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
@@ -32,7 +33,7 @@ public class RecipeProviderUtil {
     private RecipeProviderUtil() {
     }
 
-    public static void addSmeltingBlastingRecipes(Consumer<FinishedRecipe> consumer, Ingredient smeltingInput, ItemLike output, float experience, int smeltingTime,
+    public static void addSmeltingBlastingRecipes(RecipeOutput consumer, Ingredient smeltingInput, ItemLike output, float experience, int smeltingTime,
           ResourceLocation blastingLocation, ResourceLocation smeltingLocation, RecipeCriterion... criteria) {
         ExtendedCookingRecipeBuilder blastingRecipe = ExtendedCookingRecipeBuilder.blasting(output, smeltingInput, smeltingTime / 2).experience(experience);
         ExtendedCookingRecipeBuilder smeltingRecipe = ExtendedCookingRecipeBuilder.smelting(output, smeltingInput, smeltingTime).experience(experience);
@@ -45,13 +46,13 @@ public class RecipeProviderUtil {
         smeltingRecipe.build(consumer, smeltingLocation);
     }
 
-    public static void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, @Nullable ItemLike boat,
+    public static void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, String basePath, ItemLike planks, @Nullable ItemLike boat,
           @Nullable ItemLike chestBoat, ItemLike door, ItemLike fenceGate, @Nullable TagKey<Item> log, ItemLike pressurePlate, ItemLike trapdoor,
           @Nullable ItemLike hangingSign, String name) {
         addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, chestBoat, door, fenceGate, log, pressurePlate, trapdoor, hangingSign, name, null);
     }
 
-    public static void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, @Nullable ItemLike boat,
+    public static void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, String basePath, ItemLike planks, @Nullable ItemLike boat,
           @Nullable ItemLike chestBoat, ItemLike door, ItemLike fenceGate, @Nullable TagKey<Item> log, ItemLike pressurePlate, ItemLike trapdoor,
           @Nullable ItemLike hangingSign, String name, @Nullable ICondition condition) {
         if (boat != null) {
@@ -114,14 +115,14 @@ public class RecipeProviderUtil {
         ), basePath + "trapdoor/" + name, condition);
     }
 
-    public static void addSandStoneToSandRecipe(Consumer<FinishedRecipe> consumer, String path, @Nullable ICondition condition, ItemLike sand, ItemLike... sandstones) {
+    public static void addSandStoneToSandRecipe(RecipeOutput consumer, String path, @Nullable ICondition condition, ItemLike sand, ItemLike... sandstones) {
         build(consumer, ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Ingredient.of(sandstones)),
               new ItemStack(sand, 2)
         ), path, condition);
     }
 
-    private static void build(Consumer<FinishedRecipe> consumer, MekanismRecipeBuilder<?> builder, String path, @Nullable ICondition condition) {
+    private static void build(RecipeOutput consumer, MekanismRecipeBuilder<?> builder, String path, @Nullable ICondition condition) {
         if (condition != null) {
             //If there is a condition, add it to the recipe builder
             builder.addCondition(condition);
@@ -129,11 +130,11 @@ public class RecipeProviderUtil {
         builder.build(consumer, Mekanism.rl(path));
     }
 
-    public static void addPrecisionSawmillBedRecipe(Consumer<FinishedRecipe> consumer, String basePath, ItemLike bed, DyeColor color) {
+    public static void addPrecisionSawmillBedRecipe(RecipeOutput consumer, String basePath, ItemLike bed, DyeColor color) {
         addPrecisionSawmillBedRecipe(consumer, basePath, bed, Blocks.OAK_PLANKS, color, null);
     }
 
-    public static void addPrecisionSawmillBedRecipe(Consumer<FinishedRecipe> consumer, String basePath, ItemLike bed, ItemLike planks, DyeColor color,
+    public static void addPrecisionSawmillBedRecipe(RecipeOutput consumer, String basePath, ItemLike bed, ItemLike planks, DyeColor color,
           @Nullable ICondition condition) {
         SawmillRecipeBuilder bedRecipeBuilder = SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(bed),

@@ -5,6 +5,7 @@ import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRequirements.Strategy;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
@@ -107,7 +108,7 @@ public class ExtendedAdvancementBuilder {
         return addCriterion(RegistryUtils.getPath(item.asItem()), InventoryChangeTrigger.TriggerInstance.hasItems(item));
     }
 
-    public ExtendedAdvancementBuilder requirements(String[][] requirements) {
+    public ExtendedAdvancementBuilder requirements(AdvancementRequirements requirements) {
         return runInternal(builder -> builder.requirements(requirements));
     }
 

@@ -17,6 +17,7 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.Tags;
@@ -29,7 +30,7 @@ class EnergyCubeRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY));
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "energy_cube/";
         addTieredEnergyCube(consumer, basePath, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.STEEL_CASING, Tags.Items.INGOTS_IRON, MekanismTags.Items.ALLOYS_BASIC);
         addTieredEnergyCube(consumer, basePath, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM), MekanismTags.Items.ALLOYS_INFUSED);
@@ -37,7 +38,7 @@ class EnergyCubeRecipeProvider implements ISubRecipeProvider {
         addTieredEnergyCube(consumer, basePath, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, Tags.Items.GEMS_DIAMOND, MekanismTags.Items.ALLOYS_ATOMIC);
     }
 
-    private void addTieredEnergyCube(Consumer<FinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockEnergyCube, ?> energyCube,
+    private void addTieredEnergyCube(RecipeOutput consumer, String basePath, BlockRegistryObject<BlockEnergyCube, ?> energyCube,
           IItemProvider previousEnergyCube, TagKey<Item> ingotTag, TagKey<Item> alloyTag) {
         String tierName = Attribute.getBaseTier(energyCube.getBlock()).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(energyCube)

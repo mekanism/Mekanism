@@ -8,11 +8,12 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 
 class ChemicalCrystallizerRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "crystallizing/";
         //Salt
         ChemicalCrystallizerRecipeBuilder.crystallizing(

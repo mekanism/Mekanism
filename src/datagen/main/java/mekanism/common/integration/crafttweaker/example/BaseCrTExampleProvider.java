@@ -336,9 +336,8 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     private void addFluidStackIngredientSupport() {
         addSupportedConversion(FluidStackIngredient.class, FluidStackIngredient.class, this::getIngredientRepresentation,
               (imports, ingredient) -> {
-                  if (ingredient instanceof SingleFluidStackIngredient) {
-                      JsonObject serialized = ingredient.serialize().getAsJsonObject();
-                      return IFluidStack.of(SerializerHelper.deserializeFluid(serialized)).getCommandString();
+                  if (ingredient instanceof SingleFluidStackIngredient single) {
+                      return IFluidStack.of(single.getInputRaw()).getCommandString();
                   } else if (ingredient instanceof TaggedFluidStackIngredient) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
                       return CrTUtils.fluidTags().tag(serialized.get(JsonConstants.TAG).getAsString())
@@ -350,9 +349,8 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
 
     @Nullable
     private String getIngredientRepresentation(CrTImportsComponent imports, FluidStackIngredient ingredient) {
-        if (ingredient instanceof SingleFluidStackIngredient) {
-            JsonObject serialized = ingredient.serialize().getAsJsonObject();
-            String stackRepresentation = IFluidStack.of(SerializerHelper.deserializeFluid(serialized)).getCommandString();
+        if (ingredient instanceof SingleFluidStackIngredient single) {
+            String stackRepresentation = IFluidStack.of(single.getInputRaw()).getCommandString();
             return imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".from(" + stackRepresentation + ")";
         } else if (ingredient instanceof TaggedFluidStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();

@@ -13,6 +13,7 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registration.impl.PigmentRegistryObject;
 import mekanism.common.registries.MekanismPigments;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -93,13 +94,13 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "pigment_extracting/";
         addExtractionRecipes(consumer, basePath);
         addFlowerExtractionRecipes(consumer, basePath);
     }
 
-    private static void addFlowerExtractionRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private static void addFlowerExtractionRecipes(RecipeOutput consumer, String basePath) {
         basePath += "flower/";
         //Flowers -> 4x dye output
         //Note: We use this higher rate as the pigment extractor is rather effective at extracting
@@ -219,7 +220,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "white"));
     }
 
-    private static void addExtractionRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private static void addExtractionRecipes(RecipeOutput consumer, String basePath) {
         for (Map.Entry<EnumColor, PigmentRegistryObject<Pigment>> entry : MekanismPigments.PIGMENT_COLOR_LOOKUP.entrySet()) {
             EnumColor color = entry.getKey();
             IPigmentProvider pigment = entry.getValue();
@@ -246,7 +247,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
         }
     }
 
-    private static void addExtractionRecipe(Consumer<FinishedRecipe> consumer, EnumColor color, Map<EnumColor, ItemLike> input, IPigmentProvider pigment, long rate,
+    private static void addExtractionRecipe(RecipeOutput consumer, EnumColor color, Map<EnumColor, ItemLike> input, IPigmentProvider pigment, long rate,
           String basePath) {
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(input.get(color)),
@@ -254,7 +255,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
     }
 
-    private static void addTagExtractionRecipe(Consumer<FinishedRecipe> consumer, EnumColor color, Map<EnumColor, TagKey<Item>> input, IPigmentProvider pigment, long rate,
+    private static void addTagExtractionRecipe(RecipeOutput consumer, EnumColor color, Map<EnumColor, TagKey<Item>> input, IPigmentProvider pigment, long rate,
           String basePath) {
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(input.get(color)),

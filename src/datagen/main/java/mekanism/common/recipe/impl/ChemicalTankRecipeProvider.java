@@ -1,5 +1,6 @@
 package mekanism.common.recipe.impl;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
@@ -17,6 +18,7 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -28,7 +30,7 @@ class ChemicalTankRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(Pattern.ALLOY, Pattern.OSMIUM, Pattern.ALLOY));
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "chemical_tank/";
         //Note: For the basic chemical tank, we have to handle the empty slot differently than batching it against our chemical tank pattern
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.BASIC_CHEMICAL_TANK)
@@ -44,13 +46,13 @@ class ChemicalTankRecipeProvider implements ISubRecipeProvider {
         addTieredChemicalTank(consumer, basePath, MekanismBlocks.ULTIMATE_CHEMICAL_TANK, MekanismBlocks.ELITE_CHEMICAL_TANK, MekanismTags.Items.ALLOYS_ATOMIC);
     }
 
-    private void addTieredChemicalTank(Consumer<FinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> tank, IItemProvider previousTank,
+    private void addTieredChemicalTank(RecipeOutput consumer, String basePath, BlockRegistryObject<? extends ITypeBlock, ?> tank, IItemProvider previousTank,
           TagKey<Item> alloyTag) {
         String tierName = Attribute.getBaseTier(tank.getBlock()).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(tank)
               .pattern(CHEMICAL_TANK_PATTERN)
               .key(Pattern.PREVIOUS, previousTank)
-              .key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
+              .key(Pattern.OSMIUM, Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)))
               .key(Pattern.ALLOY, alloyTag)
               .build(consumer, Mekanism.rl(basePath + tierName));
     }

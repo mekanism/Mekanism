@@ -3,6 +3,7 @@ package mekanism.common.recipe.compat;
 import java.util.function.Consumer;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import potionstudios.byg.common.block.BYGWoodTypes;
 import yamahari.ilikewood.plugin.byg.OhTheBiomesYoullGoWoodTypes;
 import yamahari.ilikewood.registry.woodtype.IWoodType;
@@ -15,7 +16,7 @@ public class ILikeWoodBYGRecipeProvider extends CompatRecipeProvider {
     }
 
     @Override
-    protected void registerRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    protected void registerRecipes(RecipeOutput consumer, String basePath) {
         addWoodType(consumer, basePath, BYGWoodTypes.ASPEN, OhTheBiomesYoullGoWoodTypes.ASPEN);
         addWoodType(consumer, basePath, BYGWoodTypes.BAOBAB, OhTheBiomesYoullGoWoodTypes.BAOBAB);
         addWoodType(consumer, basePath, BYGWoodTypes.BLUE_ENCHANTED, OhTheBiomesYoullGoWoodTypes.BLUE_ENCHANTED);
@@ -46,7 +47,7 @@ public class ILikeWoodBYGRecipeProvider extends CompatRecipeProvider {
         addWoodType(consumer, basePath, BYGWoodTypes.ZELKOVA, OhTheBiomesYoullGoWoodTypes.ZELKOVA);
     }
 
-    private void addWoodType(Consumer<FinishedRecipe> consumer, String basePath, BYGWoodTypes bygWoodType, IWoodType woodType) {
+    private void addWoodType(RecipeOutput consumer, String basePath, BYGWoodTypes bygWoodType, IWoodType woodType) {
         ILikeWoodRecipeProvider.addWoodType(consumer, allModsLoaded, basePath, bygWoodType.planks(), bygWoodType.log(), bygWoodType.fence(), woodType);
     }
 }

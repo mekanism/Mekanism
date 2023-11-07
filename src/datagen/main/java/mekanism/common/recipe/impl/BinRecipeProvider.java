@@ -17,6 +17,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.Tags;
@@ -29,7 +30,7 @@ class BinRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(Pattern.COBBLESTONE, Pattern.COBBLESTONE, Pattern.COBBLESTONE));
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         //Special recipes (bins)
         SpecialRecipeBuilder.build(consumer, MekanismRecipeSerializers.BIN_INSERT);
         SpecialRecipeBuilder.build(consumer, MekanismRecipeSerializers.BIN_EXTRACT);
@@ -50,7 +51,7 @@ class BinRecipeProvider implements ISubRecipeProvider {
         addTieredBin(consumer, basePath, MekanismBlocks.ULTIMATE_BIN, MekanismBlocks.ELITE_BIN, MekanismTags.Items.CIRCUITS_ULTIMATE, MekanismTags.Items.ALLOYS_ATOMIC);
     }
 
-    private void addTieredBin(Consumer<FinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockBin, ?> bin, IItemProvider previousBin, TagKey<Item> circuitTag,
+    private void addTieredBin(RecipeOutput consumer, String basePath, BlockRegistryObject<BlockBin, ?> bin, IItemProvider previousBin, TagKey<Item> circuitTag,
           TagKey<Item> alloyTag) {
         String tierName = Attribute.getBaseTier(bin.getBlock()).getLowerName();
         MekDataShapedRecipeBuilder.shapedRecipe(bin)

@@ -6,6 +6,7 @@ import mekanism.api.datagen.recipe.builder.SawmillRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import vectorwing.farmersdelight.common.registry.ModItems;
@@ -18,11 +19,11 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
     }
 
     @Override
-    protected void registerRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    protected void registerRecipes(RecipeOutput consumer, String basePath) {
         addPrecisionSawmillRecipes(consumer, basePath + "sawing/");
     }
 
-    private void addPrecisionSawmillRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addPrecisionSawmillRecipes(RecipeOutput consumer, String basePath) {
         //Beef
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(Items.BEEF),

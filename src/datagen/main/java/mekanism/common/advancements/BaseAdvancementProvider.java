@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -92,8 +93,8 @@ public abstract class BaseAdvancementProvider implements DataProvider {
         return InventoryChangeTrigger.TriggerInstance.hasItems(items);
     }
 
-    protected static ItemPredicate predicate(ItemLike... items) {
-        return ItemPredicate.Builder.item().of(items).build();
+    protected static Optional<ItemPredicate> predicate(ItemLike... items) {
+        return Optional.of(ItemPredicate.Builder.item().of(items).build());
     }
 
     @SafeVarargs

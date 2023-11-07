@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -37,9 +38,11 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -79,8 +82,8 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     private final List<ISubRecipeProvider> compatProviders = new ArrayList<>();
     private final Set<String> disabledCompats = new HashSet<>();
 
-    public MekanismRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, existingFileHelper, Mekanism.MODID);
+    public MekanismRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, existingFileHelper, Mekanism.MODID, lookupProvider);
 
         //Mod Compat Recipe providers
         checkCompat("ae2", AE2RecipeProvider::new);
@@ -105,7 +108,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     }
 
     @Override
-    protected void addRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void addRecipes(RecipeOutput consumer) {
         addMiscRecipes(consumer);
         addGearModuleRecipes(consumer);
         addLateGameRecipes(consumer);
@@ -151,7 +154,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         );
     }
 
-    private void addMiscRecipes(Consumer<FinishedRecipe> consumer) {
+    private void addMiscRecipes(RecipeOutput consumer) {
         //Atomic disassembler
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.ATOMIC_DISASSEMBLER)
               .pattern(RecipePattern.createPattern(
@@ -1298,7 +1301,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .build(consumer);
     }
 
-    private void addGearModuleRecipes(Consumer<FinishedRecipe> consumer) {
+    private void addGearModuleRecipes(RecipeOutput consumer) {
         //Module Base
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_BASE, 2)
               .pattern(RecipePattern.createPattern(
@@ -1606,7 +1609,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .build(consumer);
     }
 
-    private void addLateGameRecipes(Consumer<FinishedRecipe> consumer) {
+    private void addLateGameRecipes(RecipeOutput consumer) {
         String basePath = "processing/lategame/";
 
         //plutonium

@@ -13,6 +13,7 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -25,7 +26,7 @@ import net.neoforged.neoforge.common.Tags;
 class EnrichingRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "enriching/";
         addEnrichingConversionRecipes(consumer, basePath + "conversion/");
         addEnrichingDeoxidizingRecipes(consumer, basePath + "deoxidizing/");
@@ -68,7 +69,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "string"));
     }
 
-    private void addEnrichingConversionRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addEnrichingConversionRecipes(RecipeOutput consumer, String basePath) {
         addEnrichingMudConversionRecipes(consumer, basePath + "mud/");
         addEnrichingStoneConversionRecipes(consumer, basePath + "stone/");
         addEnrichingBlackstoneConversionRecipes(consumer, basePath + "blackstone/");
@@ -133,7 +134,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "nether_bricks_to_chiseled_nether_bricks"));
     }
 
-    private void addEnrichingMudConversionRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addEnrichingMudConversionRecipes(RecipeOutput consumer, String basePath) {
         //Mud -> clay
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Blocks.MUD),
@@ -146,7 +147,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "packed_to_bricks"));
     }
 
-    private void addEnrichingStoneConversionRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addEnrichingStoneConversionRecipes(RecipeOutput consumer, String basePath) {
         //Stone -> cracked stone bricks
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Blocks.STONE),
@@ -164,7 +165,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "bricks_to_chiseled_bricks"));
     }
 
-    private void addEnrichingDeepslateConversionRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addEnrichingDeepslateConversionRecipes(RecipeOutput consumer, String basePath) {
         //Cobbled Deepslate -> Deepslate
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Tags.Items.COBBLESTONE_DEEPSLATE),
@@ -250,7 +251,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "polished_wall_to_tile"));
     }
 
-    private void addEnrichingBlackstoneConversionRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addEnrichingBlackstoneConversionRecipes(RecipeOutput consumer, String basePath) {
         //Polished blackstone -> cracked polished blackstone bricks
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Blocks.POLISHED_BLACKSTONE),
@@ -268,7 +269,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "bricks_to_chiseled_bricks"));
     }
 
-    private void addEnrichingGraniteRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addEnrichingGraniteRecipes(RecipeOutput consumer, String basePath) {
         //Granite -> Polished Granite
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Blocks.GRANITE),
@@ -286,7 +287,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "slab_to_polished_slab"));
     }
 
-    private void addEnrichingDioriteRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addEnrichingDioriteRecipes(RecipeOutput consumer, String basePath) {
         //Diorite -> Polished Diorite
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Blocks.DIORITE),
@@ -304,7 +305,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "slab_to_polished_slab"));
     }
 
-    private void addEnrichingAndesiteRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addEnrichingAndesiteRecipes(RecipeOutput consumer, String basePath) {
         //Andesite -> Polished Andesite
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Blocks.ANDESITE),
@@ -322,7 +323,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "slab_to_polished_slab"));
     }
 
-    private void addEnrichingQuartzRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addEnrichingQuartzRecipes(RecipeOutput consumer, String basePath) {
         //Quartz Block -> Quartz Item
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
@@ -350,7 +351,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "smooth_stairs_to_stairs"));
     }
 
-    private void addEnrichingMossyConversionRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addEnrichingMossyConversionRecipes(RecipeOutput consumer, String basePath) {
         //Mossy Stone Brick -> Stone Brick recipes
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Blocks.MOSSY_STONE_BRICKS),
@@ -387,7 +388,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "cobblestone_walls"));
     }
 
-    private void addEnrichingDeoxidizingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addEnrichingDeoxidizingRecipes(RecipeOutput consumer, String basePath) {
         //Generate baseline recipes from weathering recipe set
         for (Map.Entry<Block, Block> entry : WeatheringCopper.PREVIOUS_BY_BLOCK.get().entrySet()) {
             Block result = entry.getValue();
@@ -398,7 +399,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         }
     }
 
-    private void addEnrichingDyeRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addEnrichingDyeRecipes(RecipeOutput consumer, String basePath) {
         //Red
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(Blocks.ROSE_BUSH),
@@ -510,7 +511,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "white"));
     }
 
-    private void addEnrichingEnrichedRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addEnrichingEnrichedRecipes(RecipeOutput consumer, String basePath) {
         //Carbon
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(ItemTags.COALS),

@@ -3,6 +3,7 @@ package mekanism.client.texture;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.registration.impl.FluidDeferredRegister;
@@ -10,6 +11,7 @@ import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType
 import mekanism.common.registration.impl.FluidRegistryObject;
 import net.minecraft.client.renderer.texture.atlas.sources.DirectoryLister;
 import net.minecraft.client.renderer.texture.atlas.sources.SingleFile;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -20,8 +22,8 @@ public abstract class BaseSpriteSourceProvider extends SpriteSourceProvider {
 
     private final Set<ResourceLocation> trackedSingles = new HashSet<>();
 
-    protected BaseSpriteSourceProvider(PackOutput output, String modid, ExistingFileHelper fileHelper) {
-        super(output, fileHelper, modid);
+    protected BaseSpriteSourceProvider(PackOutput output, String modid, ExistingFileHelper fileHelper, CompletableFuture<Provider> lookupProvider) {
+        super(output, lookupProvider, modid, fileHelper);
     }
 
     protected void addFiles(SourceList atlas, ResourceLocation... resourceLocations) {

@@ -9,6 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -19,7 +20,7 @@ import net.neoforged.neoforge.common.Tags;
 class CombinerRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "combining/";
         addCombinerDyeRecipes(consumer, basePath + "dye/");
         addCombinerGlowRecipes(consumer, basePath + "glow/");
@@ -56,7 +57,7 @@ class CombinerRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "muddy_mangrove_roots"));
     }
 
-    private void addCombinerDyeRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addCombinerDyeRecipes(RecipeOutput consumer, String basePath) {
         //Black + white -> light gray
         CombinerRecipeBuilder.combining(
               IngredientCreatorAccess.item().from(Tags.Items.DYES_BLACK),
@@ -113,7 +114,7 @@ class CombinerRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "purple"));
     }
 
-    private void addCombinerGlowRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addCombinerGlowRecipes(RecipeOutput consumer, String basePath) {
         ItemStackIngredient glow = IngredientCreatorAccess.item().from(Tags.Items.DUSTS_GLOWSTONE);
         //Sweet Berries -> Glow Berries
         CombinerRecipeBuilder.combining(
@@ -135,7 +136,7 @@ class CombinerRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "item_frame"));
     }
 
-    private void addCombinerWaxingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void addCombinerWaxingRecipes(RecipeOutput consumer, String basePath) {
         //Generate baseline recipes from waxing recipe set
         ItemStackIngredient wax = IngredientCreatorAccess.item().from(Items.HONEYCOMB);
         for (Map.Entry<Block, Block> entry : HoneycombItem.WAXABLES.get().entrySet()) {

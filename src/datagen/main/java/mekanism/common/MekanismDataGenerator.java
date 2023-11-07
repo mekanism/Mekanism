@@ -58,14 +58,14 @@ public class MekanismDataGenerator {
         addProvider(gen, event.includeClient(), MekanismLangProvider::new);
         gen.addProvider(event.includeClient(), new PrideRobitTextureProvider(output, existingFileHelper));
         gen.addProvider(event.includeClient(), new MekanismSoundProvider(output, existingFileHelper));
-        gen.addProvider(event.includeClient(), new MekanismSpriteSourceProvider(output, existingFileHelper));
+        gen.addProvider(event.includeClient(), new MekanismSpriteSourceProvider(output, existingFileHelper, lookupProvider));
         gen.addProvider(event.includeClient(), new MekanismItemModelProvider(output, existingFileHelper));
         gen.addProvider(event.includeClient(), new MekanismBlockStateProvider(output, existingFileHelper));
         //Server side data generators
         gen.addProvider(event.includeServer(), new MekanismTagProvider(output, lookupProvider, existingFileHelper));
         addProvider(gen, event.includeServer(), MekanismLootProvider::new);
         gen.addProvider(event.includeServer(), drProvider);
-        MekanismRecipeProvider recipeProvider = new MekanismRecipeProvider(output, existingFileHelper);
+        MekanismRecipeProvider recipeProvider = new MekanismRecipeProvider(output, existingFileHelper, lookupProvider);
         gen.addProvider(event.includeServer(), recipeProvider);
         gen.addProvider(event.includeServer(), new MekanismAdvancementProvider(output, existingFileHelper));
         //TODO - 1.20: Re-enable after updating ProjectE

@@ -118,7 +118,7 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
             json.add(DataGenJsonConstants.PATTERN, jsonPattern);
             JsonObject jsonobject = new JsonObject();
             for (Char2ObjectMap.Entry<Ingredient> entry : key.char2ObjectEntrySet()) {
-                jsonobject.add(String.valueOf(entry.getCharKey()), entry.getValue().toJson());
+                jsonobject.add(String.valueOf(entry.getCharKey()), entry.getValue().toJson(false));
             }
             json.add(DataGenJsonConstants.KEY, jsonobject);
         }

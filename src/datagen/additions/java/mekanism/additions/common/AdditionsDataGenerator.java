@@ -37,7 +37,7 @@ public class AdditionsDataGenerator {
         //Client side data generators
         MekanismDataGenerator.addProvider(gen, event.includeClient(), AdditionsLangProvider::new);
         gen.addProvider(event.includeClient(), new AdditionsSoundProvider(output, existingFileHelper));
-        gen.addProvider(event.includeClient(), new AdditionsSpriteSourceProvider(output, existingFileHelper));
+        gen.addProvider(event.includeClient(), new AdditionsSpriteSourceProvider(output, existingFileHelper, lookupProvider));
         gen.addProvider(event.includeClient(), new AdditionsItemModelProvider(output, existingFileHelper));
         gen.addProvider(event.includeClient(), new AdditionsBlockStateProvider(output, existingFileHelper));
         //Server side data generators

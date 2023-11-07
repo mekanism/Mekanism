@@ -35,7 +35,7 @@ public class GeneratorsDataGenerator {
         //Client side data generators
         MekanismDataGenerator.addProvider(gen, event.includeClient(), GeneratorsLangProvider::new);
         gen.addProvider(event.includeClient(), new GeneratorsSoundProvider(output, existingFileHelper));
-        gen.addProvider(event.includeClient(), new GeneratorsSpriteSourceProvider(output, existingFileHelper));
+        gen.addProvider(event.includeClient(), new GeneratorsSpriteSourceProvider(output, existingFileHelper, lookupProvider));
         gen.addProvider(event.includeClient(), new GeneratorsItemModelProvider(output, existingFileHelper));
         gen.addProvider(event.includeClient(), new GeneratorsBlockStateProvider(output, existingFileHelper));
         //Server side data generators

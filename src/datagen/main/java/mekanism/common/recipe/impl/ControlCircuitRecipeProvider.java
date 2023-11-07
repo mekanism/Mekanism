@@ -15,6 +15,7 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -23,7 +24,7 @@ class ControlCircuitRecipeProvider implements ISubRecipeProvider {
     private static final RecipePattern circuitPattern = RecipePattern.createPattern(TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY));
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "control_circuit/";
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)),
@@ -35,7 +36,7 @@ class ControlCircuitRecipeProvider implements ISubRecipeProvider {
         addCircuitUpgradeRecipe(consumer, MekanismItems.ULTIMATE_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE, MekanismTags.Items.ALLOYS_ATOMIC, basePath, "ultimate");
     }
 
-    private void addCircuitUpgradeRecipe(Consumer<FinishedRecipe> consumer, IItemProvider output, TagKey<Item> circuitTag, TagKey<Item> alloyTag, String basePath,
+    private void addCircuitUpgradeRecipe(RecipeOutput consumer, IItemProvider output, TagKey<Item> circuitTag, TagKey<Item> alloyTag, String basePath,
           String name) {
         ExtendedShapedRecipeBuilder.shapedRecipe(output)
               .pattern(circuitPattern)

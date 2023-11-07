@@ -8,12 +8,13 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
 
 class EvaporatingRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "evaporating/";
         //Brine
         FluidToFluidRecipeBuilder.evaporating(
