@@ -9,7 +9,7 @@ import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.neoforged.neoforge.client.event.TextureStitchEvent;
+import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +20,7 @@ public class DigitalMinerBakedModel extends ExtensionBakedModel<Void> {
     @Nullable
     private static TextureAtlasSprite AFD_SAD, AFD_TEXT, MAY_4TH;
 
-    public static void onStitch(TextureStitchEvent.Post event) {
+    public static void onStitch(TextureAtlasStitchedEvent event) {
         TextureAtlas atlas = event.getAtlas();
         AFD_SAD = atlas.getSprite(Mekanism.rl("block/models/digital_miner_screen_afd_sad"));
         AFD_TEXT = atlas.getSprite(Mekanism.rl("block/models/digital_miner_screen_afd_text"));

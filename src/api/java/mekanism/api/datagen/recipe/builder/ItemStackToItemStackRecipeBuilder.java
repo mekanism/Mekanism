@@ -6,7 +6,6 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -64,8 +63,8 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
     }
 
     @Override
-    protected MekanismRecipeBuilder<ItemStackToItemStackRecipeBuilder>.RecipeResult getResult(ResourceLocation id, Provider registries) {
-        return new ItemStackToItemStackRecipeResult(id, registries);
+    protected MekanismRecipeBuilder<ItemStackToItemStackRecipeBuilder>.RecipeResult getResult(ResourceLocation id) {
+        return new ItemStackToItemStackRecipeResult(id);
     }
 
     /**
@@ -79,8 +78,8 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
 
     public class ItemStackToItemStackRecipeResult extends RecipeResult {
 
-        protected ItemStackToItemStackRecipeResult(ResourceLocation id, Provider registries) {
-            super(id, registries);
+        protected ItemStackToItemStackRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override

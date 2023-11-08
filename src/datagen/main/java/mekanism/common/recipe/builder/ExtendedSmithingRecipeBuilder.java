@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.common.DataGenJsonConstants;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -33,14 +32,14 @@ public class ExtendedSmithingRecipeBuilder extends BaseRecipeBuilder<ExtendedSmi
     }
 
     @Override
-    protected MekanismRecipeBuilder<ExtendedSmithingRecipeBuilder>.RecipeResult getResult(ResourceLocation id, Provider registries) {
-        return new Result(id, registries);
+    protected MekanismRecipeBuilder<ExtendedSmithingRecipeBuilder>.RecipeResult getResult(ResourceLocation id) {
+        return new Result(id);
     }
 
     public class Result extends BaseRecipeResult {
 
-        public Result(ResourceLocation id, Provider registries) {
-            super(id, registries);
+        public Result(ResourceLocation id) {
+            super(id);
         }
 
         @Override

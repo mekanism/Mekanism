@@ -19,6 +19,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -35,7 +36,7 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
     private record WrapperRecipeOutput(RecipeOutput parent, ExistingFileHelper existingFileHelper) implements RecipeOutput {
 
         @Override
-        public void accept(FinishedRecipe finishedRecipe) {
+        public void accept(FinishedRecipe finishedRecipe, ICondition... conditions) {
             parent.accept(finishedRecipe);
             existingFileHelper.trackGenerated(finishedRecipe.id(), PackType.SERVER_DATA, ".json", "recipes");
         }
@@ -43,11 +44,6 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
         @Override
         public Builder advancement() {
             return parent.advancement();
-        }
-
-        @Override
-        public Provider provider() {
-            return parent.provider();
         }
     }
 

@@ -12,7 +12,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.recipe.pattern.RecipePattern;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -98,14 +97,14 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
     }
 
     @Override
-    protected MekanismRecipeBuilder<ExtendedShapedRecipeBuilder>.RecipeResult getResult(ResourceLocation id, Provider registries) {
-        return new Result(id, registries);
+    protected MekanismRecipeBuilder<ExtendedShapedRecipeBuilder>.RecipeResult getResult(ResourceLocation id) {
+        return new Result(id);
     }
 
     public class Result extends BaseRecipeResult {
 
-        protected Result(ResourceLocation id, Provider registries) {
-            super(id, registries);
+        protected Result(ResourceLocation id) {
+            super(id);
         }
 
         @Override

@@ -64,8 +64,8 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
 
     protected abstract class BaseRecipeResult extends RecipeResult {
 
-        protected BaseRecipeResult(ResourceLocation id, Provider registries) {
-            super(id, registries);
+        protected BaseRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override

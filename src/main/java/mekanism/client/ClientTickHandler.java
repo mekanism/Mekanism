@@ -273,7 +273,7 @@ public class ClientTickHandler {
     @SubscribeEvent
     public void onMouseEvent(MouseScrollingEvent event) {
         if (MekanismConfig.client.allowModeScroll.get() && minecraft.player != null && minecraft.player.isShiftKeyDown()) {
-            double delta = event.getScrollDelta();
+            double delta = event.getScrollDeltaY();//todo 1.20.2 check scrolls
             if (delta != 0 && IModeItem.isModeItem(minecraft.player, EquipmentSlot.MAINHAND)) {
                 int shift = scrollIncrementer.scroll(delta);
                 if (shift != 0) {

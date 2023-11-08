@@ -6,7 +6,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,14 +35,14 @@ public class ItemStackToEnergyRecipeBuilder extends MekanismRecipeBuilder<ItemSt
     }
 
     @Override
-    protected MekanismRecipeBuilder<ItemStackToEnergyRecipeBuilder>.RecipeResult getResult(ResourceLocation id, Provider registries) {
-        return new ItemStackToEnergyRecipeResult(id, registries);
+    protected MekanismRecipeBuilder<ItemStackToEnergyRecipeBuilder>.RecipeResult getResult(ResourceLocation id) {
+        return new ItemStackToEnergyRecipeResult(id);
     }
 
     public class ItemStackToEnergyRecipeResult extends RecipeResult {
 
-        protected ItemStackToEnergyRecipeResult(ResourceLocation id, Provider registries) {
-            super(id, registries);
+        protected ItemStackToEnergyRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override

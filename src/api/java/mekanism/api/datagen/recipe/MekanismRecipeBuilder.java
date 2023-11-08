@@ -1,8 +1,6 @@
 package mekanism.api.datagen.recipe;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,14 +14,11 @@ import net.minecraft.advancements.AdvancementRequirements.Strategy;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.conditions.ConditionalOps;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -97,7 +92,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      *
      * @param id ID of the recipe being built.
      */
-    protected abstract RecipeResult getResult(ResourceLocation id, Provider registries);
+    protected abstract RecipeResult getResult(ResourceLocation id);
 
     /**
      * Performs any extra validation.
@@ -121,7 +116,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
             advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
                   .rewards(AdvancementRewards.Builder.recipe(id)).requirements(Strategy.OR);
         }
-        recipeOutput.accept(getResult(id, recipeOutput.provider()));
+        recipeOutput.accept(getResult(id));
     }
 
     /**
@@ -144,11 +139,9 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
     protected abstract class RecipeResult implements FinishedRecipe {
 
         private final ResourceLocation id;
-        private final Provider registries;
 
-        public RecipeResult(ResourceLocation id, Provider registries) {
+        public RecipeResult(ResourceLocation id) {
             this.id = id;
-            this.registries = registries;
         }
 
         @Override
@@ -156,8 +149,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty(JsonConstants.TYPE, serializerName.toString());
             if (!conditions.isEmpty()) {
-                final DynamicOps<JsonElement> dynamicOps = ConditionalOps.create(RegistryOps.create(JsonOps.INSTANCE, registries), ICondition.IContext.EMPTY);
-                ICondition.LIST_CODEC.fieldOf(JsonConstants.CONDITIONS).codec().encode(conditions, dynamicOps, jsonObject);
+                ICondition.LIST_CODEC.fieldOf(JsonConstants.CONDITIONS).codec().encode(conditions, JsonOps.INSTANCE, jsonObject);
             }
             this.serializeRecipeData(jsonObject);
             return jsonObject;

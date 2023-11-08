@@ -50,7 +50,7 @@ import net.minecraft.util.FastColor;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.client.event.TextureStitchEvent;
+import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -301,7 +301,7 @@ public class MekanismRenderer {
     }
 
     @SubscribeEvent
-    public static void onStitch(TextureStitchEvent.Post event) {
+    public static void onStitch(TextureAtlasStitchedEvent event) {
         TextureAtlas map = event.getAtlas();
         if (!map.location().equals(TextureAtlas.LOCATION_BLOCKS)) {
             return;

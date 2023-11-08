@@ -595,7 +595,7 @@ public class ClientRegistration {
     public static void addLayers(EntityRenderersEvent.AddLayers event) {
         //Add our own custom armor layer to the various player renderers
         for (Model skin : event.getSkins()) {
-            addCustomLayers(EntityType.PLAYER, (PlayerRenderer) event.getSkin(skin.id()), event.getContext().getModelManager());
+            addCustomLayers(EntityType.PLAYER, (PlayerRenderer) event.getSkin(skin), event.getContext().getModelManager());
         }
         //Add our own custom armor layer to everything that has an armor layer
         //Note: This includes any modded mobs that have vanilla's BipedArmorLayer added to them

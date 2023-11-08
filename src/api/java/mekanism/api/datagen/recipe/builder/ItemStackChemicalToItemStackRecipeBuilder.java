@@ -18,7 +18,6 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredie
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -115,8 +114,8 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
     }
 
     @Override
-    protected MekanismRecipeBuilder<ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL, STACK, INGREDIENT>>.RecipeResult getResult(ResourceLocation id, Provider registries) {
-        return new ItemStackChemicalToItemStackRecipeResult(id, registries);
+    protected MekanismRecipeBuilder<ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL, STACK, INGREDIENT>>.RecipeResult getResult(ResourceLocation id) {
+        return new ItemStackChemicalToItemStackRecipeResult(id);
     }
 
     /**
@@ -130,8 +129,8 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
 
     public class ItemStackChemicalToItemStackRecipeResult extends RecipeResult {
 
-        protected ItemStackChemicalToItemStackRecipeResult(ResourceLocation id, Provider registries) {
-            super(id, registries);
+        protected ItemStackChemicalToItemStackRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override

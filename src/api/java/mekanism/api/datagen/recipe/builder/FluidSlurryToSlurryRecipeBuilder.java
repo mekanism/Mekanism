@@ -8,7 +8,6 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,14 +40,14 @@ public class FluidSlurryToSlurryRecipeBuilder extends MekanismRecipeBuilder<Flui
     }
 
     @Override
-    protected MekanismRecipeBuilder<FluidSlurryToSlurryRecipeBuilder>.RecipeResult getResult(ResourceLocation id, Provider registries) {
-        return new FluidSlurryToSlurryRecipeResult(id, registries);
+    protected MekanismRecipeBuilder<FluidSlurryToSlurryRecipeBuilder>.RecipeResult getResult(ResourceLocation id) {
+        return new FluidSlurryToSlurryRecipeResult(id);
     }
 
     public class FluidSlurryToSlurryRecipeResult extends RecipeResult {
 
-        protected FluidSlurryToSlurryRecipeResult(ResourceLocation id, Provider registries) {
-            super(id, registries);
+        protected FluidSlurryToSlurryRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override

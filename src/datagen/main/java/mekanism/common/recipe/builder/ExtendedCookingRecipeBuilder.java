@@ -6,7 +6,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.util.RegistryUtils;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.BlockItem;
@@ -72,8 +71,8 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
     }
 
     @Override
-    protected MekanismRecipeBuilder<ExtendedCookingRecipeBuilder>.RecipeResult getResult(ResourceLocation id, Provider registries) {
-        return new Result(id, registries);
+    protected MekanismRecipeBuilder<ExtendedCookingRecipeBuilder>.RecipeResult getResult(ResourceLocation id) {
+        return new Result(id);
     }
 
     @Override//Copy of #determineRecipeCategory
@@ -93,8 +92,8 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
 
     public class Result extends BaseRecipeResult {
 
-        public Result(ResourceLocation id, Provider registries) {
-            super(id, registries);
+        public Result(ResourceLocation id) {
+            super(id);
         }
 
         @Override

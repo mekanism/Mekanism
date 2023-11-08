@@ -16,7 +16,6 @@ import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -69,14 +68,14 @@ public class ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL extends Chemical<C
     }
 
     @Override
-    protected MekanismRecipeBuilder<ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL, STACK, INGREDIENT>>.RecipeResult getResult(ResourceLocation id, Provider registries) {
-        return new ChemicalChemicalToChemicalRecipeResult(id, registries);
+    protected MekanismRecipeBuilder<ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL, STACK, INGREDIENT>>.RecipeResult getResult(ResourceLocation id) {
+        return new ChemicalChemicalToChemicalRecipeResult(id);
     }
 
     public class ChemicalChemicalToChemicalRecipeResult extends RecipeResult {
 
-        protected ChemicalChemicalToChemicalRecipeResult(ResourceLocation id, Provider registries) {
-            super(id, registries);
+        protected ChemicalChemicalToChemicalRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override

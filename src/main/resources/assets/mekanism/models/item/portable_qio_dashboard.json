@@ -1,6 +1,6 @@
 {
     "parent": "minecraft:item/generated",
-    "loader": "forge:item_layers",
+    "loader": "neoforge:item_layers",
     "neoforge_data": {
         "layers": {
             "1": {

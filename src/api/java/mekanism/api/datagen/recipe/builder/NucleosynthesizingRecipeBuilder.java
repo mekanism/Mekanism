@@ -7,7 +7,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -48,8 +47,8 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
     }
 
     @Override
-    protected MekanismRecipeBuilder<NucleosynthesizingRecipeBuilder>.RecipeResult getResult(ResourceLocation id, Provider registries) {
-        return new NucleosynthesizingRecipeResult(id, registries);
+    protected MekanismRecipeBuilder<NucleosynthesizingRecipeBuilder>.RecipeResult getResult(ResourceLocation id) {
+        return new NucleosynthesizingRecipeResult(id);
     }
 
     /**
@@ -63,8 +62,8 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
 
     public class NucleosynthesizingRecipeResult extends RecipeResult {
 
-        protected NucleosynthesizingRecipeResult(ResourceLocation id, Provider registries) {
-            super(id, registries);
+        protected NucleosynthesizingRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override

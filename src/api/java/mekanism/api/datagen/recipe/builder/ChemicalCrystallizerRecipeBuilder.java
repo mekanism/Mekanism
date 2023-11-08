@@ -7,7 +7,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -41,8 +40,8 @@ public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<Che
     }
 
     @Override
-    protected MekanismRecipeBuilder<ChemicalCrystallizerRecipeBuilder>.RecipeResult getResult(ResourceLocation id, Provider registries) {
-        return new ChemicalCrystallizerRecipeResult(id, registries);
+    protected MekanismRecipeBuilder<ChemicalCrystallizerRecipeBuilder>.RecipeResult getResult(ResourceLocation id) {
+        return new ChemicalCrystallizerRecipeResult(id);
     }
 
     /**
@@ -56,8 +55,8 @@ public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<Che
 
     public class ChemicalCrystallizerRecipeResult extends RecipeResult {
 
-        protected ChemicalCrystallizerRecipeResult(ResourceLocation id, Provider registries) {
-            super(id, registries);
+        protected ChemicalCrystallizerRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override

@@ -16,7 +16,6 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -88,14 +87,14 @@ public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL
     }
 
     @Override
-    protected MekanismRecipeBuilder<ItemStackToChemicalRecipeBuilder<CHEMICAL, STACK>>.RecipeResult getResult(ResourceLocation id, Provider registries) {
-        return new ItemStackToChemicalRecipeResult(id, registries);
+    protected MekanismRecipeBuilder<ItemStackToChemicalRecipeBuilder<CHEMICAL, STACK>>.RecipeResult getResult(ResourceLocation id) {
+        return new ItemStackToChemicalRecipeResult(id);
     }
 
     public class ItemStackToChemicalRecipeResult extends RecipeResult {
 
-        protected ItemStackToChemicalRecipeResult(ResourceLocation id, Provider registries) {
-            super(id, registries);
+        protected ItemStackToChemicalRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override
