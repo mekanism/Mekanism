@@ -17,7 +17,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.26'//https://maven.neoforged.net/#/releases/net/neoforged/gradle/userdev
+    id 'net.neoforged.gradle.userdev' version '7.0.33'//https://maven.neoforged.net/#/releases/net/neoforged/gradle/userdev
     //id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
@@ -96,6 +96,9 @@ configurations {
 // based on the primary added source set
 for (String name : secondaryModules) {
     def sourceSet = sourceSets.create(name)
+    sourceSet.runs {
+        modIdentifier = name
+    }
     sourceSet.resources {
         //Add the generated module resources
         srcDirs += ["src/datagen/generated/mekanism${name}"]
