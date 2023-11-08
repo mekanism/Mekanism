@@ -19,7 +19,7 @@ license="MIT"
     versionRange="${mc_version}"
     side="BOTH"
 [[dependencies.mekanism]]
-    modId="forge"
+    modId="neoforge"
     mandatory=true
     versionRange="${forge_version}"
     side="BOTH"

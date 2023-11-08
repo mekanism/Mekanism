@@ -426,7 +426,8 @@ dependencies {
 
     compileOnly ("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly ("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
-    runtimeOnly ("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+    //todo 1.20.2 reinstate when neo?
+    //runtimeOnly ("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
 
     //TODO - 1.19: Re-enable once https://github.com/Chisel-Team/ConnectedTexturesMod/pull/204 is merged
     //runtimeOnly fg.deobf("team.chisel.ctm:CTM:${minecraft_version}-${ctm_version}")
@@ -435,15 +436,17 @@ dependencies {
     compileOnly ("mcjty.theoneprobe:theoneprobe:${top_version}:api") {
         transitive = false
     }
-    runtimeOnly ("mcjty.theoneprobe:theoneprobe:${top_version}") {
-        transitive = false
-    }
+    //todo 1.20.2 reinstate when neo?
+    //runtimeOnly ("mcjty.theoneprobe:theoneprobe:${top_version}") {
+    //    transitive = false
+    //}
     compileOnly ("curse.maven:jade-api-324717:${jade_api_id}")
-    runtimeOnly ("curse.maven:jade-324717:${jade_id}")
+    //todo 1.20.2 runtimeOnly ("curse.maven:jade-324717:${jade_id}")
     compileOnly ("mcp.mobius.waila:wthit-api:forge-${wthit_version}")
 
-    implementation ("com.blamejared.crafttweaker:CraftTweaker-forge-${previous_minecraft_version}:${crafttweaker_version}")
-    implementation ("com.blamejared.jeitweaker:JeiTweaker-forge-${previous_minecraft_version}:${jeitweaker_version}")
+    //todo 1.20.2 move back to implementation
+    compileOnly ("com.blamejared.crafttweaker:CraftTweaker-forge-${previous_minecraft_version}:${crafttweaker_version}")
+    compileOnly ("com.blamejared.jeitweaker:JeiTweaker-forge-${previous_minecraft_version}:${jeitweaker_version}")
 
     compileOnly ("dev.gigaherz.jsonthings:JsonThings-${previous_minecraft_version}:${json_things_version}")
 
@@ -459,14 +462,16 @@ dependencies {
     compileOnly ("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
 
     //Dependencies for data generators for mod compat reference
-    datagenMainImplementation ("appeng:appliedenergistics2-forge:${ae2_version}")
+    datagenMainCompileOnly ("appeng:appliedenergistics2-forge:${ae2_version}")//todo 1.20.2 back to Implementation
     datagenMainCompileOnly ("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
     datagenMainRuntimeOnly ("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
     datagenMainRuntimeOnly ("curse.maven:terrablender-563928:${terrablender_id}")
     //TODO - 1.20: Switch back to datagenMainImplementation
     datagenMainCompileOnly ("curse.maven:biomes-youll-go-247560:${byg_id}")
-    datagenMainImplementation ("curse.maven:farmers-delight-398521:${farmers_delight_id}")
-    datagenMainImplementation ("curse.maven:i-like-wood-324164:${ilikewood_id}")
+    //TODO - 1.20.2: Switch back to datagenMainImplementation
+    datagenMainCompileOnly ("curse.maven:farmers-delight-398521:${farmers_delight_id}")
+    //TODO - 1.20.2: Switch back to datagenMainImplementation
+    datagenMainCompileOnly ("curse.maven:i-like-wood-324164:${ilikewood_id}")
     //TODO - 1.20: Switch back to datagenMainImplementation
     datagenMainCompileOnly ("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
     //TODO - 1.20: Switch back to datagenMainImplementation
