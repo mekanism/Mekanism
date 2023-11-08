@@ -66,7 +66,8 @@ public class MekanismDefense implements IModModule {
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
-        NeoForge.EVENT_BUS.register(this);
+        //this will throw unless there are @SubscribeEvent here
+        //NeoForge.EVENT_BUS.register(this);
 
         packetHandler.initialize();
 
