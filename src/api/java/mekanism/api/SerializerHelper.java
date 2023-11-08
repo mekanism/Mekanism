@@ -22,6 +22,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -92,9 +93,9 @@ public class SerializerHelper {
     }));
 
     public static final Codec<ChemicalStack<?>> BOXED_CHEMICALSTACK_CODEC = ChemicalType.CODEC.dispatch(JsonConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor, type->switch (type){
-        case GAS -> GasStack.CODEC;
-        case INFUSION -> InfusionStack.CODEC;
-        case PIGMENT -> PigmentStack.CODEC;
+        case GAS -> ChemicalUtils.GAS_STACK_CODEC;
+        case INFUSION -> ChemicalUtils.INFUSION_STACK_CODEC;
+        case PIGMENT -> ChemicalUtils.PIGMENT_STACK_CODEC;
         case SLURRY -> SlurryStack.CODEC;
     });
 

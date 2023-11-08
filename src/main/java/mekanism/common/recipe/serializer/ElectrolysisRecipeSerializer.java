@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ElectrolysisRecipe;
@@ -32,8 +33,8 @@ public class ElectrolysisRecipeSerializer<RECIPE extends ElectrolysisRecipe> imp
             codec = RecordCodecBuilder.create(instance->instance.group(
                   IngredientCreatorAccess.fluid().codec().fieldOf(JsonConstants.INPUT).forGetter(ElectrolysisRecipe::getInput),
                   FLOAT_LONG_AT_LEAST_ONE.optionalFieldOf(JsonConstants.ENERGY_MULTIPLIER, FloatingLong.ONE).forGetter(ElectrolysisRecipe::getEnergyMultiplier),
-                  GasStack.CODEC.fieldOf(JsonConstants.LEFT_GAS_OUTPUT).forGetter(ElectrolysisRecipe::getLeftGasOutput),
-                  GasStack.CODEC.fieldOf(JsonConstants.RIGHT_GAS_OUTPUT).forGetter(ElectrolysisRecipe::getRightGasOutput)
+                  ChemicalUtils.GAS_STACK_CODEC.fieldOf(JsonConstants.LEFT_GAS_OUTPUT).forGetter(ElectrolysisRecipe::getLeftGasOutput),
+                  ChemicalUtils.GAS_STACK_CODEC.fieldOf(JsonConstants.RIGHT_GAS_OUTPUT).forGetter(ElectrolysisRecipe::getRightGasOutput)
             ).apply(instance, factory::create));
         }
         return codec;

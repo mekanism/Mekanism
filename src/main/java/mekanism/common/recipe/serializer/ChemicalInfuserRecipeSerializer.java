@@ -1,5 +1,6 @@
 package mekanism.common.recipe.serializer;
 
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
@@ -12,7 +13,7 @@ public class ChemicalInfuserRecipeSerializer<RECIPE extends ChemicalInfuserRecip
       ChemicalChemicalToChemicalRecipeSerializer<Gas, GasStack, GasStackIngredient, RECIPE> {
 
     public ChemicalInfuserRecipeSerializer(IFactory<Gas, GasStack, GasStackIngredient, RECIPE> factory) {
-        super(factory, GasStack.CODEC);
+        super(factory, ChemicalUtils.GAS_STACK_CODEC);
     }
 
     @Override

@@ -1,14 +1,19 @@
 package mekanism.api.chemical;
 
+import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import mekanism.api.Action;
+import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import net.minecraft.nbt.CompoundTag;
@@ -20,6 +25,11 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ChemicalUtils {
+
+    //nb: these can't be in their respective classes as they init before the custom registries are created, thus the EMPTY init fails
+    public static final Codec<GasStack> GAS_STACK_CODEC = ChemicalStack.codec(Gas.CODEC, JsonConstants.GAS, GasStack::new);
+    public static final Codec<InfusionStack> INFUSION_STACK_CODEC = ChemicalStack.codec(InfuseType.CODEC, JsonConstants.INFUSE_TYPE, InfusionStack::new);
+    public static final Codec<PigmentStack> PIGMENT_STACK_CODEC = ChemicalStack.codec(Pigment.CODEC, JsonConstants.PIGMENT, PigmentStack::new);
 
     private ChemicalUtils() {
     }

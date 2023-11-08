@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalTags;
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.providers.IChemicalProvider;
@@ -59,7 +60,7 @@ public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreato
 
     public static class SinglePigmentStackIngredient extends SingleChemicalStackIngredient<Pigment, PigmentStack> implements PigmentStackIngredient {
 
-        static Codec<SinglePigmentStackIngredient> CODEC = makeCodec(PigmentStack.CODEC, SinglePigmentStackIngredient::new);
+        static Codec<SinglePigmentStackIngredient> CODEC = makeCodec(ChemicalUtils.PIGMENT_STACK_CODEC, SinglePigmentStackIngredient::new);
 
         private SinglePigmentStackIngredient(PigmentStack stack) {
             super(stack);

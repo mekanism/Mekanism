@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalTags;
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.providers.IChemicalProvider;
@@ -58,7 +59,7 @@ public class GasStackIngredientCreator extends ChemicalStackIngredientCreator<Ga
 
     public static class SingleGasStackIngredient extends SingleChemicalStackIngredient<Gas, GasStack> implements GasStackIngredient {
 
-        static Codec<SingleGasStackIngredient> CODEC = makeCodec(GasStack.CODEC, SingleGasStackIngredient::new);
+        static Codec<SingleGasStackIngredient> CODEC = makeCodec(ChemicalUtils.GAS_STACK_CODEC, SingleGasStackIngredient::new);
 
         private SingleGasStackIngredient(GasStack stack) {
             super(stack);

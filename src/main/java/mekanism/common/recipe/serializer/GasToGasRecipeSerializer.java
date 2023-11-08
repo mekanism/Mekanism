@@ -1,20 +1,15 @@
 package mekanism.common.recipe.serializer;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +28,7 @@ public class GasToGasRecipeSerializer<RECIPE extends GasToGasRecipe> implements 
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance->instance.group(
                   IngredientCreatorAccess.gas().codec().fieldOf(JsonConstants.INPUT).forGetter(GasToGasRecipe::getInput),
-                  GasStack.CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(GasToGasRecipe::getOutputRaw)
+                  ChemicalUtils.GAS_STACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(GasToGasRecipe::getOutputRaw)
             ).apply(instance, factory::create));
         }
         return codec;

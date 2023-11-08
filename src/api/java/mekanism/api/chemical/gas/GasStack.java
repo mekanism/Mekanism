@@ -1,7 +1,5 @@
 package mekanism.api.chemical.gas;
 
-import com.mojang.serialization.Codec;
-import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -19,8 +17,6 @@ import org.jetbrains.annotations.Nullable;
  */
 @NothingNullByDefault
 public final class GasStack extends ChemicalStack<Gas> {
-
-    public static final Codec<GasStack> CODEC = codec(Gas.CODEC, JsonConstants.GAS, GasStack::new);
 
     /**
      * Empty GasStack instance.

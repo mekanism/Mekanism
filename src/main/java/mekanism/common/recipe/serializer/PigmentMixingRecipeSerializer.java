@@ -1,5 +1,6 @@
 package mekanism.common.recipe.serializer;
 
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.PigmentMixingRecipe;
@@ -12,7 +13,7 @@ public class PigmentMixingRecipeSerializer<RECIPE extends PigmentMixingRecipe> e
       ChemicalChemicalToChemicalRecipeSerializer<Pigment, PigmentStack, PigmentStackIngredient, RECIPE> {
 
     public PigmentMixingRecipeSerializer(IFactory<Pigment, PigmentStack, PigmentStackIngredient, RECIPE> factory) {
-        super(factory, PigmentStack.CODEC);
+        super(factory, ChemicalUtils.PIGMENT_STACK_CODEC);
     }
 
     @Override

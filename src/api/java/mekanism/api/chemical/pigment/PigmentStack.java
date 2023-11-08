@@ -1,7 +1,5 @@
 package mekanism.api.chemical.pigment;
 
-import com.mojang.serialization.Codec;
-import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -14,8 +12,6 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public final class PigmentStack extends ChemicalStack<Pigment> {
-
-    public static final Codec<PigmentStack> CODEC = codec(Pigment.CODEC, JsonConstants.PIGMENT, PigmentStack::new);
 
     /**
      * Empty PigmentStack instance.

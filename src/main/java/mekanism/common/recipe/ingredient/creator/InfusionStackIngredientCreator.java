@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalTags;
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.providers.IChemicalProvider;
@@ -59,7 +60,7 @@ public class InfusionStackIngredientCreator extends ChemicalStackIngredientCreat
 
     public static class SingleInfusionStackIngredient extends SingleChemicalStackIngredient<InfuseType, InfusionStack> implements InfusionStackIngredient {
 
-        static Codec<SingleInfusionStackIngredient> CODEC = makeCodec(InfusionStack.CODEC, SingleInfusionStackIngredient::new);
+        static Codec<SingleInfusionStackIngredient> CODEC = makeCodec(ChemicalUtils.INFUSION_STACK_CODEC, SingleInfusionStackIngredient::new);
 
         private SingleInfusionStackIngredient(InfusionStack stack) {
             super(stack);

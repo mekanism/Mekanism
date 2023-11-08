@@ -1,12 +1,10 @@
 package mekanism.common.recipe.serializer;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
@@ -16,9 +14,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator;
 import mekanism.common.recipe.ingredient.creator.GasStackIngredientCreator;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
@@ -30,7 +25,7 @@ public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> implements Reci
     private final  RecordCodecBuilder<RECIPE, FluidStackIngredient> FLUID_INPUT_FIELD = RecordCodecBuilder.of(RotaryRecipe::getFluidInput, JsonConstants.FLUID_INPUT, FluidStackIngredientCreator.INSTANCE.codec());
     private final  RecordCodecBuilder<RECIPE, FluidStack> FLUID_OUTPUT_FIELD = RecordCodecBuilder.of(r->r.getFluidOutput(GasStack.EMPTY), JsonConstants.FLUID_OUTPUT, SerializerHelper.FLUIDSTACK_CODEC);
     private final RecordCodecBuilder<RECIPE, GasStackIngredient> GAS_INPUT_FIELD = RecordCodecBuilder.of(RotaryRecipe::getGasInput, JsonConstants.GAS_INPUT, GasStackIngredientCreator.INSTANCE.codec());
-    private final RecordCodecBuilder<RECIPE, GasStack> GAS_OUTPUT_FIELD = RecordCodecBuilder.of(rotaryRecipe -> rotaryRecipe.getGasOutput(FluidStack.EMPTY), JsonConstants.GAS_INPUT, GasStack.CODEC);
+    private final RecordCodecBuilder<RECIPE, GasStack> GAS_OUTPUT_FIELD = RecordCodecBuilder.of(rotaryRecipe -> rotaryRecipe.getGasOutput(FluidStack.EMPTY), JsonConstants.GAS_INPUT, ChemicalUtils.GAS_STACK_CODEC);
 
     private Codec<RECIPE> bothWaysCodec() {
         return RecordCodecBuilder.create(i -> i.group(
