@@ -1,5 +1,7 @@
 package mekanism.common.recipe.compat;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -232,7 +234,7 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
         }
         return new AndCondition(Stream.concat(
               baseConditions,
-              Arrays.stream(configs).map(config -> new ConditionExistsCondition(new ConfigCondition(config.name())))
-        ).toArray(ICondition[]::new));
+              Arrays.stream(configs).map(config -> new ConditionExistsCondition(/*new ConfigCondition(config.name())*/null))//todo 1.20.2 replace with real condition
+        ).toList());
     }
 }
