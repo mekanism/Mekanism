@@ -41,7 +41,7 @@ public class GeneratorsDataGenerator {
         //Server side data generators
         gen.addProvider(event.includeServer(), new GeneratorsTagProvider(output, lookupProvider, existingFileHelper));
         MekanismDataGenerator.addProvider(gen, event.includeServer(), GeneratorsLootProvider::new);
-        gen.addProvider(event.includeServer(), new GeneratorsRecipeProvider(output, existingFileHelper));
+        gen.addProvider(event.includeServer(), new GeneratorsRecipeProvider(output, existingFileHelper, lookupProvider));
         gen.addProvider(event.includeServer(), new GeneratorsAdvancementProvider(output, existingFileHelper));
     }
 }

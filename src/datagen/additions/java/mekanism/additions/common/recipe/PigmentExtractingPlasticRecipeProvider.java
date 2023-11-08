@@ -15,6 +15,7 @@ import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registration.impl.PigmentRegistryObject;
 import mekanism.common.registries.MekanismPigments;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 
 public class PigmentExtractingPlasticRecipeProvider implements ISubRecipeProvider {
 
@@ -32,7 +33,7 @@ public class PigmentExtractingPlasticRecipeProvider implements ISubRecipeProvide
     private static final long TRANSPARENT_PLASTIC_SLAB_RATE = TRANSPARENT_PLASTIC_BLOCK_RATE / 2;//21
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "pigment_extracting/plastic/";
         for (Map.Entry<EnumColor, PigmentRegistryObject<Pigment>> entry : MekanismPigments.PIGMENT_COLOR_LOOKUP.entrySet()) {
             EnumColor color = entry.getKey();
@@ -52,7 +53,7 @@ public class PigmentExtractingPlasticRecipeProvider implements ISubRecipeProvide
         }
     }
 
-    private static void addExtractionRecipe(Consumer<FinishedRecipe> consumer, EnumColor color, Map<EnumColor, ? extends IItemProvider> input, IPigmentProvider pigment,
+    private static void addExtractionRecipe(RecipeOutput consumer, EnumColor color, Map<EnumColor, ? extends IItemProvider> input, IPigmentProvider pigment,
           long rate, String basePath) {
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(input.get(color)),

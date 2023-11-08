@@ -61,7 +61,7 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        return super.mouseScrolled(mouseX, mouseY, delta) || scrollBar.adjustScroll(delta);
+    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
+        return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY) || scrollBar.adjustScroll(deltaX);
     }
 }

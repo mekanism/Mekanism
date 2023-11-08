@@ -20,7 +20,7 @@ public interface IBabyEntity {
         if (entity.level() != null && !entity.level().isClientSide) {
             AttributeInstance attributeInstance = entity.getAttribute(Attributes.MOVEMENT_SPEED);
             if (attributeInstance != null) {
-                attributeInstance.removeModifier(babySpeedBoostModifier);
+                attributeInstance.removeModifier(babySpeedBoostUUID);
                 if (child) {
                     attributeInstance.addTransientModifier(babySpeedBoostModifier);
                 }

@@ -20,6 +20,7 @@ import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 
 public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
 
@@ -31,20 +32,20 @@ public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, Pattern.CONSTANT, AdditionsRecipeProvider.PLASTIC_ROD_CHAR));
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "plastic/";
         registerPlasticFences(consumer, basePath);
         registerPlasticFenceGates(consumer, basePath);
     }
 
-    private void registerPlasticFences(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void registerPlasticFences(RecipeOutput consumer, String basePath) {
         basePath += "fence/";
         for (Map.Entry<EnumColor, BlockRegistryObject<BlockPlasticFence, ItemBlockColoredName>> entry : AdditionsBlocks.PLASTIC_FENCES.entrySet()) {
             registerPlasticFence(consumer, entry.getValue(), AdditionsBlocks.PLASTIC_BLOCKS.get(entry.getKey()), basePath);
         }
     }
 
-    private void registerPlasticFence(Consumer<FinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider plastic, String basePath) {
+    private void registerPlasticFence(RecipeOutput consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider plastic, String basePath) {
         EnumColor color = result.getBlock().getColor();
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 3)
               .pattern(PLASTIC_FENCE)
@@ -55,14 +56,14 @@ public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
         PlasticBlockRecipeProvider.registerRecolor(consumer, result, AdditionsTags.Items.FENCES_PLASTIC, color, basePath);
     }
 
-    private void registerPlasticFenceGates(Consumer<FinishedRecipe> consumer, String basePath) {
+    private void registerPlasticFenceGates(RecipeOutput consumer, String basePath) {
         basePath += "fence_gate/";
         for (Map.Entry<EnumColor, BlockRegistryObject<BlockPlasticFenceGate, ItemBlockColoredName>> entry : AdditionsBlocks.PLASTIC_FENCE_GATES.entrySet()) {
             registerPlasticFenceGate(consumer, entry.getValue(), AdditionsBlocks.PLASTIC_BLOCKS.get(entry.getKey()), basePath);
         }
     }
 
-    private void registerPlasticFenceGate(Consumer<FinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider plastic, String basePath) {
+    private void registerPlasticFenceGate(RecipeOutput consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider plastic, String basePath) {
         EnumColor color = result.getBlock().getColor();
         ExtendedShapedRecipeBuilder.shapedRecipe(result)
               .pattern(PLASTIC_FENCE_GATE)

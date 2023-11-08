@@ -1,6 +1,7 @@
 package mekanism.additions.common.recipe;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.MekanismAdditions;
@@ -29,6 +30,7 @@ import mekanism.common.registries.MekanismPigments;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -57,12 +59,12 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(PLASTIC_SHEET_CHAR, Pattern.DYE, PLASTIC_SHEET_CHAR),
           TripleLine.of(Pattern.GLOWSTONE, PLASTIC_SHEET_CHAR, Pattern.GLOWSTONE));
 
-    public AdditionsRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, existingFileHelper, MekanismAdditions.MODID);
+    public AdditionsRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper, CompletableFuture<Provider> lookupProvider) {
+        super(output, existingFileHelper, MekanismAdditions.MODID, lookupProvider);
     }
 
     @Override
-    protected void addRecipes(RecipeOutput output) {
+    protected void addRecipes(RecipeOutput consumer) {
         ExtendedShapedRecipeBuilder.shapedRecipe(AdditionsItems.WALKIE_TALKIE)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.EMPTY, Pattern.OSMIUM),
@@ -96,13 +98,13 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         );
     }
 
-    private void registerBalloons(Consumer<FinishedRecipe> consumer) {
+    private void registerBalloons(RecipeOutput consumer) {
         for (ItemRegistryObject<ItemBalloon> balloon : AdditionsItems.BALLOONS.values()) {
             registerBalloon(consumer, balloon, "balloon/");
         }
     }
 
-    private void registerBalloon(Consumer<FinishedRecipe> consumer, ItemRegistryObject<ItemBalloon> result, String basePath) {
+    private void registerBalloon(RecipeOutput consumer, ItemRegistryObject<ItemBalloon> result, String basePath) {
         EnumColor color = result.asItem().getColor();
         String colorString = color.getRegistryPrefix();
         Ingredient recolorInput = difference(AdditionsTags.Items.BALLOONS, result);
@@ -127,13 +129,13 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         ).build(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
     }
 
-    private void registerGlowPanels(Consumer<FinishedRecipe> consumer) {
+    private void registerGlowPanels(RecipeOutput consumer) {
         for (BlockRegistryObject<BlockGlowPanel, ItemBlockColoredName> glowPanel : AdditionsBlocks.GLOW_PANELS.values()) {
             registerGlowPanel(consumer, glowPanel, "glow_panel/");
         }
     }
 
-    private void registerGlowPanel(Consumer<FinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, String basePath) {
+    private void registerGlowPanel(RecipeOutput consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, String basePath) {
         EnumColor color = result.getBlock().getColor();
         DyeColor dye = color.getDyeColor();
         if (dye != null) {

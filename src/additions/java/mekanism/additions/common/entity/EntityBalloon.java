@@ -397,8 +397,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         return (float) (size.height - OFFSET);
     }
 
+    //todo 1.20.2 work out if we can inline this
     @NotNull
-    @Override
+    //@Override
     protected AABB getBoundingBoxForPose(@NotNull Pose pose) {
         EntityDimensions size = getDimensions(pose);
         double x = getX();

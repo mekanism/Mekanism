@@ -1,5 +1,6 @@
 package mekanism.tools.common.recipe;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.providers.IItemProvider;
@@ -20,9 +21,11 @@ import mekanism.common.util.RegistryUtils;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.registries.ToolsItems;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -80,12 +83,12 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(Pattern.EMPTY, ROD_CHAR, Pattern.EMPTY),
           TripleLine.of(Pattern.EMPTY, ROD_CHAR, Pattern.EMPTY));
 
-    public ToolsRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, existingFileHelper, MekanismTools.MODID);
+    public ToolsRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper, CompletableFuture<Provider> lookupProvider) {
+        super(output, existingFileHelper, MekanismTools.MODID, lookupProvider);
     }
 
     @Override
-    protected void addRecipes(Consumer<FinishedRecipe> consumer) {
+    protected void addRecipes(RecipeOutput consumer) {
         registerRecipeSet(consumer, "bronze", ToolsItems.BRONZE_HELMET, ToolsItems.BRONZE_CHESTPLATE, ToolsItems.BRONZE_LEGGINGS, ToolsItems.BRONZE_BOOTS,
               ToolsItems.BRONZE_SWORD, ToolsItems.BRONZE_PICKAXE, ToolsItems.BRONZE_AXE, ToolsItems.BRONZE_SHOVEL, ToolsItems.BRONZE_HOE, ToolsItems.BRONZE_PAXEL,
               ToolsItems.BRONZE_SHIELD, MekanismTags.Items.INGOTS_BRONZE, Tags.Items.RODS_WOODEN, MekanismItems.BRONZE_NUGGET);
@@ -111,7 +114,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         SpecialRecipeBuilder.build(consumer, ToolsRecipeSerializers.BANNER_SHIELD);
     }
 
-    private void registerRecipeSet(Consumer<FinishedRecipe> consumer, String name, IItemProvider helmet, IItemProvider chestplate, IItemProvider leggings,
+    private void registerRecipeSet(RecipeOutput consumer, String name, IItemProvider helmet, IItemProvider chestplate, IItemProvider leggings,
           IItemProvider boots, IItemProvider sword, IItemProvider pickaxe, IItemProvider axe, IItemProvider shovel, IItemProvider hoe, IItemProvider paxel,
           IItemProvider shield, TagKey<Item> ingot, TagKey<Item> rod, @Nullable IItemProvider nugget) {
         String baseArmorPath = name + "/armor/";
@@ -146,7 +149,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         }
     }
 
-    private void registerVanillaPaxels(Consumer<FinishedRecipe> consumer) {
+    private void registerVanillaPaxels(RecipeOutput consumer) {
         registerVanillaPaxel(consumer, ToolsItems.WOOD_PAXEL, Items.WOODEN_AXE, Items.WOODEN_PICKAXE, Items.WOODEN_SHOVEL, null);
         registerVanillaPaxel(consumer, ToolsItems.STONE_PAXEL, Items.STONE_AXE, Items.STONE_PICKAXE, Items.STONE_SHOVEL, null);
         registerVanillaPaxel(consumer, ToolsItems.IRON_PAXEL, Items.IRON_AXE, Items.IRON_PICKAXE, Items.IRON_SHOVEL, Items.IRON_NUGGET);
@@ -155,7 +158,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         ExtendedSmithingRecipeBuilder.smithing(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE, ToolsItems.DIAMOND_PAXEL, Items.NETHERITE_INGOT, ToolsItems.NETHERITE_PAXEL).build(consumer);
     }
 
-    private void registerVanillaPaxel(Consumer<FinishedRecipe> consumer, IItemProvider paxel, Item axe, Item pickaxe, Item shovel, @Nullable Item nugget) {
+    private void registerVanillaPaxel(RecipeOutput consumer, IItemProvider paxel, Item axe, Item pickaxe, Item shovel, @Nullable Item nugget) {
         PaxelShapedRecipeBuilder.shapedRecipe(paxel)
               .pattern(PAXEL)
               .key(AXE_CHAR, axe)

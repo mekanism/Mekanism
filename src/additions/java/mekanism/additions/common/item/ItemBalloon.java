@@ -7,7 +7,7 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockSource;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.network.chat.Component;
@@ -146,16 +146,16 @@ public class ItemBalloon extends Item {
         @NotNull
         @Override
         public ItemStack execute(BlockSource source, @NotNull ItemStack stack) {
-            Direction side = source.getBlockState().getValue(DispenserBlock.FACING);
-            BlockPos sourcePos = source.getPos();
+            Direction side = source.state().getValue(DispenserBlock.FACING);
+            BlockPos sourcePos = source.pos();
             BlockPos offsetPos = sourcePos.relative(side);
-            List<LivingEntity> entities = source.getLevel().getEntitiesOfClass(LivingEntity.class, new AABB(offsetPos, offsetPos.offset(1, 1, 1)));
+            List<LivingEntity> entities = source.level().getEntitiesOfClass(LivingEntity.class, new AABB(offsetPos, offsetPos.offset(1, 1, 1)));
             boolean latched = false;
 
             for (LivingEntity entity : entities) {
                 AABB bound = new AABB(entity.getX() - 0.2, entity.getY() - 0.5, entity.getZ() - 0.2,
                       entity.getX() + 0.2, entity.getY() + entity.getDimensions(entity.getPose()).height + 4, entity.getZ() + 0.2);
-                List<EntityBalloon> balloonsNear = source.getLevel().getEntitiesOfClass(EntityBalloon.class, bound);
+                List<EntityBalloon> balloonsNear = source.level().getEntitiesOfClass(EntityBalloon.class, bound);
                 boolean hasBalloon = false;
                 for (EntityBalloon balloon : balloonsNear) {
                     if (balloon.latchedEntity == entity) {
@@ -166,7 +166,7 @@ public class ItemBalloon extends Item {
                 if (!hasBalloon) {
                     EntityBalloon balloon = EntityBalloon.create(entity, color);
                     if (balloon != null) {
-                        source.getLevel().addFreshEntity(balloon);
+                        source.level().addFreshEntity(balloon);
                     }
                     latched = true;
                 }
@@ -180,10 +180,10 @@ public class ItemBalloon extends Item {
                     case WEST -> pos = pos.add(-0.5, -1, 0);
                     case EAST -> pos = pos.add(0.5, -1, 0);
                 }
-                if (!source.getLevel().isClientSide) {
-                    EntityBalloon balloon = EntityBalloon.create(source.getLevel(), pos.x, pos.y, pos.z, color);
+                if (!source.level().isClientSide) {
+                    EntityBalloon balloon = EntityBalloon.create(source.level(), pos.x, pos.y, pos.z, color);
                     if (balloon != null) {
-                        source.getLevel().addFreshEntity(balloon);
+                        source.level().addFreshEntity(balloon);
                     }
                 }
             }

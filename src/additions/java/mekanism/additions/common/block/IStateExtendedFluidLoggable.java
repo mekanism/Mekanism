@@ -3,6 +3,7 @@ package mekanism.additions.common.block;
 import mekanism.common.block.states.IFluidLogType;
 import mekanism.common.block.states.IStateFluidLoggable;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
@@ -45,14 +46,14 @@ public interface IStateExtendedFluidLoggable extends IStateFluidLoggable {
     }
 
     @Override
-    default boolean canPlaceLiquid(@NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid fluid) {
-        return !state.getValue(BlockStateProperties.WATERLOGGED) && IStateFluidLoggable.super.canPlaceLiquid(world, pos, state, fluid);
+    default boolean canPlaceLiquid(Player player,  @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid fluid) {
+        return !state.getValue(BlockStateProperties.WATERLOGGED) && IStateFluidLoggable.super.canPlaceLiquid(player, world, pos, state, fluid);
     }
 
     @Override
     default boolean placeLiquid(@NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull FluidState fluidState) {
         Fluid fluid = fluidState.getType();
-        if (canPlaceLiquid(world, pos, state, fluid)) {
+        if (canPlaceLiquid(null, world, pos, state, fluid)) {
             if (!world.isClientSide()) {
                 if (fluid == Fluids.WATER) {
                     world.setBlock(pos, state.setValue(BlockStateProperties.WATERLOGGED, true), Block.UPDATE_ALL);
@@ -68,11 +69,11 @@ public interface IStateExtendedFluidLoggable extends IStateFluidLoggable {
 
     @NotNull
     @Override
-    default ItemStack pickupBlock(@NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockState state) {
+    default ItemStack pickupBlock(Player player, @NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockState state) {
         if (state.getValue(BlockStateProperties.WATERLOGGED)) {
             world.setBlock(pos, state.setValue(BlockStateProperties.WATERLOGGED, false), Block.UPDATE_ALL);
             return new ItemStack(Items.WATER_BUCKET);
         }
-        return IStateFluidLoggable.super.pickupBlock(world, pos, state);
+        return IStateFluidLoggable.super.pickupBlock(player, world, pos, state);
     }
 }

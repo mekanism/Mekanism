@@ -10,12 +10,13 @@ import mekanism.api.providers.IEntityTypeProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.common.advancements.BaseAdvancementProvider;
 import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.DamagePredicate;
 import net.minecraft.advancements.critereon.EntityHurtPlayerTrigger;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.KilledTrigger;
+import net.minecraft.advancements.critereon.KilledTrigger.TriggerInstance;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -63,7 +64,7 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
         return new RecipeCriterion(entityTypeProvider.getName(), kill(entityTypeProvider));
     }
 
-    private CriterionTriggerInstance kill(IEntityTypeProvider entityTypeProvider) {
+    private Criterion<TriggerInstance> kill(IEntityTypeProvider entityTypeProvider) {
         return KilledTrigger.TriggerInstance.playerKilledEntity(EntityPredicate.Builder.entity().of(entityTypeProvider.getEntityType()));
     }
 
@@ -71,7 +72,7 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
         return new RecipeCriterion(entityTypeProvider.getName(), damaged(entityTypeProvider));
     }
 
-    private CriterionTriggerInstance damaged(IEntityTypeProvider entityTypeProvider) {
+    private Criterion<EntityHurtPlayerTrigger.TriggerInstance> damaged(IEntityTypeProvider entityTypeProvider) {
         //Damaged by entity and not blocked
         return EntityHurtPlayerTrigger.TriggerInstance.entityHurtPlayer(DamagePredicate.Builder.damageInstance()
               .sourceEntity(EntityPredicate.Builder.entity().of(entityTypeProvider.getEntityType()).build())

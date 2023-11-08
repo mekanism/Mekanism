@@ -14,6 +14,7 @@ import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -22,7 +23,7 @@ public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
     private static final RecipePattern PLASTIC_SLAB = RecipePattern.createPattern(TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT));
 
     @Override
-    public void addRecipes(Consumer<FinishedRecipe> consumer) {
+    public void addRecipes(RecipeOutput consumer) {
         String basePath = "plastic/slab/";
         registerPlasticSlabs(consumer, AdditionsBlocks.PLASTIC_SLABS, AdditionsBlocks.PLASTIC_BLOCKS, AdditionsTags.Items.SLABS_PLASTIC, false, basePath);
         registerPlasticSlabs(consumer, AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS, AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS,
@@ -31,7 +32,7 @@ public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
               basePath + "glow/");
     }
 
-    private void registerPlasticSlabs(Consumer<FinishedRecipe> consumer, Map<EnumColor, ? extends IItemProvider> blocks, Map<EnumColor, ? extends IItemProvider> plastic,
+    private void registerPlasticSlabs(RecipeOutput consumer, Map<EnumColor, ? extends IItemProvider> blocks, Map<EnumColor, ? extends IItemProvider> plastic,
           TagKey<Item> blockType, boolean transparent, String basePath) {
         for (Map.Entry<EnumColor, ? extends IItemProvider> entry : blocks.entrySet()) {
             EnumColor color = entry.getKey();
@@ -39,7 +40,7 @@ public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
         }
     }
 
-    private void registerPlasticSlab(Consumer<FinishedRecipe> consumer, EnumColor color, IItemProvider result, IItemProvider plastic,
+    private void registerPlasticSlab(RecipeOutput consumer, EnumColor color, IItemProvider result, IItemProvider plastic,
           TagKey<Item> blockType, boolean transparent, String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 6)
               .pattern(PLASTIC_SLAB)

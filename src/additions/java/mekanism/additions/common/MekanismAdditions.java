@@ -18,7 +18,7 @@ import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
 import mekanism.common.registration.impl.EntityTypeRegistryObject;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.BlockSource;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -125,9 +125,9 @@ public class MekanismAdditions implements IModModule {
                 @NotNull
                 @Override
                 protected ItemStack execute(@NotNull BlockSource source, @NotNull ItemStack stack) {
-                    BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
-                    if (BlockObsidianTNT.createAndAddEntity(source.getLevel(), blockpos, null)) {
-                        source.getLevel().gameEvent(null, GameEvent.ENTITY_PLACE, blockpos);
+                    BlockPos blockpos = source.pos().relative(source.state().getValue(DispenserBlock.FACING));
+                    if (BlockObsidianTNT.createAndAddEntity(source.level(), blockpos, null)) {
+                        source.level().gameEvent(null, GameEvent.ENTITY_PLACE, blockpos);
                         stack.shrink(1);
                         return stack;
                     }
