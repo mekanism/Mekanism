@@ -9,7 +9,7 @@
 			"faces": {
 				"south": {"uv": [2.5, 2.5, 3, 3], "texture": "#robit"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 15,
 				"sky_light": 15
 			}
@@ -21,7 +21,7 @@
 			"faces": {
 				"south": {"uv": [0.5, 2.5, 1, 3], "texture": "#robit"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 15,
 				"sky_light": 15
 			}
@@ -134,7 +134,7 @@
 			"faces": {
 				"north": {"uv": [6.5, 12, 7.5, 12.5], "texture": "#robit"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 15,
 				"sky_light": 15
 			}

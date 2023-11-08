@@ -44,7 +44,7 @@
 			"faces": {
 				"south": {"uv": [8, 8, 16, 16], "texture": "#ports_led", "cullface": "south"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 15,
 				"sky_light": 15
 			}

@@ -98,7 +98,7 @@
 			"faces": {
 				"up": {"uv": [8, 0, 16, 8], "texture": "#3", "cullface": "up"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 15,
 				"sky_light": 15
 			}
@@ -149,7 +149,7 @@
 			"faces": {
 				"north": {"uv": [8, 8, 16, 16], "texture": "#3", "cullface": "north"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 15,
 				"sky_light": 15
 			}

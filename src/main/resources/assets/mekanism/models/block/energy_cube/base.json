@@ -161,7 +161,7 @@
 				"east": {"uv": [0, 3, 3, 6], "texture": "#corner", "cullface": "east"},
 				"up": {"uv": [0, 0, 3, 3], "texture": "#corner", "cullface": "up"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 10,
 				"sky_light": 10
 			}
@@ -185,7 +185,7 @@
 				"south": {"uv": [0, 3, 3, 6], "texture": "#corner", "cullface": "south"},
 				"up": {"uv": [0, 0, 3, 3], "texture": "#corner", "cullface": "up"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 10,
 				"sky_light": 10
 			}
@@ -209,7 +209,7 @@
 				"west": {"uv": [0, 3, 3, 6], "texture": "#corner", "cullface": "west"},
 				"up": {"uv": [0, 0, 3, 3], "texture": "#corner", "cullface": "up"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 10,
 				"sky_light": 10
 			}
@@ -233,7 +233,7 @@
 				"west": {"uv": [0, 3, 3, 6], "texture": "#corner", "cullface": "west"},
 				"up": {"uv": [0, 0, 3, 3], "texture": "#corner", "cullface": "up"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 10,
 				"sky_light": 10
 			}
@@ -257,7 +257,7 @@
 				"east": {"uv": [0, 3, 3, 6], "texture": "#corner", "cullface": "east"},
 				"down": {"uv": [0, 0, 3, 3], "texture": "#corner", "cullface": "down"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 10,
 				"sky_light": 10
 			}
@@ -281,7 +281,7 @@
 				"south": {"uv": [0, 3, 3, 6], "texture": "#corner", "cullface": "south"},
 				"down": {"uv": [0, 0, 3, 3], "texture": "#corner", "cullface": "down"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 10,
 				"sky_light": 10
 			}
@@ -305,7 +305,7 @@
 				"west": {"uv": [0, 3, 3, 6], "texture": "#corner", "cullface": "west"},
 				"down": {"uv": [0, 0, 3, 3], "texture": "#corner", "cullface": "down"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 10,
 				"sky_light": 10
 			}
@@ -329,7 +329,7 @@
 				"west": {"uv": [0, 3, 3, 6], "texture": "#corner", "cullface": "west"},
 				"down": {"uv": [0, 0, 3, 3], "texture": "#corner", "cullface": "down"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 10,
 				"sky_light": 10
 			}

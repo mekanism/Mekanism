@@ -248,7 +248,7 @@
 			"faces": {
 				"north": {"uv": [8, 8, 16, 16], "texture": "#2", "cullface": "north"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 15,
 				"sky_light": 15
 			}
@@ -272,7 +272,7 @@
 			"faces": {
 				"east": {"uv": [8, 0, 16, 8], "texture": "#2", "cullface": "east"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 15,
 				"sky_light": 15
 			}
@@ -292,7 +292,7 @@
 			"faces": {
 				"up": {"uv": [8, 0, 16, 8], "rotation": 270, "texture": "#2", "cullface": "up"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 15,
 				"sky_light": 15
 			}
@@ -316,7 +316,7 @@
 			"faces": {
 				"south": {"uv": [8, 0, 16, 8], "rotation": 180, "texture": "#2", "cullface": "south"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 15,
 				"sky_light": 15
 			}
@@ -340,7 +340,7 @@
 			"faces": {
 				"west": {"uv": [8, 0, 16, 8], "texture": "#2", "cullface": "west"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 15,
 				"sky_light": 15
 			}

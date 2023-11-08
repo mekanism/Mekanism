@@ -26,7 +26,7 @@
 				"west": {"uv": [4, 1, 5, 2], "texture": "#6"},
 				"up": {"uv": [4, 1, 5, 2], "texture": "#6"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 15,
 				"sky_light": 15
 			}

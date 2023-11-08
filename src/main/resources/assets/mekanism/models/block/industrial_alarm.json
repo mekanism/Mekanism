@@ -1,5 +1,5 @@
 {
-	"loader": "forge:composite",
+	"loader": "neoforge:composite",
 	"gui_light": "side",
 	"textures": {
 		"1": "mekanism:block/models/industrial_alarm",

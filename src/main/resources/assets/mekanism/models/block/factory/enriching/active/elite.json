@@ -1,5 +1,5 @@
 {
-    "loader": "forge:composite",
+    "loader": "neoforge:composite",
     "parent": "block/block",
     "textures": {
         "particle": "mekanism:block/factory/enriching/enriching_factory_front"

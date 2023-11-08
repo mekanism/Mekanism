@@ -1,5 +1,5 @@
 {
-  "loader": "forge:composite",
+  "loader": "neoforge:composite",
   "gui_light": "side",
   "display": {
     "thirdperson_righthand": {

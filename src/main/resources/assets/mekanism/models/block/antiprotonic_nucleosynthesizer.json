@@ -1,5 +1,5 @@
 {
-	"loader": "forge:composite",
+	"loader": "neoforge:composite",
 	"gui_light": "side",
 	"textures": {
 		"particle": "mekanism:block/models/antiprotonic_nucleosynthesizer_front"
@@ -236,7 +236,7 @@
 						"south": {"uv": [0, 0, 2, 2], "texture": "#8"},
 						"west": {"uv": [0, 0, 2, 2], "texture": "#8"}
 					},
-					"forge_data": {
+					"neoforge_data": {
 						"block_light": 15,
 						"sky_light": 15
 					}
@@ -251,7 +251,7 @@
 						"south": {"uv": [0, 0, 2, 2], "texture": "#8"},
 						"west": {"uv": [0, 0, 2, 2], "texture": "#8"}
 					},
-					"forge_data": {
+					"neoforge_data": {
 						"block_light": 15,
 						"sky_light": 15
 					}
@@ -266,7 +266,7 @@
 						"south": {"uv": [0, 0, 2, 2], "texture": "#8"},
 						"west": {"uv": [0, 0, 2, 2], "texture": "#8"}
 					},
-					"forge_data": {
+					"neoforge_data": {
 						"block_light": 15,
 						"sky_light": 15
 					}
@@ -281,7 +281,7 @@
 						"south": {"uv": [0, 0, 2, 2], "texture": "#8"},
 						"west": {"uv": [0, 0, 2, 2], "texture": "#8"}
 					},
-					"forge_data": {
+					"neoforge_data": {
 						"block_light": 15,
 						"sky_light": 15
 					}
@@ -305,7 +305,7 @@
 					"faces": {
 						"south": {"uv": [8, 8, 16, 16], "texture": "#6", "cullface": "south"}
 					},
-					"forge_data": {
+					"neoforge_data": {
 						"block_light": 15,
 						"sky_light": 15
 					}

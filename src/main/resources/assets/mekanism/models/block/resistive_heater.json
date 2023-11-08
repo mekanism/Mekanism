@@ -35,7 +35,7 @@
 			"faces": {
 				"west": {"uv": [8, 8, 16, 16], "texture": "#6", "cullface": "west"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 15,
 				"sky_light": 15
 			}
@@ -47,7 +47,7 @@
 			"faces": {
 				"east": {"uv": [8, 8, 16, 16], "texture": "#6", "cullface": "east"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 15,
 				"sky_light": 15
 			}

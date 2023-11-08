@@ -1,5 +1,5 @@
 {
-	"loader": "forge:composite",
+	"loader": "neoforge:composite",
 	"gui_light": "side",
 	"textures": {
 		"particle": "mekanism:block/models/isotopic_centrifuge"
@@ -108,7 +108,7 @@
 					"faces": {
 						"down": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "down"}
 					},
-					"forge_data": {
+					"neoforge_data": {
 						"block_light": 15,
 						"sky_light": 15
 					}
@@ -349,7 +349,7 @@
 					"faces": {
 						"north": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "north"}
 					},
-					"forge_data": {
+					"neoforge_data": {
 						"block_light": 15,
 						"sky_light": 15
 					}

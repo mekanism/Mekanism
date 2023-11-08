@@ -1,5 +1,5 @@
 {
-	"loader": "forge:composite",
+	"loader": "neoforge:composite",
 	"gui_light": "side",
 	"display": {
 		"thirdperson_righthand": {
@@ -154,7 +154,7 @@
 					"faces": {
 						"south": {"uv": [8, 8, 16, 16], "texture": "#4", "cullface": "south"}
 					},
-					"forge_data": {
+					"neoforge_data": {
 						"block_light": 15,
 						"sky_light": 15
 					}

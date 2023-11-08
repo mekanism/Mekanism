@@ -134,7 +134,7 @@
 			"faces": {
 				"east": {"uv": [0, 0, 5, 5], "texture": "#ports_large_led", "cullface": "east"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 15,
 				"sky_light": 15
 			}
@@ -158,7 +158,7 @@
 			"faces": {
 				"west": {"uv": [8, 0, 16, 8], "texture": "#ports_led", "cullface": "west"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 15,
 				"sky_light": 15
 			}

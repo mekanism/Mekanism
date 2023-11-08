@@ -1,5 +1,5 @@
 {
-	"loader": "forge:composite",
+	"loader": "neoforge:composite",
 	"gui_light": "side",
 	"textures": {
 		"particle": "mekanism:block/models/solar_neutron_activator1"

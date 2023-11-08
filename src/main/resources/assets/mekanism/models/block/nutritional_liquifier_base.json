@@ -1,6 +1,6 @@
 {
   "parent": "block/block",
-  "loader": "forge:composite",
+  "loader": "neoforge:composite",
   "textures": {
     "particle": "mekanism:block/nutritional_liquifier"
   },

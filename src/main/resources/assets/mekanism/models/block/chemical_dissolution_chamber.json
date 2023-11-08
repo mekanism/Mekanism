@@ -1,5 +1,5 @@
 {
-	"loader": "forge:composite",
+	"loader": "neoforge:composite",
 	"parent": "block/block",
 	"textures": {
 		"particle": "mekanism:block/bottom"
@@ -49,7 +49,7 @@
 					"faces": {
 						"west": {"uv": [0, 0, 8, 8], "texture": "#0", "cullface": "west"}
 					},
-					"forge_data": {
+					"neoforge_data": {
 						"block_light": 15,
 						"sky_light": 15
 					}
@@ -73,7 +73,7 @@
 					"faces": {
 						"east": {"uv": [0, 0, 5, 5], "texture": "#2", "cullface": "east"}
 					},
-					"forge_data": {
+					"neoforge_data": {
 						"block_light": 15,
 						"sky_light": 15
 					}

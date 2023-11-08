@@ -33,7 +33,7 @@
 			"faces": {
 				"north": {"uv": [0, 0, 16, 16], "texture": "#north_led", "cullface": "north"}
 			},
-			"forge_data": {
+			"neoforge_data": {
 				"block_light": 15,
 				"sky_light": 15
 			}

@@ -1,5 +1,5 @@
 {
-	"loader": "forge:composite",
+	"loader": "neoforge:composite",
 	"parent": "block/block",
 	"textures": {
 		"particle": "mekanism:block/models/quantum_entangloporter"
@@ -401,7 +401,7 @@
 					"faces": {
 						"north": {"uv": [8, 0, 16, 8], "texture": "#4", "cullface": "north"}
 					},
-					"forge_data": {
+					"neoforge_data": {
 						"block_light": 15,
 						"sky_light": 15
 					}
@@ -413,7 +413,7 @@
 					"faces": {
 						"east": {"uv": [8, 0, 16, 8], "texture": "#4", "cullface": "east"}
 					},
-					"forge_data": {
+					"neoforge_data": {
 						"block_light": 15,
 						"sky_light": 15
 					}
@@ -451,7 +451,7 @@
 					"faces": {
 						"south": {"uv": [8, 0, 16, 8], "texture": "#4", "cullface": "south"}
 					},
-					"forge_data": {
+					"neoforge_data": {
 						"block_light": 15,
 						"sky_light": 15
 					}
@@ -463,7 +463,7 @@
 					"faces": {
 						"west": {"uv": [8, 0, 16, 8], "texture": "#4", "cullface": "west"}
 					},
-					"forge_data": {
+					"neoforge_data": {
 						"block_light": 15,
 						"sky_light": 15
 					}
@@ -501,7 +501,7 @@
 					"faces": {
 						"up": {"uv": [8, 0, 16, 8], "rotation": 270, "texture": "#4", "cullface": "up"}
 					},
-					"forge_data": {
+					"neoforge_data": {
 						"block_light": 15,
 						"sky_light": 15
 					}
@@ -526,7 +526,7 @@
 					"faces": {
 						"down": {"uv": [8, 0, 16, 8], "rotation": 90, "texture": "#4", "cullface": "down"}
 					},
-					"forge_data": {
+					"neoforge_data": {
 						"block_light": 15,
 						"sky_light": 15
 					}
@@ -556,7 +556,7 @@
 						"up": {"uv": [15, 15, 16, 16], "texture": "#0"},
 						"down": {"uv": [15, 15, 16, 16], "texture": "#0"}
 					},
-					"forge_data": {
+					"neoforge_data": {
 						"block_light": 15,
 						"sky_light": 15
 					}
