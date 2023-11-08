@@ -3,7 +3,7 @@
 		"1": "mekanismadditions:entity/balloon_string",
 		"all": "mekanismadditions:entity/balloon"
 	},
-	"loader": "forge:separate_transforms",
+	"loader": "neoforge:separate_transforms",
 	"base": {
 		"parent": "mekanismadditions:item/balloon_latched"
 	},

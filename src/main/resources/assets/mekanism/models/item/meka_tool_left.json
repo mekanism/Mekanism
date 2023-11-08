@@ -1,5 +1,5 @@
 {
-    "loader": "forge:obj",
+    "loader": "neoforge:obj",
     "model": "mekanism:models/entity/mekatool_left.obj",
     "flip_v": true,
     "display": {

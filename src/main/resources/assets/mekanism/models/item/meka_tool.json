@@ -1,8 +1,8 @@
 {
     "parent": "minecraft:item/generated",
-    "loader": "forge:separate_transforms",
+    "loader": "neoforge:separate_transforms",
     "base": {
-        "loader": "forge:obj",
+        "loader": "neoforge:obj",
         "model": "mekanism:models/entity/mekatool_right.obj",
         "flip_v": true,
         "display": {
