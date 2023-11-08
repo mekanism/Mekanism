@@ -148,6 +148,9 @@ def setupExtraSourceSets(SourceSet base) {
 SourceSet setupExtraSourceSet(SourceSet baseSourceSet, String extra) {
     def name = baseSourceSet.getName()
     def extraSourceSet = sourceSets.create(baseSourceSet.getTaskName(extra, null))
+    extraSourceSet.runs {
+        modIdentifier = name
+    }
     extraSourceSet.java.srcDirs = ["src/${extra}/${name}/java"]
     //Resources folder for if we have anything get created by our annotation processors or in the case of game tests, for any nbt presets
     extraSourceSet.resources.srcDirs = ["src/${extra}/${name}/resources"]
@@ -464,8 +467,8 @@ dependencies {
     //Dependencies for data generators for mod compat reference
     datagenMainCompileOnly ("appeng:appliedenergistics2-forge:${ae2_version}")//todo 1.20.2 back to Implementation
     datagenMainCompileOnly ("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
-    datagenMainRuntimeOnly ("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
-    datagenMainRuntimeOnly ("curse.maven:terrablender-563928:${terrablender_id}")
+    //datagenMainRuntimeOnly ("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
+    //datagenMainRuntimeOnly ("curse.maven:terrablender-563928:${terrablender_id}")
     //TODO - 1.20: Switch back to datagenMainImplementation
     datagenMainCompileOnly ("curse.maven:biomes-youll-go-247560:${byg_id}")
     //TODO - 1.20.2: Switch back to datagenMainImplementation
