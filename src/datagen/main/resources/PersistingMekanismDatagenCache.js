@@ -1,4 +1,4 @@
-var ASMAPI = Java.type('net.minecraftforge.coremod.api.ASMAPI')
+var ASMAPI = Java.type('net.neoforged.coremod.api.ASMAPI')
 
 function initializeCoreMod() {
   return {
@@ -6,7 +6,7 @@ function initializeCoreMod() {
       'target': {
         'type': 'METHOD',
         'class': 'net.minecraft.data.DataGenerator',
-        'methodName': ASMAPI.mapMethod('m_123917_'),
+        'methodName': 'run',//ASMAPI.mapMethod('m_123917_'),
         'methodDesc': '()V'
       },
       'transformer': function (method) {
