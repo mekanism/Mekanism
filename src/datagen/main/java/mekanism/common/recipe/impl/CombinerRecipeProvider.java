@@ -1,14 +1,13 @@
 package mekanism.common.recipe.impl;
 
 import java.util.Map;
-import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.data.recipes.FinishedRecipe;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.ItemStack;
@@ -145,7 +144,7 @@ class CombinerRecipeProvider implements ISubRecipeProvider {
                   IngredientCreatorAccess.item().from(entry.getKey()),
                   wax,
                   new ItemStack(result)
-            ).build(consumer, Mekanism.rl(basePath + result.asItem()));
+            ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(result.asItem())));
         }
     }
 }

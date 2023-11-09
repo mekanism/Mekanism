@@ -1,7 +1,6 @@
 package mekanism.common.recipe.impl;
 
 import java.util.Map;
-import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
@@ -12,7 +11,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.data.recipes.FinishedRecipe;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
@@ -395,7 +394,7 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
             ItemStackToItemStackRecipeBuilder.enriching(
                   IngredientCreatorAccess.item().from(entry.getKey()),
                   new ItemStack(result)
-            ).build(consumer, Mekanism.rl(basePath + result.asItem()));
+            ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(result.asItem())));
         }
     }
 

@@ -14,7 +14,6 @@ import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -118,8 +117,6 @@ public class ExtendedAdvancementBuilder {
     }
 
     public AdvancementHolder save(Consumer<AdvancementHolder> consumer) {
-        AdvancementHolder built = internal.save(consumer, advancement.name(), existingFileHelper);
-        existingFileHelper.trackGenerated(built.id(), PackType.SERVER_DATA, ".json", "advancements");
-        return built;
+        return internal.save(consumer, advancement.name(), existingFileHelper);
     }
 }

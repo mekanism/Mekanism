@@ -34,11 +34,13 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     }
 
     private static final Set<String> PATHS_TO_SKIP = Set.of(
-          //"/scripts/",//CraftTweaker script files
+          "/computer_help/",//TODO - 1.20.2: Remove this as it should just work:tm: once NG updates to support minecraftLibrary type stuff again
+          "/scripts/",//CraftTweaker script files
           "/pe_custom_conversions/"//ProjectE custom conversion files
     );
     private static final List<String> FAKE_PROVIDERS = List.of(
-          //"CraftTweaker Examples: mekanism",
+          "ComputerHelp: mekanism",//TODO - 1.20.2: Remove this as it should just work:tm: once NG updates to support minecraftLibrary type stuff again
+          "CraftTweaker Examples: mekanism",
           "Custom EMC Conversions: mekanism"
     );
 
@@ -66,12 +68,12 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
             return;
         }
 
-        FieldReflectionHelper<HashCache, Map<String, ProviderCache>> existingCaches = new FieldReflectionHelper<>(HashCache.class, "f_252445_", () -> null);
+        FieldReflectionHelper<HashCache, Map<String, ProviderCache>> existingCaches = new FieldReflectionHelper<>(HashCache.class, "caches", () -> null);
         FieldReflectionHelper<HashCache, Map<String, ProviderCache>> originalCachesField = new FieldReflectionHelper<>(HashCache.class, "originalCaches", () -> null);
-        FieldReflectionHelper<HashCache, Set<Path>> cachePaths = new FieldReflectionHelper<>(HashCache.class, "f_236084_", () -> null);
-        FieldReflectionHelper<HashCache, Integer> initialCount = new FieldReflectionHelper<>(HashCache.class, "f_236085_", () -> 0);
-        FieldReflectionHelper<HashCache, Integer> writes = new FieldReflectionHelper<>(HashCache.class, "f_252434_", () -> 0);
-        FieldReflectionHelper<ProviderCache, ImmutableMap<Path, HashCode>> providerCacheData = new FieldReflectionHelper<>(ProviderCache.class, "f_236127_", () -> null);
+        FieldReflectionHelper<HashCache, Set<Path>> cachePaths = new FieldReflectionHelper<>(HashCache.class, "cachePaths", () -> null);
+        FieldReflectionHelper<HashCache, Integer> initialCount = new FieldReflectionHelper<>(HashCache.class, "initialCount", () -> 0);
+        FieldReflectionHelper<HashCache, Integer> writes = new FieldReflectionHelper<>(HashCache.class, "writes", () -> 0);
+        FieldReflectionHelper<ProviderCache, ImmutableMap<Path, HashCode>> providerCacheData = new FieldReflectionHelper<>(ProviderCache.class, "data", () -> null);
 
         Map<String, ProviderCache> caches = existingCaches.getValue(cache);
         Map<String, ProviderCache> originalCaches = originalCachesField.getValue(cache);
@@ -103,7 +105,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         int totalAdditionalWrites = additionalWrites;
         writes.transformValue(cache, ConstantPredicates.alwaysTrue(), c -> c + totalAdditionalWrites);
 
-        FieldReflectionHelper<HashCache, Set<String>> cachesToWrite = new FieldReflectionHelper<>(HashCache.class, "f_236083_", () -> null);
+        FieldReflectionHelper<HashCache, Set<String>> cachesToWrite = new FieldReflectionHelper<>(HashCache.class, "cachesToWrite", () -> null);
         Set<String> toWrite = cachesToWrite.getValue(cache);
         Map<String, ProviderCache> fakeCaches = new HashMap<>();
         Set<Path> paths = cachePaths.getValue(cache);

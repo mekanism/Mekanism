@@ -1,7 +1,6 @@
 package mekanism.common.recipe.impl;
 
 import java.util.Map;
-import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -11,7 +10,6 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.RegistryUtils;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -117,7 +115,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
                   IngredientCreatorAccess.item().from(entry.getKey()),
                   oxygen,
                   new ItemStack(result)
-            ).build(consumer, Mekanism.rl(basePath + result.asItem()));
+            ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(result.asItem())));
         }
     }
 }

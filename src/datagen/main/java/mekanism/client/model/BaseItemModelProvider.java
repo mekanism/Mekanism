@@ -122,14 +122,14 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
 
     //Note: This isn't the best way to do this in terms of model file validation, but it works
     protected void registerBucket(FluidRegistryObject<?, ?, ?, ?, ?> fluidRO) {
-        withExistingParent(RegistryUtils.getPath(fluidRO.getBucket()), new ResourceLocation("forge", "item/bucket"))
+        withExistingParent(RegistryUtils.getPath(fluidRO.getBucket()), new ResourceLocation("neoforge", "item/bucket"))
               .customLoader(DynamicFluidContainerModelBuilder::begin)
               .fluid(fluidRO.getStillFluid());
     }
 
     private static class TrimModelDataHelper<TMD_CLASS> {
 
-        private final FieldReflectionHelper<ItemModelGenerators, List<TMD_CLASS>> generatedTrimModels = new FieldReflectionHelper<>(ItemModelGenerators.class, "f_265952_", Collections::emptyList);
+        private final FieldReflectionHelper<ItemModelGenerators, List<TMD_CLASS>> generatedTrimModels = new FieldReflectionHelper<>(ItemModelGenerators.class, "GENERATED_TRIM_MODELS", Collections::emptyList);
         private final FieldReflectionHelper<TMD_CLASS, String> name;
         private final FieldReflectionHelper<TMD_CLASS, Float> itemModelIndex;
 
@@ -140,8 +140,8 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
-            name = new FieldReflectionHelper<>(tmdClass, "f_265890_", () -> null);
-            itemModelIndex = new FieldReflectionHelper<>(tmdClass, "f_265849_", () -> null);
+            name = new FieldReflectionHelper<>(tmdClass, "name", () -> null);
+            itemModelIndex = new FieldReflectionHelper<>(tmdClass, "itemModelIndex", () -> null);
         }
 
         public void forEachTrim(BiConsumer<String, Float> consumer) {

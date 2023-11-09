@@ -30,7 +30,6 @@ import mekanism.common.tier.FactoryTier;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.FrameType;
-import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.PlayerTrigger;
@@ -327,7 +326,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
                                 MekanismItems.MEKASUIT_PANTS,
                                 MekanismItems.MEKASUIT_BOOTS,
                                 MekanismItems.MEKA_TOOL
-                          ).map(item -> new MaxedModuleContainerItemPredicate<>(item.asItem()))
+                          ).map(item -> new MaxedModuleContainerItemPredicate<>(item.asItem()).toVanilla())
                           .toArray(ItemPredicate[]::new)
               )).save(consumer);
 

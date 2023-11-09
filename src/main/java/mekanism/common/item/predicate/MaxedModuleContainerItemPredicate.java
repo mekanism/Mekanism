@@ -1,21 +1,13 @@
 package mekanism.common.item.predicate;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import java.util.Set;
-import mekanism.api.JsonConstants;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
-import mekanism.common.Mekanism;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.ModuleHelper;
-import mekanism.common.util.RegistryUtils;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.advancements.critereon.ICustomItemPredicate;
@@ -53,7 +45,7 @@ public class MaxedModuleContainerItemPredicate<ITEM extends Item & IModuleContai
     }
 
     static Codec<MaxedModuleContainerItemPredicate<?>> makeCodec() {
-        return ForgeRegistries.ITEMS.getCodec().comapFlatMap(item->{
+        return ForgeRegistries.ITEMS.getCodec().fieldOf("item").codec().comapFlatMap(item->{
             if (item instanceof IModuleContainerItem) {
                 return DataResult.success(new MaxedModuleContainerItemPredicate<>((Item & IModuleContainerItem) item));
             }

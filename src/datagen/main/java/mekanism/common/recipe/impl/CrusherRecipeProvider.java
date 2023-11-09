@@ -2,14 +2,13 @@ package mekanism.common.recipe.impl;
 
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import java.util.Map;
-import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.registries.MekanismItems;
-import net.minecraft.data.recipes.FinishedRecipe;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.HoneycombItem;
@@ -413,7 +412,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
             ItemStackToItemStackRecipeBuilder.crushing(
                   IngredientCreatorAccess.item().from(entry.getKey()),
                   new ItemStack(result)
-            ).build(consumer, Mekanism.rl(basePath + result.asItem()));
+            ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(result.asItem())));
         }
     }
 
@@ -424,7 +423,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
             ItemStackToItemStackRecipeBuilder.crushing(
                   IngredientCreatorAccess.item().from(input),
                   MekanismItems.BIO_FUEL.getItemStack(Math.round(chance.getFloatValue() * 8))
-            ).build(consumer, Mekanism.rl(basePath + input.asItem()));
+            ).build(consumer, Mekanism.rl(basePath + RegistryUtils.getPath(input.asItem())));
         }
     }
 }

@@ -17,8 +17,6 @@ import mekanism.client.texture.MekanismSpriteSourceProvider;
 import mekanism.client.texture.PrideRobitTextureProvider;
 import mekanism.common.advancements.MekanismAdvancementProvider;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
-import mekanism.common.integration.computer.ComputerHelpProvider;
-import mekanism.common.integration.crafttweaker.MekanismCrTExampleProvider;
 import mekanism.common.loot.MekanismLootProvider;
 import mekanism.common.recipe.impl.MekanismRecipeProvider;
 import mekanism.common.registries.MekanismDatapackRegistryProvider;
@@ -29,13 +27,13 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod.EventBusSubscriber;
 import net.neoforged.fml.common.Mod.EventBusSubscriber.Bus;
 import net.neoforged.fml.config.ConfigTracker;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 @EventBusSubscriber(modid = Mekanism.MODID, bus = Bus.MOD)
 public class MekanismDataGenerator {
@@ -70,8 +68,10 @@ public class MekanismDataGenerator {
         gen.addProvider(event.includeServer(), new MekanismAdvancementProvider(output, existingFileHelper));
         //TODO - 1.20: Re-enable after updating ProjectE
         //addProvider(gen, event.includeServer(), MekanismCustomConversions::new);
-        gen.addProvider(event.includeServer(), new MekanismCrTExampleProvider(output, existingFileHelper));
-        gen.addProvider(event.includeServer(), new ComputerHelpProvider(output, Mekanism.MODID));
+        //TODO - 1.20.2: Re-enable after CrT updates
+        //gen.addProvider(event.includeServer(), new MekanismCrTExampleProvider(output, existingFileHelper));
+        //TODO - 1.20.2: Re-enable after NG updates to support minecraftLibrary type stuff again
+        //gen.addProvider(event.includeServer(), new ComputerHelpProvider(output, Mekanism.MODID));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
         gen.addProvider(true, new PersistingDisabledProvidersProvider(output, recipeProvider.getDisabledCompats()));
