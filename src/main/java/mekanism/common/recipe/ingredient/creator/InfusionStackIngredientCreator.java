@@ -16,6 +16,7 @@ import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.M
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 
 @NothingNullByDefault
 public class InfusionStackIngredientCreator extends ChemicalStackIngredientCreator<InfuseType, InfusionStack, InfusionStackIngredient> {
@@ -60,7 +61,8 @@ public class InfusionStackIngredientCreator extends ChemicalStackIngredientCreat
 
     public static class SingleInfusionStackIngredient extends SingleChemicalStackIngredient<InfuseType, InfusionStack> implements InfusionStackIngredient {
 
-        static Codec<SingleInfusionStackIngredient> CODEC = makeCodec(ChemicalUtils.INFUSION_STACK_CODEC, SingleInfusionStackIngredient::new);
+        //Note: This must be a lazily initialized so that this class can be loaded in tests
+        static Codec<SingleInfusionStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(ChemicalUtils.INFUSION_STACK_CODEC, SingleInfusionStackIngredient::new));
 
         private SingleInfusionStackIngredient(InfusionStack stack) {
             super(stack);
@@ -74,7 +76,8 @@ public class InfusionStackIngredientCreator extends ChemicalStackIngredientCreat
 
     public static class TaggedInfusionStackIngredient extends TaggedChemicalStackIngredient<InfuseType, InfusionStack> implements InfusionStackIngredient {
 
-        static Codec<TaggedInfusionStackIngredient> CODEC = makeCodec(ChemicalTags.INFUSE_TYPE, TaggedInfusionStackIngredient::new);
+        //Note: This must be a lazily initialized so that this class can be loaded in tests
+        static Codec<TaggedInfusionStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(ChemicalTags.INFUSE_TYPE, TaggedInfusionStackIngredient::new));
 
         private TaggedInfusionStackIngredient(TagKey<InfuseType> tag, long amount) {
             super(ChemicalTags.INFUSE_TYPE, tag, amount);

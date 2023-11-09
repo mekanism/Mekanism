@@ -1,9 +1,5 @@
 package mekanism.common.recipe.ingredient.creator;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -26,13 +22,10 @@ import mekanism.common.recipe.ingredient.IMultiIngredient;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
@@ -41,7 +34,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
 
     private final Codec<ItemStackIngredient> CODEC = Codec.either(SingleItemStackIngredient.CODEC, MultiItemStackIngredient.CODEC)
           .xmap(
-                either->either.map(Function.identity(), multi->{
+                either -> either.map(Function.identity(), multi -> {
                     //unbox if we only got one
                     if (multi.ingredients.length == 1) {
                         return multi.ingredients[0];
@@ -52,7 +45,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
                     if (iStackIngredient instanceof SingleItemStackIngredient single) {
                         return Either.left(single);
                     }
-                    return Either.right((MultiItemStackIngredient)iStackIngredient);
+                    return Either.right((MultiItemStackIngredient) iStackIngredient);
                 }
           );
 
@@ -107,7 +100,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
             } else if (ingredient instanceof SingleItemStackIngredient single) {
                 cleanedIngredients.add(single);
             } else {
-                throw new IllegalStateException("Unknown ingredient class: "+ingredient);
+                throw new IllegalStateException("Unknown ingredient class: " + ingredient);
             }
         }
         //There should be more than a single item, or we would have split out earlier
@@ -121,10 +114,12 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
 
     @NothingNullByDefault
     public static class SingleItemStackIngredient extends ItemStackIngredient {
-        static final Codec<SingleItemStackIngredient> CODEC = RecordCodecBuilder.create(i->i.group(
+
+        //Note: This must be a lazily initialized so that this class can be loaded in tests
+        static final Codec<SingleItemStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> RecordCodecBuilder.create(i -> i.group(
               Ingredient.CODEC.fieldOf(JsonConstants.INGREDIENT).forGetter(SingleItemStackIngredient::getInputRaw),
               SerializerHelper.POSITIVE_NONZERO_INT_CODEC.optionalFieldOf(JsonConstants.AMOUNT, 1).forGetter(SingleItemStackIngredient::getAmountRaw)
-        ).apply(i, SingleItemStackIngredient::new));
+        ).apply(i, SingleItemStackIngredient::new)));
 
         private final Ingredient ingredient;
         private final int amount;
@@ -206,7 +201,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
     @NothingNullByDefault
     public static class MultiItemStackIngredient extends ItemStackIngredient implements IMultiIngredient<ItemStack, SingleItemStackIngredient> {
 
-        static final Codec<MultiItemStackIngredient> CODEC = ExtraCodecs.nonEmptyList(SingleItemStackIngredient.CODEC.listOf()).xmap(lst-> new MultiItemStackIngredient(lst.toArray(new SingleItemStackIngredient[0])), MultiItemStackIngredient::getIngredients);
+        static final Codec<MultiItemStackIngredient> CODEC = ExtraCodecs.nonEmptyList(SingleItemStackIngredient.CODEC.listOf()).xmap(lst -> new MultiItemStackIngredient(lst.toArray(new SingleItemStackIngredient[0])), MultiItemStackIngredient::getIngredients);
 
         private final SingleItemStackIngredient[] ingredients;
 

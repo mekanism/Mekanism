@@ -15,6 +15,7 @@ import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.M
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 
 @NothingNullByDefault
 public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator<Slurry, SlurryStack, SlurryStackIngredient> {
@@ -59,7 +60,8 @@ public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator
 
     public static class SingleSlurryStackIngredient extends SingleChemicalStackIngredient<Slurry, SlurryStack> implements SlurryStackIngredient {
 
-        static Codec<SingleSlurryStackIngredient> CODEC = makeCodec(SlurryStack.CODEC, SingleSlurryStackIngredient::new);
+        //Note: This must be a lazily initialized so that this class can be loaded in tests
+        static Codec<SingleSlurryStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(SlurryStack.CODEC, SingleSlurryStackIngredient::new));
 
         private SingleSlurryStackIngredient(SlurryStack stack) {
             super(stack);
@@ -73,7 +75,8 @@ public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator
 
     public static class TaggedSlurryStackIngredient extends TaggedChemicalStackIngredient<Slurry, SlurryStack> implements SlurryStackIngredient {
 
-        static Codec<TaggedSlurryStackIngredient> CODEC = makeCodec(ChemicalTags.SLURRY, TaggedSlurryStackIngredient::new);
+        //Note: This must be a lazily initialized so that this class can be loaded in tests
+        static Codec<TaggedSlurryStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(ChemicalTags.SLURRY, TaggedSlurryStackIngredient::new));
 
         private TaggedSlurryStackIngredient(TagKey<Slurry> tag, long amount) {
             super(ChemicalTags.SLURRY, tag, amount);

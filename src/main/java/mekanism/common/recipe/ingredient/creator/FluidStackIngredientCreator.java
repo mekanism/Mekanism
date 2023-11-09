@@ -1,10 +1,5 @@
 package mekanism.common.recipe.ingredient.creator;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -25,21 +20,16 @@ import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import mekanism.common.tags.TagUtils;
-import mekanism.common.util.RegistryUtils;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.ForgeRegistries;
 import net.neoforged.neoforge.registries.ForgeRegistries.Keys;
 import net.neoforged.neoforge.registries.tags.ITag;
-import net.neoforged.neoforge.registries.tags.ITagManager;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class FluidStackIngredientCreator implements IFluidStackIngredientCreator {
@@ -144,7 +134,9 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     @NothingNullByDefault
     public static class SingleFluidStackIngredient extends FluidStackIngredient {
 
-        static final Codec<SingleFluidStackIngredient> CODEC = SerializerHelper.FLUIDSTACK_CODEC.xmap(SingleFluidStackIngredient::new, SingleFluidStackIngredient::getInputRaw);
+        //Note: This must be a lazily initialized so that this class can be loaded in tests
+        static final Codec<SingleFluidStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> SerializerHelper.FLUIDSTACK_CODEC.xmap(SingleFluidStackIngredient::new,
+              SingleFluidStackIngredient::getInputRaw));
 
         private final List<@NotNull FluidStack> representations;
         private final FluidStack fluidInstance;
@@ -220,10 +212,11 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     @NothingNullByDefault
     public static class TaggedFluidStackIngredient extends FluidStackIngredient {
 
-        static final Codec<TaggedFluidStackIngredient> CODEC = RecordCodecBuilder.create(instance->instance.group(
+        //Note: This must be a lazily initialized so that this class can be loaded in tests
+        static final Codec<TaggedFluidStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> RecordCodecBuilder.create(instance->instance.group(
               TagKey.hashedCodec(Keys.FLUIDS).fieldOf(JsonConstants.TAG).forGetter(TaggedFluidStackIngredient::getTag),
               SerializerHelper.POSITIVE_NONZERO_INT_CODEC.fieldOf(JsonConstants.AMOUNT).forGetter(TaggedFluidStackIngredient::getRawAmount)
-        ).apply(instance, TaggedFluidStackIngredient::new));
+        ).apply(instance, TaggedFluidStackIngredient::new)));
 
         private final ITag<Fluid> tag;
         private final int amount;

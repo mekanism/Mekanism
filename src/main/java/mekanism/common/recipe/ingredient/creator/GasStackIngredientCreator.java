@@ -16,6 +16,7 @@ import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.M
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 
 @NothingNullByDefault
 public class GasStackIngredientCreator extends ChemicalStackIngredientCreator<Gas, GasStack, GasStackIngredient> {
@@ -59,7 +60,8 @@ public class GasStackIngredientCreator extends ChemicalStackIngredientCreator<Ga
 
     public static class SingleGasStackIngredient extends SingleChemicalStackIngredient<Gas, GasStack> implements GasStackIngredient {
 
-        static Codec<SingleGasStackIngredient> CODEC = makeCodec(ChemicalUtils.GAS_STACK_CODEC, SingleGasStackIngredient::new);
+        //Note: This must be a lazily initialized so that this class can be loaded in tests
+        static Codec<SingleGasStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(ChemicalUtils.GAS_STACK_CODEC, SingleGasStackIngredient::new));
 
         private SingleGasStackIngredient(GasStack stack) {
             super(stack);
@@ -73,7 +75,8 @@ public class GasStackIngredientCreator extends ChemicalStackIngredientCreator<Ga
 
     public static class TaggedGasStackIngredient extends TaggedChemicalStackIngredient<Gas, GasStack> implements GasStackIngredient {
 
-        static Codec<TaggedGasStackIngredient> CODEC = makeCodec(ChemicalTags.GAS, TaggedGasStackIngredient::new);
+        //Note: This must be a lazily initialized so that this class can be loaded in tests
+        static Codec<TaggedGasStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(ChemicalTags.GAS, TaggedGasStackIngredient::new));
 
         private TaggedGasStackIngredient(TagKey<Gas> tag, long amount) {
             super(ChemicalTags.GAS, tag, amount);

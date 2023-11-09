@@ -16,6 +16,7 @@ import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.M
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 
 @NothingNullByDefault
 public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreator<Pigment, PigmentStack, PigmentStackIngredient> {
@@ -60,7 +61,8 @@ public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreato
 
     public static class SinglePigmentStackIngredient extends SingleChemicalStackIngredient<Pigment, PigmentStack> implements PigmentStackIngredient {
 
-        static Codec<SinglePigmentStackIngredient> CODEC = makeCodec(ChemicalUtils.PIGMENT_STACK_CODEC, SinglePigmentStackIngredient::new);
+        //Note: This must be a lazily initialized so that this class can be loaded in tests
+        static Codec<SinglePigmentStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(ChemicalUtils.PIGMENT_STACK_CODEC, SinglePigmentStackIngredient::new));
 
         private SinglePigmentStackIngredient(PigmentStack stack) {
             super(stack);
@@ -74,7 +76,8 @@ public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreato
 
     public static class TaggedPigmentStackIngredient extends TaggedChemicalStackIngredient<Pigment, PigmentStack> implements PigmentStackIngredient {
 
-        static Codec<TaggedPigmentStackIngredient> CODEC = makeCodec(ChemicalTags.PIGMENT, TaggedPigmentStackIngredient::new);
+        //Note: This must be a lazily initialized so that this class can be loaded in tests
+        static Codec<TaggedPigmentStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(ChemicalTags.PIGMENT, TaggedPigmentStackIngredient::new));
 
         private TaggedPigmentStackIngredient(TagKey<Pigment> tag, long amount) {
             super(ChemicalTags.PIGMENT, tag, amount);
