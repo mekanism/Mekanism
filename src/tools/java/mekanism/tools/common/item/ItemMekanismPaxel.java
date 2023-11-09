@@ -92,17 +92,16 @@ public class ItemMekanismPaxel extends AxeItem implements IHasRepairType, IAttri
     @NotNull
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        Level world = context.getLevel();
-        BlockPos blockpos = context.getClickedPos();
-        Player player = context.getPlayer();
-        BlockState blockstate = world.getBlockState(blockpos);
-
         // Attempt to use the paxel as an axe
         InteractionResult axeResult = super.useOn(context);
         if (axeResult != InteractionResult.PASS) {
             return axeResult;
         }
 
+        Level world = context.getLevel();
+        BlockPos blockpos = context.getClickedPos();
+        Player player = context.getPlayer();
+        BlockState blockstate = world.getBlockState(blockpos);
         BlockState resultToSet = null;
         //We cannot strip the item that was right-clicked, so attempt to use the paxel as a shovel
         if (context.getClickedFace() == Direction.DOWN) {
