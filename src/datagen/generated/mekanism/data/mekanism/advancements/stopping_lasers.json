@@ -2,7 +2,6 @@
   "parent": "mekanism:laser",
   "criteria": {
     "block": {
-      "conditions": {},
       "trigger": "mekanism:block_laser"
     }
   },

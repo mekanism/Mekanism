@@ -2,7 +2,6 @@
   "parent": "mekanism:teleportation_core",
   "criteria": {
     "teleport": {
-      "conditions": {},
       "trigger": "mekanism:teleport"
     },
     "teleporter": {

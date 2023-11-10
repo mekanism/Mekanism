@@ -2,7 +2,6 @@
   "parent": "mekanism:robit",
   "criteria": {
     "change_skin": {
-      "conditions": {},
       "trigger": "mekanism:change_robit_skin"
     }
   },

@@ -7,10 +7,12 @@
   },
   "itemInput": {
     "ingredient": {
-      "type": "forge:nbt",
-      "count": 1,
-      "item": "minecraft:diamond_sword",
-      "nbt": "{Damage:0}"
+      "type": "neoforge:nbt",
+      "Count": 1,
+      "id": "minecraft:diamond_sword",
+      "tag": {
+        "Damage": 0
+      }
     }
   },
   "output": {

@@ -2,7 +2,6 @@
   "parent": "mekanism:infused_alloy",
   "criteria": {
     "upgrade": {
-      "conditions": {},
       "trigger": "mekanism:alloy_upgrade"
     }
   },

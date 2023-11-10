@@ -1,7 +1,6 @@
 {
   "criteria": {
     "automatic": {
-      "conditions": {},
       "trigger": "mekanism:logged_in"
     }
   },

@@ -1,5 +1,5 @@
 {
-  "type": "forge:add_features",
+  "type": "neoforge:add_features",
   "biomes": "#mekanism:spawn_ores",
   "features": [
     "mekanism:ore_uranium_small",

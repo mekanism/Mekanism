@@ -3,7 +3,7 @@
   "category": "building",
   "key": {
     "#": {
-      "type": "forge:difference",
+      "type": "neoforge:difference",
       "base": {
         "tag": "mekanismadditions:plastic_blocks/road"
       },

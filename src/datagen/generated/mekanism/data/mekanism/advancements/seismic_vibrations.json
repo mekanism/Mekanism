@@ -26,7 +26,6 @@
       "trigger": "minecraft:inventory_changed"
     },
     "view_vibrations": {
-      "conditions": {},
       "trigger": "mekanism:view_vibrations"
     }
   },

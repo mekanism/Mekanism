@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "type": "forge:difference",
+      "type": "neoforge:difference",
       "base": {
         "tag": "mekanismadditions:balloons"
       },

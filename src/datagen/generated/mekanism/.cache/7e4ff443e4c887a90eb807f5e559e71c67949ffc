@@ -1,12 +1,6 @@
-// 1.20.1	2023-09-10T15:23:49.8726052	Datapack registries: mekanism
+// 1.20.2	2023-11-09T17:23:29.8951365	Datapack registries: mekanism
 3569c860b35530ba451e7442db81f25f1491a9c9 data/mekanism/damage_type/laser.json
 3d56d26f6e58ced8680ed0cde116e2b4f3850aef data/mekanism/damage_type/radiation.json
-6222f7bed3dbe2cad38b36dc733d552a267cc508 data/mekanism/forge/biome_modifier/fluorite.json
-4d1d5f810163b439cf9a55dc098a6066ef5b737b data/mekanism/forge/biome_modifier/lead.json
-2a00f64dd1e3388a74dc173ccb93032bc8544fd4 data/mekanism/forge/biome_modifier/osmium.json
-d2d37a1682c99bf6c284758a2ac80e87728a3037 data/mekanism/forge/biome_modifier/salt.json
-77702f650d22a96cac2db3f0b84d19a1227df624 data/mekanism/forge/biome_modifier/tin.json
-fced4c03916f058755bce6c575d266140d9c52b5 data/mekanism/forge/biome_modifier/uranium.json
 9eaadaf3a3535dd198e340273d2e37f773f2ea12 data/mekanism/mekanism/robit_skin/ace.json
 0d1b6505a0aec5f2664de808dfb4d954af5e70d8 data/mekanism/mekanism/robit_skin/agender.json
 becd70895054f146aa5ed9e757d62459a0bba9ea data/mekanism/mekanism/robit_skin/allay.json
@@ -20,6 +14,12 @@ a120117c2e52ef2078c50e69a1907ec277c61934 data/mekanism/mekanism/robit_skin/pan.j
 6db289e40f4c9cedfe86a72926b00ad8706bd986 data/mekanism/mekanism/robit_skin/pride.json
 35389c6c93776b88f9bce85a24c3fa3248b8cf42 data/mekanism/mekanism/robit_skin/robit.json
 21638cf606efe01420641470ef10c65606ab0a93 data/mekanism/mekanism/robit_skin/trans.json
+4b5486b95ec20bf30a7181d57b88a7fe001d61b6 data/mekanism/neoforge/biome_modifier/fluorite.json
+03f4b3f12d317f18c3b6306766836593d91d0ca0 data/mekanism/neoforge/biome_modifier/lead.json
+6fda868e072a610b8a24cce473fe23e10deee556 data/mekanism/neoforge/biome_modifier/osmium.json
+ca8cb2901b33c9461f6509f626e6be241582a398 data/mekanism/neoforge/biome_modifier/salt.json
+e47e7396ea81ddc26f1776c244cc316a4e662cb8 data/mekanism/neoforge/biome_modifier/tin.json
+cba4a77cb7bbe0e2141c84ecc3ab72f09c675dfc data/mekanism/neoforge/biome_modifier/uranium.json
 cdf2ebc8048eb1419e3c4f1a7843bf5e52340fd1 data/mekanism/worldgen/configured_feature/ore_fluorite_buried.json
 e73206979090815a6200b7d8831f04291b3649b2 data/mekanism/worldgen/configured_feature/ore_fluorite_buried_retrogen.json
 9d00985122b9ca430dc29c37d42c04f320b5b5ad data/mekanism/worldgen/configured_feature/ore_fluorite_normal.json
