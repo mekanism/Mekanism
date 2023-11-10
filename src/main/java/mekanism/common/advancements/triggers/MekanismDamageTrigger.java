@@ -7,11 +7,11 @@ import mekanism.api.JsonConstants;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismDamageTypes.MekanismDamageType;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.NotNull;
@@ -59,12 +59,12 @@ public class MekanismDamageTrigger extends SimpleCriterionTrigger<MekanismDamage
             return json;
         }
 
-        public static MekanismDamageTrigger.TriggerInstance damaged(MekanismDamageType damageType) {
-            return new MekanismDamageTrigger.TriggerInstance(Optional.empty(), damageType, false);
+        public static Criterion<TriggerInstance> damaged(MekanismDamageType damageType) {
+            return MekanismCriteriaTriggers.DAMAGE.createCriterion(new TriggerInstance(Optional.empty(), damageType, false));
         }
 
-        public static MekanismDamageTrigger.TriggerInstance killed(MekanismDamageType damageType) {
-            return new MekanismDamageTrigger.TriggerInstance(Optional.empty(), damageType, true);
+        public static Criterion<TriggerInstance> killed(MekanismDamageType damageType) {
+            return MekanismCriteriaTriggers.DAMAGE.createCriterion(new TriggerInstance(Optional.empty(), damageType, true));
         }
     }
 }

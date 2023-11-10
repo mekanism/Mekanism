@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 public class ChemicalUtils {
 
     //nb: these can't be in their respective classes as they init before the custom registries are created, thus the EMPTY init fails
+    //TODO - 1.20.2: Figure out why the slurry stack codec doesn't have to be here?
     public static final Codec<GasStack> GAS_STACK_CODEC = ChemicalStack.codec(Gas.CODEC, JsonConstants.GAS, GasStack::new);
     public static final Codec<InfusionStack> INFUSION_STACK_CODEC = ChemicalStack.codec(InfuseType.CODEC, JsonConstants.INFUSE_TYPE, InfusionStack::new);
     public static final Codec<PigmentStack> PIGMENT_STACK_CODEC = ChemicalStack.codec(Pigment.CODEC, JsonConstants.PIGMENT, PigmentStack::new);

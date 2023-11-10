@@ -1153,7 +1153,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
         return isConstant ? createConst(value, decimal) : create(value, decimal);
     }
 
-    public static FloatingLong fromNumber(Number number, boolean isConstant) {
+    private static FloatingLong fromNumber(Number number, boolean isConstant) {
         if (number instanceof Integer || number instanceof Long || number instanceof Short || number instanceof Byte || number instanceof BigInteger) {
             long longValue = number.longValue();
             if (longValue < 0) {

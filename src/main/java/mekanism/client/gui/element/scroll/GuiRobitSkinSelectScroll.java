@@ -140,7 +140,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double xDelta, double yDelta) {
-        return scrollBar.adjustScroll(xDelta) || super.mouseScrolled(mouseX, mouseY, xDelta, yDelta);
+        return scrollBar.adjustScroll(yDelta) || super.mouseScrolled(mouseX, mouseY, xDelta, yDelta);
     }
 
     @Override

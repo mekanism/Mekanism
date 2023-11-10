@@ -14,7 +14,7 @@ public class OC2CapabilityHelper {
     private static final Capability<Device> CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static <TILE extends BlockEntity & IComputerTile> ICapabilityResolver getOpenComputers2Capability(TILE tile) {
-        throw new IllegalStateException("OC not porter");//todo when OC2 updates
+        throw new IllegalStateException("OC not porter");//TODO - 1.20.2: when OC2 updates
         /*if (tile.isComputerCapabilityPersistent()) {
             return BasicCapabilityResolver.persistent(CAPABILITY, () -> MekanismDevice.create(tile));
         }

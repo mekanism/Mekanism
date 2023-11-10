@@ -42,7 +42,7 @@ public class NSSHelper {
     //};
 
     public static void init() {
-        //TODO ProjectE register("GAS", gasCreator);
+        //TODO - 1.20.2: ProjectE register("GAS", gasCreator);
         //register("INFUSE_TYPE", infuseTypeCreator);
         //register("PIGMENT", pigmentCreator);
         //register("SLURRY", slurryCreator);

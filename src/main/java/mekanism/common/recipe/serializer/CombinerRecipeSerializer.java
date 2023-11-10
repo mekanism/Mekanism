@@ -27,8 +27,8 @@ public class CombinerRecipeSerializer<RECIPE extends CombinerRecipe> implements 
         this.factory = factory;
     }
 
-    @Override
     @NotNull
+    @Override
     public Codec<RECIPE> codec() {
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance->instance.group(

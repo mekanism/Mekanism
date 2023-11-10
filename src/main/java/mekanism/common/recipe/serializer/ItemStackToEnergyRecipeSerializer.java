@@ -28,8 +28,8 @@ public class ItemStackToEnergyRecipeSerializer<RECIPE extends ItemStackToEnergyR
         this.factory = factory;
     }
 
-    @Override
     @NotNull
+    @Override
     public Codec<RECIPE> codec() {
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance->instance.group(

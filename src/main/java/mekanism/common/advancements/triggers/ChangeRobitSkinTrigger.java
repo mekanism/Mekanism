@@ -7,6 +7,7 @@ import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
@@ -60,12 +61,12 @@ public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<ChangeRobitSk
             return json;
         }
 
-        public static ChangeRobitSkinTrigger.TriggerInstance toAny() {
-            return new ChangeRobitSkinTrigger.TriggerInstance(Optional.empty(), null);
+        public static Criterion<TriggerInstance> toAny() {
+            return MekanismCriteriaTriggers.CHANGE_ROBIT_SKIN.createCriterion(new TriggerInstance(Optional.empty(), null));
         }
 
-        public static ChangeRobitSkinTrigger.TriggerInstance toSkin(ResourceKey<RobitSkin> skin) {
-            return new ChangeRobitSkinTrigger.TriggerInstance(Optional.empty(), skin);
+        public static Criterion<TriggerInstance> toSkin(ResourceKey<RobitSkin> skin) {
+            return MekanismCriteriaTriggers.CHANGE_ROBIT_SKIN.createCriterion(new TriggerInstance(Optional.empty(), skin));
         }
     }
 }

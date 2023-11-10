@@ -7,7 +7,6 @@ import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
@@ -32,12 +31,10 @@ public abstract class ItemStackToFluidRecipe extends MekanismRecipe implements P
     protected final FluidStack output;
 
     /**
-     * @param id     Recipe name.
      * @param input  Input.
      * @param output Output.
      */
-    public ItemStackToFluidRecipe(ResourceLocation id, ItemStackIngredient input, FluidStack output) {
-        super();
+    public ItemStackToFluidRecipe(ItemStackIngredient input, FluidStack output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {

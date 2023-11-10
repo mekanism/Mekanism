@@ -32,8 +32,8 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
 
     protected abstract STACK stackFromBuffer(@NotNull FriendlyByteBuf buffer);
 
-    @Override
     @NotNull
+    @Override
     public Codec<RECIPE> codec() {
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance->instance.group(

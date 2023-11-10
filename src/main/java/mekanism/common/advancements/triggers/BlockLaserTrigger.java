@@ -4,11 +4,11 @@ import com.google.gson.JsonObject;
 import java.util.Optional;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,12 +25,13 @@ public class BlockLaserTrigger extends SimpleCriterionTrigger<BlockLaserTrigger.
 
     public static class TriggerInstance extends AbstractCriterionTriggerInstance {
 
+        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
         public TriggerInstance(Optional<ContextAwarePredicate> playerPredicate) {
             super(playerPredicate);
         }
 
-        public static BlockLaserTrigger.TriggerInstance block() {
-            return new BlockLaserTrigger.TriggerInstance(Optional.empty());
+        public static Criterion<TriggerInstance> block() {
+            return MekanismCriteriaTriggers.BLOCK_LASER.createCriterion(new TriggerInstance(Optional.empty()));
         }
     }
 }

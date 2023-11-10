@@ -26,171 +26,182 @@ import org.openzen.zencode.java.ZenCodeType;
 /**
  * Expand ProjectE's NSSResolver CraftTweaker class to add helpers for creating {@link NormalizedSimpleStack} for our various chemicals.
  */
-//TODO ProjectE
-//@ZenRegister(modDeps = MekanismHooks.PROJECTE_MOD_ID)
-//@ZenCodeType.Expansion(CrTConstants.EXPANSION_TARGET_NSS_RESOLVER)
+@ZenRegister(modDeps = MekanismHooks.PROJECTE_MOD_ID)
+@ZenCodeType.Expansion(CrTConstants.EXPANSION_TARGET_NSS_RESOLVER)
 public class CrTNSSResolverExpansion {
 
-    //private CrTNSSResolverExpansion() {
-    //}
-//
-    ///**
-    // * Create a {@link NormalizedSimpleStack} representing a given {@link Gas}.
-    // *
-    // * @param gas Gas to represent
-    // *
-    // * @return A {@link NormalizedSimpleStack} representing a given {@link Gas}.
-    // */
-    //@ZenCodeType.StaticExpansionMethod
-    //public static NormalizedSimpleStack fromGas(Gas gas) {
-    //    return NSSGas.createGas(validateNotEmptyAndGet(gas, "gas"));
-    //}
-//
-    ///**
-    // * Create a {@link NormalizedSimpleStack} representing a given {@link ICrTGasStack}.
-    // *
-    // * @param stack Gas Stack to represent
-    // *
-    // * @return A {@link NormalizedSimpleStack} representing a given {@link ICrTGasStack}.
-    // */
-    //@ZenCodeType.StaticExpansionMethod
-    //public static NormalizedSimpleStack fromGas(ICrTGasStack stack) {
-    //    return NSSGas.createGas(validateNotEmptyAndGet(stack, "gas"));
-    //}
-//
-    ///**
-    // * Create a {@link NormalizedSimpleStack} representing a given {@link KnownTag<Gas>}.
-    // *
-    // * @param tag Gas Tag to represent
-    // *
-    // * @return A {@link NormalizedSimpleStack} representing a given {@link KnownTag<Gas>}.
-    // */
-    //@ZenCodeType.StaticExpansionMethod
-    //public static NormalizedSimpleStack fromGasTag(KnownTag<Gas> tag) {
-    //    return NSSGas.createTag(CrTUtils.validateTagAndGet(tag));
-    //}
-//
-    ///**
-    // * Create a {@link NormalizedSimpleStack} representing a given {@link InfuseType}.
-    // *
-    // * @param infuseType Infuse Type to represent
-    // *
-    // * @return A {@link NormalizedSimpleStack} representing a given {@link InfuseType}.
-    // */
-    //@ZenCodeType.StaticExpansionMethod
-    //public static NormalizedSimpleStack fromInfuseType(InfuseType infuseType) {
-    //    return NSSInfuseType.createInfuseType(validateNotEmptyAndGet(infuseType, "infuse type"));
-    //}
-//
-    ///**
-    // * Create a {@link NormalizedSimpleStack} representing a given {@link ICrTInfusionStack}.
-    // *
-    // * @param stack Infusion Stack to represent
-    // *
-    // * @return A {@link NormalizedSimpleStack} representing a given {@link ICrTInfusionStack}.
-    // */
-    //@ZenCodeType.StaticExpansionMethod
-    //public static NormalizedSimpleStack fromInfuseType(ICrTInfusionStack stack) {
-    //    return NSSInfuseType.createInfuseType(validateNotEmptyAndGet(stack, "infusion"));
-    //}
-//
-    ///**
-    // * Create a {@link NormalizedSimpleStack} representing a given {@link KnownTag<InfuseType>}.
-    // *
-    // * @param tag Infuse Type Tag to represent
-    // *
-    // * @return A {@link NormalizedSimpleStack} representing a given {@link KnownTag<InfuseType>}.
-    // */
-    //@ZenCodeType.StaticExpansionMethod
-    //public static NormalizedSimpleStack fromInfuseTypeTag(KnownTag<InfuseType> tag) {
-    //    return NSSInfuseType.createTag(CrTUtils.validateTagAndGet(tag));
-    //}
-//
-    ///**
-    // * Create a {@link NormalizedSimpleStack} representing a given {@link Pigment}.
-    // *
-    // * @param pigment Pigment to represent
-    // *
-    // * @return A {@link NormalizedSimpleStack} representing a given {@link Pigment}.
-    // */
-    //@ZenCodeType.StaticExpansionMethod
-    //public static NormalizedSimpleStack fromPigment(Pigment pigment) {
-    //    return NSSPigment.createPigment(validateNotEmptyAndGet(pigment, "pigment"));
-    //}
-//
-    ///**
-    // * Create a {@link NormalizedSimpleStack} representing a given {@link ICrTPigmentStack}.
-    // *
-    // * @param stack Pigment Stack to represent
-    // *
-    // * @return A {@link NormalizedSimpleStack} representing a given {@link ICrTPigmentStack}.
-    // */
-    //@ZenCodeType.StaticExpansionMethod
-    //public static NormalizedSimpleStack fromPigment(ICrTPigmentStack stack) {
-    //    return NSSPigment.createPigment(validateNotEmptyAndGet(stack, "pigment"));
-    //}
-//
-    ///**
-    // * Create a {@link NormalizedSimpleStack} representing a given {@link KnownTag<Pigment>}.
-    // *
-    // * @param tag Pigment Tag to represent
-    // *
-    // * @return A {@link NormalizedSimpleStack} representing a given {@link KnownTag<Pigment>}.
-    // */
-    //@ZenCodeType.StaticExpansionMethod
-    //public static NormalizedSimpleStack fromPigmentTag(KnownTag<Pigment> tag) {
-    //    return NSSPigment.createTag(CrTUtils.validateTagAndGet(tag));
-    //}
-//
-    ///**
-    // * Create a {@link NormalizedSimpleStack} representing a given {@link Slurry}.
-    // *
-    // * @param slurry Slurry to represent
-    // *
-    // * @return A {@link NormalizedSimpleStack} representing a given {@link Slurry}.
-    // */
-    //@ZenCodeType.StaticExpansionMethod
-    //public static NormalizedSimpleStack fromSlurry(Slurry slurry) {
-    //    return NSSSlurry.createSlurry(validateNotEmptyAndGet(slurry, "slurry"));
-    //}
-//
-    ///**
-    // * Create a {@link NormalizedSimpleStack} representing a given {@link ICrTSlurryStack}.
-    // *
-    // * @param stack Slurry Stack to represent
-    // *
-    // * @return A {@link NormalizedSimpleStack} representing a given {@link ICrTSlurryStack}.
-    // */
-    //@ZenCodeType.StaticExpansionMethod
-    //public static NormalizedSimpleStack fromSlurry(ICrTSlurryStack stack) {
-    //    return NSSSlurry.createSlurry(validateNotEmptyAndGet(stack, "slurry"));
-    //}
-//
-    ///**
-    // * Create a {@link NormalizedSimpleStack} representing a given {@link KnownTag<Slurry>}.
-    // *
-    // * @param tag Slurry Tag to represent
-    // *
-    // * @return A {@link NormalizedSimpleStack} representing a given {@link KnownTag<Slurry>}.
-    // */
-    //@ZenCodeType.StaticExpansionMethod
-    //public static NormalizedSimpleStack fromSlurryTag(KnownTag<Slurry> tag) {
-    //    return NSSSlurry.createTag(CrTUtils.validateTagAndGet(tag));
-    //}
-//
-    //private static <CHEMICAL extends Chemical<CHEMICAL>> CHEMICAL validateNotEmptyAndGet(CHEMICAL chemical, String type) {
-    //    if (chemical.isEmptyType()) {
-    //        //Note: We check this here to provide a better error than we would get in the NSS create method
-    //        throw new IllegalArgumentException("Cannot make an NSS Representation using an empty " + type + ".");
-    //    }
-    //    return chemical.getChemical();
-    //}
-//
-    //private static <STACK extends ChemicalStack<?>, CRT_STACK extends ICrTChemicalStack<?, STACK, ?>> STACK validateNotEmptyAndGet(CRT_STACK stack, String type) {
-    //    if (stack.isEmpty()) {
-    //        //Note: We check this here to provide a better error than we would get in the NSS create method
-    //        throw new IllegalArgumentException("Cannot make an NSS Representation using an empty " + type + " stack.");
-    //    }
-    //    return stack.getInternal();
-    //}
+    private CrTNSSResolverExpansion() {
+    }
+
+    /**
+     * Create a {@link NormalizedSimpleStack} representing a given {@link Gas}.
+     *
+     * @param gas Gas to represent
+     *
+     * @return A {@link NormalizedSimpleStack} representing a given {@link Gas}.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static NormalizedSimpleStack fromGas(Gas gas) {
+        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
+        //return NSSGas.createGas(validateNotEmptyAndGet(gas, "gas"));
+    }
+
+    /**
+     * Create a {@link NormalizedSimpleStack} representing a given {@link ICrTGasStack}.
+     *
+     * @param stack Gas Stack to represent
+     *
+     * @return A {@link NormalizedSimpleStack} representing a given {@link ICrTGasStack}.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static NormalizedSimpleStack fromGas(ICrTGasStack stack) {
+        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
+        //return NSSGas.createGas(validateNotEmptyAndGet(stack, "gas"));
+    }
+
+    /**
+     * Create a {@link NormalizedSimpleStack} representing a given {@link KnownTag<Gas>}.
+     *
+     * @param tag Gas Tag to represent
+     *
+     * @return A {@link NormalizedSimpleStack} representing a given {@link KnownTag<Gas>}.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static NormalizedSimpleStack fromGasTag(KnownTag<Gas> tag) {
+        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
+        //return NSSGas.createTag(CrTUtils.validateTagAndGet(tag));
+    }
+
+    /**
+     * Create a {@link NormalizedSimpleStack} representing a given {@link InfuseType}.
+     *
+     * @param infuseType Infuse Type to represent
+     *
+     * @return A {@link NormalizedSimpleStack} representing a given {@link InfuseType}.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static NormalizedSimpleStack fromInfuseType(InfuseType infuseType) {
+        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
+        //return NSSInfuseType.createInfuseType(validateNotEmptyAndGet(infuseType, "infuse type"));
+    }
+
+    /**
+     * Create a {@link NormalizedSimpleStack} representing a given {@link ICrTInfusionStack}.
+     *
+     * @param stack Infusion Stack to represent
+     *
+     * @return A {@link NormalizedSimpleStack} representing a given {@link ICrTInfusionStack}.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static NormalizedSimpleStack fromInfuseType(ICrTInfusionStack stack) {
+        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
+        //return NSSInfuseType.createInfuseType(validateNotEmptyAndGet(stack, "infusion"));
+    }
+
+    /**
+     * Create a {@link NormalizedSimpleStack} representing a given {@link KnownTag<InfuseType>}.
+     *
+     * @param tag Infuse Type Tag to represent
+     *
+     * @return A {@link NormalizedSimpleStack} representing a given {@link KnownTag<InfuseType>}.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static NormalizedSimpleStack fromInfuseTypeTag(KnownTag<InfuseType> tag) {
+        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
+        //return NSSInfuseType.createTag(CrTUtils.validateTagAndGet(tag));
+    }
+
+    /**
+     * Create a {@link NormalizedSimpleStack} representing a given {@link Pigment}.
+     *
+     * @param pigment Pigment to represent
+     *
+     * @return A {@link NormalizedSimpleStack} representing a given {@link Pigment}.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static NormalizedSimpleStack fromPigment(Pigment pigment) {
+        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
+        //return NSSPigment.createPigment(validateNotEmptyAndGet(pigment, "pigment"));
+    }
+
+    /**
+     * Create a {@link NormalizedSimpleStack} representing a given {@link ICrTPigmentStack}.
+     *
+     * @param stack Pigment Stack to represent
+     *
+     * @return A {@link NormalizedSimpleStack} representing a given {@link ICrTPigmentStack}.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static NormalizedSimpleStack fromPigment(ICrTPigmentStack stack) {
+        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
+        //return NSSPigment.createPigment(validateNotEmptyAndGet(stack, "pigment"));
+    }
+
+    /**
+     * Create a {@link NormalizedSimpleStack} representing a given {@link KnownTag<Pigment>}.
+     *
+     * @param tag Pigment Tag to represent
+     *
+     * @return A {@link NormalizedSimpleStack} representing a given {@link KnownTag<Pigment>}.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static NormalizedSimpleStack fromPigmentTag(KnownTag<Pigment> tag) {
+        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
+        //return NSSPigment.createTag(CrTUtils.validateTagAndGet(tag));
+    }
+
+    /**
+     * Create a {@link NormalizedSimpleStack} representing a given {@link Slurry}.
+     *
+     * @param slurry Slurry to represent
+     *
+     * @return A {@link NormalizedSimpleStack} representing a given {@link Slurry}.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static NormalizedSimpleStack fromSlurry(Slurry slurry) {
+        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
+        //return NSSSlurry.createSlurry(validateNotEmptyAndGet(slurry, "slurry"));
+    }
+
+    /**
+     * Create a {@link NormalizedSimpleStack} representing a given {@link ICrTSlurryStack}.
+     *
+     * @param stack Slurry Stack to represent
+     *
+     * @return A {@link NormalizedSimpleStack} representing a given {@link ICrTSlurryStack}.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static NormalizedSimpleStack fromSlurry(ICrTSlurryStack stack) {
+        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
+        //return NSSSlurry.createSlurry(validateNotEmptyAndGet(stack, "slurry"));
+    }
+
+    /**
+     * Create a {@link NormalizedSimpleStack} representing a given {@link KnownTag<Slurry>}.
+     *
+     * @param tag Slurry Tag to represent
+     *
+     * @return A {@link NormalizedSimpleStack} representing a given {@link KnownTag<Slurry>}.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static NormalizedSimpleStack fromSlurryTag(KnownTag<Slurry> tag) {
+        throw new IllegalStateException("Requires update");//TODO - 1.20.2: ProjectE
+        //return NSSSlurry.createTag(CrTUtils.validateTagAndGet(tag));
+    }
+
+    private static <CHEMICAL extends Chemical<CHEMICAL>> CHEMICAL validateNotEmptyAndGet(CHEMICAL chemical, String type) {
+        if (chemical.isEmptyType()) {
+            //Note: We check this here to provide a better error than we would get in the NSS create method
+            throw new IllegalArgumentException("Cannot make an NSS Representation using an empty " + type + ".");
+        }
+        return chemical.getChemical();
+    }
+
+    private static <STACK extends ChemicalStack<?>, CRT_STACK extends ICrTChemicalStack<?, STACK, ?>> STACK validateNotEmptyAndGet(CRT_STACK stack, String type) {
+        if (stack.isEmpty()) {
+            //Note: We check this here to provide a better error than we would get in the NSS create method
+            throw new IllegalArgumentException("Cannot make an NSS Representation using an empty " + type + " stack.");
+        }
+        return stack.getInternal();
+    }
 }

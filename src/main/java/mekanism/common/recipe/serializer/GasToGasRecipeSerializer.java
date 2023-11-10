@@ -22,8 +22,8 @@ public class GasToGasRecipeSerializer<RECIPE extends GasToGasRecipe> implements 
         this.factory = factory;
     }
 
-    @Override
     @NotNull
+    @Override
     public Codec<RECIPE> codec() {
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance->instance.group(

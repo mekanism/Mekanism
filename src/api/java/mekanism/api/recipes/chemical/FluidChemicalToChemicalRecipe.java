@@ -95,6 +95,7 @@ public abstract class FluidChemicalToChemicalRecipe<CHEMICAL extends Chemical<CH
         return (STACK) output.copy();
     }
 
+    //TODO - 1.20.2: Javadocs
     public STACK getOutputRaw() {
         return output;
     }

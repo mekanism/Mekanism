@@ -24,7 +24,8 @@ public class GasStackIngredientCreator extends ChemicalStackIngredientCreator<Ga
     public static final GasStackIngredientCreator INSTANCE = new GasStackIngredientCreator();
 
     private GasStackIngredientCreator() {
-        super(SingleGasStackIngredient.CODEC, TaggedGasStackIngredient.CODEC, codec->MultiGasStackIngredient.makeCodec(codec, MultiGasStackIngredient::new), SingleGasStackIngredient.class, TaggedGasStackIngredient.class, MultiGasStackIngredient.class, GasStackIngredient.class);
+        super(SingleGasStackIngredient.CODEC, TaggedGasStackIngredient.CODEC, codec->MultiGasStackIngredient.makeCodec(codec, MultiGasStackIngredient::new),
+              SingleGasStackIngredient.class, TaggedGasStackIngredient.class, MultiGasStackIngredient.class, GasStackIngredient.class);
     }
 
     @Override

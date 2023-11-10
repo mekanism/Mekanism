@@ -234,7 +234,7 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
         }
         return new AndCondition(Stream.concat(
               baseConditions,
-              Arrays.stream(configs).map(config -> new ConditionExistsCondition(/*new ConfigCondition(config.name())*/null))//todo 1.20.2 replace with real condition
+              Arrays.stream(configs).map(config -> new ConditionExistsCondition(/*new ConfigCondition(config.name())*/null))//TODO - 1.20.2: replace with real condition
         ).toList());
     }
 }

@@ -24,7 +24,8 @@ public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreato
     public static final PigmentStackIngredientCreator INSTANCE = new PigmentStackIngredientCreator();
 
     private PigmentStackIngredientCreator() {
-        super(SinglePigmentStackIngredient.CODEC, TaggedPigmentStackIngredient.CODEC, codec-> MultiPigmentStackIngredient.makeCodec(codec, MultiPigmentStackIngredient::new), SinglePigmentStackIngredient.class, TaggedPigmentStackIngredient.class, MultiPigmentStackIngredient.class, PigmentStackIngredient.class);
+        super(SinglePigmentStackIngredient.CODEC, TaggedPigmentStackIngredient.CODEC, codec-> MultiPigmentStackIngredient.makeCodec(codec, MultiPigmentStackIngredient::new),
+              SinglePigmentStackIngredient.class, TaggedPigmentStackIngredient.class, MultiPigmentStackIngredient.class, PigmentStackIngredient.class);
     }
 
     @Override

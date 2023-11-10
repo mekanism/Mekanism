@@ -81,6 +81,7 @@ public abstract class ItemStackChemicalToItemStackRecipe<CHEMICAL extends Chemic
         return output.copy();
     }
 
+    //TODO - 1.20.2: Javadocs
     public ItemStack getOutputRaw() {
         return output;
     }

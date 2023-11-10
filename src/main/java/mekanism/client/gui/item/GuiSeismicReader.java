@@ -155,7 +155,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double xDelta, double yDelta) {
-        return super.mouseScrolled(mouseX, mouseY, xDelta, yDelta) || scrollBar.adjustScroll(xDelta);
+        return super.mouseScrolled(mouseX, mouseY, xDelta, yDelta) || scrollBar.adjustScroll(yDelta);
     }
 
     @FunctionalInterface

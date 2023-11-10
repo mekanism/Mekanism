@@ -36,8 +36,8 @@ public abstract class ChemicalChemicalToChemicalRecipeSerializer<CHEMICAL extend
 
     protected abstract STACK fromBuffer(@NotNull FriendlyByteBuf buffer);
 
-    @Override
     @NotNull
+    @Override
     public Codec<RECIPE> codec() {
         if (codec == null) {
             Codec<INGREDIENT> ingredientCodec = getDeserializer().getIngredientCreator().codec();

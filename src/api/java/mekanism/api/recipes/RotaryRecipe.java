@@ -67,7 +67,6 @@ public abstract class RotaryRecipe extends MekanismRecipe {
      * {@link #RotaryRecipe(FluidStackIngredient, GasStack)} and making two separate recipes if the conversion will be possible in both directions.
      */
     public RotaryRecipe(GasStackIngredient gasInput, FluidStack fluidOutput) {
-        super();
         this.gasInput = Objects.requireNonNull(gasInput, "Gas input cannot be null.");
         Objects.requireNonNull(fluidOutput, "Fluid output cannot be null.");
         if (fluidOutput.isEmpty()) {

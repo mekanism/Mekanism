@@ -41,7 +41,6 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
      * @apiNote At least one output must not be empty.
      */
     public SawmillRecipe(ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance) {
-        super();
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(mainOutput, "Main output cannot be null.");
         Objects.requireNonNull(secondaryOutput, "Secondary output cannot be null.");

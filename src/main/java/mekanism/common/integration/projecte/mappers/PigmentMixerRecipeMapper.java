@@ -42,20 +42,21 @@ public class PigmentMixerRecipeMapper implements IRecipeTypeMapper {
         boolean handled = false;
         List<@NotNull PigmentStack> leftInputRepresentations = recipe.getLeftInput().getRepresentations();
         List<@NotNull PigmentStack> rightInputRepresentations = recipe.getRightInput().getRepresentations();
-        //for (PigmentStack leftRepresentation : leftInputRepresentations) {
-        //    NormalizedSimpleStack nssLeft = NSSPigment.createPigment(leftRepresentation);
-        //    for (PigmentStack rightRepresentation : rightInputRepresentations) {
-        //        PigmentStack output = recipe.getOutput(leftRepresentation, rightRepresentation);
-        //        if (!output.isEmpty()) {
-        //            IngredientHelper ingredientHelper = new IngredientHelper(mapper);
-        //            ingredientHelper.put(nssLeft, leftRepresentation.getAmount());
-        //            ingredientHelper.put(rightRepresentation);
-        //            if (ingredientHelper.addAsConversion(output)) {
-        //                handled = true;
-        //            }
-        //        }
-        //    }
-        //}
+        //TODO - 1.20.2: ProjectE
+        /*for (PigmentStack leftRepresentation : leftInputRepresentations) {
+            NormalizedSimpleStack nssLeft = NSSPigment.createPigment(leftRepresentation);
+            for (PigmentStack rightRepresentation : rightInputRepresentations) {
+                PigmentStack output = recipe.getOutput(leftRepresentation, rightRepresentation);
+                if (!output.isEmpty()) {
+                    IngredientHelper ingredientHelper = new IngredientHelper(mapper);
+                    ingredientHelper.put(nssLeft, leftRepresentation.getAmount());
+                    ingredientHelper.put(rightRepresentation);
+                    if (ingredientHelper.addAsConversion(output)) {
+                        handled = true;
+                    }
+                }
+            }
+        }*/
         return handled;
     }
 }

@@ -1,8 +1,5 @@
 package mekanism.common.recipe.serializer;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
@@ -14,8 +11,7 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
@@ -29,15 +25,15 @@ public class NucleosynthesizingRecipeSerializer<RECIPE extends Nucleosynthesizin
         this.factory = factory;
     }
 
-    @Override
     @NotNull
+    @Override
     public Codec<RECIPE> codec() {
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance->instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.ITEM_INPUT).forGetter(NucleosynthesizingRecipe::getItemInput),
                   IngredientCreatorAccess.gas().codec().fieldOf(JsonConstants.GAS_INPUT).forGetter(NucleosynthesizingRecipe::getChemicalInput),
                   SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(r->r.getOutput(ItemStack.EMPTY, GasStack.EMPTY)),
-                  SerializerHelper.POSITIVE_INT_CODEC.fieldOf(JsonConstants.DURATION).forGetter(NucleosynthesizingRecipe::getDuration)
+                  ExtraCodecs.POSITIVE_INT.fieldOf(JsonConstants.DURATION).forGetter(NucleosynthesizingRecipe::getDuration)
             ).apply(instance, factory::create));
         }
         return codec;

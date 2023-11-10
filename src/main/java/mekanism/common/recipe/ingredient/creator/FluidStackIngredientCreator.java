@@ -215,7 +215,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         //Note: This must be a lazily initialized so that this class can be loaded in tests
         static final Codec<TaggedFluidStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> RecordCodecBuilder.create(instance->instance.group(
               TagKey.codec(Keys.FLUIDS).fieldOf(JsonConstants.TAG).forGetter(TaggedFluidStackIngredient::getTag),
-              SerializerHelper.POSITIVE_NONZERO_INT_CODEC.fieldOf(JsonConstants.AMOUNT).forGetter(TaggedFluidStackIngredient::getRawAmount)
+              ExtraCodecs.POSITIVE_INT.fieldOf(JsonConstants.AMOUNT).forGetter(TaggedFluidStackIngredient::getRawAmount)
         ).apply(instance, TaggedFluidStackIngredient::new)));
 
         private final ITag<Fluid> tag;
@@ -311,7 +311,10 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
     @NothingNullByDefault
     public static class MultiFluidStackIngredient extends FluidStackIngredient implements IMultiIngredient<FluidStack, FluidStackIngredient> {
 
-        static final Codec<MultiFluidStackIngredient> CODEC = ExtraCodecs.nonEmptyList(SINGLE_CODEC.listOf()).xmap(lst->new MultiFluidStackIngredient(lst.toArray(new FluidStackIngredient[0])), MultiFluidStackIngredient::getIngredients);
+        static final Codec<MultiFluidStackIngredient> CODEC = ExtraCodecs.nonEmptyList(SINGLE_CODEC.listOf()).xmap(
+              lst->new MultiFluidStackIngredient(lst.toArray(new FluidStackIngredient[0])),
+              MultiFluidStackIngredient::getIngredients
+        );
 
         private final FluidStackIngredient[] ingredients;
 

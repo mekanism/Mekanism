@@ -69,6 +69,6 @@ public abstract class GuiScrollList extends GuiScrollableElement {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double xDelta, double yDelta) {
-        return isMouseOver(mouseX, mouseY) && adjustScroll(xDelta) || super.mouseScrolled(mouseX, mouseY, xDelta, yDelta);
+        return isMouseOver(mouseX, mouseY) && adjustScroll(yDelta) || super.mouseScrolled(mouseX, mouseY, xDelta, yDelta);
     }
 }

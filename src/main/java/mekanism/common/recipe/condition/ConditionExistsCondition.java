@@ -6,6 +6,7 @@ import net.neoforged.neoforge.common.conditions.ICondition;
 import org.jetbrains.annotations.Nullable;
 
 public record ConditionExistsCondition(@Nullable ICondition condition) implements ICondition {
+
     private static final ConditionExistsCondition DOES_NOT_EXIST = new ConditionExistsCondition(null);
 
     @Override
@@ -24,6 +25,8 @@ public record ConditionExistsCondition(@Nullable ICondition condition) implement
     }
 
     public static Codec<ConditionExistsCondition> makeCodec() {
-        return RecordCodecBuilder.create(instance -> instance.group(ICondition.CODEC.fieldOf("condition").orElse(DOES_NOT_EXIST).forGetter(o->o.condition)).apply(instance, ConditionExistsCondition::new));
+        return RecordCodecBuilder.create(instance -> instance.group(
+              ICondition.CODEC.fieldOf("condition").orElse(DOES_NOT_EXIST).forGetter(ConditionExistsCondition::condition)
+        ).apply(instance, ConditionExistsCondition::new));
     }
 }

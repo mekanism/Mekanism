@@ -43,20 +43,21 @@ public class PaintingMachineRecipeMapper implements IRecipeTypeMapper {
         boolean handled = false;
         List<@NotNull PigmentStack> pigmentRepresentations = recipe.getChemicalInput().getRepresentations();
         List<@NotNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
-        //for (PigmentStack pigmentRepresentation : pigmentRepresentations) {
-        //    NormalizedSimpleStack nssPigment = NSSPigment.createPigment(pigmentRepresentation);
-        //    for (ItemStack itemRepresentation : itemRepresentations) {
-        //        ItemStack output = recipe.getOutput(itemRepresentation, pigmentRepresentation);
-        //        if (!output.isEmpty()) {
-        //            IngredientHelper ingredientHelper = new IngredientHelper(mapper);
-        //            ingredientHelper.put(nssPigment, pigmentRepresentation.getAmount());
-        //            ingredientHelper.put(itemRepresentation);
-        //            if (ingredientHelper.addAsConversion(output)) {
-        //                handled = true;
-        //            }
-        //        }
-        //    }
-        //}
+        //TODO - 1.20.2: ProjectE
+        /*for (PigmentStack pigmentRepresentation : pigmentRepresentations) {
+            NormalizedSimpleStack nssPigment = NSSPigment.createPigment(pigmentRepresentation);
+            for (ItemStack itemRepresentation : itemRepresentations) {
+                ItemStack output = recipe.getOutput(itemRepresentation, pigmentRepresentation);
+                if (!output.isEmpty()) {
+                    IngredientHelper ingredientHelper = new IngredientHelper(mapper);
+                    ingredientHelper.put(nssPigment, pigmentRepresentation.getAmount());
+                    ingredientHelper.put(itemRepresentation);
+                    if (ingredientHelper.addAsConversion(output)) {
+                        handled = true;
+                    }
+                }
+            }
+        }*/
         return handled;
     }
 }

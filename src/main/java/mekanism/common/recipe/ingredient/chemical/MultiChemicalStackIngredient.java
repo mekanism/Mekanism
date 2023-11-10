@@ -1,7 +1,5 @@
 package mekanism.common.recipe.ingredient.chemical;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,12 +30,11 @@ public abstract class MultiChemicalStackIngredient<CHEMICAL extends Chemical<CHE
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> implements ChemicalStackIngredient<CHEMICAL, STACK>, IMultiIngredient<STACK, INGREDIENT> {
 
     public static <
-              CHEMICAL extends Chemical<CHEMICAL>,
-              STACK extends ChemicalStack<CHEMICAL>,
-              INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>,
-              MULTI extends MultiChemicalStackIngredient<CHEMICAL, STACK, INGREDIENT>
-          >
-    Codec<MULTI> makeCodec(Codec<INGREDIENT> singleJoinedCodec, Function<List<INGREDIENT>, MULTI> multiConstructor) {
+          CHEMICAL extends Chemical<CHEMICAL>,
+          STACK extends ChemicalStack<CHEMICAL>,
+          INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>,
+          MULTI extends MultiChemicalStackIngredient<CHEMICAL, STACK, INGREDIENT>
+          > Codec<MULTI> makeCodec(Codec<INGREDIENT> singleJoinedCodec, Function<List<INGREDIENT>, MULTI> multiConstructor) {
         return ExtraCodecs.nonEmptyList(singleJoinedCodec.listOf()).xmap(multiConstructor, MultiChemicalStackIngredient::getIngredients);
     }
 

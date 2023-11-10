@@ -2,7 +2,6 @@ package mekanism.common.advancements;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import mekanism.common.advancements.triggers.AlloyUpgradeTrigger;
@@ -17,14 +16,16 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.critereon.PlayerTrigger;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class MekanismCriteriaTriggers {
 
     private MekanismCriteriaTriggers() {
     }
 
-    private static final List<Pair<ResourceLocation, CriterionTrigger<?>>> lazyToRegister = new ArrayList<>();
+    private record NamedTrigger(ResourceLocation nane, CriterionTrigger<?> trigger) {
+    }
+
+    private static final List<NamedTrigger> lazyToRegister = new ArrayList<>();
 
     //TODO: Eventually we may want to require parent advancements to be unlocked as one of the "and" conditions. So that then once the parent unlocks
     // if they already completed all the other requirements it auto unlocks as well, but then they can't skip things
@@ -44,14 +45,14 @@ public class MekanismCriteriaTriggers {
     }
 
     private static <TRIGGER extends CriterionTrigger<?>> TRIGGER lazyRegister(ResourceLocation name, TRIGGER criterion) {
-        lazyToRegister.add(Pair.of(name, criterion));
+        lazyToRegister.add(new NamedTrigger(name, criterion));
         return criterion;
     }
 
     public static void init() {
-        for (Pair<ResourceLocation, CriterionTrigger<?>> pair : lazyToRegister) {
-            //todo see if we can get a RL version?
-            CriteriaTriggers.register(pair.getLeft().toString(), pair.getRight());
+        for (NamedTrigger namedTrigger : lazyToRegister) {
+            //TODO - 1.20.2: see if we can get a RL version?
+            CriteriaTriggers.register(namedTrigger.nane().toString(), namedTrigger.trigger());
         }
         lazyToRegister.clear();
     }

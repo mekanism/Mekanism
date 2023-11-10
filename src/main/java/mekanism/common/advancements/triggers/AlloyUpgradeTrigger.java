@@ -4,11 +4,11 @@ import com.google.gson.JsonObject;
 import java.util.Optional;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,8 +30,8 @@ public class AlloyUpgradeTrigger extends SimpleCriterionTrigger<AlloyUpgradeTrig
             super(playerPredicate);
         }
 
-        public static AlloyUpgradeTrigger.TriggerInstance upgraded() {
-            return new AlloyUpgradeTrigger.TriggerInstance(Optional.empty());
+        public static Criterion<TriggerInstance> upgraded() {
+            return MekanismCriteriaTriggers.ALLOY_UPGRADE.createCriterion(new TriggerInstance(Optional.empty()));
         }
     }
 }

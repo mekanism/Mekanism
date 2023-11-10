@@ -120,7 +120,7 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
         } else if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        TaggedChemicalStackIngredient<CHEMICAL, STACK> other = (TaggedChemicalStackIngredient<CHEMICAL, STACK>) o;
+        TaggedChemicalStackIngredient<?, ?> other = (TaggedChemicalStackIngredient<?, ?>) o;
         return amount == other.amount && tag.equals(other.tag);
     }
 

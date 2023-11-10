@@ -47,17 +47,18 @@ public class ItemStackGasToItemStackRecipeMapper implements IRecipeTypeMapper {
         for (GasStack gasRepresentation : gasRepresentations) {
             NSSGas nssGas = NSSGas.createGas(gasRepresentation);
             long gasAmount = gasRepresentation.getAmount() * TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED;
-            //TODO ProjectE for (ItemStack itemRepresentation : itemRepresentations) {
-            //    ItemStack output = recipe.getOutput(itemRepresentation, gasRepresentation);
-            //    if (!output.isEmpty()) {
-            //        IngredientHelper ingredientHelper = new IngredientHelper(mapper);
-            //        ingredientHelper.put(itemRepresentation);
-            //        ingredientHelper.put(nssGas, gasAmount);
-            //        if (ingredientHelper.addAsConversion(output)) {
-            //            handled = true;
-            //        }
-            //    }
-            //}
+            //TODO - 1.20.2: ProjectE update
+            /*for (ItemStack itemRepresentation : itemRepresentations) {
+                ItemStack output = recipe.getOutput(itemRepresentation, gasRepresentation);
+                if (!output.isEmpty()) {
+                    IngredientHelper ingredientHelper = new IngredientHelper(mapper);
+                    ingredientHelper.put(itemRepresentation);
+                    ingredientHelper.put(nssGas, gasAmount);
+                    if (ingredientHelper.addAsConversion(output)) {
+                        handled = true;
+                    }
+                }
+            }*/
         }
         return handled;
     }

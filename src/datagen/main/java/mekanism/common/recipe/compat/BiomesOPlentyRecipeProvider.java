@@ -39,7 +39,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
         //TODO: Bio-fuel recipes?
     }
 
-    //todo 1.20.2 replace with real fields if there's a Neo version released
+    //TODO - 1.20.2: replace with real fields if there's a Neo version released
     @SuppressWarnings("unchecked")
     public static RegistryObject<Block> getBOPBlock(String fieldName) {
         try {

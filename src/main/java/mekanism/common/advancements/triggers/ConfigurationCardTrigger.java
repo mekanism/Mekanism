@@ -4,11 +4,11 @@ import com.google.gson.JsonObject;
 import java.util.Optional;
 import mekanism.api.JsonConstants;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +28,7 @@ public class ConfigurationCardTrigger extends SimpleCriterionTrigger<Configurati
 
         private final boolean copy;
 
+        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
         protected TriggerInstance(Optional<ContextAwarePredicate> playerPredicate, boolean copy) {
             super(playerPredicate);
             this.copy = copy;
@@ -41,12 +42,12 @@ public class ConfigurationCardTrigger extends SimpleCriterionTrigger<Configurati
             return json;
         }
 
-        public static ConfigurationCardTrigger.TriggerInstance copy() {
-            return new ConfigurationCardTrigger.TriggerInstance(Optional.empty(), true);
+        public static Criterion<TriggerInstance> copy() {
+            return MekanismCriteriaTriggers.CONFIGURATION_CARD.createCriterion(new TriggerInstance(Optional.empty(), true));
         }
 
-        public static ConfigurationCardTrigger.TriggerInstance paste() {
-            return new ConfigurationCardTrigger.TriggerInstance(Optional.empty(), false);
+        public static Criterion<TriggerInstance> paste() {
+            return MekanismCriteriaTriggers.CONFIGURATION_CARD.createCriterion(new TriggerInstance(Optional.empty(), false));
         }
     }
 }

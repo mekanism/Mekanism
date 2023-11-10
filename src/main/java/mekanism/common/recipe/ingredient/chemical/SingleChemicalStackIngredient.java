@@ -102,7 +102,7 @@ public abstract class SingleChemicalStackIngredient<CHEMICAL extends Chemical<CH
         } else if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        return chemicalInstance.equals(((SingleChemicalStackIngredient<CHEMICAL, STACK>) o).chemicalInstance);
+        return chemicalInstance.equals(((SingleChemicalStackIngredient<?, ?>) o).chemicalInstance);
     }
 
     @Override

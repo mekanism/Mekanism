@@ -1,10 +1,8 @@
 package mekanism.common.recipe.serializer;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
 import mekanism.api.JsonConstants;
@@ -15,9 +13,7 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.impl.SawmillIRecipe;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
@@ -31,25 +27,23 @@ public class SawmillRecipeSerializer implements RecipeSerializer<SawmillIRecipe>
         this.factory = factory;
     }
 
-    @Override
     @NotNull
+    @Override
     public Codec<SawmillIRecipe> codec() {
         if (codec == null) {
-            Codec<Double> chanceCodec = ExtraCodecs.validate(Codec.DOUBLE, d->d > 0 && d <= 1 ? DataResult.success(d) : DataResult.error(()->"Expected secondaryChance to be greater than zero, and less than or equal to one. Found "+d));
-            var secondaryChanceFieldBase = ExtraCodecs.strictOptionalField(chanceCodec, JsonConstants.SECONDARY_CHANCE);
-            var mainOutputFieldBase = SerializerHelper.ITEMSTACK_CODEC.optionalFieldOf(JsonConstants.MAIN_OUTPUT);
-            var secondaryOutputField = SerializerHelper.ITEMSTACK_CODEC.optionalFieldOf(JsonConstants.SECONDARY_OUTPUT).forGetter(SawmillIRecipe::getSecondaryOutputRaw);
+            Codec<Double> chanceCodec = ExtraCodecs.validate(Codec.DOUBLE, d -> d > 0 && d <= 1 ? DataResult.success(d) : DataResult.error(() -> "Expected secondaryChance to be greater than zero, and less than or equal to one. Found " + d));
+            MapCodec<Optional<Double>> secondaryChanceFieldBase = ExtraCodecs.strictOptionalField(chanceCodec, JsonConstants.SECONDARY_CHANCE);
+            MapCodec<Optional<ItemStack>> mainOutputFieldBase = SerializerHelper.ITEMSTACK_CODEC.optionalFieldOf(JsonConstants.MAIN_OUTPUT);
+            RecordCodecBuilder<SawmillIRecipe, Optional<ItemStack>> secondaryOutputField = SerializerHelper.ITEMSTACK_CODEC.optionalFieldOf(JsonConstants.SECONDARY_OUTPUT).forGetter(SawmillIRecipe::getSecondaryOutputRaw);
 
-            codec = RecordCodecBuilder.create(instance->instance.group(
+            codec = RecordCodecBuilder.create(instance -> instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.INPUT).forGetter(SawmillRecipe::getInput),
                   SerializerHelper.oneRequired(secondaryOutputField, mainOutputFieldBase, SawmillIRecipe::getMainOutputRaw),
                   secondaryOutputField,
                   SerializerHelper.dependentOptionality(secondaryOutputField, secondaryChanceFieldBase, sawmillIRecipe -> Optional.of(sawmillIRecipe.getSecondaryChance()))
             ).apply(instance,
-                  (input, mainOutput, secondaryOutput, secondChance)-> factory.create(input, mainOutput.orElse(ItemStack.EMPTY), secondaryOutput.orElse(ItemStack.EMPTY), secondChance.orElse(0D))
+                  (input, mainOutput, secondaryOutput, secondChance) -> factory.create(input, mainOutput.orElse(ItemStack.EMPTY), secondaryOutput.orElse(ItemStack.EMPTY), secondChance.orElse(0D))
             ));
-
-            
         }
         return codec;
     }

@@ -606,7 +606,7 @@ public final class MekanismUtils {
     }
 
     /**
-     * Copy of LivingEntity#onChangedPotionEffect(EffectInstance, boolean) due to not being able to AT the method as it is protected.
+     * Copy of LivingEntity#onEffectUpdated(MobEffectInstance, boolean, Entity) due to not being able to AT the method as it is protected.
      */
     private static void onChangedPotionEffect(LivingEntity entity, MobEffectInstance effectInstance, boolean reapply) {
         entity.effectsDirty = true;

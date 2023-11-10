@@ -177,7 +177,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
 
     @Nullable
     public static String basicImplicitIngredient(Ingredient vanillaIngredient, int amount, JsonElement serialized, boolean handleTags) {
-        throw new IllegalStateException("CT not updated");//todo CraftTweaker porting
+        throw new IllegalStateException("CT not updated");//TODO - 1.20.2: CraftTweaker porting
         /*if (serialized.isJsonObject()) {
             JsonObject serializedIngredient = serialized.getAsJsonObject();
             if (vanillaIngredient.isVanilla()) {

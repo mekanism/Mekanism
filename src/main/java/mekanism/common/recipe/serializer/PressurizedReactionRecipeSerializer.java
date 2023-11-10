@@ -30,8 +30,8 @@ public class PressurizedReactionRecipeSerializer implements RecipeSerializer<Pre
         this.factory = factory;
     }
 
-    @Override
     @NotNull
+    @Override
     public Codec<PressurizedReactionIRecipe> codec() {
         if (codec == null) {
             Codec<PressurizedReactionIRecipe> baseCodec = RecordCodecBuilder.create(instance -> instance.group(
@@ -39,7 +39,7 @@ public class PressurizedReactionRecipeSerializer implements RecipeSerializer<Pre
                   IngredientCreatorAccess.fluid().codec().fieldOf(JsonConstants.FLUID_INPUT).forGetter(PressurizedReactionRecipe::getInputFluid),
                   IngredientCreatorAccess.gas().codec().fieldOf(JsonConstants.GAS_INPUT).forGetter(PressurizedReactionRecipe::getInputGas),
                   FloatingLong.CODEC.optionalFieldOf(JsonConstants.ENERGY_REQUIRED, FloatingLong.ZERO).forGetter(PressurizedReactionRecipe::getEnergyRequired),
-                  SerializerHelper.POSITIVE_INT_CODEC.fieldOf(JsonConstants.DURATION).forGetter(PressurizedReactionRecipe::getDuration),
+                  ExtraCodecs.POSITIVE_INT.fieldOf(JsonConstants.DURATION).forGetter(PressurizedReactionRecipe::getDuration),
                   SerializerHelper.ITEMSTACK_CODEC.optionalFieldOf(JsonConstants.ITEM_OUTPUT, ItemStack.EMPTY).forGetter(PressurizedReactionIRecipe::getOutputItem),
                   ChemicalUtils.GAS_STACK_CODEC.optionalFieldOf(JsonConstants.GAS_OUTPUT, GasStack.EMPTY).forGetter(PressurizedReactionIRecipe::getOutputGas)
             ).apply(instance, factory::create));

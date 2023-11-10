@@ -23,7 +23,7 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
         addPrecisionSawmillRecipes(consumer, basePath + "sawing/");
     }
 
-    //todo 1.20.2 replace with real fields if there's a Neo version released
+    //TODO - 1.20.2: replace with real fields if there's a Neo version released
     @SuppressWarnings("unchecked")
     private static RegistryObject<Item> getFDItem(String fieldName) {
         try {

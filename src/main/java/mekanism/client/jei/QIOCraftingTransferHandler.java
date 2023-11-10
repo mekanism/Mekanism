@@ -130,7 +130,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
             //I don't believe this ever will happen with a normal crafting recipe but just in case it does, error
             // if we have more than nine inputs, as there should never be
             // a case where this actually happens except potentially with some really obscure modded recipe
-            Mekanism.logger.warn("Error evaluating recipe transfer handler for recipe: {}, had more than 9 inputs: {}", recipe/*.getId() TODO when JEI updates maybe restore Id*/, maxInputCount);
+            Mekanism.logger.warn("Error evaluating recipe transfer handler for recipe: {}, had more than 9 inputs: {}", recipe/*.getId() TODO - 1.20.2: when JEI updates maybe restore Id*/, maxInputCount);
             return handlerHelper.createInternalError();
         }
         int inputCount = 0;

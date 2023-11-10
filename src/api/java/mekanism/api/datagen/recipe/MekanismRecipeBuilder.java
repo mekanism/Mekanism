@@ -81,7 +81,8 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
     /**
      * Gets a recipe result object.
      *
-     * @param id ID of the recipe being built.
+     * @param id                ID of the recipe being built.
+     * @param advancementHolder Optional advancement that unlocks this recipe.
      */
     protected abstract RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder);
 
@@ -97,7 +98,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * Builds this recipe.
      *
      * @param recipeOutput Finished Recipe Consumer.
-     * @param id       Name of the recipe being built.
+     * @param id           Name of the recipe being built.
      */
     public void build(RecipeOutput recipeOutput, ResourceLocation id) {
         validate(id);
@@ -118,7 +119,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * Builds this recipe basing the name on the output item.
      *
      * @param recipeOutput Finished Recipe Consumer.
-     * @param output   Output to base the recipe name off of.
+     * @param output       Output to base the recipe name off of.
      */
     protected void build(RecipeOutput recipeOutput, ItemLike output) {
         ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(output.asItem());

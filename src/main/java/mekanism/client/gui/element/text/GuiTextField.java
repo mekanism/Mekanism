@@ -172,12 +172,6 @@ public class GuiTextField extends GuiElement {
         updateTextField();
     }
 
-    //@Override
-    //public void tick() {
-    //    super.tick();
-    //    textField.tick();
-    //}
-
     @Nullable
     @Override
     public GuiElement mouseClickedNested(double mouseX, double mouseY, int button) {

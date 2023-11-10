@@ -6,7 +6,7 @@ function initializeCoreMod() {
       'target': {
         'type': 'METHOD',
         'class': 'net.minecraft.data.DataGenerator',
-        'methodName': 'run',//ASMAPI.mapMethod('m_123917_'),
+        'methodName': 'run',
         'methodDesc': '()V'
       },
       'transformer': function (method) {

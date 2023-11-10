@@ -40,10 +40,10 @@ public class SawmillIRecipe extends SawmillRecipe {
     }
 
     public Optional<ItemStack> getMainOutputRaw() {
-        return this.mainOutput .isEmpty() ? Optional.empty() : Optional.of(this.mainOutput);
+        return this.mainOutput.isEmpty() ? Optional.empty() : Optional.of(this.mainOutput);
     }
 
     public Optional<ItemStack> getSecondaryOutputRaw() {
-        return this.secondaryOutput .isEmpty() ? Optional.empty() : Optional.of(this.secondaryOutput);
+        return this.secondaryOutput.isEmpty() ? Optional.empty() : Optional.of(this.secondaryOutput);
     }
 }

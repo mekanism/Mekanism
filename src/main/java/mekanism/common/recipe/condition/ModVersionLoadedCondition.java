@@ -7,15 +7,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
-public class ModVersionLoadedCondition implements ICondition {
-
-    private final String minVersion;
-    private final String modid;
-
-    public ModVersionLoadedCondition(String modid, String version) {
-        this.modid = modid;
-        this.minVersion = version;
-    }
+public record ModVersionLoadedCondition(String modid, String minVersion) implements ICondition {
 
     @Override
     public boolean test(IContext context) {
@@ -29,12 +21,10 @@ public class ModVersionLoadedCondition implements ICondition {
         return MekanismRecipeConditions.MOD_VERSION_LOADED.get();
     }
 
-    @Override
-    public String toString() {
-        return "mod_version_loaded(\"" + modid + "\", \"" + minVersion + "\")";
-    }
-
     public static Codec<ModVersionLoadedCondition> makeCodec() {
-        return RecordCodecBuilder.create(instance -> instance.group(Codec.STRING.fieldOf("modid").forGetter(o->o.modid), Codec.STRING.fieldOf("minVersion").forGetter(o->o.minVersion)).apply(instance, ModVersionLoadedCondition::new));
+        return RecordCodecBuilder.create(instance -> instance.group(
+              Codec.STRING.fieldOf("modid").forGetter(ModVersionLoadedCondition::modid),
+              Codec.STRING.fieldOf("minVersion").forGetter(ModVersionLoadedCondition::minVersion)
+        ).apply(instance, ModVersionLoadedCondition::new));
     }
 }

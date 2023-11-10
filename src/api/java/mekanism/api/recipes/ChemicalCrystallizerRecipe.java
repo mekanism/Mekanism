@@ -36,7 +36,6 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
      * @param output Output.
      */
     public ChemicalCrystallizerRecipe(ChemicalStackIngredient<?, ?> input, ItemStack output) {
-        super();
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.chemicalType = ChemicalType.getTypeFor(input);
         Objects.requireNonNull(output, "Output cannot be null.");
@@ -136,6 +135,7 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
         return input;
     }
 
+    //TODO - 1.20.2: Javadocs
     @Internal
     public ItemStack getOutputRaw() {
         return this.output;

@@ -7,11 +7,11 @@ import java.util.Locale;
 import java.util.Optional;
 import mekanism.api.JsonConstants;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.StringRepresentable;
@@ -53,6 +53,7 @@ public class UseGaugeDropperTrigger extends SimpleCriterionTrigger<UseGaugeDropp
 
         private final UseDropperAction action;
 
+        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
         public TriggerInstance(Optional<ContextAwarePredicate> playerPredicate, UseDropperAction action) {
             super(playerPredicate);
             this.action = action;
@@ -66,8 +67,8 @@ public class UseGaugeDropperTrigger extends SimpleCriterionTrigger<UseGaugeDropp
             return json;
         }
 
-        public static UseGaugeDropperTrigger.TriggerInstance any() {
-            return new UseGaugeDropperTrigger.TriggerInstance(Optional.empty(), UseDropperAction.ANY);
+        public static Criterion<TriggerInstance> any() {
+            return MekanismCriteriaTriggers.USE_GAUGE_DROPPER.createCriterion(new TriggerInstance(Optional.empty(), UseDropperAction.ANY));
         }
     }
 }

@@ -56,14 +56,14 @@ public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> implements Reci
     public RotaryRecipeSerializer(IFactory<RECIPE> factory) {
         this.factory = factory;
         this.codec = Lazy.of(this::makeCodec);
-        }
+    }
 
     private Codec<RECIPE> makeCodec() {
         return NeoForgeExtraCodecs.withAlternative(bothWaysCodec(), NeoForgeExtraCodecs.withAlternative(fluidToGasCodec(), gasToFluidCodec()));
     }
 
-    @Override
     @NotNull
+    @Override
     public Codec<RECIPE> codec() {
         return this.codec.get();
     }

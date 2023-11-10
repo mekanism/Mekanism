@@ -7,11 +7,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 
 public class GameEventDeferredRegister extends WrappedDeferredRegister<GameEvent> {
 
-    private final String modid;
-
     public GameEventDeferredRegister(String modid) {
         super(modid, Registries.GAME_EVENT);
-        this.modid = modid;
     }
 
     public GameEventRegistryObject<GameEvent> register(String name) {

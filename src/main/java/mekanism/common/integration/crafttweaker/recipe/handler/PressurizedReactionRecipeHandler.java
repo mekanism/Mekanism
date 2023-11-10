@@ -40,7 +40,7 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
         }
         //Note: We can handle skipping optional params like this because only one output should be empty at a time
         // if there is only a single output, which means we can safely skip the other
-        throw new IllegalStateException("Needs update");//todo CraftTweaker update
+        throw new IllegalStateException("Needs update");//TODO - 1.20.2: CraftTweaker update
         //return buildCommandString(manager, recipe, recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputGas(), recipe.getDuration(),
         //      itemOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : itemOutput, gasOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : gasOutput,
         //      recipe.getEnergyRequired().isZero() ? SKIP_OPTIONAL_PARAM : recipe.getEnergyRequired()

@@ -4,7 +4,6 @@ import com.google.common.collect.Streams;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.MapDecoder;
 import com.mojang.serialization.MapEncoder;
 import com.mojang.serialization.MapEncoder.Implementation;
 import com.mojang.serialization.RecordBuilder;
@@ -32,24 +31,17 @@ public class ChemicalCrystallizerRecipeSerializer<RECIPE extends ChemicalCrystal
     }
 
     @SuppressWarnings("unchecked")
-    private static MapDecoder<ChemicalStackIngredient<?, ?>> decoderByType(ChemicalType chemicalType) {
-        return ((Codec<ChemicalStackIngredient<?, ?>>) switch (chemicalType) {
-            case GAS -> IngredientCreatorAccess.gas().codec();
-            case INFUSION -> IngredientCreatorAccess.infusion().codec();
-            case PIGMENT -> IngredientCreatorAccess.pigment().codec();
-            case SLURRY -> IngredientCreatorAccess.slurry().codec();
-        }).fieldOf(JsonConstants.INPUT);
+    private static MapCodec<ChemicalStackIngredient<?, ?>> codecByType(ChemicalType chemicalType) {
+        return ((Codec<ChemicalStackIngredient<?, ?>>) IngredientCreatorAccess.getCreatorForType(chemicalType).codec()).fieldOf(JsonConstants.INPUT);
     }
 
     private static final MapCodec<ChemicalType> chemicalTypeMapCodec = ChemicalType.CODEC.fieldOf(JsonConstants.CHEMICAL_TYPE);
 
-    private static final MapEncoder<ChemicalStackIngredient<?,?>> chemicalStackIngredientEncoder = new Implementation<ChemicalStackIngredient<?, ?>>() {
+    private static final MapEncoder<ChemicalStackIngredient<?,?>> chemicalStackIngredientEncoder = new Implementation<>() {
         @Override
-        @SuppressWarnings("unchecked")
         public <T> RecordBuilder<T> encode(ChemicalStackIngredient<?, ?> input, DynamicOps<T> ops, RecordBuilder<T> prefix) {
             ChemicalType type = ChemicalType.getTypeFor(input);
-            Codec<ChemicalStackIngredient<?,?>> codec1 = (Codec<ChemicalStackIngredient<?,?>>)IngredientCreatorAccess.getCreatorForType(type).codec();
-            return codec1.fieldOf(JsonConstants.INPUT).encode(input, ops, chemicalTypeMapCodec.encode(type, ops, prefix));
+            return codecByType(type).encode(input, ops, chemicalTypeMapCodec.encode(type, ops, prefix));
         }
 
         @Override
@@ -58,14 +50,14 @@ public class ChemicalCrystallizerRecipeSerializer<RECIPE extends ChemicalCrystal
         }
     };
 
-    @Override
     @NotNull
+    @Override
     public Codec<RECIPE> codec() {
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance-> {
-                var typeField = chemicalTypeMapCodec.<RECIPE>forGetter(r -> ChemicalType.getTypeFor(r.getInput()));
+                RecordCodecBuilder<RECIPE, ChemicalType> typeField = chemicalTypeMapCodec.forGetter(r -> ChemicalType.getTypeFor(r.getInput()));
                 return instance.group(
-                      typeField.dependent(ChemicalCrystallizerRecipe::getInput, chemicalStackIngredientEncoder, ChemicalCrystallizerRecipeSerializer::decoderByType),
+                      typeField.dependent(ChemicalCrystallizerRecipe::getInput, chemicalStackIngredientEncoder, ChemicalCrystallizerRecipeSerializer::codecByType),
                       //SerializerHelper.BOXED_CHEMICALSTACK_INGREDIENT_CODEC.fieldOf(JsonConstants.INPUT).forGetter(ChemicalCrystallizerRecipe::getInput),
                       SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(ChemicalCrystallizerRecipe::getOutputRaw)
                 ).apply(instance, factory::create);

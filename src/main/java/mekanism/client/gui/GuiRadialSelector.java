@@ -209,7 +209,7 @@ public class GuiRadialSelector extends Screen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
-        return deltaX != 0 && mouseScrolled(radialData, scrollIncrementer.scroll(deltaX)) || super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
+        return deltaY != 0 && mouseScrolled(radialData, scrollIncrementer.scroll(deltaY)) || super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
     }
 
     private <MODE extends IRadialMode> boolean mouseScrolled(RadialData<MODE> radialData, int shift) {

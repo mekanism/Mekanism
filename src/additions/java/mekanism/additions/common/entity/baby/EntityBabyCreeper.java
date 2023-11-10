@@ -60,8 +60,9 @@ public class EntityBabyCreeper extends Creeper implements IBabyEntity {
     }
 
     @Override
-    public float getMyRidingOffset(Entity other) {
-        return isBaby() ? 0 : super.getMyRidingOffset(other);
+    public float ridingOffset(@NotNull Entity other) {
+        //TODO - 1.20.2: Test this
+        return -0.66F;
     }
 
     @Override

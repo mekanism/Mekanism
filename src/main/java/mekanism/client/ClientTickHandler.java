@@ -52,14 +52,13 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.FogType;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.InputEvent.MouseScrollingEvent;
 import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.TickEvent.ClientTickEvent;
 import net.neoforged.neoforge.event.TickEvent.Phase;
-import net.neoforged.bus.api.Event;
-import net.neoforged.bus.api.SubscribeEvent;
 
 /**
  * Client-side tick handler for Mekanism. Used mainly for the update check upon startup.
@@ -273,7 +272,7 @@ public class ClientTickHandler {
     @SubscribeEvent
     public void onMouseEvent(MouseScrollingEvent event) {
         if (MekanismConfig.client.allowModeScroll.get() && minecraft.player != null && minecraft.player.isShiftKeyDown()) {
-            double delta = event.getScrollDeltaY();//todo 1.20.2 check scrolls
+            double delta = event.getScrollDeltaY();
             if (delta != 0 && IModeItem.isModeItem(minecraft.player, EquipmentSlot.MAINHAND)) {
                 int shift = scrollIncrementer.scroll(delta);
                 if (shift != 0) {

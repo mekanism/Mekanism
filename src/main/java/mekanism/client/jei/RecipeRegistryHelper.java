@@ -61,7 +61,7 @@ public class RecipeRegistryHelper {
                 FoodProperties food = stack.getFoodProperties(null);
                 //Only display consuming foods that provide healing as otherwise no paste will be made
                 if (food != null && food.getNutrition() > 0) {
-                    list.add(new NutritionalLiquifierIRecipe(item, IngredientCreatorAccess.item().from(stack),
+                    list.add(new NutritionalLiquifierIRecipe(IngredientCreatorAccess.item().from(stack),
                           MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.getNutrition() * 50)));
                 }
             }

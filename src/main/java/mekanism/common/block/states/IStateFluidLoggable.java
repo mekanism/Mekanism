@@ -71,7 +71,7 @@ public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer 
     }
 
     @Override
-    default boolean canPlaceLiquid(@Nullable Player p_294682_, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid fluid) {
+    default boolean canPlaceLiquid(@Nullable Player player, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid fluid) {
         return state.getValue(getFluidLoggedProperty()).isEmpty() && isValidFluid(fluid);
     }
 
@@ -106,7 +106,7 @@ public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer 
 
     @NotNull
     @Override
-    default ItemStack pickupBlock(@Nullable Player p_294682_, @NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockState state) {
+    default ItemStack pickupBlock(@Nullable Player player, @NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockState state) {
         IFluidLogType fluidLogged = state.getValue(getFluidLoggedProperty());
         if (!fluidLogged.isEmpty()) {
             Fluid fluid = fluidLogged.getFluid();

@@ -22,7 +22,7 @@ public class RotaryRecipeHandler extends MekanismRecipeHandler<RotaryRecipe> {
     public String dumpToCommandString(IRecipeManager<? super RotaryRecipe> manager, RotaryRecipe recipe) {
         //Note: We take advantage of the fact that if we have a recipe we have at least one direction and that we can skip parameters
         // as if they were optional as we will skip the later one as well and then end up with the proper method
-        throw new IllegalStateException("Needs update");//todo CraftTweaker update
+        throw new IllegalStateException("Needs update");//TODO - 1.20.2: CraftTweaker update
         //return buildCommandString(manager, recipe,
         //      recipe.hasFluidToGas() ? recipe.getFluidInput() : SKIP_OPTIONAL_PARAM,
         //      recipe.hasGasToFluid() ? recipe.getGasInput() : SKIP_OPTIONAL_PARAM,

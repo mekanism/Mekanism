@@ -4,11 +4,11 @@ import com.google.gson.JsonObject;
 import java.util.Optional;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,12 +25,13 @@ public class UnboxCardboardBoxTrigger extends SimpleCriterionTrigger<UnboxCardbo
 
     public static class TriggerInstance extends AbstractCriterionTriggerInstance {
 
+        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
         public TriggerInstance(Optional<ContextAwarePredicate> playerPredicate) {
             super(playerPredicate);
         }
 
-        public static UnboxCardboardBoxTrigger.TriggerInstance unbox() {
-            return new UnboxCardboardBoxTrigger.TriggerInstance(Optional.empty());
+        public static Criterion<TriggerInstance> unbox() {
+            return MekanismCriteriaTriggers.UNBOX_CARDBOARD_BOX.createCriterion(new TriggerInstance(Optional.empty()));
         }
     }
 }

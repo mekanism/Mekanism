@@ -53,6 +53,6 @@ public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFis
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
-        return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY) || scrollBar.adjustScroll(deltaX);
+        return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY) || scrollBar.adjustScroll(deltaY);
     }
 }

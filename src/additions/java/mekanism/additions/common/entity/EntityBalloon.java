@@ -397,23 +397,13 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         return (float) (size.height - OFFSET);
     }
 
-    //todo 1.20.2 work out if we can inline this
-    @NotNull
-    //@Override
-    protected AABB getBoundingBoxForPose(@NotNull Pose pose) {
-        EntityDimensions size = getDimensions(pose);
-        double x = getX();
-        double y = getY();
-        double z = getZ();
-        float f = size.width / 2F;
-        double posY = y - OFFSET;
-        return new AABB(new Vec3(x - f, posY, z - f), new Vec3(x + f, posY + size.height, z + f));
-    }
-
     @NotNull
     @Override
     protected AABB makeBoundingBox() {
-        return getBoundingBoxForPose(Pose.STANDING);
+        //TODO - 1.20.2: Test this
+        AABB boundingBox = super.makeBoundingBox();
+        return boundingBox.setMinY(boundingBox.minY - OFFSET)
+              .setMaxY(boundingBox.maxY - OFFSET);
     }
 
     @Override

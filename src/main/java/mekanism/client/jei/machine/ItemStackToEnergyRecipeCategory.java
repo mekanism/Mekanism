@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.progress.ProgressType;
@@ -23,7 +22,6 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -70,7 +68,7 @@ public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStac
                 //Manually add the tooltip showing the amounts if the mouse is over the energy gauge
                 Component energyOutput = EnergyDisplay.of(energy).getTextComponent();
                 if (Minecraft.getInstance().options.advancedItemTooltips || Screen.hasShiftDown()) {
-                    //TODO JEI update
+                    //TODO - 1.20.2: JEI update
                     //return List.of(energyOutput, TextComponentUtil.build(ChatFormatting.DARK_GRAY, MekanismLang.JEI_RECIPE_ID.translate(recipe.getId())));
                 }
                 return Collections.singletonList(energyOutput);

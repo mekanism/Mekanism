@@ -48,24 +48,24 @@ public class ElectrolysisRecipeMapper implements IRecipeTypeMapper {
             GasStack leftOutput = output.left();
             GasStack rightOutput = output.right();
             if (!leftOutput.isEmpty() && !rightOutput.isEmpty()) {
-                //TODO ProjectE
-                //NormalizedSimpleStack nssInput = NSSFluid.createFluid(representation.getFluid(), representation.getTag());
-                //NormalizedSimpleStack nssLeftOutput = NSSGas.createGas(leftOutput);
-                //NormalizedSimpleStack nssRightOutput = NSSGas.createGas(rightOutput);
-                ////Add trying to calculate left output (using it as if we needed negative of right output)
-                //IngredientHelper ingredientHelper = new IngredientHelper(mapper);
-                //ingredientHelper.put(nssInput, representation.getAmount());
-                //ingredientHelper.put(nssRightOutput, -rightOutput.getAmount());
-                //if (ingredientHelper.addAsConversion(nssLeftOutput, leftOutput.getAmount())) {
-                //    handled = true;
-                //}
-                ////Add trying to calculate right output (using it as if we needed negative of left output)
-                //ingredientHelper.resetHelper();
-                //ingredientHelper.put(nssInput, representation.getAmount());
-                //ingredientHelper.put(nssLeftOutput, -leftOutput.getAmount());
-                //if (ingredientHelper.addAsConversion(nssRightOutput, rightOutput.getAmount())) {
-                //    handled = true;
-                //}
+                //TODO - 1.20.2: ProjectE
+                /*NormalizedSimpleStack nssInput = NSSFluid.createFluid(representation);
+                NormalizedSimpleStack nssLeftOutput = NSSGas.createGas(leftOutput);
+                NormalizedSimpleStack nssRightOutput = NSSGas.createGas(rightOutput);
+                //Add trying to calculate left output (using it as if we needed negative of right output)
+                IngredientHelper ingredientHelper = new IngredientHelper(mapper);
+                ingredientHelper.put(nssInput, representation.getAmount());
+                ingredientHelper.put(nssRightOutput, -rightOutput.getAmount());
+                if (ingredientHelper.addAsConversion(nssLeftOutput, leftOutput.getAmount())) {
+                    handled = true;
+                }
+                //Add trying to calculate right output (using it as if we needed negative of left output)
+                ingredientHelper.resetHelper();
+                ingredientHelper.put(nssInput, representation.getAmount());
+                ingredientHelper.put(nssLeftOutput, -leftOutput.getAmount());
+                if (ingredientHelper.addAsConversion(nssRightOutput, rightOutput.getAmount())) {
+                    handled = true;
+                }*/
             }
         }
         return handled;

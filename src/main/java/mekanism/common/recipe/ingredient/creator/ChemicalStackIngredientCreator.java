@@ -25,7 +25,8 @@ public abstract class ChemicalStackIngredientCreator<CHEMICAL extends Chemical<C
     protected <ING_STACKED extends SingleChemicalStackIngredient<CHEMICAL, STACK>,
           ING_TAGGED extends TaggedChemicalStackIngredient<CHEMICAL,STACK>,
           MULTI extends MultiChemicalStackIngredient<CHEMICAL, STACK, INGREDIENT>>
-    ChemicalStackIngredientCreator(Codec<ING_STACKED> stackCodec, Codec<ING_TAGGED> taggedCodec, Function<Codec<INGREDIENT>, Codec<MULTI>> multiCodecSupplier, Class<ING_STACKED> stackedClass, Class<ING_TAGGED> taggedClass, Class<MULTI> multiClass, Class<INGREDIENT> ingredientClass) {
+    ChemicalStackIngredientCreator(Codec<ING_STACKED> stackCodec, Codec<ING_TAGGED> taggedCodec, Function<Codec<INGREDIENT>, Codec<MULTI>> multiCodecSupplier,
+          Class<ING_STACKED> stackedClass, Class<ING_TAGGED> taggedClass, Class<MULTI> multiClass, Class<INGREDIENT> ingredientClass) {
         Codec<INGREDIENT> joinedSingle = Codec.either(stackCodec, taggedCodec).xmap(
               either -> either.map(Function.identity(), Function.identity()),
               input -> {
@@ -65,9 +66,8 @@ public abstract class ChemicalStackIngredientCreator<CHEMICAL extends Chemical<C
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Codec<INGREDIENT> codec() {
-        return (Codec<INGREDIENT>)myCodec;
+        return myCodec;
     }
 
     @Override

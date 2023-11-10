@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import java.util.Set;
+import mekanism.api.JsonConstants;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.common.content.gear.IModuleContainerItem;
@@ -45,7 +46,7 @@ public class MaxedModuleContainerItemPredicate<ITEM extends Item & IModuleContai
     }
 
     static Codec<MaxedModuleContainerItemPredicate<?>> makeCodec() {
-        return ForgeRegistries.ITEMS.getCodec().fieldOf("item").codec().comapFlatMap(item->{
+        return ForgeRegistries.ITEMS.getCodec().fieldOf(JsonConstants.ITEM).codec().comapFlatMap(item->{
             if (item instanceof IModuleContainerItem) {
                 return DataResult.success(new MaxedModuleContainerItemPredicate<>((Item & IModuleContainerItem) item));
             }

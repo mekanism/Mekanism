@@ -50,7 +50,7 @@ import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
-//TODO see what can be removed/replaced by codecs
+//TODO - 1.20.2: see what can be removed/replaced by codecs and add javadocs
 public class SerializerHelper {
 
     private SerializerHelper() {
@@ -58,15 +58,12 @@ public class SerializerHelper {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
-    public static final Codec<Integer> POSITIVE_INT_CODEC = Codec.intRange(0, Integer.MAX_VALUE);
-    public static final Codec<Integer> POSITIVE_NONZERO_INT_CODEC = Codec.intRange(1, Integer.MAX_VALUE);
-
-    public static final Codec<Long> POSITIVE_LONG_CODEC = Util.make(()->{
+    public static final Codec<Long> POSITIVE_LONG_CODEC = Util.make(() -> {
         final Function<Long, DataResult<Long>> checker = Codec.checkRange(0L, Long.MAX_VALUE);
         return Codec.LONG.flatXmap(checker, checker);
     });
 
-    public static final Codec<Long> POSITIVE_NONZERO_LONG_CODEC = Util.make(()->{
+    public static final Codec<Long> POSITIVE_NONZERO_LONG_CODEC = Util.make(() -> {
         final Function<Long, DataResult<Long>> checker = Codec.checkRange(1L, Long.MAX_VALUE);
         return Codec.LONG.flatXmap(checker, checker);
     });
@@ -75,24 +72,26 @@ public class SerializerHelper {
      * Codec version of the old CraftingHelper.getItemStack
      */
     public static final Codec<ItemStack> ITEMSTACK_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(ItemStack::getItem),
-          POSITIVE_INT_CODEC.optionalFieldOf("Count", 1).forGetter(ItemStack::getCount),
-          CompoundTag.CODEC.optionalFieldOf("nbt").forGetter(stack -> Optional.ofNullable(stack.getTag()))
+          BuiltInRegistries.ITEM.byNameCodec().fieldOf(JsonConstants.ITEM).forGetter(ItemStack::getItem),
+          ExtraCodecs.POSITIVE_INT.optionalFieldOf("Count", 1).forGetter(ItemStack::getCount),
+          CompoundTag.CODEC.optionalFieldOf(JsonConstants.NBT).forGetter(stack -> Optional.ofNullable(stack.getTag()))
     ).apply(instance, ItemStack::new));
 
-    private static final Codec<Fluid> NON_EMPTY_FLUID_CODEC = ExtraCodecs.validate(BuiltInRegistries.FLUID.byNameCodec(), fluid -> fluid == Fluids.EMPTY ? DataResult.error(()->"Invalid fluid type") : DataResult.success(fluid));
+    private static final Codec<Fluid> NON_EMPTY_FLUID_CODEC = ExtraCodecs.validate(BuiltInRegistries.FLUID.byNameCodec(),
+          fluid -> fluid == Fluids.EMPTY ? DataResult.error(() -> "Invalid fluid type") : DataResult.success(fluid));
 
     public static final Codec<FluidStack> FLUIDSTACK_CODEC = RecordCodecBuilder.create(instance -> instance.group(
           NON_EMPTY_FLUID_CODEC.fieldOf(JsonConstants.FLUID).forGetter(FluidStack::getFluid),
-          POSITIVE_INT_CODEC.fieldOf(JsonConstants.AMOUNT).forGetter(FluidStack::getAmount),
+          ExtraCodecs.POSITIVE_INT.fieldOf(JsonConstants.AMOUNT).forGetter(FluidStack::getAmount),
           TagParser.AS_CODEC.optionalFieldOf(JsonConstants.NBT).forGetter(stack -> Optional.ofNullable(stack.getTag()))
     ).apply(instance, (fluid, amount, tag) -> {
+        //Note: We don't use the constructor that accepts a tag to avoid having to copy it
         FluidStack stack = new FluidStack(fluid, amount);
         tag.ifPresent(stack::setTag);
         return stack;
     }));
 
-    public static final Codec<ChemicalStack<?>> BOXED_CHEMICALSTACK_CODEC = ChemicalType.CODEC.dispatch(JsonConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor, type->switch (type){
+    public static final Codec<ChemicalStack<?>> BOXED_CHEMICALSTACK_CODEC = ChemicalType.CODEC.dispatch(JsonConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor, type -> switch (type) {
         case GAS -> ChemicalUtils.GAS_STACK_CODEC;
         case INFUSION -> ChemicalUtils.INFUSION_STACK_CODEC;
         case PIGMENT -> ChemicalUtils.PIGMENT_STACK_CODEC;
@@ -100,7 +99,7 @@ public class SerializerHelper {
     });
 
     //NB: this puts the type on the same level as the other fields, i.e. inside `input: { type: GAS, gas: "blah", amount: 1}`
-    public static Codec<ChemicalStackIngredient<?, ?>> BOXED_CHEMICALSTACK_INGREDIENT_CODEC = ChemicalType.CODEC.dispatch(JsonConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor, type-> IngredientCreatorAccess.getCreatorForType(type).codec());
+    public static Codec<ChemicalStackIngredient<?, ?>> BOXED_CHEMICALSTACK_INGREDIENT_CODEC = ChemicalType.CODEC.dispatch(JsonConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor, type -> IngredientCreatorAccess.getCreatorForType(type).codec());
 
     /**
      * Deserializes a FloatingLong that is stored in a specific key in a Json Object.
@@ -478,15 +477,14 @@ public class SerializerHelper {
     }
 
     /**
-     * Generate a RecordCodecBuilder which is required only if the 'primary' is present.
-     * If this field is present, it will be returned regardless.
-     * Does not eat errors
+     * Generate a RecordCodecBuilder which is required only if the 'primary' is present. If this field is present, it will be returned regardless. Does not eat errors
      *
-     * @param primaryField the field which determines the required-ness. MUST be an Optional
-     * @param dependentCodec the codec for <strong>this</strong> field
+     * @param primaryField    the field which determines the required-ness. MUST be an Optional
+     * @param dependentCodec  the codec for <strong>this</strong> field
      * @param dependentGetter the getter for this field (what you'd use on {@link MapCodec#forGetter(Function)})
-     * @param <SOURCE> the resulting type that both fields exist on
-     * @param <THIS_TYPE> the value type of this dependent field
+     * @param <SOURCE>        the resulting type that both fields exist on
+     * @param <THIS_TYPE>     the value type of this dependent field
+     *
      * @return a RecordCodecBuilder which contains the resulting logic - use in side a `group()`
      */
     @NotNull
@@ -515,15 +513,14 @@ public class SerializerHelper {
     }
 
     /**
-     * Generate a RecordCodecBuilder which is REQUIRED only if the 'other' is NOT present.
-     * When the other field is present, this one is OPTIONAL.
-     * Does not eat errors.
+     * Generate a RecordCodecBuilder which is REQUIRED only if the 'other' is NOT present. When the other field is present, this one is OPTIONAL. Does not eat errors.
      *
-     * @param otherField the field which determines the required-ness. MUST be an Optional
-     * @param dependentCodec the codec for <strong>this</strong> field
+     * @param otherField      the field which determines the required-ness. MUST be an Optional
+     * @param dependentCodec  the codec for <strong>this</strong> field
      * @param dependentGetter the getter for this field (what you'd use on {@link MapCodec#forGetter(Function)})
-     * @param <SOURCE> the resulting type that both fields exist on
-     * @param <THIS_TYPE> the value type of this dependent field
+     * @param <SOURCE>        the resulting type that both fields exist on
+     * @param <THIS_TYPE>     the value type of this dependent field
+     *
      * @return a RecordCodecBuilder which contains the resulting logic - use in side a `group()`
      */
     @NotNull

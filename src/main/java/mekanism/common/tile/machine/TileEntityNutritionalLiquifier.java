@@ -189,7 +189,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
             //If the food provides no healing don't allow consuming it as it won't provide any paste
             return null;
         }
-        return new NutritionalLiquifierIRecipe(stack.getItem(), IngredientCreatorAccess.item().from(stack, 1),
+        return new NutritionalLiquifierIRecipe(IngredientCreatorAccess.item().from(stack, 1),
               MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.getNutrition() * 50));
     }
 

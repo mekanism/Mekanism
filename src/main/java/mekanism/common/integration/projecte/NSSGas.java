@@ -18,10 +18,10 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link moze_intel.projecte.api.nss.NSSTag} for representing {@link Gas}s.
  */
-public final class NSSGas/* TODO ProjectE extends AbstractNSSTag<Gas>*/ {
+public final class NSSGas/* TODO - 1.20.2: ProjectE extends AbstractNSSTag<Gas>*/ {
 
     private NSSGas(@NotNull ResourceLocation resourceLocation, boolean isTag) {
-        //todo ProjectE super(resourceLocation, isTag);
+        //TODO - 1.20.2: ProjectE super(resourceLocation, isTag);
     }
 
     /**
@@ -77,7 +77,7 @@ public final class NSSGas/* TODO ProjectE extends AbstractNSSTag<Gas>*/ {
         return createTag(tag.location());
     }
 
-    //todo ProjectE update
+    //TODO - 1.20.2: ProjectE update
     /*@Override
     protected boolean isInstance(AbstractNSSTag o) {
         return o instanceof NSSGas;
@@ -97,7 +97,7 @@ public final class NSSGas/* TODO ProjectE extends AbstractNSSTag<Gas>*/ {
 
     @NotNull
     @Override
-    protected Optional getTag() {
+    protected Optional<Either<Named<Gas>, ITag<Gas>>> getTag() {
         return getTag(MekanismAPI.gasRegistry());
     }
 

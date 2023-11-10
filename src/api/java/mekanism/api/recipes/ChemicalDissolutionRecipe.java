@@ -39,7 +39,6 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implement
      * @param output    Output.
      */
     public ChemicalDissolutionRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ChemicalStack<?> output) {
-        super();
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
         this.gasInput = Objects.requireNonNull(gasInput, "Gas input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
@@ -80,6 +79,7 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implement
         return output.copy();
     }
 
+    //TODO - 1.20.2: Javadocs
     public BoxedChemicalStack getOutputRaw() {
         return output;
     }

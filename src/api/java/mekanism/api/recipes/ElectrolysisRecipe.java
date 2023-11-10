@@ -37,7 +37,6 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
      * @param rightGasOutput   Right output.
      */
     public ElectrolysisRecipe(FluidStackIngredient input, FloatingLong energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput) {
-        super();
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         this.energyMultiplier = Objects.requireNonNull(energyMultiplier, "Energy multiplier cannot be null.").copyAsConst();
         if (energyMultiplier.smallerThan(FloatingLong.ONE)) {
@@ -91,10 +90,12 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
         return new ElectrolysisRecipeOutput(leftGasOutput.copy(), rightGasOutput.copy());
     }
 
+    //TODO - 1.20.2: Javadocs
     public GasStack getLeftGasOutput() {
         return leftGasOutput;
     }
 
+    //TODO - 1.20.2: Javadocs
     public GasStack getRightGasOutput() {
         return rightGasOutput;
     }

@@ -54,7 +54,7 @@ public class GuiEntityPreview extends GuiElement {
     public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         InventoryScreen.renderEntityInInventoryFollowsAngle(guiGraphics, relativeX + width / 2, relativeY + height - 2 - border - (height - size) / 2,
-              scale, /* todo work out what these 3 are (mouseX guessed from what param was mapped in .1) */0, 0,  mouseX, rotation, 0, preview.get());
+              scale, /* TODO - 1.20.2 work out what these 3 are (mouseX guessed from what param was mapped in .1) */0, 0,  mouseX, rotation, 0, preview.get());
     }
 
     @Override
@@ -77,11 +77,11 @@ public class GuiEntityPreview extends GuiElement {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta, double deltaY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
         if (isMouseOver(mouseX, mouseY)) {
-            rotation = Mth.wrapDegrees(rotation + (float) delta);
+            rotation = Mth.wrapDegrees(rotation + (float) deltaY);
             return true;
         }
-        return super.mouseScrolled(mouseX, mouseY, delta, deltaY);
+        return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
     }
 }

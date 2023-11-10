@@ -252,7 +252,7 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
             // the other portion of the recipe is incomplete
             cachedRecipes = recipes.stream()
                   .filter(recipe -> !recipe.value().isIncomplete())
-                  .map(RecipeHolder::value)//todo are the ids used?
+                  .map(RecipeHolder::value)//TODO - 1.20.2: are the ids used?
                   .toList();
         }
         return cachedRecipes;

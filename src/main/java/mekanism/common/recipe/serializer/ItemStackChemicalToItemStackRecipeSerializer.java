@@ -35,8 +35,8 @@ public abstract class ItemStackChemicalToItemStackRecipeSerializer<CHEMICAL exte
 
     protected abstract ChemicalIngredientDeserializer<CHEMICAL, STACK, INGREDIENT> getDeserializer();
 
-    @Override
     @NotNull
+    @Override
     public Codec<RECIPE> codec() {
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance->instance.group(

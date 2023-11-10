@@ -12,7 +12,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -41,11 +40,11 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
                     }
                     return multi;
                 }),
-                iStackIngredient -> {
-                    if (iStackIngredient instanceof SingleItemStackIngredient single) {
+                stackIngredient -> {
+                    if (stackIngredient instanceof SingleItemStackIngredient single) {
                         return Either.left(single);
                     }
-                    return Either.right((MultiItemStackIngredient) iStackIngredient);
+                    return Either.right((MultiItemStackIngredient) stackIngredient);
                 }
           );
 
@@ -118,7 +117,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
         //Note: This must be a lazily initialized so that this class can be loaded in tests
         static final Codec<SingleItemStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> RecordCodecBuilder.create(i -> i.group(
               Ingredient.CODEC.fieldOf(JsonConstants.INGREDIENT).forGetter(SingleItemStackIngredient::getInputRaw),
-              SerializerHelper.POSITIVE_NONZERO_INT_CODEC.optionalFieldOf(JsonConstants.AMOUNT, 1).forGetter(SingleItemStackIngredient::getAmountRaw)
+              ExtraCodecs.POSITIVE_INT.optionalFieldOf(JsonConstants.AMOUNT, 1).forGetter(SingleItemStackIngredient::getAmountRaw)
         ).apply(i, SingleItemStackIngredient::new)));
 
         private final Ingredient ingredient;
@@ -201,7 +200,10 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
     @NothingNullByDefault
     public static class MultiItemStackIngredient extends ItemStackIngredient implements IMultiIngredient<ItemStack, SingleItemStackIngredient> {
 
-        static final Codec<MultiItemStackIngredient> CODEC = ExtraCodecs.nonEmptyList(SingleItemStackIngredient.CODEC.listOf()).xmap(lst -> new MultiItemStackIngredient(lst.toArray(new SingleItemStackIngredient[0])), MultiItemStackIngredient::getIngredients);
+        static final Codec<MultiItemStackIngredient> CODEC = ExtraCodecs.nonEmptyList(SingleItemStackIngredient.CODEC.listOf()).xmap(
+              lst -> new MultiItemStackIngredient(lst.toArray(new SingleItemStackIngredient[0])),
+              MultiItemStackIngredient::getIngredients
+        );
 
         private final SingleItemStackIngredient[] ingredients;
 

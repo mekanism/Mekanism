@@ -20,8 +20,8 @@ public class WrappedShapedRecipeSerializer<RECIPE extends WrappedShapedRecipe> i
         this.wrapper = wrapper;
     }
 
-    @Override
     @NotNull
+    @Override
     public Codec<RECIPE> codec() {
         if (codec == null) {
             codec = RecipeSerializer.SHAPED_RECIPE.codec().xmap(wrapper, WrappedShapedRecipe::getInternal);

@@ -826,7 +826,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     }
                     //If the ingredient is not vanilla, we start by checking against the exact stack it has stored as an item
                     // Note: We can use a raw hashed item here as we don't store it anywhere, and just use it as a lookup
-                    //todo no more isVanilla?
+                    //TODO - 1.20.2: no more isVanilla?
                     if (/*!usedIngredient.isVanilla() && */testEquivalentItem(world, frequency, slot, index, usedIngredient, HashedItem.raw(item))) {
                         //Match found, we can exit
                         return;
