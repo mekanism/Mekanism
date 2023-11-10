@@ -286,7 +286,9 @@ minecraft {
     accessTransformers {
         files(
                 file('src/main/resources/META-INF/accesstransformer.cfg'),
-                file('src/additions/resources/META-INF/accesstransformer.cfg')
+                file('src/additions/resources/META-INF/accesstransformer.cfg'),
+                //Datagen only ATs so the file name doesn't have to match accesstransformer.cfg
+                file('src/datagen/main/resources/META-INF/datagen_ats.cfg')
         )
     }
 }
