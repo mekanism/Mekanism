@@ -15,7 +15,6 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer.IngredientType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.registries.tags.ITag;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,10 +23,10 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, CLAZZ extends TaggedChemicalStackIngredient<CHEMICAL, STACK>> Codec<CLAZZ>
     makeCodec(ChemicalTags<CHEMICAL> tags, BiFunction<TagKey<CHEMICAL>, Long, CLAZZ> constructor) {
-        return ExtraCodecs.lazyInitializedCodec(() -> RecordCodecBuilder.create(instance->instance.group(
-              TagKey.hashedCodec(tags.getResourceKey()).fieldOf(JsonConstants.TAG).forGetter(TaggedChemicalStackIngredient::getTag),
+        return RecordCodecBuilder.create(instance->instance.group(
+              TagKey.codec(tags.getResourceKey()).fieldOf(JsonConstants.TAG).forGetter(TaggedChemicalStackIngredient::getTag),
               SerializerHelper.POSITIVE_NONZERO_LONG_CODEC.fieldOf(JsonConstants.AMOUNT).forGetter(TaggedChemicalStackIngredient::getRawAmount)
-        ).apply(instance, constructor)));
+        ).apply(instance, constructor));
     }
 
     @NotNull

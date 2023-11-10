@@ -214,7 +214,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
         static final Codec<TaggedFluidStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> RecordCodecBuilder.create(instance->instance.group(
-              TagKey.hashedCodec(Keys.FLUIDS).fieldOf(JsonConstants.TAG).forGetter(TaggedFluidStackIngredient::getTag),
+              TagKey.codec(Keys.FLUIDS).fieldOf(JsonConstants.TAG).forGetter(TaggedFluidStackIngredient::getTag),
               SerializerHelper.POSITIVE_NONZERO_INT_CODEC.fieldOf(JsonConstants.AMOUNT).forGetter(TaggedFluidStackIngredient::getRawAmount)
         ).apply(instance, TaggedFluidStackIngredient::new)));
 
