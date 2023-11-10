@@ -76,7 +76,7 @@ public class SerializerHelper {
      */
     public static final Codec<ItemStack> ITEMSTACK_CODEC = RecordCodecBuilder.create(instance -> instance.group(
           BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(ItemStack::getItem),
-          POSITIVE_INT_CODEC.fieldOf("Count").forGetter(ItemStack::getCount),
+          POSITIVE_INT_CODEC.optionalFieldOf("Count", 1).forGetter(ItemStack::getCount),
           CompoundTag.CODEC.optionalFieldOf("nbt").forGetter(stack -> Optional.ofNullable(stack.getTag()))
     ).apply(instance, ItemStack::new));
 
