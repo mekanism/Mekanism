@@ -2,18 +2,18 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
-      "type": "forge:and",
+      "type": "neoforge:and",
       "values": [
         {
-          "type": "forge:mod_loaded",
+          "type": "neoforge:mod_loaded",
           "modid": "ilikewoodxbiomesoplenty"
         },
         {
-          "type": "forge:mod_loaded",
+          "type": "neoforge:mod_loaded",
           "modid": "biomesoplenty"
         },
         {
-          "type": "forge:mod_loaded",
+          "type": "neoforge:mod_loaded",
           "modid": "ilikewood_lecterns"
         }
       ]

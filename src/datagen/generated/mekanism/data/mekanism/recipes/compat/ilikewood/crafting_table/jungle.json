@@ -2,10 +2,10 @@
   "type": "mekanism:sawing",
   "conditions": [
     {
-      "type": "forge:and",
+      "type": "neoforge:and",
       "values": [
         {
-          "type": "forge:mod_loaded",
+          "type": "neoforge:mod_loaded",
           "modid": "ilikewood"
         },
         {

@@ -6,7 +6,7 @@
   },
   "conditions": [
     {
-      "type": "forge:and",
+      "type": "neoforge:and",
       "values": [
         {
           "type": "mekanism:mod_version_loaded",
