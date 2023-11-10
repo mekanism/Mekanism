@@ -99,6 +99,7 @@ public class SerializerHelper {
         case SLURRY -> SlurryStack.CODEC;
     });
 
+    //NB: this puts the type on the same level as the other fields, i.e. inside `input: { type: GAS, gas: "blah", amount: 1}`
     public static Codec<ChemicalStackIngredient<?, ?>> BOXED_CHEMICALSTACK_INGREDIENT_CODEC = ChemicalType.CODEC.dispatch(JsonConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor, type-> IngredientCreatorAccess.getCreatorForType(type).codec());
 
     /**

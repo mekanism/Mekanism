@@ -1,10 +1,15 @@
 package mekanism.common.recipe.serializer;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
+import com.google.common.collect.Streams;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.MapDecoder;
+import com.mojang.serialization.MapEncoder;
+import com.mojang.serialization.MapEncoder.Implementation;
+import com.mojang.serialization.RecordBuilder;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.stream.Stream;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalType;
@@ -13,8 +18,6 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
@@ -28,14 +31,45 @@ public class ChemicalCrystallizerRecipeSerializer<RECIPE extends ChemicalCrystal
         this.factory = factory;
     }
 
+    @SuppressWarnings("unchecked")
+    private static MapDecoder<ChemicalStackIngredient<?, ?>> decoderByType(ChemicalType chemicalType) {
+        return ((Codec<ChemicalStackIngredient<?, ?>>) switch (chemicalType) {
+            case GAS -> IngredientCreatorAccess.gas().codec();
+            case INFUSION -> IngredientCreatorAccess.infusion().codec();
+            case PIGMENT -> IngredientCreatorAccess.pigment().codec();
+            case SLURRY -> IngredientCreatorAccess.slurry().codec();
+        }).fieldOf(JsonConstants.INPUT);
+    }
+
+    private static final MapCodec<ChemicalType> chemicalTypeMapCodec = ChemicalType.CODEC.fieldOf(JsonConstants.CHEMICAL_TYPE);
+
+    private static final MapEncoder<ChemicalStackIngredient<?,?>> chemicalStackIngredientEncoder = new Implementation<ChemicalStackIngredient<?, ?>>() {
+        @Override
+        @SuppressWarnings("unchecked")
+        public <T> RecordBuilder<T> encode(ChemicalStackIngredient<?, ?> input, DynamicOps<T> ops, RecordBuilder<T> prefix) {
+            ChemicalType type = ChemicalType.getTypeFor(input);
+            Codec<ChemicalStackIngredient<?,?>> codec1 = (Codec<ChemicalStackIngredient<?,?>>)IngredientCreatorAccess.getCreatorForType(type).codec();
+            return codec1.fieldOf(JsonConstants.INPUT).encode(input, ops, chemicalTypeMapCodec.encode(type, ops, prefix));
+        }
+
+        @Override
+        public <T> Stream<T> keys(DynamicOps<T> ops) {
+            return Streams.concat(chemicalTypeMapCodec.keys(ops), Stream.of(ops.createString(JsonConstants.INPUT)));
+        }
+    };
+
     @Override
     @NotNull
     public Codec<RECIPE> codec() {
         if (codec == null) {
-            codec = RecordCodecBuilder.create(instance->instance.group(
-                  SerializerHelper.BOXED_CHEMICALSTACK_INGREDIENT_CODEC.fieldOf(JsonConstants.INPUT).forGetter(ChemicalCrystallizerRecipe::getInput),
-                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(ChemicalCrystallizerRecipe::getOutputRaw)
-            ).apply(instance, factory::create));
+            codec = RecordCodecBuilder.create(instance-> {
+                var typeField = chemicalTypeMapCodec.<RECIPE>forGetter(r -> ChemicalType.getTypeFor(r.getInput()));
+                return instance.group(
+                      typeField.dependent(ChemicalCrystallizerRecipe::getInput, chemicalStackIngredientEncoder, ChemicalCrystallizerRecipeSerializer::decoderByType),
+                      //SerializerHelper.BOXED_CHEMICALSTACK_INGREDIENT_CODEC.fieldOf(JsonConstants.INPUT).forGetter(ChemicalCrystallizerRecipe::getInput),
+                      SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(ChemicalCrystallizerRecipe::getOutputRaw)
+                ).apply(instance, factory::create);
+            });
         }
         return codec;
     }
