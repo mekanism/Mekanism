@@ -41,15 +41,3 @@ license="MIT"
     versionRange="${jei_version}"
     ordering="AFTER"
     side="BOTH"
-[[dependencies.mekanism]]
-    modId="jsonthings"
-    mandatory=false
-    versionRange="${json_things_version}"
-    ordering="AFTER"
-    side="BOTH"
-[[dependencies.mekanism]]
-    modId="wthit"
-    mandatory=false
-    versionRange="${wthit_version}"
-    ordering="AFTER"
-    side="BOTH"
