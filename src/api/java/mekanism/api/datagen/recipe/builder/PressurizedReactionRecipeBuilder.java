@@ -10,9 +10,11 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<PressurizedReactionRecipeBuilder> {
@@ -108,14 +110,14 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
     }
 
     @Override
-    protected MekanismRecipeBuilder<PressurizedReactionRecipeBuilder>.RecipeResult getResult(ResourceLocation id) {
-        return new PressurizedReactionRecipeResult(id);
+    protected MekanismRecipeBuilder<PressurizedReactionRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+        return new PressurizedReactionRecipeResult(id, advancementHolder);
     }
 
     public class PressurizedReactionRecipeResult extends RecipeResult {
 
-        protected PressurizedReactionRecipeResult(ResourceLocation id) {
-            super(id);
+        protected PressurizedReactionRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+            super(id, advancementHolder);
         }
 
         @Override

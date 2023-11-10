@@ -8,8 +8,10 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<ElectrolysisRecipeBuilder> {
@@ -54,14 +56,14 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
     }
 
     @Override
-    protected MekanismRecipeBuilder<ElectrolysisRecipeBuilder>.RecipeResult getResult(ResourceLocation id) {
-        return new ElectrolysisRecipeResult(id);
+    protected MekanismRecipeBuilder<ElectrolysisRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+        return new ElectrolysisRecipeResult(id, advancementHolder);
     }
 
     public class ElectrolysisRecipeResult extends RecipeResult {
 
-        protected ElectrolysisRecipeResult(ResourceLocation id) {
-            super(id);
+        protected ElectrolysisRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+            super(id, advancementHolder);
         }
 
         @Override

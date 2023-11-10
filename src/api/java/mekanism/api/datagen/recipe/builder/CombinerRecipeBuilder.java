@@ -6,10 +6,12 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeBuilder> {
@@ -40,8 +42,8 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeB
     }
 
     @Override
-    protected MekanismRecipeBuilder<CombinerRecipeBuilder>.RecipeResult getResult(ResourceLocation id) {
-        return new CombinerRecipeResult(id);
+    protected MekanismRecipeBuilder<CombinerRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+        return new CombinerRecipeResult(id, advancementHolder);
     }
 
     /**
@@ -55,8 +57,8 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeB
 
     public class CombinerRecipeResult extends RecipeResult {
 
-        protected CombinerRecipeResult(ResourceLocation id) {
-            super(id);
+        protected CombinerRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+            super(id, advancementHolder);
         }
 
         @Override

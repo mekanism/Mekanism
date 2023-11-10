@@ -3,14 +3,16 @@ package mekanism.api.datagen.recipe;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.advancements.AdvancementRequirements.Strategy;
+import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
@@ -36,8 +38,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
     }
 
     protected final List<ICondition> conditions = new ArrayList<>();
-    protected final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
-    protected boolean hasCritereon = false;
+    protected final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
     protected final ResourceLocation serializerName;
 
     protected MekanismRecipeBuilder(ResourceLocation serializerName) {
@@ -50,8 +51,8 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      *
      * @param criterion Criterion to add.
      */
-    public BUILDER addCriterion(RecipeCriterion criterion) {
-        return addCriterion(criterion.name(), criterion.criterion());
+    public BUILDER unlockedBy(RecipeCriterion criterion) {
+        return unlockedBy(criterion.name(), criterion.criterion());
     }
 
     /**
@@ -61,9 +62,8 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * @param criterion Criterion to add.
      */
     @SuppressWarnings("unchecked")
-    public BUILDER addCriterion(String name, Criterion<?> criterion) {
-        advancementBuilder.addCriterion(name, criterion);
-        hasCritereon = true;
+    public BUILDER unlockedBy(String name, Criterion<?> criterion) {
+        criteria.put(name, criterion);
         return (BUILDER) this;
     }
 
@@ -79,20 +79,11 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
     }
 
     /**
-     * Checks if this recipe has any criteria.
-     *
-     * @return {@code true} if this recipe has any criteria.
-     */
-    protected boolean hasCriteria() {
-        return hasCritereon;
-    }
-
-    /**
      * Gets a recipe result object.
      *
      * @param id ID of the recipe being built.
      */
-    protected abstract RecipeResult getResult(ResourceLocation id);
+    protected abstract RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder);
 
     /**
      * Performs any extra validation.
@@ -110,13 +101,17 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      */
     public void build(RecipeOutput recipeOutput, ResourceLocation id) {
         validate(id);
-        if (hasCriteria()) {
+        AdvancementHolder advancementHolder = null;
+        if (!this.criteria.isEmpty()) {
+            Advancement.Builder advancementBuilder = recipeOutput.advancement()
+                  .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
+                  .rewards(AdvancementRewards.Builder.recipe(id))
+                  .requirements(AdvancementRequirements.Strategy.OR);
             //If there is a way to "unlock" this recipe then add an advancement with the criteria
-            //todo while this is deprecated, it's basically what mojang does, see if we can delay the criteria until this point
-            advancementBuilder.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
-                  .rewards(AdvancementRewards.Builder.recipe(id)).requirements(Strategy.OR);
+            this.criteria.forEach(advancementBuilder::addCriterion);
+            advancementHolder = advancementBuilder.build(new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()));
         }
-        recipeOutput.accept(getResult(id));
+        recipeOutput.accept(getResult(id, advancementHolder));
     }
 
     /**
@@ -139,9 +134,12 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
     protected abstract class RecipeResult implements FinishedRecipe {
 
         private final ResourceLocation id;
+        @Nullable
+        private final AdvancementHolder advancementHolder;
 
-        public RecipeResult(ResourceLocation id) {
+        public RecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
             this.id = id;
+            this.advancementHolder = advancementHolder;
         }
 
         @Override
@@ -173,8 +171,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         @Nullable
         @Override
         public AdvancementHolder advancement() {
-            return advancementBuilder.build(new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()));
+            return advancementHolder;
         }
-
     }
 }

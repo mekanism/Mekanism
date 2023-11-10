@@ -1,6 +1,5 @@
 package mekanism.common.recipe;
 
-import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.datagen.recipe.RecipeCriterion;
@@ -10,7 +9,6 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.builder.ExtendedCookingRecipeBuilder;
 import mekanism.common.registries.MekanismItems;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -39,8 +37,8 @@ public class RecipeProviderUtil {
         ExtendedCookingRecipeBuilder smeltingRecipe = ExtendedCookingRecipeBuilder.smelting(output, smeltingInput, smeltingTime).experience(experience);
         //If there are any criteria add them
         for (RecipeCriterion criterion : criteria) {
-            blastingRecipe.addCriterion(criterion);
-            smeltingRecipe.addCriterion(criterion);
+            blastingRecipe.unlockedBy(criterion);
+            smeltingRecipe.unlockedBy(criterion);
         }
         blastingRecipe.build(consumer, blastingLocation);
         smeltingRecipe.build(consumer, smeltingLocation);

@@ -18,10 +18,12 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredie
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
@@ -114,8 +116,9 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
     }
 
     @Override
-    protected MekanismRecipeBuilder<ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL, STACK, INGREDIENT>>.RecipeResult getResult(ResourceLocation id) {
-        return new ItemStackChemicalToItemStackRecipeResult(id);
+    protected MekanismRecipeBuilder<ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL, STACK, INGREDIENT>>.RecipeResult getResult(ResourceLocation id,
+          @Nullable AdvancementHolder advancementHolder) {
+        return new ItemStackChemicalToItemStackRecipeResult(id, advancementHolder);
     }
 
     /**
@@ -129,8 +132,8 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
 
     public class ItemStackChemicalToItemStackRecipeResult extends RecipeResult {
 
-        protected ItemStackChemicalToItemStackRecipeResult(ResourceLocation id) {
-            super(id);
+        protected ItemStackChemicalToItemStackRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+            super(id, advancementHolder);
         }
 
         @Override

@@ -7,10 +7,12 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<NucleosynthesizingRecipeBuilder> {
@@ -47,8 +49,8 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
     }
 
     @Override
-    protected MekanismRecipeBuilder<NucleosynthesizingRecipeBuilder>.RecipeResult getResult(ResourceLocation id) {
-        return new NucleosynthesizingRecipeResult(id);
+    protected MekanismRecipeBuilder<NucleosynthesizingRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+        return new NucleosynthesizingRecipeResult(id, advancementHolder);
     }
 
     /**
@@ -62,8 +64,8 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
 
     public class NucleosynthesizingRecipeResult extends RecipeResult {
 
-        protected NucleosynthesizingRecipeResult(ResourceLocation id) {
-            super(id);
+        protected NucleosynthesizingRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+            super(id, advancementHolder);
         }
 
         @Override

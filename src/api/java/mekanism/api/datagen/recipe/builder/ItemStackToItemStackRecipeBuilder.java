@@ -6,10 +6,12 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<ItemStackToItemStackRecipeBuilder> {
@@ -63,8 +65,8 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
     }
 
     @Override
-    protected MekanismRecipeBuilder<ItemStackToItemStackRecipeBuilder>.RecipeResult getResult(ResourceLocation id) {
-        return new ItemStackToItemStackRecipeResult(id);
+    protected MekanismRecipeBuilder<ItemStackToItemStackRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+        return new ItemStackToItemStackRecipeResult(id, advancementHolder);
     }
 
     /**
@@ -78,8 +80,8 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
 
     public class ItemStackToItemStackRecipeResult extends RecipeResult {
 
-        protected ItemStackToItemStackRecipeResult(ResourceLocation id) {
-            super(id);
+        protected ItemStackToItemStackRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+            super(id, advancementHolder);
         }
 
         @Override

@@ -7,10 +7,12 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<ChemicalCrystallizerRecipeBuilder> {
@@ -40,8 +42,8 @@ public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<Che
     }
 
     @Override
-    protected MekanismRecipeBuilder<ChemicalCrystallizerRecipeBuilder>.RecipeResult getResult(ResourceLocation id) {
-        return new ChemicalCrystallizerRecipeResult(id);
+    protected MekanismRecipeBuilder<ChemicalCrystallizerRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+        return new ChemicalCrystallizerRecipeResult(id, advancementHolder);
     }
 
     /**
@@ -55,8 +57,8 @@ public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<Che
 
     public class ChemicalCrystallizerRecipeResult extends RecipeResult {
 
-        protected ChemicalCrystallizerRecipeResult(ResourceLocation id) {
-            super(id);
+        protected ChemicalCrystallizerRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+            super(id, advancementHolder);
         }
 
         @Override

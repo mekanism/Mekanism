@@ -8,6 +8,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -81,14 +82,14 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
     }
 
     @Override
-    protected MekanismRecipeBuilder<RotaryRecipeBuilder>.RecipeResult getResult(ResourceLocation id) {
-        return new RotaryRecipeResult(id);
+    protected MekanismRecipeBuilder<RotaryRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+        return new RotaryRecipeResult(id, advancementHolder);
     }
 
     public class RotaryRecipeResult extends RecipeResult {
 
-        protected RotaryRecipeResult(ResourceLocation id) {
-            super(id);
+        protected RotaryRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+            super(id, advancementHolder);
         }
 
         @Override

@@ -6,9 +6,11 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class FluidToFluidRecipeBuilder extends MekanismRecipeBuilder<FluidToFluidRecipeBuilder> {
@@ -36,14 +38,14 @@ public class FluidToFluidRecipeBuilder extends MekanismRecipeBuilder<FluidToFlui
     }
 
     @Override
-    protected MekanismRecipeBuilder<FluidToFluidRecipeBuilder>.RecipeResult getResult(ResourceLocation id) {
-        return new FluidToFluidRecipeResult(id);
+    protected MekanismRecipeBuilder<FluidToFluidRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+        return new FluidToFluidRecipeResult(id, advancementHolder);
     }
 
     public class FluidToFluidRecipeResult extends RecipeResult {
 
-        protected FluidToFluidRecipeResult(ResourceLocation id) {
-            super(id);
+        protected FluidToFluidRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+            super(id, advancementHolder);
         }
 
         @Override

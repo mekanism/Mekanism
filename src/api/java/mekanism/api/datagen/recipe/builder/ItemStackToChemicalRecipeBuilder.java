@@ -16,8 +16,10 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends
@@ -87,14 +89,14 @@ public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL
     }
 
     @Override
-    protected MekanismRecipeBuilder<ItemStackToChemicalRecipeBuilder<CHEMICAL, STACK>>.RecipeResult getResult(ResourceLocation id) {
-        return new ItemStackToChemicalRecipeResult(id);
+    protected MekanismRecipeBuilder<ItemStackToChemicalRecipeBuilder<CHEMICAL, STACK>>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+        return new ItemStackToChemicalRecipeResult(id, advancementHolder);
     }
 
     public class ItemStackToChemicalRecipeResult extends RecipeResult {
 
-        protected ItemStackToChemicalRecipeResult(ResourceLocation id) {
-            super(id);
+        protected ItemStackToChemicalRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
+            super(id, advancementHolder);
         }
 
         @Override
