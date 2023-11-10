@@ -35,7 +35,7 @@ public class SawmillRecipeSerializer implements RecipeSerializer<SawmillIRecipe>
     @NotNull
     public Codec<SawmillIRecipe> codec() {
         if (codec == null) {
-            Codec<Double> chanceCodec = ExtraCodecs.validate(Codec.DOUBLE, d->d > 0 && d >= 1 ? DataResult.success(d) : DataResult.error(()->"Expected secondaryChance to be greater than zero, and less than or equal to one."));
+            Codec<Double> chanceCodec = ExtraCodecs.validate(Codec.DOUBLE, d->d > 0 && d <= 1 ? DataResult.success(d) : DataResult.error(()->"Expected secondaryChance to be greater than zero, and less than or equal to one. Found "+d));
             var secondaryChanceFieldBase = ExtraCodecs.strictOptionalField(chanceCodec, JsonConstants.SECONDARY_CHANCE);
             var mainOutputFieldBase = SerializerHelper.ITEMSTACK_CODEC.optionalFieldOf(JsonConstants.MAIN_OUTPUT);
             var secondaryOutputField = SerializerHelper.ITEMSTACK_CODEC.optionalFieldOf(JsonConstants.SECONDARY_OUTPUT).forGetter(SawmillIRecipe::getSecondaryOutputRaw);
