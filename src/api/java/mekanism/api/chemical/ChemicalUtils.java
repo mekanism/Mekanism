@@ -15,6 +15,7 @@ import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -31,6 +32,7 @@ public class ChemicalUtils {
     public static final Codec<GasStack> GAS_STACK_CODEC = ChemicalStack.codec(Gas.CODEC, JsonConstants.GAS, GasStack::new);
     public static final Codec<InfusionStack> INFUSION_STACK_CODEC = ChemicalStack.codec(InfuseType.CODEC, JsonConstants.INFUSE_TYPE, InfusionStack::new);
     public static final Codec<PigmentStack> PIGMENT_STACK_CODEC = ChemicalStack.codec(Pigment.CODEC, JsonConstants.PIGMENT, PigmentStack::new);
+    public static final Codec<SlurryStack> SLURRY_STACK_CODEC = ChemicalStack.codec(Slurry.CODEC, JsonConstants.SLURRY, SlurryStack::new);
 
     private ChemicalUtils() {
     }

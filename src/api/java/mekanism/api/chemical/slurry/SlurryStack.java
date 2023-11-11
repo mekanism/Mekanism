@@ -1,7 +1,5 @@
 package mekanism.api.chemical.slurry;
 
-import com.mojang.serialization.Codec;
-import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -14,8 +12,6 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public final class SlurryStack extends ChemicalStack<Slurry> {
-
-    public static final Codec<SlurryStack> CODEC = codec(Slurry.CODEC, JsonConstants.SLURRY, SlurryStack::new);
 
     /**
      * Empty SlurryStack instance.

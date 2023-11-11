@@ -33,8 +33,6 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -58,11 +56,17 @@ public class SerializerHelper {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
+    /**
+     * Long Codec which accepts a number >= 0
+     */
     public static final Codec<Long> POSITIVE_LONG_CODEC = Util.make(() -> {
         final Function<Long, DataResult<Long>> checker = Codec.checkRange(0L, Long.MAX_VALUE);
         return Codec.LONG.flatXmap(checker, checker);
     });
 
+    /**
+     * Long Codec which accepts a number > 0
+     */
     public static final Codec<Long> POSITIVE_NONZERO_LONG_CODEC = Util.make(() -> {
         final Function<Long, DataResult<Long>> checker = Codec.checkRange(1L, Long.MAX_VALUE);
         return Codec.LONG.flatXmap(checker, checker);
@@ -77,9 +81,15 @@ public class SerializerHelper {
           CompoundTag.CODEC.optionalFieldOf(JsonConstants.NBT).forGetter(stack -> Optional.ofNullable(stack.getTag()))
     ).apply(instance, ItemStack::new));
 
+    /**
+     * Fluid Codec which makes extra sure we don't end up with an empty/invalid fluid
+     */
     private static final Codec<Fluid> NON_EMPTY_FLUID_CODEC = ExtraCodecs.validate(BuiltInRegistries.FLUID.byNameCodec(),
           fluid -> fluid == Fluids.EMPTY ? DataResult.error(() -> "Invalid fluid type") : DataResult.success(fluid));
 
+    /**
+     * Fluidstack codec to maintain compatibility with our old json
+     */
     public static final Codec<FluidStack> FLUIDSTACK_CODEC = RecordCodecBuilder.create(instance -> instance.group(
           NON_EMPTY_FLUID_CODEC.fieldOf(JsonConstants.FLUID).forGetter(FluidStack::getFluid),
           ExtraCodecs.POSITIVE_INT.fieldOf(JsonConstants.AMOUNT).forGetter(FluidStack::getAmount),
@@ -91,15 +101,16 @@ public class SerializerHelper {
         return stack;
     }));
 
+    /**
+     * Codec to get any kind of chemical stack, based on a "chemicalType" field.
+     * See also {@link ChemicalType}
+     */
     public static final Codec<ChemicalStack<?>> BOXED_CHEMICALSTACK_CODEC = ChemicalType.CODEC.dispatch(JsonConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor, type -> switch (type) {
         case GAS -> ChemicalUtils.GAS_STACK_CODEC;
         case INFUSION -> ChemicalUtils.INFUSION_STACK_CODEC;
         case PIGMENT -> ChemicalUtils.PIGMENT_STACK_CODEC;
-        case SLURRY -> SlurryStack.CODEC;
+        case SLURRY -> ChemicalUtils.SLURRY_STACK_CODEC;
     });
-
-    //NB: this puts the type on the same level as the other fields, i.e. inside `input: { type: GAS, gas: "blah", amount: 1}`
-    public static Codec<ChemicalStackIngredient<?, ?>> BOXED_CHEMICALSTACK_INGREDIENT_CODEC = ChemicalType.CODEC.dispatch(JsonConstants.CHEMICAL_TYPE, ChemicalType::getTypeFor, type -> IngredientCreatorAccess.getCreatorForType(type).codec());
 
     /**
      * Deserializes a FloatingLong that is stored in a specific key in a Json Object.
@@ -108,6 +119,7 @@ public class SerializerHelper {
      * @param key  Key the FloatingLong is stored in.
      *
      * @return FloatingLong.
+     * @deprecated use {@link FloatingLong#CODEC}
      */
     @Deprecated(forRemoval = true)
     public static FloatingLong getFloatingLong(@NotNull JsonObject json, @NotNull String key) {
@@ -140,7 +152,9 @@ public class SerializerHelper {
      * @param json Json Object.
      *
      * @return Chemical Type.
+     * @deprecated use {@link #BOXED_CHEMICALSTACK_CODEC} or {@link ChemicalType#CODEC}
      */
+    @Deprecated(forRemoval = true)
     public static ChemicalType getChemicalType(@NotNull JsonObject json) {
         if (!json.has(JsonConstants.CHEMICAL_TYPE)) {
             throw new JsonSyntaxException("Missing '" + JsonConstants.CHEMICAL_TYPE + "', expected to find a string");
@@ -164,12 +178,12 @@ public class SerializerHelper {
      * @param key  Key in the Json Object that contains an Item Stack.
      *
      * @return Item Stack.
+     * @deprecated use {@link #ITEMSTACK_CODEC}
      */
     @Deprecated(forRemoval = true)
     public static ItemStack getItemStack(@NotNull JsonObject json, @NotNull String key) {
         validateKey(json, key);
-        throw new IllegalStateException("method no longer exists");
-        //return CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, key), true, true);
+        return ITEMSTACK_CODEC.parse(JsonOps.INSTANCE, GsonHelper.getAsJsonObject(json, key)).getOrThrow(false, unused->{});
     }
 
     /**
@@ -179,6 +193,7 @@ public class SerializerHelper {
      * @param key  Key in the Json Object that contains a Fluid Stack.
      *
      * @return Fluid Stack.
+     * @deprecated use {@link #FLUIDSTACK_CODEC}
      */
     @Deprecated(forRemoval = true)
     public static FluidStack getFluidStack(@NotNull JsonObject json, @NotNull String key) {
@@ -193,6 +208,7 @@ public class SerializerHelper {
      * @param key  Key in the Json Object that contains a Chemical Stack.
      *
      * @return Chemical Stack.
+     * @deprecated use {@link #BOXED_CHEMICALSTACK_CODEC}
      */
     @Deprecated(forRemoval = true)
     public static ChemicalStack<?> getBoxedChemicalStack(@NotNull JsonObject json, @NotNull String key) {
@@ -214,6 +230,7 @@ public class SerializerHelper {
      * @param key  Key in the Json Object that contains a Gas Stack.
      *
      * @return Gas Stack.
+     * @deprecated use {@link ChemicalUtils#GAS_STACK_CODEC}
      */
     @Deprecated(forRemoval = true)
     public static GasStack getGasStack(@NotNull JsonObject json, @NotNull String key) {
@@ -228,6 +245,7 @@ public class SerializerHelper {
      * @param key  Key in the Json Object that contains an Infusion Stack.
      *
      * @return Infusion Stack.
+     * @deprecated use {@link ChemicalUtils#INFUSION_STACK_CODEC}
      */
     @Deprecated(forRemoval = true)
     public static InfusionStack getInfusionStack(@NotNull JsonObject json, @NotNull String key) {
@@ -242,6 +260,7 @@ public class SerializerHelper {
      * @param key  Key in the Json Object that contains a Pigment Stack.
      *
      * @return Pigment Stack.
+     * @deprecated use {@link ChemicalUtils#PIGMENT_STACK_CODEC}
      */
     @Deprecated(forRemoval = true)
     public static PigmentStack getPigmentStack(@NotNull JsonObject json, @NotNull String key) {
@@ -256,6 +275,7 @@ public class SerializerHelper {
      * @param key  Key in the Json Object that contains a Slurry Stack.
      *
      * @return Slurry Stack.
+     * @deprecated use {@link ChemicalUtils#SLURRY_STACK_CODEC}
      */
     @Deprecated(forRemoval = true)
     public static SlurryStack getSlurryStack(@NotNull JsonObject json, @NotNull String key) {
@@ -269,6 +289,7 @@ public class SerializerHelper {
      * @param json Json object to deserialize.
      *
      * @return Fluid Stack.
+     * @deprecated use {@link #FLUIDSTACK_CODEC}
      */
     @Deprecated(forRemoval = true)
     public static FluidStack deserializeFluid(@NotNull JsonObject json) {

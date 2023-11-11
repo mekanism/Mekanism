@@ -1,12 +1,9 @@
 package mekanism.common.recipe.serializer;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
@@ -15,8 +12,6 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.impl.FluidSlurryToSlurryIRecipe;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,7 +31,7 @@ public class FluidSlurryToSlurryRecipeSerializer implements RecipeSerializer<Flu
             codec = RecordCodecBuilder.create(instance->instance.group(
                   IngredientCreatorAccess.fluid().codec().fieldOf(JsonConstants.FLUID_INPUT).forGetter(FluidSlurryToSlurryRecipe::getFluidInput),
                   IngredientCreatorAccess.slurry().codec().fieldOf(JsonConstants.SLURRY_INPUT).forGetter(FluidSlurryToSlurryRecipe::getChemicalInput),
-                  SlurryStack.CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(FluidSlurryToSlurryIRecipe::getOutputRaw)
+                  ChemicalUtils.SLURRY_STACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(FluidSlurryToSlurryIRecipe::getOutputRaw)
             ).apply(instance, factory::create));
         }
         return codec;

@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalTags;
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.providers.IChemicalProvider;
@@ -62,7 +63,7 @@ public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator
     public static class SingleSlurryStackIngredient extends SingleChemicalStackIngredient<Slurry, SlurryStack> implements SlurryStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        static Codec<SingleSlurryStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(SlurryStack.CODEC, SingleSlurryStackIngredient::new));
+        static Codec<SingleSlurryStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(ChemicalUtils.SLURRY_STACK_CODEC, SingleSlurryStackIngredient::new));
 
         private SingleSlurryStackIngredient(SlurryStack stack) {
             super(stack);
