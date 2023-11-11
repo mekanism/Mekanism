@@ -219,10 +219,8 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
     }
 
     private String convertIngredient(FluidStackIngredient ingredient) {
-        if (ingredient instanceof SingleFluidStackIngredient) {
-            JsonObject serialized = ingredient.serialize().getAsJsonObject();
-            //Note: Handled via implicit casts
-            return IFluidStack.of(SerializerHelper.deserializeFluid(serialized)).getCommandString();
+        if (ingredient instanceof SingleFluidStackIngredient singleFluidStackIngredient) {
+            return IFluidStack.of(singleFluidStackIngredient.getInputRaw()).getCommandString();
         } else if (ingredient instanceof TaggedFluidStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             //Note: Handled via implicit casts
