@@ -85,7 +85,7 @@ public abstract class SingleChemicalStackIngredient<CHEMICAL extends Chemical<CH
     }
 
     @NotNull
-    protected STACK getChemicalInstance() {
+    public STACK getChemicalInstance() {
         return chemicalInstance;
     }
 

@@ -61,11 +61,6 @@ public abstract class ChemicalStackIngredientCreator<CHEMICAL extends Chemical<C
     }
 
     @Override
-    public INGREDIENT deserialize(@Nullable JsonElement json) {
-        return getDeserializer().deserialize(json);
-    }
-
-    @Override
     public Codec<INGREDIENT> codec() {
         return myCodec;
     }

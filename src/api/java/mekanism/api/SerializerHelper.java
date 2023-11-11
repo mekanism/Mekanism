@@ -331,7 +331,9 @@ public class SerializerHelper {
      * @param json Json object to deserialize.
      *
      * @return Gas Stack.
+     * @deprecated use {@link ChemicalUtils#GAS_STACK_CODEC}
      */
+    @Deprecated(forRemoval = true)
     public static GasStack deserializeGas(@NotNull JsonObject json) {
         return deserializeChemicalStack(json, JsonConstants.GAS, Gas::getFromRegistry);
     }
@@ -342,7 +344,9 @@ public class SerializerHelper {
      * @param json Json object to deserialize.
      *
      * @return Infusion Stack.
+     * @deprecated use {@link ChemicalUtils#INFUSION_STACK_CODEC}
      */
+    @Deprecated(forRemoval = true)
     public static InfusionStack deserializeInfuseType(@NotNull JsonObject json) {
         return deserializeChemicalStack(json, JsonConstants.INFUSE_TYPE, InfuseType::getFromRegistry);
     }
@@ -353,7 +357,9 @@ public class SerializerHelper {
      * @param json Json object to deserialize.
      *
      * @return Pigment Stack.
+     * @deprecated use {@link ChemicalUtils#PIGMENT_STACK_CODEC}
      */
+    @Deprecated(forRemoval = true)
     public static PigmentStack deserializePigment(@NotNull JsonObject json) {
         return deserializeChemicalStack(json, JsonConstants.PIGMENT, Pigment::getFromRegistry);
     }
@@ -364,7 +370,9 @@ public class SerializerHelper {
      * @param json Json object to deserialize.
      *
      * @return Slurry Stack.
+     * @deprecated use {@link ChemicalUtils#SLURRY_STACK_CODEC}
      */
+    @Deprecated(forRemoval = true)
     public static SlurryStack deserializeSlurry(@NotNull JsonObject json) {
         return deserializeChemicalStack(json, JsonConstants.SLURRY, Slurry::getFromRegistry);
     }
@@ -399,15 +407,7 @@ public class SerializerHelper {
      * @return Json representation.
      */
     public static JsonElement serializeItemStack(@NotNull ItemStack stack) {
-        JsonObject json = new JsonObject();
-        json.addProperty(JsonConstants.ITEM, ForgeRegistries.ITEMS.getKey(stack.getItem()).toString());
-        if (stack.getCount() > 1) {
-            json.addProperty(JsonConstants.COUNT, stack.getCount());
-        }
-        if (stack.hasTag()) {
-            json.addProperty(JsonConstants.NBT, stack.getTag().toString());
-        }
-        return json;
+        return ITEMSTACK_CODEC.encodeStart(JsonOps.INSTANCE, stack).getOrThrow(false, unused->{});
     }
 
     /**
@@ -418,13 +418,7 @@ public class SerializerHelper {
      * @return Json representation.
      */
     public static JsonElement serializeFluidStack(@NotNull FluidStack stack) {
-        JsonObject json = new JsonObject();
-        json.addProperty(JsonConstants.FLUID, ForgeRegistries.FLUIDS.getKey(stack.getFluid()).toString());
-        json.addProperty(JsonConstants.AMOUNT, stack.getAmount());
-        if (stack.hasTag()) {
-            json.addProperty(JsonConstants.NBT, stack.getTag().toString());
-        }
-        return json;
+        return FLUIDSTACK_CODEC.encodeStart(JsonOps.INSTANCE, stack).getOrThrow(false, unused->{});
     }
 
     /**
@@ -435,15 +429,7 @@ public class SerializerHelper {
      * @return Json representation.
      */
     public static JsonElement serializeBoxedChemicalStack(@NotNull BoxedChemicalStack stack) {
-        ChemicalType chemicalType = stack.getChemicalType();
-        JsonObject json = switch (chemicalType) {
-            case GAS -> serializeGasStack((GasStack) stack.getChemicalStack());
-            case INFUSION -> serializeInfusionStack((InfusionStack) stack.getChemicalStack());
-            case PIGMENT -> serializePigmentStack((PigmentStack) stack.getChemicalStack());
-            case SLURRY -> serializeSlurryStack((SlurryStack) stack.getChemicalStack());
-        };
-        json.addProperty(JsonConstants.CHEMICAL_TYPE, chemicalType.getSerializedName());
-        return json;
+        return BOXED_CHEMICALSTACK_CODEC.encodeStart(JsonOps.INSTANCE, stack.getChemicalStack()).getOrThrow(false, unused->{});
     }
 
     /**
@@ -454,7 +440,7 @@ public class SerializerHelper {
      * @return Json representation.
      */
     public static JsonObject serializeGasStack(@NotNull GasStack stack) {
-        return serializeChemicalStack(JsonConstants.GAS, stack);
+        return ChemicalUtils.GAS_STACK_CODEC.encodeStart(JsonOps.INSTANCE, stack).getOrThrow(false, unused->{}).getAsJsonObject();
     }
 
     /**
@@ -465,7 +451,7 @@ public class SerializerHelper {
      * @return Json representation.
      */
     public static JsonObject serializeInfusionStack(@NotNull InfusionStack stack) {
-        return serializeChemicalStack(JsonConstants.INFUSE_TYPE, stack);
+        return ChemicalUtils.INFUSION_STACK_CODEC.encodeStart(JsonOps.INSTANCE, stack).getOrThrow(false, unused->{}).getAsJsonObject();
     }
 
     /**
@@ -476,7 +462,7 @@ public class SerializerHelper {
      * @return Json representation.
      */
     public static JsonObject serializePigmentStack(@NotNull PigmentStack stack) {
-        return serializeChemicalStack(JsonConstants.PIGMENT, stack);
+        return ChemicalUtils.PIGMENT_STACK_CODEC.encodeStart(JsonOps.INSTANCE, stack).getOrThrow(false, unused->{}).getAsJsonObject();
     }
 
     /**
@@ -487,14 +473,7 @@ public class SerializerHelper {
      * @return Json representation.
      */
     public static JsonObject serializeSlurryStack(@NotNull SlurryStack stack) {
-        return serializeChemicalStack(JsonConstants.SLURRY, stack);
-    }
-
-    private static JsonObject serializeChemicalStack(@NotNull String serializationKey, @NotNull ChemicalStack<?> stack) {
-        JsonObject json = new JsonObject();
-        json.addProperty(serializationKey, stack.getTypeRegistryName().toString());
-        json.addProperty(JsonConstants.AMOUNT, stack.getAmount());
-        return json;
+        return ChemicalUtils.SLURRY_STACK_CODEC.encodeStart(JsonOps.INSTANCE, stack).getOrThrow(false, unused->{}).getAsJsonObject();
     }
 
     /**

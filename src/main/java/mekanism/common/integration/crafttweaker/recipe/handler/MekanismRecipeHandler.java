@@ -235,11 +235,9 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> String convertIngredient(String crtClass,
           KnownTagManager<CHEMICAL> tagManager, ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer,
           ChemicalStackIngredient<CHEMICAL, STACK> ingredient) {
-        if (ingredient instanceof SingleChemicalStackIngredient) {
-            //Serialize and deserialize to get easy access to the amount
-            JsonObject serialized = ingredient.serialize().getAsJsonObject();
+        if (ingredient instanceof SingleChemicalStackIngredient<CHEMICAL,STACK> singleChemicalStackIngredient) {
             //Note: Handled via implicit casts
-            return convertParam(deserializer.deserializeStack(serialized));
+            return convertParam(singleChemicalStackIngredient.getChemicalInstance());
         } else if (ingredient instanceof TaggedChemicalStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             KnownTag<CHEMICAL> tag = tagManager.tag(serialized.get(JsonConstants.TAG).getAsString());

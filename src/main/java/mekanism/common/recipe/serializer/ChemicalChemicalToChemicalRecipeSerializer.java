@@ -35,7 +35,7 @@ public abstract class ChemicalChemicalToChemicalRecipeSerializer<CHEMICAL extend
     @Override
     public Codec<RECIPE> codec() {
         if (codec == null) {
-            Codec<INGREDIENT> ingredientCodec = getDeserializer().getIngredientCreator().codec();
+            Codec<INGREDIENT> ingredientCodec = getDeserializer().codec();
             codec = RecordCodecBuilder.create(instance->instance.group(
                   ingredientCodec.fieldOf(JsonConstants.LEFT_INPUT).forGetter(ChemicalChemicalToChemicalRecipe::getLeftInput),
                   ingredientCodec.fieldOf(JsonConstants.RIGHT_INPUT).forGetter(ChemicalChemicalToChemicalRecipe::getLeftInput),

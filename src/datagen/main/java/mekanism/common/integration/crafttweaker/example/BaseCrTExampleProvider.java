@@ -370,9 +370,8 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         addSupportedConversionWithAlt(ChemicalStackIngredient.class, ingredientClass, ingredientClass,
               (imports, ingredient) -> getIngredientRepresentation(ingredient, imports.addImport(ingredientType), deserializer, singleDescription, tagManager),
               (imports, ingredient) -> {
-                  if (ingredient instanceof SingleChemicalStackIngredient) {
-                      JsonObject serialized = ingredient.serialize().getAsJsonObject();
-                      return singleDescription.apply(deserializer.deserializeStack(serialized)).getCommandString();
+                  if (ingredient instanceof SingleChemicalStackIngredient<CHEMICAL, STACK> singleChemicalStackIngredient) {
+                      return singleDescription.apply(singleChemicalStackIngredient.getChemicalInstance()).getCommandString();
                   } else if (ingredient instanceof TaggedChemicalStackIngredient) {
                       JsonObject serialized = (JsonObject) ingredient.serialize();
                       long amount = serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsLong();
@@ -388,9 +387,8 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> String getIngredientRepresentation(
           ChemicalStackIngredient<CHEMICAL, STACK> ingredient, String ingredientType, ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer,
           Function<STACK, CommandStringDisplayable> singleDescription, KnownTagManager<CHEMICAL> tagManager) {
-        if (ingredient instanceof SingleChemicalStackIngredient) {
-            JsonObject serialized = ingredient.serialize().getAsJsonObject();
-            String stackRepresentation = singleDescription.apply(deserializer.deserializeStack(serialized)).getCommandString();
+        if (ingredient instanceof SingleChemicalStackIngredient<CHEMICAL, STACK> singleChemicalStackIngredient) {
+            String stackRepresentation = singleDescription.apply(singleChemicalStackIngredient.getChemicalInstance()).getCommandString();
             return ingredientType + ".from(" + stackRepresentation + ")";
         } else if (ingredient instanceof TaggedChemicalStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
