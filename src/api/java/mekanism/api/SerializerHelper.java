@@ -1,11 +1,8 @@
 package mekanism.api;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
@@ -19,42 +16,31 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.ChemicalUtils;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
-import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
-//TODO - 1.20.2: see what can be removed/replaced by codecs and add javadocs
 public class SerializerHelper {
 
     private SerializerHelper() {
     }
-
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     /**
      * Long Codec which accepts a number >= 0
@@ -293,36 +279,7 @@ public class SerializerHelper {
      */
     @Deprecated(forRemoval = true)
     public static FluidStack deserializeFluid(@NotNull JsonObject json) {
-        if (!json.has(JsonConstants.AMOUNT)) {
-            throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
-        }
-        JsonElement count = json.get(JsonConstants.AMOUNT);
-        if (!GsonHelper.isNumberValue(count)) {
-            throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
-        }
-        int amount = count.getAsJsonPrimitive().getAsInt();
-        if (amount < 1) {
-            throw new JsonSyntaxException("Expected amount to be greater than zero.");
-        }
-        ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(json, JsonConstants.FLUID));
-        Fluid fluid = ForgeRegistries.FLUIDS.getValue(resourceLocation);
-        if (fluid == null || fluid == Fluids.EMPTY) {
-            throw new JsonSyntaxException("Invalid fluid type '" + resourceLocation + "'");
-        }
-        CompoundTag nbt = null;
-        if (json.has(JsonConstants.NBT)) {
-            JsonElement jsonNBT = json.get(JsonConstants.NBT);
-            try {
-                if (jsonNBT.isJsonObject()) {
-                    nbt = TagParser.parseTag(GSON.toJson(jsonNBT));
-                } else {
-                    nbt = TagParser.parseTag(GsonHelper.convertToString(jsonNBT, JsonConstants.NBT));
-                }
-            } catch (CommandSyntaxException e) {
-                throw new JsonSyntaxException("Invalid NBT entry for fluid '" + resourceLocation + "'");
-            }
-        }
-        return new FluidStack(fluid, amount, nbt);
+        return FLUIDSTACK_CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, unused -> {});
     }
 
     /**
@@ -335,7 +292,7 @@ public class SerializerHelper {
      */
     @Deprecated(forRemoval = true)
     public static GasStack deserializeGas(@NotNull JsonObject json) {
-        return deserializeChemicalStack(json, JsonConstants.GAS, Gas::getFromRegistry);
+        return ChemicalUtils.GAS_STACK_CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, unused -> {});
     }
 
     /**
@@ -348,7 +305,7 @@ public class SerializerHelper {
      */
     @Deprecated(forRemoval = true)
     public static InfusionStack deserializeInfuseType(@NotNull JsonObject json) {
-        return deserializeChemicalStack(json, JsonConstants.INFUSE_TYPE, InfuseType::getFromRegistry);
+        return ChemicalUtils.INFUSION_STACK_CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, unused -> {});
     }
 
     /**
@@ -361,7 +318,7 @@ public class SerializerHelper {
      */
     @Deprecated(forRemoval = true)
     public static PigmentStack deserializePigment(@NotNull JsonObject json) {
-        return deserializeChemicalStack(json, JsonConstants.PIGMENT, Pigment::getFromRegistry);
+        return ChemicalUtils.PIGMENT_STACK_CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, unused -> {});
     }
 
     /**
@@ -374,29 +331,7 @@ public class SerializerHelper {
      */
     @Deprecated(forRemoval = true)
     public static SlurryStack deserializeSlurry(@NotNull JsonObject json) {
-        return deserializeChemicalStack(json, JsonConstants.SLURRY, Slurry::getFromRegistry);
-    }
-
-    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK deserializeChemicalStack(@NotNull JsonObject json,
-          @NotNull String serializationKey, @NotNull Function<ResourceLocation, CHEMICAL> fromRegistry) {
-        if (!json.has(JsonConstants.AMOUNT)) {
-            throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
-        }
-        JsonElement count = json.get(JsonConstants.AMOUNT);
-        if (!GsonHelper.isNumberValue(count)) {
-            throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
-        }
-        long amount = count.getAsJsonPrimitive().getAsLong();
-        if (amount < 1) {
-            throw new JsonSyntaxException("Expected amount to be greater than zero.");
-        }
-        ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(json, serializationKey));
-        CHEMICAL chemical = fromRegistry.apply(resourceLocation);
-        if (chemical.isEmptyType()) {
-            throw new JsonSyntaxException("Invalid " + serializationKey + " type '" + resourceLocation + "'");
-        }
-        //noinspection unchecked
-        return (STACK) chemical.getStack(amount);
+        return ChemicalUtils.SLURRY_STACK_CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, unused -> {});
     }
 
     /**
