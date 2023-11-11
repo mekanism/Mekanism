@@ -8,7 +8,7 @@ import javax.annotation.meta.TypeQualifierDefault;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Interface to declare that all fields, methods, and parameters in a class are {@link @NotNull}
+ * Interface to declare that all fields, methods, and parameters in a class are {@link NotNull}
  */
 @NotNull
 @Nonnull//Note: Must use the javax nonnull for intellij to recognize it properly in override warnings
