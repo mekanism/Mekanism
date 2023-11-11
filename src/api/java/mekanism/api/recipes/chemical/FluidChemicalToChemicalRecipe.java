@@ -30,8 +30,8 @@ import org.jetbrains.annotations.NotNull;
 public abstract class FluidChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipe implements BiPredicate<@NotNull FluidStack, @NotNull STACK> {
 
-    private final FluidStackIngredient fluidInput;
-    private final INGREDIENT chemicalInput;
+    protected final FluidStackIngredient fluidInput;
+    protected final INGREDIENT chemicalInput;
     protected final STACK output;
 
     /**
@@ -93,11 +93,6 @@ public abstract class FluidChemicalToChemicalRecipe<CHEMICAL extends Chemical<CH
     @Contract(value = "_, _ -> new", pure = true)
     public STACK getOutput(FluidStack fluidStack, STACK chemicalStack) {
         return (STACK) output.copy();
-    }
-
-    //TODO - 1.20.2: Javadocs
-    public STACK getOutputRaw() {
-        return output;
     }
 
     @Override

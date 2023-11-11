@@ -13,7 +13,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
 @NothingNullByDefault
-public class CompressingIRecipe extends ItemStackGasToItemStackRecipe {
+public class CompressingIRecipe extends ItemStackGasToItemStackRecipe implements ItemStackOutputInternal {
 
     public CompressingIRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
         super(itemInput, gasInput, output);
@@ -25,7 +25,7 @@ public class CompressingIRecipe extends ItemStackGasToItemStackRecipe {
     }
 
     @Override
-    public RecipeSerializer<ItemStackGasToItemStackRecipe> getSerializer() {
+    public RecipeSerializer<CompressingIRecipe> getSerializer() {
         return MekanismRecipeSerializers.COMPRESSING.get();
     }
 
@@ -37,5 +37,10 @@ public class CompressingIRecipe extends ItemStackGasToItemStackRecipe {
     @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.OSMIUM_COMPRESSOR.getItemStack();
+    }
+
+    @Override
+    public ItemStack getOutputRaw() {
+        return output;
     }
 }

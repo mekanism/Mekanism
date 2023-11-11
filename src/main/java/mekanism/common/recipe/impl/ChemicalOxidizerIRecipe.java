@@ -1,6 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -13,7 +14,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
 @NothingNullByDefault
-public class ChemicalOxidizerIRecipe extends ItemStackToGasRecipe {
+public class ChemicalOxidizerIRecipe extends ItemStackToGasRecipe implements ChemicalOutputInternal<Gas, GasStack> {
 
     public ChemicalOxidizerIRecipe(ItemStackIngredient input, GasStack output) {
         super(input, output);
@@ -25,7 +26,7 @@ public class ChemicalOxidizerIRecipe extends ItemStackToGasRecipe {
     }
 
     @Override
-    public RecipeSerializer<ItemStackToGasRecipe> getSerializer() {
+    public RecipeSerializer<ChemicalOxidizerIRecipe> getSerializer() {
         return MekanismRecipeSerializers.OXIDIZING.get();
     }
 
@@ -37,5 +38,10 @@ public class ChemicalOxidizerIRecipe extends ItemStackToGasRecipe {
     @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.CHEMICAL_OXIDIZER.getItemStack();
+    }
+
+    @Override
+    public GasStack getOutputRaw() {
+        return output;
     }
 }

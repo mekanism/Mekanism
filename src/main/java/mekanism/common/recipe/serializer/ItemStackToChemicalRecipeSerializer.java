@@ -12,6 +12,7 @@ import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.impl.ChemicalOutputInternal;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -19,7 +20,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> implements RecipeSerializer<RECIPE> {
+      RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK> & ChemicalOutputInternal<CHEMICAL, STACK>> implements RecipeSerializer<RECIPE> {
 
     private final IFactory<CHEMICAL, STACK, RECIPE> factory;
     private Codec<RECIPE> codec;
@@ -38,7 +39,7 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance->instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.INPUT).forGetter(ItemStackToChemicalRecipe::getInput),
-                  stackCodec.fieldOf(JsonConstants.OUTPUT).forGetter(ItemStackToChemicalRecipe::getOutputRaw)
+                  stackCodec.fieldOf(JsonConstants.OUTPUT).forGetter(ChemicalOutputInternal::getOutputRaw)
             ).apply(instance, factory::create));
         }
         return codec;

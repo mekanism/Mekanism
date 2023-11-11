@@ -25,10 +25,10 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predicate<@NotNull FluidStack> {
 
-    private final FluidStackIngredient input;
-    private final GasStack leftGasOutput;
-    private final GasStack rightGasOutput;
-    private final FloatingLong energyMultiplier;
+    protected final FluidStackIngredient input;
+    protected final GasStack leftGasOutput;
+    protected final GasStack rightGasOutput;
+    protected final FloatingLong energyMultiplier;
 
     /**
      * @param input            Input.
@@ -88,16 +88,6 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
     @Contract(value = "_ -> new", pure = true)
     public ElectrolysisRecipeOutput getOutput(FluidStack input) {
         return new ElectrolysisRecipeOutput(leftGasOutput.copy(), rightGasOutput.copy());
-    }
-
-    //TODO - 1.20.2: Javadocs
-    public GasStack getLeftGasOutput() {
-        return leftGasOutput;
-    }
-
-    //TODO - 1.20.2: Javadocs
-    public GasStack getRightGasOutput() {
-        return rightGasOutput;
     }
 
     /**

@@ -27,9 +27,9 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implements Predicate<@NotNull BoxedChemicalStack> {
 
-    private final ChemicalType chemicalType;
-    private final ChemicalStackIngredient<?, ?> input;
-    private final ItemStack output;
+    protected final ChemicalType chemicalType;
+    protected final ChemicalStackIngredient<?, ?> input;
+    protected final ItemStack output;
 
     /**
      * @param input  Input.
@@ -133,12 +133,6 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
      */
     public ChemicalStackIngredient<?, ?> getInput() {
         return input;
-    }
-
-    //TODO - 1.20.2: Javadocs
-    @Internal
-    public ItemStack getOutputRaw() {
-        return this.output;
     }
 
     @Override

@@ -13,7 +13,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
 @NothingNullByDefault
-public class PaintingIRecipe extends PaintingRecipe {
+public class PaintingIRecipe extends PaintingRecipe implements ItemStackOutputInternal {
 
     public PaintingIRecipe(ItemStackIngredient itemInput, PigmentStackIngredient pigmentInput, ItemStack output) {
         super(itemInput, pigmentInput, output);
@@ -25,7 +25,7 @@ public class PaintingIRecipe extends PaintingRecipe {
     }
 
     @Override
-    public RecipeSerializer<PaintingRecipe> getSerializer() {
+    public RecipeSerializer<PaintingIRecipe> getSerializer() {
         return MekanismRecipeSerializers.PAINTING.get();
     }
 
@@ -37,5 +37,10 @@ public class PaintingIRecipe extends PaintingRecipe {
     @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.PAINTING_MACHINE.getItemStack();
+    }
+
+    @Override
+    public ItemStack getOutputRaw() {
+        return output;
     }
 }

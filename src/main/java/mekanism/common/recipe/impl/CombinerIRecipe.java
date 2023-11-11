@@ -23,7 +23,7 @@ public class CombinerIRecipe extends CombinerRecipe {
     }
 
     @Override
-    public RecipeSerializer<CombinerRecipe> getSerializer() {
+    public RecipeSerializer<CombinerIRecipe> getSerializer() {
         return MekanismRecipeSerializers.COMBINING.get();
     }
 
@@ -35,5 +35,9 @@ public class CombinerIRecipe extends CombinerRecipe {
     @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.COMBINER.getItemStack();
+    }
+
+    public ItemStack getOutputRaw() {
+        return output;
     }
 }

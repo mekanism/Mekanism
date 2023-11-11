@@ -1,6 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
@@ -13,7 +14,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
 @NothingNullByDefault
-public class CentrifugingIRecipe extends GasToGasRecipe {
+public class CentrifugingIRecipe extends GasToGasRecipe implements ChemicalOutputInternal<Gas, GasStack> {
 
     public CentrifugingIRecipe(GasStackIngredient input, GasStack output) {
         super(input, output);
@@ -25,7 +26,7 @@ public class CentrifugingIRecipe extends GasToGasRecipe {
     }
 
     @Override
-    public RecipeSerializer<GasToGasRecipe> getSerializer() {
+    public RecipeSerializer<CentrifugingIRecipe> getSerializer() {
         return MekanismRecipeSerializers.CENTRIFUGING.get();
     }
 
@@ -37,5 +38,10 @@ public class CentrifugingIRecipe extends GasToGasRecipe {
     @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.ISOTOPIC_CENTRIFUGE.getItemStack();
+    }
+
+    @Override
+    public GasStack getOutputRaw() {
+        return output;
     }
 }

@@ -25,7 +25,7 @@ public class FluidSlurryToSlurryIRecipe extends FluidSlurryToSlurryRecipe {
     }
 
     @Override
-    public RecipeSerializer<FluidSlurryToSlurryRecipe> getSerializer() {
+    public RecipeSerializer<FluidSlurryToSlurryIRecipe> getSerializer() {
         return MekanismRecipeSerializers.WASHING.get();
     }
 
@@ -37,5 +37,9 @@ public class FluidSlurryToSlurryIRecipe extends FluidSlurryToSlurryRecipe {
     @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.CHEMICAL_WASHER.getItemStack();
+    }
+
+    public SlurryStack getOutputRaw() {
+        return output;
     }
 }

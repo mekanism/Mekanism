@@ -13,7 +13,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
 @NothingNullByDefault
-public class InjectingIRecipe extends ItemStackGasToItemStackRecipe {
+public class InjectingIRecipe extends ItemStackGasToItemStackRecipe implements ItemStackOutputInternal {
 
     public InjectingIRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
         super(itemInput, gasInput, output);
@@ -25,7 +25,7 @@ public class InjectingIRecipe extends ItemStackGasToItemStackRecipe {
     }
 
     @Override
-    public RecipeSerializer<ItemStackGasToItemStackRecipe> getSerializer() {
+    public RecipeSerializer<InjectingIRecipe> getSerializer() {
         return MekanismRecipeSerializers.INJECTING.get();
     }
 
@@ -37,5 +37,10 @@ public class InjectingIRecipe extends ItemStackGasToItemStackRecipe {
     @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.CHEMICAL_INJECTION_CHAMBER.getItemStack();
+    }
+
+    @Override
+    public ItemStack getOutputRaw() {
+        return output;
     }
 }

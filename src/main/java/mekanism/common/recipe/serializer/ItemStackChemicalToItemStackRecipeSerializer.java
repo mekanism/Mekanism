@@ -14,6 +14,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.impl.ItemStackOutputInternal;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -23,7 +24,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ItemStackChemicalToItemStackRecipeSerializer<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>>
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT> & ItemStackOutputInternal>
       implements RecipeSerializer<RECIPE> {
 
     private final IFactory<CHEMICAL, STACK, INGREDIENT, RECIPE> factory;
@@ -42,7 +43,7 @@ public abstract class ItemStackChemicalToItemStackRecipeSerializer<CHEMICAL exte
             codec = RecordCodecBuilder.create(instance->instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.ITEM_INPUT).forGetter(ItemStackChemicalToItemStackRecipe::getItemInput),
                   getDeserializer().getIngredientCreator().codec().fieldOf(JsonConstants.CHEMICAL_INPUT).forGetter(ItemStackChemicalToItemStackRecipe::getChemicalInput),
-                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(ItemStackChemicalToItemStackRecipe::getOutputRaw)
+                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(ItemStackOutputInternal::getOutputRaw)
             ).apply(instance, factory::create));
         }
         return codec;

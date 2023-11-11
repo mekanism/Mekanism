@@ -5,14 +5,15 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.common.recipe.impl.ChemicalInfuserIRecipe;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-public class ChemicalInfuserRecipeSerializer<RECIPE extends ChemicalInfuserRecipe> extends
-      ChemicalChemicalToChemicalRecipeSerializer<Gas, GasStack, GasStackIngredient, RECIPE> {
+public class ChemicalInfuserRecipeSerializer extends
+      ChemicalChemicalToChemicalRecipeSerializer<Gas, GasStack, GasStackIngredient, ChemicalInfuserIRecipe> {
 
-    public ChemicalInfuserRecipeSerializer(IFactory<Gas, GasStack, GasStackIngredient, RECIPE> factory) {
+    public ChemicalInfuserRecipeSerializer(IFactory<Gas, GasStack, GasStackIngredient, ChemicalInfuserIRecipe> factory) {
         super(factory, ChemicalUtils.GAS_STACK_CODEC);
     }
 

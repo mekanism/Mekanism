@@ -1,6 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -13,7 +14,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
 @NothingNullByDefault
-public class PigmentExtractingIRecipe extends ItemStackToPigmentRecipe {
+public class PigmentExtractingIRecipe extends ItemStackToPigmentRecipe implements ChemicalOutputInternal<Pigment, PigmentStack> {
 
     public PigmentExtractingIRecipe(ItemStackIngredient input, PigmentStack output) {
         super(input, output);
@@ -25,7 +26,7 @@ public class PigmentExtractingIRecipe extends ItemStackToPigmentRecipe {
     }
 
     @Override
-    public RecipeSerializer<ItemStackToPigmentRecipe> getSerializer() {
+    public RecipeSerializer<PigmentExtractingIRecipe> getSerializer() {
         return MekanismRecipeSerializers.PIGMENT_EXTRACTING.get();
     }
 
@@ -37,5 +38,10 @@ public class PigmentExtractingIRecipe extends ItemStackToPigmentRecipe {
     @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.PIGMENT_EXTRACTOR.getItemStack();
+    }
+
+    @Override
+    public PigmentStack getOutputRaw() {
+        return output;
     }
 }

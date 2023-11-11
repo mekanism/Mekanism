@@ -72,11 +72,6 @@ public abstract class ItemStackToChemicalRecipe<CHEMICAL extends Chemical<CHEMIC
         return (STACK) output.copy();
     }
 
-    //TODO - 1.20.2: Javadocs
-    public STACK getOutputRaw() {
-        return output;
-    }
-
     /**
      * For JEI, gets the output representations to display.
      *

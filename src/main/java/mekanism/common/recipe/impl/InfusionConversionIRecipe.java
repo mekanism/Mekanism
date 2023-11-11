@@ -1,6 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -13,7 +14,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
 @NothingNullByDefault
-public class InfusionConversionIRecipe extends ItemStackToInfuseTypeRecipe {
+public class InfusionConversionIRecipe extends ItemStackToInfuseTypeRecipe implements ChemicalOutputInternal<InfuseType, InfusionStack> {
 
     public InfusionConversionIRecipe(ItemStackIngredient input, InfusionStack output) {
         super(input, output);
@@ -25,7 +26,7 @@ public class InfusionConversionIRecipe extends ItemStackToInfuseTypeRecipe {
     }
 
     @Override
-    public RecipeSerializer<ItemStackToInfuseTypeRecipe> getSerializer() {
+    public RecipeSerializer<InfusionConversionIRecipe> getSerializer() {
         return MekanismRecipeSerializers.INFUSION_CONVERSION.get();
     }
 
@@ -37,5 +38,10 @@ public class InfusionConversionIRecipe extends ItemStackToInfuseTypeRecipe {
     @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.METALLURGIC_INFUSER.getItemStack();
+    }
+
+    @Override
+    public InfusionStack getOutputRaw() {
+        return output;
     }
 }

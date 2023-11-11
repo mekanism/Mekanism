@@ -2,6 +2,7 @@ package mekanism.common.recipe.impl;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -26,7 +27,7 @@ public class ChemicalDissolutionIRecipe extends ChemicalDissolutionRecipe {
     }
 
     @Override
-    public RecipeSerializer<ChemicalDissolutionRecipe> getSerializer() {
+    public RecipeSerializer<ChemicalDissolutionIRecipe> getSerializer() {
         return MekanismRecipeSerializers.DISSOLUTION.get();
     }
 
@@ -38,5 +39,9 @@ public class ChemicalDissolutionIRecipe extends ChemicalDissolutionRecipe {
     @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER.getItemStack();
+    }
+
+    public BoxedChemicalStack getOutputRaw() {
+        return output;
     }
 }

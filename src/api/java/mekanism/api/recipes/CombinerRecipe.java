@@ -24,9 +24,9 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class CombinerRecipe extends MekanismRecipe implements BiPredicate<@NotNull ItemStack, @NotNull ItemStack> {
 
-    private final ItemStackIngredient mainInput;
-    private final ItemStackIngredient extraInput;
-    private final ItemStack output;
+    protected final ItemStackIngredient mainInput;
+    protected final ItemStackIngredient extraInput;
+    protected final ItemStack output;
 
     /**
      * @param mainInput  Main input.
@@ -77,11 +77,6 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
     @Contract(value = "_, _ -> new", pure = true)
     public ItemStack getOutput(@NotNull ItemStack input, @NotNull ItemStack extra) {
         return output.copy();
-    }
-
-    //TODO - 1.20.2: Javadocs
-    public ItemStack getOutputRaw() {
-        return output;
     }
 
     @NotNull

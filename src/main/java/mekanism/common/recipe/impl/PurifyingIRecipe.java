@@ -13,7 +13,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
 @NothingNullByDefault
-public class PurifyingIRecipe extends ItemStackGasToItemStackRecipe {
+public class PurifyingIRecipe extends ItemStackGasToItemStackRecipe implements ItemStackOutputInternal {
 
     public PurifyingIRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
         super(itemInput, gasInput, output);
@@ -25,7 +25,7 @@ public class PurifyingIRecipe extends ItemStackGasToItemStackRecipe {
     }
 
     @Override
-    public RecipeSerializer<ItemStackGasToItemStackRecipe> getSerializer() {
+    public RecipeSerializer<PurifyingIRecipe> getSerializer() {
         return MekanismRecipeSerializers.PURIFYING.get();
     }
 
@@ -37,5 +37,10 @@ public class PurifyingIRecipe extends ItemStackGasToItemStackRecipe {
     @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.PURIFICATION_CHAMBER.getItemStack();
+    }
+
+    @Override
+    public ItemStack getOutputRaw() {
+        return output;
     }
 }

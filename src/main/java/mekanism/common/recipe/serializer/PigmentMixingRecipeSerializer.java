@@ -5,14 +5,15 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.common.recipe.impl.PigmentMixingIRecipe;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-public class PigmentMixingRecipeSerializer<RECIPE extends PigmentMixingRecipe> extends
-      ChemicalChemicalToChemicalRecipeSerializer<Pigment, PigmentStack, PigmentStackIngredient, RECIPE> {
+public class PigmentMixingRecipeSerializer extends
+      ChemicalChemicalToChemicalRecipeSerializer<Pigment, PigmentStack, PigmentStackIngredient, PigmentMixingIRecipe> {
 
-    public PigmentMixingRecipeSerializer(IFactory<Pigment, PigmentStack, PigmentStackIngredient, RECIPE> factory) {
+    public PigmentMixingRecipeSerializer(IFactory<Pigment, PigmentStack, PigmentStackIngredient, PigmentMixingIRecipe> factory) {
         super(factory, ChemicalUtils.PIGMENT_STACK_CODEC);
     }
 

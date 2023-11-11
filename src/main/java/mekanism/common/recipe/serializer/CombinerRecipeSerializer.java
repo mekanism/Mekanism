@@ -1,8 +1,5 @@
 package mekanism.common.recipe.serializer;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
@@ -11,37 +8,36 @@ import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.impl.CombinerIRecipe;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
-public class CombinerRecipeSerializer<RECIPE extends CombinerRecipe> implements RecipeSerializer<RECIPE> {
+public class CombinerRecipeSerializer implements RecipeSerializer<CombinerIRecipe> {
 
-    private final IFactory<RECIPE> factory;
-    private Codec<RECIPE> codec;
+    private final IFactory<CombinerIRecipe> factory;
+    private Codec<CombinerIRecipe> codec;
 
-    public CombinerRecipeSerializer(IFactory<RECIPE> factory) {
+    public CombinerRecipeSerializer(IFactory<CombinerIRecipe> factory) {
         this.factory = factory;
     }
 
     @NotNull
     @Override
-    public Codec<RECIPE> codec() {
+    public Codec<CombinerIRecipe> codec() {
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance->instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.MAIN_INPUT).forGetter(CombinerRecipe::getMainInput),
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.EXTRA_INPUT).forGetter(CombinerRecipe::getExtraInput),
-                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(CombinerRecipe::getOutputRaw)
+                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(CombinerIRecipe::getOutputRaw)
             ).apply(instance, factory::create));
         }
         return codec;
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
+    public CombinerIRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             ItemStackIngredient mainInput = IngredientCreatorAccess.item().read(buffer);
             ItemStackIngredient extraInput = IngredientCreatorAccess.item().read(buffer);
@@ -54,7 +50,7 @@ public class CombinerRecipeSerializer<RECIPE extends CombinerRecipe> implements 
     }
 
     @Override
-    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
+    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull CombinerIRecipe recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

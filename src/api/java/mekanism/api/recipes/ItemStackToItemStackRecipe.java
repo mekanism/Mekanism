@@ -27,8 +27,8 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implements Predicate<@NotNull ItemStack> {
 
-    private final ItemStackIngredient input;
-    private final ItemStack output;
+    protected final ItemStackIngredient input;
+    protected final ItemStack output;
 
     /**
      * @param input  Input.

@@ -12,7 +12,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
 @NothingNullByDefault
-public class SmeltingIRecipe extends ItemStackToItemStackRecipe {
+public class SmeltingIRecipe extends ItemStackToItemStackRecipe implements ItemStackOutputInternal {
 
     public SmeltingIRecipe(ItemStackIngredient input, ItemStack output) {
         super(input, output);
@@ -24,7 +24,7 @@ public class SmeltingIRecipe extends ItemStackToItemStackRecipe {
     }
 
     @Override
-    public RecipeSerializer<ItemStackToItemStackRecipe> getSerializer() {
+    public RecipeSerializer<SmeltingIRecipe> getSerializer() {
         return MekanismRecipeSerializers.SMELTING.get();
     }
 
@@ -36,5 +36,10 @@ public class SmeltingIRecipe extends ItemStackToItemStackRecipe {
     @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.ENERGIZED_SMELTER.getItemStack();
+    }
+
+    @Override
+    public ItemStack getOutputRaw() {
+        return output;
     }
 }

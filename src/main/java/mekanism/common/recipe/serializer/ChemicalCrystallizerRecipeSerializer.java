@@ -11,17 +11,18 @@ import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.impl.ChemicalCrystallizerIRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
-public class ChemicalCrystallizerRecipeSerializer<RECIPE extends ChemicalCrystallizerRecipe> implements RecipeSerializer<RECIPE> {
+public class ChemicalCrystallizerRecipeSerializer implements RecipeSerializer<ChemicalCrystallizerIRecipe> {
 
-    private final IFactory<RECIPE> factory;
-    private Codec<RECIPE> codec;
+    private final IFactory<ChemicalCrystallizerIRecipe> factory;
+    private Codec<ChemicalCrystallizerIRecipe> codec;
 
-    public ChemicalCrystallizerRecipeSerializer(IFactory<RECIPE> factory) {
+    public ChemicalCrystallizerRecipeSerializer(IFactory<ChemicalCrystallizerIRecipe> factory) {
         this.factory = factory;
     }
 
@@ -31,18 +32,18 @@ public class ChemicalCrystallizerRecipeSerializer<RECIPE extends ChemicalCrystal
 
     @NotNull
     @Override
-    public Codec<RECIPE> codec() {
+    public Codec<ChemicalCrystallizerIRecipe> codec() {
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance-> instance.group(
                   chemicalStackIngredientMapEncoder.forGetter(ChemicalCrystallizerRecipe::getInput),
-                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(ChemicalCrystallizerRecipe::getOutputRaw)
+                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(ChemicalCrystallizerIRecipe::getOutputRaw)
             ).apply(instance, factory::create));
         }
         return codec;
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
+    public ChemicalCrystallizerIRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
             ChemicalStackIngredient<?, ?> inputIngredient = IngredientCreatorAccess.getCreatorForType(chemicalType).read(buffer);
@@ -55,7 +56,7 @@ public class ChemicalCrystallizerRecipeSerializer<RECIPE extends ChemicalCrystal
     }
 
     @Override
-    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
+    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull ChemicalCrystallizerIRecipe recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

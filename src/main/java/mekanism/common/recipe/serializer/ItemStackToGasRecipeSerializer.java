@@ -4,10 +4,11 @@ import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackToGasRecipe;
+import mekanism.common.recipe.impl.ChemicalOutputInternal;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemStackToGasRecipeSerializer<RECIPE extends ItemStackToGasRecipe> extends ItemStackToChemicalRecipeSerializer<Gas, GasStack, RECIPE> {
+public class ItemStackToGasRecipeSerializer<RECIPE extends ItemStackToGasRecipe & ChemicalOutputInternal<Gas, GasStack>> extends ItemStackToChemicalRecipeSerializer<Gas, GasStack, RECIPE> {
 
     public ItemStackToGasRecipeSerializer(IFactory<Gas, GasStack, RECIPE> factory) {
         super(factory, ChemicalUtils.GAS_STACK_CODEC);

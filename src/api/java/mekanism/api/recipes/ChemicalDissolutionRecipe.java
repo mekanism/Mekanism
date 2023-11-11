@@ -29,9 +29,9 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implements BiPredicate<@NotNull ItemStack, @NotNull GasStack> {
 
-    private final ItemStackIngredient itemInput;
-    private final GasStackIngredient gasInput;
-    private final BoxedChemicalStack output;
+    protected final ItemStackIngredient itemInput;
+    protected final GasStackIngredient gasInput;
+    protected final BoxedChemicalStack output;
 
     /**
      * @param itemInput Item input.
@@ -77,11 +77,6 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implement
     @Contract(value = "_, _ -> new", pure = true)
     public BoxedChemicalStack getOutput(ItemStack inputItem, GasStack inputGas) {
         return output.copy();
-    }
-
-    //TODO - 1.20.2: Javadocs
-    public BoxedChemicalStack getOutputRaw() {
-        return output;
     }
 
     @Override

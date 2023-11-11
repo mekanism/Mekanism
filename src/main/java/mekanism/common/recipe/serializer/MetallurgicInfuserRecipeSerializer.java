@@ -4,9 +4,10 @@ import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
+import mekanism.common.recipe.impl.MetallurgicInfuserIRecipe;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 
-public class MetallurgicInfuserRecipeSerializer<RECIPE extends MetallurgicInfuserRecipe> extends
+public class MetallurgicInfuserRecipeSerializer<RECIPE extends MetallurgicInfuserIRecipe> extends
       ItemStackChemicalToItemStackRecipeSerializer<InfuseType, InfusionStack, InfusionStackIngredient, RECIPE> {
 
     public MetallurgicInfuserRecipeSerializer(IFactory<InfuseType, InfusionStack, InfusionStackIngredient, RECIPE> factory) {

@@ -1,8 +1,5 @@
 package mekanism.common.recipe.serializer;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
@@ -11,16 +8,14 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.impl.ChemicalOutputInternal;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ChemicalChemicalToChemicalRecipeSerializer<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>>
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT> & ChemicalOutputInternal<CHEMICAL, STACK>>
       implements RecipeSerializer<RECIPE> {
 
     private final IFactory<CHEMICAL, STACK, INGREDIENT, RECIPE> factory;
@@ -44,7 +39,7 @@ public abstract class ChemicalChemicalToChemicalRecipeSerializer<CHEMICAL extend
             codec = RecordCodecBuilder.create(instance->instance.group(
                   ingredientCodec.fieldOf(JsonConstants.LEFT_INPUT).forGetter(ChemicalChemicalToChemicalRecipe::getLeftInput),
                   ingredientCodec.fieldOf(JsonConstants.RIGHT_INPUT).forGetter(ChemicalChemicalToChemicalRecipe::getLeftInput),
-                  stackCodec.fieldOf(JsonConstants.OUTPUT).forGetter(ChemicalChemicalToChemicalRecipe::getOutputRaw)
+                  stackCodec.fieldOf(JsonConstants.OUTPUT).forGetter(ChemicalOutputInternal::getOutputRaw)
             ).apply(instance, factory::create));
         }
         return codec;

@@ -23,7 +23,7 @@ public class ChemicalCrystallizerIRecipe extends ChemicalCrystallizerRecipe {
     }
 
     @Override
-    public RecipeSerializer<ChemicalCrystallizerRecipe> getSerializer() {
+    public RecipeSerializer<ChemicalCrystallizerIRecipe> getSerializer() {
         return MekanismRecipeSerializers.CRYSTALLIZING.get();
     }
 
@@ -35,5 +35,9 @@ public class ChemicalCrystallizerIRecipe extends ChemicalCrystallizerRecipe {
     @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.CHEMICAL_CRYSTALLIZER.getItemStack();
+    }
+
+    public ItemStack getOutputRaw() {
+        return this.output;
     }
 }

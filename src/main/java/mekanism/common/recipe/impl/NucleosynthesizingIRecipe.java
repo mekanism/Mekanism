@@ -25,7 +25,7 @@ public class NucleosynthesizingIRecipe extends NucleosynthesizingRecipe {
     }
 
     @Override
-    public RecipeSerializer<NucleosynthesizingRecipe> getSerializer() {
+    public RecipeSerializer<NucleosynthesizingIRecipe> getSerializer() {
         return MekanismRecipeSerializers.NUCLEOSYNTHESIZING.get();
     }
 

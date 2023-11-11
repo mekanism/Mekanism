@@ -35,7 +35,7 @@ public class RotaryIRecipe extends RotaryRecipe {
     }
 
     @Override
-    public RecipeSerializer<RotaryRecipe> getSerializer() {
+    public RecipeSerializer<RotaryIRecipe> getSerializer() {
         return MekanismRecipeSerializers.ROTARY.get();
     }
 
@@ -49,20 +49,28 @@ public class RotaryIRecipe extends RotaryRecipe {
         return MekanismBlocks.ROTARY_CONDENSENTRATOR.getItemStack();
     }
 
-    public static class Factory implements RotaryRecipeSerializer.IFactory<RotaryRecipe> {
+    public GasStack getGasOutputRaw() {
+        return this.gasOutput;
+    }
+
+    public FluidStack getFluidOutputRaw() {
+        return this.fluidOutput;
+    }
+
+    public static class Factory implements RotaryRecipeSerializer.IFactory<RotaryIRecipe> {
 
         @Override
-        public RotaryRecipe create(FluidStackIngredient fluidInput, GasStack gasOutput) {
+        public RotaryIRecipe create(FluidStackIngredient fluidInput, GasStack gasOutput) {
             return new RotaryIRecipe(fluidInput, gasOutput);
         }
 
         @Override
-        public RotaryRecipe create(GasStackIngredient gasInput, FluidStack fluidOutput) {
+        public RotaryIRecipe create(GasStackIngredient gasInput, FluidStack fluidOutput) {
             return new RotaryIRecipe(gasInput, fluidOutput);
         }
 
         @Override
-        public RotaryRecipe create(FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput) {
+        public RotaryIRecipe create(FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput) {
             return new RotaryIRecipe(fluidInput, gasInput, gasOutput, fluidOutput);
         }
     }

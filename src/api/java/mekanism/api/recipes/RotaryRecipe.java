@@ -26,12 +26,12 @@ import org.jetbrains.annotations.Contract;
 @NothingNullByDefault
 public abstract class RotaryRecipe extends MekanismRecipe {
 
-    private final GasStackIngredient gasInput;
-    private final FluidStackIngredient fluidInput;
-    private final FluidStack fluidOutput;
-    private final GasStack gasOutput;
-    private final boolean hasGasToFluid;
-    private final boolean hasFluidToGas;
+    protected final GasStackIngredient gasInput;
+    protected final FluidStackIngredient fluidInput;
+    protected final FluidStack fluidOutput;
+    protected final GasStack gasOutput;
+    protected final boolean hasGasToFluid;
+    protected final boolean hasFluidToGas;
 
     /**
      * Rotary recipe that converts a fluid into a gas.

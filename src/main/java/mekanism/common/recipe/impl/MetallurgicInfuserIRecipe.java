@@ -12,7 +12,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
 @NothingNullByDefault
-public class MetallurgicInfuserIRecipe extends MetallurgicInfuserRecipe {
+public class MetallurgicInfuserIRecipe extends MetallurgicInfuserRecipe implements ItemStackOutputInternal {
 
     public MetallurgicInfuserIRecipe(ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output) {
         super(itemInput, infusionInput, output);
@@ -24,7 +24,7 @@ public class MetallurgicInfuserIRecipe extends MetallurgicInfuserRecipe {
     }
 
     @Override
-    public RecipeSerializer<MetallurgicInfuserRecipe> getSerializer() {
+    public RecipeSerializer<MetallurgicInfuserIRecipe> getSerializer() {
         return MekanismRecipeSerializers.METALLURGIC_INFUSING.get();
     }
 
@@ -36,5 +36,10 @@ public class MetallurgicInfuserIRecipe extends MetallurgicInfuserRecipe {
     @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.METALLURGIC_INFUSER.getItemStack();
+    }
+
+    @Override
+    public ItemStack getOutputRaw() {
+        return output;
     }
 }

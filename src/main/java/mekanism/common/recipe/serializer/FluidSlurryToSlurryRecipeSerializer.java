@@ -13,36 +13,37 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngre
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.impl.FluidSlurryToSlurryIRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
-public class FluidSlurryToSlurryRecipeSerializer<RECIPE extends FluidSlurryToSlurryRecipe> implements RecipeSerializer<RECIPE> {
+public class FluidSlurryToSlurryRecipeSerializer implements RecipeSerializer<FluidSlurryToSlurryIRecipe> {
 
-    private final IFactory<RECIPE> factory;
-    private Codec<RECIPE> codec;
+    private final IFactory<FluidSlurryToSlurryIRecipe> factory;
+    private Codec<FluidSlurryToSlurryIRecipe> codec;
 
-    public FluidSlurryToSlurryRecipeSerializer(IFactory<RECIPE> factory) {
+    public FluidSlurryToSlurryRecipeSerializer(IFactory<FluidSlurryToSlurryIRecipe> factory) {
         this.factory = factory;
     }
 
     @NotNull
     @Override
-    public Codec<RECIPE> codec() {
+    public Codec<FluidSlurryToSlurryIRecipe> codec() {
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance->instance.group(
                   IngredientCreatorAccess.fluid().codec().fieldOf(JsonConstants.FLUID_INPUT).forGetter(FluidSlurryToSlurryRecipe::getFluidInput),
                   IngredientCreatorAccess.slurry().codec().fieldOf(JsonConstants.SLURRY_INPUT).forGetter(FluidSlurryToSlurryRecipe::getChemicalInput),
-                  SlurryStack.CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(FluidSlurryToSlurryRecipe::getOutputRaw)
+                  SlurryStack.CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(FluidSlurryToSlurryIRecipe::getOutputRaw)
             ).apply(instance, factory::create));
         }
         return codec;
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
+    public FluidSlurryToSlurryIRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             FluidStackIngredient fluidInput = IngredientCreatorAccess.fluid().read(buffer);
             SlurryStackIngredient slurryInput = IngredientCreatorAccess.slurry().read(buffer);
@@ -55,7 +56,7 @@ public class FluidSlurryToSlurryRecipeSerializer<RECIPE extends FluidSlurryToSlu
     }
 
     @Override
-    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
+    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull FluidSlurryToSlurryIRecipe recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

@@ -18,24 +18,25 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredie
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.impl.ChemicalDissolutionIRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
-public class ChemicalDissolutionRecipeSerializer<RECIPE extends ChemicalDissolutionRecipe> implements RecipeSerializer<RECIPE> {
+public class ChemicalDissolutionRecipeSerializer implements RecipeSerializer<ChemicalDissolutionIRecipe> {
 
-    private final IFactory<RECIPE> factory;
-    private Codec<RECIPE> codec;
+    private final IFactory<ChemicalDissolutionIRecipe> factory;
+    private Codec<ChemicalDissolutionIRecipe> codec;
 
-    public ChemicalDissolutionRecipeSerializer(IFactory<RECIPE> factory) {
+    public ChemicalDissolutionRecipeSerializer(IFactory<ChemicalDissolutionIRecipe> factory) {
         this.factory = factory;
     }
 
     @NotNull
     @Override
-    public Codec<RECIPE> codec() {
+    public Codec<ChemicalDissolutionIRecipe> codec() {
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance->instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.ITEM_INPUT).forGetter(ChemicalDissolutionRecipe::getItemInput),
@@ -47,7 +48,7 @@ public class ChemicalDissolutionRecipeSerializer<RECIPE extends ChemicalDissolut
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
+    public ChemicalDissolutionIRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             ItemStackIngredient itemInput = IngredientCreatorAccess.item().read(buffer);
             GasStackIngredient gasInput = IngredientCreatorAccess.gas().read(buffer);
@@ -66,7 +67,7 @@ public class ChemicalDissolutionRecipeSerializer<RECIPE extends ChemicalDissolut
     }
 
     @Override
-    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
+    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull ChemicalDissolutionIRecipe recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

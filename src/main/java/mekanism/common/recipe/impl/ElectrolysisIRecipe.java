@@ -26,7 +26,7 @@ public class ElectrolysisIRecipe extends ElectrolysisRecipe {
     }
 
     @Override
-    public RecipeSerializer<ElectrolysisRecipe> getSerializer() {
+    public RecipeSerializer<ElectrolysisIRecipe> getSerializer() {
         return MekanismRecipeSerializers.SEPARATING.get();
     }
 
@@ -38,5 +38,13 @@ public class ElectrolysisIRecipe extends ElectrolysisRecipe {
     @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.ELECTROLYTIC_SEPARATOR.getItemStack();
+    }
+
+    public GasStack getLeftGasOutput() {
+        return leftGasOutput;
+    }
+
+    public GasStack getRightGasOutput() {
+        return rightGasOutput;
     }
 }
