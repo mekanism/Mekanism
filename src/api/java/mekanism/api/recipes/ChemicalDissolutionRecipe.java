@@ -10,10 +10,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -98,11 +95,4 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implement
         return itemInput.hasNoMatchingInstances() || gasInput.hasNoMatchingInstances();
     }
 
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        itemInput.write(buffer);
-        gasInput.write(buffer);
-        buffer.writeEnum(output.getChemicalType());
-        output.getChemicalStack().writeToPacket(buffer);
-    }
 }

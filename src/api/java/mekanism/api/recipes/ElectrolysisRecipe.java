@@ -8,7 +8,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -100,14 +99,6 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
     @Override
     public boolean isIncomplete() {
         return input.hasNoMatchingInstances();
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        input.write(buffer);
-        energyMultiplier.writeToBuffer(buffer);
-        leftGasOutput.writeToPacket(buffer);
-        rightGasOutput.writeToPacket(buffer);
     }
 
     public record ElectrolysisRecipeOutput(@NotNull GasStack left, @NotNull GasStack right) {

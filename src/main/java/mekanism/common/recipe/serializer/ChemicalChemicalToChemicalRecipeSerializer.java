@@ -61,7 +61,9 @@ public abstract class ChemicalChemicalToChemicalRecipeSerializer<CHEMICAL extend
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
         try {
-            recipe.write(buffer);
+            recipe.getLeftInput().write(buffer);
+            recipe.getRightInput().write(buffer);
+            recipe.getOutputRaw().writeToPacket(buffer);
         } catch (Exception e) {
             Mekanism.logger.error("Error writing chemical chemical to chemical recipe to packet.", e);
             throw e;

@@ -13,7 +13,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
 @NothingNullByDefault
-public class NucleosynthesizingIRecipe extends NucleosynthesizingRecipe {
+public class NucleosynthesizingIRecipe extends NucleosynthesizingRecipe implements ItemStackOutputInternal {
 
     public NucleosynthesizingIRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output, int duration) {
         super(itemInput, gasInput, output, duration);
@@ -37,5 +37,10 @@ public class NucleosynthesizingIRecipe extends NucleosynthesizingRecipe {
     @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER.getItemStack();
+    }
+
+    @Override
+    public ItemStack getOutputRaw() {
+        return output;
     }
 }

@@ -10,7 +10,6 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -100,10 +99,4 @@ public abstract class FluidChemicalToChemicalRecipe<CHEMICAL extends Chemical<CH
         return fluidInput.hasNoMatchingInstances() || chemicalInput.hasNoMatchingInstances();
     }
 
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        fluidInput.write(buffer);
-        chemicalInput.write(buffer);
-        output.writeToPacket(buffer);
-    }
 }

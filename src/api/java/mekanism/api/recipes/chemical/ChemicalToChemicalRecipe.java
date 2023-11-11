@@ -9,7 +9,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -84,11 +83,5 @@ public abstract class ChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICA
     @Override
     public boolean isIncomplete() {
         return input.hasNoMatchingInstances();
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        input.write(buffer);
-        output.writeToPacket(buffer);
     }
 }

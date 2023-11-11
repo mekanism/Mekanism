@@ -105,7 +105,16 @@ public class RotaryRecipeSerializer implements RecipeSerializer<RotaryIRecipe> {
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RotaryIRecipe recipe) {
         try {
-            recipe.write(buffer);
+            buffer.writeBoolean(recipe.hasFluidToGas());
+            if (recipe.hasFluidToGas()) {
+                recipe.getFluidInput().write(buffer);
+                recipe.getGasOutputRaw().writeToPacket(buffer);
+            }
+            buffer.writeBoolean(recipe.hasGasToFluid());
+            if (recipe.hasGasToFluid()) {
+                recipe.getGasInput().write(buffer);
+                recipe.getFluidOutputRaw().writeToPacket(buffer);
+            }
         } catch (Exception e) {
             Mekanism.logger.error("Error writing rotary recipe to packet.", e);
             throw e;

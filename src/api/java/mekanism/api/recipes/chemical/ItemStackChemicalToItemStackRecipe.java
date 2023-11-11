@@ -11,7 +11,6 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -106,10 +105,4 @@ public abstract class ItemStackChemicalToItemStackRecipe<CHEMICAL extends Chemic
         return itemInput.hasNoMatchingInstances() || chemicalInput.hasNoMatchingInstances();
     }
 
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        itemInput.write(buffer);
-        chemicalInput.write(buffer);
-        buffer.writeItem(output);
-    }
 }

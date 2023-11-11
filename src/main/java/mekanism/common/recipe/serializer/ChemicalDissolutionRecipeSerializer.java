@@ -69,7 +69,10 @@ public class ChemicalDissolutionRecipeSerializer implements RecipeSerializer<Che
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull ChemicalDissolutionIRecipe recipe) {
         try {
-            recipe.write(buffer);
+            recipe.getItemInput().write(buffer);
+            recipe.getGasInput().write(buffer);
+            buffer.writeEnum(recipe.getOutputRaw().getChemicalType());
+            recipe.getOutputRaw().getChemicalStack().writeToPacket(buffer);
         } catch (Exception e) {
             Mekanism.logger.error("Error writing itemstack gas to gas recipe to packet.", e);
             throw e;

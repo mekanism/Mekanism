@@ -3,7 +3,6 @@ package mekanism.api.recipes;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -32,12 +31,6 @@ public abstract class NucleosynthesizingRecipe extends ItemStackGasToItemStackRe
             throw new IllegalArgumentException("Duration must be a number greater than zero.");
         }
         this.duration = duration;
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        super.write(buffer);
-        buffer.writeVarInt(duration);
     }
 
     /**

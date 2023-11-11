@@ -53,7 +53,9 @@ public class FluidSlurryToSlurryRecipeSerializer implements RecipeSerializer<Flu
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull FluidSlurryToSlurryIRecipe recipe) {
         try {
-            recipe.write(buffer);
+            recipe.getFluidInput().write(buffer);
+            recipe.getChemicalInput().write(buffer);
+            recipe.getOutputRaw().writeToPacket(buffer);
         } catch (Exception e) {
             Mekanism.logger.error("Error writing fluid slurry to slurry recipe to packet.", e);
             throw e;

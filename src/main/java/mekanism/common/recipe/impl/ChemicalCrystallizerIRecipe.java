@@ -1,6 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.ChemicalType;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -39,5 +40,9 @@ public class ChemicalCrystallizerIRecipe extends ChemicalCrystallizerRecipe {
 
     public ItemStack getOutputRaw() {
         return this.output;
+    }
+
+    public ChemicalType getChemicalType() {
+        return chemicalType;
     }
 }

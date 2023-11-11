@@ -74,7 +74,13 @@ public class PressurizedReactionRecipeSerializer implements RecipeSerializer<Pre
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull PressurizedReactionIRecipe recipe) {
         try {
-            recipe.write(buffer);
+            recipe.getInputSolid().write(buffer);
+            recipe.getInputFluid().write(buffer);
+            recipe.getInputGas().write(buffer);
+            recipe.getEnergyRequired().writeToBuffer(buffer);
+            buffer.writeVarInt(recipe.getDuration());
+            buffer.writeItem(recipe.getOutputItem());
+            recipe.getOutputGas().writeToPacket(buffer);
         } catch (Exception e) {
             Mekanism.logger.error("Error writing pressurized reaction recipe to packet.", e);
             throw e;

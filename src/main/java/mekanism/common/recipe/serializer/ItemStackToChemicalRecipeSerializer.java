@@ -60,7 +60,8 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
         try {
-            recipe.write(buffer);
+            recipe.getInput().write(buffer);
+            recipe.getOutputRaw().writeToPacket(buffer);
         } catch (Exception e) {
             Mekanism.logger.error("Error writing itemstack to chemical recipe to packet.", e);
             throw e;

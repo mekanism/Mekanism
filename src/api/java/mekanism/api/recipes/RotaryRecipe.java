@@ -7,7 +7,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
@@ -247,17 +246,4 @@ public abstract class RotaryRecipe extends MekanismRecipe {
         return (hasFluidToGas && fluidInput.hasNoMatchingInstances()) || (hasGasToFluid && gasInput.hasNoMatchingInstances());
     }
 
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        buffer.writeBoolean(hasFluidToGas);
-        if (hasFluidToGas) {
-            fluidInput.write(buffer);
-            gasOutput.writeToPacket(buffer);
-        }
-        buffer.writeBoolean(hasGasToFluid);
-        if (hasGasToFluid) {
-            gasInput.write(buffer);
-            fluidOutput.writeToPacket(buffer);
-        }
-    }
 }

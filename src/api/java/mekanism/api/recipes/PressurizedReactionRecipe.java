@@ -9,7 +9,6 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.TriPredicate;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -145,17 +144,6 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
     @Override
     public boolean isIncomplete() {
         return inputSolid.hasNoMatchingInstances() || inputFluid.hasNoMatchingInstances() || inputGas.hasNoMatchingInstances();
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        inputSolid.write(buffer);
-        inputFluid.write(buffer);
-        inputGas.write(buffer);
-        energyRequired.writeToBuffer(buffer);
-        buffer.writeVarInt(duration);
-        buffer.writeItem(outputItem);
-        outputGas.writeToPacket(buffer);
     }
 
     /**

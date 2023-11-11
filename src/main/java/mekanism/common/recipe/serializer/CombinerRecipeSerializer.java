@@ -52,7 +52,9 @@ public class CombinerRecipeSerializer implements RecipeSerializer<CombinerIRecip
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull CombinerIRecipe recipe) {
         try {
-            recipe.write(buffer);
+            recipe.getMainInput().write(buffer);
+            recipe.getExtraInput().write(buffer);
+            buffer.writeItem(recipe.getOutputRaw());
         } catch (Exception e) {
             Mekanism.logger.error("Error writing combiner recipe to packet.", e);
             throw e;

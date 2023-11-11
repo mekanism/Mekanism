@@ -50,7 +50,8 @@ public class ItemStackToItemStackRecipeSerializer<RECIPE extends ItemStackToItem
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
         try {
-            recipe.write(buffer);
+            recipe.getInput().write(buffer);
+            buffer.writeItem(recipe.getOutputRaw());
         } catch (Exception e) {
             Mekanism.logger.error("Error writing itemstack to itemstack recipe to packet.", e);
             throw e;

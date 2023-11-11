@@ -58,7 +58,10 @@ public class ElectrolysisRecipeSerializer implements RecipeSerializer<Electrolys
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull ElectrolysisIRecipe recipe) {
         try {
-            recipe.write(buffer);
+            recipe.getInput().write(buffer);
+            recipe.getEnergyMultiplier().writeToBuffer(buffer);
+            recipe.getLeftGasOutput().writeToPacket(buffer);
+            recipe.getRightGasOutput().writeToPacket(buffer);
         } catch (Exception e) {
             Mekanism.logger.error("Error writing electrolysis recipe to packet.", e);
             throw e;

@@ -2,7 +2,6 @@ package mekanism.api.recipes;
 
 import mekanism.api.inventory.IgnoredIInventory;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
@@ -12,13 +11,6 @@ import org.jetbrains.annotations.NotNull;
  * Base class for helping wrap our recipes into IRecipes.
  */
 public abstract class MekanismRecipe implements Recipe<IgnoredIInventory> {//TODO: Should we make implementations override equals and hashcode?
-
-    /**
-     * Writes this recipe to a PacketBuffer.
-     *
-     * @param buffer The buffer to write to.
-     */
-    public abstract void write(FriendlyByteBuf buffer);
 
     @Override
     public boolean matches(@NotNull IgnoredIInventory inv, @NotNull Level world) {

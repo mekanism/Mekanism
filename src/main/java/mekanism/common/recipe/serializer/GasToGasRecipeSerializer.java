@@ -51,7 +51,8 @@ public class GasToGasRecipeSerializer<RECIPE extends GasToGasRecipe & ChemicalOu
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
         try {
-            recipe.write(buffer);
+            recipe.getInput().write(buffer);
+            recipe.getOutputRaw().writeToPacket(buffer);
         } catch (Exception e) {
             Mekanism.logger.error("Error writing gas to gas recipe to packet.", e);
             throw e;

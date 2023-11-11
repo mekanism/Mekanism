@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -79,9 +78,4 @@ public abstract class FluidToFluidRecipe extends MekanismRecipe implements Predi
         return input.hasNoMatchingInstances();
     }
 
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        input.write(buffer);
-        output.writeToPacket(buffer);
-    }
 }

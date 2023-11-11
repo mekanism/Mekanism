@@ -65,7 +65,10 @@ public class SawmillRecipeSerializer implements RecipeSerializer<SawmillIRecipe>
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull SawmillIRecipe recipe) {
         try {
-            recipe.write(buffer);
+            recipe.getInput().write(buffer);
+            buffer.writeItem(recipe.getMainOutputRaw().orElse(ItemStack.EMPTY));
+            buffer.writeItem(recipe.getSecondaryOutputRaw().orElse(ItemStack.EMPTY));
+            buffer.writeDouble(recipe.getSecondaryChance());
         } catch (Exception e) {
             Mekanism.logger.error("Error writing sawmill recipe to packet.", e);
             throw e;

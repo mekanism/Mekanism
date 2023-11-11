@@ -112,7 +112,7 @@ public class MekanismRecipeSerializers {
     public static final RecipeSerializerRegistryObject<PurifyingIRecipe> PURIFYING = RECIPE_SERIALIZERS.register("purifying", () -> new ItemStackGasToItemStackRecipeSerializer<>(PurifyingIRecipe::new));
     public static final RecipeSerializerRegistryObject<InjectingIRecipe> INJECTING = RECIPE_SERIALIZERS.register("injecting", () -> new ItemStackGasToItemStackRecipeSerializer<>(InjectingIRecipe::new));
 
-    public static final RecipeSerializerRegistryObject<NucleosynthesizingIRecipe> NUCLEOSYNTHESIZING = RECIPE_SERIALIZERS.register("nucleosynthesizing", () -> new NucleosynthesizingRecipeSerializer<>(NucleosynthesizingIRecipe::new));
+    public static final RecipeSerializerRegistryObject<NucleosynthesizingIRecipe> NUCLEOSYNTHESIZING = RECIPE_SERIALIZERS.register("nucleosynthesizing", () -> new NucleosynthesizingRecipeSerializer(NucleosynthesizingIRecipe::new));
 
     public static final RecipeSerializerRegistryObject<EnergyConversionIRecipe> ENERGY_CONVERSION = RECIPE_SERIALIZERS.register("energy_conversion", () -> new ItemStackToEnergyRecipeSerializer<>(EnergyConversionIRecipe::new));
 

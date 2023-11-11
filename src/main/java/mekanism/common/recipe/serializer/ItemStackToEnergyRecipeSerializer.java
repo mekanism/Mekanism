@@ -55,7 +55,8 @@ public class ItemStackToEnergyRecipeSerializer<RECIPE extends ItemStackToEnergyR
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
         try {
-            recipe.write(buffer);
+            recipe.getInput().write(buffer);
+            recipe.getOutput(ItemStack.EMPTY).writeToBuffer(buffer);
         } catch (Exception e) {
             Mekanism.logger.error("Error writing itemstack to energy recipe to packet.", e);
             throw e;

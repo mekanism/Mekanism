@@ -7,7 +7,6 @@ import java.util.function.BiPredicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -99,10 +98,4 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
         return mainInput.hasNoMatchingInstances() || extraInput.hasNoMatchingInstances();
     }
 
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        mainInput.write(buffer);
-        extraInput.write(buffer);
-        buffer.writeItem(output);
-    }
 }

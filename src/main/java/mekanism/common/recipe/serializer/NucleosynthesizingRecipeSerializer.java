@@ -10,29 +10,30 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredie
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.impl.NucleosynthesizingIRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
-public class NucleosynthesizingRecipeSerializer<RECIPE extends NucleosynthesizingRecipe> implements RecipeSerializer<RECIPE> {
+public class NucleosynthesizingRecipeSerializer implements RecipeSerializer<NucleosynthesizingIRecipe> {
 
-    private final IFactory<RECIPE> factory;
-    private Codec<RECIPE> codec;
+    private final IFactory<NucleosynthesizingIRecipe> factory;
+    private Codec<NucleosynthesizingIRecipe> codec;
 
-    public NucleosynthesizingRecipeSerializer(IFactory<RECIPE> factory) {
+    public NucleosynthesizingRecipeSerializer(IFactory<NucleosynthesizingIRecipe> factory) {
         this.factory = factory;
     }
 
     @NotNull
     @Override
-    public Codec<RECIPE> codec() {
+    public Codec<NucleosynthesizingIRecipe> codec() {
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance->instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.ITEM_INPUT).forGetter(NucleosynthesizingRecipe::getItemInput),
                   IngredientCreatorAccess.gas().codec().fieldOf(JsonConstants.GAS_INPUT).forGetter(NucleosynthesizingRecipe::getChemicalInput),
-                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(r->r.getOutput(ItemStack.EMPTY, GasStack.EMPTY)),
+                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(NucleosynthesizingIRecipe::getOutputRaw),
                   ExtraCodecs.POSITIVE_INT.fieldOf(JsonConstants.DURATION).forGetter(NucleosynthesizingRecipe::getDuration)
             ).apply(instance, factory::create));
         }
@@ -40,7 +41,7 @@ public class NucleosynthesizingRecipeSerializer<RECIPE extends Nucleosynthesizin
     }
 
     @Override
-    public RECIPE fromNetwork(@NotNull FriendlyByteBuf buffer) {
+    public NucleosynthesizingIRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             ItemStackIngredient inputSolid = IngredientCreatorAccess.item().read(buffer);
             GasStackIngredient inputGas = IngredientCreatorAccess.gas().read(buffer);
@@ -54,9 +55,12 @@ public class NucleosynthesizingRecipeSerializer<RECIPE extends Nucleosynthesizin
     }
 
     @Override
-    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RECIPE recipe) {
+    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull NucleosynthesizingIRecipe recipe) {
         try {
-            recipe.write(buffer);
+            recipe.getItemInput().write(buffer);
+            recipe.getChemicalInput().write(buffer);
+            buffer.writeItem(recipe.getOutputRaw());
+            buffer.writeVarInt(recipe.getDuration());
         } catch (Exception e) {
             Mekanism.logger.error("Error writing nucleosynthesizing recipe to packet.", e);
             throw e;

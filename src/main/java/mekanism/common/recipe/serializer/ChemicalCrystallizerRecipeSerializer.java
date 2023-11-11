@@ -58,7 +58,9 @@ public class ChemicalCrystallizerRecipeSerializer implements RecipeSerializer<Ch
     @Override
     public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull ChemicalCrystallizerIRecipe recipe) {
         try {
-            recipe.write(buffer);
+            buffer.writeEnum(recipe.getChemicalType());
+            recipe.getInput().write(buffer);
+            buffer.writeItem(recipe.getOutputRaw());
         } catch (Exception e) {
             Mekanism.logger.error("Error writing boxed chemical to itemstack recipe to packet.", e);
             throw e;

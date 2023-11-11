@@ -8,7 +8,6 @@ import java.util.Random;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -116,14 +115,6 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
     @Override
     public boolean isIncomplete() {
         return input.hasNoMatchingInstances();
-    }
-
-    @Override
-    public void write(FriendlyByteBuf buffer) {
-        input.write(buffer);
-        buffer.writeItem(mainOutput);
-        buffer.writeItem(secondaryOutput);
-        buffer.writeDouble(secondaryChance);
     }
 
     /**
