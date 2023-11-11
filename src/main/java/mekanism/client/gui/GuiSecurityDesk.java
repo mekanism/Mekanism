@@ -140,9 +140,9 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         }
 
         if (isOwner(freq)) {
-            publicButton.active = freq.getSecurityMode() != SecurityMode.PUBLIC;
-            privateButton.active = freq.getSecurityMode() != SecurityMode.PRIVATE;
-            trustedButton.active = freq.getSecurityMode() != SecurityMode.TRUSTED;
+            publicButton.active = freq.getSecurity() != SecurityMode.PUBLIC;
+            privateButton.active = freq.getSecurity() != SecurityMode.PRIVATE;
+            trustedButton.active = freq.getSecurity() != SecurityMode.TRUSTED;
             overrideButton.active = true;
         } else {
             publicButton.active = false;
@@ -173,7 +173,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         drawCenteredText(guiGraphics, MekanismLang.TRUSTED_PLAYERS.translate(), 74, 57, subheadingTextColor());
         SecurityFrequency frequency = tile.getFreq();
         if (frequency != null) {
-            drawString(guiGraphics, MekanismLang.SECURITY.translate(frequency.getSecurityMode()), 13, 103, titleTextColor());
+            drawString(guiGraphics, MekanismLang.SECURITY.translate(frequency.getSecurity()), 13, 103, titleTextColor());
         } else {
             drawString(guiGraphics, MekanismLang.SECURITY_OFFLINE.translateColored(EnumColor.RED), 13, 103, titleTextColor());
         }

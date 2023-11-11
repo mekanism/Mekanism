@@ -2,16 +2,22 @@ package mekanism.common.lib.frequency;
 
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 import mekanism.api.NBTConstants;
+import mekanism.api.security.SecurityMode;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
+import mekanism.common.lib.security.SecurityFrequency;
+import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.util.WorldUtils;
@@ -27,8 +33,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     private final Map<FrequencyType<?>, FrequencyData> supportedFrequencies = new LinkedHashMap<>();
 
-    private final Map<FrequencyType<?>, List<? extends Frequency>> publicCache = new LinkedHashMap<>();
-    private final Map<FrequencyType<?>, List<? extends Frequency>> privateCache = new LinkedHashMap<>();
+    private final Map<SecurityMode, Map<FrequencyType<?>, List<? extends Frequency>>> frequencyCache = new EnumMap<>(SecurityMode.class);
 
     private boolean needsSave;
     private boolean needsNotify;
@@ -96,15 +101,23 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     public <FREQ extends Frequency> List<FREQ> getPublicCache(FrequencyType<FREQ> type) {
-        return getCache(publicCache, type);
+        return getCache(SecurityMode.PUBLIC, type);
     }
 
     public <FREQ extends Frequency> List<FREQ> getPrivateCache(FrequencyType<FREQ> type) {
-        return getCache(privateCache, type);
+        return getCache(SecurityMode.PRIVATE, type);
     }
 
-    private <FREQ extends Frequency> List<FREQ> getCache(Map<FrequencyType<?>, List<? extends Frequency>> cache, FrequencyType<FREQ> type) {
-        return (List<FREQ>) cache.computeIfAbsent(type, t -> new ArrayList<>());
+    public <FREQ extends Frequency> List<FREQ> getTrustedCache(FrequencyType<FREQ> type) {
+        return getCache(SecurityMode.TRUSTED, type);
+    }
+
+    private Map<FrequencyType<?>, List<? extends Frequency>> getCache(SecurityMode securityMode) {
+        return frequencyCache.computeIfAbsent(securityMode, mode -> new LinkedHashMap<>());
+    }
+
+    private <FREQ extends Frequency> List<FREQ> getCache(SecurityMode securityMode, FrequencyType<FREQ> type) {
+        return (List<FREQ>) getCache(securityMode).computeIfAbsent(type, t -> new ArrayList<>());
     }
 
     public <FREQ extends Frequency> void setFrequencyFromData(FrequencyType<FREQ> type, FrequencyIdentity data, UUID player) {
@@ -118,8 +131,21 @@ public class TileComponentFrequency implements ITileComponent {
 
     private <FREQ extends Frequency> void setFrequencyFromData(FrequencyType<FREQ> type, FrequencyIdentity data, @NotNull UUID player, FrequencyData frequencyData) {
         Frequency oldFrequency = frequencyData.selectedFrequency;
-        FrequencyManager<FREQ> manager = type.getManager(data, player);
-        FREQ freq = manager.getOrCreateFrequency(data, player);
+        FrequencyManager<FREQ> manager = null;
+        FREQ freq = null;
+        if (!Objects.equals(data.ownerUUID(), player) && SecurityUtils.get().isTrusted(data.securityMode(), data.ownerUUID(), player)) {
+            manager = type.getManager(data, data.ownerUUID());
+            freq = manager.getFrequency(data.key());
+            if (freq == null) {
+                //Frequency doesn't exist, update the data to having the player as the owner
+                data = new FrequencyIdentity(data.key(), data.securityMode(), player);
+            }
+        }
+        if (freq == null) {
+            //If the player is the owner, or is trying to create a new trusted frequency, create it for this player instead
+            manager = type.getManager(data, player);
+            freq = manager.getOrCreateFrequency(data, player);
+        }
         if (!freq.equals(oldFrequency)) {
             //If the frequency being set isn't the existing frequency, then deactivate the old one
             // and update the tile to be using the new one
@@ -131,7 +157,7 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     public void removeFrequencyFromData(FrequencyType<?> type, FrequencyIdentity data, UUID player) {
-        FrequencyManager<?> manager = type.getManager(data, player);
+        FrequencyManager<?> manager = type.getManager(data, data.ownerUUID() == null ? player : data.ownerUUID());
         if (manager != null && manager.remove(data.key(), player)) {
             setNeedsNotify(supportedFrequencies.get(type));
         }
@@ -140,7 +166,16 @@ public class TileComponentFrequency implements ITileComponent {
     private <FREQ extends Frequency> void updateFrequency(FrequencyType<FREQ> type, FrequencyData frequencyData) {
         if (frequencyData.selectedFrequency != null) {
             if (frequencyData.selectedFrequency.isValid()) {
-                if (frequencyData.selectedFrequency.isRemoved()) {
+                boolean unsetFrequency = frequencyData.selectedFrequency.isRemoved();
+                if (!unsetFrequency && frequencyData.selectedFrequency.getSecurity() == SecurityMode.TRUSTED) {
+                    //If we aren't unsetting the frequency, check if it is a trusted frequency that we no longer have access to
+                    UUID ownerUUID = tile.getOwnerUUID();
+                    if (ownerUUID != null && !frequencyData.selectedFrequency.ownerMatches(ownerUUID)) {
+                        SecurityFrequency security = FrequencyType.SECURITY.getManager(null, SecurityMode.PUBLIC).getFrequency(frequencyData.selectedFrequency.getOwner());
+                        unsetFrequency = security != null && !security.getTrustedUUIDs().contains(ownerUUID);
+                    }
+                }
+                if (unsetFrequency) {
                     FrequencyManager<FREQ> manager = type.getFrequencyManager((FREQ) frequencyData.selectedFrequency);
                     if (manager != null) {
                         manager.deactivate(frequencyData.selectedFrequency, tile);
@@ -226,7 +261,7 @@ public class TileComponentFrequency implements ITileComponent {
                             FrequencyIdentity identity = FrequencyIdentity.load(type, frequencyData);
                             if (identity != null) {
                                 UUID owner = frequencyData.getUUID(NBTConstants.OWNER_UUID);
-                                if (identity.isPublic() || owner.equals(player.getUUID())) {
+                                if (identity.securityMode() == SecurityMode.PUBLIC || owner.equals(player.getUUID())) {
                                     //If the frequency is public or the player is the owner allow setting the frequency
                                     setFrequencyFromData(type, identity, owner, entry.getValue());
                                 }
@@ -276,18 +311,29 @@ public class TileComponentFrequency implements ITileComponent {
         }
     }
 
+    private <FREQ extends Frequency> Consumer<@NotNull List<FREQ>> getSetter(SecurityMode securityMode, FrequencyType<FREQ> type) {
+        Map<FrequencyType<?>, List<? extends Frequency>> cache = getCache(securityMode);
+        return value -> cache.put(type, value);
+    }
+
+
     private <FREQ extends Frequency> void track(MekanismContainer container, FrequencyType<FREQ> type) {
+        Consumer<@NotNull List<FREQ>> publicSetter = getSetter(SecurityMode.PUBLIC, type);
+        Consumer<@NotNull List<FREQ>> privateSetter = getSetter(SecurityMode.PRIVATE, type);
+        Consumer<@NotNull List<FREQ>> trustedSetter = getSetter(SecurityMode.TRUSTED, type);
+
         //Simplify out the is remote check. Note: It is important the client and server trackers are in the same order
         if (container.isRemote()) {
-            container.track(SyncableFrequencyList.create(type, () -> getPublicCache(type), value -> publicCache.put(type, value)));
-            container.track(SyncableFrequencyList.create(type, () -> getPrivateCache(type), value -> privateCache.put(type, value)));
+            container.track(SyncableFrequencyList.create(type, () -> getPublicCache(type), publicSetter));
+            container.track(SyncableFrequencyList.create(type, () -> getPrivateCache(type), privateSetter));
+            container.track(SyncableFrequencyList.create(type, () -> getTrustedCache(type), trustedSetter));
         } else {
-            container.track(SyncableFrequencyList.create(type, () -> type.getManagerWrapper().getPublicManager().getFrequencies(), value -> publicCache.put(type, value)));
+            container.track(SyncableFrequencyList.create(type, () -> type.getManagerWrapper().getPublicManager().getFrequencies(), publicSetter));
             //Note: We take advantage of the fact that containers are one to one even on the server, and sync
             // the private frequencies of the player who opened the container rather than the private
             // frequencies of the owner of the tile
-            container.track(SyncableFrequencyList.create(type, () -> type.getManagerWrapper().getPrivateManager(container.getPlayerUUID()).getFrequencies(),
-                  value -> privateCache.put(type, value)));
+            container.track(SyncableFrequencyList.create(type, () -> type.getManagerWrapper().getPrivateManager(container.getPlayerUUID()).getFrequencies(), privateSetter));
+            container.track(SyncableFrequencyList.create(type, () -> type.getManagerWrapper().getTrustedManager(container.getPlayerUUID()).getFrequencies(), trustedSetter));
         }
     }
 

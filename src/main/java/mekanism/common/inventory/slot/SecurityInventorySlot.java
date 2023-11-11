@@ -64,7 +64,7 @@ public class SecurityInventorySlot extends BasicInventorySlot {
                 if (stackOwner.equals(ownerUUID)) {
                     ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(current);
                     if (securityObject != null) {
-                        securityObject.setSecurityMode(frequency.getSecurityMode());
+                        securityObject.setSecurityMode(frequency.getSecurity());
                     }
                 }
             }

@@ -23,6 +23,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.inventory.IHashedItem;
 import mekanism.api.inventory.qio.IQIOFrequency;
 import mekanism.api.math.MathUtils;
+import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
@@ -36,6 +37,7 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
+import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.qio.PacketBatchItemViewerSync;
 import mekanism.common.network.to_client.qio.PacketUpdateItemViewer;
@@ -440,6 +442,20 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     @Override
     public boolean tick() {
         boolean superDirty = super.tick();
+
+        if (getSecurity() == SecurityMode.TRUSTED && !playersViewingItems.isEmpty()) {
+            //TODO - 1.20.4: Only perform every so often?
+            SecurityFrequency security = FrequencyType.SECURITY.getManager(null, SecurityMode.PUBLIC).getFrequency(getOwner());
+            if (security != null) {
+                for (ServerPlayer player : new HashSet<>(playersViewingItems)) {
+                    if (!ownerMatches(player.getUUID()) && !security.getTrustedUUIDs().contains(player.getUUID()) && player.containerMenu instanceof QIOItemViewerContainer) {
+                        player.closeContainer();
+                        closeItemViewer(player);
+                    }
+                }
+            }
+        }
+
         if (!updatedItems.isEmpty() || needsUpdate) {
             //Only calculate the packet and the update map if there are actually players viewing this frequency,
             // otherwise we can just skip looking up UUIDs and counts

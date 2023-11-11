@@ -3,13 +3,15 @@ package mekanism.client.gui.element.custom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.text.APILang;
+import java.util.UUID;
+import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismButton;
+import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.scroll.GuiTextScrollList;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -42,6 +44,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
 
     private final IGuiFrequencySelector<FREQ> frequencySelector;
     private final MekanismButton publicButton;
+    private final MekanismButton trustedButton;
     private final MekanismButton privateButton;
     private final MekanismButton setButton;
     private final MekanismButton deleteButton;
@@ -51,7 +54,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
     //Used to keep track of the last list of frequencies, by taking advantage of container sync providing a new list object
     // each time things are synced currently so that we can just do an identity compare
     private List<FREQ> lastFrequencies = Collections.emptyList();
-    private boolean publicFreq = true;
+    private SecurityMode securityMode = SecurityMode.PUBLIC;
     private boolean init;
 
     public <SELECTOR extends IGuiWrapper & IGuiFrequencySelector<FREQ>> GuiFrequencySelector(SELECTOR frequencySelector, int yStart) {
@@ -60,23 +63,28 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
         this.yStart = yStart;
         boolean hasColor = frequencySelector instanceof IGuiColorFrequencySelector;
         scrollList = addChild(new GuiTextScrollList(frequencySelector, 27, yStart + 22, 122, 42));
-        publicButton = addChild(new TranslationButton(frequencySelector, 27, yStart, 60, 20, APILang.PUBLIC, () -> {
-            this.publicFreq = true;
+        publicButton = addChild(new MekanismImageButton(frequencySelector, 27, yStart, 38, 20, 38, 20, getButtonLocation("public"), () -> {
+            this.securityMode = SecurityMode.PUBLIC;
             this.scrollList.clearSelection();
             updateButtons();
-        }));
-        privateButton = addChild(new TranslationButton(frequencySelector, 89, yStart, 60, 20, APILang.PRIVATE, () -> {
-            this.publicFreq = false;
+        }, getOnHover(MekanismLang.PUBLIC_MODE)));
+        trustedButton = addChild(new MekanismImageButton(frequencySelector, 69, yStart, 38, 20, 38, 20, getButtonLocation("trusted"), () -> {
+            this.securityMode = SecurityMode.TRUSTED;
             this.scrollList.clearSelection();
             updateButtons();
-        }));
+        },getOnHover(MekanismLang.TRUSTED_MODE)));
+        privateButton = addChild(new MekanismImageButton(frequencySelector, 111, yStart, 38, 20, 38, 20, getButtonLocation("private"), () -> {
+            this.securityMode = SecurityMode.PRIVATE;
+            this.scrollList.clearSelection();
+            updateButtons();
+        }, getOnHover(MekanismLang.PRIVATE_MODE)));
         int buttonWidth = hasColor ? 50 : 60;
         setButton = addChild(new TranslationButton(frequencySelector, 27, yStart + 113, buttonWidth, 18,
               MekanismLang.BUTTON_SET, () -> {
             int selection = this.scrollList.getSelection();
             if (selection != -1) {
                 Frequency frequency = getFrequencies().get(selection);
-                setFrequency(frequency.getName());
+                setFrequency(frequency.getName(), frequency.getOwner());
             }
             //Note: We update the buttons regardless so that if something went wrong, and we don't have a selection
             // we will disable the ability to press the set button
@@ -123,7 +131,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
             // the selected frequency to the client
             FREQ frequency = frequencySelector.getFrequency();
             if (frequency != null) {
-                publicFreq = frequency.isPublic();
+                securityMode = frequency.getSecurity();
             }
         }
         //TODO: Remove the need for this to happen each tick? For starters we managed to reduce the amount
@@ -139,21 +147,17 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
             lastFrequencies = frequencies;
             List<String> text = new ArrayList<>(frequencies.size());
             for (Frequency freq : frequencies) {
-                if (publicFreq) {
-                    text.add(freq.getName() + " (" + freq.getOwnerName() + ")");
-                } else {
+                if (securityMode == SecurityMode.PRIVATE) {
                     text.add(freq.getName());
+                } else {
+                    text.add(freq.getName() + " (" + freq.getOwnerName() + ")");
                 }
             }
             scrollList.setText(text);
         }
-        if (publicFreq) {
-            publicButton.active = false;
-            privateButton.active = true;
-        } else {
-            publicButton.active = true;
-            privateButton.active = false;
-        }
+        publicButton.active = securityMode != SecurityMode.PUBLIC;
+        trustedButton.active = securityMode != SecurityMode.TRUSTED;
+        privateButton.active = securityMode != SecurityMode.PRIVATE;
         if (scrollList.hasSelection()) {
             FREQ selectedFrequency = frequencies.get(scrollList.getSelection());
             FREQ currentFrequency = frequencySelector.getFrequency();
@@ -171,18 +175,22 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
     }
 
     private List<FREQ> getFrequencies() {
-        return publicFreq ? frequencySelector.getPublicFrequencies() : frequencySelector.getPrivateFrequencies();
+        return switch (securityMode) {
+            case PUBLIC -> frequencySelector.getPublicFrequencies();
+            case PRIVATE -> frequencySelector.getPrivateFrequencies();
+            case TRUSTED -> frequencySelector.getTrustedFrequencies();
+        };
     }
 
     private void setFrequency() {
-        setFrequency(frequencyField.getText());
+        setFrequency(frequencyField.getText(), Minecraft.getInstance().player == null ? null : Minecraft.getInstance().player.getUUID());
         frequencyField.setText("");
         updateButtons();
     }
 
-    private void setFrequency(String freq) {
+    private void setFrequency(String freq, @Nullable UUID ownerUUID) {
         if (!freq.isEmpty()) {
-            frequencySelector.sendSetFrequency(new FrequencyIdentity(freq, publicFreq));
+            frequencySelector.sendSetFrequency(new FrequencyIdentity(freq, securityMode, ownerUUID));
         }
     }
 
@@ -218,6 +226,8 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
         FREQ getFrequency();
 
         List<FREQ> getPublicFrequencies();
+
+        List<FREQ> getTrustedFrequencies();
 
         List<FREQ> getPrivateFrequencies();
 
@@ -265,6 +275,11 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
         }
 
         @Override
+        default List<FREQ> getTrustedFrequencies() {
+            return getTileEntity().getTrustedCache(getFrequencyType());
+        }
+
+        @Override
         default List<FREQ> getPrivateFrequencies() {
             return getTileEntity().getPrivateCache(getFrequencyType());
         }
@@ -297,6 +312,11 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
         @Override
         default List<FREQ> getPublicFrequencies() {
             return getFrequencyContainer().getPublicCache();
+        }
+
+        @Override
+        default List<FREQ> getTrustedFrequencies() {
+            return getFrequencyContainer().getTrustedCache();
         }
 
         @Override

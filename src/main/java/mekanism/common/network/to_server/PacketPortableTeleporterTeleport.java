@@ -53,7 +53,6 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
         ServerPlayer player = sender.get();
         ItemStack stack = player.getItemInHand(currentHand);
         if (!stack.isEmpty() && stack.getItem() instanceof ItemPortableTeleporter) {
-            //Note: We make use of the player's own UUID, given they shouldn't be allowed to teleport to a private frequency of another player
             TeleporterFrequency found = FrequencyType.TELEPORTER.getFrequency(identity, player.getUUID());
             if (found == null) {
                 return;

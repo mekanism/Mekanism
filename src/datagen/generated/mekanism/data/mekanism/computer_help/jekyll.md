@@ -205,10 +205,10 @@ builtInTables:
         description: Usually the name of the frequency entered in the GUI
         javaType: java.lang.String
         type: String
-      public:
-        description: Whether the Frequency is public or not
-        javaType: boolean
-        type: boolean
+      security:
+        description: Whether the Frequency is public, trusted, or private
+        javaType: mekanism.api.security.SecurityMode
+        type: String (SecurityMode)
     humanName: Table (Frequency)
   net.minecraft.core.BlockPos:
     description: An xyz position

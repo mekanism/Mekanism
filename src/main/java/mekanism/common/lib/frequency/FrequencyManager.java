@@ -1,6 +1,7 @@
 package mekanism.common.lib.frequency;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -8,9 +9,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.NBTConstants;
+import mekanism.api.security.SecurityMode;
 import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
+import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -38,15 +41,17 @@ public class FrequencyManager<FREQ extends Frequency> {
     private UUID ownerUUID;
 
     private final FrequencyType<FREQ> frequencyType;
+    private SecurityMode securityMode = SecurityMode.PUBLIC;
 
     public FrequencyManager(FrequencyType<FREQ> frequencyType) {
         this.frequencyType = frequencyType;
         managers.add(this);
     }
 
-    public FrequencyManager(FrequencyType<FREQ> frequencyType, UUID uuid) {
+    public FrequencyManager(FrequencyType<FREQ> frequencyType, UUID uuid, SecurityMode securityMode) {
         this(frequencyType);
         ownerUUID = uuid;
+        this.securityMode = securityMode;
     }
 
     /**
@@ -121,6 +126,21 @@ public class FrequencyManager<FREQ extends Frequency> {
     }
 
     public Collection<FREQ> getFrequencies() {
+        if (securityMode == SecurityMode.TRUSTED && ownerUUID != null) {
+            List<FREQ> trustedFrequencies = new ArrayList<>(frequencies.values());
+            //TODO: Try to come up with a better way of doing this that allows us to cache this
+            FrequencyManager<SecurityFrequency> securityManager = FrequencyType.SECURITY.getManager(null, SecurityMode.PUBLIC);
+            for (FrequencyManager<FREQ> trustedManager : frequencyType.getManagerWrapper().getTrustedManagers()) {
+                if (!ownerUUID.equals(trustedManager.ownerUUID)) {
+                    //Add any frequencies that the owner has access to because of being trusted by the other player
+                    SecurityFrequency frequency = securityManager.getFrequency(trustedManager.ownerUUID);
+                    if (frequency != null && frequency.getTrustedUUIDs().contains(ownerUUID)) {
+                        trustedFrequencies.addAll(trustedManager.frequencies.values());
+                    }
+                }
+            }
+            return trustedFrequencies;
+        }
         return frequencies.values();
     }
 
@@ -131,7 +151,7 @@ public class FrequencyManager<FREQ extends Frequency> {
     public FREQ getOrCreateFrequency(FrequencyIdentity identity, @Nullable UUID ownerUUID) {
         return frequencies.computeIfAbsent(identity.key(), key -> {
             FREQ freq = frequencyType.create(key, ownerUUID);
-            freq.setPublic(identity.isPublic());
+            freq.setSecurityMode(identity.securityMode());
             markDirty();
             return freq;
         });
@@ -154,7 +174,7 @@ public class FrequencyManager<FREQ extends Frequency> {
 
     private void tickSelf() {
         boolean dirty = false;
-        for (FREQ freq : getFrequencies()) {
+        for (FREQ freq : frequencies.values()) {
             dirty |= freq.tick();
         }
         if (dirty) {
@@ -164,6 +184,9 @@ public class FrequencyManager<FREQ extends Frequency> {
 
     public String getName() {
         String owner = ownerUUID == null ? "" : ownerUUID + "_";
+        if (securityMode != SecurityMode.PUBLIC) {
+            return owner + frequencyType.getName() + securityMode.name() + "FrequencyHandler";
+        }
         return owner + frequencyType.getName() + "FrequencyHandler";
     }
 
@@ -196,7 +219,7 @@ public class FrequencyManager<FREQ extends Frequency> {
                 nbtTags.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
             }
             ListTag list = new ListTag();
-            for (FREQ freq : getFrequencies()) {
+            for (FREQ freq : frequencies.values()) {
                 CompoundTag compound = new CompoundTag();
                 freq.write(compound);
                 list.add(compound);

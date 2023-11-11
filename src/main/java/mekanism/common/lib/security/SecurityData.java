@@ -8,7 +8,7 @@ public record SecurityData(SecurityMode mode, boolean override) {
     public static final SecurityData DUMMY = new SecurityData(SecurityMode.PUBLIC, false);
 
     public SecurityData(SecurityFrequency frequency) {
-        this(frequency.getSecurityMode(), frequency.isOverridden());
+        this(frequency.getSecurity(), frequency.isOverridden());
     }
 
     public static SecurityData read(FriendlyByteBuf dataStream) {

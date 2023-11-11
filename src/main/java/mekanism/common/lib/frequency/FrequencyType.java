@@ -3,15 +3,18 @@ package mekanism.common.lib.frequency;
 import com.mojang.serialization.Codec;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import mekanism.api.NBTConstants;
+import mekanism.api.security.SecurityMode;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.security.SecurityFrequency;
+import mekanism.common.lib.security.SecurityUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.ExtraCodecs;
@@ -28,12 +31,12 @@ public class FrequencyType<FREQ extends Frequency> {
     public static final FrequencyType<TeleporterFrequency> TELEPORTER = register("Teleporter",
           (key, uuid) -> new TeleporterFrequency((String) key, uuid),
           TeleporterFrequency::new,
-          FrequencyManagerWrapper.Type.PUBLIC_PRIVATE,
+          FrequencyManagerWrapper.Type.PUBLIC_PRIVATE_TRUSTED,
           IdentitySerializer.NAME);
     public static final FrequencyType<InventoryFrequency> INVENTORY = register("Inventory",
           (key, uuid) -> new InventoryFrequency((String) key, uuid),
           InventoryFrequency::new,
-          FrequencyManagerWrapper.Type.PUBLIC_PRIVATE,
+          FrequencyManagerWrapper.Type.PUBLIC_PRIVATE_TRUSTED,
           IdentitySerializer.NAME);
     public static final FrequencyType<SecurityFrequency> SECURITY = register("Security",
           (key, uuid) -> new SecurityFrequency(uuid),
@@ -43,7 +46,7 @@ public class FrequencyType<FREQ extends Frequency> {
     public static final FrequencyType<QIOFrequency> QIO = register("QIO",
           (key, uuid) -> new QIOFrequency((String) key, uuid),
           QIOFrequency::new,
-          FrequencyManagerWrapper.Type.PUBLIC_PRIVATE,
+          FrequencyManagerWrapper.Type.PUBLIC_PRIVATE_TRUSTED,
           IdentitySerializer.NAME);
 
     public static void init() {
@@ -96,8 +99,12 @@ public class FrequencyType<FREQ extends Frequency> {
         return managerWrapper;
     }
 
-    public FrequencyManager<FREQ> getManager(@Nullable UUID owner) {
-        return owner == null ? getManagerWrapper().getPublicManager() : getManagerWrapper().getPrivateManager(owner);
+    public FrequencyManager<FREQ> getManager(@Nullable UUID owner, SecurityMode securityMode) {
+        return switch (securityMode) {
+            case PUBLIC -> getManagerWrapper().getPublicManager();
+            case PRIVATE -> getManagerWrapper().getPrivateManager(owner);
+            case TRUSTED -> getManagerWrapper().getTrustedManager(owner);
+        };
     }
 
     @Nullable
@@ -105,18 +112,31 @@ public class FrequencyType<FREQ extends Frequency> {
     public FrequencyManager<FREQ> getFrequencyManager(@Nullable FREQ freq) {
         if (freq == null) {
             return null;
-        } else if (freq.isPublic()) {
-            return getManagerWrapper().getPublicManager();
         }
-        return getManagerWrapper().getPrivateManager(freq.getOwner());
+        return switch (freq.getSecurity()) {
+            case PUBLIC -> getManagerWrapper().getPublicManager();
+            case PRIVATE -> getManagerWrapper().getPrivateManager(freq.getOwner());
+            case TRUSTED -> getManagerWrapper().getTrustedManager(freq.getOwner());
+        };
     }
 
     public FrequencyManager<FREQ> getManager(FrequencyIdentity identity, UUID owner) {
-        return identity.isPublic() ? getManagerWrapper().getPublicManager() : getManagerWrapper().getPrivateManager(owner);
+        return switch (identity.securityMode()) {
+            case PUBLIC -> getManagerWrapper().getPublicManager();
+            case PRIVATE -> getManagerWrapper().getPrivateManager(owner);
+            case TRUSTED -> getManagerWrapper().getTrustedManager(owner);
+        };
     }
 
+    @Nullable
     public FREQ getFrequency(FrequencyIdentity identity, UUID owner) {
-        return getManager(identity, owner).getFrequency(identity.key());
+        FrequencyManager<FREQ> manager;
+        if (!Objects.equals(identity.ownerUUID(), owner) && SecurityUtils.get().isTrusted(identity.securityMode(), identity.ownerUUID(), owner)) {
+            manager = getManager(identity, identity.ownerUUID());
+        } else {
+            manager = getManager(identity, owner);
+        }
+        return manager.getFrequency(identity.key());
     }
 
     public IdentitySerializer getIdentitySerializer() {

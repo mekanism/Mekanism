@@ -25,7 +25,7 @@ public abstract class Frequency implements IFrequency {
     private String ownerName;
 
     private boolean valid = true;
-    private boolean publicFreq;
+    private SecurityMode securityMode = SecurityMode.PUBLIC;
 
     private final FrequencyType<?> frequencyType;
 
@@ -81,21 +81,14 @@ public abstract class Frequency implements IFrequency {
 
     @Override
     public final SecurityMode getSecurity() {
-        //TODO: Eventually we may want to allow for protected frequencies, at which point instead of
-        // storing a boolean publicFreq we would just store the security mode
-        return isPublic() ? SecurityMode.PUBLIC : SecurityMode.PRIVATE;
+        return securityMode;
     }
 
-    public boolean isPublic() {
-        return publicFreq;
-    }
-
-    public Frequency setPublic(boolean isPublic) {
-        if (publicFreq != isPublic) {
-            publicFreq = isPublic;
+    public void setSecurityMode(SecurityMode securityMode) {
+        if (this.securityMode != securityMode) {
+            this.securityMode = securityMode;
             dirty = true;
         }
-        return this;
     }
 
     @Override
@@ -132,7 +125,7 @@ public abstract class Frequency implements IFrequency {
         if (ownerUUID != null) {
             nbtTags.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
         }
-        nbtTags.putBoolean(NBTConstants.PUBLIC_FREQUENCY, publicFreq);
+        NBTUtils.writeEnum(nbtTags, NBTConstants.SECURITY_MODE, securityMode);
     }
 
     public void write(CompoundTag nbtTags) {
@@ -142,7 +135,7 @@ public abstract class Frequency implements IFrequency {
     protected void read(CompoundTag nbtTags) {
         name = nbtTags.getString(NBTConstants.NAME);
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, this::setOwnerUUID);
-        publicFreq = nbtTags.getBoolean(NBTConstants.PUBLIC_FREQUENCY);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
     }
 
     private void setOwnerUUID(@Nullable UUID uuid) {
@@ -155,14 +148,14 @@ public abstract class Frequency implements IFrequency {
         buffer.writeUtf(name);
         buffer.writeNullable(ownerUUID, FriendlyByteBuf::writeUUID);
         buffer.writeUtf(ownerName, PacketUtils.LAST_USERNAME_LENGTH);
-        buffer.writeBoolean(publicFreq);
+        buffer.writeEnum(securityMode);
     }
 
     protected void read(FriendlyByteBuf dataStream) {
         name = dataStream.readUtf();
         ownerUUID = dataStream.readNullable(FriendlyByteBuf::readUUID);
         ownerName = dataStream.readUtf(PacketUtils.LAST_USERNAME_LENGTH);
-        publicFreq = dataStream.readBoolean();
+        securityMode = dataStream.readEnum(SecurityMode.class);
     }
 
     /**
@@ -180,17 +173,24 @@ public abstract class Frequency implements IFrequency {
         if (ownerUUID != null) {
             code = 31 * code + ownerUUID.hashCode();
         }
-        code = 31 * code + (publicFreq ? 1 : 0);
+        if (frequencyType != FrequencyType.SECURITY) {
+            code = 31 * code + (securityMode.ordinal());
+        }
         return code;
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Frequency other && publicFreq == other.publicFreq && ownerUUID != null && name.equals(other.name) && ownerUUID.equals(other.ownerUUID);
+        if (obj instanceof Frequency other) {
+            if (frequencyType == FrequencyType.SECURITY || securityMode == other.securityMode) {
+                return ownerUUID != null && name.equals(other.name) && ownerUUID.equals(other.ownerUUID);
+            }
+        }
+        return false;
     }
 
     public FrequencyIdentity getIdentity() {
-        return new FrequencyIdentity(getKey(), publicFreq);
+        return new FrequencyIdentity(getKey(), securityMode, ownerUUID);
     }
 
     public boolean areIdentitiesEqual(Frequency other) {
@@ -217,7 +217,7 @@ public abstract class Frequency implements IFrequency {
         return FrequencyType.<FREQ>load(dataStream).create(dataStream);
     }
 
-    public record FrequencyIdentity(Object key, boolean isPublic) {
+    public record FrequencyIdentity(Object key, SecurityMode securityMode, @Nullable UUID ownerUUID) {
 
         public static FrequencyIdentity load(FrequencyType<?> type, CompoundTag tag) {
             return type.getIdentitySerializer().load(tag);

@@ -12,6 +12,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IFilter;
@@ -338,7 +339,7 @@ public abstract class BaseComputerHelper {
         Frequency.FrequencyIdentity identity = frequency.getIdentity();
         Map<String, Object> wrapped = new HashMap<>(2);
         wrapped.put("key", identity.key().toString());
-        wrapped.put("public", identity.isPublic());
+        wrapped.put("security", convert(identity.securityMode()));
         return wrapped;
     }
 
@@ -533,7 +534,7 @@ public abstract class BaseComputerHelper {
 
         TableType.builder(Frequency.class, "A frequency's identity")
               .addField("key", String.class, "Usually the name of the frequency entered in the GUI")
-              .addField("public", boolean.class, "Whether the Frequency is public or not")
+              .addField("security", SecurityMode.class, "Whether the Frequency is public, trusted, or private")
               .build(types);
 
         TableType.builder(IFilter.class, "Common Filter properties. Use the API Global to make constructing these a little easier.\nFilters are a combination of these base properties, an ItemStack or Mod Id or Tag component, and a device specific type.\nThe exception to that is an Oredictionificator filter, which does not have an item/mod/tag component.")

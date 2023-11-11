@@ -34,7 +34,7 @@ public class PacketSetFrequencyColor<FREQ extends Frequency & IColorableFrequenc
               .map(Entity::getUUID)
               .ifPresent(player -> {
                   FREQ freq = type.getFrequency(data, player);
-                  if (freq != null && freq.ownerMatches(player)) {
+                  if (freq != null && freq.ownerMatches(player)) {//Only allow changing the color if the owner of the frequency
                       freq.setColor(set ? freq.getColor().getNext() : freq.getColor().getPrevious());
                   }
               });

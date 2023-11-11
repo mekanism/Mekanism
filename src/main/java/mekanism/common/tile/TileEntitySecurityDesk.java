@@ -22,6 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntitySecurityDesk extends TileEntityMekanism implements IBoundingBlock {
 
@@ -74,10 +75,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             MinecraftServer server = getWorldNN().getServer();
             if (server != null) {
                 for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                    if (player.containerMenu instanceof ISecurityContainer container && !container.canPlayerAccess(player)) {
-                        //Boot any players out of the container if they no longer have access to viewing it
-                        player.closeContainer();
-                    }
+                    closeIfNoAccess(player);
                 }
             }
         }
@@ -91,22 +89,25 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             if (removed != null && hasLevel()) {
                 MinecraftServer server = getWorldNN().getServer();
                 if (server != null) {
-                    Player player = server.getPlayerList().getPlayer(removed);
-                    if (player != null && player.containerMenu instanceof ISecurityContainer container && container.canPlayerAccess(player)) {
-                        //If the player that got removed from being trusted no longer has access to view the container they were viewing
-                        // boot them out of it
-                        player.closeContainer();
-                    }
+                    closeIfNoAccess(server.getPlayerList().getPlayer(removed));
                 }
             }
+        }
+    }
+
+    private void closeIfNoAccess(@Nullable Player player) {
+        if (player != null && player.containerMenu instanceof ISecurityContainer container && !container.canPlayerAccess(player)) {
+            //Boot any players out of the container if they no longer have access to viewing it
+            player.closeContainer();
         }
     }
 
     public void setSecurityDeskMode(SecurityMode mode) {
         SecurityFrequency frequency = getFreq();
         if (frequency != null) {
-            SecurityMode old = frequency.getSecurityMode();
+            SecurityMode old = frequency.getSecurity();
             if (old != mode) {
+                //TODO - 1.20.4: Is this fine, or do we need to make security frequencies override the identity
                 frequency.setSecurityMode(mode);
                 markForSave();
                 // send the security update to other players; this change will be visible on machine security tabs
