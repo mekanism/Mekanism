@@ -78,7 +78,7 @@ public class SerializerHelper {
     public static final Codec<ItemStack> ITEMSTACK_CODEC = RecordCodecBuilder.create(instance -> instance.group(
           BuiltInRegistries.ITEM.byNameCodec().fieldOf(JsonConstants.ITEM).forGetter(ItemStack::getItem),
           ExtraCodecs.POSITIVE_INT.optionalFieldOf(JsonConstants.COUNT, 1).forGetter(ItemStack::getCount),
-          CompoundTag.CODEC.optionalFieldOf(JsonConstants.NBT).forGetter(stack -> Optional.ofNullable(stack.getTag()))
+          TagParser.AS_CODEC.optionalFieldOf(JsonConstants.NBT).forGetter(stack -> Optional.ofNullable(stack.getTag()))
     ).apply(instance, ItemStack::new));
 
     /**
