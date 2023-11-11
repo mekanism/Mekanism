@@ -19,6 +19,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
@@ -710,7 +711,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         if (frequency != null) {
             throw new ComputerException("Unable to create public teleporter frequency with name '%s' as one already exists.", name);
         }
-        setFrequency(FrequencyType.TELEPORTER, new FrequencyIdentity(name, true), getOwnerUUID());
+        setFrequency(FrequencyType.TELEPORTER, new FrequencyIdentity(name, SecurityMode.PUBLIC, null), getOwnerUUID());
     }
 
     @ComputerMethod(methodDescription = "Requires a frequency to be selected")

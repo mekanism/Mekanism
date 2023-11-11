@@ -13,6 +13,7 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.tile.TileEntityTeleporter;
+import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -25,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import java.util.UUID;
 
 public class PacketPortableTeleporterTeleport implements IMekanismPacket {
 
@@ -44,8 +46,11 @@ public class PacketPortableTeleporterTeleport implements IMekanismPacket {
         }
         ItemStack stack = player.getItemInHand(currentHand);
         if (!stack.isEmpty() && stack.getItem() instanceof ItemPortableTeleporter) {
-            //Note: We make use of the player's own UUID, given they shouldn't be allowed to teleport to a private frequency of another player
-            TeleporterFrequency found = FrequencyType.TELEPORTER.getFrequency(identity, player.getUUID());
+            UUID uuid = player.getUUID();
+            if (SecurityUtils.get().isTrusted(identity.securityMode(), identity.ownerUUID(), uuid)) {
+                uuid = identity.ownerUUID();
+            }
+            TeleporterFrequency found = FrequencyType.TELEPORTER.getFrequency(identity, uuid);
             if (found == null) {
                 return;
             }

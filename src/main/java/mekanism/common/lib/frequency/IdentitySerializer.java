@@ -2,8 +2,10 @@ package mekanism.common.lib.frequency;
 
 import java.util.UUID;
 import mekanism.api.NBTConstants;
+import mekanism.api.security.SecurityMode;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.network.BasePacketHandler;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -12,14 +14,18 @@ public interface IdentitySerializer {
     IdentitySerializer NAME = new IdentitySerializer() {
         @Override
         public FrequencyIdentity read(FriendlyByteBuf buf) {
-            return new FrequencyIdentity(BasePacketHandler.readString(buf), buf.readBoolean());
+            return new FrequencyIdentity(BasePacketHandler.readString(buf), buf.readEnum(SecurityMode.class), BasePacketHandler.readOptional(buf, FriendlyByteBuf::readUUID));
         }
 
         @Override
         public FrequencyIdentity load(CompoundTag data) {
             String name = data.getString(NBTConstants.NAME);
             if (!name.isEmpty()) {
-                return new FrequencyIdentity(name, data.getBoolean(NBTConstants.PUBLIC_FREQUENCY));
+                if (data.hasUUID(NBTConstants.OWNER_UUID)) {
+                    return new FrequencyIdentity(name, SecurityMode.byIndexStatic(data.getInt(NBTConstants.SECURITY_MODE)), data.getUUID(NBTConstants.OWNER_UUID));
+                } else {
+                    return new FrequencyIdentity(name, SecurityMode.byIndexStatic(data.getInt(NBTConstants.SECURITY_MODE)), null);
+                }
             }
             return null;
         }
@@ -27,14 +33,18 @@ public interface IdentitySerializer {
         @Override
         public void write(FriendlyByteBuf buf, FrequencyIdentity data) {
             buf.writeUtf(data.key().toString());
-            buf.writeBoolean(data.isPublic());
+            buf.writeEnum(data.securityMode());
+            BasePacketHandler.writeOptional(buf, data.ownerUUID(), FriendlyByteBuf::writeUUID);
         }
 
         @Override
         public CompoundTag serialize(FrequencyIdentity data) {
             CompoundTag tag = new CompoundTag();
             tag.putString(NBTConstants.NAME, data.key().toString());
-            tag.putBoolean(NBTConstants.PUBLIC_FREQUENCY, data.isPublic());
+            NBTUtils.writeEnum(tag, NBTConstants.SECURITY_MODE, data.securityMode());
+            if (data.ownerUUID() != null) {
+                tag.putUUID(NBTConstants.OWNER_UUID, data.ownerUUID());
+            }
             return tag;
         }
     };
@@ -42,13 +52,13 @@ public interface IdentitySerializer {
     IdentitySerializer UUID = new IdentitySerializer() {
         @Override
         public FrequencyIdentity read(FriendlyByteBuf buf) {
-            return new FrequencyIdentity(buf.readUUID(), buf.readBoolean());
+            return new FrequencyIdentity(buf.readUUID(), buf.readEnum(SecurityMode.class), null);
         }
 
         @Override
         public FrequencyIdentity load(CompoundTag data) {
             if (data.hasUUID(NBTConstants.OWNER_UUID)) {
-                return new FrequencyIdentity(data.getUUID(NBTConstants.OWNER_UUID), data.getBoolean(NBTConstants.PUBLIC_FREQUENCY));
+                return new FrequencyIdentity(data.getUUID(NBTConstants.OWNER_UUID), SecurityMode.byIndexStatic(data.getInt(NBTConstants.PUBLIC_FREQUENCY)), null);
             }
             return null;
         }
@@ -56,14 +66,14 @@ public interface IdentitySerializer {
         @Override
         public void write(FriendlyByteBuf buf, FrequencyIdentity data) {
             buf.writeUUID((UUID) data.key());
-            buf.writeBoolean(data.isPublic());
+            buf.writeEnum(data.securityMode());
         }
 
         @Override
         public CompoundTag serialize(FrequencyIdentity data) {
             CompoundTag tag = new CompoundTag();
             tag.putUUID(NBTConstants.OWNER_UUID, (UUID) data.key());
-            tag.putBoolean(NBTConstants.PUBLIC_FREQUENCY, data.isPublic());
+            NBTUtils.writeEnum(tag, NBTConstants.SECURITY_MODE, data.securityMode());
             return tag;
         }
     };

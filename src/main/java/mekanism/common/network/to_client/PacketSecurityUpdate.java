@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import mekanism.api.security.SecurityMode;
 import mekanism.client.MekanismClient;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.security.SecurityData;
@@ -69,7 +70,7 @@ public class PacketSecurityUpdate implements IMekanismPacket {
             buffer.writeUtf(playerUsername);
             BasePacketHandler.writeOptional(buffer, securityData, (buf, data) -> data.write(buf));
         } else {
-            List<SecurityFrequency> frequencies = new ArrayList<>(FrequencyType.SECURITY.getManager(null).getFrequencies());
+            List<SecurityFrequency> frequencies = new ArrayList<>(FrequencyType.SECURITY.getManager(null, SecurityMode.PUBLIC).getFrequencies());
             //In theory no owner should be null but handle the case anyway just in case
             frequencies.removeIf(frequency -> frequency.getOwner() == null);
             buffer.writeCollection(frequencies, (buf, frequency) -> {

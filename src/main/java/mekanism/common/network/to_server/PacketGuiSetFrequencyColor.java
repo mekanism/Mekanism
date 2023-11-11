@@ -5,9 +5,11 @@ import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.util.SecurityUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
+import java.util.UUID;
 
 public class PacketGuiSetFrequencyColor<FREQ extends Frequency & IColorableFrequency> implements IMekanismPacket {
 
@@ -29,8 +31,12 @@ public class PacketGuiSetFrequencyColor<FREQ extends Frequency & IColorableFrequ
     public void handle(NetworkEvent.Context context) {
         ServerPlayer player = context.getSender();
         if (player != null) {
-            FREQ freq = frequencyType.getFrequency(identity, player.getUUID());
-            if (freq != null && freq.ownerMatches(player.getUUID())) {
+            UUID uuid = player.getUUID();
+            if (SecurityUtils.get().isTrusted(identity.securityMode(), identity.ownerUUID(), uuid)) {
+                uuid = identity.ownerUUID();
+            }
+            FREQ freq = frequencyType.getFrequency(identity, uuid);
+            if (freq != null && freq.ownerMatches(uuid)) {
                 freq.setColor(next ? freq.getColor().getNext() : freq.getColor().getPrevious());
             }
         }

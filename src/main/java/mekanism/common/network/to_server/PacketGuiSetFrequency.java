@@ -8,6 +8,7 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -16,6 +17,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
+import java.util.UUID;
 
 public class PacketGuiSetFrequency<FREQ extends Frequency> implements IMekanismPacket {
 
@@ -47,11 +49,15 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> implements IMekanismP
         if (player == null) {
             return;
         }
+        UUID uuid = player.getUUID();
+        if (SecurityUtils.get().isTrusted(data.securityMode(), data.ownerUUID(), uuid)) {
+            uuid = data.ownerUUID();
+        }
         if (updateType.isTile()) {
             BlockEntity tile = WorldUtils.getTileEntity(player.level(), tilePosition);
             if (tile instanceof IFrequencyHandler frequencyHandler && ISecurityUtils.INSTANCE.canAccess(player, tile)) {
                 if (updateType == FrequencyUpdate.SET_TILE) {
-                    frequencyHandler.setFrequency(type, data, player.getUUID());
+                    frequencyHandler.setFrequency(type, data, uuid);
                 } else if (updateType == FrequencyUpdate.REMOVE_TILE) {
                     frequencyHandler.removeFrequency(type, data, player.getUUID());
                 }
@@ -59,12 +65,12 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> implements IMekanismP
         } else {
             ItemStack stack = player.getItemInHand(currentHand);
             if (ISecurityUtils.INSTANCE.canAccess(player, stack) && stack.getItem() instanceof IFrequencyItem item) {
-                FrequencyManager<FREQ> manager = type.getManager(data, player.getUUID());
+                FrequencyManager<FREQ> manager = type.getManager(data, uuid);
                 if (updateType == FrequencyUpdate.SET_ITEM) {
                     //Note: We don't bother validating if the frequency is public or not here, as if it isn't then
                     // a new private frequency will just be created for the player who sent a packet they shouldn't
                     // have been able to send due to not knowing what private frequencies exist for other players
-                    item.setFrequency(stack, manager.getOrCreateFrequency(data, player.getUUID()));
+                    item.setFrequency(stack, manager.getOrCreateFrequency(data, uuid));
                 } else if (updateType == FrequencyUpdate.REMOVE_ITEM) {
                     if (manager.remove(data.key(), player.getUUID())) {
                         FrequencyIdentity current = item.getFrequencyIdentity(stack);

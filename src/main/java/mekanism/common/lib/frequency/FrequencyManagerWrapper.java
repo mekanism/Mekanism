@@ -1,8 +1,10 @@
 package mekanism.common.lib.frequency;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
+import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
 
 public class FrequencyManagerWrapper<FREQ extends Frequency> {
@@ -11,6 +13,7 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
     private final FrequencyType<FREQ> frequencyType;
     private FrequencyManager<FREQ> publicManager;
     private Map<UUID, FrequencyManager<FREQ>> privateManagers;
+    private Map<UUID, FrequencyManager<FREQ>> trustedManagers;
 
     private FrequencyManagerWrapper(Type type, FrequencyType<FREQ> frequencyType) {
         this.type = type;
@@ -21,6 +24,9 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
         }
         if (type.supportsPrivate()) {
             privateManagers = new Object2ObjectOpenHashMap<>();
+        }
+        if (type.supportsTrusted()) {
+            trustedManagers = new Object2ObjectOpenHashMap<>();
         }
     }
 
@@ -47,29 +53,56 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
         }
 
         return privateManagers.computeIfAbsent(ownerUUID, owner -> {
-            FrequencyManager<FREQ> manager = new FrequencyManager<>(frequencyType, owner);
+            FrequencyManager<FREQ> manager = new FrequencyManager<>(frequencyType, owner, SecurityMode.PRIVATE);
             manager.createOrLoad();
             return manager;
         });
+    }
+
+    public FrequencyManager<FREQ> getTrustedManager(UUID ownerUUID) {
+        if (!type.supportsTrusted()) {
+            Mekanism.logger.error("Attempted to access trusted frequency manager of type {}. This shouldn't happen!", frequencyType.getName());
+            return null;
+        } else if (ownerUUID == null) {
+            Mekanism.logger.error("Attempted to access trusted frequency manager of type {} with no owner. This shouldn't happen!", frequencyType.getName());
+            return null;
+        }
+
+        return trustedManagers.computeIfAbsent(ownerUUID, owner -> {
+            FrequencyManager<FREQ> manager = new FrequencyManager<>(frequencyType, owner, SecurityMode.TRUSTED);
+            manager.createOrLoad();
+            return manager;
+        });
+    }
+
+    public Collection<FrequencyManager<FREQ>> getTrustedManagers() {
+        return trustedManagers.values();
     }
 
     public void clear() {
         if (privateManagers != null) {
             privateManagers.clear();
         }
+        if (trustedManagers != null) {
+            trustedManagers.clear();
+        }
     }
 
     public enum Type {
         PUBLIC_ONLY,
         PRIVATE_ONLY,
-        PUBLIC_PRIVATE;
+        PUBLIC_PRIVATE_TRUSTED;
 
         boolean supportsPublic() {
-            return this == PUBLIC_ONLY || this == PUBLIC_PRIVATE;
+            return this == PUBLIC_ONLY || this == PUBLIC_PRIVATE_TRUSTED;
+        }
+
+        boolean supportsTrusted() {
+            return this == PUBLIC_PRIVATE_TRUSTED;
         }
 
         boolean supportsPrivate() {
-            return this == PRIVATE_ONLY || this == PUBLIC_PRIVATE;
+            return this == PRIVATE_ONLY || this == PUBLIC_PRIVATE_TRUSTED;
         }
     }
 }

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
@@ -135,7 +136,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         if (frequency != null) {
             throw new ComputerException("Unable to create public QIO frequency with name '%s' as one already exists.", name);
         }
-        setFrequency(FrequencyType.QIO, new FrequencyIdentity(name, true), getOwnerUUID());
+        setFrequency(FrequencyType.QIO, new FrequencyIdentity(name, SecurityMode.PUBLIC, null), getOwnerUUID());
     }
 
     @ComputerMethod(methodDescription = "Requires a frequency to be selected")

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import mekanism.api.NBTConstants;
+import mekanism.api.security.SecurityMode;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
@@ -27,6 +28,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     private final Map<FrequencyType<?>, List<? extends Frequency>> publicCache = new LinkedHashMap<>();
     private final Map<FrequencyType<?>, List<? extends Frequency>> privateCache = new LinkedHashMap<>();
+    private final Map<FrequencyType<?>, List<? extends Frequency>> trustedCache = new LinkedHashMap<>();
 
     private boolean needsSave;
     private boolean needsNotify;
@@ -92,6 +94,10 @@ public class TileComponentFrequency implements ITileComponent {
 
     public <FREQ extends Frequency> List<FREQ> getPrivateCache(FrequencyType<FREQ> type) {
         return getCache(privateCache, type);
+    }
+
+    public <FREQ extends Frequency> List<FREQ> getTrustedCache(FrequencyType<FREQ> type) {
+        return getCache(trustedCache, type);
     }
 
     private <FREQ extends Frequency> List<FREQ> getCache(Map<FrequencyType<?>, List<? extends Frequency>> cache, FrequencyType<FREQ> type) {
@@ -215,7 +221,7 @@ public class TileComponentFrequency implements ITileComponent {
                             FrequencyIdentity identity = FrequencyIdentity.load(type, frequencyData);
                             if (identity != null) {
                                 UUID owner = frequencyData.getUUID(NBTConstants.OWNER_UUID);
-                                if (identity.isPublic() || owner.equals(player.getUUID())) {
+                                if (identity.securityMode() == SecurityMode.PUBLIC || owner.equals(player.getUUID())) {
                                     //If the frequency is public or the player is the owner allow setting the frequency
                                     setFrequencyFromData(type, identity, owner, entry.getValue());
                                 }
@@ -269,6 +275,7 @@ public class TileComponentFrequency implements ITileComponent {
         if (container.isRemote()) {
             container.track(SyncableFrequencyList.create(() -> getPublicCache(type), value -> publicCache.put(type, value)));
             container.track(SyncableFrequencyList.create(() -> getPrivateCache(type), value -> privateCache.put(type, value)));
+            container.track(SyncableFrequencyList.create(() -> getTrustedCache(type), value -> trustedCache.put(type, value)));
         } else {
             container.track(SyncableFrequencyList.create(() -> type.getManagerWrapper().getPublicManager().getFrequencies(), value -> publicCache.put(type, value)));
             //Note: We take advantage of the fact that containers are one to one even on the server, and sync
@@ -276,6 +283,8 @@ public class TileComponentFrequency implements ITileComponent {
             // frequencies of the owner of the tile
             container.track(SyncableFrequencyList.create(() -> type.getManagerWrapper().getPrivateManager(container.getPlayerUUID()).getFrequencies(),
                   value -> privateCache.put(type, value)));
+            container.track(SyncableFrequencyList.create(() -> type.getManagerWrapper().getTrustedManager(container.getPlayerUUID()).getFrequencies(),
+                    value -> trustedCache.put(type, value)));
         }
     }
 

@@ -11,6 +11,7 @@ import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IFilter;
@@ -317,7 +318,7 @@ public abstract class BaseComputerHelper {
         Frequency.FrequencyIdentity identity = frequency.getIdentity();
         Map<String, Object> wrapped = new HashMap<>(2);
         wrapped.put("key", identity.key().toString());
-        wrapped.put("public", identity.isPublic());
+        wrapped.put("public", identity.securityMode() == SecurityMode.PUBLIC);
         return wrapped;
     }
 
