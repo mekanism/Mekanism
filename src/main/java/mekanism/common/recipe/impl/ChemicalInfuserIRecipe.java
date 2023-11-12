@@ -23,11 +23,6 @@ public class ChemicalInfuserIRecipe extends BasicChemicalInfuserRecipe implement
     }
 
     @Override
-    public String getGroup() {
-        return MekanismBlocks.CHEMICAL_INFUSER.getName();
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.CHEMICAL_INFUSER.getItemStack();
     }

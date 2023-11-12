@@ -34,11 +34,6 @@ public class PressurizedReactionIRecipe extends BasicPressurizedReactionRecipe {
     }
 
     @Override
-    public String getGroup() {
-        return MekanismBlocks.PRESSURIZED_REACTION_CHAMBER.getName();
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.PRESSURIZED_REACTION_CHAMBER.getItemStack();
     }

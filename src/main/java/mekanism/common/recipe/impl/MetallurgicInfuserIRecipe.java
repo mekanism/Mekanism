@@ -22,11 +22,6 @@ public class MetallurgicInfuserIRecipe extends BasicMetallurgicInfuserRecipe imp
     }
 
     @Override
-    public String getGroup() {
-        return MekanismBlocks.METALLURGIC_INFUSER.getName();
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.METALLURGIC_INFUSER.getItemStack();
     }

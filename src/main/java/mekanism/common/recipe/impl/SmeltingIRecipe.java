@@ -23,7 +23,7 @@ public class SmeltingIRecipe extends BasicItemStackToItemStackRecipe implements 
 
     @Override
     public String getGroup() {
-        return MekanismBlocks.ENERGIZED_SMELTER.getName();
+        return "energized_smelter";
     }
 
     @Override

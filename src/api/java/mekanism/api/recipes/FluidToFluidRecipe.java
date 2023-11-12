@@ -57,4 +57,9 @@ public abstract class FluidToFluidRecipe extends MekanismRecipe implements Predi
     public final RecipeType<FluidToFluidRecipe> getType() {
         return MekanismRecipeTypes.TYPE_EVAPORATING.get();
     }
+
+    @Override
+    public String getGroup() {
+        return "thermal_evaporation_controller";
+    }
 }

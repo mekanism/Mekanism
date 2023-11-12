@@ -23,11 +23,6 @@ public class ElectrolysisIRecipe extends BasicElectrolysisRecipe {
     }
 
     @Override
-    public String getGroup() {
-        return MekanismBlocks.ELECTROLYTIC_SEPARATOR.getName();
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.ELECTROLYTIC_SEPARATOR.getItemStack();
     }

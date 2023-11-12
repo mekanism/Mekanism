@@ -26,11 +26,6 @@ public class FluidToFluidIRecipe extends BasicFluidToFluidRecipe {
     }
 
     @Override
-    public String getGroup() {
-        return MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER.getName();
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER.getItemStack();
     }

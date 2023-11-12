@@ -49,4 +49,9 @@ public abstract class MetallurgicInfuserRecipe extends ItemStackChemicalToItemSt
     public final RecipeType<MetallurgicInfuserRecipe> getType() {
         return MekanismRecipeTypes.TYPE_METALLURGIC_INFUSING.get();
     }
+
+    @Override
+    public String getGroup() {
+        return "metallurgic_infuser";
+    }
 }

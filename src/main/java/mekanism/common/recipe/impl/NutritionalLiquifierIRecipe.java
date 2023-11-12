@@ -33,7 +33,7 @@ public class NutritionalLiquifierIRecipe extends BasicItemStackToFluidRecipe {
 
     @Override
     public String getGroup() {
-        return MekanismBlocks.NUTRITIONAL_LIQUIFIER.getName();
+        return "nutritional_liquifier";
     }
 
     @Override

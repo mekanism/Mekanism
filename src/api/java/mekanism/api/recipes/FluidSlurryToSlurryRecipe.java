@@ -43,4 +43,9 @@ public abstract class FluidSlurryToSlurryRecipe extends FluidChemicalToChemicalR
     public final RecipeType<FluidSlurryToSlurryRecipe> getType() {
         return MekanismRecipeTypes.TYPE_WASHING.get();
     }
+
+    @Override
+    public String getGroup() {
+        return "chemical_washer";
+    }
 }

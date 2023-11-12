@@ -123,4 +123,9 @@ public abstract class RotaryRecipe extends MekanismRecipe {
     public final RecipeType<RotaryRecipe> getType() {
         return MekanismRecipeTypes.TYPE_ROTARY.get();
     }
+
+    @Override
+    public String getGroup() {
+        return "rotary_condensentrator";
+    }
 }

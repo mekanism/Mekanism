@@ -24,11 +24,6 @@ public class ChemicalDissolutionIRecipe extends BasicChemicalDissolutionRecipe {
     }
 
     @Override
-    public String getGroup() {
-        return MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER.getName();
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER.getItemStack();
     }

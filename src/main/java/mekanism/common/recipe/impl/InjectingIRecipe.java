@@ -24,7 +24,7 @@ public class InjectingIRecipe extends BasicItemStackGasToItemStackRecipe impleme
 
     @Override
     public String getGroup() {
-        return MekanismBlocks.CHEMICAL_INJECTION_CHAMBER.getName();
+        return "chemical_injection_chamber";
     }
 
     @Override

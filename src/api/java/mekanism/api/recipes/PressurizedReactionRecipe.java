@@ -92,6 +92,11 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
         return MekanismRecipeTypes.TYPE_REACTION.get();
     }
 
+    @Override
+    public String getGroup() {
+        return "pressurized_reaction_chamber";
+    }
+
     /**
      * @apiNote Both item and gas may be present or one may be empty.
      */

@@ -22,11 +22,6 @@ public class PaintingIRecipe extends BasicPaintingRecipe implements ItemStackOut
     }
 
     @Override
-    public String getGroup() {
-        return MekanismBlocks.PAINTING_MACHINE.getName();
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.PAINTING_MACHINE.getItemStack();
     }

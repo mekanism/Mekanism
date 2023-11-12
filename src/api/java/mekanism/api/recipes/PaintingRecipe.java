@@ -49,4 +49,9 @@ public abstract class PaintingRecipe extends ItemStackChemicalToItemStackRecipe<
     public final RecipeType<PaintingRecipe> getType() {
         return MekanismRecipeTypes.TYPE_PAINTING.get();
     }
+
+    @Override
+    public String getGroup() {
+        return "painting_machine";
+    }
 }

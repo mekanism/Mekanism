@@ -39,4 +39,9 @@ public abstract class PigmentMixingRecipe extends ChemicalChemicalToChemicalReci
     public final RecipeType<PigmentMixingRecipe> getType() {
         return MekanismRecipeTypes.TYPE_PIGMENT_MIXING.get();
     }
+
+    @Override
+    public String getGroup() {
+        return "pigment_mixer";
+    }
 }

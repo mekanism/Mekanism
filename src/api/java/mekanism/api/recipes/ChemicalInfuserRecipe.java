@@ -39,4 +39,9 @@ public abstract class ChemicalInfuserRecipe extends ChemicalChemicalToChemicalRe
     public final RecipeType<ChemicalInfuserRecipe> getType() {
         return MekanismRecipeTypes.TYPE_CHEMICAL_INFUSING.get();
     }
+
+    @Override
+    public String getGroup() {
+        return "chemical_infuser";
+    }
 }

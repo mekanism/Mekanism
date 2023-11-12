@@ -33,7 +33,7 @@ public class CentrifugingIRecipe extends BasicGasToGasRecipe implements Chemical
 
     @Override
     public String getGroup() {
-        return MekanismBlocks.ISOTOPIC_CENTRIFUGE.getName();
+        return "isotopic_centrifuge";
     }
 
     @Override

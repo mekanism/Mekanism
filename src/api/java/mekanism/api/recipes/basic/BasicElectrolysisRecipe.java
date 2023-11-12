@@ -68,4 +68,8 @@ public abstract class BasicElectrolysisRecipe extends ElectrolysisRecipe {
         return energyMultiplier;
     }
 
+    @Override
+    public String getGroup() {
+        return "electrolytic_separator";
+    }
 }

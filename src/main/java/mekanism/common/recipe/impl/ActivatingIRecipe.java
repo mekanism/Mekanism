@@ -33,7 +33,7 @@ public class ActivatingIRecipe extends BasicGasToGasRecipe implements ChemicalOu
 
     @Override
     public String getGroup() {
-        return MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR.getName();
+        return "solar_neutron_activator";
     }
 
     @Override

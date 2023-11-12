@@ -23,7 +23,7 @@ public class EnrichingIRecipe extends BasicItemStackToItemStackRecipe implements
 
     @Override
     public String getGroup() {
-        return MekanismBlocks.ENRICHMENT_CHAMBER.getName();
+        return "enrichment_chamber";
     }
 
     @Override

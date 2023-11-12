@@ -21,11 +21,6 @@ public class CombinerIRecipe extends BasicCombinerRecipe {
     }
 
     @Override
-    public String getGroup() {
-        return MekanismBlocks.COMBINER.getName();
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.COMBINER.getItemStack();
     }

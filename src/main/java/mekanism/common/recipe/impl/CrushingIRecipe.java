@@ -23,7 +23,7 @@ public class CrushingIRecipe extends BasicItemStackToItemStackRecipe implements 
 
     @Override
     public String getGroup() {
-        return MekanismBlocks.CRUSHER.getName();
+        return "crusher";
     }
 
     @Override

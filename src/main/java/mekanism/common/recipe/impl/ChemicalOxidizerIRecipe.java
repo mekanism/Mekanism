@@ -25,7 +25,7 @@ public class ChemicalOxidizerIRecipe extends BasicItemStackToGasRecipe implement
 
     @Override
     public String getGroup() {
-        return MekanismBlocks.CHEMICAL_OXIDIZER.getName();
+        return "chemical_oxidizer";
     }
 
     @Override

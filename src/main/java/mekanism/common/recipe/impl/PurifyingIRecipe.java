@@ -27,7 +27,7 @@ public class PurifyingIRecipe extends BasicItemStackGasToItemStackRecipe impleme
 
     @Override
     public String getGroup() {
-        return MekanismBlocks.PURIFICATION_CHAMBER.getName();
+        return "purification_chamber";
     }
 
     @Override

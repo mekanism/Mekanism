@@ -22,11 +22,6 @@ public class ChemicalCrystallizerIRecipe extends BasicChemicalCrystallizerRecipe
     }
 
     @Override
-    public String getGroup() {
-        return MekanismBlocks.CHEMICAL_CRYSTALLIZER.getName();
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.CHEMICAL_CRYSTALLIZER.getItemStack();
     }

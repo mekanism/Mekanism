@@ -75,6 +75,11 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
         return MekanismRecipeTypes.TYPE_SAWING.get();
     }
 
+    @Override
+    public String getGroup() {
+        return "precision_sawmill";
+    }
+
     /**
      * Represents a precalculated chance based output. This output keeps track of what random value was calculated for use in comparing if the secondary output should be
      * created.

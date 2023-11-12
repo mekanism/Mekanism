@@ -90,4 +90,9 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
     public final RecipeType<ChemicalCrystallizerRecipe> getType() {
         return MekanismRecipeTypes.TYPE_CRYSTALLIZING.get();
     }
+
+    @Override
+    public String getGroup() {
+        return "chemical_crystallizer";
+    }
 }

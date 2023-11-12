@@ -24,7 +24,7 @@ public class CompressingIRecipe extends BasicItemStackGasToItemStackRecipe imple
 
     @Override
     public String getGroup() {
-        return MekanismBlocks.OSMIUM_COMPRESSOR.getName();
+        return "osmium_compressor";
     }
 
     @Override

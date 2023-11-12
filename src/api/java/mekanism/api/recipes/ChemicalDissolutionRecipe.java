@@ -59,4 +59,9 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implement
     public final RecipeType<ChemicalDissolutionRecipe> getType() {
         return MekanismRecipeTypes.TYPE_DISSOLUTION.get();
     }
+
+    @Override
+    public String getGroup() {
+        return "chemical_dissolution_chamber";
+    }
 }

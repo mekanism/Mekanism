@@ -23,11 +23,6 @@ public class PigmentExtractingIRecipe extends BasicItemStackToPigmentRecipe impl
     }
 
     @Override
-    public String getGroup() {
-        return MekanismBlocks.PIGMENT_EXTRACTOR.getName();
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.PIGMENT_EXTRACTOR.getItemStack();
     }

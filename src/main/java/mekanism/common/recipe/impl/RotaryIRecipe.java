@@ -33,11 +33,6 @@ public class RotaryIRecipe extends BasicRotaryRecipe {
     }
 
     @Override
-    public String getGroup() {
-        return MekanismBlocks.ROTARY_CONDENSENTRATOR.getName();
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.ROTARY_CONDENSENTRATOR.getItemStack();
     }

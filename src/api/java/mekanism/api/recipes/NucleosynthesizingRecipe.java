@@ -50,4 +50,9 @@ public abstract class NucleosynthesizingRecipe extends ItemStackGasToItemStackRe
 
     @Override
     public abstract List<@NotNull ItemStack> getOutputDefinition();
+
+    @Override
+    public String getGroup() {
+        return "antiprotonic_nucleosynthesizer";
+    }
 }

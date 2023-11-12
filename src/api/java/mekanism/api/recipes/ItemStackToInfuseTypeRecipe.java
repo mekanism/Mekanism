@@ -38,4 +38,9 @@ public abstract class ItemStackToInfuseTypeRecipe extends ItemStackToChemicalRec
     public final RecipeType<ItemStackToInfuseTypeRecipe> getType() {
         return MekanismRecipeTypes.TYPE_INFUSION_CONVERSION.get();
     }
+
+    @Override
+    public String getGroup() {
+        return "infusion_conversion";
+    }
 }

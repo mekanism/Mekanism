@@ -23,11 +23,6 @@ public class InfusionConversionIRecipe extends BasicItemStackToInfuseTypeRecipe 
     }
 
     @Override
-    public String getGroup() {
-        return "infusion_conversion";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.METALLURGIC_INFUSER.getItemStack();
     }

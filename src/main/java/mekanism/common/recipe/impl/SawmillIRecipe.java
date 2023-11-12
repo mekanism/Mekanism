@@ -22,11 +22,6 @@ public class SawmillIRecipe extends BasicSawmillRecipe {
     }
 
     @Override
-    public String getGroup() {
-        return MekanismBlocks.PRECISION_SAWMILL.getName();
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.PRECISION_SAWMILL.getItemStack();
     }

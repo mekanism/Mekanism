@@ -23,11 +23,6 @@ public class FluidSlurryToSlurryIRecipe extends BasicFluidSlurryToSlurryRecipe {
     }
 
     @Override
-    public String getGroup() {
-        return MekanismBlocks.CHEMICAL_WASHER.getName();
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return MekanismBlocks.CHEMICAL_WASHER.getItemStack();
     }

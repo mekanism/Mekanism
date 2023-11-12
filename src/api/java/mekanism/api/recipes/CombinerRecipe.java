@@ -70,4 +70,9 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
     public final RecipeType<CombinerRecipe> getType() {
         return MekanismRecipeTypes.TYPE_COMBINING.get();
     }
+
+    @Override
+    public String getGroup() {
+        return "combiner";
+    }
 }

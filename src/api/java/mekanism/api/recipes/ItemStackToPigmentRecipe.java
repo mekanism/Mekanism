@@ -37,4 +37,9 @@ public abstract class ItemStackToPigmentRecipe extends ItemStackToChemicalRecipe
     public final RecipeType<ItemStackToPigmentRecipe> getType() {
         return MekanismRecipeTypes.TYPE_PIGMENT_EXTRACTING.get();
     }
+
+    @Override
+    public String getGroup() {
+        return "pigment_extractor";
+    }
 }
