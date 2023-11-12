@@ -1,16 +1,10 @@
 package mekanism.api.recipes;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Predicate;
-import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -22,26 +16,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @apiNote Chemical Crystallizers can process this recipe type.
  */
-@NothingNullByDefault
 public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implements Predicate<@NotNull BoxedChemicalStack> {
-
-    protected final ChemicalType chemicalType;
-    protected final ChemicalStackIngredient<?, ?> input;
-    protected final ItemStack output;
-
-    /**
-     * @param input  Input.
-     * @param output Output.
-     */
-    public ChemicalCrystallizerRecipe(ChemicalStackIngredient<?, ?> input, ItemStack output) {
-        this.input = Objects.requireNonNull(input, "Input cannot be null.");
-        this.chemicalType = ChemicalType.getTypeFor(input);
-        Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("Output cannot be empty.");
-        }
-        this.output = output.copy();
-    }
 
     /**
      * Gets the output based on the given input.
@@ -55,29 +30,17 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
-    public ItemStack getOutput(BoxedChemicalStack input) {
-        return output.copy();
-    }
-
-    @NotNull
-    @Override
-    public ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
-        return output.copy();
-    }
+    public abstract ItemStack getOutput(BoxedChemicalStack input);
 
     /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public List<ItemStack> getOutputDefinition() {
-        return Collections.singletonList(output);
-    }
+    public abstract List<ItemStack> getOutputDefinition();
 
     @Override
-    public boolean test(BoxedChemicalStack chemicalStack) {
-        return chemicalType == chemicalStack.getChemicalType() && testInternal(chemicalStack.getChemicalStack());
-    }
+    public abstract boolean test(BoxedChemicalStack chemicalStack);
 
     /**
      * Helper to test this recipe against a chemical stack without having to first box it up.
@@ -88,9 +51,7 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
      *
      * @apiNote See {@link #test(BoxedChemicalStack)}.
      */
-    public boolean test(ChemicalStack<?> stack) {
-        return chemicalType == ChemicalType.getTypeFor(stack) && testInternal(stack);
-    }
+    public abstract boolean test(ChemicalStack<?> stack);
 
     /**
      * Helper to test this recipe against a chemical stack's type without having to first box it up.
@@ -101,9 +62,7 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
      *
      * @apiNote See {@link #testType(BoxedChemicalStack)}.
      */
-    public boolean testType(ChemicalStack<?> stack) {
-        return chemicalType == ChemicalType.getTypeFor(stack) && testTypeInternal(stack);
-    }
+    public abstract boolean testType(ChemicalStack<?> stack);
 
     /**
      * Helper to test this recipe against a chemical stack's type without having to first box it up.
@@ -112,30 +71,16 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
      *
      * @return {@code true} if the stack's type matches the input.
      */
-    public boolean testType(BoxedChemicalStack stack) {
-        return chemicalType == stack.getChemicalType() && testTypeInternal(stack.getChemicalStack());
-    }
-
-    @SuppressWarnings("unchecked")
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean testInternal(STACK stack) {
-        return ((ChemicalStackIngredient<CHEMICAL, STACK>) input).test(stack);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean testTypeInternal(STACK stack) {
-        return ((ChemicalStackIngredient<CHEMICAL, STACK>) input).testType(stack);
-    }
+    public abstract boolean testType(BoxedChemicalStack stack);
 
     /**
      * Gets the input ingredient.
      */
-    public ChemicalStackIngredient<?, ?> getInput() {
-        return input;
-    }
+    public abstract ChemicalStackIngredient<?, ?> getInput();
 
     @Override
     public boolean isIncomplete() {
-        return input.hasNoMatchingInstances();
+        return getInput().hasNoMatchingInstances();
     }
 
 }

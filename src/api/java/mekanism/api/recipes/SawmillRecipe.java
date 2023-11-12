@@ -1,9 +1,6 @@
 package mekanism.api.recipes;
 
-
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -26,43 +23,8 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
 
     protected static final Random RANDOM = new Random();
 
-    protected final ItemStackIngredient input;
-    protected final ItemStack mainOutput;
-    protected final ItemStack secondaryOutput;
-    protected final double secondaryChance;
-
-    /**
-     * @param input           Input.
-     * @param mainOutput      Main Output.
-     * @param secondaryOutput Secondary Output (chance based).
-     * @param secondaryChance Chance of the secondary output being produced. This must be at least zero and at most one.
-     *
-     * @apiNote At least one output must not be empty.
-     */
-    public SawmillRecipe(ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance) {
-        this.input = Objects.requireNonNull(input, "Input cannot be null.");
-        Objects.requireNonNull(mainOutput, "Main output cannot be null.");
-        Objects.requireNonNull(secondaryOutput, "Secondary output cannot be null.");
-        if (mainOutput.isEmpty() && secondaryOutput.isEmpty()) {
-            throw new IllegalArgumentException("At least one output must not be empty.");
-        } else if (secondaryChance < 0 || secondaryChance > 1) {
-            throw new IllegalArgumentException("Secondary output chance must be at least zero and at most one.");
-        } else if (mainOutput.isEmpty()) {
-            if (secondaryChance == 0 || secondaryChance == 1) {
-                throw new IllegalArgumentException("Secondary output must have a chance greater than zero and less than one.");
-            }
-        } else if (secondaryOutput.isEmpty() && secondaryChance != 0) {
-            throw new IllegalArgumentException("If there is no secondary output, the chance of getting the secondary output should be zero.");
-        }
-        this.mainOutput = mainOutput.copy();
-        this.secondaryOutput = secondaryOutput.copy();
-        this.secondaryChance = secondaryChance;
-    }
-
     @Override
-    public boolean test(ItemStack stack) {
-        return this.input.test(stack);
-    }
+    public abstract boolean test(ItemStack stack);
 
     /**
      * Gets a new chance output based on the given input.
@@ -76,97 +38,64 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new")
-    public ChanceOutput getOutput(ItemStack input) {
-        return new ChanceOutput(secondaryChance > 0 ? RANDOM.nextDouble() : 0);
-    }
+    public abstract ChanceOutput getOutput(ItemStack input);
 
     /**
      * For JEI, gets the main output representations to display.
      *
      * @return Representation of the main output, <strong>MUST NOT</strong> be modified.
      */
-    public List<ItemStack> getMainOutputDefinition() {
-        return mainOutput.isEmpty() ? Collections.emptyList() : Collections.singletonList(mainOutput);
-    }
+    public abstract List<ItemStack> getMainOutputDefinition();
 
     /**
      * For JEI, gets the secondary output representations to display.
      *
      * @return Representation of the secondary output, <strong>MUST NOT</strong> be modified.
      */
-    public List<ItemStack> getSecondaryOutputDefinition() {
-        return secondaryOutput.isEmpty() ? Collections.emptyList() : Collections.singletonList(secondaryOutput);
-    }
+    public abstract List<ItemStack> getSecondaryOutputDefinition();
 
     /**
      * Gets the chance (between 0 and 1) of the secondary output being produced.
      */
-    public double getSecondaryChance() {
-        return secondaryChance;
-    }
+    public abstract double getSecondaryChance();
 
     /**
      * Gets the input ingredient.
      */
-    public ItemStackIngredient getInput() {
-        return input;
-    }
+    public abstract ItemStackIngredient getInput();
 
     @Override
     public boolean isIncomplete() {
-        return input.hasNoMatchingInstances();
+        return getInput().hasNoMatchingInstances();
     }
 
     /**
      * Represents a precalculated chance based output. This output keeps track of what random value was calculated for use in comparing if the secondary output should be
      * created.
      */
-    public class ChanceOutput {
-
-        protected final double rand;
-
-        protected ChanceOutput(double rand) {
-            this.rand = rand;
-        }
+    public interface ChanceOutput {
 
         /**
          * Gets a copy of the main output of this recipe. This may be empty if there is only a secondary chance based output.
          */
-        public ItemStack getMainOutput() {
-            return mainOutput.copy();
-        }
+        ItemStack getMainOutput();
 
         /**
          * Gets a copy of the secondary output ignoring the random chance of it happening. This is mostly used for checking the maximum amount we can get as a secondary
          * output for purposes of seeing if we have space to process.
          */
-        public ItemStack getMaxSecondaryOutput() {
-            return secondaryChance > 0 ? secondaryOutput.copy() : ItemStack.EMPTY;
-        }
+        ItemStack getMaxSecondaryOutput();
 
         /**
-         * Gets a copy of the secondary output if the random number generated for this output matches the chance of a secondary output being produced, otherwise returns
-         * an empty stack.
+         * Gets a copy of the secondary output if the random number generated for this output matches the chance of a secondary output being produced, otherwise returns an
+         * empty stack.
          */
-        public ItemStack getSecondaryOutput() {
-            if (rand <= secondaryChance) {
-                return secondaryOutput.copy();
-            }
-            return ItemStack.EMPTY;
-        }
+        ItemStack getSecondaryOutput();
 
         /**
          * Similar to {@link #getSecondaryOutput()} except that this calculates a new random number to act as if this was another chance output for purposes of handling
          * multiple operations at once.
          */
-        public ItemStack nextSecondaryOutput() {
-            if (secondaryChance > 0) {
-                double rand = RANDOM.nextDouble();
-                if (rand <= secondaryChance) {
-                    return secondaryOutput.copy();
-                }
-            }
-            return ItemStack.EMPTY;
-        }
+        ItemStack nextSecondaryOutput();
     }
 }

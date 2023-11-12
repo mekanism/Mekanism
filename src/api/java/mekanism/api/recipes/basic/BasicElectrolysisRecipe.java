@@ -1,0 +1,71 @@
+package mekanism.api.recipes.basic;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.math.FloatingLong;
+import mekanism.api.recipes.ElectrolysisRecipe;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.neoforged.neoforge.fluids.FluidStack;
+import org.jetbrains.annotations.Contract;
+
+@NothingNullByDefault
+public abstract class BasicElectrolysisRecipe extends ElectrolysisRecipe {
+
+    protected final FluidStackIngredient input;
+    protected final GasStack leftGasOutput;
+    protected final GasStack rightGasOutput;
+    protected final FloatingLong energyMultiplier;
+
+    /**
+     * @param input            Input.
+     * @param energyMultiplier Multiplier to the energy cost in relation to the configured hydrogen separating energy cost. Must be at least one.
+     * @param leftGasOutput    Left output.
+     * @param rightGasOutput   Right output.
+     */
+    public BasicElectrolysisRecipe(FluidStackIngredient input, FloatingLong energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput) {
+        this.input = Objects.requireNonNull(input, "Input cannot be null.");
+        this.energyMultiplier = Objects.requireNonNull(energyMultiplier, "Energy multiplier cannot be null.").copyAsConst();
+        if (energyMultiplier.smallerThan(FloatingLong.ONE)) {
+            throw new IllegalArgumentException("Energy multiplier must be at least one.");
+        }
+        Objects.requireNonNull(leftGasOutput, "Left output cannot be null");
+        Objects.requireNonNull(rightGasOutput, "Right output cannot be null");
+        if (leftGasOutput.isEmpty()) {
+            throw new IllegalArgumentException("Left output cannot be empty.");
+        } else if (rightGasOutput.isEmpty()) {
+            throw new IllegalArgumentException("Right output cannot be empty.");
+        }
+        this.leftGasOutput = leftGasOutput.copy();
+        this.rightGasOutput = rightGasOutput.copy();
+    }
+
+    @Override
+    public FluidStackIngredient getInput() {
+        return input;
+    }
+
+    @Override
+    public List<ElectrolysisRecipeOutput> getOutputDefinition() {
+        return Collections.singletonList(new ElectrolysisRecipeOutput(leftGasOutput, rightGasOutput));
+    }
+
+    @Override
+    public boolean test(FluidStack fluidStack) {
+        return this.input.test(fluidStack);
+    }
+
+    @Override
+    @Contract(value = "_ -> new", pure = true)
+    public ElectrolysisRecipeOutput getOutput(FluidStack input) {
+        return new ElectrolysisRecipeOutput(leftGasOutput.copy(), rightGasOutput.copy());
+    }
+
+    @Override
+    public FloatingLong getEnergyMultiplier() {
+        return energyMultiplier;
+    }
+
+}

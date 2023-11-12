@@ -1,8 +1,6 @@
 package mekanism.api.recipes;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
@@ -25,119 +23,15 @@ import org.jetbrains.annotations.Contract;
 @NothingNullByDefault
 public abstract class RotaryRecipe extends MekanismRecipe {
 
-    protected final GasStackIngredient gasInput;
-    protected final FluidStackIngredient fluidInput;
-    protected final FluidStack fluidOutput;
-    protected final GasStack gasOutput;
-    protected final boolean hasGasToFluid;
-    protected final boolean hasFluidToGas;
-
-    /**
-     * Rotary recipe that converts a fluid into a gas.
-     *
-     * @param fluidInput Fluid input.
-     * @param gasOutput  Gas output.
-     *
-     * @apiNote It is recommended to use {@link #RotaryRecipe(FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this constructor in
-     * combination with {@link #RotaryRecipe(GasStackIngredient, FluidStack)} and making two separate recipes if the conversion will be possible in both
-     * directions.
-     */
-    public RotaryRecipe(FluidStackIngredient fluidInput, GasStack gasOutput) {
-        this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
-        Objects.requireNonNull(gasOutput, "Gas output cannot be null.");
-        if (gasOutput.isEmpty()) {
-            throw new IllegalArgumentException("Gas output cannot be empty.");
-        }
-        this.gasOutput = gasOutput.copy();
-        //noinspection ConstantConditions we safety check it being null behind require hasGasToFluid
-        this.gasInput = null;
-        this.fluidOutput = FluidStack.EMPTY;
-        this.hasGasToFluid = false;
-        this.hasFluidToGas = true;
-    }
-
-    /**
-     * Rotary recipe that converts a gas into a fluid.
-     *
-     * @param gasInput    Gas input.
-     * @param fluidOutput Fluid output.
-     *
-     * @apiNote It is recommended to use {@link #RotaryRecipe(FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this constructor in combination with
-     * {@link #RotaryRecipe(FluidStackIngredient, GasStack)} and making two separate recipes if the conversion will be possible in both directions.
-     */
-    public RotaryRecipe(GasStackIngredient gasInput, FluidStack fluidOutput) {
-        this.gasInput = Objects.requireNonNull(gasInput, "Gas input cannot be null.");
-        Objects.requireNonNull(fluidOutput, "Fluid output cannot be null.");
-        if (fluidOutput.isEmpty()) {
-            throw new IllegalArgumentException("Fluid output cannot be empty.");
-        }
-        this.fluidOutput = fluidOutput.copy();
-        //noinspection ConstantConditions we safety check it being null behind require hasFluidToGas
-        this.fluidInput = null;
-        this.gasOutput = GasStack.EMPTY;
-        this.hasGasToFluid = true;
-        this.hasFluidToGas = false;
-    }
-
-    /**
-     * Rotary recipe that is capable of converting a fluid into a gas and a gas into a fluid.
-     *
-     * @param fluidInput  Fluid input.
-     * @param gasInput    Gas input.
-     * @param gasOutput   Gas output.
-     * @param fluidOutput Fluid output.
-     *
-     * @apiNote It is recommended to use this constructor over using {@link #RotaryRecipe(FluidStackIngredient, GasStack)} and
-     * {@link #RotaryRecipe(GasStackIngredient, FluidStack)} in combination and creating two recipes if the conversion will be possible in both
-     * directions.
-     */
-    public RotaryRecipe(FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput) {
-        this.gasInput = Objects.requireNonNull(gasInput, "Gas input cannot be null.");
-        this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
-        Objects.requireNonNull(gasOutput, "Gas output cannot be null.");
-        Objects.requireNonNull(fluidOutput, "Fluid output cannot be null.");
-        if (gasOutput.isEmpty()) {
-            throw new IllegalArgumentException("Gas output cannot be empty.");
-        } else if (fluidOutput.isEmpty()) {
-            throw new IllegalArgumentException("Fluid output cannot be empty.");
-        }
-        this.gasOutput = gasOutput.copy();
-        this.fluidOutput = fluidOutput.copy();
-        this.hasGasToFluid = true;
-        this.hasFluidToGas = true;
-    }
-
     /**
      * @return {@code true} if this recipe knows how to convert a gas to a fluid.
      */
-    public boolean hasGasToFluid() {
-        return hasGasToFluid;
-    }
+    public abstract boolean hasGasToFluid();
 
     /**
      * @return {@code true} if this recipe knows how to convert a fluid to a gas.
      */
-    public boolean hasFluidToGas() {
-        return hasFluidToGas;
-    }
-
-    /**
-     * @throws IllegalStateException if {@link #hasGasToFluid()} is {@code false}.
-     */
-    protected void assertHasGasToFluid() {
-        if (!hasGasToFluid()) {
-            throw new IllegalStateException("This recipe has no gas to fluid conversion.");
-        }
-    }
-
-    /**
-     * @throws IllegalStateException if {@link #hasFluidToGas()} is {@code false}.
-     */
-    protected void assertHasFluidToGas() {
-        if (!hasFluidToGas()) {
-            throw new IllegalStateException("This recipe has no fluid to gas conversion.");
-        }
-    }
+    public abstract boolean hasFluidToGas();
 
     /**
      * Checks if this recipe can convert fluids to gases, and evaluates this recipe on the given input.
@@ -146,9 +40,7 @@ public abstract class RotaryRecipe extends MekanismRecipe {
      *
      * @return {@code true} if the input is valid for this recipe.
      */
-    public boolean test(FluidStack fluidStack) {
-        return hasFluidToGas() && fluidInput.test(fluidStack);
-    }
+    public abstract boolean test(FluidStack fluidStack);
 
     /**
      * Checks if this recipe can convert gases to fluids, and evaluates this recipe on the given input.
@@ -157,29 +49,21 @@ public abstract class RotaryRecipe extends MekanismRecipe {
      *
      * @return {@code true} if the input is valid for this recipe.
      */
-    public boolean test(GasStack gasStack) {
-        return hasGasToFluid() && gasInput.test(gasStack);
-    }
+    public abstract boolean test(GasStack gasStack);
 
     /**
      * Gets the fluid input ingredient.
      *
      * @throws IllegalStateException if {@link #hasFluidToGas()} is {@code false}.
      */
-    public FluidStackIngredient getFluidInput() {
-        assertHasFluidToGas();
-        return fluidInput;
-    }
+    public abstract FluidStackIngredient getFluidInput();
 
     /**
      * Gets the gas input ingredient.
      *
      * @throws IllegalStateException if {@link #hasGasToFluid()} is {@code false}.
      */
-    public GasStackIngredient getGasInput() {
-        assertHasGasToFluid();
-        return gasInput;
-    }
+    public abstract GasStackIngredient getGasInput();
 
     /**
      * For JEI, gets the gas output representations to display.
@@ -188,10 +72,7 @@ public abstract class RotaryRecipe extends MekanismRecipe {
      *
      * @throws IllegalStateException if {@link #hasFluidToGas()} is {@code false}.
      */
-    public List<GasStack> getGasOutputDefinition() {
-        assertHasFluidToGas();
-        return Collections.singletonList(gasOutput);
-    }
+    public abstract List<GasStack> getGasOutputDefinition();
 
     /**
      * For JEI, gets the fluid output representations to display.
@@ -200,10 +81,7 @@ public abstract class RotaryRecipe extends MekanismRecipe {
      *
      * @throws IllegalStateException if {@link #hasGasToFluid()} is {@code false}.
      */
-    public List<FluidStack> getFluidOutputDefinition() {
-        assertHasGasToFluid();
-        return Collections.singletonList(fluidOutput);
-    }
+    public abstract List<FluidStack> getFluidOutputDefinition();
 
     /**
      * Gets a new gas output based on the given input.
@@ -218,10 +96,7 @@ public abstract class RotaryRecipe extends MekanismRecipe {
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
-    public GasStack getGasOutput(FluidStack input) {
-        assertHasFluidToGas();
-        return gasOutput.copy();
-    }
+    public abstract GasStack getGasOutput(FluidStack input);
 
     /**
      * Gets a new fluid output based on the given input.
@@ -236,14 +111,10 @@ public abstract class RotaryRecipe extends MekanismRecipe {
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
-    public FluidStack getFluidOutput(GasStack input) {
-        assertHasGasToFluid();
-        return fluidOutput.copy();
-    }
+    public abstract FluidStack getFluidOutput(GasStack input);
 
     @Override
     public boolean isIncomplete() {
-        return (hasFluidToGas && fluidInput.hasNoMatchingInstances()) || (hasGasToFluid && gasInput.hasNoMatchingInstances());
+        return (hasFluidToGas() && getFluidInput().hasNoMatchingInstances()) || (hasGasToFluid() && getGasInput().hasNoMatchingInstances());
     }
-
 }

@@ -1,8 +1,6 @@
 package mekanism.api.recipes;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiPredicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -23,43 +21,18 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class CombinerRecipe extends MekanismRecipe implements BiPredicate<@NotNull ItemStack, @NotNull ItemStack> {
 
-    protected final ItemStackIngredient mainInput;
-    protected final ItemStackIngredient extraInput;
-    protected final ItemStack output;
-
-    /**
-     * @param mainInput  Main input.
-     * @param extraInput Secondary/extra input.
-     * @param output     Output.
-     */
-    public CombinerRecipe(ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack output) {
-        this.mainInput = Objects.requireNonNull(mainInput, "Main input cannot be null.");
-        this.extraInput = Objects.requireNonNull(extraInput, "Secondary/Extra input cannot be null.");
-        Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("Output cannot be empty.");
-        }
-        this.output = output.copy();
-    }
-
     @Override
-    public boolean test(ItemStack input, ItemStack extra) {
-        return mainInput.test(input) && extraInput.test(extra);
-    }
+    public abstract boolean test(ItemStack input, ItemStack extra);
 
     /**
      * Gets the main input ingredient.
      */
-    public ItemStackIngredient getMainInput() {
-        return mainInput;
-    }
+    public abstract ItemStackIngredient getMainInput();
 
     /**
      * Gets the secondary input ingredient.
      */
-    public ItemStackIngredient getExtraInput() {
-        return extraInput;
-    }
+    public abstract ItemStackIngredient getExtraInput();
 
     /**
      * Gets a new output based on the given inputs.
@@ -74,28 +47,21 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
      * @implNote The passed in inputs should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_, _ -> new", pure = true)
-    public ItemStack getOutput(@NotNull ItemStack input, @NotNull ItemStack extra) {
-        return output.copy();
-    }
+    public abstract ItemStack getOutput(@NotNull ItemStack input, @NotNull ItemStack extra);
 
     @NotNull
     @Override
-    public ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
-        return output.copy();
-    }
+    public abstract ItemStack getResultItem(@NotNull RegistryAccess registryAccess);
 
     /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public List<ItemStack> getOutputDefinition() {
-        return Collections.singletonList(output);
-    }
+    public abstract List<ItemStack> getOutputDefinition();
 
     @Override
     public boolean isIncomplete() {
-        return mainInput.hasNoMatchingInstances() || extraInput.hasNoMatchingInstances();
+        return getMainInput().hasNoMatchingInstances() || getExtraInput().hasNoMatchingInstances();
     }
-
 }

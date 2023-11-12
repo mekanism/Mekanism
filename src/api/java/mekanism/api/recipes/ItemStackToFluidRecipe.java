@@ -1,8 +1,6 @@
 package mekanism.api.recipes;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -26,33 +24,13 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class ItemStackToFluidRecipe extends MekanismRecipe implements Predicate<@NotNull ItemStack> {
 
-    protected final ItemStackIngredient input;
-    protected final FluidStack output;
-
-    /**
-     * @param input  Input.
-     * @param output Output.
-     */
-    public ItemStackToFluidRecipe(ItemStackIngredient input, FluidStack output) {
-        this.input = Objects.requireNonNull(input, "Input cannot be null.");
-        Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("Output cannot be empty.");
-        }
-        this.output = output.copy();
-    }
-
     @Override
-    public boolean test(ItemStack itemStack) {
-        return input.test(itemStack);
-    }
+    public abstract boolean test(ItemStack itemStack);
 
     /**
      * Gets the input ingredient.
      */
-    public ItemStackIngredient getInput() {
-        return input;
-    }
+    public abstract ItemStackIngredient getInput();
 
     /**
      * Gets a new output based on the given input.
@@ -66,22 +44,17 @@ public abstract class ItemStackToFluidRecipe extends MekanismRecipe implements P
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
-    public FluidStack getOutput(ItemStack input) {
-        return output.copy();
-    }
+    public abstract FluidStack getOutput(ItemStack input);
 
     /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public List<FluidStack> getOutputDefinition() {
-        return Collections.singletonList(output);
-    }
+    public abstract List<FluidStack> getOutputDefinition();
 
     @Override
     public boolean isIncomplete() {
-        return input.hasNoMatchingInstances();
+        return getInput().hasNoMatchingInstances();
     }
-
 }

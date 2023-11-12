@@ -1,6 +1,5 @@
 package mekanism.api.recipes;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -31,97 +30,40 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class PressurizedReactionRecipe extends MekanismRecipe implements TriPredicate<@NotNull ItemStack, @NotNull FluidStack, @NotNull GasStack> {
 
-    protected final ItemStackIngredient inputSolid;
-    protected final FluidStackIngredient inputFluid;
-    protected final GasStackIngredient inputGas;
-    protected final FloatingLong energyRequired;
-    protected final int duration;
-    protected final ItemStack outputItem;
-    protected final GasStack outputGas;
-
-    /**
-     * @param inputSolid     Item input.
-     * @param inputFluid     Fluid input.
-     * @param inputGas       Gas input.
-     * @param energyRequired Amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
-     * @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
-     * @param outputItem     Item output.
-     * @param outputGas      Gas output.
-     *
-     * @apiNote At least one output must not be empty.
-     */
-    public PressurizedReactionRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
-          FloatingLong energyRequired, int duration, ItemStack outputItem, GasStack outputGas) {
-        this.inputSolid = Objects.requireNonNull(inputSolid, "Item input cannot be null.");
-        this.inputFluid = Objects.requireNonNull(inputFluid, "Fluid input cannot be null.");
-        this.inputGas = Objects.requireNonNull(inputGas, "Gas input cannot be null.");
-        this.energyRequired = Objects.requireNonNull(energyRequired, "Required energy cannot be null.").copyAsConst();
-        if (duration <= 0) {
-            throw new IllegalArgumentException("Duration must be positive.");
-        }
-        this.duration = duration;
-        Objects.requireNonNull(outputItem, "Item output cannot be null.");
-        Objects.requireNonNull(outputGas, "Gas output cannot be null.");
-        if (outputItem.isEmpty() && outputGas.isEmpty()) {
-            throw new IllegalArgumentException("At least one output must not be empty.");
-        }
-        Objects.requireNonNull(outputItem, "Item output cannot be null.");
-        Objects.requireNonNull(outputGas, "Gas output cannot be null.");
-        if (outputItem.isEmpty() && outputGas.isEmpty()) {
-            throw new IllegalArgumentException("At least one output must not be empty.");
-        }
-        this.outputItem = outputItem.copy();
-        this.outputGas = outputGas.copy();
-    }
-
     /**
      * Gets the item input ingredient.
      */
-    public ItemStackIngredient getInputSolid() {
-        return inputSolid;
-    }
+    public abstract ItemStackIngredient getInputSolid();
 
     /**
      * Gets the fluid input ingredient.
      */
-    public FluidStackIngredient getInputFluid() {
-        return inputFluid;
-    }
+    public abstract FluidStackIngredient getInputFluid();
 
     /**
      * Gets the gas input ingredient.
      */
-    public GasStackIngredient getInputGas() {
-        return inputGas;
-    }
+    public abstract GasStackIngredient getInputGas();
 
     /**
      * Gets the amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
      */
-    public FloatingLong getEnergyRequired() {
-        return energyRequired;
-    }
+    public abstract FloatingLong getEnergyRequired();
 
     /**
      * Gets the base duration in ticks that this recipe takes to complete.
      */
-    public int getDuration() {
-        return duration;
-    }
+    public abstract int getDuration();
 
     @Override
-    public boolean test(ItemStack solid, FluidStack liquid, GasStack gas) {
-        return this.inputSolid.test(solid) && this.inputFluid.test(liquid) && this.inputGas.test(gas);
-    }
+    public abstract boolean test(ItemStack solid, FluidStack liquid, GasStack gas);
 
     /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public List<PressurizedReactionRecipeOutput> getOutputDefinition() {
-        return Collections.singletonList(new PressurizedReactionRecipeOutput(outputItem, outputGas));
-    }
+    public abstract List<PressurizedReactionRecipeOutput> getOutputDefinition();
 
     /**
      * Gets a new output based on the given inputs.
@@ -137,13 +79,11 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
      * @implNote The passed in inputs should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_, _, _ -> new", pure = true)
-    public PressurizedReactionRecipeOutput getOutput(ItemStack solid, FluidStack liquid, GasStack gas) {
-        return new PressurizedReactionRecipeOutput(this.outputItem.copy(), this.outputGas.copy());
-    }
+    public abstract PressurizedReactionRecipeOutput getOutput(ItemStack solid, FluidStack liquid, GasStack gas);
 
     @Override
     public boolean isIncomplete() {
-        return inputSolid.hasNoMatchingInstances() || inputFluid.hasNoMatchingInstances() || inputGas.hasNoMatchingInstances();
+        return getInputSolid().hasNoMatchingInstances() || getInputFluid().hasNoMatchingInstances() || getInputGas().hasNoMatchingInstances();
     }
 
     /**

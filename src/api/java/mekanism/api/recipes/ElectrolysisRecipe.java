@@ -1,6 +1,5 @@
 package mekanism.api.recipes;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -24,54 +23,20 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predicate<@NotNull FluidStack> {
 
-    protected final FluidStackIngredient input;
-    protected final GasStack leftGasOutput;
-    protected final GasStack rightGasOutput;
-    protected final FloatingLong energyMultiplier;
-
-    /**
-     * @param input            Input.
-     * @param energyMultiplier Multiplier to the energy cost in relation to the configured hydrogen separating energy cost. Must be at least one.
-     * @param leftGasOutput    Left output.
-     * @param rightGasOutput   Right output.
-     */
-    public ElectrolysisRecipe(FluidStackIngredient input, FloatingLong energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput) {
-        this.input = Objects.requireNonNull(input, "Input cannot be null.");
-        this.energyMultiplier = Objects.requireNonNull(energyMultiplier, "Energy multiplier cannot be null.").copyAsConst();
-        if (energyMultiplier.smallerThan(FloatingLong.ONE)) {
-            throw new IllegalArgumentException("Energy multiplier must be at least one.");
-        }
-        Objects.requireNonNull(leftGasOutput, "Left output cannot be null");
-        Objects.requireNonNull(rightGasOutput, "Right output cannot be null");
-        if (leftGasOutput.isEmpty()) {
-            throw new IllegalArgumentException("Left output cannot be empty.");
-        } else if (rightGasOutput.isEmpty()) {
-            throw new IllegalArgumentException("Right output cannot be empty.");
-        }
-        this.leftGasOutput = leftGasOutput.copy();
-        this.rightGasOutput = rightGasOutput.copy();
-    }
-
     /**
      * Gets the input ingredient.
      */
-    public FluidStackIngredient getInput() {
-        return input;
-    }
+    public abstract FluidStackIngredient getInput();
 
     /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public List<ElectrolysisRecipeOutput> getOutputDefinition() {
-        return Collections.singletonList(new ElectrolysisRecipeOutput(leftGasOutput, rightGasOutput));
-    }
+    public abstract List<ElectrolysisRecipeOutput> getOutputDefinition();
 
     @Override
-    public boolean test(FluidStack fluidStack) {
-        return this.input.test(fluidStack);
-    }
+    public abstract boolean test(FluidStack fluidStack);
 
     /**
      * Gets a new output based on the given input.
@@ -85,20 +50,16 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
-    public ElectrolysisRecipeOutput getOutput(FluidStack input) {
-        return new ElectrolysisRecipeOutput(leftGasOutput.copy(), rightGasOutput.copy());
-    }
+    public abstract ElectrolysisRecipeOutput getOutput(FluidStack input);
 
     /**
      * Gets the multiplier to the energy cost in relation to the configured hydrogen separating energy cost.
      */
-    public FloatingLong getEnergyMultiplier() {
-        return energyMultiplier;
-    }
+    public abstract FloatingLong getEnergyMultiplier();
 
     @Override
     public boolean isIncomplete() {
-        return input.hasNoMatchingInstances();
+        return getInput().hasNoMatchingInstances();
     }
 
     public record ElectrolysisRecipeOutput(@NotNull GasStack left, @NotNull GasStack right) {

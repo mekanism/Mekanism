@@ -2,6 +2,7 @@ package mekanism.common.recipe.impl;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ItemStackToFluidRecipe;
+import mekanism.api.recipes.basic.BasicItemStackToFluidRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.world.item.ItemStack;
@@ -10,7 +11,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 @NothingNullByDefault
-public class NutritionalLiquifierIRecipe extends ItemStackToFluidRecipe {
+public class NutritionalLiquifierIRecipe extends BasicItemStackToFluidRecipe {
 
     public NutritionalLiquifierIRecipe(ItemStackIngredient input, FluidStack output) {
         super(input, output);
