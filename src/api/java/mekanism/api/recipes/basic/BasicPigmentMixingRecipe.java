@@ -6,12 +6,14 @@ import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
-public abstract class BasicPigmentMixingRecipe extends PigmentMixingRecipe implements IBasicChemicalOutput<Pigment, PigmentStack> {
+public class BasicPigmentMixingRecipe extends PigmentMixingRecipe implements IBasicChemicalOutput<Pigment, PigmentStack> {
 
     protected final PigmentStackIngredient leftInput;
     protected final PigmentStackIngredient rightInput;
@@ -64,5 +66,10 @@ public abstract class BasicPigmentMixingRecipe extends PigmentMixingRecipe imple
     @Override
     public PigmentStack getOutputRaw() {
         return output;
+    }
+
+    @Override
+    public RecipeSerializer<BasicPigmentMixingRecipe> getSerializer() {
+        return MekanismRecipeSerializers.PIGMENT_MIXING.get();
     }
 }

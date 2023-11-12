@@ -4,12 +4,12 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
+import mekanism.api.recipes.basic.BasicItemStackToPigmentRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.impl.PigmentExtractingIRecipe;
 import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -33,7 +33,7 @@ public abstract class ItemStackToPigmentRecipeManager extends ItemStackToChemica
 
         @Override
         protected ItemStackToPigmentRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, PigmentStack output) {
-            return new PigmentExtractingIRecipe(input, output);
+            return new BasicItemStackToPigmentRecipe(input, output);
         }
     }
 }

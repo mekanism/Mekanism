@@ -9,6 +9,8 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.PigmentMixingRecipe;
+import mekanism.api.recipes.basic.BasicChemicalInfuserRecipe;
+import mekanism.api.recipes.basic.BasicPigmentMixingRecipe;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
@@ -20,8 +22,6 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTG
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.impl.ChemicalInfuserIRecipe;
-import mekanism.common.recipe.impl.PigmentMixingIRecipe;
 import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -84,8 +84,8 @@ public abstract class ChemicalChemicalToChemicalRecipeManager<CHEMICAL extends C
         }
 
         @Override
-        protected ChemicalInfuserRecipe makeRecipe(ResourceLocation id, GasStackIngredient left, GasStackIngredient right, GasStack output) {
-            return new ChemicalInfuserIRecipe(left, right, output);
+        protected BasicChemicalInfuserRecipe makeRecipe(ResourceLocation id, GasStackIngredient left, GasStackIngredient right, GasStack output) {
+            return new BasicChemicalInfuserRecipe(left, right, output);
         }
     }
 
@@ -101,7 +101,7 @@ public abstract class ChemicalChemicalToChemicalRecipeManager<CHEMICAL extends C
 
         @Override
         protected PigmentMixingRecipe makeRecipe(ResourceLocation id, PigmentStackIngredient left, PigmentStackIngredient right, PigmentStack output) {
-            return new PigmentMixingIRecipe(left, right, output);
+            return new BasicPigmentMixingRecipe(left, right, output);
         }
     }
 }

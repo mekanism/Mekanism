@@ -5,14 +5,16 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
-public abstract class BasicRotaryRecipe extends RotaryRecipe {
+public class BasicRotaryRecipe extends RotaryRecipe {
 
     protected final GasStackIngredient gasInput;
     protected final FluidStackIngredient fluidInput;
@@ -188,5 +190,25 @@ public abstract class BasicRotaryRecipe extends RotaryRecipe {
      */
     public FluidStack getFluidOutputRaw() {
         return this.fluidOutput;
+    }
+
+    @Override
+    public RecipeSerializer<BasicRotaryRecipe> getSerializer() {
+        return MekanismRecipeSerializers.ROTARY.get();
+    }
+
+    public static class Factory {
+
+        public BasicRotaryRecipe create(FluidStackIngredient fluidInput, GasStack gasOutput) {
+            return new BasicRotaryRecipe(fluidInput, gasOutput);
+        }
+
+        public BasicRotaryRecipe create(GasStackIngredient gasInput, FluidStack fluidOutput) {
+            return new BasicRotaryRecipe(gasInput, fluidOutput);
+        }
+
+        public BasicRotaryRecipe create(FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput) {
+            return new BasicRotaryRecipe(fluidInput, gasInput, gasOutput, fluidOutput);
+        }
     }
 }

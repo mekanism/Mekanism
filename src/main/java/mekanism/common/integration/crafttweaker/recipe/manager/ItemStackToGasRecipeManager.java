@@ -4,13 +4,13 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackToGasRecipe;
+import mekanism.api.recipes.basic.BasicChemicalOxidizerRecipe;
+import mekanism.api.recipes.basic.BasicGasConversionRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.impl.BasicChemicalOxidizerRecipe;
-import mekanism.common.recipe.impl.BasicGasConversionRecipe;
 import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 

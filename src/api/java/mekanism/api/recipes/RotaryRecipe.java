@@ -141,4 +141,5 @@ public abstract class RotaryRecipe extends MekanismRecipe {
     public ItemStack getToastSymbol() {
         return new ItemStack(ROTARY_CONDENSENTRATOR.get());
     }
+
 }

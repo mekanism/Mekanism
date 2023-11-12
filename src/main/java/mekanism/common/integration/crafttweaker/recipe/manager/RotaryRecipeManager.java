@@ -3,13 +3,13 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import mekanism.api.recipes.RotaryRecipe;
+import mekanism.api.recipes.basic.BasicRotaryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.impl.RotaryIRecipe;
 import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -79,7 +79,7 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipe> {
      * @param gasOutput  {@link ICrTGasStack} representing the output of the recipe. Will be validated as not empty.
      */
     public final RotaryRecipe makeRecipe(ResourceLocation id, FluidStackIngredient fluidInput, ICrTGasStack gasOutput) {
-        return new RotaryIRecipe(fluidInput, getAndValidateNotEmpty(gasOutput));
+        return new BasicRotaryRecipe(fluidInput, getAndValidateNotEmpty(gasOutput));
     }
 
     /**
@@ -90,7 +90,7 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipe> {
      * @param fluidOutput {@link IFluidStack} representing the output of the recipe. Will be validated as not empty.
      */
     public final RotaryRecipe makeRecipe(ResourceLocation id, GasStackIngredient gasInput, IFluidStack fluidOutput) {
-        return new RotaryIRecipe(gasInput, getAndValidateNotEmpty(fluidOutput));
+        return new BasicRotaryRecipe(gasInput, getAndValidateNotEmpty(fluidOutput));
     }
 
     /**
@@ -103,7 +103,7 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipe> {
      * @param fluidOutput {@link IFluidStack} representing the output of the recipe when converting from a gas to a fluid. Will be validated as not empty.
      */
     public final RotaryRecipe makeRecipe(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, ICrTGasStack gasOutput, IFluidStack fluidOutput) {
-        return new RotaryIRecipe(fluidInput, gasInput, getAndValidateNotEmpty(gasOutput), getAndValidateNotEmpty(fluidOutput));
+        return new BasicRotaryRecipe(fluidInput, gasInput, getAndValidateNotEmpty(gasOutput), getAndValidateNotEmpty(fluidOutput));
     }
 
     @Override

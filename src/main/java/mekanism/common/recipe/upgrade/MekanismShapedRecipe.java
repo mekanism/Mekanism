@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.WrappedShapedRecipe;
-import mekanism.common.registries.MekanismRecipeSerializers;
+import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +24,7 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return MekanismRecipeSerializers.MEK_DATA.get();
+        return MekanismRecipeSerializersInternal.MEK_DATA.get();
     }
 
     @Override

@@ -7,12 +7,14 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
+import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
-public abstract class BasicItemStackToPigmentRecipe extends ItemStackToPigmentRecipe implements IBasicChemicalOutput<Pigment, PigmentStack> {
+public class BasicItemStackToPigmentRecipe extends ItemStackToPigmentRecipe implements IBasicChemicalOutput<Pigment, PigmentStack> {
 
     protected final ItemStackIngredient input;
     protected final PigmentStack output;
@@ -54,5 +56,10 @@ public abstract class BasicItemStackToPigmentRecipe extends ItemStackToPigmentRe
     @Override
     public PigmentStack getOutputRaw() {
         return output;
+    }
+
+    @Override
+    public RecipeSerializer<BasicItemStackToPigmentRecipe> getSerializer() {
+        return MekanismRecipeSerializers.PIGMENT_EXTRACTING.get();
     }
 }

@@ -9,15 +9,17 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 
 @NothingNullByDefault
-public abstract class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe {
+public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe {
 
     protected final ChemicalType chemicalType;
     protected final ChemicalStackIngredient<?, ?> input;
@@ -105,5 +107,10 @@ public abstract class BasicChemicalCrystallizerRecipe extends ChemicalCrystalliz
      */
     public ChemicalType getChemicalType() {
         return chemicalType;
+    }
+
+    @Override
+    public RecipeSerializer<BasicChemicalCrystallizerRecipe> getSerializer() {
+        return MekanismRecipeSerializers.CRYSTALLIZING.get();
     }
 }

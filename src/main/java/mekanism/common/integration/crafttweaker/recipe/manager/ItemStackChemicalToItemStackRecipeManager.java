@@ -14,6 +14,11 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.PaintingRecipe;
+import mekanism.api.recipes.basic.BasicCompressingRecipe;
+import mekanism.api.recipes.basic.BasicInjectingRecipe;
+import mekanism.api.recipes.basic.BasicMetallurgicInfuserRecipe;
+import mekanism.api.recipes.basic.BasicPaintingRecipe;
+import mekanism.api.recipes.basic.BasicPurifyingRecipe;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
@@ -24,11 +29,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.impl.BasicCompressingRecipe;
-import mekanism.common.recipe.impl.BasicInjectingRecipe;
-import mekanism.common.recipe.impl.MetallurgicInfuserIRecipe;
-import mekanism.common.recipe.impl.PaintingIRecipe;
-import mekanism.common.recipe.impl.BasicPurifyingRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
@@ -154,7 +154,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
 
         @Override
         protected MetallurgicInfuserRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output) {
-            return new MetallurgicInfuserIRecipe(itemInput, infusionInput, output);
+            return new BasicMetallurgicInfuserRecipe(itemInput, infusionInput, output);
         }
     }
 
@@ -170,7 +170,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
 
         @Override
         protected PaintingRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, PigmentStackIngredient pigmentInput, ItemStack output) {
-            return new PaintingIRecipe(itemInput, pigmentInput, output);
+            return new BasicPaintingRecipe(itemInput, pigmentInput, output);
         }
     }
 }

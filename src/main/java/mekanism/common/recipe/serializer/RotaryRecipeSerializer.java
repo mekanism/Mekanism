@@ -12,7 +12,6 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredie
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.impl.RotaryIRecipe;
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator;
 import mekanism.common.recipe.ingredient.creator.GasStackIngredientCreator;
 import net.minecraft.network.FriendlyByteBuf;
@@ -52,10 +51,10 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
         ).apply(i, this.factory::create));
     }
 
-    private final IFactory<BasicRotaryRecipe> factory;
+    private final BasicRotaryRecipe.Factory factory;
     private final Lazy<Codec<BasicRotaryRecipe>> codec;
 
-    public RotaryRecipeSerializer(IFactory<BasicRotaryRecipe> factory) {
+    public RotaryRecipeSerializer(BasicRotaryRecipe.Factory factory) {
         this.factory = factory;
         this.codec = Lazy.of(this::makeCodec);
     }

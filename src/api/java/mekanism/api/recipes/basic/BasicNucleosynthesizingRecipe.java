@@ -5,16 +5,18 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
-public abstract class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe implements IBasicItemStackOutput {
+public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe implements IBasicItemStackOutput {
 
     protected final ItemStackIngredient itemInput;
     protected final GasStackIngredient chemicalInput;
@@ -80,5 +82,10 @@ public abstract class BasicNucleosynthesizingRecipe extends NucleosynthesizingRe
     @Override
     public ItemStack getOutputRaw() {
         return output;
+    }
+
+    @Override
+    public RecipeSerializer<BasicNucleosynthesizingRecipe> getSerializer() {
+        return MekanismRecipeSerializers.NUCLEOSYNTHESIZING.get();
     }
 }

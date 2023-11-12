@@ -6,6 +6,7 @@ import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PressurizedReactionRecipe;
+import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -14,7 +15,6 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.impl.PressurizedReactionIRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
@@ -164,7 +164,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Pres
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be positive! Duration: " + duration);
         }
-        return new PressurizedReactionIRecipe(inputSolid, inputFluid, inputGas, energyRequired.copyAsConst(), duration, outputItem, outputGas);
+        return new BasicPressurizedReactionRecipe(inputSolid, inputFluid, inputGas, energyRequired.copyAsConst(), duration, outputItem, outputGas);
     }
 
     @Override

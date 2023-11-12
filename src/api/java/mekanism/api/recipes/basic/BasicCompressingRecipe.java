@@ -1,13 +1,11 @@
-package mekanism.common.recipe.impl;
+package mekanism.api.recipes.basic;
 
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MekanismRecipeTypes;
-import mekanism.api.recipes.basic.BasicItemStackGasToItemStackRecipe;
-import mekanism.api.recipes.basic.IBasicItemStackOutput;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

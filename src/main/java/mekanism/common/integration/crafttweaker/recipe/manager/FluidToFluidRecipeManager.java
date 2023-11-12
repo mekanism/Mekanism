@@ -9,7 +9,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.impl.FluidToFluidIRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.openzen.zencode.java.ZenCodeType;
@@ -66,7 +65,7 @@ public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<Fl
 
         @Override
         protected BasicFluidToFluidRecipe makeRecipe(ResourceLocation id, FluidStackIngredient input, FluidStack output) {
-            return new FluidToFluidIRecipe(input, output);
+            return new BasicFluidToFluidRecipe(input, output);
         }
     }
 }

@@ -5,16 +5,18 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
-public abstract class BasicMetallurgicInfuserRecipe extends MetallurgicInfuserRecipe implements IBasicItemStackOutput {
+public class BasicMetallurgicInfuserRecipe extends MetallurgicInfuserRecipe implements IBasicItemStackOutput {
 
     protected final ItemStackIngredient itemInput;
     protected final InfusionStackIngredient infusionInput;
@@ -70,5 +72,10 @@ public abstract class BasicMetallurgicInfuserRecipe extends MetallurgicInfuserRe
     @Override
     public ItemStack getOutputRaw() {
         return output;
+    }
+
+    @Override
+    public RecipeSerializer<BasicMetallurgicInfuserRecipe> getSerializer() {
+        return MekanismRecipeSerializers.METALLURGIC_INFUSING.get();
     }
 }

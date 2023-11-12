@@ -8,13 +8,14 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
+import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Contract;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 @NothingNullByDefault
-public abstract class BasicChemicalDissolutionRecipe extends ChemicalDissolutionRecipe {
+public class BasicChemicalDissolutionRecipe extends ChemicalDissolutionRecipe {
 
     protected final ItemStackIngredient itemInput;
     protected final GasStackIngredient gasInput;
@@ -67,5 +68,10 @@ public abstract class BasicChemicalDissolutionRecipe extends ChemicalDissolution
      */
     public BoxedChemicalStack getOutputRaw() {
         return output;
+    }
+
+    @Override
+    public RecipeSerializer<BasicChemicalDissolutionRecipe> getSerializer() {
+        return MekanismRecipeSerializers.DISSOLUTION.get();
     }
 }

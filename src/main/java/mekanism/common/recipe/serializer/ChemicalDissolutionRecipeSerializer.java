@@ -11,27 +11,27 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
+import mekanism.api.recipes.basic.BasicChemicalDissolutionRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.impl.ChemicalDissolutionIRecipe;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
-public class ChemicalDissolutionRecipeSerializer implements RecipeSerializer<ChemicalDissolutionIRecipe> {
+public class ChemicalDissolutionRecipeSerializer implements RecipeSerializer<BasicChemicalDissolutionRecipe> {
 
-    private final IFactory<ChemicalDissolutionIRecipe> factory;
-    private Codec<ChemicalDissolutionIRecipe> codec;
+    private final IFactory<BasicChemicalDissolutionRecipe> factory;
+    private Codec<BasicChemicalDissolutionRecipe> codec;
 
-    public ChemicalDissolutionRecipeSerializer(IFactory<ChemicalDissolutionIRecipe> factory) {
+    public ChemicalDissolutionRecipeSerializer(IFactory<BasicChemicalDissolutionRecipe> factory) {
         this.factory = factory;
     }
 
     @NotNull
     @Override
-    public Codec<ChemicalDissolutionIRecipe> codec() {
+    public Codec<BasicChemicalDissolutionRecipe> codec() {
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance->instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.ITEM_INPUT).forGetter(ChemicalDissolutionRecipe::getItemInput),
@@ -43,7 +43,7 @@ public class ChemicalDissolutionRecipeSerializer implements RecipeSerializer<Che
     }
 
     @Override
-    public ChemicalDissolutionIRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
+    public BasicChemicalDissolutionRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             ItemStackIngredient itemInput = IngredientCreatorAccess.item().read(buffer);
             GasStackIngredient gasInput = IngredientCreatorAccess.gas().read(buffer);
@@ -62,7 +62,7 @@ public class ChemicalDissolutionRecipeSerializer implements RecipeSerializer<Che
     }
 
     @Override
-    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull ChemicalDissolutionIRecipe recipe) {
+    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull BasicChemicalDissolutionRecipe recipe) {
         try {
             recipe.getItemInput().write(buffer);
             recipe.getGasInput().write(buffer);
@@ -75,7 +75,7 @@ public class ChemicalDissolutionRecipeSerializer implements RecipeSerializer<Che
     }
 
     @FunctionalInterface
-    public interface IFactory<RECIPE extends ChemicalDissolutionRecipe> {
+    public interface IFactory<RECIPE extends BasicChemicalDissolutionRecipe> {
 
         RECIPE create(ItemStackIngredient itemInput, GasStackIngredient gasInput, ChemicalStack<?> output);
     }

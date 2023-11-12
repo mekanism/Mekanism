@@ -1,6 +1,5 @@
 package mekanism.common.recipe.impl;
 
-import java.util.function.Consumer;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
@@ -14,9 +13,8 @@ import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismRecipeSerializers;
+import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -32,8 +30,8 @@ class BinRecipeProvider implements ISubRecipeProvider {
     @Override
     public void addRecipes(RecipeOutput consumer) {
         //Special recipes (bins)
-        SpecialRecipeBuilder.build(consumer, MekanismRecipeSerializers.BIN_INSERT);
-        SpecialRecipeBuilder.build(consumer, MekanismRecipeSerializers.BIN_EXTRACT);
+        SpecialRecipeBuilder.build(consumer, MekanismRecipeSerializersInternal.BIN_INSERT.get());
+        SpecialRecipeBuilder.build(consumer, MekanismRecipeSerializersInternal.BIN_EXTRACT.get());
         //Recipes for making bins
         String basePath = "bin/";
         //Note: For the basic bin, we have to handle the empty slot differently than batching it against our bin pattern

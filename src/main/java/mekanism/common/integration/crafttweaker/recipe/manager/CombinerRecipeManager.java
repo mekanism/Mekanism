@@ -4,11 +4,11 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import mekanism.api.recipes.CombinerRecipe;
+import mekanism.api.recipes.basic.BasicCombinerRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.impl.CombinerIRecipe;
 import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -43,8 +43,8 @@ public class CombinerRecipeManager extends MekanismRecipeManager<CombinerRecipe>
      * @param extraInput {@link ItemStackIngredient} representing the secondary item input of the recipe.
      * @param output     {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final CombinerRecipe makeRecipe(ResourceLocation id, ItemStackIngredient mainInput, ItemStackIngredient extraInput, IItemStack output) {
-        return new CombinerIRecipe(mainInput, extraInput, getAndValidateNotEmpty(output));
+    public final BasicCombinerRecipe makeRecipe(ResourceLocation id, ItemStackIngredient mainInput, ItemStackIngredient extraInput, IItemStack output) {
+        return new BasicCombinerRecipe(mainInput, extraInput, getAndValidateNotEmpty(output));
     }
 
     @Override

@@ -7,12 +7,14 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
+import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
-public abstract class BasicItemStackToInfuseTypeRecipe extends ItemStackToInfuseTypeRecipe implements IBasicChemicalOutput<InfuseType, InfusionStack> {
+public class BasicItemStackToInfuseTypeRecipe extends ItemStackToInfuseTypeRecipe implements IBasicChemicalOutput<InfuseType, InfusionStack> {
 
     protected final ItemStackIngredient input;
     protected final InfusionStack output;
@@ -54,5 +56,10 @@ public abstract class BasicItemStackToInfuseTypeRecipe extends ItemStackToInfuse
     @Override
     public InfusionStack getOutputRaw() {
         return output;
+    }
+
+    @Override
+    public RecipeSerializer<BasicItemStackToInfuseTypeRecipe> getSerializer() {
+        return MekanismRecipeSerializers.INFUSION_CONVERSION.get();
     }
 }

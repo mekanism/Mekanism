@@ -10,11 +10,10 @@ import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
-import mekanism.common.registries.MekanismRecipeSerializers;
+import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -178,7 +177,7 @@ public class BinInsertRecipe extends BinRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return MekanismRecipeSerializers.BIN_INSERT.get();
+        return MekanismRecipeSerializersInternal.BIN_INSERT.get();
     }
 
     public static void onCrafting(ItemCraftedEvent event) {

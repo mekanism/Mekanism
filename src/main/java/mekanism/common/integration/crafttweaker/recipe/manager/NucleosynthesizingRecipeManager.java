@@ -4,12 +4,12 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
+import mekanism.api.recipes.basic.BasicNucleosynthesizingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.impl.NucleosynthesizingIRecipe;
 import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -51,7 +51,7 @@ public class NucleosynthesizingRecipeManager extends MekanismRecipeManager<Nucle
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be a number greater than zero! Duration: " + duration);
         }
-        return new NucleosynthesizingIRecipe(itemInput, gasInput, getAndValidateNotEmpty(output), duration);
+        return new BasicNucleosynthesizingRecipe(itemInput, gasInput, getAndValidateNotEmpty(output), duration);
     }
 
     @Override

@@ -5,14 +5,16 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.CombinerRecipe;
+import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
-public abstract class BasicCombinerRecipe extends CombinerRecipe {
+public class BasicCombinerRecipe extends CombinerRecipe {
 
     protected final ItemStackIngredient mainInput;
     protected final ItemStackIngredient extraInput;
@@ -67,5 +69,10 @@ public abstract class BasicCombinerRecipe extends CombinerRecipe {
 
     public ItemStack getOutputRaw() {
         return output;
+    }
+
+    @Override
+    public RecipeSerializer<BasicCombinerRecipe> getSerializer() {
+        return MekanismRecipeSerializers.COMBINING.get();
     }
 }

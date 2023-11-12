@@ -3,14 +3,14 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.GasToGasRecipe;
+import mekanism.api.recipes.basic.BasicActivatingRecipe;
+import mekanism.api.recipes.basic.BasicCentrifugingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.api.recipes.basic.BasicActivatingRecipe;
-import mekanism.common.recipe.impl.BasicCentrifugingRecipe;
 import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 

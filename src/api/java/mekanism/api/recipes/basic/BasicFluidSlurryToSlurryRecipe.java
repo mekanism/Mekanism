@@ -6,13 +6,15 @@ import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
+import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
-public abstract class BasicFluidSlurryToSlurryRecipe extends FluidSlurryToSlurryRecipe {
+public class BasicFluidSlurryToSlurryRecipe extends FluidSlurryToSlurryRecipe {
 
     protected final FluidStackIngredient fluidInput;
     protected final SlurryStackIngredient chemicalInput;
@@ -61,5 +63,10 @@ public abstract class BasicFluidSlurryToSlurryRecipe extends FluidSlurryToSlurry
 
     public SlurryStack getOutputRaw() {
         return output;
+    }
+
+    @Override
+    public RecipeSerializer<BasicFluidSlurryToSlurryRecipe> getSerializer() {
+        return MekanismRecipeSerializers.WASHING.get();
     }
 }

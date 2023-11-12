@@ -5,16 +5,18 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.PaintingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
-public abstract class BasicPaintingRecipe extends PaintingRecipe implements IBasicItemStackOutput {
+public class BasicPaintingRecipe extends PaintingRecipe implements IBasicItemStackOutput {
 
     protected final ItemStackIngredient itemInput;
     protected final PigmentStackIngredient pigmentInput;
@@ -71,5 +73,10 @@ public abstract class BasicPaintingRecipe extends PaintingRecipe implements IBas
     @Override
     public ItemStack getOutputRaw() {
         return output;
+    }
+
+    @Override
+    public RecipeSerializer<BasicPaintingRecipe> getSerializer() {
+        return MekanismRecipeSerializers.PAINTING.get();
     }
 }

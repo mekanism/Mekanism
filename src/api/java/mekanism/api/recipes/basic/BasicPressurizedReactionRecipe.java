@@ -6,16 +6,18 @@ import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
-public abstract class BasicPressurizedReactionRecipe  extends PressurizedReactionRecipe {
+public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
 
     protected final ItemStackIngredient inputSolid;
     protected final FluidStackIngredient inputFluid;
@@ -100,5 +102,10 @@ public abstract class BasicPressurizedReactionRecipe  extends PressurizedReactio
 
     public GasStack getOutputGas() {
         return outputGas;
+    }
+
+    @Override
+    public RecipeSerializer<BasicPressurizedReactionRecipe> getSerializer() {
+        return MekanismRecipeSerializers.REACTION.get();
     }
 }

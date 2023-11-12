@@ -6,11 +6,13 @@ import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
+import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 @NothingNullByDefault
-public abstract class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
+public class BasicItemStackToEnergyRecipe extends ItemStackToEnergyRecipe {
 
     protected final ItemStackIngredient input;
     protected final FloatingLong output;
@@ -49,4 +51,8 @@ public abstract class BasicItemStackToEnergyRecipe extends ItemStackToEnergyReci
         return Collections.singletonList(output);
     }
 
+    @Override
+    public RecipeSerializer<BasicItemStackToEnergyRecipe> getSerializer() {
+        return MekanismRecipeSerializers.ENERGY_CONVERSION.get();
+    }
 }

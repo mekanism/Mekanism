@@ -4,11 +4,10 @@ import mekanism.api.Action;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
-import mekanism.common.registries.MekanismRecipeSerializers;
+import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -93,6 +92,6 @@ public class BinExtractRecipe extends BinRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return MekanismRecipeSerializers.BIN_EXTRACT.get();
+        return MekanismRecipeSerializersInternal.BIN_EXTRACT.get();
     }
 }

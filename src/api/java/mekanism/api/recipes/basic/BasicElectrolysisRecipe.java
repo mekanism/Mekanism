@@ -7,12 +7,14 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ElectrolysisRecipe;
+import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
-public abstract class BasicElectrolysisRecipe extends ElectrolysisRecipe {
+public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
 
     protected final FluidStackIngredient input;
     protected final GasStack leftGasOutput;
@@ -79,5 +81,10 @@ public abstract class BasicElectrolysisRecipe extends ElectrolysisRecipe {
 
     public GasStack getRightGasOutput() {
         return rightGasOutput;
+    }
+
+    @Override
+    public RecipeSerializer<BasicElectrolysisRecipe> getSerializer() {
+        return MekanismRecipeSerializers.SEPARATING.get();
     }
 }

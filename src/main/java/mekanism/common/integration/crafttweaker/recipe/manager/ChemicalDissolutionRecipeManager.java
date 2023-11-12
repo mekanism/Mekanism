@@ -2,13 +2,13 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
+import mekanism.api.recipes.basic.BasicChemicalDissolutionRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.impl.ChemicalDissolutionIRecipe;
 import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -43,8 +43,8 @@ public class ChemicalDissolutionRecipeManager extends MekanismRecipeManager<Chem
      * @param gasInput  {@link GasStackIngredient} representing the gas input of the recipe.
      * @param output    {@link ICrTChemicalStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final ChemicalDissolutionRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ICrTChemicalStack<?, ?, ?> output) {
-        return new ChemicalDissolutionIRecipe(itemInput, gasInput, getAndValidateNotEmpty(output));
+    public final BasicChemicalDissolutionRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ICrTChemicalStack<?, ?, ?> output) {
+        return new BasicChemicalDissolutionRecipe(itemInput, gasInput, getAndValidateNotEmpty(output));
     }
 
     @Override

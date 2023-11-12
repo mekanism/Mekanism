@@ -6,13 +6,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
-public abstract class BasicSawmillRecipe extends SawmillRecipe {
+public class BasicSawmillRecipe extends SawmillRecipe {
 
     protected final ItemStackIngredient input;
     protected final ItemStack mainOutput;
@@ -94,6 +96,11 @@ public abstract class BasicSawmillRecipe extends SawmillRecipe {
      */
     public Optional<ItemStack> getSecondaryOutputRaw() {
         return this.secondaryOutput.isEmpty() ? Optional.empty() : Optional.of(this.secondaryOutput);
+    }
+
+    @Override
+    public RecipeSerializer<BasicSawmillRecipe> getSerializer() {
+        return MekanismRecipeSerializers.SAWING.get();
     }
 
 
