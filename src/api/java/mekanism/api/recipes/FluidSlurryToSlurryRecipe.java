@@ -1,11 +1,14 @@
 package mekanism.api.recipes;
 
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
+import java.util.List;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.chemical.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.neoforged.neoforge.fluids.FluidStack;
+import org.jetbrains.annotations.Contract;
 
 /**
  * Input: FluidStack
@@ -16,15 +19,22 @@ import mekanism.api.recipes.ingredients.FluidStackIngredient;
  *
  * @apiNote Chemical Washers can process this recipe type.
  */
-@ParametersAreNotNullByDefault
+@NothingNullByDefault
 public abstract class FluidSlurryToSlurryRecipe extends FluidChemicalToChemicalRecipe<Slurry, SlurryStack, SlurryStackIngredient> {
 
-    /**
-     * @param fluidInput  Fluid input.
-     * @param slurryInput Slurry input.
-     * @param output      Output.
-     */
-    public FluidSlurryToSlurryRecipe(FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output) {
-        super(fluidInput, slurryInput, output);
-    }
+    @Override
+    public abstract boolean test(FluidStack fluidStack, SlurryStack chemicalStack);
+
+    @Override
+    public abstract FluidStackIngredient getFluidInput();
+
+    @Override
+    public abstract SlurryStackIngredient getChemicalInput();
+
+    @Override
+    public abstract List<SlurryStack> getOutputDefinition();
+
+    @Override
+    @Contract(value = "_, _ -> new", pure = true)
+    public abstract SlurryStack getOutput(FluidStack fluidStack, SlurryStack chemicalStack);
 }

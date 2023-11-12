@@ -1,8 +1,6 @@
 package mekanism.api.recipes.chemical;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiPredicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
@@ -30,38 +28,15 @@ import org.jetbrains.annotations.NotNull;
 public abstract class ItemStackChemicalToItemStackRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipe implements BiPredicate<@NotNull ItemStack, @NotNull STACK> {
 
-    protected final ItemStackIngredient itemInput;
-    protected final INGREDIENT chemicalInput;
-    protected final ItemStack output;
-
-    /**
-     * @param itemInput     Item input.
-     * @param chemicalInput Chemical input.
-     * @param output        Output.
-     */
-    public ItemStackChemicalToItemStackRecipe(ItemStackIngredient itemInput, INGREDIENT chemicalInput, ItemStack output) {
-        this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
-        this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
-        Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("Output cannot be empty.");
-        }
-        this.output = output.copy();
-    }
-
     /**
      * Gets the input item ingredient.
      */
-    public ItemStackIngredient getItemInput() {
-        return itemInput;
-    }
+    public abstract ItemStackIngredient getItemInput();
 
     /**
      * Gets the input chemical ingredient.
      */
-    public INGREDIENT getChemicalInput() {
-        return chemicalInput;
-    }
+    public abstract INGREDIENT getChemicalInput();
 
     /**
      * Gets a new output based on the given inputs.
@@ -76,33 +51,25 @@ public abstract class ItemStackChemicalToItemStackRecipe<CHEMICAL extends Chemic
      * @implNote The passed in inputs should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_, _ -> new", pure = true)
-    public ItemStack getOutput(ItemStack inputItem, STACK inputChemical) {
-        return output.copy();
-    }
+    public abstract ItemStack getOutput(ItemStack inputItem, STACK inputChemical);
 
     @NotNull
     @Override
-    public ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
-        return output.copy();
-    }
+    public abstract ItemStack getResultItem(@NotNull RegistryAccess registryAccess);
 
     @Override
-    public boolean test(ItemStack itemStack, STACK gasStack) {
-        return itemInput.test(itemStack) && chemicalInput.test(gasStack);
-    }
+    public abstract boolean test(ItemStack itemStack, STACK gasStack);
 
     /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public List<@NotNull ItemStack> getOutputDefinition() {
-        return Collections.singletonList(output);
-    }
+    public abstract List<@NotNull ItemStack> getOutputDefinition();
 
     @Override
     public boolean isIncomplete() {
-        return itemInput.hasNoMatchingInstances() || chemicalInput.hasNoMatchingInstances();
+        return getItemInput().hasNoMatchingInstances() || getChemicalInput().hasNoMatchingInstances();
     }
 
 }

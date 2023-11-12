@@ -3,7 +3,6 @@ package mekanism.common.integration.projecte.mappers;
 import java.util.List;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
-import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.integration.projecte.NSSGas;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;

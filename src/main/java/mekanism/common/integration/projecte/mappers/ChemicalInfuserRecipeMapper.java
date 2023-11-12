@@ -3,8 +3,6 @@ package mekanism.common.integration.projecte.mappers;
 import java.util.List;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
-import mekanism.common.integration.projecte.IngredientHelper;
-import mekanism.common.integration.projecte.NSSGas;
 import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.INSSFakeGroupManager;

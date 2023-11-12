@@ -2,6 +2,7 @@ package mekanism.common.recipe.impl;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
+import mekanism.api.recipes.basic.BasicMetallurgicInfuserRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -12,7 +13,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
 @NothingNullByDefault
-public class MetallurgicInfuserIRecipe extends MetallurgicInfuserRecipe implements ItemStackOutputInternal {
+public class MetallurgicInfuserIRecipe extends BasicMetallurgicInfuserRecipe implements ItemStackOutputInternal {
 
     public MetallurgicInfuserIRecipe(ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output) {
         super(itemInput, infusionInput, output);

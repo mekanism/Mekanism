@@ -1,10 +1,12 @@
 package mekanism.api.recipes;
 
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
+import java.util.List;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.chemical.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import org.jetbrains.annotations.Contract;
 
 /**
  * Input: Gas
@@ -17,14 +19,19 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredie
  *     <li>Centrifuging: Can be processed in an Isotopic Centrifuge.</li>
  * </ul>
  */
-@ParametersAreNotNullByDefault
+@NothingNullByDefault
 public abstract class GasToGasRecipe extends ChemicalToChemicalRecipe<Gas, GasStack, GasStackIngredient> {
 
-    /**
-     * @param input  Input.
-     * @param output Output.
-     */
-    public GasToGasRecipe(GasStackIngredient input, GasStack output) {
-        super(input, output);
-    }
+    @Override
+    public abstract boolean test(GasStack chemicalStack);
+
+    @Override
+    public abstract GasStackIngredient getInput();
+
+    @Override
+    public abstract List<GasStack> getOutputDefinition();
+
+    @Override
+    @Contract(value = "_ -> new", pure = true)
+    public abstract GasStack getOutput(GasStack input);
 }

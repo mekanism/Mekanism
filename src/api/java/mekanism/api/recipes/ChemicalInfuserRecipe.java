@@ -1,10 +1,12 @@
 package mekanism.api.recipes;
 
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
+import java.util.List;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import org.jetbrains.annotations.Contract;
 
 /**
  * Input: Two gases. The order of them does not matter.
@@ -13,17 +15,22 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredie
  *
  * @apiNote Chemical Infusers can process this recipe type and the gases can be put in any order into the infuser.
  */
-@ParametersAreNotNullByDefault
+@NothingNullByDefault
 public abstract class ChemicalInfuserRecipe extends ChemicalChemicalToChemicalRecipe<Gas, GasStack, GasStackIngredient> {
 
-    /**
-     * @param leftInput  Left input.
-     * @param rightInput Right input.
-     * @param output     Output.
-     *
-     * @apiNote The order of the inputs does not matter.
-     */
-    public ChemicalInfuserRecipe(GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
-        super(leftInput, rightInput, output);
-    }
+    @Override
+    public abstract boolean test(GasStack input1, GasStack input2);
+
+    @Override
+    @Contract(value = "_, _ -> new", pure = true)
+    public abstract GasStack getOutput(GasStack input1, GasStack input2);
+
+    @Override
+    public abstract GasStackIngredient getLeftInput();
+
+    @Override
+    public abstract GasStackIngredient getRightInput();
+
+    @Override
+    public abstract List<GasStack> getOutputDefinition();
 }

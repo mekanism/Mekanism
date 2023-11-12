@@ -1,8 +1,6 @@
 package mekanism.api.recipes.chemical;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
@@ -25,43 +23,20 @@ import org.jetbrains.annotations.NotNull;
 public abstract class ChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipe implements Predicate<@NotNull STACK> {
 
-    private final INGREDIENT input;
-    protected final STACK output;
-
-    /**
-     * @param input  Input.
-     * @param output Output.
-     */
-    public ChemicalToChemicalRecipe(INGREDIENT input, STACK output) {
-        this.input = Objects.requireNonNull(input, "Input cannot be null.");
-        Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("Output cannot be empty.");
-        }
-        //noinspection unchecked
-        this.output = (STACK) output.copy();
-    }
-
     @Override
-    public boolean test(STACK chemicalStack) {
-        return input.test(chemicalStack);
-    }
+    public abstract boolean test(STACK chemicalStack);
 
     /**
      * Gets the input ingredient.
      */
-    public INGREDIENT getInput() {
-        return input;
-    }
+    public abstract INGREDIENT getInput();
 
     /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public List<STACK> getOutputDefinition() {
-        return Collections.singletonList(output);
-    }
+    public abstract List<STACK> getOutputDefinition();
 
     /**
      * Gets a new output based on the given input.
@@ -74,14 +49,11 @@ public abstract class ChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICA
      * outputs where things like NBT may be different.
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
-    @SuppressWarnings("unchecked")
     @Contract(value = "_ -> new", pure = true)
-    public STACK getOutput(STACK input) {
-        return (STACK) output.copy();
-    }
+    public abstract STACK getOutput(STACK input);
 
     @Override
     public boolean isIncomplete() {
-        return input.hasNoMatchingInstances();
+        return getInput().hasNoMatchingInstances();
     }
 }

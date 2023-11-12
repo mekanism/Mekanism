@@ -1,12 +1,16 @@
 package mekanism.api.recipes;
 
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
+import java.util.List;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Input: ItemStack
@@ -17,15 +21,26 @@ import net.minecraft.world.item.ItemStack;
  *
  * @apiNote Metallurgic Infusers and Infusing Factories can process this recipe type.
  */
-@ParametersAreNotNullByDefault
+@NothingNullByDefault
 public abstract class MetallurgicInfuserRecipe extends ItemStackChemicalToItemStackRecipe<InfuseType, InfusionStack, InfusionStackIngredient> {
 
-    /**
-     * @param itemInput     Item input.
-     * @param infusionInput Infusion input.
-     * @param output        Output.
-     */
-    public MetallurgicInfuserRecipe(ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output) {
-        super(itemInput, infusionInput, output);
-    }
+    @Override
+    public abstract ItemStackIngredient getItemInput();
+
+    @Override
+    public abstract InfusionStackIngredient getChemicalInput();
+
+    @Override
+    @Contract(value = "_, _ -> new", pure = true)
+    public abstract ItemStack getOutput(ItemStack inputItem, InfusionStack inputChemical);
+
+    @NotNull
+    @Override
+    public abstract ItemStack getResultItem(@NotNull RegistryAccess registryAccess);
+
+    @Override
+    public abstract boolean test(ItemStack itemStack, InfusionStack gasStack);
+
+    @Override
+    public abstract List<@NotNull ItemStack> getOutputDefinition();
 }

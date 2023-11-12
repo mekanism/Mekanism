@@ -1,8 +1,6 @@
 package mekanism.api.recipes.chemical;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiPredicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
@@ -13,7 +11,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Base class for defining chemical chemical to chemical recipes.
+ * Base class for defining chemical+chemical to chemical recipes.
  * <br>
  * Input: Two chemicals of the same chemical type. The order of them does not matter.
  * <br>
@@ -25,32 +23,8 @@ import org.jetbrains.annotations.NotNull;
 public abstract class ChemicalChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipe implements BiPredicate<@NotNull STACK, @NotNull STACK> {
 
-    protected final INGREDIENT leftInput;
-    protected final INGREDIENT rightInput;
-    protected final STACK output;
-
-    /**
-     * @param leftInput  Left input.
-     * @param rightInput Right input.
-     * @param output     Output.
-     *
-     * @apiNote The order of the inputs does not matter.
-     */
-    public ChemicalChemicalToChemicalRecipe(INGREDIENT leftInput, INGREDIENT rightInput, STACK output) {
-        this.leftInput = Objects.requireNonNull(leftInput, "Left input cannot be null.");
-        this.rightInput = Objects.requireNonNull(rightInput, "Right input cannot be null.");
-        Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("Output cannot be empty.");
-        }
-        //noinspection unchecked
-        this.output = (STACK) output.copy();
-    }
-
     @Override
-    public boolean test(STACK input1, STACK input2) {
-        return (leftInput.test(input1) && rightInput.test(input2)) || (rightInput.test(input1) && leftInput.test(input2));
-    }
+    public abstract boolean test(STACK input1, STACK input2);
 
     /**
      * Gets a new output based on the given inputs, the order of these inputs which one is {@code input1} and which one is {@code input2} does not matter.
@@ -64,38 +38,29 @@ public abstract class ChemicalChemicalToChemicalRecipe<CHEMICAL extends Chemical
      * outputs where things like NBT may be different.
      * @implNote The passed in inputs should <strong>NOT</strong> be modified.
      */
-    @SuppressWarnings("unchecked")
     @Contract(value = "_, _ -> new", pure = true)
-    public STACK getOutput(STACK input1, STACK input2) {
-        return (STACK) output.copy();
-    }
+    public abstract STACK getOutput(STACK input1, STACK input2);
 
     /**
      * Gets the left input ingredient.
      */
-    public INGREDIENT getLeftInput() {
-        return leftInput;
-    }
+    public abstract INGREDIENT getLeftInput();
 
     /**
      * Gets the right input ingredient.
      */
-    public INGREDIENT getRightInput() {
-        return rightInput;
-    }
+    public abstract INGREDIENT getRightInput();
 
     /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public List<STACK> getOutputDefinition() {
-        return Collections.singletonList(output);
-    }
+    public abstract List<STACK> getOutputDefinition();
 
     @Override
     public boolean isIncomplete() {
-        return leftInput.hasNoMatchingInstances() || rightInput.hasNoMatchingInstances();
+        return getLeftInput().hasNoMatchingInstances() || getRightInput().hasNoMatchingInstances();
     }
 
 }

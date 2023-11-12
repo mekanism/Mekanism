@@ -1,8 +1,6 @@
 package mekanism.api.recipes.chemical;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiPredicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
@@ -29,53 +27,25 @@ import org.jetbrains.annotations.NotNull;
 public abstract class FluidChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipe implements BiPredicate<@NotNull FluidStack, @NotNull STACK> {
 
-    protected final FluidStackIngredient fluidInput;
-    protected final INGREDIENT chemicalInput;
-    protected final STACK output;
-
-    /**
-     * @param fluidInput    Fluid input.
-     * @param chemicalInput Chemical input.
-     * @param output        Output.
-     */
-    public FluidChemicalToChemicalRecipe(FluidStackIngredient fluidInput, INGREDIENT chemicalInput, STACK output) {
-        super();
-        this.fluidInput = Objects.requireNonNull(fluidInput, "Fluid input cannot be null.");
-        this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
-        Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("Output cannot be empty.");
-        }
-        this.output = (STACK) output.copy();
-    }
-
     @Override
-    public boolean test(FluidStack fluidStack, STACK chemicalStack) {
-        return fluidInput.test(fluidStack) && chemicalInput.test(chemicalStack);
-    }
+    public abstract boolean test(FluidStack fluidStack, STACK chemicalStack);
 
     /**
      * Gets the input fluid ingredient.
      */
-    public FluidStackIngredient getFluidInput() {
-        return fluidInput;
-    }
+    public abstract FluidStackIngredient getFluidInput();
 
     /**
      * Gets the input chemical ingredient.
      */
-    public INGREDIENT getChemicalInput() {
-        return chemicalInput;
-    }
+    public abstract INGREDIENT getChemicalInput();
 
     /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public List<STACK> getOutputDefinition() {
-        return Collections.singletonList(output);
-    }
+    public abstract List<STACK> getOutputDefinition();
 
     /**
      * Gets a new output based on the given inputs.
@@ -90,13 +60,12 @@ public abstract class FluidChemicalToChemicalRecipe<CHEMICAL extends Chemical<CH
      * @implNote The passed in inputs should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_, _ -> new", pure = true)
-    public STACK getOutput(FluidStack fluidStack, STACK chemicalStack) {
-        return (STACK) output.copy();
-    }
+    public abstract STACK getOutput(FluidStack fluidStack, STACK chemicalStack);
+
 
     @Override
     public boolean isIncomplete() {
-        return fluidInput.hasNoMatchingInstances() || chemicalInput.hasNoMatchingInstances();
+        return getFluidInput().hasNoMatchingInstances() || getChemicalInput().hasNoMatchingInstances();
     }
 
 }

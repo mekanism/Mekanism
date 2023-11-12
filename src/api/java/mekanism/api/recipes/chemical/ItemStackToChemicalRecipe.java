@@ -1,8 +1,6 @@
 package mekanism.api.recipes.chemical;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
@@ -26,34 +24,13 @@ import org.jetbrains.annotations.NotNull;
 public abstract class ItemStackToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends MekanismRecipe implements
       Predicate<@NotNull ItemStack> {
 
-    protected final ItemStackIngredient input;
-    protected final STACK output;
-
-    /**
-     * @param input  Input.
-     * @param output Output.
-     */
-    public ItemStackToChemicalRecipe(ItemStackIngredient input, STACK output) {
-        super();
-        this.input = Objects.requireNonNull(input, "Input cannot be null.");
-        Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("Output cannot be empty.");
-        }
-        this.output = (STACK) output.copy();
-    }
-
     @Override
-    public boolean test(ItemStack itemStack) {
-        return input.test(itemStack);
-    }
+    public abstract boolean test(ItemStack itemStack);
 
     /**
      * Gets the input ingredient.
      */
-    public ItemStackIngredient getInput() {
-        return input;
-    }
+    public abstract ItemStackIngredient getInput();
 
     /**
      * Gets a new output based on the given input.
@@ -67,22 +44,18 @@ public abstract class ItemStackToChemicalRecipe<CHEMICAL extends Chemical<CHEMIC
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
-    public STACK getOutput(ItemStack input) {
-        return (STACK) output.copy();
-    }
+    public abstract STACK getOutput(ItemStack input);
 
     /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public List<STACK> getOutputDefinition() {
-        return Collections.singletonList(output);
-    }
+    public abstract List<STACK> getOutputDefinition();
 
     @Override
     public boolean isIncomplete() {
-        return input.hasNoMatchingInstances();
+        return getInput().hasNoMatchingInstances();
     }
 
 }

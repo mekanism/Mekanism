@@ -1,12 +1,16 @@
 package mekanism.api.recipes;
 
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
+import java.util.List;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Input: ItemStack
@@ -17,15 +21,26 @@ import net.minecraft.world.item.ItemStack;
  *
  * @apiNote Painting Machines can process this recipe type.
  */
-@ParametersAreNotNullByDefault
+@NothingNullByDefault
 public abstract class PaintingRecipe extends ItemStackChemicalToItemStackRecipe<Pigment, PigmentStack, PigmentStackIngredient> {
 
-    /**
-     * @param itemInput    Item input.
-     * @param pigmentInput Pigment input.
-     * @param output       Output.
-     */
-    public PaintingRecipe(ItemStackIngredient itemInput, PigmentStackIngredient pigmentInput, ItemStack output) {
-        super(itemInput, pigmentInput, output);
-    }
+    @Override
+    public abstract ItemStackIngredient getItemInput();
+
+    @Override
+    public abstract PigmentStackIngredient getChemicalInput();
+
+    @Override
+    @Contract(value = "_, _ -> new", pure = true)
+    public abstract ItemStack getOutput(ItemStack inputItem, PigmentStack inputChemical);
+
+    @NotNull
+    @Override
+    public abstract ItemStack getResultItem(@NotNull RegistryAccess registryAccess);
+
+    @Override
+    public abstract boolean test(ItemStack itemStack, PigmentStack gasStack);
+
+    @Override
+    public abstract List<@NotNull ItemStack> getOutputDefinition();
 }

@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
-import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;

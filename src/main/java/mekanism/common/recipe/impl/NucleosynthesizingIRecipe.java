@@ -2,18 +2,18 @@ package mekanism.common.recipe.impl;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
+import mekanism.api.recipes.basic.BasicNucleosynthesizingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 
 @NothingNullByDefault
-public class NucleosynthesizingIRecipe extends NucleosynthesizingRecipe implements ItemStackOutputInternal {
+public class NucleosynthesizingIRecipe extends BasicNucleosynthesizingRecipe implements ItemStackOutputInternal {
 
     public NucleosynthesizingIRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output, int duration) {
         super(itemInput, gasInput, output, duration);
