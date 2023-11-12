@@ -83,24 +83,32 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
 
         /**
          * Gets a copy of the main output of this recipe. This may be empty if there is only a secondary chance based output.
+         *
+         * @implNote return a new copy
          */
         ItemStack getMainOutput();
 
         /**
          * Gets a copy of the secondary output ignoring the random chance of it happening. This is mostly used for checking the maximum amount we can get as a secondary
          * output for purposes of seeing if we have space to process.
+         *
+         * @implNote return a new copy or ItemStack.EMPTY
          */
         ItemStack getMaxSecondaryOutput();
 
         /**
          * Gets a copy of the secondary output if the random number generated for this output matches the chance of a secondary output being produced, otherwise returns an
          * empty stack.
+         *
+         * @implNote return a new copy or ItemStack.EMPTY
          */
         ItemStack getSecondaryOutput();
 
         /**
          * Similar to {@link #getSecondaryOutput()} except that this calculates a new random number to act as if this was another chance output for purposes of handling
          * multiple operations at once.
+         *
+         * @implNote return a new copy or ItemStack.EMPTY
          */
         ItemStack nextSecondaryOutput();
     }
