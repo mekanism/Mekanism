@@ -7,6 +7,7 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.chemical.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
@@ -37,4 +38,9 @@ public abstract class FluidSlurryToSlurryRecipe extends FluidChemicalToChemicalR
     @Override
     @Contract(value = "_, _ -> new", pure = true)
     public abstract SlurryStack getOutput(FluidStack fluidStack, SlurryStack chemicalStack);
+
+    @Override
+    public final RecipeType<FluidSlurryToSlurryRecipe> getType() {
+        return MekanismRecipeTypes.TYPE_WASHING.get();
+    }
 }

@@ -22,6 +22,10 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class NucleosynthesizingRecipe extends ItemStackGasToItemStackRecipe {
 
+    public NucleosynthesizingRecipe() {
+        super(MekanismRecipeTypes.TYPE_NUCLEOSYNTHESIZING.get());
+    }
+
     /**
      * Gets the duration in ticks this recipe takes to complete.
      */

@@ -6,6 +6,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -33,4 +34,9 @@ public abstract class ChemicalInfuserRecipe extends ChemicalChemicalToChemicalRe
 
     @Override
     public abstract List<GasStack> getOutputDefinition();
+
+    @Override
+    public final RecipeType<ChemicalInfuserRecipe> getType() {
+        return MekanismRecipeTypes.TYPE_CHEMICAL_INFUSING.get();
+    }
 }

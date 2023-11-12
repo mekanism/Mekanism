@@ -21,11 +21,6 @@ public class PigmentMixingIRecipe extends BasicPigmentMixingRecipe implements Ch
     }
 
     @Override
-    public RecipeType<PigmentMixingRecipe> getType() {
-        return MekanismRecipeType.PIGMENT_MIXING.get();
-    }
-
-    @Override
     public RecipeSerializer<PigmentMixingIRecipe> getSerializer() {
         return MekanismRecipeSerializers.PIGMENT_MIXING.get();
     }

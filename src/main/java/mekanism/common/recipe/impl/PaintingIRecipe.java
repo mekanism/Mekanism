@@ -1,27 +1,19 @@
 package mekanism.common.recipe.impl;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.recipes.PaintingRecipe;
 import mekanism.api.recipes.basic.BasicPaintingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
 
 @NothingNullByDefault
 public class PaintingIRecipe extends BasicPaintingRecipe implements ItemStackOutputInternal {
 
     public PaintingIRecipe(ItemStackIngredient itemInput, PigmentStackIngredient pigmentInput, ItemStack output) {
         super(itemInput, pigmentInput, output);
-    }
-
-    @Override
-    public RecipeType<PaintingRecipe> getType() {
-        return MekanismRecipeType.PAINTING.get();
     }
 
     @Override

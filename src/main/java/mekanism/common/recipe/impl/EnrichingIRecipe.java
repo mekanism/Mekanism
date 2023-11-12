@@ -1,26 +1,19 @@
 package mekanism.common.recipe.impl;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.recipes.ItemStackToItemStackRecipe;
+import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.basic.BasicItemStackToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
 
 @NothingNullByDefault
 public class EnrichingIRecipe extends BasicItemStackToItemStackRecipe implements ItemStackOutputInternal {
 
     public EnrichingIRecipe(ItemStackIngredient input, ItemStack output) {
-        super(input, output);
-    }
-
-    @Override
-    public RecipeType<ItemStackToItemStackRecipe> getType() {
-        return MekanismRecipeType.ENRICHING.get();
+        super(input, output, MekanismRecipeTypes.TYPE_ENRICHING.get());
     }
 
     @Override

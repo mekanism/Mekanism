@@ -1,6 +1,7 @@
 package mekanism.api.recipes;
 
 import java.util.List;
+import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -9,6 +10,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredie
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,6 +31,12 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class ItemStackGasToItemStackRecipe extends ItemStackChemicalToItemStackRecipe<Gas, GasStack, GasStackIngredient> {
 
+    private final RecipeType<? extends ItemStackGasToItemStackRecipe> recipeType;
+
+    protected ItemStackGasToItemStackRecipe(RecipeType<? extends ItemStackGasToItemStackRecipe> recipeType) {
+        this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");
+    }
+
     @Override
     public abstract ItemStackIngredient getItemInput();
 
@@ -48,4 +56,9 @@ public abstract class ItemStackGasToItemStackRecipe extends ItemStackChemicalToI
 
     @Override
     public abstract List<@NotNull ItemStack> getOutputDefinition();
+
+    @Override
+    public final RecipeType<? extends ItemStackGasToItemStackRecipe> getType() {
+        return recipeType;
+    }
 }

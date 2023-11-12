@@ -1,11 +1,13 @@
 package mekanism.api.recipes;
 
 import java.util.List;
+import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.chemical.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -22,6 +24,12 @@ import org.jetbrains.annotations.Contract;
 @NothingNullByDefault
 public abstract class GasToGasRecipe extends ChemicalToChemicalRecipe<Gas, GasStack, GasStackIngredient> {
 
+    private final RecipeType<GasToGasRecipe> recipeType;
+
+    protected GasToGasRecipe(RecipeType<GasToGasRecipe> recipeType) {
+        this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");
+    }
+
     @Override
     public abstract boolean test(GasStack chemicalStack);
 
@@ -34,4 +42,9 @@ public abstract class GasToGasRecipe extends ChemicalToChemicalRecipe<Gas, GasSt
     @Override
     @Contract(value = "_ -> new", pure = true)
     public abstract GasStack getOutput(GasStack input);
+
+    @Override
+    public RecipeType<GasToGasRecipe> getType() {
+        return recipeType;
+    }
 }

@@ -2,10 +2,12 @@ package mekanism.api.recipes;
 
 import java.util.List;
 import java.util.function.Predicate;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @apiNote Chemical Crystallizers can process this recipe type.
  */
+@NothingNullByDefault
 public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implements Predicate<@NotNull BoxedChemicalStack> {
 
     /**
@@ -83,4 +86,8 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
         return getInput().hasNoMatchingInstances();
     }
 
+    @Override
+    public final RecipeType<ChemicalCrystallizerRecipe> getType() {
+        return MekanismRecipeTypes.TYPE_CRYSTALLIZING.get();
+    }
 }

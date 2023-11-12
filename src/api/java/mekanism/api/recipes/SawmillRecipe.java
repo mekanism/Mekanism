@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,6 +68,11 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
     @Override
     public boolean isIncomplete() {
         return getInput().hasNoMatchingInstances();
+    }
+
+    @Override
+    public final RecipeType<SawmillRecipe> getType() {
+        return MekanismRecipeTypes.TYPE_SAWING.get();
     }
 
     /**

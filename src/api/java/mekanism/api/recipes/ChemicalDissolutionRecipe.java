@@ -2,14 +2,17 @@ package mekanism.api.recipes;
 
 import java.util.List;
 import java.util.function.BiPredicate;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+@NothingNullByDefault
 public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implements BiPredicate<@NotNull ItemStack, @NotNull GasStack> {
 
     /**
@@ -50,5 +53,10 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implement
     @Override
     public boolean isIncomplete() {
         return getItemInput().hasNoMatchingInstances() || getGasInput().hasNoMatchingInstances();
+    }
+
+    @Override
+    public final RecipeType<ChemicalDissolutionRecipe> getType() {
+        return MekanismRecipeTypes.TYPE_DISSOLUTION.get();
     }
 }

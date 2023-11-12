@@ -1,11 +1,13 @@
 package mekanism.api.recipes;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,6 +25,12 @@ import org.jetbrains.annotations.NotNull;
  */
 @NothingNullByDefault
 public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implements Predicate<@NotNull ItemStack> {
+
+    protected final RecipeType<ItemStackToItemStackRecipe> recipeType;
+
+    public ItemStackToItemStackRecipe(RecipeType<ItemStackToItemStackRecipe> recipeType) {
+        this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");
+    }
 
     @Override
     public abstract boolean test(ItemStack input);
@@ -60,5 +68,10 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implemen
     @Override
     public boolean isIncomplete() {
         return getInput().hasNoMatchingInstances();
+    }
+
+    @Override
+    public final RecipeType<ItemStackToItemStackRecipe> getType() {
+        return this.recipeType;
     }
 }

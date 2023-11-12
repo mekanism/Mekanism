@@ -6,6 +6,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,5 +64,10 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
     @Override
     public boolean isIncomplete() {
         return getMainInput().hasNoMatchingInstances() || getExtraInput().hasNoMatchingInstances();
+    }
+
+    @Override
+    public final RecipeType<CombinerRecipe> getType() {
+        return MekanismRecipeTypes.TYPE_COMBINING.get();
     }
 }

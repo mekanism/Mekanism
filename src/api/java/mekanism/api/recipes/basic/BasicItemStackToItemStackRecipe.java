@@ -8,6 +8,7 @@ import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +22,8 @@ public abstract class BasicItemStackToItemStackRecipe extends ItemStackToItemSta
      * @param input  Input.
      * @param output Output.
      */
-    public BasicItemStackToItemStackRecipe(ItemStackIngredient input, ItemStack output) {
+    public BasicItemStackToItemStackRecipe(ItemStackIngredient input, ItemStack output, RecipeType<ItemStackToItemStackRecipe> recipeType) {
+        super(recipeType);
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
         if (output.isEmpty()) {

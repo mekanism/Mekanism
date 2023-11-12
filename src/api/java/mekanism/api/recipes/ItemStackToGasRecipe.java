@@ -1,12 +1,14 @@
 package mekanism.api.recipes;
 
 import java.util.List;
+import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -23,6 +25,12 @@ import org.jetbrains.annotations.Contract;
 @NothingNullByDefault
 public abstract class ItemStackToGasRecipe extends ItemStackToChemicalRecipe<Gas, GasStack> {
 
+    private final RecipeType<ItemStackToGasRecipe> recipeType;
+
+    protected ItemStackToGasRecipe(RecipeType<ItemStackToGasRecipe> recipeType) {
+        this.recipeType = Objects.requireNonNull(recipeType, "Recipe type cannot be null");
+    }
+
     @Override
     public abstract boolean test(ItemStack itemStack);
 
@@ -35,4 +43,9 @@ public abstract class ItemStackToGasRecipe extends ItemStackToChemicalRecipe<Gas
 
     @Override
     public abstract List<GasStack> getOutputDefinition();
+
+    @Override
+    public final RecipeType<ItemStackToGasRecipe> getType() {
+        return recipeType;
+    }
 }

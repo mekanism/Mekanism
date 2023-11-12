@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -50,5 +51,10 @@ public abstract class FluidToFluidRecipe extends MekanismRecipe implements Predi
     @Override
     public boolean isIncomplete() {
         return getInput().hasNoMatchingInstances();
+    }
+
+    @Override
+    public final RecipeType<FluidToFluidRecipe> getType() {
+        return MekanismRecipeTypes.TYPE_EVAPORATING.get();
     }
 }

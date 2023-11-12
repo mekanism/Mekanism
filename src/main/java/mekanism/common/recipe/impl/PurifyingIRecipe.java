@@ -2,6 +2,7 @@ package mekanism.common.recipe.impl;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
+import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.basic.BasicItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -16,12 +17,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 public class PurifyingIRecipe extends BasicItemStackGasToItemStackRecipe implements ItemStackOutputInternal {
 
     public PurifyingIRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
-        super(itemInput, gasInput, output);
-    }
-
-    @Override
-    public RecipeType<ItemStackGasToItemStackRecipe> getType() {
-        return MekanismRecipeType.PURIFYING.get();
+        super(itemInput, gasInput, output, MekanismRecipeTypes.TYPE_PURIFYING.get());
     }
 
     @Override

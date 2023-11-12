@@ -6,6 +6,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -49,5 +50,10 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe implements 
     @Override
     public boolean isIncomplete() {
         return getInput().hasNoMatchingInstances();
+    }
+
+    @Override
+    public final RecipeType<ItemStackToEnergyRecipe> getType() {
+        return MekanismRecipeTypes.TYPE_ENERGY_CONVERSION.get();
     }
 }

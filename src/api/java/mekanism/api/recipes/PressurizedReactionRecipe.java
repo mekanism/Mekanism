@@ -9,6 +9,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredie
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.common.util.TriPredicate;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
@@ -84,6 +85,11 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
     @Override
     public boolean isIncomplete() {
         return getInputSolid().hasNoMatchingInstances() || getInputFluid().hasNoMatchingInstances() || getInputGas().hasNoMatchingInstances();
+    }
+
+    @Override
+    public final RecipeType<?> getType() {
+        return MekanismRecipeTypes.TYPE_REACTION.get();
     }
 
     /**

@@ -5,6 +5,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
@@ -116,5 +117,10 @@ public abstract class RotaryRecipe extends MekanismRecipe {
     @Override
     public boolean isIncomplete() {
         return (hasFluidToGas() && getFluidInput().hasNoMatchingInstances()) || (hasGasToFluid() && getGasInput().hasNoMatchingInstances());
+    }
+
+    @Override
+    public final RecipeType<RotaryRecipe> getType() {
+        return MekanismRecipeTypes.TYPE_ROTARY.get();
     }
 }

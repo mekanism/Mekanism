@@ -3,17 +3,14 @@ package mekanism.common.recipe.impl;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
 
 @NothingNullByDefault
 public class PressurizedReactionIRecipe extends BasicPressurizedReactionRecipe {
@@ -29,11 +26,6 @@ public class PressurizedReactionIRecipe extends BasicPressurizedReactionRecipe {
 
     public GasStack getOutputGas() {
         return outputGas;
-    }
-
-    @Override
-    public RecipeType<PressurizedReactionRecipe> getType() {
-        return MekanismRecipeType.REACTION.get();
     }
 
     @Override

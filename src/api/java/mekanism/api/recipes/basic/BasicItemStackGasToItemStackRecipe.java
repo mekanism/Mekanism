@@ -10,6 +10,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredie
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +26,8 @@ public abstract class BasicItemStackGasToItemStackRecipe  extends ItemStackGasTo
      * @param gasInput  Gas input.
      * @param output    Output.
      */
-    public BasicItemStackGasToItemStackRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
+    public BasicItemStackGasToItemStackRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output, RecipeType<ItemStackGasToItemStackRecipe> recipeType) {
+        super(recipeType);
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
         this.chemicalInput = Objects.requireNonNull(gasInput, "Chemical input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");

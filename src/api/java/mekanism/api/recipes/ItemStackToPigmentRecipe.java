@@ -7,6 +7,7 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -31,4 +32,9 @@ public abstract class ItemStackToPigmentRecipe extends ItemStackToChemicalRecipe
 
     @Override
     public abstract List<PigmentStack> getOutputDefinition();
+
+    @Override
+    public final RecipeType<ItemStackToPigmentRecipe> getType() {
+        return MekanismRecipeTypes.TYPE_PIGMENT_EXTRACTING.get();
+    }
 }

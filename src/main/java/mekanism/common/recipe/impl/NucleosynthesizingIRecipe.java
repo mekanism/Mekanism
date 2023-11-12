@@ -20,11 +20,6 @@ public class NucleosynthesizingIRecipe extends BasicNucleosynthesizingRecipe imp
     }
 
     @Override
-    public RecipeType<NucleosynthesizingRecipe> getType() {
-        return MekanismRecipeType.NUCLEOSYNTHESIZING.get();
-    }
-
-    @Override
     public RecipeSerializer<NucleosynthesizingIRecipe> getSerializer() {
         return MekanismRecipeSerializers.NUCLEOSYNTHESIZING.get();
     }

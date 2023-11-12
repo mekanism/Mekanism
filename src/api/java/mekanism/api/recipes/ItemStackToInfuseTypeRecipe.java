@@ -7,6 +7,7 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -32,4 +33,9 @@ public abstract class ItemStackToInfuseTypeRecipe extends ItemStackToChemicalRec
 
     @Override
     public abstract List<InfusionStack> getOutputDefinition();
+
+    @Override
+    public final RecipeType<ItemStackToInfuseTypeRecipe> getType() {
+        return MekanismRecipeTypes.TYPE_INFUSION_CONVERSION.get();
+    }
 }

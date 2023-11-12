@@ -4,6 +4,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.GasToGasRecipe;
+import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.basic.BasicGasToGasRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -17,7 +18,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 public class CentrifugingIRecipe extends BasicGasToGasRecipe implements ChemicalOutputInternal<Gas, GasStack> {
 
     public CentrifugingIRecipe(GasStackIngredient input, GasStack output) {
-        super(input, output);
+        super(input, output, MekanismRecipeTypes.TYPE_CENTRIFUGING.get());
     }
 
     @Override
