@@ -3,7 +3,6 @@ package mekanism.common.recipe.impl;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.basic.BasicCombinerRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -16,16 +15,8 @@ public class CombinerIRecipe extends BasicCombinerRecipe {
     }
 
     @Override
-    public RecipeSerializer<CombinerIRecipe> getSerializer() {
+    public RecipeSerializer<BasicCombinerRecipe> getSerializer() {
         return MekanismRecipeSerializers.COMBINING.get();
     }
 
-    @Override
-    public ItemStack getToastSymbol() {
-        return MekanismBlocks.COMBINER.getItemStack();
-    }
-
-    public ItemStack getOutputRaw() {
-        return output;
-    }
 }

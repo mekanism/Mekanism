@@ -89,4 +89,21 @@ public abstract class BasicChemicalCrystallizerRecipe extends ChemicalCrystalliz
         return input;
     }
 
+    /**
+     * For Serializer usage only. Do not modify the returned stack!
+     *
+     * @return the uncopied output definition
+     */
+    public ItemStack getOutputRaw() {
+        return this.output;
+    }
+
+    /**
+     * For Serializer usage.
+     *
+     * @return the chemical type of the input
+     */
+    public ChemicalType getChemicalType() {
+        return chemicalType;
+    }
 }

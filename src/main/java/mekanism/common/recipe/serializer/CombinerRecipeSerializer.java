@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.recipes.CombinerRecipe;
+import mekanism.api.recipes.basic.BasicCombinerRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
@@ -14,30 +15,30 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
-public class CombinerRecipeSerializer implements RecipeSerializer<CombinerIRecipe> {
+public class CombinerRecipeSerializer implements RecipeSerializer<BasicCombinerRecipe> {
 
-    private final IFactory<CombinerIRecipe> factory;
-    private Codec<CombinerIRecipe> codec;
+    private final IFactory<BasicCombinerRecipe> factory;
+    private Codec<BasicCombinerRecipe> codec;
 
-    public CombinerRecipeSerializer(IFactory<CombinerIRecipe> factory) {
+    public CombinerRecipeSerializer(IFactory<BasicCombinerRecipe> factory) {
         this.factory = factory;
     }
 
     @NotNull
     @Override
-    public Codec<CombinerIRecipe> codec() {
+    public Codec<BasicCombinerRecipe> codec() {
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance->instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.MAIN_INPUT).forGetter(CombinerRecipe::getMainInput),
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.EXTRA_INPUT).forGetter(CombinerRecipe::getExtraInput),
-                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(CombinerIRecipe::getOutputRaw)
+                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicCombinerRecipe::getOutputRaw)
             ).apply(instance, factory::create));
         }
         return codec;
     }
 
     @Override
-    public CombinerIRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
+    public BasicCombinerRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             ItemStackIngredient mainInput = IngredientCreatorAccess.item().read(buffer);
             ItemStackIngredient extraInput = IngredientCreatorAccess.item().read(buffer);
@@ -50,7 +51,7 @@ public class CombinerRecipeSerializer implements RecipeSerializer<CombinerIRecip
     }
 
     @Override
-    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull CombinerIRecipe recipe) {
+    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull BasicCombinerRecipe recipe) {
         try {
             recipe.getMainInput().write(buffer);
             recipe.getExtraInput().write(buffer);
@@ -62,7 +63,7 @@ public class CombinerRecipeSerializer implements RecipeSerializer<CombinerIRecip
     }
 
     @FunctionalInterface
-    public interface IFactory<RECIPE extends CombinerRecipe> {
+    public interface IFactory<RECIPE extends BasicCombinerRecipe> {
 
         RECIPE create(ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack output);
     }

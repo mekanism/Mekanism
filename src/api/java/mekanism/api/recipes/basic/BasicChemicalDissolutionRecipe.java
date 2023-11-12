@@ -60,4 +60,12 @@ public abstract class BasicChemicalDissolutionRecipe extends ChemicalDissolution
         return Collections.singletonList(output);
     }
 
+    /**
+     * For Serializer usage only. Do not modify the returned stack!
+     *
+     * @return the uncopied output definition
+     */
+    public BoxedChemicalStack getOutputRaw() {
+        return output;
+    }
 }

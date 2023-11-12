@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
-public abstract class BasicPaintingRecipe  extends PaintingRecipe {
+public abstract class BasicPaintingRecipe extends PaintingRecipe implements IBasicItemStackOutput {
 
     protected final ItemStackIngredient itemInput;
     protected final PigmentStackIngredient pigmentInput;
@@ -66,5 +66,10 @@ public abstract class BasicPaintingRecipe  extends PaintingRecipe {
     @Override
     public List<@NotNull ItemStack> getOutputDefinition() {
         return Collections.singletonList(output);
+    }
+
+    @Override
+    public ItemStack getOutputRaw() {
+        return output;
     }
 }

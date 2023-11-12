@@ -3,10 +3,15 @@ package mekanism.api.recipes;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<@NotNull ItemStack> {
 
     protected static final Random RANDOM = new Random();
+    private static final RegistryObject<Item> PRECISION_SAWMILL = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "precision_sawmill"), ForgeRegistries.ITEMS);
 
     @Override
     public abstract boolean test(ItemStack stack);
@@ -78,6 +84,11 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
     @Override
     public String getGroup() {
         return "precision_sawmill";
+    }
+
+    @Override
+    public ItemStack getToastSymbol() {
+        return new ItemStack(PRECISION_SAWMILL.get());
     }
 
     /**

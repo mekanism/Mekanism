@@ -4,6 +4,7 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.recipes.basic.BasicChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
@@ -41,7 +42,7 @@ public class ChemicalCrystallizerRecipeManager extends MekanismRecipeManager<Che
      * @param input  {@link ChemicalStackIngredient} representing the input of the recipe.
      * @param output {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final ChemicalCrystallizerRecipe makeRecipe(ResourceLocation id, ChemicalStackIngredient<?, ?> input, IItemStack output) {
+    public final BasicChemicalCrystallizerRecipe makeRecipe(ResourceLocation id, ChemicalStackIngredient<?, ?> input, IItemStack output) {
         return new ChemicalCrystallizerIRecipe(input, getAndValidateNotEmpty(output));
     }
 

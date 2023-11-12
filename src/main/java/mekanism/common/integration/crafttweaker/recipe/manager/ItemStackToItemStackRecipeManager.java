@@ -9,9 +9,9 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.impl.CrushingIRecipe;
-import mekanism.common.recipe.impl.EnrichingIRecipe;
-import mekanism.common.recipe.impl.SmeltingIRecipe;
+import mekanism.common.recipe.impl.BasicCrushingRecipe;
+import mekanism.common.recipe.impl.BasicEnrichingRecipe;
+import mekanism.common.recipe.impl.BasicSmeltingRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
@@ -73,7 +73,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
 
         @Override
         protected ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
-            return new CrushingIRecipe(input, output);
+            return new BasicCrushingRecipe(input, output);
         }
     }
 
@@ -89,7 +89,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
 
         @Override
         protected ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
-            return new EnrichingIRecipe(input, output);
+            return new BasicEnrichingRecipe(input, output);
         }
     }
 
@@ -105,7 +105,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
 
         @Override
         protected ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
-            return new SmeltingIRecipe(input, output);
+            return new BasicSmeltingRecipe(input, output);
         }
     }
 }

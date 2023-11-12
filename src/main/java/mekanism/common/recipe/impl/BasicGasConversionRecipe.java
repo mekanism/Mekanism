@@ -1,25 +1,30 @@
 package mekanism.common.recipe.impl;
 
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.basic.BasicItemStackToGasRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 
 @NothingNullByDefault
-public class GasConversionIRecipe extends BasicItemStackToGasRecipe implements ChemicalOutputInternal<Gas, GasStack> {
+public class BasicGasConversionRecipe extends BasicItemStackToGasRecipe {
 
-    public GasConversionIRecipe(ItemStackIngredient input, GasStack output) {
+    private static final RegistryObject<Item> CREATIVE_CHEMICAL_TANK = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "creative_chemical_tank"), ForgeRegistries.ITEMS);
+
+    public BasicGasConversionRecipe(ItemStackIngredient input, GasStack output) {
         super(input, output, MekanismRecipeTypes.TYPE_GAS_CONVERSION.get());
     }
 
     @Override
-    public RecipeSerializer<GasConversionIRecipe> getSerializer() {
+    public RecipeSerializer<BasicGasConversionRecipe> getSerializer() {
         return MekanismRecipeSerializers.GAS_CONVERSION.get();
     }
 
@@ -30,11 +35,7 @@ public class GasConversionIRecipe extends BasicItemStackToGasRecipe implements C
 
     @Override
     public ItemStack getToastSymbol() {
-        return MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemStack();
+        return new ItemStack(CREATIVE_CHEMICAL_TANK.get());
     }
 
-    @Override
-    public GasStack getOutputRaw() {
-        return output;
-    }
 }

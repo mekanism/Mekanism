@@ -59,4 +59,7 @@ public abstract class BasicItemStackToItemStackRecipe extends ItemStackToItemSta
         return Collections.singletonList(output);
     }
 
+    public ItemStack getOutputRaw() {
+        return output;
+    }
 }

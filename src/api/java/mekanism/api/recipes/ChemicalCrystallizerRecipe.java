@@ -2,12 +2,17 @@ package mekanism.api.recipes;
 
 import java.util.List;
 import java.util.function.Predicate;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,6 +25,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @NothingNullByDefault
 public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implements Predicate<@NotNull BoxedChemicalStack> {
+
+    private static final RegistryObject<Item> CHEMICAL_CRYSTALLIZER = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "chemical_crystallizer"), ForgeRegistries.ITEMS);
 
     /**
      * Gets the output based on the given input.
@@ -94,5 +101,10 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
     @Override
     public String getGroup() {
         return "chemical_crystallizer";
+    }
+
+    @Override
+    public ItemStack getToastSymbol() {
+        return new ItemStack(CHEMICAL_CRYSTALLIZER.get());
     }
 }

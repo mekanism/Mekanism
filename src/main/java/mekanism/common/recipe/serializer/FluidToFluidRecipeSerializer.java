@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.recipes.FluidToFluidRecipe;
+import mekanism.api.recipes.basic.BasicFluidToFluidRecipe;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
@@ -14,7 +15,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
-public class FluidToFluidRecipeSerializer<RECIPE extends FluidToFluidIRecipe> implements RecipeSerializer<RECIPE> {
+public class FluidToFluidRecipeSerializer<RECIPE extends BasicFluidToFluidRecipe> implements RecipeSerializer<RECIPE> {
 
     private final IFactory<RECIPE> factory;
     private Codec<RECIPE> codec;
@@ -29,7 +30,7 @@ public class FluidToFluidRecipeSerializer<RECIPE extends FluidToFluidIRecipe> im
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance->instance.group(
                   IngredientCreatorAccess.fluid().codec().fieldOf(JsonConstants.INPUT).forGetter(FluidToFluidRecipe::getInput),
-                  SerializerHelper.FLUIDSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(FluidToFluidIRecipe::getOutputRaw)
+                  SerializerHelper.FLUIDSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicFluidToFluidRecipe::getOutputRaw)
             ).apply(instance, factory::create));
         }
         return codec;

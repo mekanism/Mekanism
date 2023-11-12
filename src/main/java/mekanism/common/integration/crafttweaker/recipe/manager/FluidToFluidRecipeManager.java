@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import mekanism.api.recipes.FluidToFluidRecipe;
+import mekanism.api.recipes.basic.BasicFluidToFluidRecipe;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
@@ -42,11 +43,11 @@ public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<Fl
      * @param input  {@link FluidStackIngredient} representing the input of the recipe.
      * @param output {@link IFluidStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final FluidToFluidIRecipe makeRecipe(ResourceLocation id, FluidStackIngredient input, IFluidStack output) {
+    public final BasicFluidToFluidRecipe makeRecipe(ResourceLocation id, FluidStackIngredient input, IFluidStack output) {
         return makeRecipe(id, input, getAndValidateNotEmpty(output));
     }
 
-    protected abstract FluidToFluidIRecipe makeRecipe(ResourceLocation id, FluidStackIngredient input, FluidStack output);
+    protected abstract BasicFluidToFluidRecipe makeRecipe(ResourceLocation id, FluidStackIngredient input, FluidStack output);
 
     @Override
     protected String describeOutputs(FluidToFluidRecipe recipe) {
@@ -64,7 +65,7 @@ public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<Fl
         }
 
         @Override
-        protected FluidToFluidIRecipe makeRecipe(ResourceLocation id, FluidStackIngredient input, FluidStack output) {
+        protected BasicFluidToFluidRecipe makeRecipe(ResourceLocation id, FluidStackIngredient input, FluidStack output) {
             return new FluidToFluidIRecipe(input, output);
         }
     }

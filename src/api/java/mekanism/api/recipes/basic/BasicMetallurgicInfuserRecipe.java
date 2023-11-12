@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
-public abstract class BasicMetallurgicInfuserRecipe  extends MetallurgicInfuserRecipe {
+public abstract class BasicMetallurgicInfuserRecipe extends MetallurgicInfuserRecipe implements IBasicItemStackOutput {
 
     protected final ItemStackIngredient itemInput;
     protected final InfusionStackIngredient infusionInput;
@@ -65,5 +65,10 @@ public abstract class BasicMetallurgicInfuserRecipe  extends MetallurgicInfuserR
     @Override
     public List<@NotNull ItemStack> getOutputDefinition() {
         return Collections.singletonList(output);
+    }
+
+    @Override
+    public ItemStack getOutputRaw() {
+        return output;
     }
 }

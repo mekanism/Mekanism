@@ -46,4 +46,7 @@ public abstract class BasicFluidToFluidRecipe  extends FluidToFluidRecipe {
         return output.copy();
     }
 
+    public FluidStack getOutputRaw() {
+        return output;
     }
+}

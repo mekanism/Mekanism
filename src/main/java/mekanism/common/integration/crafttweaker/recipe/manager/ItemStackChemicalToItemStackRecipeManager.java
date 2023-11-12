@@ -24,11 +24,11 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.impl.CompressingIRecipe;
-import mekanism.common.recipe.impl.InjectingIRecipe;
+import mekanism.common.recipe.impl.BasicCompressingRecipe;
+import mekanism.common.recipe.impl.BasicInjectingRecipe;
 import mekanism.common.recipe.impl.MetallurgicInfuserIRecipe;
 import mekanism.common.recipe.impl.PaintingIRecipe;
-import mekanism.common.recipe.impl.PurifyingIRecipe;
+import mekanism.common.recipe.impl.BasicPurifyingRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
@@ -105,7 +105,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
 
         @Override
         protected ItemStackGasToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
-            return new CompressingIRecipe(itemInput, gasInput, output);
+            return new BasicCompressingRecipe(itemInput, gasInput, output);
         }
     }
 
@@ -121,7 +121,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
 
         @Override
         protected ItemStackGasToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
-            return new InjectingIRecipe(itemInput, gasInput, output);
+            return new BasicInjectingRecipe(itemInput, gasInput, output);
         }
     }
 
@@ -137,7 +137,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
 
         @Override
         protected ItemStackGasToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
-            return new PurifyingIRecipe(itemInput, gasInput, output);
+            return new BasicPurifyingRecipe(itemInput, gasInput, output);
         }
     }
 

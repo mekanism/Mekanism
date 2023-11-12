@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -12,7 +13,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
-public abstract class BasicItemStackToGasRecipe extends ItemStackToGasRecipe {
+public abstract class BasicItemStackToGasRecipe extends ItemStackToGasRecipe implements IBasicChemicalOutput<Gas, GasStack> {
 
     protected final ItemStackIngredient input;
     protected final GasStack output;
@@ -50,5 +51,9 @@ public abstract class BasicItemStackToGasRecipe extends ItemStackToGasRecipe {
     @Override
     public List<GasStack> getOutputDefinition() {
         return Collections.singletonList(output);
+    }
+
+    public GasStack getOutputRaw() {
+        return output;
     }
 }

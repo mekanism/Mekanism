@@ -4,6 +4,7 @@ package mekanism.api.recipes.basic;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -75,6 +76,24 @@ public abstract class BasicSawmillRecipe extends SawmillRecipe {
     @Override
     public ItemStackIngredient getInput() {
         return input;
+    }
+
+    /**
+     * For Serializer use. DO NOT MODIFY RETURN VALUE.
+     *
+     * @return the uncopied basic output, or empty if the value is ItemStack.EMPTY
+     */
+    public Optional<ItemStack> getMainOutputRaw() {
+        return this.mainOutput.isEmpty() ? Optional.empty() : Optional.of(this.mainOutput);
+    }
+
+    /**
+     * For Serializer use. DO NOT MODIFY RETURN VALUE.
+     *
+     * @return the uncopied basic output
+     */
+    public Optional<ItemStack> getSecondaryOutputRaw() {
+        return this.secondaryOutput.isEmpty() ? Optional.empty() : Optional.of(this.secondaryOutput);
     }
 
 

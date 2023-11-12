@@ -1,12 +1,18 @@
 package mekanism.api.recipes;
 
 import java.util.List;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -18,6 +24,8 @@ import org.jetbrains.annotations.Contract;
  */
 @NothingNullByDefault
 public abstract class PigmentMixingRecipe extends ChemicalChemicalToChemicalRecipe<Pigment, PigmentStack, PigmentStackIngredient> {
+
+    private static final RegistryObject<Item> PIGMENT_MIXER = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "pigment_mixer"), ForgeRegistries.ITEMS);
 
     @Override
     public abstract boolean test(PigmentStack input1, PigmentStack input2);
@@ -43,5 +51,10 @@ public abstract class PigmentMixingRecipe extends ChemicalChemicalToChemicalReci
     @Override
     public String getGroup() {
         return "pigment_mixer";
+    }
+
+    @Override
+    public ItemStack getToastSymbol() {
+        return new ItemStack(PIGMENT_MIXER.get());
     }
 }

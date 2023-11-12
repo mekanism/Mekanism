@@ -7,6 +7,7 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.RotaryRecipe;
+import mekanism.api.recipes.basic.BasicRotaryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -21,14 +22,14 @@ import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
-public class RotaryRecipeSerializer implements RecipeSerializer<RotaryIRecipe> {
+public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecipe> {
 
-    private final  RecordCodecBuilder<RotaryIRecipe, FluidStackIngredient> FLUID_INPUT_FIELD = RecordCodecBuilder.of(RotaryRecipe::getFluidInput, JsonConstants.FLUID_INPUT, FluidStackIngredientCreator.INSTANCE.codec());
-    private final  RecordCodecBuilder<RotaryIRecipe, FluidStack> FLUID_OUTPUT_FIELD = RecordCodecBuilder.of(RotaryIRecipe::getFluidOutputRaw, JsonConstants.FLUID_OUTPUT, SerializerHelper.FLUIDSTACK_CODEC);
-    private final RecordCodecBuilder<RotaryIRecipe, GasStackIngredient> GAS_INPUT_FIELD = RecordCodecBuilder.of(RotaryRecipe::getGasInput, JsonConstants.GAS_INPUT, GasStackIngredientCreator.INSTANCE.codec());
-    private final RecordCodecBuilder<RotaryIRecipe, GasStack> GAS_OUTPUT_FIELD = RecordCodecBuilder.of(RotaryIRecipe::getGasOutputRaw, JsonConstants.GAS_INPUT, ChemicalUtils.GAS_STACK_CODEC);
+    private final RecordCodecBuilder<BasicRotaryRecipe, FluidStackIngredient> FLUID_INPUT_FIELD = RecordCodecBuilder.of(RotaryRecipe::getFluidInput, JsonConstants.FLUID_INPUT, FluidStackIngredientCreator.INSTANCE.codec());
+    private final RecordCodecBuilder<BasicRotaryRecipe, FluidStack> FLUID_OUTPUT_FIELD = RecordCodecBuilder.of(BasicRotaryRecipe::getFluidOutputRaw, JsonConstants.FLUID_OUTPUT, SerializerHelper.FLUIDSTACK_CODEC);
+    private final RecordCodecBuilder<BasicRotaryRecipe, GasStackIngredient> GAS_INPUT_FIELD = RecordCodecBuilder.of(RotaryRecipe::getGasInput, JsonConstants.GAS_INPUT, GasStackIngredientCreator.INSTANCE.codec());
+    private final RecordCodecBuilder<BasicRotaryRecipe, GasStack> GAS_OUTPUT_FIELD = RecordCodecBuilder.of(BasicRotaryRecipe::getGasOutputRaw, JsonConstants.GAS_INPUT, ChemicalUtils.GAS_STACK_CODEC);
 
-    private Codec<RotaryIRecipe> bothWaysCodec() {
+    private Codec<BasicRotaryRecipe> bothWaysCodec() {
         return RecordCodecBuilder.create(i -> i.group(
               FLUID_INPUT_FIELD,
               GAS_INPUT_FIELD,
@@ -37,40 +38,40 @@ public class RotaryRecipeSerializer implements RecipeSerializer<RotaryIRecipe> {
         ).apply(i, this.factory::create));
     }
 
-    private Codec<RotaryIRecipe> fluidToGasCodec() {
+    private Codec<BasicRotaryRecipe> fluidToGasCodec() {
         return RecordCodecBuilder.create(i -> i.group(
               FLUID_INPUT_FIELD,
               GAS_OUTPUT_FIELD
         ).apply(i, this.factory::create));
     }
 
-    private Codec<RotaryIRecipe> gasToFluidCodec() {
+    private Codec<BasicRotaryRecipe> gasToFluidCodec() {
         return RecordCodecBuilder.create(i -> i.group(
               GAS_INPUT_FIELD,
               FLUID_OUTPUT_FIELD
         ).apply(i, this.factory::create));
     }
 
-    private final IFactory<RotaryIRecipe> factory;
-    private final Lazy<Codec<RotaryIRecipe>> codec;
+    private final IFactory<BasicRotaryRecipe> factory;
+    private final Lazy<Codec<BasicRotaryRecipe>> codec;
 
-    public RotaryRecipeSerializer(IFactory<RotaryIRecipe> factory) {
+    public RotaryRecipeSerializer(IFactory<BasicRotaryRecipe> factory) {
         this.factory = factory;
         this.codec = Lazy.of(this::makeCodec);
     }
 
-    private Codec<RotaryIRecipe> makeCodec() {
+    private Codec<BasicRotaryRecipe> makeCodec() {
         return NeoForgeExtraCodecs.withAlternative(bothWaysCodec(), NeoForgeExtraCodecs.withAlternative(fluidToGasCodec(), gasToFluidCodec()));
     }
 
     @NotNull
     @Override
-    public Codec<RotaryIRecipe> codec() {
+    public Codec<BasicRotaryRecipe> codec() {
         return this.codec.get();
     }
 
     @Override
-    public RotaryIRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
+    public BasicRotaryRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             FluidStackIngredient fluidInputIngredient = null;
             GasStackIngredient gasInputIngredient = null;
@@ -103,7 +104,7 @@ public class RotaryRecipeSerializer implements RecipeSerializer<RotaryIRecipe> {
     }
 
     @Override
-    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull RotaryIRecipe recipe) {
+    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull BasicRotaryRecipe recipe) {
         try {
             buffer.writeBoolean(recipe.hasFluidToGas());
             if (recipe.hasFluidToGas()) {
@@ -121,7 +122,7 @@ public class RotaryRecipeSerializer implements RecipeSerializer<RotaryIRecipe> {
         }
     }
 
-    public interface IFactory<RECIPE extends RotaryIRecipe> {
+    public interface IFactory<RECIPE extends BasicRotaryRecipe> {
 
         RECIPE create(FluidStackIngredient fluidInput, GasStack gasOutput);
 

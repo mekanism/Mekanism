@@ -3,11 +3,12 @@ package mekanism.common.recipe.serializer;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.PaintingRecipe;
+import mekanism.api.recipes.basic.BasicPaintingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
 import mekanism.common.recipe.impl.PaintingIRecipe;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
 
-public class PaintingRecipeSerializer<RECIPE extends PaintingIRecipe> extends
+public class PaintingRecipeSerializer<RECIPE extends BasicPaintingRecipe> extends
       ItemStackChemicalToItemStackRecipeSerializer<Pigment, PigmentStack, PigmentStackIngredient, RECIPE> {
 
     public PaintingRecipeSerializer(IFactory<Pigment, PigmentStack, PigmentStackIngredient, RECIPE> factory) {

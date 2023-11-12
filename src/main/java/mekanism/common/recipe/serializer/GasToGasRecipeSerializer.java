@@ -4,18 +4,17 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
 import mekanism.api.chemical.ChemicalUtils;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.GasToGasRecipe;
+import mekanism.api.recipes.basic.BasicGasToGasRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.impl.ChemicalOutputInternal;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
-public class GasToGasRecipeSerializer<RECIPE extends GasToGasRecipe & ChemicalOutputInternal<Gas, GasStack>> implements RecipeSerializer<RECIPE> {
+public class GasToGasRecipeSerializer<RECIPE extends BasicGasToGasRecipe> implements RecipeSerializer<RECIPE> {
 
     private final IFactory<RECIPE> factory;
     private Codec<RECIPE> codec;
@@ -30,7 +29,7 @@ public class GasToGasRecipeSerializer<RECIPE extends GasToGasRecipe & ChemicalOu
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance->instance.group(
                   IngredientCreatorAccess.gas().codec().fieldOf(JsonConstants.INPUT).forGetter(GasToGasRecipe::getInput),
-                  ChemicalUtils.GAS_STACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(ChemicalOutputInternal::getOutputRaw)
+                  ChemicalUtils.GAS_STACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicGasToGasRecipe::getOutputRaw)
             ).apply(instance, factory::create));
         }
         return codec;

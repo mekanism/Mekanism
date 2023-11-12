@@ -59,4 +59,7 @@ public abstract class BasicFluidSlurryToSlurryRecipe extends FluidSlurryToSlurry
         return output.copy();
     }
 
+    public SlurryStack getOutputRaw() {
+        return output;
+    }
 }

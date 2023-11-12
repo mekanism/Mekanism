@@ -1,12 +1,17 @@
 package mekanism.api.recipes;
 
 import java.util.List;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @NothingNullByDefault
 public abstract class NucleosynthesizingRecipe extends ItemStackGasToItemStackRecipe {
+
+    private static final RegistryObject<Item> ANTIPROTONIC_NUCLEOSYNTHESIZER = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "antiprotonic_nucleosynthesizer"), ForgeRegistries.ITEMS);
 
     public NucleosynthesizingRecipe() {
         super(MekanismRecipeTypes.TYPE_NUCLEOSYNTHESIZING.get());
@@ -54,5 +61,10 @@ public abstract class NucleosynthesizingRecipe extends ItemStackGasToItemStackRe
     @Override
     public String getGroup() {
         return "antiprotonic_nucleosynthesizer";
+    }
+
+    @Override
+    public ItemStack getToastSymbol() {
+        return new ItemStack(ANTIPROTONIC_NUCLEOSYNTHESIZER.get());
     }
 }

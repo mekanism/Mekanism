@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
-public abstract class BasicNucleosynthesizingRecipe  extends NucleosynthesizingRecipe {
+public abstract class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe implements IBasicItemStackOutput {
 
     protected final ItemStackIngredient itemInput;
     protected final GasStackIngredient chemicalInput;
@@ -75,5 +75,10 @@ public abstract class BasicNucleosynthesizingRecipe  extends NucleosynthesizingR
     @Override
     public List<@NotNull ItemStack> getOutputDefinition() {
         return Collections.singletonList(output);
+    }
+
+    @Override
+    public ItemStack getOutputRaw() {
+        return output;
     }
 }

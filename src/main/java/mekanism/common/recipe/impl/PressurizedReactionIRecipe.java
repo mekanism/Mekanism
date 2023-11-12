@@ -7,7 +7,6 @@ import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -20,21 +19,9 @@ public class PressurizedReactionIRecipe extends BasicPressurizedReactionRecipe {
         super(inputSolid, inputFluid, inputGas, energyRequired, duration, outputItem, outputGas);
     }
 
-    public ItemStack getOutputItem() {
-        return outputItem;
-    }
-
-    public GasStack getOutputGas() {
-        return outputGas;
-    }
-
     @Override
-    public RecipeSerializer<PressurizedReactionIRecipe> getSerializer() {
+    public RecipeSerializer<BasicPressurizedReactionRecipe> getSerializer() {
         return MekanismRecipeSerializers.REACTION.get();
     }
 
-    @Override
-    public ItemStack getToastSymbol() {
-        return MekanismBlocks.PRESSURIZED_REACTION_CHAMBER.getItemStack();
-    }
 }

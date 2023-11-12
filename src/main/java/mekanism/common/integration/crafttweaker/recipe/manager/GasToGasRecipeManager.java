@@ -9,8 +9,8 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.recipe.impl.ActivatingIRecipe;
-import mekanism.common.recipe.impl.CentrifugingIRecipe;
+import mekanism.api.recipes.basic.BasicActivatingRecipe;
+import mekanism.common.recipe.impl.BasicCentrifugingRecipe;
 import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -68,7 +68,7 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager<GasToG
 
         @Override
         protected GasToGasRecipe makeRecipe(ResourceLocation id, GasStackIngredient ingredient, GasStack output) {
-            return new ActivatingIRecipe(ingredient, output);
+            return new BasicActivatingRecipe(ingredient, output);
         }
     }
 
@@ -84,7 +84,7 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager<GasToG
 
         @Override
         protected GasToGasRecipe makeRecipe(ResourceLocation id, GasStackIngredient ingredient, GasStack output) {
-            return new CentrifugingIRecipe(ingredient, output);
+            return new BasicCentrifugingRecipe(ingredient, output);
         }
     }
 }

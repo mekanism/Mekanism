@@ -4,13 +4,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
-public abstract class BasicChemicalInfuserRecipe  extends ChemicalInfuserRecipe {
+public abstract class BasicChemicalInfuserRecipe extends ChemicalInfuserRecipe implements IBasicChemicalOutput<Gas, GasStack> {
 
     protected final GasStackIngredient leftInput;
     protected final GasStackIngredient rightInput;
@@ -58,5 +59,9 @@ public abstract class BasicChemicalInfuserRecipe  extends ChemicalInfuserRecipe 
     @Override
     public List<GasStack> getOutputDefinition() {
         return Collections.singletonList(output);
+    }
+
+    public GasStack getOutputRaw() {
+        return output;
     }
 }

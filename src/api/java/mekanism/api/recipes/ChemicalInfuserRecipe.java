@@ -1,12 +1,18 @@
 package mekanism.api.recipes;
 
 import java.util.List;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -18,6 +24,8 @@ import org.jetbrains.annotations.Contract;
  */
 @NothingNullByDefault
 public abstract class ChemicalInfuserRecipe extends ChemicalChemicalToChemicalRecipe<Gas, GasStack, GasStackIngredient> {
+
+    private static final RegistryObject<Item> CHEMICAL_INFUSER = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "chemical_infuser"), ForgeRegistries.ITEMS);
 
     @Override
     public abstract boolean test(GasStack input1, GasStack input2);
@@ -43,5 +51,10 @@ public abstract class ChemicalInfuserRecipe extends ChemicalChemicalToChemicalRe
     @Override
     public String getGroup() {
         return "chemical_infuser";
+    }
+
+    @Override
+    public ItemStack getToastSymbol() {
+        return new ItemStack(CHEMICAL_INFUSER.get());
     }
 }

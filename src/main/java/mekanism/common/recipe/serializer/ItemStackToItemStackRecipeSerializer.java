@@ -4,17 +4,16 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
-import mekanism.api.recipes.ItemStackToItemStackRecipe;
+import mekanism.api.recipes.basic.BasicItemStackToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.impl.ItemStackOutputInternal;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemStackToItemStackRecipeSerializer<RECIPE extends ItemStackToItemStackRecipe & ItemStackOutputInternal> implements RecipeSerializer<RECIPE> {
+public class ItemStackToItemStackRecipeSerializer<RECIPE extends BasicItemStackToItemStackRecipe> implements RecipeSerializer<RECIPE> {
 
     private final IFactory<RECIPE> factory;
     private Codec<RECIPE> codec;
@@ -28,8 +27,8 @@ public class ItemStackToItemStackRecipeSerializer<RECIPE extends ItemStackToItem
     public Codec<RECIPE> codec() {
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance->instance.group(
-                  IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.INPUT).forGetter(ItemStackToItemStackRecipe::getInput),
-                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(ItemStackOutputInternal::getOutputRaw)
+                  IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.INPUT).forGetter(BasicItemStackToItemStackRecipe::getInput),
+                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicItemStackToItemStackRecipe::getOutputRaw)
             ).apply(instance, factory::create));
         }
         return codec;
@@ -59,7 +58,7 @@ public class ItemStackToItemStackRecipeSerializer<RECIPE extends ItemStackToItem
     }
 
     @FunctionalInterface
-    public interface IFactory<RECIPE extends ItemStackToItemStackRecipe> {
+    public interface IFactory<RECIPE extends BasicItemStackToItemStackRecipe> {
 
         RECIPE create(ItemStackIngredient input, ItemStack output);
     }

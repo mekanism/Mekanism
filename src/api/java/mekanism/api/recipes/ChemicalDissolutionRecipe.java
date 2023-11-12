@@ -2,18 +2,25 @@ package mekanism.api.recipes;
 
 import java.util.List;
 import java.util.function.BiPredicate;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
 public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implements BiPredicate<@NotNull ItemStack, @NotNull GasStack> {
+
+    private static final RegistryObject<Item> CHEMICAL_DISSOLUTION_CHAMBER = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "chemical_dissolution_chamber"), ForgeRegistries.ITEMS);
 
     /**
      * Gets the input item ingredient.
@@ -63,5 +70,10 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implement
     @Override
     public String getGroup() {
         return "chemical_dissolution_chamber";
+    }
+
+    @Override
+    public ItemStack getToastSymbol() {
+        return new ItemStack(CHEMICAL_DISSOLUTION_CHAMBER.get());
     }
 }

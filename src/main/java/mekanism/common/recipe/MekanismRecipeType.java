@@ -42,7 +42,7 @@ import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
-import mekanism.common.recipe.impl.SmeltingIRecipe;
+import mekanism.common.recipe.impl.BasicSmeltingRecipe;
 import mekanism.common.recipe.lookup.cache.ChemicalCrystallizerInputRecipeCache;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.DoubleItem;
@@ -209,7 +209,7 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
                             IItemStackIngredientCreator ingredientCreator = IngredientCreatorAccess.item();
                             input = ingredientCreator.from(ingredients.stream().map(ingredientCreator::from));
                         }
-                        recipes.add(new RecipeHolder<>(smeltingRecipe.id(), castRecipe(new SmeltingIRecipe(input, recipeOutput))));
+                        recipes.add(new RecipeHolder<>(smeltingRecipe.id(), castRecipe(new BasicSmeltingRecipe(input, recipeOutput))));
                     }
                 }
             }

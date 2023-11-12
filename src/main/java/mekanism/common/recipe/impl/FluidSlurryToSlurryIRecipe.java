@@ -5,9 +5,7 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.basic.BasicFluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 @NothingNullByDefault
@@ -18,16 +16,8 @@ public class FluidSlurryToSlurryIRecipe extends BasicFluidSlurryToSlurryRecipe {
     }
 
     @Override
-    public RecipeSerializer<FluidSlurryToSlurryIRecipe> getSerializer() {
+    public RecipeSerializer<BasicFluidSlurryToSlurryRecipe> getSerializer() {
         return MekanismRecipeSerializers.WASHING.get();
     }
 
-    @Override
-    public ItemStack getToastSymbol() {
-        return MekanismBlocks.CHEMICAL_WASHER.getItemStack();
-    }
-
-    public SlurryStack getOutputRaw() {
-        return output;
-    }
 }

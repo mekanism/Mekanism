@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -11,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
-public abstract class BasicItemStackToInfuseTypeRecipe  extends ItemStackToInfuseTypeRecipe {
+public abstract class BasicItemStackToInfuseTypeRecipe extends ItemStackToInfuseTypeRecipe implements IBasicChemicalOutput<InfuseType, InfusionStack> {
 
     protected final ItemStackIngredient input;
     protected final InfusionStack output;
@@ -48,5 +49,10 @@ public abstract class BasicItemStackToInfuseTypeRecipe  extends ItemStackToInfus
     @Override
     public List<InfusionStack> getOutputDefinition() {
         return Collections.singletonList(output);
+    }
+
+    @Override
+    public InfusionStack getOutputRaw() {
+        return output;
     }
 }

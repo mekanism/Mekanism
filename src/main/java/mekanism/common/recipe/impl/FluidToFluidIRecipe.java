@@ -3,9 +3,7 @@ package mekanism.common.recipe.impl;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.basic.BasicFluidToFluidRecipe;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -17,16 +15,8 @@ public class FluidToFluidIRecipe extends BasicFluidToFluidRecipe {
     }
 
     @Override
-    public RecipeSerializer<FluidToFluidIRecipe> getSerializer() {
+    public RecipeSerializer<BasicFluidToFluidRecipe> getSerializer() {
         return MekanismRecipeSerializers.EVAPORATING.get();
     }
 
-    public FluidStack getOutputRaw() {
-        return output;
-    }
-
-    @Override
-    public ItemStack getToastSymbol() {
-        return MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER.getItemStack();
-    }
 }

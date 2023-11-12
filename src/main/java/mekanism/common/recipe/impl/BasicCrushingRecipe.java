@@ -1,23 +1,29 @@
 package mekanism.common.recipe.impl;
 
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.basic.BasicItemStackToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 
 @NothingNullByDefault
-public class CrushingIRecipe extends BasicItemStackToItemStackRecipe implements ItemStackOutputInternal {
+public class BasicCrushingRecipe extends BasicItemStackToItemStackRecipe {
 
-    public CrushingIRecipe(ItemStackIngredient input, ItemStack output) {
+    private static final RegistryObject<Item> CRUSHER = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "crusher"), ForgeRegistries.ITEMS);
+
+    public BasicCrushingRecipe(ItemStackIngredient input, ItemStack output) {
         super(input, output, MekanismRecipeTypes.TYPE_CRUSHING.get());
     }
 
     @Override
-    public RecipeSerializer<CrushingIRecipe> getSerializer() {
+    public RecipeSerializer<BasicCrushingRecipe> getSerializer() {
         return MekanismRecipeSerializers.CRUSHING.get();
     }
 
@@ -28,11 +34,7 @@ public class CrushingIRecipe extends BasicItemStackToItemStackRecipe implements 
 
     @Override
     public ItemStack getToastSymbol() {
-        return MekanismBlocks.CRUSHER.getItemStack();
+        return new ItemStack(CRUSHER.get());
     }
 
-    @Override
-    public ItemStack getOutputRaw() {
-        return output;
-    }
 }

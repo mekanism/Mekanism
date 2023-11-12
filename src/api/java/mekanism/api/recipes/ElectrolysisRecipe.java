@@ -3,12 +3,18 @@ package mekanism.api.recipes;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,6 +29,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @NothingNullByDefault
 public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predicate<@NotNull FluidStack> {
+
+    private static final RegistryObject<Item> ELECTROLYTIC_SEPARATOR = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "electrolytic_separator"), ForgeRegistries.ITEMS);
 
     /**
      * Gets the input ingredient.
@@ -66,6 +74,11 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
     @Override
     public final RecipeType<ElectrolysisRecipe> getType() {
         return MekanismRecipeTypes.TYPE_SEPARATING.get();
+    }
+
+    @Override
+    public ItemStack getToastSymbol() {
+        return new ItemStack(ELECTROLYTIC_SEPARATOR.get());
     }
 
     public record ElectrolysisRecipeOutput(@NotNull GasStack left, @NotNull GasStack right) {

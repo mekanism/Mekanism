@@ -4,13 +4,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
-public abstract class BasicPigmentMixingRecipe extends PigmentMixingRecipe {
+public abstract class BasicPigmentMixingRecipe extends PigmentMixingRecipe implements IBasicChemicalOutput<Pigment, PigmentStack> {
 
     protected final PigmentStackIngredient leftInput;
     protected final PigmentStackIngredient rightInput;
@@ -58,5 +59,10 @@ public abstract class BasicPigmentMixingRecipe extends PigmentMixingRecipe {
     @Override
     public List<PigmentStack> getOutputDefinition() {
         return Collections.singletonList(output);
+    }
+
+    @Override
+    public PigmentStack getOutputRaw() {
+        return output;
     }
 }

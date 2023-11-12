@@ -94,4 +94,11 @@ public abstract class BasicPressurizedReactionRecipe  extends PressurizedReactio
         return new PressurizedReactionRecipeOutput(this.outputItem.copy(), this.outputGas.copy());
     }
 
+    public ItemStack getOutputItem() {
+        return outputItem;
     }
+
+    public GasStack getOutputGas() {
+        return outputGas;
+    }
+}

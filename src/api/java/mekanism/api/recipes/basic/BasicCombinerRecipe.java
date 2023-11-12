@@ -65,4 +65,7 @@ public abstract class BasicCombinerRecipe extends CombinerRecipe {
         return Collections.singletonList(output);
     }
 
+    public ItemStack getOutputRaw() {
+        return output;
+    }
 }

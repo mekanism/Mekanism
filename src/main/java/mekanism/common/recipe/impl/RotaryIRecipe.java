@@ -5,10 +5,8 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.basic.BasicRotaryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import mekanism.common.recipe.serializer.RotaryRecipeSerializer;
-import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.recipe.serializer.RotaryRecipeSerializer.IFactory;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -28,24 +26,11 @@ public class RotaryIRecipe extends BasicRotaryRecipe {
     }
 
     @Override
-    public RecipeSerializer<RotaryIRecipe> getSerializer() {
+    public RecipeSerializer<BasicRotaryRecipe> getSerializer() {
         return MekanismRecipeSerializers.ROTARY.get();
     }
 
-    @Override
-    public ItemStack getToastSymbol() {
-        return MekanismBlocks.ROTARY_CONDENSENTRATOR.getItemStack();
-    }
-
-    public GasStack getGasOutputRaw() {
-        return this.gasOutput;
-    }
-
-    public FluidStack getFluidOutputRaw() {
-        return this.fluidOutput;
-    }
-
-    public static class Factory implements RotaryRecipeSerializer.IFactory<RotaryIRecipe> {
+    public static class Factory implements IFactory<RotaryIRecipe> {
 
         @Override
         public RotaryIRecipe create(FluidStackIngredient fluidInput, GasStack gasOutput) {

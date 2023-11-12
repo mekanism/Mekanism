@@ -72,4 +72,12 @@ public abstract class BasicElectrolysisRecipe extends ElectrolysisRecipe {
     public String getGroup() {
         return "electrolytic_separator";
     }
+
+    public GasStack getLeftGasOutput() {
+        return leftGasOutput;
+    }
+
+    public GasStack getRightGasOutput() {
+        return rightGasOutput;
+    }
 }

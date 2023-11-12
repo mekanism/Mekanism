@@ -9,6 +9,7 @@ import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PressurizedReactionRecipe;
+import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -21,27 +22,27 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
-public class PressurizedReactionRecipeSerializer implements RecipeSerializer<PressurizedReactionIRecipe> {
+public class PressurizedReactionRecipeSerializer implements RecipeSerializer<BasicPressurizedReactionRecipe> {
 
-    private final IFactory<PressurizedReactionIRecipe> factory;
-    private Codec<PressurizedReactionIRecipe> codec;
+    private final IFactory<BasicPressurizedReactionRecipe> factory;
+    private Codec<BasicPressurizedReactionRecipe> codec;
 
-    public PressurizedReactionRecipeSerializer(IFactory<PressurizedReactionIRecipe> factory) {
+    public PressurizedReactionRecipeSerializer(IFactory<BasicPressurizedReactionRecipe> factory) {
         this.factory = factory;
     }
 
     @NotNull
     @Override
-    public Codec<PressurizedReactionIRecipe> codec() {
+    public Codec<BasicPressurizedReactionRecipe> codec() {
         if (codec == null) {
-            Codec<PressurizedReactionIRecipe> baseCodec = RecordCodecBuilder.create(instance -> instance.group(
+            Codec<BasicPressurizedReactionRecipe> baseCodec = RecordCodecBuilder.create(instance -> instance.group(
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.ITEM_INPUT).forGetter(PressurizedReactionRecipe::getInputSolid),
                   IngredientCreatorAccess.fluid().codec().fieldOf(JsonConstants.FLUID_INPUT).forGetter(PressurizedReactionRecipe::getInputFluid),
                   IngredientCreatorAccess.gas().codec().fieldOf(JsonConstants.GAS_INPUT).forGetter(PressurizedReactionRecipe::getInputGas),
                   FloatingLong.CODEC.optionalFieldOf(JsonConstants.ENERGY_REQUIRED, FloatingLong.ZERO).forGetter(PressurizedReactionRecipe::getEnergyRequired),
                   ExtraCodecs.POSITIVE_INT.fieldOf(JsonConstants.DURATION).forGetter(PressurizedReactionRecipe::getDuration),
-                  SerializerHelper.ITEMSTACK_CODEC.optionalFieldOf(JsonConstants.ITEM_OUTPUT, ItemStack.EMPTY).forGetter(PressurizedReactionIRecipe::getOutputItem),
-                  ChemicalUtils.GAS_STACK_CODEC.optionalFieldOf(JsonConstants.GAS_OUTPUT, GasStack.EMPTY).forGetter(PressurizedReactionIRecipe::getOutputGas)
+                  SerializerHelper.ITEMSTACK_CODEC.optionalFieldOf(JsonConstants.ITEM_OUTPUT, ItemStack.EMPTY).forGetter(BasicPressurizedReactionRecipe::getOutputItem),
+                  ChemicalUtils.GAS_STACK_CODEC.optionalFieldOf(JsonConstants.GAS_OUTPUT, GasStack.EMPTY).forGetter(BasicPressurizedReactionRecipe::getOutputGas)
             ).apply(instance, factory::create));
 
             codec = ExtraCodecs.validate(baseCodec, result->{
@@ -55,7 +56,7 @@ public class PressurizedReactionRecipeSerializer implements RecipeSerializer<Pre
     }
 
     @Override
-    public PressurizedReactionIRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
+    public BasicPressurizedReactionRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             ItemStackIngredient inputSolid = IngredientCreatorAccess.item().read(buffer);
             FluidStackIngredient inputFluid = IngredientCreatorAccess.fluid().read(buffer);
@@ -72,7 +73,7 @@ public class PressurizedReactionRecipeSerializer implements RecipeSerializer<Pre
     }
 
     @Override
-    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull PressurizedReactionIRecipe recipe) {
+    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull BasicPressurizedReactionRecipe recipe) {
         try {
             recipe.getInputSolid().write(buffer);
             recipe.getInputFluid().write(buffer);
@@ -88,7 +89,7 @@ public class PressurizedReactionRecipeSerializer implements RecipeSerializer<Pre
     }
 
     @FunctionalInterface
-    public interface IFactory<RECIPE extends PressurizedReactionRecipe> {
+    public interface IFactory<RECIPE extends BasicPressurizedReactionRecipe> {
 
         RECIPE create(ItemStackIngredient itemInput, FluidStackIngredient fluidInput, GasStackIngredient gasInput, FloatingLong energyRequired, int duration,
               ItemStack outputItem, GasStack outputGas);

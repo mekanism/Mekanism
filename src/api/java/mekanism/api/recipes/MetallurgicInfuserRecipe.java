@@ -1,6 +1,7 @@
 package mekanism.api.recipes;
 
 import java.util.List;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
@@ -8,8 +9,12 @@ import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,6 +29,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @NothingNullByDefault
 public abstract class MetallurgicInfuserRecipe extends ItemStackChemicalToItemStackRecipe<InfuseType, InfusionStack, InfusionStackIngredient> {
+
+    private static final RegistryObject<Item> METALLURGIC_INFUSER = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "metallurgic_infuser"), ForgeRegistries.ITEMS);
 
     @Override
     public abstract ItemStackIngredient getItemInput();
@@ -53,5 +60,10 @@ public abstract class MetallurgicInfuserRecipe extends ItemStackChemicalToItemSt
     @Override
     public String getGroup() {
         return "metallurgic_infuser";
+    }
+
+    @Override
+    public ItemStack getToastSymbol() {
+        return new ItemStack(METALLURGIC_INFUSER.get());
     }
 }

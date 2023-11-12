@@ -2,16 +2,21 @@ package mekanism.api.recipes;
 
 import java.util.List;
 import java.util.Objects;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.common.util.TriPredicate;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,6 +35,8 @@ import org.jetbrains.annotations.NotNull;
  */
 @NothingNullByDefault
 public abstract class PressurizedReactionRecipe extends MekanismRecipe implements TriPredicate<@NotNull ItemStack, @NotNull FluidStack, @NotNull GasStack> {
+
+    private static final RegistryObject<Item> PRESSURIZED_REACTION_CHAMBER = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "pressurized_reaction_chamber"), ForgeRegistries.ITEMS);
 
     /**
      * Gets the item input ingredient.
@@ -95,6 +102,11 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
     @Override
     public String getGroup() {
         return "pressurized_reaction_chamber";
+    }
+
+    @Override
+    public ItemStack getToastSymbol() {
+        return new ItemStack(PRESSURIZED_REACTION_CHAMBER.get());
     }
 
     /**

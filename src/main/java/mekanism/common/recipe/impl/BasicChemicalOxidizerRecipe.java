@@ -1,25 +1,30 @@
 package mekanism.common.recipe.impl;
 
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.basic.BasicItemStackToGasRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 
 @NothingNullByDefault
-public class ChemicalOxidizerIRecipe extends BasicItemStackToGasRecipe implements ChemicalOutputInternal<Gas, GasStack> {
+public class BasicChemicalOxidizerRecipe extends BasicItemStackToGasRecipe {
 
-    public ChemicalOxidizerIRecipe(ItemStackIngredient input, GasStack output) {
+    private static final RegistryObject<Item> CHEMICAL_OXIDIZER = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "chemical_oxidizer"), ForgeRegistries.ITEMS);
+
+    public BasicChemicalOxidizerRecipe(ItemStackIngredient input, GasStack output) {
         super(input, output, MekanismRecipeTypes.TYPE_OXIDIZING.get());
     }
 
     @Override
-    public RecipeSerializer<ChemicalOxidizerIRecipe> getSerializer() {
+    public RecipeSerializer<BasicChemicalOxidizerRecipe> getSerializer() {
         return MekanismRecipeSerializers.OXIDIZING.get();
     }
 
@@ -30,11 +35,7 @@ public class ChemicalOxidizerIRecipe extends BasicItemStackToGasRecipe implement
 
     @Override
     public ItemStack getToastSymbol() {
-        return MekanismBlocks.CHEMICAL_OXIDIZER.getItemStack();
+        return new ItemStack(CHEMICAL_OXIDIZER.get());
     }
 
-    @Override
-    public GasStack getOutputRaw() {
-        return output;
-    }
 }

@@ -8,6 +8,7 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.codec.DependentMapCodec;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.recipes.basic.BasicChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
@@ -17,12 +18,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.NotNull;
 
-public class ChemicalCrystallizerRecipeSerializer implements RecipeSerializer<ChemicalCrystallizerIRecipe> {
+public class ChemicalCrystallizerRecipeSerializer implements RecipeSerializer<BasicChemicalCrystallizerRecipe> {
 
-    private final IFactory<ChemicalCrystallizerIRecipe> factory;
-    private Codec<ChemicalCrystallizerIRecipe> codec;
+    private final IFactory<BasicChemicalCrystallizerRecipe> factory;
+    private Codec<BasicChemicalCrystallizerRecipe> codec;
 
-    public ChemicalCrystallizerRecipeSerializer(IFactory<ChemicalCrystallizerIRecipe> factory) {
+    public ChemicalCrystallizerRecipeSerializer(IFactory<BasicChemicalCrystallizerRecipe> factory) {
         this.factory = factory;
     }
 
@@ -32,18 +33,18 @@ public class ChemicalCrystallizerRecipeSerializer implements RecipeSerializer<Ch
 
     @NotNull
     @Override
-    public Codec<ChemicalCrystallizerIRecipe> codec() {
+    public Codec<BasicChemicalCrystallizerRecipe> codec() {
         if (codec == null) {
             codec = RecordCodecBuilder.create(instance-> instance.group(
-                  chemicalStackIngredientMapEncoder.forGetter(ChemicalCrystallizerRecipe::getInput),
-                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(ChemicalCrystallizerIRecipe::getOutputRaw)
+                  chemicalStackIngredientMapEncoder.forGetter(BasicChemicalCrystallizerRecipe::getInput),
+                  SerializerHelper.ITEMSTACK_CODEC.fieldOf(JsonConstants.OUTPUT).forGetter(BasicChemicalCrystallizerRecipe::getOutputRaw)
             ).apply(instance, factory::create));
         }
         return codec;
     }
 
     @Override
-    public ChemicalCrystallizerIRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
+    public BasicChemicalCrystallizerRecipe fromNetwork(@NotNull FriendlyByteBuf buffer) {
         try {
             ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
             ChemicalStackIngredient<?, ?> inputIngredient = IngredientCreatorAccess.getCreatorForType(chemicalType).read(buffer);
@@ -56,7 +57,7 @@ public class ChemicalCrystallizerRecipeSerializer implements RecipeSerializer<Ch
     }
 
     @Override
-    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull ChemicalCrystallizerIRecipe recipe) {
+    public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull BasicChemicalCrystallizerRecipe recipe) {
         try {
             buffer.writeEnum(recipe.getChemicalType());
             recipe.getInput().write(buffer);
@@ -68,7 +69,7 @@ public class ChemicalCrystallizerRecipeSerializer implements RecipeSerializer<Ch
     }
 
     @FunctionalInterface
-    public interface IFactory<RECIPE extends ChemicalCrystallizerRecipe> {
+    public interface IFactory<RECIPE extends BasicChemicalCrystallizerRecipe> {
 
         RECIPE create(ChemicalStackIngredient<?, ?> input, ItemStack output);
     }

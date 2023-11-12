@@ -50,4 +50,13 @@ public abstract class BasicGasToGasRecipe extends GasToGasRecipe {
     public GasStack getOutput(GasStack input) {
         return output.copy();
     }
+
+    /**
+     * For Serializer usage only. Do not modify the returned stack!
+     *
+     * @return the uncopied output definition
+     */
+    public GasStack getOutputRaw() {
+        return output;
+    }
 }

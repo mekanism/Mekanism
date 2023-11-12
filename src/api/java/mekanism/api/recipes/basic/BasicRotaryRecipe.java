@@ -12,7 +12,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
-public abstract class BasicRotaryRecipe  extends RotaryRecipe {
+public abstract class BasicRotaryRecipe extends RotaryRecipe {
 
     protected final GasStackIngredient gasInput;
     protected final FluidStackIngredient fluidInput;
@@ -27,8 +27,8 @@ public abstract class BasicRotaryRecipe  extends RotaryRecipe {
      * @param fluidInput Fluid input.
      * @param gasOutput  Gas output.
      *
-     * @apiNote It is recommended to use {@link #RotaryRecipe(FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this constructor in
-     * combination with {@link #RotaryRecipe(GasStackIngredient, FluidStack)} and making two separate recipes if the conversion will be possible in both
+     * @apiNote It is recommended to use {@link #BasicRotaryRecipe(FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this constructor in
+     * combination with {@link #BasicRotaryRecipe(GasStackIngredient, FluidStack)} and making two separate recipes if the conversion will be possible in both
      * directions.
      */
     public BasicRotaryRecipe(FluidStackIngredient fluidInput, GasStack gasOutput) {
@@ -51,8 +51,8 @@ public abstract class BasicRotaryRecipe  extends RotaryRecipe {
      * @param gasInput    Gas input.
      * @param fluidOutput Fluid output.
      *
-     * @apiNote It is recommended to use {@link #RotaryRecipe(FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this constructor in combination with
-     * {@link #RotaryRecipe(FluidStackIngredient, GasStack)} and making two separate recipes if the conversion will be possible in both directions.
+     * @apiNote It is recommended to use {@link #BasicRotaryRecipe(FluidStackIngredient, GasStackIngredient, GasStack, FluidStack)} over this constructor in combination with
+     * {@link #BasicRotaryRecipe(FluidStackIngredient, GasStack)} and making two separate recipes if the conversion will be possible in both directions.
      */
     public BasicRotaryRecipe(GasStackIngredient gasInput, FluidStack fluidOutput) {
         this.gasInput = Objects.requireNonNull(gasInput, "Gas input cannot be null.");
@@ -76,8 +76,8 @@ public abstract class BasicRotaryRecipe  extends RotaryRecipe {
      * @param gasOutput   Gas output.
      * @param fluidOutput Fluid output.
      *
-     * @apiNote It is recommended to use this constructor over using {@link #RotaryRecipe(FluidStackIngredient, GasStack)} and
-     * {@link #RotaryRecipe(GasStackIngredient, FluidStack)} in combination and creating two recipes if the conversion will be possible in both
+     * @apiNote It is recommended to use this constructor over using {@link #BasicRotaryRecipe(FluidStackIngredient, GasStack)} and
+     * {@link #BasicRotaryRecipe(GasStackIngredient, FluidStack)} in combination and creating two recipes if the conversion will be possible in both
      * directions.
      */
     public BasicRotaryRecipe(FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput) {
@@ -96,11 +96,13 @@ public abstract class BasicRotaryRecipe  extends RotaryRecipe {
         this.hasFluidToGas = true;
     }
 
-    @Override public boolean hasGasToFluid() {
+    @Override
+    public boolean hasGasToFluid() {
         return hasGasToFluid;
     }
 
-    @Override public boolean hasFluidToGas() {
+    @Override
+    public boolean hasFluidToGas() {
         return hasFluidToGas;
     }
 
@@ -122,44 +124,69 @@ public abstract class BasicRotaryRecipe  extends RotaryRecipe {
         }
     }
 
-    @Override public boolean test(FluidStack fluidStack) {
+    @Override
+    public boolean test(FluidStack fluidStack) {
         return hasFluidToGas() && fluidInput.test(fluidStack);
     }
 
-    @Override public boolean test(GasStack gasStack) {
+    @Override
+    public boolean test(GasStack gasStack) {
         return hasGasToFluid() && gasInput.test(gasStack);
     }
 
-    @Override public FluidStackIngredient getFluidInput() {
+    @Override
+    public FluidStackIngredient getFluidInput() {
         assertHasFluidToGas();
         return fluidInput;
     }
 
-    @Override public GasStackIngredient getGasInput() {
+    @Override
+    public GasStackIngredient getGasInput() {
         assertHasGasToFluid();
         return gasInput;
     }
 
-    @Override public List<GasStack> getGasOutputDefinition() {
+    @Override
+    public List<GasStack> getGasOutputDefinition() {
         assertHasFluidToGas();
         return Collections.singletonList(gasOutput);
     }
 
-    @Override public List<FluidStack> getFluidOutputDefinition() {
+    @Override
+    public List<FluidStack> getFluidOutputDefinition() {
         assertHasGasToFluid();
         return Collections.singletonList(fluidOutput);
     }
 
-    @Override@Contract(value = "_ -> new", pure = true)
+    @Override
+    @Contract(value = "_ -> new", pure = true)
     public GasStack getGasOutput(FluidStack input) {
         assertHasFluidToGas();
         return gasOutput.copy();
     }
 
-    @Override@Contract(value = "_ -> new", pure = true)
+    @Override
+    @Contract(value = "_ -> new", pure = true)
     public FluidStack getFluidOutput(GasStack input) {
         assertHasGasToFluid();
         return fluidOutput.copy();
     }
 
+    /**
+     * For Serializer use. DO NOT MODIFY RETURN VALUE.
+     *
+     * @return the uncopied basic output
+     */
+    public GasStack getGasOutputRaw() {
+        return this.gasOutput;
     }
+
+    /**
+     * For Serializer use. DO NOT MODIFY RETURN VALUE.
+     *
+     * @return the uncopied basic output
+     */
+    public FluidStack getFluidOutputRaw() {
+        return this.fluidOutput;
+    }
+}

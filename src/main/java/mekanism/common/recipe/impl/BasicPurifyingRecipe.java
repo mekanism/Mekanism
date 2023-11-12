@@ -1,27 +1,31 @@
 package mekanism.common.recipe.impl;
 
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.MekanismRecipeTypes;
 import mekanism.api.recipes.basic.BasicItemStackGasToItemStackRecipe;
+import mekanism.api.recipes.basic.IBasicItemStackOutput;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 
 @NothingNullByDefault
-public class PurifyingIRecipe extends BasicItemStackGasToItemStackRecipe implements ItemStackOutputInternal {
+public class BasicPurifyingRecipe extends BasicItemStackGasToItemStackRecipe implements IBasicItemStackOutput {
 
-    public PurifyingIRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
+    private static final RegistryObject<Item> PURIFICATION_CHAMBER = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "purification_chamber"), ForgeRegistries.ITEMS);
+
+    public BasicPurifyingRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
         super(itemInput, gasInput, output, MekanismRecipeTypes.TYPE_PURIFYING.get());
     }
 
     @Override
-    public RecipeSerializer<PurifyingIRecipe> getSerializer() {
+    public RecipeSerializer<BasicPurifyingRecipe> getSerializer() {
         return MekanismRecipeSerializers.PURIFYING.get();
     }
 
@@ -32,11 +36,7 @@ public class PurifyingIRecipe extends BasicItemStackGasToItemStackRecipe impleme
 
     @Override
     public ItemStack getToastSymbol() {
-        return MekanismBlocks.PURIFICATION_CHAMBER.getItemStack();
+        return new ItemStack(PURIFICATION_CHAMBER.get());
     }
 
-    @Override
-    public ItemStack getOutputRaw() {
-        return output;
-    }
 }

@@ -1,12 +1,18 @@
 package mekanism.api.recipes;
 
 import java.util.List;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryObject;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -23,6 +29,8 @@ import org.jetbrains.annotations.Contract;
  */
 @NothingNullByDefault
 public abstract class RotaryRecipe extends MekanismRecipe {
+
+    private static final RegistryObject<Item> ROTARY_CONDENSENTRATOR = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "rotary_condensentrator"), ForgeRegistries.ITEMS);
 
     /**
      * @return {@code true} if this recipe knows how to convert a gas to a fluid.
@@ -127,5 +135,10 @@ public abstract class RotaryRecipe extends MekanismRecipe {
     @Override
     public String getGroup() {
         return "rotary_condensentrator";
+    }
+
+    @Override
+    public ItemStack getToastSymbol() {
+        return new ItemStack(ROTARY_CONDENSENTRATOR.get());
     }
 }
