@@ -670,7 +670,6 @@
   "generic.mekanism.transfer": "%1$s- (%2$s)",
   "generic.mekanism.with_comma": "%1$s،%2$s",
   "generic.mekanism.with_parenthesis": "%1$s (%2$s)",
-  "generic.mekanism.with_two_parenthesis": "%1$s (%2$s) (%3$s)",
   "gui.mekanism.chemical": "ماده شیمیایی:%1$s",
   "gui.mekanism.close": "بستن",
   "gui.mekanism.color_picker": "انتخابگر رنگ",
