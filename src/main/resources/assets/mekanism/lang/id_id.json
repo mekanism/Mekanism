@@ -887,7 +887,6 @@
   "generic.mekanism.transfer": "- %1$s (%2$s)",
   "generic.mekanism.with_comma": "%1$s, %2$s",
   "generic.mekanism.with_parenthesis": "%1$s (%2$s)",
-  "generic.mekanism.with_two_parenthesis": "%1$s (%2$s) (%3$s)",
   "gui.mekanism.back": "Kembali",
   "gui.mekanism.chemical": "Zat Kimia: %1$s",
   "gui.mekanism.close": "Tutup",
