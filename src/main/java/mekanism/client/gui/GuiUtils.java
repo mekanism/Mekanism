@@ -13,9 +13,6 @@ import com.mojang.blaze3d.vertex.VertexBuffer.Usage;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Divisor;
 import it.unimi.dsi.fastutil.ints.IntIterator;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -42,24 +39,6 @@ import org.joml.Matrix4f;
 public class GuiUtils {
 
     private GuiUtils() {
-    }
-
-    private static MethodHandle bindImmediateBufferMH;
-
-    static {
-        try {
-            bindImmediateBufferMH = MethodHandles.privateLookupIn(BufferUploader.class, MethodHandles.lookup()).findStatic(BufferUploader.class, "bindImmediateBuffer", MethodType.methodType(void.class, VertexBuffer.class));
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static void bindImmediateBuffer(VertexBuffer buffer) {
-        try {
-            bindImmediateBufferMH.invokeExact(buffer);
-        } catch (Throwable e) {
-            buffer.bind();//fallback to just binding anyway
-        }
     }
 
     // Note: Does not validate that the passed in dimensions are valid
@@ -323,7 +302,7 @@ public class GuiUtils {
                 profiler.push("upload");
                 VertexBuffer vertexBuffer = new VertexBuffer(Usage.STATIC);
                 //vertexBuffer.bind();
-                bindImmediateBuffer(vertexBuffer);
+                BufferUploader.bindImmediateBuffer(vertexBuffer);
                 vertexBuffer.upload(bufferbuilder.end());
                 profiler.pop();
                 return vertexBuffer;
@@ -334,7 +313,7 @@ public class GuiUtils {
 
         profiler.push("drawing");
         //cachedBuffer.bind();
-        bindImmediateBuffer(cachedBuffer);
+        BufferUploader.bindImmediateBuffer(cachedBuffer);
         cachedBuffer.drawWithShader(RenderSystem.getModelViewMatrix(), RenderSystem.getProjectionMatrix(), RenderSystem.getShader());
 
         profiler.pop();
