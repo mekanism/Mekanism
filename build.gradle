@@ -462,8 +462,7 @@ dependencies {
     datagenMainCompileOnly fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
     //TODO - 1.20: Switch back to datagenMainImplementation
     datagenMainCompileOnly fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
-    //TODO - 1.20: Re-enable after projecte is updated
-    //datagenMainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
+    datagenMainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
 
     datagenNonMod "com.thiakil:yaml-ops:${yamlops_version}"
 }

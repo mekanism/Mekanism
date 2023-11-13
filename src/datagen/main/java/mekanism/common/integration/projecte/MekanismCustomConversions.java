@@ -1,19 +1,22 @@
-/*package mekanism.common.integration.projecte;
+package mekanism.common.integration.projecte;
 
+import java.util.concurrent.CompletableFuture;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismItems;
 import moze_intel.projecte.api.data.CustomConversionProvider;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.data.PackOutput;
 import org.jetbrains.annotations.NotNull;
 
 public class MekanismCustomConversions extends CustomConversionProvider {
 
-    public MekanismCustomConversions(DataGenerator generator) {
-        super(generator);
+    public MekanismCustomConversions(PackOutput output, CompletableFuture<Provider> lookupProvider) {
+        super(output, lookupProvider);
     }
 
     @Override
-    protected void addCustomConversions() {
+    protected void addCustomConversions(HolderLookup.Provider registries) {
         createConversionBuilder(Mekanism.rl("defaults"))
               .comment("Default values for Mekanism items.")
               .before(MekanismItems.SALT, 8)
@@ -28,4 +31,4 @@ public class MekanismCustomConversions extends CustomConversionProvider {
     public String getName() {
         return super.getName() + ": " + Mekanism.MODID;
     }
-}*/
+}

@@ -938,7 +938,6 @@
   "generic.mekanism.transfer": "(%2$s) %1$s -",
   "generic.mekanism.with_comma": "%2$s '%1$s",
   "generic.mekanism.with_parenthesis": "(%2$s) %1$s",
-  "generic.mekanism.with_two_parenthesis": "(%3$s) (%s) %1$s",
   "gui.mekanism.back": "ʞɔɐᗺ",
   "gui.mekanism.chemical": "%s :ꞁɐɔᴉɯǝɥƆ",
   "gui.mekanism.close": "ǝsoꞁƆ",
