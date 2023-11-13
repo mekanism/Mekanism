@@ -11,6 +11,8 @@
   "block.mekanismgenerators.solar_generator": "Zonnepanelen Generator",
   "block.mekanismgenerators.turbine_casing": "Turbine behuizing",
   "block.mekanismgenerators.turbine_valve": "Turbine ventiel",
+  "constants.mekanismgenerators.mod_name": "Mekanism: Generatoren",
+  "constants.mekanismgenerators.pack_description": "Hulpmiddelen gebruikt voor het Mekanism: Gereedschap",
   "container.mekanismgenerators.advanced_solar_generator": "Geavanceerde Zonne-Generator",
   "container.mekanismgenerators.gas_burning_generator": "Gasbrandende Generator",
   "container.mekanismgenerators.heat_generator": "Warmte Generator",

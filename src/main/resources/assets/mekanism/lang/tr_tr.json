@@ -1646,6 +1646,7 @@
   "upgrade.mekanism.filter.description": "Ağır suyu normal sudan ayıran bir filtre.",
   "upgrade.mekanism.gas": "Gaz",
   "upgrade.mekanism.gas.description": "Gaz kullanan makinelerin verimliliğini arttırır.",
+  "upgrade.mekanism.max_installed": "Maksimum Yüklenen: %1$s",
   "upgrade.mekanism.muffling": "Ses Azaltma",
   "upgrade.mekanism.muffling.description": "Makinelerden çıkan gürültüyü azaltır.",
   "upgrade.mekanism.speed": "Hız",

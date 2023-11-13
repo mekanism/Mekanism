@@ -1646,6 +1646,7 @@
   "upgrade.mekanism.filter.description": "Um filtro que separa água pesada da água normal.",
   "upgrade.mekanism.gas": "Gás",
   "upgrade.mekanism.gas.description": "Aumenta a eficiências de maquinário que usa gases.",
+  "upgrade.mekanism.max_installed": "Máximo instalado: %1$s",
   "upgrade.mekanism.muffling": "Silenciamento",
   "upgrade.mekanism.muffling.description": "Reduz o som emitido pelo maquinário.",
   "upgrade.mekanism.speed": "Velocidade",
