@@ -8,10 +8,12 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import mekanism.client.gui.GuiUtils;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 
 public class MekanismRenderType extends RenderType {
@@ -49,6 +51,14 @@ public class MekanismRenderType extends RenderType {
                 .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                 .setDepthTestState(GREATER_DEPTH_TEST)
                 .createCompositeState(false)
+    );
+
+    public static final RenderType MEK_GUI_BLIT = create("mek_gui_blit", DefaultVertexFormat.POSITION_TEX, Mode.QUADS, 256, false, false, CompositeState.builder()
+          .setShaderState(POSITION_TEX_SHADER)
+          .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+          .setTextureState(new RenderStateShard.TextureStateShard(GuiUtils.GUI_ATLAS, false, false))
+          //.setDepthTestState(GREATER_DEPTH_TEST)
+          .createCompositeState(false)
     );
 
     public static final Function<ResourceLocation, RenderType> STANDARD = Util.memoize(resourceLocation ->

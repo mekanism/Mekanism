@@ -846,16 +846,16 @@ public final class MekanismUtils {
     }
 
     public enum ResourceType {
-        GUI("textures/gui"),
-        GUI_BUTTON("textures/gui/button"),
-        GUI_BAR("textures/gui/bar"),
-        GUI_GAUGE("textures/gui/gauge"),
-        GUI_HUD("textures/gui/hud"),
-        GUI_ICONS("textures/gui/icons"),
-        GUI_PROGRESS("textures/gui/progress"),
-        GUI_RADIAL("textures/gui/radial"),
-        GUI_SLOT("textures/gui/slot"),
-        GUI_TAB("textures/gui/tabs"),
+        GUI("textures/mekgui"),
+        GUI_BUTTON("textures/mekgui/button"),
+        GUI_BAR("textures/mekgui/bar"),
+        GUI_GAUGE("textures/mekgui/gauge"),
+        GUI_HUD("textures/mekgui/hud"),
+        GUI_ICONS("textures/mekgui/icons"),
+        GUI_PROGRESS("textures/mekgui/progress"),
+        GUI_RADIAL("textures/mekgui/radial"),
+        GUI_SLOT("textures/mekgui/slot"),
+        GUI_TAB("textures/mekgui/tabs"),
         SOUND("sound"),
         RENDER("render"),
         TEXTURE_BLOCKS("textures/block"),
@@ -872,7 +872,7 @@ public final class MekanismUtils {
         }
 
         public String getPrefix() {
-            return prefix + "/";
+            return prefix.isEmpty() ? "" : prefix + "/";
         }
     }
 

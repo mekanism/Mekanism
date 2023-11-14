@@ -1,5 +1,6 @@
 package mekanism.client.texture;
 
+import mekanism.client.gui.GuiUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismFluids;
 import net.minecraft.data.PackOutput;
@@ -39,5 +40,8 @@ public class MekanismSpriteSourceProvider extends BaseSpriteSourceProvider {
 
         SourceList robitAtlas = atlas(Mekanism.rl("entity/robit"));
         addDirectory(robitAtlas, "entity/robit", "");
+
+        SourceList guiAtlas = atlas(GuiUtils.GUI_ATLAS);
+        addDirectory(guiAtlas, "mekgui", "");
     }
 }

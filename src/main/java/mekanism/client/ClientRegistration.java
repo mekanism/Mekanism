@@ -367,6 +367,7 @@ public class ClientRegistration {
     public static void registerClientReloadListeners(RegisterClientReloadListenersEvent event) {
         //Robit Texture Atlas
         event.registerReloadListener(new RobitSpriteUploader(Minecraft.getInstance().getTextureManager()));
+        event.registerReloadListener(new GuiSpriteUploader(Minecraft.getInstance().getTextureManager()));
         ClientRegistrationUtil.registerClientReloadListeners(event,
               //ISTERs
               RenderEnergyCubeItem.RENDERER, RenderJetpack.ARMORED_RENDERER, RenderAtomicDisassembler.RENDERER, RenderFlameThrower.RENDERER, RenderFreeRunners.RENDERER,

@@ -10,6 +10,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexBuffer;
 import com.mojang.blaze3d.vertex.VertexBuffer.Usage;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Divisor;
 import it.unimi.dsi.fastutil.ints.IntIterator;
@@ -17,7 +18,9 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
+import mekanism.client.GuiSpriteUploader;
 import mekanism.client.gui.element.GuiElement;
+import mekanism.client.render.MekanismRenderType;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -25,6 +28,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -40,6 +44,8 @@ public class GuiUtils {
 
     private GuiUtils() {
     }
+
+    public static ResourceLocation GUI_ATLAS = Mekanism.rl("gui");
 
     // Note: Does not validate that the passed in dimensions are valid
     // this strategy starts with a small texture and will expand it (by scaling) to meet the size requirements. good for small widgets
@@ -246,13 +252,18 @@ public class GuiUtils {
     public static void blitNineSlicedSized(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height, int sliceWidth, int sliceHeight, int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
         ProfilerFiller profiler = Minecraft.getInstance().getProfiler();
         profiler.push("blit setup");
-        RenderSystem.setShaderTexture(0, texture);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        Matrix4f matrix4f = guiGraphics.pose().last().pose();
+        //RenderSystem.setShaderTexture(0, texture);
+        //RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        PoseStack poseStack = guiGraphics.pose();
+        poseStack.pushPose();
+        //poseStack.translate(0,0,-0.001);
+        Matrix4f matrix4f = poseStack.last().pose();
+        var sprite = GuiSpriteUploader.UPLOADER.getSprite(texture);
         profiler.pop();
 
-        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-        bufferbuilder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        //BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+        //bufferbuilder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        VertexConsumer bufferbuilder = sprite.wrap(guiGraphics.bufferSource().getBuffer(MekanismRenderType.MEK_GUI_BLIT));
 
         profiler.push("blitting");
 
@@ -288,9 +299,10 @@ public class GuiUtils {
         profiler.pop();
 
         profiler.push("drawing");
+        poseStack.popPose();
         //cachedBuffer.bind();
-        BufferUploader.drawWithShader(bufferbuilder.end());
-
+        //BufferUploader.drawWithShader(bufferbuilder.end());
+        guiGraphics.bufferSource().endBatch(MekanismRenderType.MEK_GUI_BLIT);
         profiler.pop();
     }
 
@@ -298,14 +310,14 @@ public class GuiUtils {
         blitNineSlicedSized(guiGraphics, texture, x, y, width, height, sliceSize, sliceSize, uWidth, vHeight, uOffset, vOffset, textureWidth, textureHeight);
     }
 
-    private static void blit(BufferBuilder bufferbuilder, Matrix4f matrix4f, int pX, int pY, float pUOffset, float pVOffset, int pWidth, int pHeight, int pTextureWidth, int pTextureHeight) {
+    private static void blit(VertexConsumer bufferbuilder, Matrix4f matrix4f, int pX, int pY, float pUOffset, float pVOffset, int pWidth, int pHeight, int pTextureWidth, int pTextureHeight) {
         bufferbuilder.vertex(matrix4f, (float) pX, (float) pY, (float) 0).uv((pUOffset + 0.0F) / (float) pTextureWidth, (pVOffset + 0.0F) / (float) pTextureHeight).endVertex();
         bufferbuilder.vertex(matrix4f, (float) pX, (float) (pY + pHeight), (float) 0).uv((pUOffset + 0.0F) / (float) pTextureWidth, (pVOffset + (float) pHeight) / (float) pTextureHeight).endVertex();
         bufferbuilder.vertex(matrix4f, (float) (pX + pWidth), (float) (pY + pHeight), (float) 0).uv((pUOffset + (float) pWidth) / (float) pTextureWidth, (pVOffset + (float) pHeight) / (float) pTextureHeight).endVertex();
         bufferbuilder.vertex(matrix4f, (float) (pX + pWidth), (float) pY, (float) 0).uv((pUOffset + (float) pWidth) / (float) pTextureWidth, (pVOffset + 0.0F) / (float) pTextureHeight).endVertex();
     }
 
-    private static void blitRepeating(BufferBuilder bufferbuilder, Matrix4f matrix4f, int pX, int pY, int pWidth, int pHeight, int pUOffset, int pVOffset, int pSourceWidth, int pSourceHeight, int textureWidth, int textureHeight) {
+    private static void blitRepeating(VertexConsumer bufferbuilder, Matrix4f matrix4f, int pX, int pY, int pWidth, int pHeight, int pUOffset, int pVOffset, int pSourceWidth, int pSourceHeight, int textureWidth, int textureHeight) {
         int i = pX;
 
         int j;
