@@ -245,12 +245,6 @@ public class GuiUtils {
     private record NineSliceCache(ResourceLocation texture, int x, int y, int width, int height, int sliceWidth, int sliceHeight, int uWidth, int vHeight, int uOffset,
                                   int vOffset, int textureWidth, int textureHeight) {}
 
-    private static final Cache<NineSliceCache, VertexBuffer> VERTEX_BUFFER_CACHE = CacheBuilder.newBuilder()
-          //.maximumSize(10)
-          .expireAfterAccess(5, TimeUnit.MINUTES)
-          .<NineSliceCache, VertexBuffer>removalListener(notification -> notification.getValue().close())
-          .build();
-
     // like guiGraphics.blitNineSlicedSized but uses one BufferBuilder
     public static void blitNineSlicedSized(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height, int sliceWidth, int sliceHeight, int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
         ProfilerFiller profiler = Minecraft.getInstance().getProfiler();
@@ -260,61 +254,45 @@ public class GuiUtils {
         Matrix4f matrix4f = guiGraphics.pose().last().pose();
         profiler.pop();
 
-        VertexBuffer cachedBuffer;
-        try {
-            cachedBuffer = VERTEX_BUFFER_CACHE.get(new NineSliceCache(texture, x, y, width, height, sliceWidth, sliceHeight, uWidth, vHeight, uOffset, vOffset, textureWidth, textureHeight), () -> {
-                BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-                bufferbuilder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+        bufferbuilder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
-                profiler.push("blitting");
+        profiler.push("blitting");
 
-                int cornerWidth = sliceWidth;
-                int cornerHeight = sliceHeight;
-                int edgeWidth = sliceWidth;
-                int edgeHeight = sliceHeight;
-                cornerWidth = Math.min(cornerWidth, width / 2);
-                edgeWidth = Math.min(edgeWidth, width / 2);
-                cornerHeight = Math.min(cornerHeight, height / 2);
-                edgeHeight = Math.min(edgeHeight, height / 2);
-                if (width == uWidth && height == vHeight) {
-                    blit(bufferbuilder, matrix4f, x, y, uOffset, vOffset, width, height, textureWidth, textureHeight);
-                } else if (height == vHeight) {
-                    blit(bufferbuilder, matrix4f, x, y, uOffset, vOffset, cornerWidth, height, textureWidth, textureHeight);
-                    blitRepeating(bufferbuilder, matrix4f, x + cornerWidth, y, width - edgeWidth - cornerWidth, height, uOffset + cornerWidth, vOffset, uWidth - edgeWidth - cornerWidth, vHeight, textureWidth, textureHeight);
-                    blit(bufferbuilder, matrix4f, x + width - edgeWidth, y, uOffset + uWidth - edgeWidth, vOffset, edgeWidth, height, textureWidth, textureHeight);
-                } else if (width == uWidth) {
-                    blit(bufferbuilder, matrix4f, x, y, uOffset, vOffset, width, cornerHeight, textureWidth, textureHeight);
-                    blitRepeating(bufferbuilder, matrix4f, x, y + cornerHeight, width, height - edgeHeight - cornerHeight, uOffset, vOffset + cornerHeight, uWidth, vHeight - edgeHeight - cornerHeight, textureWidth, textureHeight);
-                    blit(bufferbuilder, matrix4f, x, y + height - edgeHeight, uOffset, vOffset + vHeight - edgeHeight, width, edgeHeight, textureWidth, textureHeight);
-                } else {
-                    blit(bufferbuilder, matrix4f, x, y, uOffset, vOffset, cornerWidth, cornerHeight, textureWidth, textureHeight);
-                    blitRepeating(bufferbuilder, matrix4f, x + cornerWidth, y, width - edgeWidth - cornerWidth, cornerHeight, uOffset + cornerWidth, vOffset, uWidth - edgeWidth - cornerWidth, cornerHeight, textureWidth, textureHeight);
-                    blit(bufferbuilder, matrix4f, x + width - edgeWidth, y, uOffset + uWidth - edgeWidth, vOffset, edgeWidth, cornerHeight, textureWidth, textureHeight);
-                    blit(bufferbuilder, matrix4f, x, y + height - edgeHeight, uOffset, vOffset + vHeight - edgeHeight, cornerWidth, edgeHeight, textureWidth, textureHeight);
-                    blitRepeating(bufferbuilder, matrix4f, x + cornerWidth, y + height - edgeHeight, width - edgeWidth - cornerWidth, edgeHeight, uOffset + cornerWidth, vOffset + vHeight - edgeHeight, uWidth - edgeWidth - cornerWidth, edgeHeight, textureWidth, textureHeight);
-                    blit(bufferbuilder, matrix4f, x + width - edgeWidth, y + height - edgeHeight, uOffset + uWidth - edgeWidth, vOffset + vHeight - edgeHeight, edgeWidth, edgeHeight, textureWidth, textureHeight);
-                    blitRepeating(bufferbuilder, matrix4f, x, y + cornerHeight, cornerWidth, height - edgeHeight - cornerHeight, uOffset, vOffset + cornerHeight, cornerWidth, vHeight - edgeHeight - cornerHeight, textureWidth, textureHeight);
-                    blitRepeating(bufferbuilder, matrix4f, x + cornerWidth, y + cornerHeight, width - edgeWidth - cornerWidth, height - edgeHeight - cornerHeight, uOffset + cornerWidth, vOffset + cornerHeight, uWidth - edgeWidth - cornerWidth, vHeight - edgeHeight - cornerHeight, textureWidth, textureHeight);
-                    blitRepeating(bufferbuilder, matrix4f, x + width - edgeWidth, y + cornerHeight, cornerWidth, height - edgeHeight - cornerHeight, uOffset + uWidth - edgeWidth, vOffset + cornerHeight, edgeWidth, vHeight - edgeHeight - cornerHeight, textureWidth, textureHeight);
-                }
-                profiler.pop();
-
-                profiler.push("upload");
-                VertexBuffer vertexBuffer = new VertexBuffer(Usage.STATIC);
-                //vertexBuffer.bind();
-                BufferUploader.bindImmediateBuffer(vertexBuffer);
-                vertexBuffer.upload(bufferbuilder.end());
-                profiler.pop();
-                return vertexBuffer;
-            });
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+        int cornerWidth = sliceWidth;
+        int cornerHeight = sliceHeight;
+        int edgeWidth = sliceWidth;
+        int edgeHeight = sliceHeight;
+        cornerWidth = Math.min(cornerWidth, width / 2);
+        edgeWidth = Math.min(edgeWidth, width / 2);
+        cornerHeight = Math.min(cornerHeight, height / 2);
+        edgeHeight = Math.min(edgeHeight, height / 2);
+        if (width == uWidth && height == vHeight) {
+            blit(bufferbuilder, matrix4f, x, y, uOffset, vOffset, width, height, textureWidth, textureHeight);
+        } else if (height == vHeight) {
+            blit(bufferbuilder, matrix4f, x, y, uOffset, vOffset, cornerWidth, height, textureWidth, textureHeight);
+            blitRepeating(bufferbuilder, matrix4f, x + cornerWidth, y, width - edgeWidth - cornerWidth, height, uOffset + cornerWidth, vOffset, uWidth - edgeWidth - cornerWidth, vHeight, textureWidth, textureHeight);
+            blit(bufferbuilder, matrix4f, x + width - edgeWidth, y, uOffset + uWidth - edgeWidth, vOffset, edgeWidth, height, textureWidth, textureHeight);
+        } else if (width == uWidth) {
+            blit(bufferbuilder, matrix4f, x, y, uOffset, vOffset, width, cornerHeight, textureWidth, textureHeight);
+            blitRepeating(bufferbuilder, matrix4f, x, y + cornerHeight, width, height - edgeHeight - cornerHeight, uOffset, vOffset + cornerHeight, uWidth, vHeight - edgeHeight - cornerHeight, textureWidth, textureHeight);
+            blit(bufferbuilder, matrix4f, x, y + height - edgeHeight, uOffset, vOffset + vHeight - edgeHeight, width, edgeHeight, textureWidth, textureHeight);
+        } else {
+            blit(bufferbuilder, matrix4f, x, y, uOffset, vOffset, cornerWidth, cornerHeight, textureWidth, textureHeight);
+            blitRepeating(bufferbuilder, matrix4f, x + cornerWidth, y, width - edgeWidth - cornerWidth, cornerHeight, uOffset + cornerWidth, vOffset, uWidth - edgeWidth - cornerWidth, cornerHeight, textureWidth, textureHeight);
+            blit(bufferbuilder, matrix4f, x + width - edgeWidth, y, uOffset + uWidth - edgeWidth, vOffset, edgeWidth, cornerHeight, textureWidth, textureHeight);
+            blit(bufferbuilder, matrix4f, x, y + height - edgeHeight, uOffset, vOffset + vHeight - edgeHeight, cornerWidth, edgeHeight, textureWidth, textureHeight);
+            blitRepeating(bufferbuilder, matrix4f, x + cornerWidth, y + height - edgeHeight, width - edgeWidth - cornerWidth, edgeHeight, uOffset + cornerWidth, vOffset + vHeight - edgeHeight, uWidth - edgeWidth - cornerWidth, edgeHeight, textureWidth, textureHeight);
+            blit(bufferbuilder, matrix4f, x + width - edgeWidth, y + height - edgeHeight, uOffset + uWidth - edgeWidth, vOffset + vHeight - edgeHeight, edgeWidth, edgeHeight, textureWidth, textureHeight);
+            blitRepeating(bufferbuilder, matrix4f, x, y + cornerHeight, cornerWidth, height - edgeHeight - cornerHeight, uOffset, vOffset + cornerHeight, cornerWidth, vHeight - edgeHeight - cornerHeight, textureWidth, textureHeight);
+            blitRepeating(bufferbuilder, matrix4f, x + cornerWidth, y + cornerHeight, width - edgeWidth - cornerWidth, height - edgeHeight - cornerHeight, uOffset + cornerWidth, vOffset + cornerHeight, uWidth - edgeWidth - cornerWidth, vHeight - edgeHeight - cornerHeight, textureWidth, textureHeight);
+            blitRepeating(bufferbuilder, matrix4f, x + width - edgeWidth, y + cornerHeight, cornerWidth, height - edgeHeight - cornerHeight, uOffset + uWidth - edgeWidth, vOffset + cornerHeight, edgeWidth, vHeight - edgeHeight - cornerHeight, textureWidth, textureHeight);
         }
+        profiler.pop();
 
         profiler.push("drawing");
         //cachedBuffer.bind();
-        BufferUploader.bindImmediateBuffer(cachedBuffer);
-        cachedBuffer.drawWithShader(RenderSystem.getModelViewMatrix(), RenderSystem.getProjectionMatrix(), RenderSystem.getShader());
+        BufferUploader.drawWithShader(bufferbuilder.end());
 
         profiler.pop();
     }
