@@ -13,7 +13,6 @@ import mekanism.common.recipe.upgrade.ItemRecipeData;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.UpgradeUtils;
 import moze_intel.projecte.api.ItemInfo;
-import moze_intel.projecte.api.ProjectEAPI;
 import moze_intel.projecte.api.nbt.INBTProcessor;
 import moze_intel.projecte.api.nbt.NBTProcessor;
 import moze_intel.projecte.api.proxy.IEMCProxy;
@@ -38,7 +37,7 @@ public class MekanismContentsProcessor implements INBTProcessor {
 
     @Override
     public long recalculateEMC(@NotNull ItemInfo info, long currentEMC) throws ArithmeticException {
-        IEMCProxy emcProxy = ProjectEAPI.getEMCProxy();
+        IEMCProxy emcProxy = IEMCProxy.INSTANCE;
         ItemStack stack = info.createStack();
         //Stored items
         if (stack.getItem() instanceof IItemSustainedInventory sustainedInventory) {
