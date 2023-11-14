@@ -86,8 +86,8 @@ public final class TransporterPathfinder {
             }
             Pathfinder p = new Pathfinder(new DestChecker() {
                 @Override
-                public boolean isValid(TransporterStack stack, Direction side, BlockEntity tile) {
-                    return TransporterUtils.canInsert(tile, stack.color, response.getStack(), side, false);
+                public boolean isValid(Level level, BlockPos pos, @Nullable BlockEntity tile, TransporterStack stack, Direction side) {
+                    return TransporterUtils.canInsert(level, pos, tile, stack.color, response.getStack(), side, false);
                 }
             }, network, start.getTileWorld(), dest, start.getTilePos(), stack);
             p.find(chunkMap);
@@ -176,8 +176,8 @@ public final class TransporterPathfinder {
             Long2ObjectMap<ChunkAccess> chunkMap = new Long2ObjectOpenHashMap<>();
             Pathfinder p = new Pathfinder(new DestChecker() {
                 @Override
-                public boolean isValid(TransporterStack stack, Direction side, BlockEntity tile) {
-                    return TransporterUtils.canInsert(tile, stack.color, stack.itemStack, side, true);
+                public boolean isValid(Level level, BlockPos pos, @Nullable BlockEntity tile, TransporterStack stack, Direction side) {
+                    return TransporterUtils.canInsert(level, pos, tile, stack.color, stack.itemStack, side, true);
                 }
             }, network, start.getTileWorld(), stack.homeLocation, start.getTilePos(), stack);
             p.find(chunkMap);
@@ -464,7 +464,8 @@ public final class TransporterPathfinder {
             //Check to make sure that it is the destination
             if (startTransporter != null && neighbor.equals(finalNode)) {
                 BlockEntity neighborTile = WorldUtils.getTileEntity(world, chunkMap, neighbor);
-                if (neighborTile != null && destChecker.isValid(transportStack, direction, neighborTile)) {
+                //TODO: Evaluate even passing the tile through here (alternatively could make it so that we can query getCapability via the chunkMap)
+                if (destChecker.isValid(world, neighbor, neighborTile, transportStack, direction)) {
                     if (startTransporter.canEmitTo(direction) || (finalNode.equals(transportStack.homeLocation) && startTransporter.canConnect(direction))) {
                         //If it is, and we can emit to it (normal or push mode),
                         // or it is the home location of the stack (it is returning due to not having been able to get to its destination) and
@@ -502,7 +503,7 @@ public final class TransporterPathfinder {
 
         public static class DestChecker {
 
-            public boolean isValid(TransporterStack stack, Direction side, BlockEntity tile) {
+            public boolean isValid(Level level, BlockPos pos, @Nullable BlockEntity tile, TransporterStack stack, Direction side) {
                 return false;
             }
         }

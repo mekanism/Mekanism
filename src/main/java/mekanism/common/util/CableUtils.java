@@ -5,6 +5,7 @@ import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
 import mekanism.common.integration.energy.EnergyCompatUtils;
@@ -44,9 +45,12 @@ public final class CableUtils {
             return FloatingLong.ZERO;
         }
         EnergyAcceptorTarget target = new EnergyAcceptorTarget(6);
-        EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (acceptor, side) -> {
+        EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (level, pos, opposite) -> {
             //Insert to access side and collect the cap if it is present
-            EnergyCompatUtils.getLazyStrictEnergyHandler(acceptor, side.getOpposite()).ifPresent(target::addHandler);
+            IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(level, pos, opposite);
+            if (handler != null) {
+                target.addHandler(handler);
+            }
         });
         if (target.getHandlerCount() > 0) {
             return EmitUtils.sendToAcceptors(target, energyToSend);

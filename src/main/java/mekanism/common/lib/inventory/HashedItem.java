@@ -79,7 +79,9 @@ public class HashedItem implements IHashedItem {
      */
     @NotNull
     public CompoundTag internalToNBT() {
-        return itemStack.serializeNBT();
+        CompoundTag stackTag = new CompoundTag();
+        itemStack.save(stackTag);
+        return stackTag;
     }
 
     @Override

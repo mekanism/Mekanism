@@ -24,9 +24,11 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.upgrade.transmitter.UniversalCableUpgradeData;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -152,8 +154,8 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     }
 
     @Override
-    public boolean isValidAcceptor(BlockEntity tile, Direction side) {
-        return super.isValidAcceptor(tile, side) && getAcceptorCache().hasStrictEnergyHandlerAndListen(tile, side);
+    public boolean isValidAcceptor(ServerLevel level, BlockPos pos, @Nullable BlockEntity tile, Direction side) {
+        return super.isValidAcceptor(level, pos, tile, side) && getAcceptorCache().hasStrictEnergyHandlerAndListen(level, pos, side);
     }
 
     @Override

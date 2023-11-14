@@ -2,6 +2,7 @@ package mekanism.common.util.test;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.UnaryOperator;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.Mekanism;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -20,7 +21,6 @@ public class GameTestUtils {
 
     public static final int INACCESSIBLE_LEVEL = ChunkMap.MAX_VIEW_DISTANCE + 1;
     private static final int UNLOAD_LEVEL = ChunkLevel.MAX_LEVEL + 1;
-    private static final BooleanSupplier ALWAYS_TRUE = () -> true;
     private static final Runnable NO_OP_RUNNABLE = () -> {
     };
 
@@ -92,7 +92,7 @@ public class GameTestUtils {
                 levelMemory.setValue(holder.getTicketLevel());
                 distanceManager.updateChunkScheduling(absPos, UNLOAD_LEVEL, holder, holder.getTicketLevel());
                 //And then unload it
-                chunkMap.processUnloads(ALWAYS_TRUE);
+                chunkMap.processUnloads(ConstantPredicates.ALWAYS_TRUE);
                 fail(helper, "Chunk queued for unloading", absolutePos, relativePos);
             } else if (DEBUG_CHUNK_LOADING) {
                 //Note: Even with debug logging enabled odds are this case isn't even possible due to the earlier check to skip if unloaded

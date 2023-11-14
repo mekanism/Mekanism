@@ -4,19 +4,20 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
+import mekanism.common.util.WorldUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class TransitRequest {
 
@@ -26,17 +27,16 @@ public abstract class TransitRequest {
         return new SimpleTransitRequest(stack);
     }
 
-    public static TransitRequest anyItem(BlockEntity tile, Direction side, int amount) {
-        return definedItem(tile, side, amount, Finder.ANY);
+    public static TransitRequest anyItem(IItemHandler inventory, int amount) {
+        return definedItem(inventory, amount, Finder.ANY);
     }
 
-    public static TransitRequest definedItem(BlockEntity tile, Direction side, int amount, Finder finder) {
-        return definedItem(tile, side, 1, amount, finder);
+    public static TransitRequest definedItem(IItemHandler inventory, int amount, Finder finder) {
+        return definedItem(inventory, 1, amount, finder);
     }
 
-    public static TransitRequest definedItem(BlockEntity tile, Direction side, int min, int max, Finder finder) {
-        TileTransitRequest ret = new TileTransitRequest(tile, side);
-        IItemHandler inventory = InventoryUtils.assertItemHandler("TransitRequest", tile, side);
+    public static TransitRequest definedItem(IItemHandler inventory, int min, int max, Finder finder) {
+        TileTransitRequest ret = new TileTransitRequest(inventory);
         if (inventory == null) {
             return ret;
         }
@@ -61,16 +61,20 @@ public abstract class TransitRequest {
     public abstract Collection<? extends ItemData> getItemData();
 
     @NotNull
-    public TransitResponse addToInventory(BlockEntity tile, Direction side, int min, boolean force) {
+    public TransitResponse addToInventory(Level level, BlockPos pos, Direction side, int min, boolean force) {
+        return addToInventory(level, pos, WorldUtils.getTileEntity(level, pos), side, min, force);
+    }
+
+    @NotNull
+    public TransitResponse addToInventory(Level level, BlockPos pos, @Nullable BlockEntity tile, Direction side, int min, boolean force) {
         if (force && tile instanceof TileEntityLogisticalSorter sorter) {
             return sorter.sendHome(this);
         }
         if (isEmpty()) {
             return getEmptyResponse();
         }
-        Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, Capabilities.ITEM_HANDLER, side.getOpposite()).resolve();
-        if (capability.isPresent()) {
-            IItemHandler inventory = capability.get();
+        IItemHandler inventory = WorldUtils.getCapability(level, Capabilities.ITEM.block(), pos, null, tile, side.getOpposite());
+        if (inventory != null) {
             int slots = inventory.getSlots();
             if (slots == 0) {
                 //If the inventory has no slots just exit early with the result that we can't send any items

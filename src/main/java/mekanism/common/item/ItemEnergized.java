@@ -5,22 +5,24 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
-import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
+import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedFloatingLongValue;
+import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemEnergized extends CapabilityItem implements ICustomCreativeTabContents {
+public class ItemEnergized extends Item implements ICustomCreativeTabContents, ICapabilityAware {
 
     private final FloatingLongSupplier chargeRateSupplier;
     private final FloatingLongSupplier maxEnergySupplier;
@@ -78,16 +80,16 @@ public class ItemEnergized extends CapabilityItem implements ICustomCreativeTabC
     }
 
     @Override
-    protected boolean areCapabilityConfigsLoaded() {
-        return super.areCapabilityConfigsLoaded() && MekanismConfig.gear.isLoaded();
-    }
-
-    @Override
-    protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
-        super.gatherCapabilities(capabilities, stack, nbt);
-        //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
-        // Internal is used by the "null" side, which is what will get used for most items
-        capabilities.add(RateLimitEnergyHandler.create(() -> getChargeRate(stack), () -> getMaxEnergy(stack), canExtract, canInsert));
+    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+        EnergyCompatUtils.registerItemCapabilities(event, this, (stack, ctx) -> {
+            if (!MekanismConfig.gear.isLoaded()) {//Only expose the capabilities if the required configs are loaded
+                return null;
+            }
+            //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
+            // Internal is used by the "null" side, which is what will get used for most items
+            //TODO - 1.20.2: Figure out if we can inline the calculating of charge rate and max energy from stack to here or if it is still good to have them be suppliers
+            return RateLimitEnergyHandler.create(stack, () -> getChargeRate(stack), () -> getMaxEnergy(stack), canExtract, canInsert);
+        });
     }
 
     @Override

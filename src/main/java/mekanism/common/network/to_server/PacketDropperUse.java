@@ -124,23 +124,20 @@ public class PacketDropperUse implements IMekanismPacket {
                 MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.DUMP);
             }
         } else {
-            Optional<IChemicalHandler<CHEMICAL, STACK>> cap = stack.getCapability(ChemicalUtil.getCapabilityForChemical(tank)).resolve();
-            if (cap.isPresent()) {
-                IChemicalHandler<CHEMICAL, STACK> handler = cap.get();
-                if (handler instanceof IMekanismChemicalHandler<CHEMICAL, STACK, ?> chemicalHandler) {
-                    IChemicalTank<CHEMICAL, STACK> itemTank = chemicalHandler.getChemicalTank(0, null);
-                    //It is a chemical tank
-                    if (itemTank != null) {
-                        //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
-                        if (action == DropperAction.FILL_DROPPER) {
-                            //Insert chemical into dropper
-                            transferBetweenTanks(tank, itemTank, player);
-                            MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.FILL);
-                        } else if (action == DropperAction.DRAIN_DROPPER) {
-                            //Extract chemical from dropper
-                            transferBetweenTanks(itemTank, tank, player);
-                            MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.DRAIN);
-                        }
+            IChemicalHandler<CHEMICAL, STACK> handler = stack.getCapability(ChemicalUtil.getCapabilityForChemical(tank).item());
+            if (handler instanceof IMekanismChemicalHandler<CHEMICAL, STACK, ?> chemicalHandler) {
+                IChemicalTank<CHEMICAL, STACK> itemTank = chemicalHandler.getChemicalTank(0, null);
+                //It is a chemical tank
+                if (itemTank != null) {
+                    //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
+                    if (action == DropperAction.FILL_DROPPER) {
+                        //Insert chemical into dropper
+                        transferBetweenTanks(tank, itemTank, player);
+                        MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.FILL);
+                    } else if (action == DropperAction.DRAIN_DROPPER) {
+                        //Extract chemical from dropper
+                        transferBetweenTanks(itemTank, tank, player);
+                        MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.DRAIN);
                     }
                 }
             }
@@ -154,7 +151,7 @@ public class PacketDropperUse implements IMekanismPacket {
             MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.DUMP);
             return;
         }
-        Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack).resolve();
+        Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack);
         if (capability.isPresent()) {
             IFluidHandlerItem fluidHandlerItem = capability.get();
             if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {

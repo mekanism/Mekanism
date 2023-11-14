@@ -134,7 +134,9 @@ public class BinInventorySlot extends BasicInventorySlot {
     public CompoundTag serializeNBT() {
         CompoundTag nbt = super.serializeNBT();
         if (isLocked()) {
-            nbt.put(NBTConstants.LOCK_STACK, lockStack.serializeNBT());
+            CompoundTag stackTag = new CompoundTag();
+            lockStack.save(stackTag);
+            nbt.put(NBTConstants.LOCK_STACK, stackTag);
         }
         return nbt;
     }

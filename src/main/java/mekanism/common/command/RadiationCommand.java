@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import mekanism.api.Coord4D;
 import mekanism.api.radiation.IRadiationManager;
+import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.MekanismPermissions;
@@ -78,11 +79,12 @@ public class RadiationCommand {
                     .executes(ctx -> {
                         CommandSourceStack source = ctx.getSource();
                         double magnitude = DoubleArgumentType.getDouble(ctx, "magnitude");
-                        source.getPlayerOrException().getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
-                            c.radiate(magnitude);
+                        IRadiationEntity cap = source.getPlayerOrException().getCapability(Capabilities.RADIATION_ENTITY);
+                        if (cap != null) {
+                            cap.radiate(magnitude);
                             source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_ADD_ENTITY.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(magnitude),
                                   UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)), true);
-                        });
+                        }
                         return 0;
                     })
               ).then(Commands.argument("targets", EntityArgument.entities())
@@ -94,12 +96,13 @@ public class RadiationCommand {
                               int addedTo = 0;
                               for (Entity entity : EntityArgument.getEntities(ctx, "targets")) {
                                   if (entity instanceof LivingEntity) {
-                                      entity.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
-                                          c.radiate(magnitude);
+                                      IRadiationEntity cap = entity.getCapability(Capabilities.RADIATION_ENTITY);
+                                      if (cap != null) {
+                                          cap.radiate(magnitude);
                                           source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_ADD_ENTITY_TARGET.translateColored(EnumColor.GRAY,
                                                 RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3),
                                                 EnumColor.INDIGO, entity.getDisplayName()), true);
-                                      });
+                                      }
                                       addedTo++;
                                   }
                               }
@@ -136,10 +139,11 @@ public class RadiationCommand {
               .requires(MekanismPermissions.COMMAND_RADIATION_HEAL)
               .executes(ctx -> {
                   CommandSourceStack source = ctx.getSource();
-                  source.getPlayerOrException().getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
-                      c.set(RadiationManager.BASELINE);
+                  IRadiationEntity cap = source.getPlayerOrException().getCapability(Capabilities.RADIATION_ENTITY);
+                  if (cap != null) {
+                      cap.set(RadiationManager.BASELINE);
                       source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_CLEAR.translateColored(EnumColor.GRAY), true);
-                  });
+                  }
                   return 0;
               }).then(Commands.argument("targets", EntityArgument.entities())
                     .requires(MekanismPermissions.COMMAND_RADIATION_HEAL_OTHERS)
@@ -148,11 +152,12 @@ public class RadiationCommand {
                         int healed = 0;
                         for (Entity entity : EntityArgument.getEntities(ctx, "targets")) {
                             if (entity instanceof LivingEntity) {
-                                entity.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
-                                    c.set(RadiationManager.BASELINE);
+                                IRadiationEntity cap = entity.getCapability(Capabilities.RADIATION_ENTITY);
+                                if (cap != null) {
+                                    cap.set(RadiationManager.BASELINE);
                                     source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_CLEAR_ENTITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                                           entity.getDisplayName()), true);
-                                });
+                                }
                                 healed++;
                             }
                         }
@@ -168,13 +173,14 @@ public class RadiationCommand {
                     .executes(ctx -> {
                         CommandSourceStack source = ctx.getSource();
                         double magnitude = DoubleArgumentType.getDouble(ctx, "magnitude");
-                        source.getPlayerOrException().getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
-                            double newValue = Math.max(RadiationManager.BASELINE, c.getRadiation() - magnitude);
-                            double reduced = c.getRadiation() - newValue;
-                            c.set(newValue);
+                        IRadiationEntity cap = source.getPlayerOrException().getCapability(Capabilities.RADIATION_ENTITY);
+                        if (cap != null) {
+                            double newValue = Math.max(RadiationManager.BASELINE, cap.getRadiation() - magnitude);
+                            double reduced = cap.getRadiation() - newValue;
+                            cap.set(newValue);
                             source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_REDUCE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(reduced),
                                   UnitDisplayUtils.getDisplayShort(reduced, RadiationUnit.SVH, 3)), true);
-                        });
+                        }
                         return 0;
                     })
               ).then(Commands.argument("targets", EntityArgument.entities())
@@ -186,14 +192,15 @@ public class RadiationCommand {
                               int reducedFrom = 0;
                               for (Entity entity : EntityArgument.getEntities(ctx, "targets")) {
                                   if (entity instanceof LivingEntity) {
-                                      entity.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
-                                          double newValue = Math.max(RadiationManager.BASELINE, c.getRadiation() - magnitude);
-                                          double reduced = c.getRadiation() - newValue;
-                                          c.set(newValue);
+                                      IRadiationEntity cap = entity.getCapability(Capabilities.RADIATION_ENTITY);
+                                      if (cap != null) {
+                                          double newValue = Math.max(RadiationManager.BASELINE, cap.getRadiation() - magnitude);
+                                          double reduced = cap.getRadiation() - newValue;
+                                          cap.set(newValue);
                                           source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_REDUCE_TARGET.translateColored(EnumColor.GRAY,
                                                 EnumColor.INDIGO, entity.getDisplayName(), RadiationScale.getSeverityColor(reduced),
                                                 UnitDisplayUtils.getDisplayShort(reduced, RadiationUnit.SVH, 3)), true);
-                                      });
+                                      }
                                       reducedFrom++;
                                   }
                               }

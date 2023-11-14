@@ -12,16 +12,15 @@ import mekanism.api.text.ILangEntry;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -34,6 +33,7 @@ import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -87,15 +87,15 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     }
 
     @Override
-    protected boolean areCapabilityConfigsLoaded() {
-        return super.areCapabilityConfigsLoaded() && MekanismConfig.gear.isLoaded();
-    }
-
-    @Override
-    protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
-        super.gatherCapabilities(capabilities, stack, nbt);
-        capabilities.add(RateLimitEnergyHandler.create(MekanismConfig.gear.freeRunnerChargeRate, MekanismConfig.gear.freeRunnerMaxEnergy,
-              BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue));
+    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+        super.attachCapabilities(event);
+        EnergyCompatUtils.registerItemCapabilities(event, this, (stack, ctx) -> {
+            if (!MekanismConfig.gear.isLoaded()) {//Only expose the capabilities if the required configs are loaded
+                return null;
+            }
+            return RateLimitEnergyHandler.create(stack, MekanismConfig.gear.freeRunnerChargeRate, MekanismConfig.gear.freeRunnerMaxEnergy,
+                  BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue);
+        });
     }
 
     public FreeRunnerMode getMode(ItemStack itemStack) {

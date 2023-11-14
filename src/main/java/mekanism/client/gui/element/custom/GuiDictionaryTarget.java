@@ -43,7 +43,8 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import org.jetbrains.annotations.NotNull;
@@ -170,10 +171,10 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                     ));
                 });
                 //Get tags of any contained chemicals
-                addChemicalTags(DictionaryTagType.GAS, stack, Capabilities.GAS_HANDLER);
-                addChemicalTags(DictionaryTagType.INFUSE_TYPE, stack, Capabilities.INFUSION_HANDLER);
-                addChemicalTags(DictionaryTagType.PIGMENT, stack, Capabilities.PIGMENT_HANDLER);
-                addChemicalTags(DictionaryTagType.SLURRY, stack, Capabilities.SLURRY_HANDLER);
+                addChemicalTags(DictionaryTagType.GAS, stack, Capabilities.GAS_HANDLER.item());
+                addChemicalTags(DictionaryTagType.INFUSE_TYPE, stack, Capabilities.INFUSION_HANDLER.item());
+                addChemicalTags(DictionaryTagType.PIGMENT, stack, Capabilities.PIGMENT_HANDLER.item());
+                addChemicalTags(DictionaryTagType.SLURRY, stack, Capabilities.SLURRY_HANDLER.item());
                 //TODO: Support other types of things?
             }
         } else if (newTarget instanceof FluidStack fluidStack) {
@@ -209,16 +210,16 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
     }
 
     private <STACK extends ChemicalStack<?>, HANDLER extends IChemicalHandler<?, STACK>> void addChemicalTags(DictionaryTagType tagType, ItemStack stack,
-          Capability<HANDLER> capability) {
-        stack.getCapability(capability).ifPresent(handler ->
-              tags.put(tagType, TagCache.getTagsAsStrings(IntStream.range(0, handler.getTanks())
-                          .mapToObj(handler::getChemicalInTank)
-                          .filter(chemicalInTank -> !chemicalInTank.isEmpty())
-                          .flatMap(chemicalInTank -> chemicalInTank.getType().getTags())
-                          .distinct()
-                    )
-              )
-        );
+          ItemCapability<HANDLER, Void> capability) {
+        HANDLER handler = stack.getCapability(capability);
+        if (handler != null) {
+            tags.put(tagType, TagCache.getTagsAsStrings(IntStream.range(0, handler.getTanks())
+                  .mapToObj(handler::getChemicalInTank)
+                  .filter(chemicalInTank -> !chemicalInTank.isEmpty())
+                  .flatMap(chemicalInTank -> chemicalInTank.getType().getTags())
+                  .distinct()
+            ));
+        }
     }
 
     @Override

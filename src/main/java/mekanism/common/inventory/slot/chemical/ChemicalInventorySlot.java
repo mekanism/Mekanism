@@ -20,7 +20,7 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,8 +29,8 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
 
     @Nullable
     protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
-    HANDLER getCapability(ItemStack stack, Capability<HANDLER> capability) {
-        return stack.isEmpty() ? null : stack.getCapability(capability).resolve().orElse(null);
+    HANDLER getCapability(ItemStack stack, ItemCapability<HANDLER, Void> capability) {
+        return stack.isEmpty() ? null : stack.getCapability(capability);
     }
 
     /**

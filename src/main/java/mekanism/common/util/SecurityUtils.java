@@ -3,7 +3,6 @@ package mekanism.common.util;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -31,7 +30,6 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.server.permission.PermissionAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -61,13 +59,27 @@ public final class SecurityUtils implements ISecurityUtils {
 
     @Nullable
     @Override
-    public UUID getOwnerUUID(ICapabilityProvider provider) {
+    public UUID getOwnerUUID(Object provider) {
         Objects.requireNonNull(provider, "Capability provider may not be null.");
-        return provider.getCapability(Capabilities.OWNER_OBJECT).resolve().map(IOwnerObject::getOwnerUUID).orElse(null);
+        IOwnerObject ownerObject = Capabilities.OWNER_OBJECT.getCapability(provider);
+        return ownerObject == null ? null : ownerObject.getOwnerUUID();
+    }
+
+    @Nullable
+    @Override
+    public UUID getOwnerUUID(ItemStack stack) {
+        Objects.requireNonNull(stack, "Capability provider may not be null.");
+        if (!stack.isEmpty()) {
+            IOwnerObject ownerObject = Capabilities.OWNER_OBJECT.getCapability(stack);
+            if (ownerObject != null) {
+                return ownerObject.getOwnerUUID();
+            }
+        }
+        return null;
     }
 
     @Override
-    public boolean canAccess(Player player, @Nullable ICapabilityProvider provider) {
+    public boolean canAccess(Player player, @Nullable Object provider) {
         //If the player is an op allow bypassing any restrictions
         return isOp(player) || canAccess(player.getUUID(), provider, player.level().isClientSide);
     }
@@ -79,25 +91,25 @@ public final class SecurityUtils implements ISecurityUtils {
     }
 
     @Override
-    public boolean canAccess(@Nullable UUID player, @Nullable ICapabilityProvider provider, boolean isClient) {
+    public boolean canAccess(@Nullable UUID player, @Nullable Object provider, boolean isClient) {
         if (!MekanismConfig.general.allowProtection.get() || provider == null) {
             //If protection is disabled, access is always granted
             return true;
         }
         //Note: We don't just use getSecurityObject here as we support checking access to things that are only owned and don't have security
-        Optional<ISecurityObject> securityCapability = provider.getCapability(Capabilities.SECURITY_OBJECT).resolve();
-        if (securityCapability.isEmpty()) {
+        ISecurityObject securityCapability = Capabilities.SECURITY_OBJECT.getCapability(provider);
+        if (securityCapability == null) {
             //If it is an owner item but not a security item make sure the owner matches
-            Optional<IOwnerObject> ownerCapability = provider.getCapability(Capabilities.OWNER_OBJECT).resolve();
-            if (ownerCapability.isPresent()) {
+            IOwnerObject ownerCapability = Capabilities.OWNER_OBJECT.getCapability(provider);
+            if (ownerCapability != null) {
                 //If it is an owner object but not a security object make sure the owner matches
-                UUID owner = ownerCapability.get().getOwnerUUID();
+                UUID owner = ownerCapability.getOwnerUUID();
                 return owner == null || owner.equals(player);
             }
             //Otherwise, if there is no owner AND no security, access is always granted
             return true;
         }
-        return canAccessObject(player, securityCapability.get(), isClient);
+        return canAccessObject(player, securityCapability, isClient);
     }
 
     @Override
@@ -170,12 +182,16 @@ public final class SecurityUtils implements ISecurityUtils {
     }
 
     @Override
-    public SecurityMode getSecurityMode(@Nullable ICapabilityProvider provider, boolean isClient) {
+    public SecurityMode getSecurityMode(@Nullable Object provider, boolean isClient) {
         if (provider == null || !MekanismConfig.general.allowProtection.get()) {
             return SecurityMode.PUBLIC;
         }
-        return provider.getCapability(Capabilities.SECURITY_OBJECT).map(security -> getEffectiveSecurityMode(security, isClient))
-              .orElseGet(() -> provider.getCapability(Capabilities.OWNER_OBJECT).isPresent() ? SecurityMode.PRIVATE : SecurityMode.PUBLIC);
+        ISecurityObject security = Capabilities.SECURITY_OBJECT.getCapability(provider);
+        if (security != null) {
+            return getEffectiveSecurityMode(security, isClient);
+        }
+        IOwnerObject ownerObject = Capabilities.OWNER_OBJECT.getCapability(provider);
+        return ownerObject == null ? SecurityMode.PUBLIC : SecurityMode.PRIVATE;
     }
 
     @Override
@@ -184,24 +200,21 @@ public final class SecurityUtils implements ISecurityUtils {
         return getFinalData(securityObject, isClient).mode();
     }
 
-    public void incrementSecurityMode(Player player, ICapabilityProvider provider) {
-        provider.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> {
-            if (security.ownerMatches(player)) {
-                security.setSecurityMode(security.getSecurityMode().getNext());
-            }
-        });
+    public void incrementSecurityMode(Player player, Object provider) {
+        ISecurityObject security = Capabilities.SECURITY_OBJECT.getCapability(provider);
+        if (security != null && security.ownerMatches(player)) {
+            security.setSecurityMode(security.getSecurityMode().getNext());
+        }
     }
 
-    public void decrementSecurityMode(Player player, ICapabilityProvider provider) {
-        provider.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> {
-            if (security.ownerMatches(player)) {
-                security.setSecurityMode(security.getSecurityMode().getPrevious());
-            }
-        });
+    public void decrementSecurityMode(Player player, Object provider) {
+        ISecurityObject security = Capabilities.SECURITY_OBJECT.getCapability(provider);
+        if (security != null && security.ownerMatches(player)) {
+            security.setSecurityMode(security.getSecurityMode().getPrevious());
+        }
     }
 
-    public InteractionResultHolder<ItemStack> claimOrOpenGui(Level level, Player player, InteractionHand hand,
-          TriConsumer<ServerPlayer, InteractionHand, ItemStack> openGui) {
+    public InteractionResultHolder<ItemStack> claimOrOpenGui(Level level, Player player, InteractionHand hand, TriConsumer<ServerPlayer, InteractionHand, ItemStack> openGui) {
         ItemStack stack = player.getItemInHand(hand);
         if (!tryClaimItem(level, player, stack)) {
             if (!canAccessOrDisplayError(player, stack)) {
@@ -214,17 +227,14 @@ public final class SecurityUtils implements ISecurityUtils {
     }
 
     public boolean tryClaimItem(Level level, Player player, ItemStack stack) {
-        Optional<IOwnerObject> capability = stack.getCapability(Capabilities.OWNER_OBJECT).resolve();
-        if (capability.isPresent()) {
-            IOwnerObject ownerObject = capability.get();
-            if (ownerObject.getOwnerUUID() == null) {
-                if (!level.isClientSide) {
-                    ownerObject.setOwnerUUID(player.getUUID());
-                    Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(player.getUUID()));
-                    player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.NOW_OWN));
-                }
-                return true;
+        IOwnerObject ownerObject = stack.getCapability(Capabilities.OWNER_OBJECT.item());
+        if (ownerObject != null && ownerObject.getOwnerUUID() == null) {
+            if (!level.isClientSide) {
+                ownerObject.setOwnerUUID(player.getUUID());
+                Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(player.getUUID()));
+                player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.NOW_OWN));
             }
+            return true;
         }
         return false;
     }
@@ -236,8 +246,10 @@ public final class SecurityUtils implements ISecurityUtils {
     }
 
     public void addOwnerTooltip(ItemStack stack, List<Component> tooltip) {
-        stack.getCapability(Capabilities.OWNER_OBJECT).ifPresent(ownerObject ->
-              tooltip.add(OwnerDisplay.of(MekanismUtils.tryGetClientPlayer(), ownerObject.getOwnerUUID()).getTextComponent()));
+        IOwnerObject ownerObject = stack.getCapability(Capabilities.OWNER_OBJECT.item());
+        if (ownerObject != null) {
+            tooltip.add(OwnerDisplay.of(MekanismUtils.tryGetClientPlayer(), ownerObject.getOwnerUUID()).getTextComponent());
+        }
     }
 
     @Override
@@ -245,16 +257,17 @@ public final class SecurityUtils implements ISecurityUtils {
         Objects.requireNonNull(stack, "Stack to add tooltip for may not be null.");
         Objects.requireNonNull(tooltip, "List of tooltips to add to may not be null.");
         addOwnerTooltip(stack, tooltip);
-        stack.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> {
+        ISecurityObject security = stack.getCapability(Capabilities.SECURITY_OBJECT.item());
+        if (security != null) {
             SecurityData data = getFinalData(security, true);
             tooltip.add(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, data.mode()));
             if (data.override()) {
                 tooltip.add(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
             }
-        });
+        }
     }
 
-    public void securityChanged(Set<Player> playersUsing, ICapabilityProvider target, SecurityMode old, SecurityMode mode) {
+    public void securityChanged(Set<Player> playersUsing, Object target, SecurityMode old, SecurityMode mode) {
         //If the mode changed and the new security mode is more restrictive than the old one
         // and there are players using the security object
         if (moreRestrictive(old, mode) && !playersUsing.isEmpty()) {

@@ -3,7 +3,6 @@ package mekanism.client.render.hud;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.render.HUDRenderer;
@@ -48,9 +47,8 @@ public class MekanismHUD implements IGuiOverlay {
                 }
             }
             if (Mekanism.hooks.CuriosLoaded) {
-                Optional<? extends IItemHandler> invOptional = CuriosIntegration.getCuriosInventory(player);
-                if (invOptional.isPresent()) {
-                    IItemHandler inv = invOptional.get();
+                IItemHandler inv = CuriosIntegration.getCuriosInventory(player);
+                if (inv != null) {
                     for (int i = 0, slots = inv.getSlots(); i < slots; i++) {
                         ItemStack stack = inv.getStackInSlot(i);
                         if (stack.getItem() instanceof IItemHUDProvider hudProvider) {

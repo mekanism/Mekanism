@@ -45,7 +45,8 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -83,13 +84,13 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     private void sideChangedBasic(TransmissionType transmissionType, Direction direction) {
         switch (transmissionType) {
             case ENERGY -> tile.invalidateCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities(), direction);
-            case FLUID -> tile.invalidateCapability(net.neoforged.neoforge.common.capabilities.Capabilities.FLUID_HANDLER, direction);
-            case GAS -> tile.invalidateCapability(Capabilities.GAS_HANDLER, direction);
-            case INFUSION -> tile.invalidateCapability(Capabilities.INFUSION_HANDLER, direction);
-            case PIGMENT -> tile.invalidateCapability(Capabilities.PIGMENT_HANDLER, direction);
-            case SLURRY -> tile.invalidateCapability(Capabilities.SLURRY_HANDLER, direction);
-            case ITEM -> tile.invalidateCapability(net.neoforged.neoforge.common.capabilities.Capabilities.ITEM_HANDLER, direction);
-            case HEAT -> tile.invalidateCapability(Capabilities.HEAT_HANDLER, direction);
+            case FLUID -> tile.invalidateCapability(FluidHandler.BLOCK, direction);
+            case GAS -> tile.invalidateCapability(Capabilities.GAS_HANDLER.block(), direction);
+            case INFUSION -> tile.invalidateCapability(Capabilities.INFUSION_HANDLER.block(), direction);
+            case PIGMENT -> tile.invalidateCapability(Capabilities.PIGMENT_HANDLER.block(), direction);
+            case SLURRY -> tile.invalidateCapability(Capabilities.SLURRY_HANDLER.block(), direction);
+            case ITEM -> tile.invalidateCapability(Capabilities.ITEM.block(), direction);
+            case HEAT -> tile.invalidateCapability(Capabilities.HEAT_HANDLER.block(), direction);
         }
         tile.markForSave();
         //And invalidate any "listeners" we may have that the side changed for a specific transmission type
@@ -114,21 +115,21 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         }
     }
 
-    public boolean isCapabilityDisabled(@NotNull Capability<?> capability, Direction side) {
+    public boolean isCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, Direction side) {
         TransmissionType type = null;
-        if (capability == net.neoforged.neoforge.common.capabilities.Capabilities.ITEM_HANDLER) {
+        if (capability == Capabilities.ITEM.block()) {
             type = TransmissionType.ITEM;
-        } else if (capability == Capabilities.GAS_HANDLER) {
+        } else if (capability == Capabilities.GAS_HANDLER.block()) {
             type = TransmissionType.GAS;
-        } else if (capability == Capabilities.INFUSION_HANDLER) {
+        } else if (capability == Capabilities.INFUSION_HANDLER.block()) {
             type = TransmissionType.INFUSION;
-        } else if (capability == Capabilities.PIGMENT_HANDLER) {
+        } else if (capability == Capabilities.PIGMENT_HANDLER.block()) {
             type = TransmissionType.PIGMENT;
-        } else if (capability == Capabilities.SLURRY_HANDLER) {
+        } else if (capability == Capabilities.SLURRY_HANDLER.block()) {
             type = TransmissionType.SLURRY;
-        } else if (capability == Capabilities.HEAT_HANDLER) {
+        } else if (capability == Capabilities.HEAT_HANDLER.block()) {
             type = TransmissionType.HEAT;
-        } else if (capability == net.neoforged.neoforge.common.capabilities.Capabilities.FLUID_HANDLER) {
+        } else if (capability == FluidHandler.BLOCK) {
             type = TransmissionType.FLUID;
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
             type = TransmissionType.ENERGY;

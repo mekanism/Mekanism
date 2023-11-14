@@ -3,6 +3,7 @@ package mekanism.common.tile.transmitter;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.IAlloyInteraction;
+import mekanism.api.IConfigurable;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.AlloyTier;
@@ -20,7 +21,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.DynamicHandler.InteractPredicate;
 import mekanism.common.capabilities.proxy.ProxyConfigurable;
 import mekanism.common.capabilities.proxy.ProxyConfigurable.ISidedConfigurable;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.capabilities.resolver.BasicSidedCapabilityResolver;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import mekanism.common.content.network.transmitter.IUpgradeableTransmitter;
@@ -45,12 +45,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class TileEntityTransmitter extends CapabilityTileEntity implements ISidedConfigurable, IAlloyInteraction {
+
+    //TODO - 1.20: Test this confiurable capability and that the resolver behaves properly
+    public static final ICapabilityProvider<? super TileEntityTransmitter, @Nullable Direction, IConfigurable> CONFIGURABLE_PROVIDER = (tile, side) ->
+          tile.getCapability(Capabilities.CONFIGURABLE, () -> new BasicSidedCapabilityResolver<>(tile, Capabilities.CONFIGURABLE, ProxyConfigurable::new), side);
 
     public static final ModelProperty<TransmitterModelData> TRANSMITTER_PROPERTY = new ModelProperty<>();
 
@@ -62,8 +67,6 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         super(((IHasTileEntity<? extends TileEntityTransmitter>) blockProvider.getBlock()).getTileType(), pos, state);
         this.transmitter = createTransmitter(blockProvider);
         cacheCoord();
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.ALLOY_INTERACTION, this));
-        addCapabilityResolver(new BasicSidedCapabilityResolver<>(this, Capabilities.CONFIGURABLE, ProxyConfigurable::new));
     }
 
     protected abstract Transmitter<?, ?, ?> createTransmitter(IBlockProvider blockProvider);

@@ -14,7 +14,7 @@ import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.ListTag;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,8 +60,8 @@ public class PigmentRecipeData extends ChemicalRecipeData<Pigment, PigmentStack,
     }
 
     @Override
-    protected Capability<IPigmentHandler> getCapability() {
-        return Capabilities.PIGMENT_HANDLER;
+    protected ItemCapability<IPigmentHandler, Void> getCapability() {
+        return Capabilities.PIGMENT_HANDLER.item();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package mekanism.client.render.hud;
 
 import mekanism.api.radiation.IRadiationManager;
+import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.radiation.RadiationManager;
@@ -29,8 +30,9 @@ public class RadiationOverlay implements IGuiOverlay {
     public void render(ExtendedGui gui, GuiGraphics guiGraphics, float partialTicks, int screenWidth, int screenHeight) {
         Player player = gui.getMinecraft().player;
         if (player != null && IRadiationManager.INSTANCE.isRadiationEnabled() && MekanismUtils.isPlayingMode(player)) {
-            player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
-                double radiation = c.getRadiation();
+            IRadiationEntity cap = player.getCapability(Capabilities.RADIATION_ENTITY);
+            if (cap != null) {
+                double radiation = cap.getRadiation();
                 double severity = RadiationScale.getScaledDoseSeverity(radiation) * 0.8;
                 //Only update the previous radiation level at most once a tick
                 if (lastTick != player.level().getGameTime()) {
@@ -47,7 +49,7 @@ public class RadiationOverlay implements IGuiOverlay {
                     int color = (0x701E1E << 8) + effect;
                     MekanismRenderer.renderColorOverlay(guiGraphics, 0, 0, color);
                 }
-            });
+            }
         }
     }
 }

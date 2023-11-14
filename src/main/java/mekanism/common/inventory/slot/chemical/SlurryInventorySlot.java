@@ -21,7 +21,7 @@ public class SlurryInventorySlot extends ChemicalInventorySlot<Slurry, SlurrySta
 
     @Nullable
     public static ISlurryHandler getCapability(ItemStack stack) {
-        return getCapability(stack, Capabilities.SLURRY_HANDLER);
+        return getCapability(stack, Capabilities.SLURRY_HANDLER.item());
     }
 
     /**
@@ -32,7 +32,7 @@ public class SlurryInventorySlot extends ChemicalInventorySlot<Slurry, SlurrySta
     public static SlurryInventorySlot drain(ISlurryTank slurryTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(slurryTank, "Slurry tank cannot be null");
         Predicate<@NotNull ItemStack> insertPredicate = getDrainInsertPredicate(slurryTank, SlurryInventorySlot::getCapability);
-        return new SlurryInventorySlot(slurryTank, insertPredicate.negate(), insertPredicate, stack -> stack.getCapability(Capabilities.SLURRY_HANDLER).isPresent(),
+        return new SlurryInventorySlot(slurryTank, insertPredicate.negate(), insertPredicate, stack -> stack.getCapability(Capabilities.SLURRY_HANDLER.item()) != null,
               listener, x, y);
     }
 

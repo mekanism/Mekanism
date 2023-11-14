@@ -2,19 +2,19 @@ package mekanism.common.item.gear;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.ItemCapabilityWrapper;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import mekanism.common.integration.gender.GenderCapabilityHelper;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStack.TooltipPart;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemHazmatSuitArmor extends ArmorItem {
+public class ItemHazmatSuitArmor extends ArmorItem implements ICapabilityAware {
 
     private static final HazmatMaterial HAZMAT_MATERIAL = new HazmatMaterial();
 
@@ -37,10 +37,9 @@ public class ItemHazmatSuitArmor extends ArmorItem {
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        ItemCapabilityWrapper wrapper = new ItemCapabilityWrapper(stack, RadiationShieldingHandler.create(item -> getShieldingByArmor(getType())));
-        GenderCapabilityHelper.addGenderCapability(this, wrapper::add);
-        return wrapper;
+    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerItem(Capabilities.RADIATION_SHIELDING, (stack, ctx) -> RadiationShieldingHandler.create(getShieldingByArmor(getType())), this);
+        GenderCapabilityHelper.addGenderCapability(event, this);
     }
 
     @Override

@@ -1,11 +1,8 @@
 package mekanism.common.util;
 
 import net.minecraft.core.Direction;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.common.util.NonNullConsumer;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 
 public final class CapabilityUtils {
@@ -13,20 +10,12 @@ public final class CapabilityUtils {
     private CapabilityUtils() {
     }
 
-    @NotNull
-    public static <T> LazyOptional<T> getCapability(@Nullable ICapabilityProvider provider, @Nullable Capability<T> cap, @Nullable Direction side) {
-        if (provider == null || cap == null || !cap.isRegistered()) {
-            return LazyOptional.empty();
+    @Nullable//TODO - 1.20.2: Look at usages as we don't want to limit to only supporting block entities when blocks may also need it
+    //@Deprecated(forRemoval = true)
+    public static <T> T getCapability(@Nullable BlockEntity blockEntity, @Nullable BlockCapability<T, @Nullable Direction> cap, @Nullable Direction side) {
+        if (blockEntity == null || !blockEntity.hasLevel()) {//TODO: Is this case actually useful/necessary?
+            return null;
         }
-        return provider.getCapability(cap, side);
-    }
-
-    /**
-     * Helper to add listeners that don't care about the data type to lazy optionals. This makes it so when we have {@code LazyOptional<?>} we can add a listener to it
-     * without having to deal with the fact that one is "capture of ?" and the listener is "?".
-     */
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public static void addListener(@NotNull LazyOptional<?> lazyOptional, @NotNull NonNullConsumer listener) {
-        lazyOptional.addListener(listener);
+        return blockEntity.getLevel().getCapability(cap, blockEntity.getBlockPos(), null, blockEntity, side);
     }
 }

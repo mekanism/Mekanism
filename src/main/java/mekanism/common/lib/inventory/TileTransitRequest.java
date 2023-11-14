@@ -8,21 +8,17 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import mekanism.common.Mekanism;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.RegistryUtils;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.IItemHandler;
 
+//TODO: Do we want to rename this to HandlerTransitRequest?
 public class TileTransitRequest extends TransitRequest {
 
-    private final BlockEntity tile;
-    private final Direction side;
+    private final IItemHandler handler;
     private final Map<HashedItem, TileItemData> itemMap = new LinkedHashMap<>();
 
-    public TileTransitRequest(BlockEntity tile, Direction side) {
-        this.tile = tile;
-        this.side = side;
+    public TileTransitRequest(IItemHandler handler) {
+        this.handler = handler;
     }
 
     public void addItem(ItemStack stack, int slot) {
@@ -35,8 +31,8 @@ public class TileTransitRequest extends TransitRequest {
         return data == null ? 0 : data.getTotalCount();
     }
 
-    protected Direction getSide() {
-        return side;
+    protected IItemHandler getHandler() {
+        return handler;
     }
 
     public Map<HashedItem, TileItemData> getItemMap() {
@@ -63,8 +59,7 @@ public class TileTransitRequest extends TransitRequest {
 
         @Override
         public ItemStack use(int amount) {
-            Direction side = getSide();
-            IItemHandler handler = InventoryUtils.assertItemHandler("TileTransitRequest", tile, side);
+            IItemHandler handler = getHandler();
             if (handler != null && !slotMap.isEmpty()) {
                 HashedItem itemType = getItemType();
                 ItemStack itemStack = itemType.getInternalStack();
@@ -79,7 +74,8 @@ public class TileTransitRequest extends TransitRequest {
                     if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
                         Mekanism.logger.warn("An inventory's returned content {} does not line up with TileTransitRequest's prediction.", stackable ? "count" : "type");
                         Mekanism.logger.warn("TileTransitRequest item: {}, toUse: {}, ret: {}, slot: {}", itemStack, toUse, ret, slot);
-                        Mekanism.logger.warn("Tile: {} {} {}", RegistryUtils.getName(tile.getType()), tile.getBlockPos(), side);
+                        //TODO: Do we want to keep track of the position and side so we can log it here like we used to?
+                        Mekanism.logger.warn("ItemHandler: {}", handler.getClass().getName());
                     }
                     amount -= toUse;
                     totalCount -= toUse;

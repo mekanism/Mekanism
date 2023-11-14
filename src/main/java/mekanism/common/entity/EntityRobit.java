@@ -34,16 +34,14 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.robit.IRobit;
 import mekanism.api.robit.RobitSkin;
+import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
-import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
@@ -117,12 +115,11 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
 import net.neoforged.neoforge.common.CommonHooks;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.ITeleporter;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.network.NetworkHooks;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
@@ -164,7 +161,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     //TODO: Allow for upgrades in the robit?
     private static final int ticksRequired = 100;
 
-    private final CapabilityCache capabilityCache = new CapabilityCache();
     public Coord4D homeLocation;
     private int lastTextureUpdate;
     private int textureIndex;
@@ -200,7 +196,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         super(type, world);
         getNavigation().setCanFloat(false);
         setCustomNameVisible(true);
-        addCapabilityResolver(BasicCapabilityResolver.security(this));
         recipeCacheLookupMonitor = new RecipeCacheLookupMonitor<>(this);
         // Choose a random offset to check for all errors. We do this to ensure that not every tile tries to recheck errors for every
         // recipe the same tick and thus create uneven spikes of CPU usage
@@ -429,20 +424,18 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     private ItemStack getItemVariant() {
         ItemStack stack = MekanismItems.ROBIT.getItemStack();
-        Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY).resolve();
-        if (capability.isPresent()) {
-            IStrictEnergyHandler energyHandlerItem = capability.get();
-            if (energyHandlerItem.getEnergyContainerCount() > 0) {
-                energyHandlerItem.setEnergy(0, energyContainer.getEnergy());
-            }
+        IStrictEnergyHandler energyHandlerItem = stack.getCapability(Capabilities.STRICT_ENERGY.item());
+        if (energyHandlerItem != null && energyHandlerItem.getEnergyContainerCount() > 0) {
+            energyHandlerItem.setEnergy(0, energyContainer.getEnergy());
         }
         ItemRobit item = (ItemRobit) stack.getItem();
         item.setSustainedInventory(getSustainedInventory(), stack);
         item.setName(stack, getName());
-        stack.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> {
+        ISecurityObject security = stack.getCapability(Capabilities.SECURITY_OBJECT.item());
+        if (security != null) {
             security.setOwnerUUID(getOwnerUUID());
             security.setSecurityMode(getSecurityMode());
-        });
+        }
         item.setSkin(stack, getSkin());
         return stack;
     }
@@ -803,34 +796,5 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             }
         }
         return textures.get(textureIndex);
-    }
-
-    protected final void addCapabilityResolver(ICapabilityResolver resolver) {
-        capabilityCache.addCapabilityResolver(resolver);
-    }
-
-    @NotNull
-    @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side) {
-        if (capabilityCache != null) {
-            //Validate the cache is not null. In theory this should never happen unless some mod is trying to access capabilities
-            // before our entity is done constructing, but there are cases such as the size event where based on when they are
-            // fired if it is based on the entity's caps then the first call will happen before the enitity has finished
-            // constructing. See https://github.com/mekanism/Mekanism/issues/7490
-            if (capabilityCache.isCapabilityDisabled(capability, side)) {
-                return LazyOptional.empty();
-            } else if (capabilityCache.canResolve(capability)) {
-                return capabilityCache.getCapabilityUnchecked(capability, side);
-            }
-        }
-        //Call to LivingEntity's Implementation of getCapability if we could not find a capability ourselves
-        return super.getCapability(capability, side);
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        //When the capabilities on our tile get invalidated, make sure to also invalidate all our cached ones
-        capabilityCache.invalidateAll();
     }
 }

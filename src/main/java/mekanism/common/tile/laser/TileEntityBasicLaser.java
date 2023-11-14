@@ -2,7 +2,6 @@ package mekanism.common.tile.laser;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -26,7 +25,6 @@ import mekanism.common.network.to_client.PacketLaserHitBlock;
 import mekanism.common.particle.LaserParticleData;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -170,9 +168,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         double refractionPercent = 0;
                         for (ItemStack armor : livingEntity.getArmorSlots()) {
                             if (!armor.isEmpty()) {
-                                Optional<ILaserDissipation> capability = armor.getCapability(Capabilities.LASER_DISSIPATION).resolve();
-                                if (capability.isPresent()) {
-                                    ILaserDissipation laserDissipation = capability.get();
+                                ILaserDissipation laserDissipation = armor.getCapability(Capabilities.LASER_DISSIPATION);
+                                if (laserDissipation != null) {
                                     dissipationPercent += laserDissipation.getDissipationPercent();
                                     refractionPercent += laserDissipation.getRefractionPercent();
                                     if (dissipationPercent >= 1) {
@@ -284,11 +281,10 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                     digging = result.getType() == Type.MISS ? null : hitPos;
                     diggingProgress = FloatingLong.ZERO;
                 }
-                Optional<ILaserReceptor> capability = CapabilityUtils.getCapability(WorldUtils.getTileEntity(level, hitPos), Capabilities.LASER_RECEPTOR,
-                      result.getDirection()).resolve();
-                if (capability.isPresent() && !capability.get().canLasersDig()) {
+                ILaserReceptor laserReceptor = WorldUtils.getCapability(level, Capabilities.LASER_RECEPTOR, hitPos, result.getDirection());
+                if (laserReceptor != null && !laserReceptor.canLasersDig()) {
                     //Give the energy to the receptor
-                    capability.get().receiveLaserEnergy(remainingEnergy);
+                    laserReceptor.receiveLaserEnergy(remainingEnergy);
                 } else {
                     //Otherwise, make progress on breaking the block
                     BlockState hitState = level.getBlockState(hitPos);

@@ -1,7 +1,5 @@
 package mekanism.common.capabilities.fluid.item;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -15,6 +13,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.tier.FluidTankTier;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,34 +21,27 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class RateLimitFluidHandler extends ItemStackMekanismFluidHandler {
 
-    public static RateLimitFluidHandler create(IntSupplier rate, IntSupplier capacity) {
-        return create(rate, capacity, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue);
+    public static RateLimitFluidHandler create(ItemStack stack, IntSupplier rate, IntSupplier capacity) {
+        return create(stack, rate, capacity, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue);
     }
 
-    public static RateLimitFluidHandler create(IntSupplier rate, IntSupplier capacity, BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canExtract,
+    public static RateLimitFluidHandler create(ItemStack stack, IntSupplier rate, IntSupplier capacity, BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canExtract,
           BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canInsert, Predicate<@NotNull FluidStack> isValid) {
         Objects.requireNonNull(rate, "Rate supplier cannot be null");
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(isValid, "Gas validity check cannot be null");
-        return new RateLimitFluidHandler(listener -> new RateLimitFluidTank(rate, capacity, canExtract, canInsert, isValid, listener));
+        return new RateLimitFluidHandler(stack, listener -> new RateLimitFluidTank(rate, capacity, canExtract, canInsert, isValid, listener));
     }
 
-    public static RateLimitFluidHandler create(FluidTankTier tier) {
+    public static RateLimitFluidHandler create(ItemStack stack, FluidTankTier tier) {
         Objects.requireNonNull(tier, "Fluid tank tier cannot be null");
-        return new RateLimitFluidHandler(listener -> new FluidTankRateLimitFluidTank(tier, listener));
+        return new RateLimitFluidHandler(stack, listener -> new FluidTankRateLimitFluidTank(tier, listener));
     }
 
-    private final IExtendedFluidTank tank;
-
-    private RateLimitFluidHandler(Function<IContentsListener, IExtendedFluidTank> tankProvider) {
-        tank = tankProvider.apply(this);
-    }
-
-    @Override
-    protected List<IExtendedFluidTank> getInitialTanks() {
-        return Collections.singletonList(tank);
+    private RateLimitFluidHandler(ItemStack stack, Function<IContentsListener, IExtendedFluidTank> tankProvider) {
+        super(stack, tankProvider);
     }
 
     public static class RateLimitFluidTank extends VariableCapacityFluidTank {

@@ -13,6 +13,7 @@ import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.lib.transmitter.CompatibleTransmitterValidator;
@@ -26,11 +27,13 @@ import mekanism.common.upgrade.transmitter.MechanicalPipeUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
@@ -144,8 +147,8 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     }
 
     @Override
-    public boolean isValidAcceptor(BlockEntity tile, Direction side) {
-        return super.isValidAcceptor(tile, side) && getAcceptorCache().isAcceptorAndListen(tile, side, Capabilities.FLUID_HANDLER);
+    public boolean isValidAcceptor(ServerLevel level, BlockPos pos, @Nullable BlockEntity tile, Direction side) {
+        return super.isValidAcceptor(level, pos, tile, side) && getAcceptorCache().isAcceptorAndListen(level, pos, side, FluidHandler.BLOCK);
     }
 
     @Override

@@ -14,7 +14,7 @@ import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.ListTag;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,8 +60,8 @@ public class SlurryRecipeData extends ChemicalRecipeData<Slurry, SlurryStack, IS
     }
 
     @Override
-    protected Capability<ISlurryHandler> getCapability() {
-        return Capabilities.SLURRY_HANDLER;
+    protected ItemCapability<ISlurryHandler, Void> getCapability() {
+        return Capabilities.SLURRY_HANDLER.item();
     }
 
     @Override

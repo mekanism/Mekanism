@@ -26,11 +26,11 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -240,8 +240,8 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return supportsTransmissionType(transmitter.getTransmitter());
     }
 
-    @NotNull
-    public LazyOptional<ACCEPTOR> getAcceptor(Direction side) {
+    @Nullable
+    public ACCEPTOR getAcceptor(Direction side) {
         return acceptorCache.getCachedAcceptor(side);
     }
 
@@ -270,7 +270,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         for (Direction side : EnumUtils.DIRECTIONS) {
             TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), getTilePos().relative(side));
             if (tile != null && isValidTransmitter(tile, side)) {
-                connections |= 1 << side.ordinal();
+                connections |= (byte) (1 << side.ordinal());
             }
         }
         return connections;
@@ -283,11 +283,15 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (isRedstoneActivated()) {
             return false;
         }
-        BlockEntity tile = WorldUtils.getTileEntity(getTileWorld(), getTilePos().relative(side));
-        if (canConnectMutual(side, tile) && isValidAcceptor(tile, side)) {
-            return true;
+        //TODO: Add a comment about this instance check
+        if (getTileWorld() instanceof ServerLevel level) {
+            BlockPos pos = getTilePos().relative(side);
+            BlockEntity tile = WorldUtils.getTileEntity(level, pos);
+            if (canConnectMutual(side, tile) && isValidAcceptor(level, pos, tile, side)) {
+                return true;
+            }
+            acceptorCache.invalidateCachedAcceptor(side);
         }
-        acceptorCache.invalidateCachedAcceptor(side);
         return false;
     }
 
@@ -310,20 +314,23 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (isRedstoneActivated()) {
             return connections;
         }
-        for (Direction side : EnumUtils.DIRECTIONS) {
-            BlockPos offset = getTilePos().relative(side);
-            BlockEntity tile = WorldUtils.getTileEntity(getTileWorld(), offset);
-            if (canConnectMutual(side, tile)) {
-                if (!isRemote() && !WorldUtils.isBlockLoaded(getTileWorld(), offset)) {
-                    getTransmitterTile().setForceUpdate();
-                    continue;
+        //TODO: Add a comment about this instance check
+        if (getTileWorld() instanceof ServerLevel level) {
+            for (Direction side : EnumUtils.DIRECTIONS) {
+                BlockPos offset = getTilePos().relative(side);
+                BlockEntity tile = WorldUtils.getTileEntity(level, offset);
+                if (canConnectMutual(side, tile)) {
+                    if (!isRemote() && !WorldUtils.isBlockLoaded(level, offset)) {
+                        getTransmitterTile().setForceUpdate();
+                        continue;
+                    }
+                    if (isValidAcceptor(level, offset, tile, side)) {
+                        connections |= (byte) (1 << side.ordinal());
+                        continue;
+                    }
                 }
-                if (isValidAcceptor(tile, side)) {
-                    connections |= 1 << side.ordinal();
-                    continue;
-                }
+                acceptorCache.invalidateCachedAcceptor(side);
             }
-            acceptorCache.invalidateCachedAcceptor(side);
         }
         return connections;
     }
@@ -348,7 +355,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     /**
      * @apiNote Only call this from the server side
      */
-    public boolean isValidAcceptor(BlockEntity tile, Direction side) {
+    public boolean isValidAcceptor(ServerLevel level, BlockPos pos, @Nullable BlockEntity tile, Direction side) {
         //TODO: Rename this method better to make it more apparent that it caches and also listens to the acceptor
         //If it isn't a transmitter or the transmission type is different than the one the transmitter has
         return !(tile instanceof TileEntityTransmitter transmitter) || !supportsTransmissionType(transmitter);
@@ -495,7 +502,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
                     //Now remove all bits that already where enabled, so we only have the
                     // ones that are newly enabled. There is no need to recheck for a
                     // network merge on two transmitters if one is no longer accessible
-                    newlyEnabledTransmitters &= ~currentTransmitterConnections;
+                    newlyEnabledTransmitters &= (byte) ~currentTransmitterConnections;
                 }
             }
 
@@ -574,6 +581,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     public void onNeighborTileChange(Direction side) {
+        //TODO - 1.20.2: I think we can remove some of the checks like this because of how the block capability caches work?
         refreshConnections(side);
     }
 

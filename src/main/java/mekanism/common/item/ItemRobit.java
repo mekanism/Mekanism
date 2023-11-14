@@ -13,7 +13,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
+import mekanism.common.capabilities.security.item.ItemStackOwnerObject;
 import mekanism.common.capabilities.security.item.ItemStackSecurityObject;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
@@ -43,6 +43,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemRobit extends ItemEnergized implements IItemSustainedInventory {
@@ -98,7 +99,11 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
                 }
                 robit.setSustainedInventory(getSustainedInventory(stack));
                 robit.setCustomName(getRobitName(stack));
-                robit.setSecurityMode(stack.getCapability(Capabilities.SECURITY_OBJECT).map(ISecurityObject::getSecurityMode).orElse(SecurityMode.PUBLIC));
+                ISecurityObject securityObject = stack.getCapability(Capabilities.SECURITY_OBJECT.item());
+                //TODO - 1.20.2: Validate this but I don't think we need to set it as public when we can't get the cap
+                if (securityObject != null) {
+                    robit.setSecurityMode(securityObject.getSecurityMode());
+                }
                 robit.setSkin(getRobitSkin(stack), player);
                 world.addFreshEntity(robit);
                 world.gameEvent(player, GameEvent.ENTITY_PLACE, robit.blockPosition());
@@ -135,8 +140,8 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
     }
 
     @Override
-    protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
-        capabilities.add(new ItemStackSecurityObject());
-        super.gatherCapabilities(capabilities, stack, nbt);
+    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+        super.attachCapabilities(event);
+        ItemStackSecurityObject.attachCapsToItem(event, this);
     }
 }

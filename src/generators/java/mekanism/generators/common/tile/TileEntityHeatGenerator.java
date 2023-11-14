@@ -31,7 +31,6 @@ import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tile.base.SubstanceType;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
@@ -41,7 +40,6 @@ import mekanism.generators.common.slot.FluidFuelInventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -185,9 +183,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @Nullable
     @Override
     public IHeatHandler getAdjacent(@NotNull Direction side) {
-        if (side == Direction.DOWN) {
-            BlockEntity adj = WorldUtils.getTileEntity(getLevel(), worldPosition.below());
-            return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER, side.getOpposite()).resolve().orElse(null);
+        if (side == Direction.DOWN && level != null) {
+            return WorldUtils.getCapability(level, Capabilities.HEAT_HANDLER.block(), getBlockPos().relative(side), side.getOpposite());
         }
         return null;
     }

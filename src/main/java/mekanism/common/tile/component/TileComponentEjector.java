@@ -17,6 +17,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.EnumColor;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -44,9 +45,11 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -199,27 +202,31 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                 //Validate the slot info is of the correct type
                 Set<Direction> outputs = info.getSidesForData(dataType);
                 if (!outputs.isEmpty()) {
-                    EjectTransitRequest ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(tile, outputs.iterator().next()), inventorySlotInfo.getSlots());
+                    IItemHandler handler = getHandler(outputs.iterator().next());
+                    EjectTransitRequest ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(handler), inventorySlotInfo.getSlots());
                     if (!ejectMap.isEmpty()) {
+                        //TODO: Re-evaluate this as this seems potentially quite wrong in that what if there are different eject maps or something??
+                        // Also if it is fine because the handler doesn't overlap in terms of contents and slots... we could skip having to overwrite the handler
                         for (Direction side : outputs) {
-                            BlockEntity target = WorldUtils.getTileEntity(tile.getLevel(), tile.getBlockPos().relative(side));
-                            if (target != null) {
-                                //Update the side so that if/when the response uses it, it makes sure it is grabbing from the correct side
-                                ejectMap.side = side;
-                                //If the spot is not loaded just skip trying to eject to it
-                                TransitResponse response;
-                                if (target instanceof TileEntityLogisticalTransporterBase transporter) {
-                                    response = transporter.getTransmitter().insert(tile, ejectMap, outputColor, true, 0);
-                                } else {
-                                    response = ejectMap.addToInventory(target, side, 0, false);
-                                }
-                                if (!response.isEmpty()) {
-                                    // use the items returned by the TransitResponse; will be visible next loop
-                                    response.useAll();
-                                    if (ejectMap.isEmpty()) {
-                                        //If we are out of items to eject, break
-                                        break;
-                                    }
+                            BlockPos relative = tile.getBlockPos().relative(side);
+                            BlockEntity target = WorldUtils.getTileEntity(tile.getLevel(), relative);
+                            //TODO: Do we want to validate we have a target OR an ItemHandler?
+                            //TODO: Re-evaluate this
+                            //Update the side so that if/when the response uses it, it makes sure it is grabbing from the correct side
+                            ejectMap.handler = getHandler(side);
+                            //If the spot is not loaded just skip trying to eject to it
+                            TransitResponse response;
+                            if (target instanceof TileEntityLogisticalTransporterBase transporter) {
+                                response = transporter.getTransmitter().insert(tile, ejectMap, outputColor, true, 0);
+                            } else {
+                                response = ejectMap.addToInventory(tile.getLevel(), relative, target, side, 0, false);
+                            }
+                            if (!response.isEmpty()) {
+                                // use the items returned by the TransitResponse; will be visible next loop
+                                response.useAll();
+                                if (ejectMap.isEmpty()) {
+                                    //If we are out of items to eject, break
+                                    break;
                                 }
                             }
                         }
@@ -229,6 +236,11 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         }
 
         tickDelay = 10;
+    }
+
+    private IItemHandler getHandler(Direction side) {
+        //Note: We can't just pass "tile" and have to instead look up the capability to make sure we respect any sidedness
+        return WorldUtils.getCapability(tile.getLevel(), Capabilities.ITEM.block(), tile.getBlockPos(), null, tile, side);
     }
 
     @ComputerMethod
@@ -394,16 +406,15 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     private static class EjectTransitRequest extends TileTransitRequest {
 
-        public Direction side;
+        public IItemHandler handler;
 
-        public EjectTransitRequest(BlockEntity tile, Direction side) {
-            super(tile, side);
-            this.side = side;
+        public EjectTransitRequest(IItemHandler handler) {
+            super(handler);
         }
 
         @Override
-        public Direction getSide() {
-            return side;
+        protected IItemHandler getHandler() {
+            return handler;
         }
     }
 }

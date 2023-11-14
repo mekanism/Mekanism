@@ -2,8 +2,7 @@ package mekanism.common.capabilities;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,9 +31,9 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
      * @implNote Do not override this method if you are implementing {@link IOffsetCapability}, instead override
      * {@link #getOffsetCapabilityIfEnabled(Capability, Direction, Vec3i)}, calling this method is fine.
      */
-    @NotNull
-    default <T> LazyOptional<T> getOffsetCapability(@NotNull Capability<T> capability, @Nullable Direction side, @NotNull Vec3i offset) {
-        return isOffsetCapabilityDisabled(capability, side, offset) ? LazyOptional.empty() : getOffsetCapabilityIfEnabled(capability, side, offset);
+    @Nullable
+    default <T> T getOffsetCapability(@NotNull BlockCapability<T, @Nullable Direction> capability, @Nullable Direction side, @NotNull Vec3i offset) {
+        return isOffsetCapabilityDisabled(capability, side, offset) ? null : getOffsetCapabilityIfEnabled(capability, side, offset);
     }
 
     /**
@@ -48,7 +47,7 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
      * @return True if this given capability is disabled for the given side and offset. If true, then {@link #getOffsetCapability(Capability, Direction, Vec3i)} should
      * return {@link LazyOptional#empty()}.
      */
-    default boolean isOffsetCapabilityDisabled(@NotNull Capability<?> capability, @Nullable Direction side, @NotNull Vec3i offset) {
+    default boolean isOffsetCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side, @NotNull Vec3i offset) {
         return false;
     }
 
@@ -69,5 +68,5 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
      *
      * @return The requested capability.
      */
-    @NotNull <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@NotNull Capability<T> capability, @Nullable Direction side, @NotNull Vec3i offset);
+    @Nullable <T> T getOffsetCapabilityIfEnabled(@NotNull BlockCapability<T, @Nullable Direction> capability, @Nullable Direction side, @NotNull Vec3i offset);
 }

@@ -11,10 +11,9 @@ import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends BaseFilter<FILTER> {
 
@@ -44,11 +43,11 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
 
     public abstract Finder getFinder();
 
-    public TransitRequest mapInventory(BlockEntity tile, Direction side, boolean singleItem) {
+    public TransitRequest mapInventory(IItemHandler itemHandler, boolean singleItem) {
         if (sizeMode && !singleItem) {
-            return TransitRequest.definedItem(tile, side, min, max, getFinder());
+            return TransitRequest.definedItem(itemHandler, min, max, getFinder());
         }
-        return TransitRequest.definedItem(tile, side, singleItem ? 1 : 64, getFinder());
+        return TransitRequest.definedItem(itemHandler, singleItem ? 1 : 64, getFinder());
     }
 
     @Override

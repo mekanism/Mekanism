@@ -76,9 +76,8 @@ public class ModuleChargeDistributionUnit implements ICustomModule<ModuleChargeD
                 }
             }
             if (!toCharge.isZero() && Mekanism.hooks.CuriosLoaded) {
-                Optional<? extends IItemHandler> curiosInventory = CuriosIntegration.getCuriosInventory(player);
-                if (curiosInventory.isPresent()) {
-                    IItemHandler handler = curiosInventory.get();
+                IItemHandler handler = CuriosIntegration.getCuriosInventory(player);
+                if (handler != null) {
                     for (int slot = 0, slots = handler.getSlots(); slot < slots; slot++) {
                         toCharge = charge(module, player, handler.getStackInSlot(slot), toCharge);
                         if (toCharge.isZero()) {

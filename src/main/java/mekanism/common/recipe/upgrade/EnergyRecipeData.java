@@ -2,7 +2,6 @@ package mekanism.common.recipe.upgrade;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
@@ -56,10 +55,9 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
             return true;
         }
         Item item = stack.getItem();
-        Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY).resolve();
         List<IEnergyContainer> energyContainers = new ArrayList<>();
-        if (capability.isPresent()) {
-            IStrictEnergyHandler energyHandler = capability.get();
+        IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(stack);
+        if (energyHandler != null) {
             for (int container = 0; container < energyHandler.getEnergyContainerCount(); container++) {
                 energyContainers.add(BasicEnergyContainer.create(energyHandler.getMaxEnergy(container), null));
             }

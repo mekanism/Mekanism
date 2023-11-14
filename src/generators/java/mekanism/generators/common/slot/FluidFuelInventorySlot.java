@@ -31,7 +31,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
         Objects.requireNonNull(fuelCreator, "Fuel fluid stack creator cannot be null");
         Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
         return new FluidFuelInventorySlot(fluidTank, fuelValue, fuelCreator, stack -> {
-            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack).resolve();
+            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack);
             if (cap.isPresent()) {
                 IFluidHandlerItem fluidHandlerItem = cap.get();
                 for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
@@ -46,7 +46,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
             // This might happen after a reload for example
             return fuelValue.applyAsInt(stack) == 0;
         }, stack -> {
-            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack).resolve();
+            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack);
             if (cap.isPresent()) {
                 IFluidHandlerItem fluidHandlerItem = cap.get();
                 for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {

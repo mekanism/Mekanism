@@ -50,7 +50,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
     public void addHUDElements(IModule<ModuleNutritionalInjectionUnit> module, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
             ItemStack container = module.getContainer();
-            Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(container).resolve();
+            Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(container);
             if (capability.isPresent()) {
                 IFluidHandlerItem handler = capability.get();
                 int max = MekanismConfig.gear.mekaSuitNutritionalMaxStorage.getAsInt();

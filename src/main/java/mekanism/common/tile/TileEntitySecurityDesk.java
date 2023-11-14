@@ -23,9 +23,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TileEntitySecurityDesk extends TileEntityMekanism implements IBoundingBlock {
 
@@ -37,7 +38,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         //Even though there are inventory slots make this return none as accessible by automation, as then people could lock items to other
         // people unintentionally. We also disable the security object capability so that we only provide access to the security desk as an
         // "owner object" which means that all access checks will be handled as requiring the owner
-        addDisabledCapabilities(net.neoforged.neoforge.common.capabilities.Capabilities.ITEM_HANDLER, Capabilities.SECURITY_OBJECT);
+        addDisabledCapabilities(Capabilities.ITEM.block(), Capabilities.SECURITY_OBJECT.block());
     }
 
     @NotNull
@@ -82,7 +83,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             MinecraftServer server = getWorldNN().getServer();
             if (server != null) {
                 for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                    if (player.containerMenu instanceof ISecurityContainer container && !ISecurityUtils.INSTANCE.canAccess(player, container.getSecurityObject())) {
+                    if (player.containerMenu instanceof ISecurityContainer container && !container.canPlayerAccess(player)) {
                         //Boot any players out of the container if they no longer have access to viewing it
                         player.closeContainer();
                     }
@@ -100,8 +101,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
                 MinecraftServer server = getWorldNN().getServer();
                 if (server != null) {
                     Player player = server.getPlayerList().getPlayer(removed);
-                    if (player != null && player.containerMenu instanceof ISecurityContainer container &&
-                        ISecurityUtils.INSTANCE.canAccess(player, container.getSecurityObject())) {
+                    if (player != null && player.containerMenu instanceof ISecurityContainer container && container.canPlayerAccess(player)) {
                         //If the player that got removed from being trusted no longer has access to view the container they were viewing
                         // boot them out of it
                         player.closeContainer();
@@ -139,7 +139,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     }
 
     @Override
-    public boolean isOffsetCapabilityDisabled(@NotNull Capability<?> capability, Direction side, @NotNull Vec3i offset) {
+    public boolean isOffsetCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, Direction side, @NotNull Vec3i offset) {
         //Don't allow proxying any capabilities by marking them all as disabled
         return true;
     }

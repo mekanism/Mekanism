@@ -56,7 +56,6 @@ import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.GasHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.InfusionHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.PigmentHandlerManager;
@@ -67,7 +66,11 @@ import mekanism.common.capabilities.resolver.manager.HeatHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ItemHandlerManager;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.computer.*;
+import mekanism.common.integration.computer.BoundMethodHolder;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.FactoryRegistry;
+import mekanism.common.integration.computer.IComputerTile;
+import mekanism.common.integration.computer.MethodRestriction;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -285,10 +288,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         if (hasSecurity()) {
             securityComponent = new TileComponentSecurity(this);
-            addCapabilityResolver(BasicCapabilityResolver.security(this));
         }
         soundEvent = hasSound() ? Attribute.get(block, AttributeSound.class).getSoundEvent() : null;
-        ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
     }
 
     private void setSupportedTypes(Block block) {
@@ -521,7 +522,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 }
             }
             //Pass on this activation if the player is using a configuration card (and this tile supports the capability)
-            if (getCapability(Capabilities.CONFIG_CARD, null).isPresent()) {
+            if (CapabilityUtils.getCapability(this, Capabilities.CONFIG_CARD, null) != null) {
                 if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurationCard) {
                     return InteractionResult.PASS;
                 }
@@ -1129,9 +1130,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Nullable
     @Override
     public IHeatHandler getAdjacent(@NotNull Direction side) {
-        if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
-            BlockEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
-            return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER, side.getOpposite()).resolve().orElse(null);
+        if (canHandleHeat() && getHeatCapacitorCount(side) > 0 && level != null) {
+            return WorldUtils.getCapability(level, Capabilities.HEAT_HANDLER.block(), getBlockPos().relative(side), side.getOpposite());
         }
         return null;
     }

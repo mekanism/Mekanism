@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.tab;
 
 import java.util.function.Supplier;
+import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.ISecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SpecialColors;
@@ -25,12 +26,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable ICapabilityProvider>> {
+public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable Object>> {
 
     private static final ResourceLocation PUBLIC = MekanismUtils.getResource(ResourceType.GUI, "public.png");
     private static final ResourceLocation PRIVATE = MekanismUtils.getResource(ResourceType.GUI, "private.png");
@@ -39,11 +39,11 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable ICapabili
     @Nullable
     private final InteractionHand currentHand;
 
-    public GuiSecurityTab(IGuiWrapper gui, ICapabilityProvider provider) {
+    public GuiSecurityTab(IGuiWrapper gui, Object provider) {
         this(gui, provider, 34);
     }
 
-    public GuiSecurityTab(IGuiWrapper gui, ICapabilityProvider provider, int y) {
+    public GuiSecurityTab(IGuiWrapper gui, Object provider, int y) {//TODO - 1.20.2: Do we want to validate object is either Entity or BlockEntity?
         this(gui, () -> provider, y, null);
     }
 
@@ -51,7 +51,7 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable ICapabili
         this(gui, () -> minecraft.player.getItemInHand(hand), 34, hand);
     }
 
-    private GuiSecurityTab(IGuiWrapper gui, Supplier<ICapabilityProvider> provider, int y, @Nullable InteractionHand hand) {
+    private GuiSecurityTab(IGuiWrapper gui, Supplier<Object> provider, int y, @Nullable InteractionHand hand) {
         super(PUBLIC, gui, provider, gui.getWidth(), y, 26, 18, false);
         this.currentHand = hand;
     }
@@ -73,38 +73,33 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable ICapabili
     @Override
     public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderToolTip(guiGraphics, mouseX, mouseY);
-        ICapabilityProvider provider = dataSource.get();
-        if (provider != null) {
-            provider.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> {
-                SecurityData data = SecurityUtils.get().getFinalData(security, true);
-                Component securityComponent = MekanismLang.SECURITY.translateColored(EnumColor.GRAY, data.mode());
-                Component ownerComponent = OwnerDisplay.of(minecraft.player, security.getOwnerUUID(), security.getOwnerName()).getTextComponent();
-                if (data.override()) {
-                    displayTooltips(guiGraphics, mouseX, mouseY, securityComponent, ownerComponent, MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
-                } else {
-                    displayTooltips(guiGraphics, mouseX, mouseY, securityComponent, ownerComponent);
-                }
-            });
+        ISecurityObject security = Capabilities.SECURITY_OBJECT.getCapability(dataSource.get());
+        if (security != null) {
+            SecurityData data = SecurityUtils.get().getFinalData(security, true);
+            Component securityComponent = MekanismLang.SECURITY.translateColored(EnumColor.GRAY, data.mode());
+            Component ownerComponent = OwnerDisplay.of(minecraft.player, security.getOwnerUUID(), security.getOwnerName()).getTextComponent();
+            if (data.override()) {
+                displayTooltips(guiGraphics, mouseX, mouseY, securityComponent, ownerComponent, MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
+            } else {
+                displayTooltips(guiGraphics, mouseX, mouseY, securityComponent, ownerComponent);
+            }
         }
     }
 
     @Override
     public void onClick(double mouseX, double mouseY, int button) {
-        ICapabilityProvider provider = dataSource.get();
-        if (provider != null) {
-            provider.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> {
-                if (security.ownerMatches(minecraft.player)) {
-                    if (currentHand != null) {
-                        Mekanism.packetHandler().sendToServer(new PacketSecurityMode(currentHand, button == GLFW.GLFW_MOUSE_BUTTON_LEFT));
-                    } else if (provider instanceof BlockEntity tile) {
-                        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteraction.NEXT_SECURITY_MODE
-                                                                                                                       : GuiInteraction.PREVIOUS_SECURITY_MODE, tile));
-                    } else if (provider instanceof Entity entity) {
-                        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteractionEntity.NEXT_SECURITY_MODE
-                                                                                                                       : GuiInteractionEntity.PREVIOUS_SECURITY_MODE, entity));
-                    }
-                }
-            });
+        Object provider = dataSource.get();
+        ISecurityObject security = Capabilities.SECURITY_OBJECT.getCapability(provider);
+        if (security != null && security.ownerMatches(minecraft.player)) {
+            if (currentHand != null) {
+                Mekanism.packetHandler().sendToServer(new PacketSecurityMode(currentHand, button == GLFW.GLFW_MOUSE_BUTTON_LEFT));
+            } else if (provider instanceof BlockEntity tile) {
+                Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteraction.NEXT_SECURITY_MODE
+                                                                                                                  : GuiInteraction.PREVIOUS_SECURITY_MODE, tile));
+            } else if (provider instanceof Entity entity) {
+                Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteractionEntity.NEXT_SECURITY_MODE
+                                                                                                                  : GuiInteractionEntity.PREVIOUS_SECURITY_MODE, entity));
+            }
         }
     }
 

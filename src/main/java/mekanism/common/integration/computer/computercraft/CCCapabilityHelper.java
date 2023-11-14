@@ -2,25 +2,39 @@ package mekanism.common.integration.computer.computercraft;
 
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import java.util.function.BooleanSupplier;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
-import mekanism.common.capabilities.resolver.ICapabilityResolver;
+import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.computer.ComputerEnergyHelper;
 import mekanism.common.integration.computer.ComputerFilterHelper;
 import mekanism.common.integration.computer.IComputerTile;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.CapabilityManager;
-import net.neoforged.neoforge.common.capabilities.CapabilityToken;
+import mekanism.common.registration.impl.TileEntityTypeDeferredRegister.BlockEntityTypeBuilder;
+import mekanism.common.tile.base.CapabilityTileEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.Nullable;
 
 public class CCCapabilityHelper {
 
-    private static final Capability<IPeripheral> CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+    //TODO: Note this may need to be moved into another class after updating to avoid class loading issues without CC present
+    // We also will likely need to update the capabilities name as odds are I did not guess what they will choose correctly
+    private static final BlockCapability<IPeripheral, @Nullable Direction> CAPABILITY = BlockCapability.create(new ResourceLocation(MekanismHooks.CC_MOD_ID, "peripheral"), IPeripheral.class, Direction.class);
+    private static final ICapabilityProvider<?, @Nullable Direction, IPeripheral> PROVIDER = getProvider();
 
-    public static <TILE extends BlockEntity & IComputerTile> ICapabilityResolver getComputerCraftCapability(TILE tile) {
-        if (tile.isComputerCapabilityPersistent()) {
-            return BasicCapabilityResolver.persistent(CAPABILITY, () -> MekanismPeripheral.create(tile));
-        }
-        return BasicCapabilityResolver.create(CAPABILITY, () -> MekanismPeripheral.create(tile));
+    private static <TILE extends CapabilityTileEntity & IComputerTile> ICapabilityProvider<? super TILE, @Nullable Direction, IPeripheral> getProvider() {
+        return (tile, context) -> tile.getCapability(CAPABILITY, () -> {
+            if (tile.isComputerCapabilityPersistent()) {
+                return BasicCapabilityResolver.persistent(CAPABILITY, () -> MekanismPeripheral.create(tile));
+            }
+            return BasicCapabilityResolver.create(CAPABILITY, () -> MekanismPeripheral.create(tile));
+        }, context);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <TILE extends CapabilityTileEntity & IComputerTile> void addCapability(BlockEntityTypeBuilder<TILE, ?> builder, BooleanSupplier supportsComputer) {
+        builder.with(CAPABILITY, (ICapabilityProvider<? super TILE, @Nullable Direction, IPeripheral>) PROVIDER, supportsComputer);
     }
 
     public static void registerApis() {

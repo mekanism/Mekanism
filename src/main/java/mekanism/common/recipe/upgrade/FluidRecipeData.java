@@ -55,7 +55,7 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
             return true;
         }
         Item item = stack.getItem();
-        Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack).resolve();
+        Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack);
         List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
         if (capability.isPresent()) {
             IFluidHandlerItem fluidHandler = capability.get();

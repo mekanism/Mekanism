@@ -37,10 +37,8 @@ public class ItemDosimeter extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
             if (!world.isClientSide) {
-                player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(cap -> {
-                    sendDosimeterLevel(cap, player, MekanismLang.RADIATION_EXPOSURE);
-                    CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
-                });
+                sendDosimeterLevel(player, player, MekanismLang.RADIATION_EXPOSURE);
+                CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
             }
             return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
         }
@@ -52,14 +50,18 @@ public class ItemDosimeter extends Item {
     public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
         if (!player.isShiftKeyDown()) {
             if (!player.level().isClientSide) {
-                entity.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(cap -> sendDosimeterLevel(cap, player, MekanismLang.RADIATION_EXPOSURE_ENTITY));
+                sendDosimeterLevel(entity, player, MekanismLang.RADIATION_EXPOSURE_ENTITY);
             }
             return InteractionResult.sidedSuccess(player.level().isClientSide);
         }
         return InteractionResult.PASS;
     }
 
-    private void sendDosimeterLevel(IRadiationEntity cap, Player player, ILangEntry doseLangEntry) {
+    private void sendDosimeterLevel(LivingEntity entity, Player player, ILangEntry doseLangEntry) {
+        IRadiationEntity cap = entity.getCapability(Capabilities.RADIATION_ENTITY);
+        if (cap == null) {
+            return;
+        }
         double radiation = IRadiationManager.INSTANCE.isRadiationEnabled() ? cap.getRadiation() : 0;
         EnumColor severityColor = RadiationScale.getSeverityColor(radiation);
         player.sendSystemMessage(doseLangEntry.translateColored(EnumColor.GRAY, severityColor, UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 3)));

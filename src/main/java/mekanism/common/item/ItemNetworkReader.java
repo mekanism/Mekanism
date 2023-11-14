@@ -1,7 +1,6 @@
 package mekanism.common.item;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Optional;
 import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -72,9 +71,8 @@ public class ItemNetworkReader extends ItemEnergized {
                 if (tile instanceof TileEntityTransmitter transmitterTile) {
                     displayTransmitterInfo(player, transmitterTile.getTransmitter(), tile, opposite);
                 } else {
-                    Optional<IHeatHandler> heatHandler = CapabilityUtils.getCapability(tile, Capabilities.HEAT_HANDLER, opposite).resolve();
-                    if (heatHandler.isPresent()) {
-                        IHeatHandler transfer = heatHandler.get();
+                    IHeatHandler transfer = WorldUtils.getCapability(world, Capabilities.HEAT_HANDLER.block(), pos, null, tile, opposite);
+                    if (transfer != null) {
                         displayBorder(player, MekanismLang.MEKANISM, true);
                         sendTemperature(player, transfer);
                         displayEndBorder(player);
@@ -104,7 +102,10 @@ public class ItemNetworkReader extends ItemEnergized {
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_BUFFER, transmitterNetwork.getStoredInfo());
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_THROUGHPUT, transmitterNetwork.getFlowInfo());
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_CAPACITY, transmitterNetwork.getNetworkReaderCapacity());
-            CapabilityUtils.getCapability(tile, Capabilities.HEAT_HANDLER, opposite).ifPresent(heatHandler -> sendTemperature(player, heatHandler));
+            IHeatHandler heatHandler = CapabilityUtils.getCapability(tile, Capabilities.HEAT_HANDLER.block(), opposite);
+            if (heatHandler != null) {
+                sendTemperature(player, heatHandler);
+            }
         } else {
             player.sendSystemMessage(MekanismLang.NO_NETWORK.translate());
         }

@@ -15,6 +15,6 @@ import org.jetbrains.annotations.Nullable;
 public class HeatHandlerManager extends CapabilityHandlerManager<IHeatCapacitorHolder, IHeatCapacitor, IHeatHandler, ISidedHeatHandler> {
 
     public HeatHandlerManager(@Nullable IHeatCapacitorHolder holder, @NotNull ISidedHeatHandler baseHandler) {
-        super(holder, baseHandler, Capabilities.HEAT_HANDLER, ProxyHeatHandler::new, IHeatCapacitorHolder::getHeatCapacitors);
+        super(holder, baseHandler, Capabilities.HEAT_HANDLER.block(), ProxyHeatHandler::new, IHeatCapacitorHolder::getHeatCapacitors);
     }
 }

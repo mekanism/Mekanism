@@ -7,7 +7,6 @@ import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
@@ -18,7 +17,6 @@ import mekanism.common.capabilities.holder.heat.HeatCapacitorHelper;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerHeatCapacitorWrapper;
@@ -55,7 +53,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     public TileEntityResistiveHeater(BlockPos pos, BlockState state) {
         super(MekanismBlocks.RESISTIVE_HEATER, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     @NotNull

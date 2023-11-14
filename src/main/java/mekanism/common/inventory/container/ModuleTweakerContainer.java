@@ -11,9 +11,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ModuleTweakerContainer extends MekanismContainer {
 
@@ -83,10 +81,9 @@ public class ModuleTweakerContainer extends MekanismContainer {
                player.getInventory().offhand.stream().anyMatch(ModuleTweakerContainer::isTweakableItem);
     }
 
-    @Nullable
     @Override
-    public ICapabilityProvider getSecurityObject() {
-        return null;
+    public boolean canPlayerAccess(@NotNull Player player) {
+        return false;
     }
 
     @Override

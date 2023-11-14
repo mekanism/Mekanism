@@ -97,7 +97,6 @@ import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.UsernameCache;
-import net.neoforged.neoforge.common.util.NonNullSupplier;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.IFluidBlock;
@@ -115,7 +114,8 @@ import org.jetbrains.annotations.Nullable;
 public final class MekanismUtils {
 
     public static final float ONE_OVER_ROOT_TWO = (float) (1 / Math.sqrt(2));
-    public static final NonNullSupplier<IllegalStateException> MISSING_CAP_ERROR = () -> new IllegalStateException("Capability is somehow not present after isPresent checks");
+    //TODO - 1.20.2: Remove??
+    public static final Supplier<IllegalStateException> MISSING_CAP_ERROR = () -> new IllegalStateException("Capability is somehow not present after isPresent checks");
     private static final ItemStack MILK = new ItemStack(Items.MILK_BUCKET);
 
     private static final List<UUID> warnedFails = new ArrayList<>();

@@ -14,7 +14,6 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
@@ -41,7 +40,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
             //If we have more than one item in the input, check if we can fill a single item of it
             // The fluid handler for buckets returns false about being able to accept fluids if they are stacked
             // though we have special handling to only move one item at a time anyway
-            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack.getCount() > 1 ? stack.copyWithCount(1) : stack).resolve();
+            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack.getCount() > 1 ? stack.copyWithCount(1) : stack);
             if (cap.isPresent()) {
                 IFluidHandlerItem fluidHandlerItem = cap.get();
                 boolean hasEmpty = false;
@@ -72,7 +71,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         return new FluidInventorySlot(fluidTank, alwaysFalse, stack -> {
-            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack).resolve();
+            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack);
             if (cap.isPresent()) {
                 boolean mode = modeSupplier.getAsBoolean();
                 //Mode == true if fluid to gas
@@ -93,7 +92,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
             }
             return false;
         }, stack -> {
-            LazyOptional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack);
+            Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack);
             if (capability.isPresent()) {
                 if (modeSupplier.getAsBoolean()) {
                     //Input tank, so we want to fill it
@@ -121,7 +120,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     public static FluidInventorySlot fill(IExtendedFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         return new FluidInventorySlot(fluidTank, alwaysFalse, stack -> {
-            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack).resolve();
+            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack);
             if (cap.isPresent()) {
                 IFluidHandlerItem fluidHandlerItem = cap.get();
                 for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
@@ -153,7 +152,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
             //If we have more than one item in the input, check if we can fill a single item of it
             // The fluid handler for buckets returns false about being able to accept fluids if they are stacked
             // though we have special handling to only move one item at a time anyway
-            LazyOptional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack.getCount() > 1 ? stack.copyWithCount(1) : stack);
+            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack.getCount() > 1 ? stack.copyWithCount(1) : stack);
             if (cap.isPresent()) {
                 FluidStack fluidInTank = fluidTank.getFluid();
                 if (fluidInTank.isEmpty()) {
@@ -168,10 +167,9 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     }
 
     //TODO: Should we make this also have the fluid type have to match a desired type???
-    private static boolean isNonFullFluidContainer(LazyOptional<IFluidHandlerItem> capability) {
-        Optional<IFluidHandlerItem> cap = capability.resolve();
-        if (cap.isPresent()) {
-            IFluidHandlerItem fluidHandler = cap.get();
+    private static boolean isNonFullFluidContainer(Optional<IFluidHandlerItem> capability) {
+        if (capability.isPresent()) {
+            IFluidHandlerItem fluidHandler = capability.get();
             for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {
                 if (fluidHandler.getFluidInTank(tank).getAmount() < fluidHandler.getTankCapacity(tank)) {
                     return true;

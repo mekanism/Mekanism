@@ -11,12 +11,12 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
-import top.theillusivec4.curios.api.CuriosApi;
+import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 
@@ -36,8 +36,9 @@ public class CuriosIntegration {
         }
     }
 
-    public static Optional<? extends IItemHandler> getCuriosInventory(LivingEntity entity) {
-        return Optional.empty();//TODO - 1.20.2: Curios update
+    @Nullable
+    public static IItemHandler getCuriosInventory(LivingEntity entity) {
+        return null;//TODO - 1.20.2: Curios update
         //return CuriosApi.getCuriosInventory(entity).map(ICuriosItemHandler::getEquippedCurios);
     }
 

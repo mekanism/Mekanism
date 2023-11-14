@@ -1,5 +1,6 @@
 package mekanism.common.inventory.container.item;
 
+import mekanism.api.security.ISecurityUtils;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.PortableQIODashboardInventory;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
@@ -10,9 +11,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class PortableQIODashboardContainer extends QIOItemViewerContainer {
 
@@ -75,10 +74,9 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
         super.clicked(slotId, dragType, clickType, player);
     }
 
-    @Nullable
     @Override
-    public ICapabilityProvider getSecurityObject() {
-        return stack;
+    public boolean canPlayerAccess(@NotNull Player player) {
+        return ISecurityUtils.INSTANCE.canAccess(player, stack);
     }
 
     @Override

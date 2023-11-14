@@ -1,7 +1,6 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.Map;
-import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
@@ -67,17 +66,17 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
             GasStack hydrogenStack = MekanismGases.HYDROGEN.getStack(maxRate * 2L);
             ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
             if (checkChestPlate(chestStack)) {
-                Optional<IGasHandler> chestCapability = chestStack.getCapability(Capabilities.GAS_HANDLER).resolve();
-                if (chestCapability.isPresent()) {
-                    hydrogenUsed = maxRate * 2L - chestCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
+                IGasHandler chestCapability = Capabilities.GAS_HANDLER.getCapability(chestStack);
+                if (chestCapability != null) {
+                    hydrogenUsed = maxRate * 2L - chestCapability.insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
                     hydrogenStack.shrink(hydrogenUsed);
                 }
             }
             if (fillHeld.get()) {
                 ItemStack handStack = player.getItemBySlot(EquipmentSlot.MAINHAND);
-                Optional<IGasHandler> handCapability = handStack.getCapability(Capabilities.GAS_HANDLER).resolve();
-                if (handCapability.isPresent()) {
-                    hydrogenUsed = maxRate * 2L - handCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
+                IGasHandler handCapability = Capabilities.GAS_HANDLER.getCapability(handStack);
+                if (handCapability != null) {
+                    hydrogenUsed = maxRate * 2L - handCapability.insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
                 }
             }
             int oxygenUsed = Math.min(maxRate, player.getMaxAirSupply() - player.getAirSupply());

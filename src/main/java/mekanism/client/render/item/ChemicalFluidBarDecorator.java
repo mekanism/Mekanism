@@ -13,15 +13,15 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.client.IItemDecorator;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 
 public class ChemicalFluidBarDecorator implements IItemDecorator {
 
-    private final Capability<? extends IChemicalHandler<?, ?>>[] chemicalCaps;
+    private final ItemCapability<? extends IChemicalHandler<?, ?>, Void>[] chemicalCaps;
     private final boolean showFluid;
     private final Predicate<ItemStack> visibleFor;
 
@@ -31,7 +31,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
      * @param chemicalCaps the capabilities to be displayed in order, starting from the bottom
      */
     @SafeVarargs
-    public ChemicalFluidBarDecorator(boolean showFluid, Predicate<ItemStack> visibleFor, Capability<? extends IChemicalHandler<?, ?>>... chemicalCaps) {
+    public ChemicalFluidBarDecorator(boolean showFluid, Predicate<ItemStack> visibleFor, ItemCapability<? extends IChemicalHandler<?, ?>, Void>... chemicalCaps) {
         this.showFluid = showFluid;
         this.chemicalCaps = chemicalCaps;
         this.visibleFor = visibleFor;
@@ -43,10 +43,9 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
             return false;
         }
         yOffset += 12;
-        for (Capability<? extends IChemicalHandler<?, ?>> chemicalCap : chemicalCaps) {
-            Optional<? extends IChemicalHandler<?, ?>> capabilityInstance = stack.getCapability(chemicalCap).resolve();
-            if (capabilityInstance.isPresent()) {
-                IChemicalHandler<?, ?> chemicalHandler = capabilityInstance.get();
+        for (ItemCapability<? extends IChemicalHandler<?, ?>, Void> chemicalCap : chemicalCaps) {
+            IChemicalHandler<?, ?> chemicalHandler = stack.getCapability(chemicalCap);
+            if (chemicalHandler != null) {
                 int tank = getDisplayTank(chemicalHandler.getTanks());
                 if (tank != -1) {
                     ChemicalStack<?> chemicalInTank = chemicalHandler.getChemicalInTank(tank);
@@ -57,7 +56,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
         }
 
         if (showFluid) {
-            Optional<IFluidHandlerItem> capabilityInstance = FluidUtil.getFluidHandler(stack).resolve();
+            Optional<IFluidHandlerItem> capabilityInstance = FluidUtil.getFluidHandler(stack);
             if (capabilityInstance.isPresent()) {
                 IFluidHandlerItem fluidHandler = capabilityInstance.get();
                 int tank = getDisplayTank(fluidHandler.getTanks());

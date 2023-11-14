@@ -31,7 +31,8 @@ import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxyGasHandler;
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxyInfusionHandler;
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxyPigmentHandler;
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler.ProxySlurryHandler;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.minecraft.core.Direction;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,36 +44,36 @@ public class ChemicalHandlerManager<CHEMICAL extends Chemical<CHEMICAL>, STACK e
       HANDLER extends IChemicalHandler<CHEMICAL, STACK>, SIDED_HANDLER extends HANDLER> extends CapabilityHandlerManager<IChemicalTankHolder<CHEMICAL, STACK, TANK>,
       TANK, HANDLER, SIDED_HANDLER> {
 
-    protected ChemicalHandlerManager(@Nullable IChemicalTankHolder<CHEMICAL, STACK, TANK> holder, SIDED_HANDLER baseHandler, Capability<HANDLER> supportedCapability,
-          ProxyCreator<HANDLER, SIDED_HANDLER> proxyCreator) {
+    protected ChemicalHandlerManager(@Nullable IChemicalTankHolder<CHEMICAL, STACK, TANK> holder, SIDED_HANDLER baseHandler,
+          BlockCapability<HANDLER, @Nullable Direction> supportedCapability, ProxyCreator<HANDLER, SIDED_HANDLER> proxyCreator) {
         super(holder, baseHandler, supportedCapability, proxyCreator, IChemicalTankHolder::getTanks);
     }
 
     public static class GasHandlerManager extends ChemicalHandlerManager<Gas, GasStack, IGasTank, IGasHandler, ISidedGasHandler> {
 
         public GasHandlerManager(@Nullable IChemicalTankHolder<Gas, GasStack, IGasTank> holder, @NotNull ISidedGasHandler baseHandler) {
-            super(holder, baseHandler, Capabilities.GAS_HANDLER, ProxyGasHandler::new);
+            super(holder, baseHandler, Capabilities.GAS_HANDLER.block(), ProxyGasHandler::new);
         }
     }
 
     public static class InfusionHandlerManager extends ChemicalHandlerManager<InfuseType, InfusionStack, IInfusionTank, IInfusionHandler, ISidedInfusionHandler> {
 
         public InfusionHandlerManager(@Nullable IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> holder, @NotNull ISidedInfusionHandler baseHandler) {
-            super(holder, baseHandler, Capabilities.INFUSION_HANDLER, ProxyInfusionHandler::new);
+            super(holder, baseHandler, Capabilities.INFUSION_HANDLER.block(), ProxyInfusionHandler::new);
         }
     }
 
     public static class PigmentHandlerManager extends ChemicalHandlerManager<Pigment, PigmentStack, IPigmentTank, IPigmentHandler, ISidedPigmentHandler> {
 
         public PigmentHandlerManager(@Nullable IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> holder, @NotNull ISidedPigmentHandler baseHandler) {
-            super(holder, baseHandler, Capabilities.PIGMENT_HANDLER, ProxyPigmentHandler::new);
+            super(holder, baseHandler, Capabilities.PIGMENT_HANDLER.block(), ProxyPigmentHandler::new);
         }
     }
 
     public static class SlurryHandlerManager extends ChemicalHandlerManager<Slurry, SlurryStack, ISlurryTank, ISlurryHandler, ISidedSlurryHandler> {
 
         public SlurryHandlerManager(@Nullable IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> holder, @NotNull ISidedSlurryHandler baseHandler) {
-            super(holder, baseHandler, Capabilities.SLURRY_HANDLER, ProxySlurryHandler::new);
+            super(holder, baseHandler, Capabilities.SLURRY_HANDLER.block(), ProxySlurryHandler::new);
         }
     }
 }

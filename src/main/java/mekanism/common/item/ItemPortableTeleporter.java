@@ -2,7 +2,7 @@ package mekanism.common.item;
 
 import java.util.List;
 import mekanism.api.security.ISecurityUtils;
-import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.security.item.ItemStackOwnerObject;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IGuiItem;
@@ -12,7 +12,6 @@ import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -21,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyItem, IGuiItem {
@@ -53,8 +53,8 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
     }
 
     @Override
-    protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
-        capabilities.add(new ItemStackOwnerObject());
-        super.gatherCapabilities(capabilities, stack, nbt);
+    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+        super.attachCapabilities(event);
+        event.registerItem(Capabilities.OWNER_OBJECT.item(), (stack, ctx) -> new ItemStackOwnerObject(stack), this);
     }
 }

@@ -24,7 +24,7 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
 
     @Nullable
     public static IInfusionHandler getCapability(ItemStack stack) {
-        return getCapability(stack, Capabilities.INFUSION_HANDLER);
+        return getCapability(stack, Capabilities.INFUSION_HANDLER.item());
     }
 
     /**
@@ -43,7 +43,7 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
         Function<ItemStack, InfusionStack> potentialConversionSupplier = stack -> getPotentialConversion(worldSupplier.get(), stack);
         return new InfusionInventorySlot(infusionTank, worldSupplier, getFillOrConvertExtractPredicate(infusionTank, InfusionInventorySlot::getCapability, potentialConversionSupplier),
               getFillOrConvertInsertPredicate(infusionTank, InfusionInventorySlot::getCapability, potentialConversionSupplier), stack -> {
-            if (stack.getCapability(Capabilities.INFUSION_HANDLER).isPresent()) {
+            if (stack.getCapability(Capabilities.INFUSION_HANDLER.item()) != null) {
                 //Note: we mark all infusion items as valid and have a more restrictive insert check so that we allow full tanks when they are done being filled
                 return true;
             }

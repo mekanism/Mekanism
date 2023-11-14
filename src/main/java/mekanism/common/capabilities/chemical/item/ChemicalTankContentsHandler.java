@@ -4,6 +4,7 @@ import java.util.Objects;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.merged.MergedChemicalTank;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.DynamicHandler.InteractPredicate;
 import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicGasHandler;
 import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.DynamicInfusionHandler;
@@ -14,18 +15,35 @@ import mekanism.common.capabilities.chemical.item.ChemicalTankRateLimitChemicalT
 import mekanism.common.capabilities.chemical.item.ChemicalTankRateLimitChemicalTank.PigmentTankRateLimitChemicalTank;
 import mekanism.common.capabilities.chemical.item.ChemicalTankRateLimitChemicalTank.SlurryTankRateLimitChemicalTank;
 import mekanism.common.capabilities.merged.MergedTankContentsHandler;
+import mekanism.common.item.block.ItemBlockChemicalTank;
 import mekanism.common.tier.ChemicalTankTier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 @NothingNullByDefault
 public class ChemicalTankContentsHandler extends MergedTankContentsHandler<MergedChemicalTank> {
 
-    public static ChemicalTankContentsHandler create(ChemicalTankTier tier) {
-        Objects.requireNonNull(tier, "Chemical tank tier cannot be null");
-        return new ChemicalTankContentsHandler(tier);
+    //TODO - 1.20.2: Do we want to get the tier from the stack
+    public static void attachCapsToItem(RegisterCapabilitiesEvent event, Item item) {
+        //TODO - 1.20.2: Figure out a better way to do this
+        event.registerItem(Capabilities.GAS_HANDLER.item(), (stack, ctx) -> new ChemicalTankContentsHandler(stack).gasHandler, item);
+        event.registerItem(Capabilities.INFUSION_HANDLER.item(), (stack, ctx) -> new ChemicalTankContentsHandler(stack).infusionHandler, item);
+        event.registerItem(Capabilities.PIGMENT_HANDLER.item(), (stack, ctx) -> new ChemicalTankContentsHandler(stack).pigmentHandler, item);
+        event.registerItem(Capabilities.SLURRY_HANDLER.item(), (stack, ctx) -> new ChemicalTankContentsHandler(stack).slurryHandler, item);
     }
 
-    private ChemicalTankContentsHandler(ChemicalTankTier tier) {
-        mergedTank = MergedChemicalTank.create(
+    private ChemicalTankContentsHandler(ItemStack stack) {
+        super(stack);
+    }
+
+    @Override
+    protected MergedChemicalTank createMergedTank() {
+        if (!(stack.getItem() instanceof ItemBlockChemicalTank tank)) {
+            throw new IllegalStateException("ChemicalTankContentsHandler for a non chemical tank");
+        }
+        ChemicalTankTier tier = Objects.requireNonNull(tank.getTier(), "Chemical tank tier cannot be null");
+        return MergedChemicalTank.create(
               new GasTankRateLimitChemicalTank(tier, gasHandler = new DynamicGasHandler(side -> gasTanks, InteractPredicate.ALWAYS_TRUE, InteractPredicate.ALWAYS_TRUE,
                     () -> onContentsChanged(NBTConstants.GAS_TANKS, gasTanks))),
               new InfusionTankRateLimitChemicalTank(tier, infusionHandler = new DynamicInfusionHandler(side -> infusionTanks, InteractPredicate.ALWAYS_TRUE,

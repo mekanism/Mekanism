@@ -7,7 +7,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,13 +37,13 @@ public interface ISecurityUtils {
      *
      * @implNote This method assumes that if the security is {@link SecurityMode#TRUSTED} and there is a clientside player, then the player can access the
      * {@link ISecurityObject security object}. This is done because the list of trusted players is not currently synced to all clients.
-     * @see #canAccess(UUID, ICapabilityProvider, boolean)
+     * @see #canAccess(UUID, Object, boolean)
      * @see #canAccessObject(Player, ISecurityObject)
      * @see #canAccessObject(UUID, ISecurityObject, boolean)
-     * @see #canAccessOrDisplayError(Player, ICapabilityProvider)
+     * @see #canAccessOrDisplayError(Player, Object)
      */
-    @Contract("_, null -> true")
-    boolean canAccess(Player player, @Nullable ICapabilityProvider provider);
+    @Contract("_, null -> true")//TODO - 1.20.2: List in docs the valid "types" for the provider
+    boolean canAccess(Player player, @Nullable Object provider);
 
     /**
      * Checks if a player can access the given security object; validating that protection is enabled in the config. Additionally, this method also checks to see if
@@ -57,10 +56,10 @@ public interface ISecurityUtils {
      *
      * @implNote This method assumes that if the security is {@link SecurityMode#TRUSTED} and there is a clientside player, then the player can access the
      * {@link ISecurityObject security object}. This is done because the list of trusted players is not currently synced to all clients.
-     * @see #canAccess(Player, ICapabilityProvider)
-     * @see #canAccess(UUID, ICapabilityProvider, boolean)
+     * @see #canAccess(Player, Object)
+     * @see #canAccess(UUID, Object, boolean)
      * @see #canAccessObject(UUID, ISecurityObject, boolean)
-     * @see #canAccessOrDisplayError(Player, ICapabilityProvider)
+     * @see #canAccessOrDisplayError(Player, Object)
      */
     boolean canAccessObject(Player player, ISecurityObject securityObject);
 
@@ -76,13 +75,13 @@ public interface ISecurityUtils {
      *
      * @implNote This method assumes that if the security is {@link SecurityMode#TRUSTED} and there is a player and {@code isClient} is {@code true}, then the player can
      * access the {@link ISecurityObject security object}. This is done because the list of trusted players is not currently synced to all clients.
-     * @see #canAccess(Player, ICapabilityProvider)
+     * @see #canAccess(Player, Object)
      * @see #canAccessObject(Player, ISecurityObject)
      * @see #canAccessObject(UUID, ISecurityObject, boolean)
-     * @see #canAccessOrDisplayError(Player, ICapabilityProvider)
+     * @see #canAccessOrDisplayError(Player, Object)
      */
-    @Contract("_, null, _ -> true")
-    boolean canAccess(@Nullable UUID player, @Nullable ICapabilityProvider provider, boolean isClient);
+    @Contract("_, null, _ -> true")//TODO - 1.20.2: List in docs the valid "types" for the provider
+    boolean canAccess(@Nullable UUID player, @Nullable Object provider, boolean isClient);
 
     /**
      * Checks if a player can access the given security object; validating that protection is enabled in the config.
@@ -96,10 +95,10 @@ public interface ISecurityUtils {
      *
      * @implNote This method assumes that if the security is {@link SecurityMode#TRUSTED} and there is a player and {@code isClient} is {@code true}, then the player can
      * access the {@link ISecurityObject security object}. This is done because the list of trusted players is not currently synced to all clients.
-     * @see #canAccess(Player, ICapabilityProvider)
-     * @see #canAccess(UUID, ICapabilityProvider, boolean)
+     * @see #canAccess(Player, Object)
+     * @see #canAccess(UUID, Object, boolean)
      * @see #canAccessObject(Player, ISecurityObject)
-     * @see #canAccessOrDisplayError(Player, ICapabilityProvider)
+     * @see #canAccessOrDisplayError(Player, Object)
      */
     boolean canAccessObject(@Nullable UUID player, ISecurityObject securityObject, boolean isClient);
 
@@ -127,7 +126,11 @@ public interface ISecurityUtils {
      * @see IOwnerObject#getOwnerUUID()
      */
     @Nullable
-    UUID getOwnerUUID(ICapabilityProvider provider);
+    UUID getOwnerUUID(Object provider);
+
+    //TODO - 1.20.2: Docs
+    @Nullable
+    UUID getOwnerUUID(ItemStack stack);
 
     /**
      * Gets the "effective" security mode for a given provider. If no provider is given, or it does not expose a {@link ISecurityObject security object}, then the
@@ -146,7 +149,7 @@ public interface ISecurityUtils {
      * @implNote If the provider is {@code null} or doesn't expose a {@link ISecurityObject security object}, then
      * @see #getEffectiveSecurityMode(ISecurityObject, boolean)
      */
-    SecurityMode getSecurityMode(@Nullable ICapabilityProvider provider, boolean isClient);
+    SecurityMode getSecurityMode(@Nullable Object provider, boolean isClient);
 
     /**
      * Gets the "effective" security mode for a given object. This is <em>different</em> from just querying {@link ISecurityObject#getSecurityMode()} as this method takes
@@ -158,7 +161,7 @@ public interface ISecurityUtils {
      *
      * @return Effective security mode.
      *
-     * @see #getSecurityMode(ICapabilityProvider, boolean)
+     * @see #getSecurityMode(Object, boolean)
      */
     SecurityMode getEffectiveSecurityMode(ISecurityObject securityObject, boolean isClient);
 
@@ -172,10 +175,10 @@ public interface ISecurityUtils {
      *
      * @implNote This method assumes that if the security is {@link SecurityMode#TRUSTED} and there is a clientside player, then the player can access the
      * {@link ISecurityObject security object}. This is done because the list of trusted players is not currently synced to all clients.
-     * @see #canAccess(Player, ICapabilityProvider)
+     * @see #canAccess(Player, Object)
      */
     @Contract("_, null -> true")
-    default boolean canAccessOrDisplayError(Player player, @Nullable ICapabilityProvider provider) {
+    default boolean canAccessOrDisplayError(Player player, @Nullable Object provider) {
         if (canAccess(player, provider)) {
             return true;
         } else if (!player.level().isClientSide) {

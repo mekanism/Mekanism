@@ -1,7 +1,6 @@
 package mekanism.common.item;
 
 import java.util.List;
-import java.util.Optional;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.NBTConstants;
 import mekanism.api.security.ISecurityUtils;
@@ -10,7 +9,6 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -58,16 +56,16 @@ public class ItemConfigurationCard extends Item {
         Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Direction side = context.getClickedFace();
-        BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-        Optional<IConfigCardAccess> configCardSupport = CapabilityUtils.getCapability(tile, Capabilities.CONFIG_CARD, side).resolve();
-        if (configCardSupport.isPresent()) {
+        IConfigCardAccess configCardAccess = WorldUtils.getCapability(world, Capabilities.CONFIG_CARD, pos, side);
+        if (configCardAccess != null) {
+            //TODO - 1.20.2: Replace with supporting non block entities as wel
+            BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
                 return InteractionResult.FAIL;
             }
             ItemStack stack = context.getItemInHand();
             if (player.isShiftKeyDown()) {
                 if (!world.isClientSide) {
-                    IConfigCardAccess configCardAccess = configCardSupport.get();
                     String translationKey = configCardAccess.getConfigCardName();
                     CompoundTag data = configCardAccess.getConfigurationData(player);
                     data.putString(NBTConstants.DATA_NAME, translationKey);
@@ -83,7 +81,6 @@ public class ItemConfigurationCard extends Item {
                     return InteractionResult.PASS;
                 }
                 if (!world.isClientSide) {
-                    IConfigCardAccess configCardAccess = configCardSupport.get();
                     if (configCardAccess.isConfigurationDataCompatible(storedType)) {
                         configCardAccess.setConfigurationData(player, data);
                         configCardAccess.configurationDataSet();

@@ -2,7 +2,6 @@ package mekanism.common.integration.lookingat;
 
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.function.Function;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -19,6 +18,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.Capabilities.MultiTypeCapability;
 import mekanism.common.capabilities.fluid.FluidTankWrapper;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
@@ -34,7 +34,7 @@ import mekanism.common.util.CapabilityUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
@@ -82,9 +82,9 @@ public class LookingAtUtils {
 
     public static void addInfo(LookingAtHelper info, @NotNull BlockEntity tile, boolean displayTanks, boolean displayFluidTanks) {
         MultiblockData structure = getMultiblock(tile);
-        Optional<IStrictEnergyHandler> energyCapability = CapabilityUtils.getCapability(tile, Capabilities.STRICT_ENERGY, null).resolve();
-        if (energyCapability.isPresent()) {
-            displayEnergy(info, energyCapability.get());
+        IStrictEnergyHandler energyCapability = CapabilityUtils.getCapability(tile, Capabilities.STRICT_ENERGY.block(), null);
+        if (energyCapability != null) {
+            displayEnergy(info, energyCapability);
         } else if (structure != null && structure.isFormed()) {
             //Special handling to allow viewing the energy of multiblock's when looking at things other than the ports
             displayEnergy(info, structure);
@@ -92,9 +92,9 @@ public class LookingAtUtils {
         if (displayTanks) {
             //Fluid - only add it to our own tiles in which we disable the default display for
             if (displayFluidTanks && tile instanceof TileEntityUpdateable) {
-                Optional<IFluidHandler> fluidCapability = CapabilityUtils.getCapability(tile, net.neoforged.neoforge.common.capabilities.Capabilities.FLUID_HANDLER, null).resolve();
-                if (fluidCapability.isPresent()) {
-                    displayFluid(info, fluidCapability.get());
+                IFluidHandler fluidCapability = CapabilityUtils.getCapability(tile, FluidHandler.BLOCK, null);
+                if (fluidCapability != null) {
+                    displayFluid(info, fluidCapability);
                 } else if (structure != null && structure.isFormed()) {
                     //Special handling to allow viewing the fluid in a multiblock when looking at things other than the ports
                     displayFluid(info, structure);
@@ -145,11 +145,10 @@ public class LookingAtUtils {
 
     @SuppressWarnings("unchecked")
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>,
-          HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void addInfo(BlockEntity tile, @Nullable MultiblockData structure, Capability<HANDLER> capability,
+          HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void addInfo(BlockEntity tile, @Nullable MultiblockData structure, MultiTypeCapability<HANDLER> capability,
           Function<MultiblockData, List<TANK>> multiBlockToTanks, LookingAtHelper info, ILangEntry langEntry, Current matchingCurrent, CurrentType matchingCurrentType) {
-        Optional<HANDLER> cap = CapabilityUtils.getCapability(tile, capability, null).resolve();
-        if (cap.isPresent()) {
-            HANDLER handler = cap.get();
+        HANDLER handler = CapabilityUtils.getCapability(tile, capability.block(), null);
+        if (handler != null) {
             if (handler instanceof ProxyChemicalHandler) {
                 List<TANK> tanks = ((ProxyChemicalHandler<CHEMICAL, STACK, ?>) handler).getTanksIfMekanism();
                 if (!tanks.isEmpty()) {

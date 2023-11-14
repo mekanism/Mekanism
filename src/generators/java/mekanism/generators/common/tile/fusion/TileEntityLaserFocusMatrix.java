@@ -2,8 +2,6 @@ package mekanism.generators.common.tile.fusion;
 
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
@@ -16,7 +14,6 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
 
     public TileEntityLaserFocusMatrix(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.LASER_FOCUS_MATRIX, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.LASER_RECEPTOR, this));
     }
 
     @Override

@@ -2,7 +2,6 @@ package mekanism.common.item;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
@@ -39,7 +38,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -131,9 +129,8 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
                 if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
                     return InteractionResult.FAIL;
                 }
-                Optional<IConfigurable> capability = CapabilityUtils.getCapability(tile, Capabilities.CONFIGURABLE, side).resolve();
-                if (capability.isPresent()) {
-                    IConfigurable config = capability.get();
+                IConfigurable config = WorldUtils.getCapability(world, Capabilities.CONFIGURABLE, pos, null, tile, side);
+                if (config != null) {
                     if (player.isShiftKeyDown()) {
                         return config.onSneakRightClick(player);
                     }

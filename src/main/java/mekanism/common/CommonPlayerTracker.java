@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.text.EnumColor;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.block.BlockBounding;
@@ -7,7 +8,6 @@ import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.radiation.RadiationManager;
-import mekanism.common.lib.radiation.capability.DefaultRadiationEntity;
 import mekanism.common.network.to_client.PacketPlayerData;
 import mekanism.common.network.to_client.PacketRadiationData;
 import mekanism.common.network.to_client.PacketResetPlayerClient;
@@ -19,20 +19,17 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.AttachCapabilitiesEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerChangedDimensionEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.neoforged.bus.api.Event;
-import net.neoforged.bus.api.SubscribeEvent;
 
 public class CommonPlayerTracker {
 
@@ -67,7 +64,11 @@ public class CommonPlayerTracker {
         ServerPlayer player = (ServerPlayer) event.getEntity();
         Mekanism.playerState.clearPlayer(player.getUUID(), false);
         Mekanism.playerState.reapplyServerSideOnly(player);
-        player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(c.getRadiation()), player));
+        IRadiationEntity radiationEntity = player.getCapability(Capabilities.RADIATION_ENTITY);
+        if (radiationEntity != null) {
+            //TODO - 1.20.2: Is this needed?
+            Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(radiationEntity.getRadiation()), player);
+        }
         RadiationManager.get().updateClientRadiation(player);
     }
 
@@ -79,32 +80,18 @@ public class CommonPlayerTracker {
     }
 
     @SubscribeEvent
-    public void attachCaps(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof LivingEntity) {
-            DefaultRadiationEntity.Provider radiationProvider = new DefaultRadiationEntity.Provider();
-            event.addCapability(DefaultRadiationEntity.Provider.NAME, radiationProvider);
-            event.addListener(radiationProvider::invalidate);
-        }
-    }
-
-    @SubscribeEvent
-    public void cloneEvent(PlayerEvent.Clone event) {
-        event.getOriginal().reviveCaps();
-        event.getOriginal().getCapability(Capabilities.RADIATION_ENTITY).ifPresent(cap ->
-              event.getEntity().getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> c.deserializeNBT(cap.serializeNBT())));
-        event.getOriginal().invalidateCaps();
-    }
-
-    @SubscribeEvent
     public void respawnEvent(PlayerEvent.PlayerRespawnEvent event) {
         ServerPlayer player = (ServerPlayer) event.getEntity();
-        player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> {
+        IRadiationEntity cap = player.getCapability(Capabilities.RADIATION_ENTITY);
+        if (cap != null) {
+            //TODO - 1.20.2: I believe this should be properly reset by the attachment type stuff?
+            // Though we likely still need to do the packet
             if (!event.isEndConquered()) {
                 //If the player is returning from the end don't reset radiation
-                c.set(RadiationManager.BASELINE);
+                cap.set(RadiationManager.BASELINE);
             }
-            Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(c.getRadiation()), player);
-        });
+            Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(cap.getRadiation()), player);
+        }
         RadiationManager.get().updateClientRadiation(player);
         Mekanism.packetHandler().sendToAll(new PacketResetPlayerClient(player.getUUID()));
     }

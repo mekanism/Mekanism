@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Coord4D;
@@ -32,7 +31,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,50 +51,45 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
     public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<ChunkAccess> chunkMap,
           Map<Coord4D, Set<TransporterStack>> additionalFlowingStacks) {
         List<AcceptorData> toReturn = new ArrayList<>();
-        for (Map.Entry<BlockPos, Map<Direction, LazyOptional<IItemHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
+        for (Map.Entry<BlockPos, Map<Direction, IItemHandler>> entry : acceptorCache.getAcceptorEntrySet()) {
             BlockPos pos = entry.getKey();
             if (!pos.equals(stack.homeLocation)) {
                 BlockEntity acceptor = WorldUtils.getTileEntity(getWorld(), chunkMap, pos);
-                if (acceptor == null) {
-                    continue;
-                }
                 Map<TransitResponse, AcceptorData> dataMap = new HashMap<>();
                 Coord4D position = new Coord4D(pos, getWorld());
-                for (Map.Entry<Direction, LazyOptional<IItemHandler>> acceptorEntry : entry.getValue().entrySet()) {
-                    Optional<IItemHandler> handler = acceptorEntry.getValue().resolve();
-                    if (handler.isPresent()) {
-                        Direction side = acceptorEntry.getKey();
-                        //TODO: Figure out how we want to best handle the color check, as without doing it here we don't
-                        // actually need to even query the TE
-                        if (acceptor instanceof ISideConfiguration config) {
-                            //If the acceptor in question implements the mekanism interface, check that the color matches and bail fast if it doesn't
-                            if (config.getEjector().hasStrictInput()) {
-                                EnumColor configColor = config.getEjector().getInputColor(RelativeSide.fromDirections(config.getDirection(), side));
-                                if (configColor != null && configColor != stack.color) {
-                                    continue;
-                                }
+                for (Map.Entry<Direction, IItemHandler> acceptorEntry : entry.getValue().entrySet()) {
+                    IItemHandler handler = acceptorEntry.getValue();
+                    Direction side = acceptorEntry.getKey();
+                    //TODO: Figure out how we want to best handle the color check, as without doing it here we don't
+                    // actually need to even query the TE
+                    if (acceptor instanceof ISideConfiguration config) {
+                        //If the acceptor in question implements the mekanism interface, check that the color matches and bail fast if it doesn't
+                        if (config.getEjector().hasStrictInput()) {
+                            EnumColor configColor = config.getEjector().getInputColor(RelativeSide.fromDirections(config.getDirection(), side));
+                            if (configColor != null && configColor != stack.color) {
+                                continue;
                             }
                         }
-                        TransitResponse response = TransporterManager.getPredictedInsert(position, side, handler.get(), request, additionalFlowingStacks);
-                        if (!response.isEmpty()) {
-                            Direction opposite = side.getOpposite();
-                            //If the response isn't empty, check if we already have acceptor data for
-                            // a matching response at the destination
-                            AcceptorData data = dataMap.get(response);
-                            if (data == null) {
-                                //If we don't, add a new acceptor data for the response and position with side
-                                data = new AcceptorData(pos, response, opposite);
-                                dataMap.put(response, data);
-                                toReturn.add(data);
-                                //Note: In theory this shouldn't cause any issues if some exposed slots overlap but are for
-                                // different acceptor data/sides as our predicted insert takes into account all en-route
-                                // items to the destination, and only checks about the side if none are actually able to be
-                                // inserted in the first place
-                            } else {
-                                //If we do, add our side as one of the sides it can accept things from for that response
-                                // This equates to the destination being the same
-                                data.sides.add(opposite);
-                            }
+                    }
+                    TransitResponse response = TransporterManager.getPredictedInsert(position, side, handler, request, additionalFlowingStacks);
+                    if (!response.isEmpty()) {
+                        Direction opposite = side.getOpposite();
+                        //If the response isn't empty, check if we already have acceptor data for
+                        // a matching response at the destination
+                        AcceptorData data = dataMap.get(response);
+                        if (data == null) {
+                            //If we don't, add a new acceptor data for the response and position with side
+                            data = new AcceptorData(pos, response, opposite);
+                            dataMap.put(response, data);
+                            toReturn.add(data);
+                            //Note: In theory this shouldn't cause any issues if some exposed slots overlap but are for
+                            // different acceptor data/sides as our predicted insert takes into account all en-route
+                            // items to the destination, and only checks about the side if none are actually able to be
+                            // inserted in the first place
+                        } else {
+                            //If we do, add our side as one of the sides it can accept things from for that response
+                            // This equates to the destination being the same
+                            data.sides.add(opposite);
                         }
                     }
                 }

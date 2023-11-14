@@ -36,7 +36,6 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.SortableFilterManager;
 import mekanism.common.content.miner.MinerFilter;
@@ -72,6 +71,7 @@ import mekanism.common.tile.interfaces.IHasVisualization;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -102,10 +102,10 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -159,9 +159,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     public TileEntityDigitalMiner(BlockPos pos, BlockState state) {
         super(MekanismBlocks.DIGITAL_MINER, pos, state);
         radius = DEFAULT_RADIUS;
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
         //Return some capabilities as disabled, and handle them with offset capabilities instead
-        addDisabledCapabilities(net.neoforged.neoforge.common.capabilities.Capabilities.ITEM_HANDLER);
+        addDisabledCapabilities(Capabilities.ITEM.block());
     }
 
     @NotNull
@@ -264,16 +263,18 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
         if (doEject && delayTicks == 0) {
             Direction oppositeDirection = getOppositeDirection();
-            BlockEntity ejectInv = WorldUtils.getTileEntity(level, getBlockPos().above().relative(oppositeDirection, 2));
-            BlockEntity ejectTile = WorldUtils.getTileEntity(getLevel(), getBlockPos().above().relative(oppositeDirection));
-            if (ejectInv != null && ejectTile != null) {
-                TransitRequest ejectMap = InventoryUtils.getEjectItemMap(ejectTile, oppositeDirection, mainSlots);
+            BlockPos ejectPos = getBlockPos().above().relative(oppositeDirection);
+            IItemHandler ejectHandler = WorldUtils.getCapability(getLevel(), Capabilities.ITEM.block(), ejectPos, oppositeDirection);
+            if (ejectHandler != null) {
+                TransitRequest ejectMap = InventoryUtils.getEjectItemMap(ejectHandler, mainSlots);
                 if (!ejectMap.isEmpty()) {
+                    BlockPos ejectInvPos = getBlockPos().above().relative(oppositeDirection, 2);
+                    BlockEntity ejectInv = WorldUtils.getTileEntity(level, ejectInvPos);
                     TransitResponse response;
                     if (ejectInv instanceof TileEntityLogisticalTransporterBase transporter) {
-                        response = transporter.getTransmitter().insert(ejectTile, ejectMap, transporter.getTransmitter().getColor(), true, 0);
+                        response = transporter.getTransmitter().insert(ejectPos, ejectMap, transporter.getTransmitter().getColor(), true, 0);
                     } else {
-                        response = ejectMap.addToInventory(ejectInv, oppositeDirection, 0, false);
+                        response = ejectMap.addToInventory(level, ejectInvPos, ejectInv, oppositeDirection, 0, false);
                     }
                     if (!response.isEmpty()) {
                         response.useAll();
@@ -598,9 +599,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
         //And finally source from the inventory on top if auto pull is enabled
         if (doPull) {
-            BlockEntity pullInv = getPullInv();
-            if (pullInv != null && InventoryUtils.isItemHandler(pullInv, Direction.DOWN)) {
-                TransitRequest request = TransitRequest.definedItem(pullInv, Direction.DOWN, 1, Finder.item(replaceTarget));
+            IItemHandler pullInv = getPullInv();
+            if (pullInv != null) {
+                TransitRequest request = TransitRequest.definedItem(pullInv, 1, Finder.item(replaceTarget));
                 if (!request.isEmpty()) {
                     TransitResponse response = request.createSimpleResponse();
                     if (response.useAll().isEmpty()) {
@@ -693,8 +694,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return stack;
     }
 
-    private BlockEntity getPullInv() {
-        return WorldUtils.getTileEntity(getLevel(), getBlockPos().above(2));
+    private IItemHandler getPullInv() {
+        return WorldUtils.getCapability(level, Capabilities.ITEM.block(), getBlockPos().above(2), Direction.DOWN);
     }
 
     private void add(List<ItemStack> stacks) {
@@ -1052,27 +1053,24 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
-    @NotNull
+    @Nullable
     @Override
-    public <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@NotNull Capability<T> capability, Direction side, @NotNull Vec3i offset) {
-        if (capability == net.neoforged.neoforge.common.capabilities.Capabilities.ITEM_HANDLER) {
+    public <T> T getOffsetCapabilityIfEnabled(@NotNull BlockCapability<T, @Nullable Direction> capability, Direction side, @NotNull Vec3i offset) {
+        if (capability == Capabilities.ITEM.block()) {
             //Get item handler cap directly from here as we disable it entirely for the main block as we only have it enabled from ports
             return itemHandlerManager.resolve(capability, side);
         }
         //Otherwise, we can just grab the capability from the tile normally
-        return getCapability(capability, side);
+        return CapabilityUtils.getCapability(this, capability, side);
     }
 
     @Override
-    public boolean isOffsetCapabilityDisabled(@NotNull Capability<?> capability, Direction side, @NotNull Vec3i offset) {
-        if (!capability.isRegistered()) {
-            //Short circuit if a capability that is not registered is being queried
-            return true;
-        } else if (capability == net.neoforged.neoforge.common.capabilities.Capabilities.ITEM_HANDLER) {
+    public boolean isOffsetCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, Direction side, @NotNull Vec3i offset) {
+        if (capability == Capabilities.ITEM.block()) {
             return notItemPort(side, offset);
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
             return notEnergyPort(side, offset);
-        } else if (canEverResolve(capability) && IBoundingBlock.super.isOffsetCapabilityDisabled(capability, side, offset)) {
+        } else if (IBoundingBlock.super.isOffsetCapabilityDisabled(capability, side, offset)) {
             //If we are not an item handler or energy capability, and it is a capability that we can support,
             // but it is one that normally should be disabled for offset capabilities, then expose it but only do so
             // via our ports for things like computer integration capabilities, then we treat the capability as

@@ -3,28 +3,26 @@ package mekanism.common.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.ISecurityUtils;
-import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.item.interfaces.IDroppableContents;
 import mekanism.common.lib.inventory.TileTransitRequest;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public final class InventoryUtils {
 
@@ -98,27 +96,12 @@ public final class InventoryUtils {
         return ItemHandlerHelper.canItemStacksStack(inSlot, toInsert);
     }
 
-    @Nullable
-    public static IItemHandler assertItemHandler(String desc, BlockEntity tile, Direction side) {
-        Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, Capabilities.ITEM_HANDLER, side).resolve();
-        if (capability.isPresent()) {
-            return capability.get();
-        }
-        Mekanism.logger.warn("'{}' was wrapped around a non-IItemHandler inventory. This should not happen!", desc, new Exception());
-        if (tile == null) {
-            Mekanism.logger.warn(" - null tile");
-        } else {
-            Mekanism.logger.warn(" - details: {} {}", tile, tile.getBlockPos());
-        }
-        return null;
+    public static boolean isItemHandler(Level level, BlockPos pos, Direction side) {
+        return WorldUtils.getCapability(level, Capabilities.ITEM.block(), pos, side) != null;
     }
 
-    public static boolean isItemHandler(BlockEntity tile, Direction side) {
-        return CapabilityUtils.getCapability(tile, Capabilities.ITEM_HANDLER, side).isPresent();
-    }
-
-    public static TileTransitRequest getEjectItemMap(BlockEntity tile, Direction side, List<IInventorySlot> slots) {
-        return getEjectItemMap(new TileTransitRequest(tile, side), slots);
+    public static TileTransitRequest getEjectItemMap(IItemHandler handler, List<IInventorySlot> slots) {
+        return getEjectItemMap(new TileTransitRequest(handler), slots);
     }
 
     @Contract("_, _ -> param1")

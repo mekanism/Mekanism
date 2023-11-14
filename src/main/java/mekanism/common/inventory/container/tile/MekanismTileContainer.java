@@ -2,6 +2,7 @@ package mekanism.common.inventory.container.tile;
 
 import java.util.List;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.security.ISecurityUtils;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
@@ -11,7 +12,6 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,10 +37,9 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
         return tile;
     }
 
-    @Nullable
     @Override
-    public ICapabilityProvider getSecurityObject() {
-        return tile;
+    public boolean canPlayerAccess(@NotNull Player player) {
+        return ISecurityUtils.INSTANCE.canAccess(player, tile);
     }
 
     @Override

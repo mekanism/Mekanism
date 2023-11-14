@@ -87,7 +87,7 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
@@ -120,10 +120,10 @@ public class MekanismJEI implements IModPlugin {
 
     private static final IIngredientSubtypeInterpreter<ItemStack> MEKANISM_NBT_INTERPRETER = (stack, context) -> {
         if (context == UidContext.Ingredient && stack.hasTag()) {
-            String nbtRepresentation = getChemicalComponent(stack, Capabilities.GAS_HANDLER);
-            nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.INFUSION_HANDLER));
-            nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.PIGMENT_HANDLER));
-            nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.SLURRY_HANDLER));
+            String nbtRepresentation = getChemicalComponent(stack, Capabilities.GAS_HANDLER.item());
+            nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.INFUSION_HANDLER.item()));
+            nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.PIGMENT_HANDLER.item()));
+            nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.SLURRY_HANDLER.item()));
             nbtRepresentation = addInterpretation(nbtRepresentation, getFluidComponent(stack));
             nbtRepresentation = addInterpretation(nbtRepresentation, getEnergyComponent(stack));
             return nbtRepresentation;
@@ -135,10 +135,9 @@ public class MekanismJEI implements IModPlugin {
         return nbtRepresentation.isEmpty() ? component : nbtRepresentation + ":" + component;
     }
 
-    private static String getChemicalComponent(ItemStack stack, Capability<? extends IChemicalHandler<?, ?>> capability) {
-        Optional<? extends IChemicalHandler<?, ?>> cap = stack.getCapability(capability).resolve();
-        if (cap.isPresent()) {
-            IChemicalHandler<?, ?> handler = cap.get();
+    private static String getChemicalComponent(ItemStack stack, ItemCapability<? extends IChemicalHandler<?, ?>, Void> capability) {
+        IChemicalHandler<?, ?> handler = stack.getCapability(capability);
+        if (handler != null) {
             String component = "";
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
                 ChemicalStack<?> chemicalStack = handler.getChemicalInTank(tank);
@@ -154,7 +153,7 @@ public class MekanismJEI implements IModPlugin {
     }
 
     private static String getFluidComponent(ItemStack stack) {
-        Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack).resolve();
+        Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack);
         if (cap.isPresent()) {
             IFluidHandlerItem handler = cap.get();
             String component = "";
@@ -172,9 +171,8 @@ public class MekanismJEI implements IModPlugin {
     }
 
     private static String getEnergyComponent(ItemStack stack) {
-        Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY).resolve();
-        if (capability.isPresent()) {
-            IStrictEnergyHandler energyHandlerItem = capability.get();
+        IStrictEnergyHandler energyHandlerItem = stack.getCapability(Capabilities.STRICT_ENERGY.item());
+        if (energyHandlerItem != null) {
             String component = "";
             int containers = energyHandlerItem.getEnergyContainerCount();
             for (int container = 0; container < containers; container++) {
@@ -209,9 +207,9 @@ public class MekanismJEI implements IModPlugin {
         for (IItemProvider itemProvider : itemProviders) {
             //Handle items
             ItemStack itemStack = itemProvider.getItemStack();
-            if (itemStack.getCapability(Capabilities.STRICT_ENERGY).isPresent() || itemStack.getCapability(Capabilities.GAS_HANDLER).isPresent() ||
-                itemStack.getCapability(Capabilities.INFUSION_HANDLER).isPresent() || itemStack.getCapability(Capabilities.PIGMENT_HANDLER).isPresent() ||
-                itemStack.getCapability(Capabilities.SLURRY_HANDLER).isPresent() || FluidUtil.getFluidHandler(itemStack).isPresent()) {
+            if (itemStack.getCapability(Capabilities.STRICT_ENERGY.item()) != null || itemStack.getCapability(Capabilities.GAS_HANDLER.item()) != null ||
+                itemStack.getCapability(Capabilities.INFUSION_HANDLER.item()) != null || itemStack.getCapability(Capabilities.PIGMENT_HANDLER.item()) != null ||
+                itemStack.getCapability(Capabilities.SLURRY_HANDLER.item()) != null || FluidUtil.getFluidHandler(itemStack).isPresent()) {
                 registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, itemProvider.asItem(), MEKANISM_NBT_INTERPRETER);
             }
         }

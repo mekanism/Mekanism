@@ -10,12 +10,17 @@ import mekanism.common.config.listener.ConfigBasedCachedSupplier;
 import mekanism.common.config.value.CachedValue;
 import mekanism.common.integration.energy.fluxnetworks.FNEnergyCompat;
 import mekanism.common.integration.energy.forgeenergy.ForgeEnergyCompat;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.capabilities.ItemCapability;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,7 +38,7 @@ public class EnergyCompatUtils {
     );
 
     //Default the list of enabled caps to our own energy capability
-    private static Supplier<List<Capability<?>>> ENABLED_ENERGY_CAPS = () -> List.of(Capabilities.STRICT_ENERGY);
+    private static Supplier<List<BlockCapability<?, @Nullable Direction>>> ENABLED_ENERGY_CAPS = () -> List.of(Capabilities.STRICT_ENERGY.block());
 
     /**
      * @apiNote For internal uses, only call this after mods have loaded so that we can properly assume all {@link IEnergyCompat#isUsable()} checks only depend on config
@@ -45,7 +50,7 @@ public class EnergyCompatUtils {
             configs.addAll(energyCompat.getBackingConfigs());
         }
         ENABLED_ENERGY_CAPS = new ConfigBasedCachedSupplier<>(
-              () -> energyCompats.stream().filter(IEnergyCompat::isUsable).<Capability<?>>map(IEnergyCompat::getCapability).toList(),
+              () -> energyCompats.stream().filter(IEnergyCompat::isUsable).<BlockCapability<?, @Nullable Direction>>map(compat -> compat.getCapability().block()).toList(),
               configs.toArray(new CachedValue[0])
         );
     }
@@ -57,13 +62,12 @@ public class EnergyCompatUtils {
     /**
      * Checks if it is a known and enabled energy capability
      */
-    public static boolean isEnergyCapability(@NotNull Capability<?> capability) {
-        //The capability may not be registered if the mod that adds it is not loaded. In which case we can just
-        // short circuit and not check if
-        if (capability.isRegistered()) {
-            for (IEnergyCompat energyCompat : energyCompats) {
-                //Note: We don't need to check if it is usable before checking if the capability matches as it is instance equality
-                if (energyCompat.isMatchingCapability(capability)) {
+    public static boolean isEnergyCapability(@NotNull BlockCapability<?, @Nullable Direction> capability) {
+        for (IEnergyCompat energyCompat : energyCompats) {
+            if (energyCompat.capabilityExists()) {
+                //TODO - 1.20.2: TEST THIS
+                if (energyCompat.getCapability().block() == capability) {
+                    //TODO - 1.20.2: Should we check this before comparing instead of checking capability exists
                     return energyCompat.isUsable();
                 }
             }
@@ -74,79 +78,89 @@ public class EnergyCompatUtils {
     /**
      * Gets all enabled energy capability integrations.
      */
-    public static List<Capability<?>> getEnabledEnergyCapabilities() {
+    public static List<BlockCapability<?, @Nullable Direction>> getEnabledEnergyCapabilities() {
         return ENABLED_ENERGY_CAPS.get();
     }
 
-    private static boolean isTileValid(@Nullable BlockEntity tile) {
-        return tile != null && !tile.isRemoved() && tile.hasLevel();
+    public static void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, ICapabilityProvider<ItemStack, Void, IStrictEnergyHandler> mekProvider) {
+        for (IEnergyCompat energyCompat : energyCompats) {
+            if (energyCompat.capabilityExists()) {
+                register(event, energyCompat.getCapability().item(), energyCompat.getProviderAs(mekProvider), item);
+            }
+        }
+    }
+
+    //Note: This extra method is required so that the code can compile even though inlining without the cast doesn't display any errors until attempting to compile
+    @SuppressWarnings("unchecked")
+    private static <CAP> void register(RegisterCapabilitiesEvent event, ItemCapability<CAP, Void> capability, ICapabilityProvider<ItemStack, Void, ?> provider, Item item) {
+        event.registerItem(capability, (ICapabilityProvider<ItemStack, Void, CAP>) provider, item);
+    }
+
+    //TODO - 1.20.2: Should this use the block entity type or the block?
+    //TODO: CALL THIS???? Though do we actually want to because we want to cache the wrapper object we provide... So we need to rethink this
+    public static <BE extends BlockEntity> void registerBlockCapabilities(RegisterCapabilitiesEvent event, BlockEntityType<BE> type,
+          ICapabilityProvider<BE, @Nullable Direction, IStrictEnergyHandler> mekProvider) {
+        for (IEnergyCompat energyCompat : energyCompats) {
+            if (energyCompat.capabilityExists()) {
+                register(event, energyCompat.getCapability().block(), type, energyCompat.getProviderAs(mekProvider));
+            }
+        }
+    }
+
+    //Note: This extra method is required so that the code can compile even though inlining without the cast doesn't display any errors until attempting to compile
+    @SuppressWarnings("unchecked")
+    private static <BE extends BlockEntity, CAP> void register(RegisterCapabilitiesEvent event, BlockCapability<CAP, @Nullable Direction> capability,
+          BlockEntityType<BE> type, ICapabilityProvider<BE, @Nullable Direction, ?> provider) {
+        event.registerBlockEntity(capability, type, (ICapabilityProvider<BE, @Nullable Direction, CAP>) provider);
+    }
+
+    @Nullable
+    public static Object wrapStrictEnergyHandler(BlockCapability<?, @Nullable Direction> capability, IStrictEnergyHandler handler) {
+        for (IEnergyCompat energyCompat : energyCompats) {
+            //TODO: Should this just be capabilityExists and then the check for enabled happens further up in the call stack to not provide it at all there
+            if (energyCompat.isUsable()) {
+                if (energyCompat.getCapability().block() == capability) {
+                    return energyCompat.wrapStrictEnergyHandler(handler);
+                }
+            }
+        }
+        return null;
     }
 
     public static boolean hasStrictEnergyHandler(@NotNull ItemStack stack) {
-        return !stack.isEmpty() && hasStrictEnergyHandler(stack, null);
-    }
-
-    public static boolean hasStrictEnergyHandler(@Nullable BlockEntity tile, Direction side) {
-        return isTileValid(tile) && hasStrictEnergyHandler((ICapabilityProvider) tile, side);
-    }
-
-    private static boolean hasStrictEnergyHandler(ICapabilityProvider provider, Direction side) {
-        //Keep the things as lazy so that we don't have to resolve anything when we are just checking for existence
-        for (IEnergyCompat energyCompat : energyCompats) {
-            if (energyCompat.isUsable() && energyCompat.isCapabilityPresent(provider, side)) {
-                return true;
-            }
-        }
-        return false;
+        //TODO - 1.20.2: Evaluate usages and see if any can just keep hold of the handler
+        // Also should we skip the wrapping to strict energy handler?
+        return getStrictEnergyHandler(stack) != null;
     }
 
     @Nullable
     public static IStrictEnergyHandler getStrictEnergyHandler(@NotNull ItemStack stack) {
-        return getLazyStrictEnergyHandler(stack).resolve().orElse(null);
+        if (!stack.isEmpty()) {
+            for (IEnergyCompat energyCompat : energyCompats) {
+                if (energyCompat.isUsable()) {
+                    IStrictEnergyHandler handler = energyCompat.getStrictEnergyHandler(stack);
+                    if (handler != null) {
+                        return handler;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
-    @NotNull
-    public static LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(@NotNull ItemStack stack) {
-        return stack.isEmpty() ? LazyOptional.empty() : getLazyStrictEnergyHandler(stack, null);
-    }
-
-    @NotNull
-    public static LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(@Nullable BlockEntity tile, Direction side) {
-        return isTileValid(tile) ? getLazyStrictEnergyHandler((ICapabilityProvider) tile, side) : LazyOptional.empty();
-    }
-
-    @NotNull
-    private static LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(ICapabilityProvider provider, Direction side) {
+    @Nullable
+    public static IStrictEnergyHandler getStrictEnergyHandler(Level level, BlockPos pos, Direction side) {
         //TODO: Eventually look into making it so that we cache the handler we get back. Maybe by passing a listener
         // to this that we can give to the capability as we wrap the result into
         for (IEnergyCompat energyCompat : energyCompats) {
             if (energyCompat.isUsable()) {
-                LazyOptional<IStrictEnergyHandler> handler = energyCompat.getLazyStrictEnergyHandler(provider, side);
-                if (handler.isPresent()) {
+                IStrictEnergyHandler handler = energyCompat.getAsStrictEnergyHandler(level, pos, side);
+                if (handler != null) {
                     return handler;
                 }
             }
         }
-        return LazyOptional.empty();
-    }
-
-    /**
-     * @apiNote It is expected that isEnergyCapability is called before calling this method
-     */
-    @NotNull
-    public static <T> LazyOptional<T> getEnergyCapability(@NotNull Capability<T> capability, @NotNull IStrictEnergyHandler handler) {
-        //The capability may not be registered if the mod that adds it is not loaded. In which case we can just
-        // short circuit and not check if
-        if (capability.isRegistered()) {
-            //Note: The methods that call this method cache the returned lazy optional properly
-            for (IEnergyCompat energyCompat : energyCompats) {
-                if (energyCompat.isUsable() && energyCompat.isMatchingCapability(capability)) {
-                    //Note: This is a little ugly but this extra method ensures that the supplier's type does not get prematurely resolved
-                    return energyCompat.getHandlerAs(handler).cast();
-                }
-            }
-        }
-        return LazyOptional.empty();
+        return null;
     }
 
     /**

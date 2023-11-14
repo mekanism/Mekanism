@@ -1,13 +1,12 @@
 package mekanism.common.capabilities.fluid.item;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.functions.ConstantPredicates;
@@ -21,24 +20,16 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public class RateLimitMultiTankFluidHandler extends ItemStackMekanismFluidHandler {
 
-    public static RateLimitMultiTankFluidHandler create(@NotNull Collection<FluidTankSpec> fluidTanks) {
-        return new RateLimitMultiTankFluidHandler(fluidTanks);
+    public static RateLimitMultiTankFluidHandler create(ItemStack stack, Collection<FluidTankSpec> fluidTanks) {
+        return new RateLimitMultiTankFluidHandler(stack, fluidTanks);
     }
 
-    private final List<IExtendedFluidTank> tanks;
-
-    private RateLimitMultiTankFluidHandler(@NotNull Collection<FluidTankSpec> fluidTanks) {
-        List<IExtendedFluidTank> tankProviders = new ArrayList<>();
-        for (FluidTankSpec spec : fluidTanks) {
-            tankProviders.add(new RateLimitFluidTank(spec.rate, spec.capacity, spec.canExtract,
-                  (fluid, automationType) -> spec.canInsert.test(fluid, automationType, getStack()), spec.isValid, this));
-        }
-        tanks = Collections.unmodifiableList(tankProviders);
-    }
-
-    @Override
-    protected List<IExtendedFluidTank> getInitialTanks() {
-        return tanks;
+    @SuppressWarnings("unchecked")
+    private RateLimitMultiTankFluidHandler(ItemStack stack, Collection<FluidTankSpec> fluidTanks) {
+        super(stack, fluidTanks.stream()
+              .map(spec -> (Function<IContentsListener, IExtendedFluidTank>) listener -> new RateLimitFluidTank(spec.rate, spec.capacity, spec.canExtract,
+                    (fluid, automationType) -> spec.canInsert.test(fluid, automationType, stack), spec.isValid, listener))
+              .toArray(Function[]::new));
     }
 
     public static class FluidTankSpec extends GenericTankSpec<FluidStack> {

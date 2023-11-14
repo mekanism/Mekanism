@@ -1,6 +1,7 @@
 package mekanism.api.functions;
 
 import java.util.function.BiPredicate;
+import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import net.neoforged.neoforge.common.util.TriPredicate;
@@ -14,6 +15,13 @@ public class ConstantPredicates {
 
     private ConstantPredicates() {
     }
+
+    /**
+     * A boolean supplier that returns {@code true}.
+     *
+     * @since 10.5.0
+     */
+    public static final BooleanSupplier ALWAYS_TRUE = () -> true;
 
     private static final Predicate<Object> alwaysTrue = t -> true;
     private static final BiPredicate<Object, Object> alwaysTrueBi = (t, u) -> true;

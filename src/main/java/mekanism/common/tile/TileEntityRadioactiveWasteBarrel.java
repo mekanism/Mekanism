@@ -9,11 +9,9 @@ import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.StackedWasteBarrel;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -41,12 +39,10 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     private long lastProcessTick;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"}, docPlaceholder = "barrel")
     StackedWasteBarrel gasTank;
-    private float prevScale;
     private int processTicks;
 
     public TileEntityRadioactiveWasteBarrel(BlockPos pos, BlockState state) {
         super(MekanismBlocks.RADIOACTIVE_WASTE_BARREL, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE, this));
     }
 
     @NotNull

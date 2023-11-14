@@ -1,5 +1,6 @@
 package mekanism.common.network.to_client;
 
+import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.LevelAndMaxMagnitude;
@@ -36,7 +37,10 @@ public class PacketRadiationData implements IMekanismPacket {
         } else if (type == RadiationPacketType.PLAYER) {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null) {
-                player.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> c.set(radiation));
+                IRadiationEntity cap = player.getCapability(Capabilities.RADIATION_ENTITY);
+                if (cap != null) {
+                    cap.set(radiation);
+                }
             }
         }
     }

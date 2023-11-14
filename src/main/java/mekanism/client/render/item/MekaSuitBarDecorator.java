@@ -17,8 +17,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.client.IItemDecorator;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -37,14 +37,14 @@ public class MekaSuitBarDecorator implements IItemDecorator {
         }
         yOffset += 12;
 
-        if (tryRender(guiGraphics, stack, Capabilities.GAS_HANDLER, xOffset, yOffset, armor.getGasTankSpecs())) {
+        if (tryRender(guiGraphics, stack, Capabilities.GAS_HANDLER.item(), xOffset, yOffset, armor.getGasTankSpecs())) {
             yOffset--;
         }
         //TODO: Other chemical types as they get added to different meka suit pieces
 
         List<FluidTankSpec> fluidTankSpecs = armor.getFluidTankSpecs();
         if (!fluidTankSpecs.isEmpty()) {
-            Optional<IFluidHandlerItem> capabilityInstance = FluidUtil.getFluidHandler(stack).resolve();
+            Optional<IFluidHandlerItem> capabilityInstance = FluidUtil.getFluidHandler(stack);
             if (capabilityInstance.isPresent()) {
                 IFluidHandlerItem fluidHandler = capabilityInstance.get();
                 int tank = getDisplayTank(fluidTankSpecs, stack, fluidHandler.getTanks());
@@ -58,12 +58,11 @@ public class MekaSuitBarDecorator implements IItemDecorator {
         return true;
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>> boolean tryRender(GuiGraphics guiGraphics, ItemStack stack, Capability<? extends IChemicalHandler<CHEMICAL, ?>> capability,
-          int xOffset, int yOffset, List<ChemicalTankSpec<CHEMICAL>> chemicalTankSpecs) {
+    private <CHEMICAL extends Chemical<CHEMICAL>> boolean tryRender(GuiGraphics guiGraphics, ItemStack stack,
+          ItemCapability<? extends IChemicalHandler<CHEMICAL, ?>, Void> capability, int xOffset, int yOffset, List<ChemicalTankSpec<CHEMICAL>> chemicalTankSpecs) {
         if (!chemicalTankSpecs.isEmpty() && chemicalTankSpecs.stream().anyMatch(spec -> spec.supportsStack(stack))) {
-            Optional<? extends IChemicalHandler<CHEMICAL, ?>> capabilityInstance = stack.getCapability(capability).resolve();
-            if (capabilityInstance.isPresent()) {
-                IChemicalHandler<CHEMICAL, ?> chemicalHandler = capabilityInstance.get();
+            IChemicalHandler<CHEMICAL, ?> chemicalHandler = stack.getCapability(capability);
+            if (chemicalHandler != null) {
                 int tank = getDisplayTank(chemicalTankSpecs, stack, chemicalHandler.getTanks());
                 if (tank != -1) {
                     ChemicalStack<CHEMICAL> chemicalInTank = chemicalHandler.getChemicalInTank(tank);

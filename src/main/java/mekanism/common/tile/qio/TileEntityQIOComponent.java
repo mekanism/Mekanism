@@ -6,8 +6,6 @@ import java.util.Map;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.content.qio.IQIOFrequencyHolder;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
@@ -33,7 +31,6 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     public TileEntityQIOComponent(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
         frequencyComponent.track(FrequencyType.QIO, true, true, true);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     @Nullable

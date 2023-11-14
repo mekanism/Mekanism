@@ -1,23 +1,28 @@
 package mekanism.common.integration.computer.opencomputers2;
 
-import li.cil.oc2.api.bus.device.Device;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
-import mekanism.common.capabilities.resolver.ICapabilityResolver;
+import java.util.function.BooleanSupplier;
 import mekanism.common.integration.computer.IComputerTile;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.CapabilityManager;
-import net.neoforged.neoforge.common.capabilities.CapabilityToken;
+import mekanism.common.registration.impl.TileEntityTypeDeferredRegister.BlockEntityTypeBuilder;
+import mekanism.common.tile.base.CapabilityTileEntity;
 
 public class OC2CapabilityHelper {
 
-    private static final Capability<Device> CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+    //TODO: Note this may need to be moved into another class after updating to avoid class loading issues without OC2 present
+    /*private static final BlockCapability<Device, @Nullable Direction> CAPABILITY = BlockCapability.create(new ResourceLocation(MekanismHooks.OC2_MOD_ID, name), Device.class, Direction.class);
+    private static final ICapabilityProvider<?, @Nullable Direction, Device> PROVIDER = getProvider();
 
-    public static <TILE extends BlockEntity & IComputerTile> ICapabilityResolver getOpenComputers2Capability(TILE tile) {
-        throw new IllegalStateException("OC not porter");//TODO - 1.20.2: when OC2 updates
-        /*if (tile.isComputerCapabilityPersistent()) {
-            return BasicCapabilityResolver.persistent(CAPABILITY, () -> MekanismDevice.create(tile));
-        }
-        return BasicCapabilityResolver.create(CAPABILITY, () -> MekanismDevice.create(tile));*/
+    private static <TILE extends CapabilityTileEntity & IComputerTile> ICapabilityProvider<? super TILE, @Nullable Direction, Device> getProvider() {
+        return (tile, context) -> tile.getCapability(CAPABILITY, () -> {
+            if (tile.isComputerCapabilityPersistent()) {
+                return BasicCapabilityResolver.persistent(CAPABILITY, () -> MekanismDevice.create(tile));
+            }
+            return BasicCapabilityResolver.create(CAPABILITY, () -> MekanismDevice.create(tile));
+        }, context);
+    }*/
+
+    @SuppressWarnings("unchecked")
+    public static <TILE extends CapabilityTileEntity & IComputerTile> void addCapability(BlockEntityTypeBuilder<TILE, ?> builder, BooleanSupplier supportsComputer) {
+        //TODO - 1.20.2: Reimplement when OC2 updates
+        //builder.with(CAPABILITY, (ICapabilityProvider<? super TILE, @Nullable Direction, Device>) PROVIDER, supportsComputer);
     }
 }

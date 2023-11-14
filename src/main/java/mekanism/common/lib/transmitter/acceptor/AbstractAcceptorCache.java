@@ -6,24 +6,24 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiConsumer;
+import java.util.function.BooleanSupplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.common.util.NonNullConsumer;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AbstractAcceptorInfo> {
+public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<ACCEPTOR>> {
 
-    private final Map<Direction, NonNullConsumer<LazyOptional<ACCEPTOR>>> cachedListeners = new EnumMap<>(Direction.class);
+    private final Map<Direction, RefreshListener> cachedListeners = new EnumMap<>(Direction.class);
     protected final Map<Direction, INFO> cachedAcceptors = new EnumMap<>(Direction.class);
     protected final Transmitter<ACCEPTOR, ?, ?> transmitter;
-    private final TileEntityTransmitter transmitterTile;
+    protected final TileEntityTransmitter transmitterTile;
     public byte currentAcceptorConnections = 0x00;
 
     protected AbstractAcceptorCache(Transmitter<ACCEPTOR, ?, ?> transmitter, TileEntityTransmitter transmitterTile) {
@@ -51,33 +51,59 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AbstractAccep
     /**
      * @implNote Grabs the acceptors from cache, ensuring that the connection map contains the side
      */
-    public LazyOptional<ACCEPTOR> getCachedAcceptor(Direction side) {
-        return Transmitter.connectionMapContainsSide(currentAcceptorConnections, side) ? getConnectedAcceptor(side) : LazyOptional.empty();
+    @Nullable
+    public ACCEPTOR getCachedAcceptor(Direction side) {
+        return Transmitter.connectionMapContainsSide(currentAcceptorConnections, side) ? getConnectedAcceptor(side) : null;
     }
 
     /**
-     * Similar to {@link EmitUtils#forEachSide(net.minecraft.world.level.Level, net.minecraft.core.BlockPos, Iterable, BiConsumer)} except queries our cached acceptors.
+     * Similar to {@link EmitUtils#forEachSide(net.minecraft.world.level.Level, net.minecraft.core.BlockPos, Iterable, mekanism.common.util.EmitUtils.SideAction)} except
+     * queries our cached acceptors.
      *
      * @implNote Grabs the acceptors from cache
      */
     public List<ACCEPTOR> getConnectedAcceptors(Set<Direction> sides) {
         List<ACCEPTOR> acceptors = new ArrayList<>(sides.size());
         for (Direction side : sides) {
-            getConnectedAcceptor(side).ifPresent(acceptors::add);
+            ACCEPTOR connectedAcceptor = getConnectedAcceptor(side);
+            if (connectedAcceptor != null) {
+                acceptors.add(connectedAcceptor);
+            }
         }
         return acceptors;
     }
 
-    protected abstract LazyOptional<ACCEPTOR> getConnectedAcceptor(Direction side);
+    /**
+     * @implNote Grabs the acceptors from cache
+     */
+    @Nullable
+    public ACCEPTOR getConnectedAcceptor(Direction side) {
+        INFO acceptorInfo = cachedAcceptors.get(side);
+        return acceptorInfo == null ? null : acceptorInfo.acceptor();
+    }
+
+    @Nullable
+    public BlockEntity getConnectedAcceptorTile(Direction side) {
+        return WorldUtils.getTileEntity(transmitterTile.getLevel(), transmitterTile.getBlockPos().relative(side));
+        //TODO: Figure out and potentially reimplement. If we don't then inline the above to the one caller
+        /*AcceptorInfo<ACCEPTOR> acceptorInfo = cachedAcceptors.get(side);
+        if (acceptorInfo != null) {
+            BlockEntity tile = acceptorInfo.getTile();
+            if (!tile.isRemoved()) {
+                return tile;
+            }
+        }
+        return null;*/
+    }
 
     /**
      * Gets the listener that will refresh connections on a given side.
      */
-    protected NonNullConsumer<LazyOptional<ACCEPTOR>> getRefreshListener(@NotNull Direction side) {
-        return cachedListeners.computeIfAbsent(side, s -> new RefreshListener<>(transmitterTile, s));
+    protected RefreshListener getRefreshListener(@NotNull Direction side) {
+        return cachedListeners.computeIfAbsent(side, s -> new RefreshListener(transmitterTile, s));
     }
 
-    private static class RefreshListener<ACCEPTOR> implements NonNullConsumer<LazyOptional<ACCEPTOR>> {
+    public static class RefreshListener implements Runnable, BooleanSupplier {
 
         //Note: We only keep a weak reference to the tile from inside the listener so that if it gets unloaded it can be released from memory
         // instead of being referenced by the listener still in the tile in a neighboring chunk
@@ -89,14 +115,29 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AbstractAccep
             this.side = side;
         }
 
+        //TODO: Document this is basically a "canRun" method
         @Override
-        public void accept(@NotNull LazyOptional<ACCEPTOR> ignored) {
+        public boolean getAsBoolean() {
             TileEntityTransmitter transmitterTile = tile.get();
             //Check to make sure the transmitter is still valid and that the position we are going to check is actually still loaded
-            if (transmitterTile != null && !transmitterTile.isRemoved() && transmitterTile.hasLevel() && transmitterTile.isLoaded() &&
-                WorldUtils.isBlockLoaded(transmitterTile.getLevel(), transmitterTile.getBlockPos().relative(side))) {
-                //If it is, then refresh the connection
-                transmitterTile.getTransmitter().refreshConnections(side);
+            return transmitterTile != null && !transmitterTile.isRemoved() && transmitterTile.hasLevel() && transmitterTile.isLoaded() &&
+                   WorldUtils.isBlockLoaded(transmitterTile.getLevel(), transmitterTile.getBlockPos().relative(side));
+        }
+
+        @Override
+        public void run() {
+            //If it is, then refresh the connection
+            TileEntityTransmitter transmitterTile = tile.get();
+            if (transmitterTile != null) {//Validate it didn't somehow become null between checking if it is valid and running the invalidation listener
+                //TODO: Evaluate this, we need to clear the cached acceptors as they are no longer necessarily valid
+                // I don't think this is right as it doesn't properly visually update when neighboring blocks are removed??
+                transmitterTile.getTransmitter().getAcceptorCache().cachedAcceptors.remove(side);
+                //TODO: Evaluate if this is correct or should it be transmitter.markDirtyAcceptor(side)
+                // previously the refresh listener did refreshConnections, but isAcceptorAndListen used markDirtyAcceptor
+                //transmitterTile.getTransmitter().refreshConnections(side);
+                //Note: This is needed at the very least when it goes from nothing to having a side
+                // Though maybe we need to call both
+                transmitterTile.getTransmitter().markDirtyAcceptor(side);
             }
         }
     }

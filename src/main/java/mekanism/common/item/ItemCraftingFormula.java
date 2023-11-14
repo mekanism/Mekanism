@@ -124,9 +124,10 @@ public class ItemCraftingFormula extends Item {
         for (int slotCount = 0; slotCount < 9; slotCount++) {
             ItemStack slotStack = inv.get(slotCount);
             if (!slotStack.isEmpty()) {
-                CompoundTag tagCompound = slotStack.serializeNBT();
-                tagCompound.putByte(NBTConstants.SLOT, (byte) slotCount);
-                tagList.add(tagCompound);
+                CompoundTag stackTag = new CompoundTag();
+                slotStack.save(stackTag);
+                stackTag.putByte(NBTConstants.SLOT, (byte) slotCount);
+                tagList.add(stackTag);
             }
         }
         ItemDataUtils.setListOrRemove(stack, NBTConstants.ITEMS, tagList);

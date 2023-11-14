@@ -30,6 +30,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -291,6 +292,29 @@ public class WorldUtils {
             return null;
         }
         return world.getBlockEntity(pos);
+    }
+
+    @Nullable
+    @Contract("null, _, _, _ -> null")
+    public static <CAP, CONTEXT> CAP getCapability(@Nullable Level level, BlockCapability<CAP, CONTEXT> cap, BlockPos pos, CONTEXT context) {
+        //TODO: USE THIS IN PLACES
+        if (!isBlockLoaded(level, pos)) {
+            //If the world is null, or it is a world reader and the block is not loaded, return null
+            return null;
+        }
+        return level.getCapability(cap, pos, context);
+    }
+
+    @Nullable
+    @Contract("null, _, _, _, _, _ -> null")
+    public static <CAP, CONTEXT> CAP getCapability(@Nullable Level level, BlockCapability<CAP, CONTEXT> cap, BlockPos pos, @Nullable BlockState state,
+          @Nullable BlockEntity tile, CONTEXT context) {
+        //TODO: USE THIS IN PLACES
+        if (!isBlockLoaded(level, pos)) {
+            //If the world is null, or it is a world reader and the block is not loaded, return null
+            return null;
+        }
+        return level.getCapability(cap, pos, state, tile, context);
     }
 
     /**

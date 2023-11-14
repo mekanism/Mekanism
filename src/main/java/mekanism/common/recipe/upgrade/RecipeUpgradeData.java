@@ -74,7 +74,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 supportedTypes.add(RecipeUpgradeType.UPGRADE);
             }
         }
-        if (stack.getCapability(Capabilities.STRICT_ENERGY).isPresent() || tile != null && tile.handles(SubstanceType.ENERGY)) {
+        if (Capabilities.STRICT_ENERGY.getCapability(stack) != null || tile != null && tile.handles(SubstanceType.ENERGY)) {
             //If we are for a block that handles energy, or we have an energy handler capability
             supportedTypes.add(RecipeUpgradeType.ENERGY);
         }
@@ -82,26 +82,26 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             //If we are for a block that handles fluid, or we have a fluid handler capability
             supportedTypes.add(RecipeUpgradeType.FLUID);
         }
-        if (stack.getCapability(Capabilities.GAS_HANDLER).isPresent() || tile != null && tile.handles(SubstanceType.GAS)) {
+        if (Capabilities.GAS_HANDLER.getCapability(stack) != null || tile != null && tile.handles(SubstanceType.GAS)) {
             //If we are for a block that handles gas, or we have a gas handler capability
             supportedTypes.add(RecipeUpgradeType.GAS);
         }
-        if (stack.getCapability(Capabilities.INFUSION_HANDLER).isPresent() || tile != null && tile.handles(SubstanceType.INFUSION)) {
+        if (Capabilities.INFUSION_HANDLER.getCapability(stack) != null || tile != null && tile.handles(SubstanceType.INFUSION)) {
             //If we are for a block that handles infusion, or we have an infusion handler capability
             supportedTypes.add(RecipeUpgradeType.INFUSION);
         }
-        if (stack.getCapability(Capabilities.PIGMENT_HANDLER).isPresent() || tile != null && tile.handles(SubstanceType.PIGMENT)) {
+        if (Capabilities.PIGMENT_HANDLER.getCapability(stack) != null || tile != null && tile.handles(SubstanceType.PIGMENT)) {
             //If we are for a block that handles pigment, or we have a pigment handler capability
             supportedTypes.add(RecipeUpgradeType.PIGMENT);
         }
-        if (stack.getCapability(Capabilities.SLURRY_HANDLER).isPresent() || tile != null && tile.handles(SubstanceType.SLURRY)) {
+        if (Capabilities.SLURRY_HANDLER.getCapability(stack) != null || tile != null && tile.handles(SubstanceType.SLURRY)) {
             //If we are for a block that handles slurry, or we have a slurry handler capability
             supportedTypes.add(RecipeUpgradeType.SLURRY);
         }
         if (item instanceof IItemSustainedInventory || tile != null && tile.persistInventory()) {
             supportedTypes.add(RecipeUpgradeType.ITEM);
         }
-        if (stack.getCapability(Capabilities.OWNER_OBJECT).isPresent() || tile != null && tile.hasSecurity()) {
+        if (Capabilities.OWNER_OBJECT.getCapability(stack) != null || tile != null && tile.hasSecurity()) {
             //Note: We only check if it has the owner capability as there is a contract that if there is a security capability
             // there will be an owner one so given our security upgrade supports owner or security we only have to check for owner
             supportedTypes.add(RecipeUpgradeType.SECURITY);
@@ -162,7 +162,8 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 }
                 //Treat owner items as public even though they are private as we don't want to lower the output
                 // item's security just because it has one item that is owned
-                SecurityMode securityMode = stack.getCapability(Capabilities.SECURITY_OBJECT).map(ISecurityObject::getSecurityMode).orElse(SecurityMode.PUBLIC);
+                ISecurityObject securityObject = Capabilities.SECURITY_OBJECT.getCapability(stack);
+                SecurityMode securityMode = securityObject == null ? SecurityMode.PUBLIC : securityObject.getSecurityMode();
                 yield new SecurityRecipeData(ownerUUID, securityMode);
             }
             case SORTING -> {

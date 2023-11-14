@@ -3,9 +3,7 @@ package mekanism.api.chemical.slurry;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.chemical.ISidedChemicalHandler;
-import net.neoforged.neoforge.common.capabilities.AutoRegisterCapability;
 
-@AutoRegisterCapability
 public interface ISlurryHandler extends IChemicalHandler<Slurry, SlurryStack>, IEmptySlurryProvider {
 
     /**

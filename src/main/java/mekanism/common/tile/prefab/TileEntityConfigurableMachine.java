@@ -1,8 +1,6 @@
 package mekanism.common.tile.prefab;
 
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -19,7 +17,6 @@ public abstract class TileEntityConfigurableMachine extends TileEntityMekanism i
 
     public TileEntityConfigurableMachine(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     @Override

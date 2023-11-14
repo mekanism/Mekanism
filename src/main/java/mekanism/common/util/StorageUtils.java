@@ -35,7 +35,7 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -52,9 +52,8 @@ public class StorageUtils {
     }
 
     public static void addStoredEnergy(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, ILangEntry langEntry) {
-        Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY).resolve();
-        if (capability.isPresent()) {
-            IStrictEnergyHandler energyHandlerItem = capability.get();
+        IStrictEnergyHandler energyHandlerItem = stack.getCapability(Capabilities.STRICT_ENERGY.item());
+        if (energyHandlerItem != null) {
             int energyContainerCount = energyHandlerItem.getEnergyContainerCount();
             for (int container = 0; container < energyContainerCount; container++) {
                 tooltip.add(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY,
@@ -77,15 +76,14 @@ public class StorageUtils {
             }
             return MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY,
                   MekanismLang.GENERIC_MB.translate(TextUtils.format(stored.getAmount())));
-        }, Capabilities.GAS_HANDLER);
+        }, Capabilities.GAS_HANDLER.item());
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
     void addStoredChemical(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, boolean showAttributes, ILangEntry emptyLangEntry,
-          Function<STACK, Component> storedFunction, Capability<HANDLER> capability) {
-        Optional<HANDLER> cap = stack.getCapability(capability).resolve();
-        if (cap.isPresent()) {
-            HANDLER handler = cap.get();
+          Function<STACK, Component> storedFunction, ItemCapability<HANDLER, Void> capability) {
+        HANDLER handler = stack.getCapability(capability);
+        if (handler != null) {
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
                 STACK chemicalInTank = handler.getChemicalInTank(tank);
                 tooltip.add(storedFunction.apply(chemicalInTank));
@@ -114,7 +112,7 @@ public class StorageUtils {
 
     public static void addStoredFluid(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, ILangEntry emptyLangEntry,
           Function<FluidStack, Component> storedFunction) {
-        Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack).resolve();
+        Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack);
         if (cap.isPresent()) {
             IFluidHandlerItem handler = cap.get();
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
@@ -251,12 +249,9 @@ public class StorageUtils {
     @Nullable
     public static IEnergyContainer getEnergyContainer(ItemStack stack, int container) {
         if (!stack.isEmpty()) {
-            Optional<IStrictEnergyHandler> energyCapability = stack.getCapability(Capabilities.STRICT_ENERGY).resolve();
-            if (energyCapability.isPresent()) {
-                IStrictEnergyHandler energyHandlerItem = energyCapability.get();
-                if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
-                    return energyHandler.getEnergyContainer(container, null);
-                }
+            IStrictEnergyHandler energyHandlerItem = stack.getCapability(Capabilities.STRICT_ENERGY.item());
+            if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
+                return energyHandler.getEnergyContainer(container, null);
             }
         }
         return null;
@@ -301,11 +296,11 @@ public class StorageUtils {
 
     private static double getDurabilityForDisplay(ItemStack stack) {
         double bestRatio = 0;
-        bestRatio = calculateRatio(stack, bestRatio, Capabilities.GAS_HANDLER);
-        bestRatio = calculateRatio(stack, bestRatio, Capabilities.INFUSION_HANDLER);
-        bestRatio = calculateRatio(stack, bestRatio, Capabilities.PIGMENT_HANDLER);
-        bestRatio = calculateRatio(stack, bestRatio, Capabilities.SLURRY_HANDLER);
-        Optional<IFluidHandlerItem> fluidCapability = FluidUtil.getFluidHandler(stack).resolve();
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.GAS_HANDLER.item());
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.INFUSION_HANDLER.item());
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.PIGMENT_HANDLER.item());
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.SLURRY_HANDLER.item());
+        Optional<IFluidHandlerItem> fluidCapability = FluidUtil.getFluidHandler(stack);
         if (fluidCapability.isPresent()) {
             IFluidHandlerItem fluidHandlerItem = fluidCapability.get();
             int tanks = fluidHandlerItem.getTanks();
@@ -322,9 +317,8 @@ public class StorageUtils {
 
     private static double getEnergyDurabilityForDisplay(ItemStack stack) {
         double bestRatio = 0;
-        Optional<IStrictEnergyHandler> energyCapability = stack.getCapability(Capabilities.STRICT_ENERGY).resolve();
-        if (energyCapability.isPresent()) {
-            IStrictEnergyHandler energyHandlerItem = energyCapability.get();
+        IStrictEnergyHandler energyHandlerItem = stack.getCapability(Capabilities.STRICT_ENERGY.item());
+        if (energyHandlerItem != null) {
             int containers = energyHandlerItem.getEnergyContainerCount();
             for (int container = 0; container < containers; container++) {
                 bestRatio = Math.max(bestRatio, energyHandlerItem.getEnergy(container).divideToLevel(energyHandlerItem.getMaxEnergy(container)));
@@ -333,10 +327,9 @@ public class StorageUtils {
         return 1 - bestRatio;
     }
 
-    private static double calculateRatio(ItemStack stack, double bestRatio, Capability<? extends IChemicalHandler<?, ?>> capability) {
-        Optional<? extends IChemicalHandler<?, ?>> cap = stack.getCapability(capability).resolve();
-        if (cap.isPresent()) {
-            IChemicalHandler<?, ?> handler = cap.get();
+    private static double calculateRatio(ItemStack stack, double bestRatio, ItemCapability<? extends IChemicalHandler<?, ?>, Void> capability) {
+        IChemicalHandler<?, ?> handler = stack.getCapability(capability);
+        if (handler != null) {
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
                 bestRatio = Math.max(bestRatio, getRatio(handler.getChemicalInTank(tank).getAmount(), handler.getTankCapacity(tank)));
             }

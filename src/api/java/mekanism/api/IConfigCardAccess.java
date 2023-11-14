@@ -3,13 +3,11 @@ package mekanism.api;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.common.capabilities.AutoRegisterCapability;
 
 /**
  * Expose this as a capability on your TileEntity to expose it to Mekanism's Configuration card for purposes of saving data to the card and then loading it on another
  * tile.
  */
-@AutoRegisterCapability
 public interface IConfigCardAccess {
 
     /**
