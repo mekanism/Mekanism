@@ -2,7 +2,11 @@ package mekanism.tools.common.item;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Set;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
 import mekanism.tools.common.IHasRepairType;
@@ -42,9 +46,18 @@ import net.minecraftforge.common.ToolActions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@ParametersAreNonnullByDefault
 public class ItemMekanismPaxel extends AxeItem implements IHasRepairType, IAttributeRefresher {
 
     private static final ToolAction PAXEL_DIG = ToolAction.get("paxel_dig");
+    private static final Set<ToolAction> PAXEL_ACTIONS = Collections.newSetFromMap(new IdentityHashMap<>());
+
+    static {
+        PAXEL_ACTIONS.add(PAXEL_DIG);
+        PAXEL_ACTIONS.addAll(ToolActions.DEFAULT_PICKAXE_ACTIONS);
+        PAXEL_ACTIONS.addAll(ToolActions.DEFAULT_SHOVEL_ACTIONS);
+        PAXEL_ACTIONS.addAll(ToolActions.DEFAULT_AXE_ACTIONS);
+    }
 
     private final IPaxelMaterial material;
     private final AttributeCache attributeCache;
@@ -75,8 +88,7 @@ public class ItemMekanismPaxel extends AxeItem implements IHasRepairType, IAttri
 
     @Override
     public boolean canPerformAction(ItemStack stack, ToolAction action) {
-        return action == PAXEL_DIG || ToolActions.DEFAULT_PICKAXE_ACTIONS.contains(action) ||
-               ToolActions.DEFAULT_SHOVEL_ACTIONS.contains(action) || super.canPerformAction(stack, action);
+        return PAXEL_ACTIONS.contains(action);
     }
 
     @Override
@@ -177,6 +189,6 @@ public class ItemMekanismPaxel extends AxeItem implements IHasRepairType, IAttri
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        return state.is(ToolsTags.Blocks.MINEABLE_WITH_PAXEL) && TierSortingRegistry.isCorrectTierForDrops(getTier(), state);
+        return this.isCorrectToolForDrops(state);
     }
 }
