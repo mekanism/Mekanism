@@ -242,9 +242,6 @@ public class GuiUtils {
         }
     }
 
-    private record NineSliceCache(ResourceLocation texture, int x, int y, int width, int height, int sliceWidth, int sliceHeight, int uWidth, int vHeight, int uOffset,
-                                  int vOffset, int textureWidth, int textureHeight) {}
-
     // like guiGraphics.blitNineSlicedSized but uses one BufferBuilder
     public static void blitNineSlicedSized(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height, int sliceWidth, int sliceHeight, int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
         ProfilerFiller profiler = Minecraft.getInstance().getProfiler();
