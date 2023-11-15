@@ -49,6 +49,7 @@ public class TileComponentFrequency implements ITileComponent {
         }
         if (needsNotify) {
             tile.invalidateCachedCapabilities();
+            //TODO: I don't believe the notify is needed anymore
             WorldUtils.notifyLoadedNeighborsOfTileChange(tile.getLevel(), tile.getBlockPos());
             needsNotify = false;
         }

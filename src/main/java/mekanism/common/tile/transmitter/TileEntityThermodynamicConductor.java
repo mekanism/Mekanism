@@ -87,6 +87,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
         if (type == ConnectionType.NONE) {
             invalidateCapability(Capabilities.HEAT_HANDLER.block(), side);
             //Notify the neighbor on that side our state changed and we no longer have a capability
+            //TODO - 1.20.2: I believe we can remove this and other neighbor notify on capability invalidation?
             WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         } else if (old == ConnectionType.NONE) {
             //Notify the neighbor on that side our state changed, and we now do have a capability
@@ -104,5 +105,6 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
             invalidateCapability(Capabilities.HEAT_HANDLER.block(), EnumUtils.DIRECTIONS);
         }
         //Note: We do not have to invalidate any caps if we are going from powered to unpowered as all the caps would already be "empty"
+        //TODO: Re-evaluate that ^ (I think we now should be doing so)
     }
 }

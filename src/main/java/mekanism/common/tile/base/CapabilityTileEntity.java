@@ -11,8 +11,6 @@ import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.NotNull;
@@ -52,7 +50,7 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
         capabilityCache.addConfigComponent(config);
     }
 
-    @Nullable//TODO: If we don't actually have a use for this remove it
+    @Nullable
     private ICapabilityResolver<@Nullable Direction> getResolver(BlockCapability<?, @Nullable Direction> capability) {
         return capabilityCache.getResolver(capability);
     }
@@ -83,56 +81,51 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
         return resolver == null ? null : resolver.resolve(capability, context);
     }
 
-    @Override
-    public void setLevel(@NotNull Level world) {
-        super.setLevel(world);
-        if (level instanceof ServerLevel serverLevel) {
-            //TODO - 1.20.2: Do we need to validate that no one called setLevel a second time and changed it
-            // and then if that is possible do we need to check if the level changed in our still valid check
-            //TODO: override clearRemoved and add this back
-            serverLevel.registerCapabilityListener(worldPosition, () -> {
-                //When the capabilities on our tile get invalidated, make sure to also invalidate all our backing cached values
-                capabilityCache.invalidateAll();
-                return !isRemoved();
-            });
-        }
-    }
-
+    //TODO: Rename this method to something better
     public void invalidateCachedCapabilities() {
+        //Clear our internal cached capability instances and then invalidate the capabilities to the world
+        // that way when queried from the invalidation listener we will ensure we can provide the up to date instance
         capabilityCache.invalidateAll();
         invalidateCapabilities();
-        //TODO: re-evaluate all the capability invalidation stuff. I think cache wise we should somehow be able to cache our capability implementation
-        // and then need to use us invalidating our caps to know when to clear them
-        // TODO - 1.20.2: We also probably want to override invalidateCapabilities to capture cases like when the tile is removed
     }
 
-    public void invalidateCapability(@NotNull BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
+    @Override
+    public void setRemoved() {
+        //Note: Clear the backing caps before letting super invalidate as then if anything somehow queries us in their invalidation listeners
+        // they will get the proper non cached data
+        capabilityCache.invalidateAll();
+        super.setRemoved();
+    }
+
+    @Override
+    public void clearRemoved() {
+        //Note: Clear the backing caps before letting super invalidate as then if anything somehow queries us in their invalidation listeners
+        // they will get the proper non cached data
+        capabilityCache.invalidateAll();
+        super.clearRemoved();
+    }
+
+    public final void invalidateCapability(@NotNull BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
         capabilityCache.invalidate(capability, side);
         invalidateCapabilities();
-        //This by proxy of the listener then invalidates all our capabilities so we don't really need to invalidate by specific ones
-        //TODO: FIX ^
     }
 
-    public void invalidateCapability(@NotNull BlockCapability<?, @Nullable Direction> capability, Direction... sides) {
+    public final void invalidateCapability(@NotNull BlockCapability<?, @Nullable Direction> capability, Direction... sides) {
         capabilityCache.invalidateSides(capability, sides);
         invalidateCapabilities();
-        //This by proxy of the listener then invalidates all our capabilities so we don't really need to invalidate by specific ones
-        //TODO: FIX ^
     }
 
-    public void invalidateCapabilities(@NotNull Collection<BlockCapability<?, @Nullable Direction>> capabilities, @Nullable Direction side) {
+    public final void invalidateCapabilities(@NotNull Collection<BlockCapability<?, @Nullable Direction>> capabilities, @Nullable Direction side) {
         for (BlockCapability<?, @Nullable Direction> capability : capabilities) {
-            invalidateCapability(capability, side);
+            capabilityCache.invalidate(capability, side);
         }
-        //This by proxy of the listener then invalidates all our capabilities so we don't really need to invalidate by specific ones
-        //TODO: FIX ^
+        invalidateCapabilities();
     }
 
-    public void invalidateCapabilities(@NotNull Collection<BlockCapability<?, @Nullable Direction>> capabilities, Direction... sides) {
+    public final void invalidateCapabilities(@NotNull Collection<BlockCapability<?, @Nullable Direction>> capabilities, Direction... sides) {
         for (BlockCapability<?, @Nullable Direction> capability : capabilities) {
-            invalidateCapability(capability, sides);
+            capabilityCache.invalidateSides(capability, sides);
         }
-        //This by proxy of the listener then invalidates all our capabilities so we don't really need to invalidate by specific ones
-        //TODO: FIX ^
+        invalidateCapabilities();
     }
 }

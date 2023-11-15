@@ -104,9 +104,8 @@ public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyCo
     public void invalidateAll() {
         //Note: We don't invalidate the base handlers as they are still valid regardless, and the holder just removes slots when they shouldn't be accessible
         // we only bother invalidating the lazy optionals
-        for (Map<BlockCapability<?, @Nullable Direction>, ?> cachedSide : cachedCapabilities.values()) {
-            cachedSide.clear();
-        }
+        //TODO: Re-evaluate and probably remove the above comment
+        cachedCapabilities.clear();
         cachedReadOnlyCapabilities.clear();
     }
 

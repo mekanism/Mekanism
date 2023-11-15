@@ -164,6 +164,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     protected void structureChanged(T multiblock) {
+        //TODO: Re-evaluate this and what notify neighbors might exist
         invalidateCachedCapabilities();
         if (multiblock.isFormed() && !multiblock.hasMaster && canBeMaster()) {
             multiblock.hasMaster = true;

@@ -68,7 +68,7 @@ public class BasicSidedCapabilityResolver<HANDLER, SIDED_HANDLER extends HANDLER
     @Override
     public void invalidate(BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
         if (side == null) {
-            invalidateReadOnly();
+            readOnlyHandler = null;
         } else {
             handlers.remove(side);
         }
@@ -76,14 +76,8 @@ public class BasicSidedCapabilityResolver<HANDLER, SIDED_HANDLER extends HANDLER
 
     @Override
     public void invalidateAll() {
-        invalidateReadOnly();
+        readOnlyHandler = null;
         handlers.clear();
-    }
-
-    private void invalidateReadOnly() {
-        if (readOnlyHandler != null) {
-            readOnlyHandler = null;
-        }
     }
 
     @FunctionalInterface

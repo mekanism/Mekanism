@@ -60,6 +60,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
             for (Direction direction : EnumUtils.DIRECTIONS) {
                 if (super.exposesInsertCap(direction)) {
                     if (!modeReqsMet(direction)) {
+                        //TODO - 1.20.2: I think we need to invalidate regardless of the state of modeReqsMet and don't need the notify neighbors anymore
                         transmitterTile.invalidateCapability(Capabilities.ITEM.block(), direction);
                     }
                     WorldUtils.notifyNeighborOfChange(transmitterTile.getLevel(), direction, transmitterTile.getTilePos());
@@ -119,6 +120,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
                 if (nowExposes != modeReqsMet(oldMode)) {
                     //If the only thing that changed whether the cap should be exposed is the mode we need to invalidate the cap
                     if (!nowExposes) {
+                        //TODO - 1.20.2: I think we need to invalidate regardless of the state of nowExposes and don't need the notify neighbors anymore
                         transmitterTile.invalidateCapability(Capabilities.ITEM.block(), side);
                     }
                     WorldUtils.notifyNeighborOfChange(transmitterTile.getLevel(), side, transmitterTile.getTilePos());

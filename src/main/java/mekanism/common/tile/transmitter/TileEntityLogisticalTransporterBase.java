@@ -74,6 +74,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
             type == ConnectionType.PUSH && old != ConnectionType.NONE) {
             invalidateCapability(Capabilities.ITEM.block(), side);
             //Notify the neighbor on that side our state changed and we no longer have a capability
+            //TODO - 1.20.2: I believe we can remove this and other neighbor notify on capability invalidation?
             WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         } else if (old == ConnectionType.NONE && type != ConnectionType.PUSH ||
                    old == ConnectionType.PUSH && type != ConnectionType.NONE) {

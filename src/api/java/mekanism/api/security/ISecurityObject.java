@@ -1,7 +1,6 @@
 package mekanism.api.security;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 
 /**
  * Expose this as a capability on items, entities, or block entities to represent it is an object that have "security". It is <strong>IMPORTANT</strong> to make sure that
@@ -22,9 +21,9 @@ public interface ISecurityObject extends IOwnerObject {
      *
      * @return Current security mode.
      *
-     * @apiNote To retrieve the "effective" security mode of this object {@link ISecurityUtils#getSecurityMode(ICapabilityProvider, boolean)} or
+     * @apiNote To retrieve the "effective" security mode of this object {@link ISecurityUtils#getSecurityMode(Object, boolean)} or
      * {@link ISecurityUtils#getEffectiveSecurityMode(ISecurityObject, boolean)} should be used instead.
-     * @see ISecurityUtils#getSecurityMode(ICapabilityProvider, boolean)
+     * @see ISecurityUtils#getSecurityMode(Object, boolean)
      * @see ISecurityUtils#getEffectiveSecurityMode(ISecurityObject, boolean)
      */
     SecurityMode getSecurityMode();
