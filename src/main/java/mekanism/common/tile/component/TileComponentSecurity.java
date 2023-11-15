@@ -48,7 +48,7 @@ public class TileComponentSecurity implements ITileComponent {
         if (ownerUUID == null) {
             tile.getFrequencyComponent().unsetFrequency(FrequencyType.SECURITY);
         } else {
-            tile.setFrequency(FrequencyType.SECURITY, new FrequencyIdentity(ownerUUID, SecurityMode.PUBLIC, null), ownerUUID);
+            tile.setFrequency(FrequencyType.SECURITY, new FrequencyIdentity(ownerUUID, SecurityMode.PUBLIC), ownerUUID);
         }
     }
 

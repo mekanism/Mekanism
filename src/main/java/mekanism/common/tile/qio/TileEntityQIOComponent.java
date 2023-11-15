@@ -136,7 +136,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         if (frequency != null) {
             throw new ComputerException("Unable to create public QIO frequency with name '%s' as one already exists.", name);
         }
-        setFrequency(FrequencyType.QIO, new FrequencyIdentity(name, SecurityMode.PUBLIC, null), getOwnerUUID());
+        setFrequency(FrequencyType.QIO, new FrequencyIdentity(name, SecurityMode.PUBLIC), getOwnerUUID());
     }
 
     @ComputerMethod(methodDescription = "Requires a frequency to be selected")

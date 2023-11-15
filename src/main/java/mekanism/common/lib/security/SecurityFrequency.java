@@ -109,6 +109,7 @@ public class SecurityFrequency extends Frequency {
         return override;
     }
 
+    @Override
     public void setSecurityMode(SecurityMode securityMode) {
         if (this.securityMode != securityMode) {
             this.securityMode = securityMode;

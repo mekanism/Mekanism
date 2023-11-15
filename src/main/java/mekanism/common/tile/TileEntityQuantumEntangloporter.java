@@ -294,7 +294,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         if (frequency != null) {
             throw new ComputerException("Unable to create public inventory frequency with name '%s' as one already exists.", name);
         }
-        setFrequency(FrequencyType.INVENTORY, new FrequencyIdentity(name, SecurityMode.PUBLIC, null), getOwnerUUID());
+        setFrequency(FrequencyType.INVENTORY, new FrequencyIdentity(name, SecurityMode.PUBLIC), getOwnerUUID());
     }
 
     //Note: A bunch of the below buffer getters are rather "hardcoded", but they should be fine unless we decide to add support for more buffers at some point

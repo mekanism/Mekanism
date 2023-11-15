@@ -224,6 +224,9 @@ public abstract class Frequency implements IFrequency {
     }
 
     public record FrequencyIdentity(Object key, SecurityMode securityMode, @Nullable UUID ownerUUID) {
+        public FrequencyIdentity(Object key, SecurityMode securityMode) {
+            this(key, securityMode, null);
+        }
 
         public static FrequencyIdentity load(FrequencyType<?> type, CompoundTag tag) {
             return type.getIdentitySerializer().load(tag);

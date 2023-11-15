@@ -711,7 +711,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         if (frequency != null) {
             throw new ComputerException("Unable to create public teleporter frequency with name '%s' as one already exists.", name);
         }
-        setFrequency(FrequencyType.TELEPORTER, new FrequencyIdentity(name, SecurityMode.PUBLIC, null), getOwnerUUID());
+        setFrequency(FrequencyType.TELEPORTER, new FrequencyIdentity(name, SecurityMode.PUBLIC), getOwnerUUID());
     }
 
     @ComputerMethod(methodDescription = "Requires a frequency to be selected")
