@@ -1,8 +1,6 @@
 package mekanism.common.item;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
@@ -10,7 +8,6 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.tags.TagUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -31,11 +28,11 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,16 +65,14 @@ public class ItemDictionary extends Item {
                 if (!world.isClientSide) {
                     BlockState blockState = world.getBlockState(pos);
                     FluidState fluidState = blockState.getFluidState();
-                    Set<ResourceLocation> blockTags = TagUtils.tagNames(blockState.getTags());
-                    Set<ResourceLocation> fluidTags = fluidState.isEmpty() ? Collections.emptySet() : TagUtils.tagNames(fluidState.getTags());
-                    Set<ResourceLocation> tileTags = tile == null ? Collections.emptySet() : TagUtils.tagNames(ForgeRegistries.BLOCK_ENTITY_TYPES, tile.getType());
-                    if (blockTags.isEmpty() && fluidTags.isEmpty() && tileTags.isEmpty()) {
+                    Stream<TagKey<BlockEntityType<?>>> tileTags = tile == null ? Stream.empty() : tile.getType().builtInRegistryHolder().tags();
+                    //Note: We handle checking they are not empty in sendTagsToPlayer, so that we only display one if one is empty
+                    if (!sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_TAGS_FOUND, blockState.getTags()) &
+                        !sendTagsToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, fluidState.getTags()) &
+                        !sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_ENTITY_TYPE_TAGS_FOUND, tileTags)) {
+                        //Note: If none of the tag types were present log that there was no key. We check using bitwise AND to ensure we print all
+                        // types we find rather than stopping evaluation after the first one that we have no tags for
                         player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY));
-                    } else {
-                        //Note: We handle checking they are not empty in sendTagsToPlayer, so that we only display one if one is empty
-                        sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_TAGS_FOUND, blockTags);
-                        sendTagsToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, fluidTags);
-                        sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_ENTITY_TYPE_TAGS_FOUND, tileTags);
                     }
                 }
                 return InteractionResult.sidedSuccess(world.isClientSide);
@@ -122,24 +117,21 @@ public class ItemDictionary extends Item {
         return InteractionResultHolder.pass(stack);
     }
 
-    private void sendTagsOrEmptyToPlayer(Player player, ILangEntry tagsFoundEntry, Stream<? extends TagKey<?>> tags) {
-        sendTagsOrEmptyToPlayer(player, tagsFoundEntry, TagUtils.tagNames(tags));
-    }
-
-    private void sendTagsOrEmptyToPlayer(Player player, ILangEntry tagsFoundEntry, Set<ResourceLocation> tags) {
-        if (tags.isEmpty()) {
+    private <TYPE> void sendTagsOrEmptyToPlayer(Player player, ILangEntry tagsFoundEntry, Stream<TagKey<TYPE>> tags) {
+        if (!sendTagsToPlayer(player, tagsFoundEntry, tags)) {
             player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY));
-        } else {
-            sendTagsToPlayer(player, tagsFoundEntry, tags);
         }
     }
 
-    private void sendTagsToPlayer(Player player, ILangEntry tagsFoundEntry, Set<ResourceLocation> tags) {
+    private <TYPE> boolean sendTagsToPlayer(Player player, ILangEntry tagsFoundEntry, Stream<TagKey<TYPE>> tagStream) {
+        List<ResourceLocation> tags = tagStream.map(TagKey::location).toList();
         if (!tags.isEmpty()) {
             player.sendSystemMessage(MekanismUtils.logFormat(tagsFoundEntry));
             for (ResourceLocation tag : tags) {
                 player.sendSystemMessage(MekanismLang.DICTIONARY_KEY.translateColored(EnumColor.DARK_GREEN, tag));
             }
+            return true;
         }
+        return false;
     }
 }

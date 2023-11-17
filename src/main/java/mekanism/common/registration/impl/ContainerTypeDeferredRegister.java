@@ -13,6 +13,7 @@ import mekanism.common.inventory.container.type.MekanismItemContainerType.IMekan
 import mekanism.common.registration.INamedEntry;
 import mekanism.common.registration.WrappedDeferredRegister;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.flag.FeatureFlags;
@@ -20,13 +21,12 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.network.IContainerFactory;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<MenuType<?>> {
 
     public ContainerTypeDeferredRegister(String modid) {
-        super(modid, ForgeRegistries.MENU_TYPES);
+        super(modid, Registries.MENU);
     }
 
     public <TILE extends TileEntityMekanism> ContainerTypeRegistryObject<MekanismTileContainer<TILE>> register(INamedEntry nameProvider, Class<TILE> tileClass) {

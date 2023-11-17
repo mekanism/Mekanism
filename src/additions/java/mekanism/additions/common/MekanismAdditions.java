@@ -105,8 +105,6 @@ public class MekanismAdditions implements IModModule {
 
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            //Ensure our tags are all initialized
-            AdditionsTags.init();
             //Setup some stuff related to entities
             //Register spawn controls for the baby entities based on the vanilla spawn controls
             registerSpawnControls(AdditionsEntityTypes.BABY_CREEPER, AdditionsEntityTypes.BABY_ENDERMAN, AdditionsEntityTypes.BABY_SKELETON,

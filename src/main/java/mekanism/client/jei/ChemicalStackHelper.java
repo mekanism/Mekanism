@@ -40,13 +40,13 @@ import mezz.jei.api.helpers.IColorHelper;
 import mezz.jei.api.ingredients.IIngredientHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.subtypes.UidContext;
+import net.minecraft.core.HolderSet.Named;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.IForgeRegistry;
-import net.neoforged.neoforge.registries.tags.ITagManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -112,16 +112,11 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         return ingredient.getType().getTags().map(TagKey::location);
     }
 
-    protected abstract IForgeRegistry<CHEMICAL> getRegistry();
+    protected abstract Registry<CHEMICAL> getRegistry();
 
     @Override
     public Optional<ResourceLocation> getTagEquivalent(Collection<STACK> stacks) {
         if (stacks.size() < 2) {
-            return Optional.empty();
-        }
-        ITagManager<CHEMICAL> tags = getRegistry().tags();
-        if (tags == null) {
-            //Something went wrong
             return Optional.empty();
         }
         Set<CHEMICAL> values = stacks.stream()
@@ -132,8 +127,11 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
             //One of the chemicals is there more than once, definitely not a tag
             return Optional.empty();
         }
-        return tags.stream().filter(tag -> tag.size() == expected && values.stream().allMatch(tag::contains))
-              .map(tag -> tag.getKey().location())
+        return getRegistry().getTags()
+              .filter(pair -> {
+                  Named<CHEMICAL> tag = pair.getSecond();
+                  return tag.size() == expected && tag.stream().allMatch(tag::contains);
+              }).map(pair -> pair.getFirst().location())
               .findFirst();
     }
 
@@ -190,8 +188,8 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         }
 
         @Override
-        protected IForgeRegistry<Gas> getRegistry() {
-            return MekanismAPI.gasRegistry();
+        protected Registry<Gas> getRegistry() {
+            return MekanismAPI.GAS_REGISTRY;
         }
 
         @Override
@@ -213,8 +211,8 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         }
 
         @Override
-        protected IForgeRegistry<InfuseType> getRegistry() {
-            return MekanismAPI.infuseTypeRegistry();
+        protected Registry<InfuseType> getRegistry() {
+            return MekanismAPI.INFUSE_TYPE_REGISTRY;
         }
 
         @Override
@@ -231,8 +229,8 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
     public static class PigmentStackHelper extends ChemicalStackHelper<Pigment, PigmentStack> implements IEmptyPigmentProvider {
 
         @Override
-        protected IForgeRegistry<Pigment> getRegistry() {
-            return MekanismAPI.pigmentRegistry();
+        protected Registry<Pigment> getRegistry() {
+            return MekanismAPI.PIGMENT_REGISTRY;
         }
 
         @Override
@@ -249,8 +247,8 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
     public static class SlurryStackHelper extends ChemicalStackHelper<Slurry, SlurryStack> implements IEmptySlurryProvider {
 
         @Override
-        protected IForgeRegistry<Slurry> getRegistry() {
-            return MekanismAPI.slurryRegistry();
+        protected Registry<Slurry> getRegistry() {
+            return MekanismAPI.SLURRY_REGISTRY;
         }
 
         @Override

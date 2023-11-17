@@ -4,12 +4,12 @@ import mekanism.api.providers.IEntityTypeProvider;
 import mekanism.common.registration.WrappedRegistryObject;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class EntityTypeRegistryObject<ENTITY extends Entity> extends WrappedRegistryObject<EntityType<ENTITY>> implements IEntityTypeProvider {
+public class EntityTypeRegistryObject<ENTITY extends Entity> extends WrappedRegistryObject<EntityType<?>, EntityType<ENTITY>> implements IEntityTypeProvider {
 
-    public EntityTypeRegistryObject(RegistryObject<EntityType<ENTITY>> registryObject) {
+    public EntityTypeRegistryObject(DeferredHolder<EntityType<?>, EntityType<ENTITY>> registryObject) {
         super(registryObject);
     }
 

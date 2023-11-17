@@ -5,13 +5,14 @@ import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class FluidToFluidRecipe extends MekanismRecipe implements Predicate<@NotNull FluidStack> {
 
-    private static final RegistryObject<Item> THERMAL_EVAPORATION_CONTROLLER = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "thermal_evaporation_controller"), ForgeRegistries.ITEMS);
+    private static final Holder<Item> THERMAL_EVAPORATION_CONTROLLER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "thermal_evaporation_controller"));
 
     @Override
     public abstract boolean test(FluidStack fluidStack);
@@ -73,6 +74,6 @@ public abstract class FluidToFluidRecipe extends MekanismRecipe implements Predi
 
     @Override
     public ItemStack getToastSymbol() {
-        return new ItemStack(THERMAL_EVAPORATION_CONTROLLER.get());
+        return new ItemStack(THERMAL_EVAPORATION_CONTROLLER);
     }
 }

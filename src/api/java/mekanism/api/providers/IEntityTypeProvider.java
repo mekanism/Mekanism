@@ -1,10 +1,10 @@
 package mekanism.api.providers;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 @MethodsReturnNonnullByDefault
 public interface IEntityTypeProvider extends IBaseProvider {
@@ -16,7 +16,7 @@ public interface IEntityTypeProvider extends IBaseProvider {
 
     @Override
     default ResourceLocation getRegistryName() {
-        return ForgeRegistries.ENTITY_TYPES.getKey(getEntityType());
+        return BuiltInRegistries.ENTITY_TYPE.getKey(getEntityType());
     }
 
     @Override

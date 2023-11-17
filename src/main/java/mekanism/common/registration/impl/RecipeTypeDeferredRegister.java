@@ -9,15 +9,15 @@ import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import mekanism.common.registration.WrappedDeferredRegister;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 public class RecipeTypeDeferredRegister extends WrappedDeferredRegister<RecipeType<?>> {
 
     private final List<IMekanismRecipeTypeProvider<?, ?>> recipeTypes = new ArrayList<>();
 
     public RecipeTypeDeferredRegister(String modid) {
-        super(modid, ForgeRegistries.RECIPE_TYPES);
+        super(modid, Registries.RECIPE_TYPE);
     }
 
     public <RECIPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache> RecipeTypeRegistryObject<RECIPE, INPUT_CACHE> register(String name,

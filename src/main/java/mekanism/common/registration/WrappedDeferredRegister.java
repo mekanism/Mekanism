@@ -2,26 +2,19 @@ package mekanism.common.registration;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
-import mekanism.common.Mekanism;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.IForgeRegistry;
-import net.neoforged.neoforge.registries.RegistryBuilder;
-import net.neoforged.neoforge.registries.RegistryObject;
 
+//TODO - 1.20.2: Cleanup by making this extend deferred register and then be able to return custom DeferredHolders and make those be most of our RegistryObject wrappers
 public class WrappedDeferredRegister<T> {
 
     protected final DeferredRegister<T> internal;
 
     protected WrappedDeferredRegister(DeferredRegister<T> internal) {
         this.internal = internal;
-    }
-
-    protected WrappedDeferredRegister(String modid, IForgeRegistry<T> registry) {
-        this(DeferredRegister.create(registry, modid));
     }
 
     /**
@@ -31,34 +24,11 @@ public class WrappedDeferredRegister<T> {
         this(DeferredRegister.create(registryName, modid));
     }
 
-    protected <I extends T, W extends WrappedRegistryObject<I>> W register(String name, Supplier<? extends I> sup, Function<RegistryObject<I>, W> objectWrapper) {
+    protected <I extends T, W extends WrappedRegistryObject<T, I>> W register(String name, Supplier<? extends I> sup, Function<DeferredHolder<T, I>, W> objectWrapper) {
         return objectWrapper.apply(internal.register(name, sup));
     }
 
     public void register(IEventBus bus) {
         internal.register(bus);
-    }
-
-    /**
-     * Only call this from mekanism and for custom registries
-     */
-    public Supplier<IForgeRegistry<T>> createAndRegister(IEventBus bus) {
-        return createAndRegister(bus, UnaryOperator.identity());
-    }
-
-    /**
-     * Only call this from mekanism and for custom chemical registries
-     */
-    public Supplier<IForgeRegistry<T>> createAndRegisterChemical(IEventBus bus) {
-        return createAndRegister(bus, builder -> builder.hasTags().setDefaultKey(Mekanism.rl("empty")));
-    }
-
-    /**
-     * Only call this from mekanism and for custom registries
-     */
-    public Supplier<IForgeRegistry<T>> createAndRegister(IEventBus bus, UnaryOperator<RegistryBuilder<T>> builder) {
-        Supplier<IForgeRegistry<T>> registry = internal.makeRegistry(() -> builder.apply(new RegistryBuilder<>()));
-        register(bus);
-        return registry;
     }
 }

@@ -1,6 +1,5 @@
 package mekanism.api;
 
-import com.mojang.serialization.Codec;
 import java.util.ServiceLoader;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -18,7 +17,6 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngre
 import mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
-import mekanism.api.robit.RobitSkin;
 
 /**
  * Provides access to a variety of different helpers that are exposed to the API.
@@ -38,13 +36,6 @@ public interface IMekanismAccess {
      * @throws IllegalStateException if JEI is not loaded.
      */
     IMekanismJEIHelper jeiHelper();
-
-    /**
-     * Codec for (de)serializing robit skins inline.
-     *
-     * @apiNote Use {@link mekanism.api.robit.RobitSkinSerializationHelper#DIRECT_CODEC} instead.
-     */
-    Codec<RobitSkin> robitSkinCodec();
 
     /**
      * Gets the item stack ingredient creator.

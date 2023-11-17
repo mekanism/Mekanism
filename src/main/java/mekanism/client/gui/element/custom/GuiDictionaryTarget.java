@@ -27,12 +27,11 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.TagCache;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.tags.TagUtils;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -44,12 +43,9 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.tags.ITagManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -127,7 +123,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                 tags.put(DictionaryTagType.ITEM, TagCache.getItemTags(stack));
                 if (item instanceof BlockItem blockItem) {
                     Block block = blockItem.getBlock();
-                    tags.put(DictionaryTagType.BLOCK, TagCache.getTagsAsStrings(TagUtils.tagsStream(ForgeRegistries.BLOCKS, block)));
+                    tags.put(DictionaryTagType.BLOCK, TagCache.getTagsAsStrings(block.builtInRegistryHolder()));
                     if (block instanceof IHasTileEntity || block.defaultBlockState().hasBlockEntity()) {
                         tags.put(DictionaryTagType.BLOCK_ENTITY_TYPE, TagCache.getTileEntityTypeTags(block));
                     }
@@ -139,19 +135,17 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                 //Enchantment tags
                 Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
                 if (!enchantments.isEmpty()) {
-                    ITagManager<Enchantment> manager = TagUtils.manager(ForgeRegistries.ENCHANTMENTS);
                     tags.put(DictionaryTagType.ENCHANTMENT, TagCache.getTagsAsStrings(enchantments.keySet().stream()
-                          .flatMap(enchantment -> TagUtils.tagsStream(manager, enchantment))
+                          .flatMap(enchantment -> enchantment.builtInRegistryHolder().tags())
                           .distinct()
                     ));
                 }
                 //Get any potion tags
                 Potion potion = PotionUtils.getPotion(itemStack);
                 if (potion != Potions.EMPTY) {
-                    tags.put(DictionaryTagType.POTION, TagCache.getTagsAsStrings(TagUtils.tagsStream(ForgeRegistries.POTIONS, potion)));
-                    ITagManager<MobEffect> effectManager = TagUtils.manager(ForgeRegistries.MOB_EFFECTS);
+                    tags.put(DictionaryTagType.POTION, TagCache.getTagsAsStrings(potion.builtInRegistryHolder()));
                     tags.put(DictionaryTagType.MOB_EFFECT, TagCache.getTagsAsStrings(potion.getEffects().stream()
-                          .flatMap(effect -> TagUtils.tagsStream(effectManager, effect.getEffect()))
+                          .flatMap(effect -> effect.getEffect().builtInRegistryHolder().tags())
                           .distinct()
                     ));
                 }
@@ -161,19 +155,17 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                       .collect(Collectors.toSet());
                 if (!attributes.isEmpty()) {
                     //Only add them though if it has any attributes at all
-                    ITagManager<Attribute> attributeManager = TagUtils.manager(ForgeRegistries.ATTRIBUTES);
                     tags.put(DictionaryTagType.ATTRIBUTE, TagCache.getTagsAsStrings(attributes.stream()
-                          .flatMap(attribute -> TagUtils.tagsStream(attributeManager, attribute))
+                          .flatMap(attribute -> BuiltInRegistries.ATTRIBUTE.wrapAsHolder(attribute).tags())
                           .distinct()
                     ));
                 }
                 //Get tags of any contained fluids
                 FluidUtil.getFluidHandler(stack).ifPresent(fluidHandler -> {
-                    ITagManager<Fluid> fluidManager = TagUtils.manager(ForgeRegistries.FLUIDS);
                     tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(IntStream.range(0, fluidHandler.getTanks())
                           .mapToObj(fluidHandler::getFluidInTank)
                           .filter(fluidInTank -> !fluidInTank.isEmpty())
-                          .flatMap(fluidInTank -> TagUtils.tagsStream(fluidManager, fluidInTank.getFluid()))
+                          .flatMap(fluidInTank -> fluidInTank.getFluid().builtInRegistryHolder().tags())
                           .distinct()
                     ));
                 });
@@ -189,7 +181,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                 target = null;
             } else {
                 target = fluidStack.copy();
-                tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(TagUtils.tagsStream(ForgeRegistries.FLUIDS, ((FluidStack) target).getFluid())));
+                tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(fluidStack.getFluid().builtInRegistryHolder()));
             }
         } else if (newTarget instanceof ChemicalStack<?> chemicalStack) {
             if (chemicalStack.isEmpty()) {

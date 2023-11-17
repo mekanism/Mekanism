@@ -4,7 +4,6 @@ import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotation.BracketResolver;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.gear.ModuleData;
@@ -19,7 +18,6 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTS
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -36,7 +34,7 @@ public class CrTBracketHandlers {
     @ZenCodeType.Method
     @BracketResolver(CrTConstants.BRACKET_GAS)
     public static ICrTGasStack getGasStack(String tokens) {
-        return getChemicalStack(CrTConstants.BRACKET_GAS, tokens, MekanismAPI.gasRegistry(), CrTUtils::stackFromGas);
+        return getChemicalStack(CrTConstants.BRACKET_GAS, tokens, MekanismAPI.GAS_REGISTRY, CrTUtils::stackFromGas);
     }
 
     /**
@@ -49,7 +47,7 @@ public class CrTBracketHandlers {
     @ZenCodeType.Method
     @BracketResolver(CrTConstants.BRACKET_INFUSE_TYPE)
     public static ICrTInfusionStack getInfusionStack(String tokens) {
-        return getChemicalStack(CrTConstants.BRACKET_INFUSE_TYPE, tokens, MekanismAPI.infuseTypeRegistry(), CrTUtils::stackFromInfuseType);
+        return getChemicalStack(CrTConstants.BRACKET_INFUSE_TYPE, tokens, MekanismAPI.INFUSE_TYPE_REGISTRY, CrTUtils::stackFromInfuseType);
     }
 
     /**
@@ -62,7 +60,7 @@ public class CrTBracketHandlers {
     @ZenCodeType.Method
     @BracketResolver(CrTConstants.BRACKET_PIGMENT)
     public static ICrTPigmentStack getPigmentStack(String tokens) {
-        return getChemicalStack(CrTConstants.BRACKET_PIGMENT, tokens, MekanismAPI.pigmentRegistry(), CrTUtils::stackFromPigment);
+        return getChemicalStack(CrTConstants.BRACKET_PIGMENT, tokens, MekanismAPI.PIGMENT_REGISTRY, CrTUtils::stackFromPigment);
     }
 
     /**
@@ -75,7 +73,7 @@ public class CrTBracketHandlers {
     @ZenCodeType.Method
     @BracketResolver(CrTConstants.BRACKET_SLURRY)
     public static ICrTSlurryStack getSlurryStack(String tokens) {
-        return getChemicalStack(CrTConstants.BRACKET_SLURRY, tokens, MekanismAPI.slurryRegistry(), CrTUtils::stackFromSlurry);
+        return getChemicalStack(CrTConstants.BRACKET_SLURRY, tokens, MekanismAPI.SLURRY_REGISTRY, CrTUtils::stackFromSlurry);
     }
 
     /**
@@ -101,34 +99,30 @@ public class CrTBracketHandlers {
     @ZenCodeType.Method
     @BracketResolver(CrTConstants.BRACKET_MODULE_DATA)
     public static ModuleData<?> getModuleData(String tokens) {
-        return getValue(CrTConstants.BRACKET_MODULE_DATA, tokens, MekanismAPI.moduleRegistry());
+        return getValue(CrTConstants.BRACKET_MODULE_DATA, tokens, MekanismAPI.MODULE_REGISTRY);
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, ?, CRT_STACK>> CRT_STACK getChemicalStack(String bracket,
-          String tokens, IForgeRegistry<CHEMICAL> registry, Function<CHEMICAL, CRT_STACK> getter) {
+          String tokens, Registry<CHEMICAL> registry, Function<CHEMICAL, CRT_STACK> getter) {
         return getter.apply(getValue(bracket, tokens, registry));
-    }
-
-    private static <V> V getValue(String bracket, String tokens, IForgeRegistry<V> registry) {
-        return getValue(bracket, tokens, registry::containsKey, registry::getValue);
     }
 
     private static <V> V getValue(String bracket, String tokens, ResourceKey<? extends Registry<? extends V>> registryKey) {
         Registry<V> registry = CraftTweakerAPI.getAccessibleElementsProvider()
               .registryAccess()
               .registryOrThrow(registryKey);
-        return getValue(bracket, tokens, registry::containsKey, registry::get);
+        return getValue(bracket, tokens, registry);
     }
 
-    private static <V> V getValue(String bracket, String tokens, Predicate<ResourceLocation> hasKey, Function<ResourceLocation, V> getter) {
+    private static <V> V getValue(String bracket, String tokens, Registry<V> registry) {
         ResourceLocation registryName = ResourceLocation.tryParse(tokens);
         if (registryName == null) {
             String typeName = bracket.replace("_", " ");
             throw new IllegalArgumentException("Could not get " + typeName + " for <" + bracket + ":" + tokens + ">. Syntax is <" + bracket + ":modid:" + bracket + "_name>");
-        } else if (!hasKey.test(registryName)) {
+        } else if (!registry.containsKey(registryName)) {
             String typeName = bracket.replace("_", " ");
             throw new IllegalArgumentException("Could not get " + typeName + " for <" + bracket + ":" + tokens + ">, " + typeName + " does not appear to exist!");
         }
-        return getter.apply(registryName);
+        return registry.get(registryName);
     }
 }

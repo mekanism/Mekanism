@@ -5,9 +5,10 @@ import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IPigmentProvider;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -28,13 +29,25 @@ public final class PigmentStack extends ChemicalStack<Pigment> {
         super(pigmentProvider.getChemical(), amount);
     }
 
+    /**
+     * Creates a new PigmentStack with a defined pigment type and quantity.
+     *
+     * @param pigmentHolder - provides the pigment type of the stack
+     * @param amount        - amount of the pigment to be referenced in this PigmentStack
+     *
+     * @since 10.5.0
+     */
+    public PigmentStack(Holder<Pigment> pigmentHolder, long amount) {
+        this(pigmentHolder.value(), amount);
+    }
+
     public PigmentStack(PigmentStack stack, long amount) {
         this(stack.getType(), amount);
     }
 
     @Override
-    protected IForgeRegistry<Pigment> getRegistry() {
-        return MekanismAPI.pigmentRegistry();
+    protected Registry<Pigment> getRegistry() {
+        return MekanismAPI.PIGMENT_REGISTRY;
     }
 
     @Override
@@ -65,8 +78,8 @@ public final class PigmentStack extends ChemicalStack<Pigment> {
     }
 
     public static PigmentStack readFromPacket(FriendlyByteBuf buf) {
-        Pigment pigment = buf.readRegistryIdSafe(Pigment.class);
-        if (pigment.isEmptyType()) {
+        Pigment pigment = buf.readById(MekanismAPI.PIGMENT_REGISTRY);
+        if (pigment == null || pigment.isEmptyType()) {
             return EMPTY;
         }
         return new PigmentStack(pigment, buf.readVarLong());

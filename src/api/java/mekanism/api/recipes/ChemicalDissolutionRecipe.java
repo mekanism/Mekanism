@@ -8,19 +8,20 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
 public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implements BiPredicate<@NotNull ItemStack, @NotNull GasStack> {
 
-    private static final RegistryObject<Item> CHEMICAL_DISSOLUTION_CHAMBER = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "chemical_dissolution_chamber"), ForgeRegistries.ITEMS);
+    private static final Holder<Item> CHEMICAL_DISSOLUTION_CHAMBER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "chemical_dissolution_chamber"));
 
     /**
      * Gets the input item ingredient.
@@ -64,7 +65,7 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implement
 
     @Override
     public final RecipeType<ChemicalDissolutionRecipe> getType() {
-        return MekanismRecipeTypes.TYPE_DISSOLUTION.get();
+        return MekanismRecipeTypes.TYPE_DISSOLUTION.value();
     }
 
     @Override
@@ -74,6 +75,6 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implement
 
     @Override
     public ItemStack getToastSymbol() {
-        return new ItemStack(CHEMICAL_DISSOLUTION_CHAMBER.get());
+        return new ItemStack(CHEMICAL_DISSOLUTION_CHAMBER);
     }
 }

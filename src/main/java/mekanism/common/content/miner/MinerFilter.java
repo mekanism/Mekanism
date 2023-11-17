@@ -6,12 +6,12 @@ import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends BaseFilter<FILTER> {
@@ -43,7 +43,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
         super.write(nbtTags);
         nbtTags.putBoolean(NBTConstants.REQUIRE_STACK, requiresReplacement);
         if (replaceTarget != Items.AIR) {
-            NBTUtils.writeRegistryEntry(nbtTags, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, replaceTarget);
+            NBTUtils.writeRegistryEntry(nbtTags, NBTConstants.REPLACE_STACK, BuiltInRegistries.ITEM, replaceTarget);
         }
         return nbtTags;
     }
@@ -52,21 +52,21 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
     public void read(CompoundTag nbtTags) {
         super.read(nbtTags);
         requiresReplacement = nbtTags.getBoolean(NBTConstants.REQUIRE_STACK);
-        replaceTarget = NBTUtils.readRegistryEntry(nbtTags, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, Items.AIR);
+        replaceTarget = NBTUtils.readRegistryEntry(nbtTags, NBTConstants.REPLACE_STACK, BuiltInRegistries.ITEM, Items.AIR);
     }
 
     @Override
     public void write(FriendlyByteBuf buffer) {
         super.write(buffer);
         buffer.writeBoolean(requiresReplacement);
-        buffer.writeRegistryId(ForgeRegistries.ITEMS, replaceTarget);
+        buffer.writeId(BuiltInRegistries.ITEM, replaceTarget);
     }
 
     @Override
     public void read(FriendlyByteBuf dataStream) {
         super.read(dataStream);
         requiresReplacement = dataStream.readBoolean();
-        replaceTarget = dataStream.readRegistryIdSafe(Item.class);
+        replaceTarget = dataStream.readById(BuiltInRegistries.ITEM);
     }
 
     @Override

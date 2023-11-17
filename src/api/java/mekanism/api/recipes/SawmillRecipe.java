@@ -6,12 +6,13 @@ import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<@NotNull ItemStack> {
 
     protected static final Random RANDOM = new Random();
-    private static final RegistryObject<Item> PRECISION_SAWMILL = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "precision_sawmill"), ForgeRegistries.ITEMS);
+    private static final Holder<Item> PRECISION_SAWMILL = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "precision_sawmill"));
 
     @Override
     public abstract boolean test(ItemStack stack);
@@ -78,7 +79,7 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
 
     @Override
     public final RecipeType<SawmillRecipe> getType() {
-        return MekanismRecipeTypes.TYPE_SAWING.get();
+        return MekanismRecipeTypes.TYPE_SAWING.value();
     }
 
     @Override
@@ -88,7 +89,7 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
 
     @Override
     public ItemStack getToastSymbol() {
-        return new ItemStack(PRECISION_SAWMILL.get());
+        return new ItemStack(PRECISION_SAWMILL);
     }
 
     /**

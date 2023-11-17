@@ -20,7 +20,6 @@ import mekanism.client.jei.MekanismJEI;
 import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismGases;
-import mekanism.common.tags.TagUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -34,10 +33,10 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIRecipe> {
@@ -65,7 +64,9 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIR
 
     private List<FluidStack> getWaterInput(FissionJEIRecipe recipe) {
         int amount = MathUtils.clampToInt(recipe.outputCoolant().getAmount());
-        return TagUtils.tag(ForgeRegistries.FLUIDS, FluidTags.WATER).stream().map(fluid -> new FluidStack(fluid, amount)).toList();
+        return BuiltInRegistries.FLUID.getTag(FluidTags.WATER)
+              .map(holders -> holders.stream().map(fluid -> new FluidStack(fluid.value(), amount)).toList())
+              .orElse(List.of());
     }
 
     @Override
@@ -91,7 +92,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIR
         recipes.add(new FissionJEIRecipe(null, IngredientCreatorAccess.gas().from(MekanismGases.FISSILE_FUEL, 1),
               MekanismGases.STEAM.getStack(coolantAmount), MekanismGases.NUCLEAR_WASTE.getStack(1)));
         //Go through all gases and add each coolant
-        for (Gas gas : MekanismAPI.gasRegistry()) {
+        for (Gas gas : MekanismAPI.GAS_REGISTRY) {
             gas.ifAttributePresent(CooledCoolant.class, cooledCoolant -> {
                 //If it is a cooled coolant add a recipe for it
                 Gas heatedCoolant = cooledCoolant.getHeatedGas();

@@ -3,7 +3,6 @@ package mekanism.common.recipe.compat;
 import biomesoplenty.api.block.BOPBlocks;
 import biomesoplenty.api.item.BOPItems;
 import java.util.Arrays;
-import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
@@ -14,7 +13,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registries.MekanismPigments;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +21,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.registries.RegistryObject;
 
 @NothingNullByDefault
 public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
@@ -41,17 +39,17 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
 
     //TODO - 1.20.2: replace with real fields if there's a Neo version released
     @SuppressWarnings("unchecked")
-    public static RegistryObject<Block> getBOPBlock(String fieldName) {
+    public static Holder<Block> getBOPBlock(String fieldName) {
         try {
-            return (RegistryObject<Block>) BOPBlocks.class.getDeclaredField(fieldName).get(null);
+            return (Holder<Block>) BOPBlocks.class.getDeclaredField(fieldName).get(null);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
     }
     @SuppressWarnings("unchecked")
-    private static RegistryObject<Item> getBOPItem(String fieldName) {
+    private static Holder<Item> getBOPItem(String fieldName) {
         try {
-            return (RegistryObject<Item>) BOPItems.class.getDeclaredField(fieldName).get(null);
+            return (Holder<Item>) BOPItems.class.getDeclaredField(fieldName).get(null);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
@@ -80,11 +78,11 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               getBOPBlock("WILLOW_FENCE_GATE"), getBOPBlock("WILLOW_PRESSURE_PLATE"), getBOPBlock("WILLOW_TRAPDOOR"), getBOPBlock("WILLOW_HANGING_SIGN"), "willow");
     }
 
-    private void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, String basePath, RegistryObject<Block> planks, RegistryObject<Item> boat,
-          RegistryObject<Item> chestBoat, RegistryObject<Block> door, RegistryObject<Block> fenceGate, RegistryObject<Block> pressurePlate, RegistryObject<Block> trapdoor,
-          RegistryObject<Block> hangingSign, String name) {
-        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks.get(), boat.get(), chestBoat.get(), door.get(), fenceGate.get(),
-              tag(name + "_logs"), pressurePlate.get(), trapdoor.get(), hangingSign.get(), name, modLoaded);
+    private void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, String basePath, Holder<Block> planks, Holder<Item> boat,
+          Holder<Item> chestBoat, Holder<Block> door, Holder<Block> fenceGate, Holder<Block> pressurePlate, Holder<Block> trapdoor,
+          Holder<Block> hangingSign, String name) {
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks.value(), boat.value(), chestBoat.value(), door.value(), fenceGate.value(),
+              tag(name + "_logs"), pressurePlate.value(), trapdoor.value(), hangingSign.value(), name, modLoaded);
     }
 
     private void addSandRecipes(RecipeOutput consumer, String basePath) {
@@ -100,8 +98,8 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     }
 
     @SafeVarargs
-    private void addSandStoneToSandRecipe(RecipeOutput consumer, String path, RegistryObject<Block> sand, RegistryObject<Block>... sandstones) {
-        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, path, modLoaded, sand.get(), toItemLike(sandstones));
+    private void addSandStoneToSandRecipe(RecipeOutput consumer, String path, Holder<Block> sand, Holder<Block>... sandstones) {
+        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, path, modLoaded, sand.value(), toItemLike(sandstones));
     }
 
     private void addDyeRecipes(RecipeOutput consumer, String basePath) {
@@ -126,7 +124,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     }
 
     @SafeVarargs
-    private void dye(RecipeOutput consumer, String basePath, ItemLike output, EnumColor color, RegistryObject<Block>... inputs) {
+    private void dye(RecipeOutput consumer, String basePath, ItemLike output, EnumColor color, Holder<Block>... inputs) {
         ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(Ingredient.of(toItemLike(inputs)));
         ItemStackToItemStackRecipeBuilder.enriching(
                     inputIngredient,
@@ -143,7 +141,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     }
 
     @SafeVarargs
-    private static ItemLike[] toItemLike(RegistryObject<Block>... ros) {
-        return Arrays.stream(ros).map(RegistryObject::get).toArray(ItemLike[]::new);
+    private static ItemLike[] toItemLike(Holder<Block>... ros) {
+        return Arrays.stream(ros).map(Holder::value).toArray(ItemLike[]::new);
     }
 }

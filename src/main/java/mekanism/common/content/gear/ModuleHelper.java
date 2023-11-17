@@ -229,7 +229,7 @@ public class ModuleHelper implements IModuleHelper {
     private ModuleData<?> getModuleTypeFromName(String name) {
         //Otherwise, try getting the registry name and then looking it up in the module registry
         ResourceLocation registryName = ResourceLocation.tryParse(name);
-        return registryName == null ? null : MekanismAPI.moduleRegistry().getValue(registryName);
+        return registryName == null ? null : MekanismAPI.MODULE_REGISTRY.get(registryName);
     }
 
     @Nullable

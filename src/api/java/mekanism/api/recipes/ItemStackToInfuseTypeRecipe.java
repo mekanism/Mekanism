@@ -7,12 +7,13 @@ import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -26,7 +27,7 @@ import org.jetbrains.annotations.Contract;
 @NothingNullByDefault
 public abstract class ItemStackToInfuseTypeRecipe extends ItemStackToChemicalRecipe<InfuseType, InfusionStack> {
 
-    private static final RegistryObject<Item> METALLURGIC_INFUSER = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "metallurgic_infuser"), ForgeRegistries.ITEMS);
+    private static final Holder<Item> METALLURGIC_INFUSER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "metallurgic_infuser"));
 
     @Override
     public abstract boolean test(ItemStack itemStack);
@@ -43,7 +44,7 @@ public abstract class ItemStackToInfuseTypeRecipe extends ItemStackToChemicalRec
 
     @Override
     public final RecipeType<ItemStackToInfuseTypeRecipe> getType() {
-        return MekanismRecipeTypes.TYPE_INFUSION_CONVERSION.get();
+        return MekanismRecipeTypes.TYPE_INFUSION_CONVERSION.value();
     }
 
     @Override
@@ -53,6 +54,6 @@ public abstract class ItemStackToInfuseTypeRecipe extends ItemStackToChemicalRec
 
     @Override
     public ItemStack getToastSymbol() {
-        return new ItemStack(METALLURGIC_INFUSER.get());
+        return new ItemStack(METALLURGIC_INFUSER);
     }
 }

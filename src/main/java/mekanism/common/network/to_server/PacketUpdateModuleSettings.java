@@ -80,7 +80,7 @@ public class PacketUpdateModuleSettings implements IMekanismPacket {
     @Override
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeVarInt(slotId);
-        buffer.writeRegistryId(MekanismAPI.moduleRegistry(), moduleType);
+        buffer.writeId(MekanismAPI.MODULE_REGISTRY, moduleType);
         buffer.writeVarInt(dataIndex);
         buffer.writeEnum(dataType);
         switch (dataType) {
@@ -93,7 +93,7 @@ public class PacketUpdateModuleSettings implements IMekanismPacket {
 
     public static PacketUpdateModuleSettings decode(FriendlyByteBuf buffer) {
         int slotId = buffer.readVarInt();
-        ModuleData<?> moduleType = buffer.readRegistryIdSafe(ModuleData.class);
+        ModuleData<?> moduleType = buffer.readById(MekanismAPI.MODULE_REGISTRY);
         int dataIndex = buffer.readVarInt();
         ModuleDataType dataType = buffer.readEnum(ModuleDataType.class);
         Object data = switch (dataType) {

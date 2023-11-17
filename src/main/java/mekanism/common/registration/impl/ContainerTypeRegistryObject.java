@@ -16,17 +16,17 @@ import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.NetworkHooks;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
-public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu> extends WrappedRegistryObject<MenuType<CONTAINER>> {
+public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu> extends WrappedRegistryObject<MenuType<?>, MenuType<CONTAINER>> {
 
-    public ContainerTypeRegistryObject(RegistryObject<MenuType<CONTAINER>> registryObject) {
+    public ContainerTypeRegistryObject(DeferredHolder<MenuType<?>, MenuType<CONTAINER>> registryObject) {
         super(registryObject);
     }
 
     //Internal use only overwrite the registry object
-    ContainerTypeRegistryObject<CONTAINER> setRegistryObject(RegistryObject<MenuType<CONTAINER>> registryObject) {
+    ContainerTypeRegistryObject<CONTAINER> setRegistryObject(DeferredHolder<MenuType<?>, MenuType<CONTAINER>> registryObject) {
         this.registryObject = registryObject;
         return this;
     }

@@ -24,14 +24,14 @@ import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 
 public class MekanismCreativeTabs {
 
@@ -52,7 +52,7 @@ public class MekanismCreativeTabs {
             //Fluid Tanks
             if (MekanismConfig.general.prefilledFluidTanks.get()) {
                 int capacity = FluidTankTier.CREATIVE.getStorage();
-                for (Fluid fluid : ForgeRegistries.FLUIDS.getValues()) {
+                for (Fluid fluid : BuiltInRegistries.FLUID) {
                     if (fluid.isSource(fluid.defaultFluidState())) {//Only add sources
                         output.accept(FluidUtils.getFilledVariant(MekanismBlocks.CREATIVE_FLUID_TANK.getItemStack(), capacity, () -> fluid));
                     }
@@ -60,18 +60,18 @@ public class MekanismCreativeTabs {
             }
             if (chemical) {
                 //Chemical Tanks
-                addFilled(MekanismConfig.general.prefilledGasTanks, MekanismAPI.gasRegistry(), output);
-                addFilled(MekanismConfig.general.prefilledInfusionTanks, MekanismAPI.infuseTypeRegistry(), output);
-                addFilled(MekanismConfig.general.prefilledPigmentTanks, MekanismAPI.pigmentRegistry(), output);
-                addFilled(MekanismConfig.general.prefilledSlurryTanks, MekanismAPI.slurryRegistry(), output);
+                addFilled(MekanismConfig.general.prefilledGasTanks, MekanismAPI.GAS_REGISTRY, output);
+                addFilled(MekanismConfig.general.prefilledInfusionTanks, MekanismAPI.INFUSE_TYPE_REGISTRY, output);
+                addFilled(MekanismConfig.general.prefilledPigmentTanks, MekanismAPI.PIGMENT_REGISTRY, output);
+                addFilled(MekanismConfig.general.prefilledSlurryTanks, MekanismAPI.SLURRY_REGISTRY, output);
             }
         }
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>> void addFilled(BooleanSupplier shouldAdd, IForgeRegistry<CHEMICAL> registry, CreativeModeTab.Output tabOutput) {
+    private static <CHEMICAL extends Chemical<CHEMICAL>> void addFilled(BooleanSupplier shouldAdd, Registry<CHEMICAL> registry, CreativeModeTab.Output tabOutput) {
         if (shouldAdd.getAsBoolean()) {
             long capacity = ChemicalTankTier.CREATIVE.getStorage();
-            for (CHEMICAL type : registry.getValues()) {
+            for (CHEMICAL type : registry) {
                 if (!type.isHidden()) {
                     tabOutput.accept(ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemStack(), capacity, type));
                 }

@@ -1,6 +1,5 @@
 package mekanism.common.service;
 
-import com.mojang.serialization.Codec;
 import mekanism.api.IMekanismAccess;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -18,7 +17,6 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngre
 import mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
-import mekanism.api.robit.RobitSkin;
 import mekanism.client.jei.MekanismJEIHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator;
@@ -27,7 +25,6 @@ import mekanism.common.recipe.ingredient.creator.InfusionStackIngredientCreator;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator;
 import mekanism.common.recipe.ingredient.creator.PigmentStackIngredientCreator;
 import mekanism.common.recipe.ingredient.creator.SlurryStackIngredientCreator;
-import mekanism.common.registries.MekanismRobitSkins;
 
 /**
  * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IMekanismAccess#INSTANCE}
@@ -40,11 +37,6 @@ public class MekanismAccess implements IMekanismAccess {
             return MekanismJEIHelper.INSTANCE;
         }
         throw new IllegalStateException("JEI is not loaded.");
-    }
-
-    @Override
-    public Codec<RobitSkin> robitSkinCodec() {
-        return MekanismRobitSkins.getDirectCodec();
     }
 
     @Override

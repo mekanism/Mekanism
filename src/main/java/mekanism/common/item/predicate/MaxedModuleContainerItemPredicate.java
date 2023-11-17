@@ -9,10 +9,10 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.ModuleHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.advancements.critereon.ICustomItemPredicate;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public class MaxedModuleContainerItemPredicate<ITEM extends Item & IModuleContainerItem> implements ICustomItemPredicate {
@@ -46,7 +46,7 @@ public class MaxedModuleContainerItemPredicate<ITEM extends Item & IModuleContai
     }
 
     static Codec<MaxedModuleContainerItemPredicate<?>> makeCodec() {
-        return ForgeRegistries.ITEMS.getCodec().fieldOf(JsonConstants.ITEM).codec().comapFlatMap(item->{
+        return BuiltInRegistries.ITEM.byNameCodec().fieldOf(JsonConstants.ITEM).codec().comapFlatMap(item->{
             if (item instanceof IModuleContainerItem) {
                 return DataResult.success(new MaxedModuleContainerItemPredicate<>((Item & IModuleContainerItem) item));
             }

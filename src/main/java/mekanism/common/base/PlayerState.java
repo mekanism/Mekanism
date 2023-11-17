@@ -180,7 +180,7 @@ public class PlayerState {
     // ----------------------
 
     public void updateStepAssist(Player player) {
-        updateAttribute(player, NeoForgeMod.STEP_HEIGHT.get(), STEP_ASSIST_MODIFIER_UUID, "Step Assist", () -> CommonPlayerTickHandler.getStepBoost(player));
+        updateAttribute(player, NeoForgeMod.STEP_HEIGHT.value(), STEP_ASSIST_MODIFIER_UUID, "Step Assist", () -> CommonPlayerTickHandler.getStepBoost(player));
     }
 
     // ----------------------
@@ -190,7 +190,7 @@ public class PlayerState {
     // ----------------------
 
     public void updateSwimBoost(Player player) {
-        updateAttribute(player, NeoForgeMod.SWIM_SPEED.get(), SWIM_BOOST_MODIFIER_UUID, "Swim Boost", () -> CommonPlayerTickHandler.getSwimBoost(player));
+        updateAttribute(player, NeoForgeMod.SWIM_SPEED.value(), SWIM_BOOST_MODIFIER_UUID, "Swim Boost", () -> CommonPlayerTickHandler.getSwimBoost(player));
     }
 
     private void updateAttribute(Player player, Attribute attribute, UUID uuid, String name, FloatSupplier additionalSupplier) {

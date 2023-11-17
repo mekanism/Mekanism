@@ -34,10 +34,10 @@ public class PacketRemoveModule implements IMekanismPacket {
     @Override
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeBlockPos(pos);
-        buffer.writeRegistryId(MekanismAPI.moduleRegistry(), moduleType);
+        buffer.writeId(MekanismAPI.MODULE_REGISTRY, moduleType);
     }
 
     public static PacketRemoveModule decode(FriendlyByteBuf buffer) {
-        return new PacketRemoveModule(buffer.readBlockPos(), buffer.readRegistryIdSafe(ModuleData.class));
+        return new PacketRemoveModule(buffer.readBlockPos(), buffer.readById(MekanismAPI.MODULE_REGISTRY));
     }
 }

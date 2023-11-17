@@ -17,10 +17,10 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +28,6 @@ import org.jetbrains.annotations.Nullable;
 public class ChemicalUtils {
 
     //nb: these can't be in their respective classes as they init before the custom registries are created, thus the EMPTY init fails
-    //TODO - 1.20.2: Figure out why the slurry stack codec doesn't have to be here?
     public static final Codec<GasStack> GAS_STACK_CODEC = ChemicalStack.codec(Gas.CODEC, JsonConstants.GAS, GasStack::new);
     public static final Codec<InfusionStack> INFUSION_STACK_CODEC = ChemicalStack.codec(InfuseType.CODEC, JsonConstants.INFUSE_TYPE, InfusionStack::new);
     public static final Codec<PigmentStack> PIGMENT_STACK_CODEC = ChemicalStack.codec(Pigment.CODEC, JsonConstants.PIGMENT, PigmentStack::new);
@@ -137,12 +136,12 @@ public class ChemicalUtils {
      * @return Chemical.
      */
     public static <CHEMICAL extends Chemical<CHEMICAL>> CHEMICAL readChemicalFromRegistry(@Nullable ResourceLocation name, CHEMICAL empty,
-          IForgeRegistry<CHEMICAL> registry) {
+          Registry<CHEMICAL> registry) {
         if (name == null) {
             return empty;
         }
-        CHEMICAL chemical = registry.getValue(name);
-        if (chemical == null) {
+        CHEMICAL chemical = registry.get(name);
+        if (chemical == null) {//Note: This should never be null as the registry defaults to the empty variant, but we validate it anyway
             return empty;
         }
         return chemical;

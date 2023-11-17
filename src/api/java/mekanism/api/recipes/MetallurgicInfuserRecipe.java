@@ -8,13 +8,14 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class MetallurgicInfuserRecipe extends ItemStackChemicalToItemStackRecipe<InfuseType, InfusionStack, InfusionStackIngredient> {
 
-    private static final RegistryObject<Item> METALLURGIC_INFUSER = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "metallurgic_infuser"), ForgeRegistries.ITEMS);
+    private static final Holder<Item> METALLURGIC_INFUSER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "metallurgic_infuser"));
 
     @Override
     public abstract ItemStackIngredient getItemInput();
@@ -54,7 +55,7 @@ public abstract class MetallurgicInfuserRecipe extends ItemStackChemicalToItemSt
 
     @Override
     public final RecipeType<MetallurgicInfuserRecipe> getType() {
-        return MekanismRecipeTypes.TYPE_METALLURGIC_INFUSING.get();
+        return MekanismRecipeTypes.TYPE_METALLURGIC_INFUSING.value();
     }
 
     @Override
@@ -64,6 +65,6 @@ public abstract class MetallurgicInfuserRecipe extends ItemStackChemicalToItemSt
 
     @Override
     public ItemStack getToastSymbol() {
-        return new ItemStack(METALLURGIC_INFUSER.get());
+        return new ItemStack(METALLURGIC_INFUSER);
     }
 }

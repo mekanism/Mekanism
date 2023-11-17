@@ -5,14 +5,12 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.providers.IPigmentProvider;
 import net.minecraft.Util;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -21,10 +19,10 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class Pigment extends Chemical<Pigment> implements IPigmentProvider {
 
-    public static final Codec<Pigment> CODEC = ExtraCodecs.lazyInitializedCodec(() -> MekanismAPI.pigmentRegistry().getCodec());
+    public static final Codec<Pigment> CODEC = MekanismAPI.PIGMENT_REGISTRY.byNameCodec();
 
     public Pigment(PigmentBuilder builder) {
-        super(builder, ChemicalTags.PIGMENT);
+        super(builder);
     }
 
     public static Pigment readFromNBT(@Nullable CompoundTag nbtTags) {
@@ -32,7 +30,7 @@ public class Pigment extends Chemical<Pigment> implements IPigmentProvider {
     }
 
     public static Pigment getFromRegistry(@Nullable ResourceLocation name) {
-        return ChemicalUtils.readChemicalFromRegistry(name, MekanismAPI.EMPTY_PIGMENT, MekanismAPI.pigmentRegistry());
+        return ChemicalUtils.readChemicalFromRegistry(name, MekanismAPI.EMPTY_PIGMENT, MekanismAPI.PIGMENT_REGISTRY);
     }
 
     @Override
@@ -52,11 +50,8 @@ public class Pigment extends Chemical<Pigment> implements IPigmentProvider {
     }
 
     @Override
-    @SuppressWarnings("ConstantConditions")
-    public final ResourceLocation getRegistryName() {
-        //May be null if called before the object is registered
-        IForgeRegistry<Pigment> registry = MekanismAPI.pigmentRegistry();
-        return registry == null ? null : registry.getKey(this);
+    protected final Registry<Pigment> getRegistry() {
+        return MekanismAPI.PIGMENT_REGISTRY;
     }
 
     @Override

@@ -14,7 +14,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.neoforged.neoforge.common.util.NonNullSupplier;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -179,8 +178,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IModule
     @SuppressWarnings("ConstantConditions")
     public final ResourceLocation getRegistryName() {
         //May be null if called before the object is registered
-        IForgeRegistry<ModuleData<?>> registry = MekanismAPI.moduleRegistry();
-        return registry == null ? null : registry.getKey(this);
+        return MekanismAPI.MODULE_REGISTRY.getKey(this);
     }
 
     /**

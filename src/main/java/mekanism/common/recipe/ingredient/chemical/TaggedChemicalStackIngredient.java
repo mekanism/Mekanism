@@ -10,34 +10,32 @@ import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer.IngredientType;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
-import net.neoforged.neoforge.registries.tags.ITag;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>>
       implements ChemicalStackIngredient<CHEMICAL, STACK> {
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, CLAZZ extends TaggedChemicalStackIngredient<CHEMICAL, STACK>> Codec<CLAZZ>
-    makeCodec(ChemicalTags<CHEMICAL> tags, BiFunction<TagKey<CHEMICAL>, Long, CLAZZ> constructor) {
-        return RecordCodecBuilder.create(instance->instance.group(
-              TagKey.codec(tags.getResourceKey()).fieldOf(JsonConstants.TAG).forGetter(TaggedChemicalStackIngredient::getTag),
+    makeCodec(ResourceKey<? extends Registry<CHEMICAL>> registry, BiFunction<TagKey<CHEMICAL>, Long, CLAZZ> constructor) {
+        return RecordCodecBuilder.create(instance -> instance.group(
+              TagKey.codec(registry).fieldOf(JsonConstants.TAG).forGetter(TaggedChemicalStackIngredient::getTag),
               SerializerHelper.POSITIVE_NONZERO_LONG_CODEC.fieldOf(JsonConstants.AMOUNT).forGetter(TaggedChemicalStackIngredient::getRawAmount)
         ).apply(instance, constructor));
     }
 
     @NotNull
-    private final ITag<CHEMICAL> tag;
+    private final HolderSet.Named<CHEMICAL> tag;
     private final long amount;
 
-    protected TaggedChemicalStackIngredient(@NotNull ChemicalTags<CHEMICAL> tags, @NotNull TagKey<CHEMICAL> tag, long amount) {
-        this(tags.getManager().map(manager -> manager.getTag(tag)).orElseThrow(), amount);
-    }
-
-    protected TaggedChemicalStackIngredient(@NotNull ITag<CHEMICAL> tag, long amount) {
+    protected TaggedChemicalStackIngredient(@NotNull HolderSet.Named<CHEMICAL> tag, long amount) {
         this.tag = tag;
         this.amount = amount;
     }
@@ -56,7 +54,7 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
 
     @Override
     public boolean testType(@NotNull CHEMICAL chemical) {
-        return tag.contains(Objects.requireNonNull(chemical));
+        return Objects.requireNonNull(chemical).is(getTag());
     }
 
     @NotNull
@@ -80,7 +78,7 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
 
     @Override
     public boolean hasNoMatchingInstances() {
-        return tag.isEmpty();
+        return tag.size() == 0;
     }
 
     @NotNull
@@ -89,8 +87,8 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
         ChemicalIngredientInfo<CHEMICAL, STACK> ingredientInfo = getIngredientInfo();
         //TODO: Can this be cached somehow
         List<@NotNull STACK> representations = new ArrayList<>();
-        for (CHEMICAL chemical : tag) {
-            representations.add(ingredientInfo.createStack(chemical, amount));
+        for (Holder<CHEMICAL> chemical : tag) {
+            representations.add(ingredientInfo.createStack(chemical.value(), amount));
         }
         return representations;
     }
@@ -98,18 +96,18 @@ public abstract class TaggedChemicalStackIngredient<CHEMICAL extends Chemical<CH
     /**
      * For use in recipe input caching.
      */
-    public Iterable<CHEMICAL> getRawInput() {
+    public Iterable<Holder<CHEMICAL>> getRawInput() {
         return tag;
     }
 
     public TagKey<CHEMICAL> getTag() {
-        return tag.getKey();
+        return tag.key();
     }
 
     @Override
     public void write(FriendlyByteBuf buffer) {
         buffer.writeEnum(IngredientType.TAGGED);
-        buffer.writeResourceLocation(tag.getKey().location());
+        buffer.writeResourceLocation(getTag().location());
         buffer.writeVarLong(amount);
     }
 

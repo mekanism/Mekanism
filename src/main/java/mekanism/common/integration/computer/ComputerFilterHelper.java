@@ -68,7 +68,7 @@ public class ComputerFilterHelper {
     public static OredictionificatorItemFilter createOredictionificatorItemFilter(ResourceLocation filterTag, Item selectedOutput) throws ComputerException {
         OredictionificatorItemFilter filter = new OredictionificatorItemFilter();
         filter.computerSetFilter(filterTag);
-        filter.setSelectedOutput(selectedOutput);
+        filter.setSelectedOutput(selectedOutput.builtInRegistryHolder());
         return filter;
     }
 

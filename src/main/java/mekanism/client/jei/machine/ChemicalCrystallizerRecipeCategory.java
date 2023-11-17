@@ -27,7 +27,6 @@ import mekanism.client.jei.MekanismJEIRecipeType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.tags.TagUtils;
 import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -39,11 +38,11 @@ import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.tags.ITag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -95,13 +94,13 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
             initChemical(builder, MekanismJEI.TYPE_PIGMENT, ingredient);
         } else if (input instanceof SlurryStackIngredient ingredient) {
             initChemical(builder, MekanismJEI.TYPE_SLURRY, ingredient);
-            Set<ITag<Item>> tags = new HashSet<>();
+            Set<HolderSet.Named<Item>> tags = new HashSet<>();
             for (SlurryStack slurryStack : ingredient.getRepresentations()) {
                 Slurry slurry = slurryStack.getType();
-                if (!MekanismTags.Slurries.DIRTY_LOOKUP.contains(slurry)) {
+                if (!slurry.is(MekanismTags.Slurries.DIRTY)) {
                     TagKey<Item> oreTag = slurry.getOreTag();
                     if (oreTag != null) {
-                        tags.add(TagUtils.tag(ForgeRegistries.ITEMS, oreTag));
+                        BuiltInRegistries.ITEM.getTag(oreTag).ifPresent(tags::add);
                     }
                 }
             }

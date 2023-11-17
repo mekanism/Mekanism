@@ -1,6 +1,5 @@
 package mekanism.common.registries;
 
-import com.mojang.serialization.Codec;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
@@ -26,15 +25,8 @@ public class MekanismRobitSkins {
 
     private static final RobitSkinDeferredRegister ROBIT_SKINS = new RobitSkinDeferredRegister(Mekanism.MODID);
 
-    @SuppressWarnings("FieldCanBeLocal")//Cannot be local as we reflect and grab it from the API
-    private static Codec<RobitSkin> DIRECT_CODEC;
-
     public static void createAndRegisterDatapack(IEventBus modEventBus) {
-        DIRECT_CODEC = MekanismRobitSkins.ROBIT_SKINS.createAndRegisterDatapack(modEventBus, RobitSkin::codec, RobitSkinSerializationHelper.NETWORK_CODEC);
-    }
-
-    public static Codec<RobitSkin> getDirectCodec() {
-        return DIRECT_CODEC;
+        ROBIT_SKINS.createAndRegisterDatapack(modEventBus, RobitSkinSerializationHelper.DIRECT_CODEC, RobitSkinSerializationHelper.NETWORK_CODEC);
     }
 
     public static final RobitSkinSerializerRegistryObject<RobitSkin> BASIC_SERIALIZER = ROBIT_SKINS.registerSerializer("basic", () -> RobitSkinSerializationHelper.NETWORK_CODEC);

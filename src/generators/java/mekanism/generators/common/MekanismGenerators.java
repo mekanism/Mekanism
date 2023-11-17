@@ -102,8 +102,6 @@ public class MekanismGenerators implements IModModule {
 
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            //Ensure our tags are all initialized
-            GeneratorTags.init();
             //Add fuel attribute to ethene
             MekanismGases.ETHENE.get().addAttribute(new Fuel(MekanismGeneratorsConfig.generators.ethyleneBurnTicks, ETHENE_ENERGY_DENSITY));
             //Register dispenser behaviors

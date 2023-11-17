@@ -29,6 +29,7 @@ import mekanism.common.registries.MekanismDamageTypes.MekanismDamageType;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -48,8 +49,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -132,28 +131,28 @@ public abstract class BaseTagProvider implements DataProvider {
         return new IntrinsicMekanismTagBuilder<>(keyExtractor, getTagBuilder(registry, tag), modid);
     }
 
-    protected <TYPE> IntrinsicMekanismTagBuilder<TYPE> getBuilder(IForgeRegistry<TYPE> registry, TagKey<TYPE> tag) {
-        return new IntrinsicMekanismTagBuilder<>(element -> registry.getResourceKey(element).orElseThrow(), getTagBuilder(registry.getRegistryKey(), tag), modid);
+    protected <TYPE> IntrinsicMekanismTagBuilder<TYPE> getBuilder(Registry<TYPE> registry, TagKey<TYPE> tag) {
+        return new IntrinsicMekanismTagBuilder<>(element -> registry.getResourceKey(element).orElseThrow(), getTagBuilder(registry.key(), tag), modid);
     }
 
     protected IntrinsicMekanismTagBuilder<Item> getItemBuilder(TagKey<Item> tag) {
-        return getBuilder(ForgeRegistries.ITEMS, tag);
+        return getBuilder(BuiltInRegistries.ITEM, tag);
     }
 
     protected IntrinsicMekanismTagBuilder<Block> getBlockBuilder(TagKey<Block> tag) {
-        return getBuilder(ForgeRegistries.BLOCKS, tag);
+        return getBuilder(BuiltInRegistries.BLOCK, tag);
     }
 
     protected IntrinsicMekanismTagBuilder<EntityType<?>> getEntityTypeBuilder(TagKey<EntityType<?>> tag) {
-        return getBuilder(ForgeRegistries.ENTITY_TYPES, tag);
+        return getBuilder(BuiltInRegistries.ENTITY_TYPE, tag);
     }
 
     protected IntrinsicMekanismTagBuilder<Fluid> getFluidBuilder(TagKey<Fluid> tag) {
-        return getBuilder(ForgeRegistries.FLUIDS, tag);
+        return getBuilder(BuiltInRegistries.FLUID, tag);
     }
 
     protected IntrinsicMekanismTagBuilder<BlockEntityType<?>> getTileEntityTypeBuilder(TagKey<BlockEntityType<?>> tag) {
-        return getBuilder(ForgeRegistries.BLOCK_ENTITY_TYPES, tag);
+        return getBuilder(BuiltInRegistries.BLOCK_ENTITY_TYPE, tag);
     }
 
     protected IntrinsicMekanismTagBuilder<GameEvent> getGameEventBuilder(TagKey<GameEvent> tag) {
@@ -169,23 +168,23 @@ public abstract class BaseTagProvider implements DataProvider {
     }
 
     protected IntrinsicMekanismTagBuilder<Gas> getGasBuilder(TagKey<Gas> tag) {
-        return getBuilder(MekanismAPI.gasRegistry(), tag);
+        return getBuilder(MekanismAPI.GAS_REGISTRY, tag);
     }
 
     protected IntrinsicMekanismTagBuilder<InfuseType> getInfuseTypeBuilder(TagKey<InfuseType> tag) {
-        return getBuilder(MekanismAPI.infuseTypeRegistry(), tag);
+        return getBuilder(MekanismAPI.INFUSE_TYPE_REGISTRY, tag);
     }
 
     protected IntrinsicMekanismTagBuilder<Pigment> getPigmentBuilder(TagKey<Pigment> tag) {
-        return getBuilder(MekanismAPI.pigmentRegistry(), tag);
+        return getBuilder(MekanismAPI.PIGMENT_REGISTRY, tag);
     }
 
     protected IntrinsicMekanismTagBuilder<Slurry> getSlurryBuilder(TagKey<Slurry> tag) {
-        return getBuilder(MekanismAPI.slurryRegistry(), tag);
+        return getBuilder(MekanismAPI.SLURRY_REGISTRY, tag);
     }
 
     protected IntrinsicMekanismTagBuilder<MobEffect> getMobEffectBuilder(TagKey<MobEffect> tag) {
-        return getBuilder(ForgeRegistries.MOB_EFFECTS, tag);
+        return getBuilder(BuiltInRegistries.MOB_EFFECT, tag);
     }
 
     protected void addToTag(TagKey<Item> tag, ItemLike... itemProviders) {

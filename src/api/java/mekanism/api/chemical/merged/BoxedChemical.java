@@ -49,12 +49,16 @@ public class BoxedChemical implements IHasTextComponent {
      */
     public static BoxedChemical read(FriendlyByteBuf buffer) {
         ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
-        return new BoxedChemical(chemicalType, switch (chemicalType) {
-            case GAS -> buffer.readRegistryIdSafe(Gas.class);
-            case INFUSION -> buffer.readRegistryIdSafe(InfuseType.class);
-            case PIGMENT -> buffer.readRegistryIdSafe(Pigment.class);
-            case SLURRY -> buffer.readRegistryIdSafe(Slurry.class);
-        });
+        Chemical<?> c = switch (chemicalType) {
+            case GAS -> buffer.readById(MekanismAPI.GAS_REGISTRY);
+            case INFUSION -> buffer.readById(MekanismAPI.INFUSE_TYPE_REGISTRY);
+            case PIGMENT -> buffer.readById(MekanismAPI.PIGMENT_REGISTRY);
+            case SLURRY -> buffer.readById(MekanismAPI.SLURRY_REGISTRY);
+        };
+        if (c == null || c.isEmptyType()) {
+            return EMPTY;
+        }
+        return new BoxedChemical(chemicalType, c);
     }
 
     /**
@@ -122,10 +126,10 @@ public class BoxedChemical implements IHasTextComponent {
     public void write(FriendlyByteBuf buffer) {
         buffer.writeEnum(chemicalType);
         switch (chemicalType) {
-            case GAS -> buffer.writeRegistryId(MekanismAPI.gasRegistry(), (Gas) chemical);
-            case INFUSION -> buffer.writeRegistryId(MekanismAPI.infuseTypeRegistry(), (InfuseType) chemical);
-            case PIGMENT -> buffer.writeRegistryId(MekanismAPI.pigmentRegistry(), (Pigment) chemical);
-            case SLURRY -> buffer.writeRegistryId(MekanismAPI.slurryRegistry(), (Slurry) chemical);
+            case GAS -> buffer.writeId(MekanismAPI.GAS_REGISTRY, (Gas) chemical);
+            case INFUSION -> buffer.writeId(MekanismAPI.INFUSE_TYPE_REGISTRY, (InfuseType) chemical);
+            case PIGMENT -> buffer.writeId(MekanismAPI.PIGMENT_REGISTRY, (Pigment) chemical);
+            case SLURRY -> buffer.writeId(MekanismAPI.SLURRY_REGISTRY, (Slurry) chemical);
         }
     }
 

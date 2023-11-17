@@ -5,13 +5,14 @@ import java.util.function.BiPredicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class CombinerRecipe extends MekanismRecipe implements BiPredicate<@NotNull ItemStack, @NotNull ItemStack> {
 
-    private static final RegistryObject<Item> COMBINER = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "combiner"), ForgeRegistries.ITEMS);
+    private static final Holder<Item> COMBINER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "combiner"));
 
     @Override
     public abstract boolean test(ItemStack input, ItemStack extra);
@@ -75,7 +76,7 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
 
     @Override
     public final RecipeType<CombinerRecipe> getType() {
-        return MekanismRecipeTypes.TYPE_COMBINING.get();
+        return MekanismRecipeTypes.TYPE_COMBINING.value();
     }
 
     @Override
@@ -85,6 +86,6 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
 
     @Override
     public ItemStack getToastSymbol() {
-        return new ItemStack(COMBINER.get());
+        return new ItemStack(COMBINER);
     }
 }

@@ -69,10 +69,6 @@ public class MekanismTools implements IModModule {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            //Ensure our tags are all initialized
-            ToolsTags.init();
-        });
         registerTiers(MekanismToolsConfig.tools.bronze, MekanismToolsConfig.tools.lapisLazuli, MekanismToolsConfig.tools.osmium, MekanismToolsConfig.tools.steel,
               MekanismToolsConfig.tools.refinedGlowstone, MekanismToolsConfig.tools.refinedObsidian);
         Mekanism.logger.info("Loaded 'Mekanism: Tools' module.");

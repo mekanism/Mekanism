@@ -35,7 +35,6 @@ import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registries.MekanismGases;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -47,6 +46,7 @@ import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -133,7 +133,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getTilePos());
         LongSupplier fuelCapacitySupplier = () -> fuelCapacity;
         fluidCoolantTank = VariableCapacityFluidTank.input(this, () -> cooledCoolantCapacity,
-              fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()) && gasCoolantTank.isEmpty(), this);
+              fluid -> fluid.getFluid().is(FluidTags.WATER) && gasCoolantTank.isEmpty(), this);
         fluidTanks.add(fluidCoolantTank);
         gasCoolantTank = MultiblockChemicalTankBuilder.GAS.input(this, () -> cooledCoolantCapacity,
               gas -> gas.has(CooledCoolant.class) && fluidCoolantTank.isEmpty(), this);

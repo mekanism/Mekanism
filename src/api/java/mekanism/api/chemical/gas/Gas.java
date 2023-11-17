@@ -5,14 +5,12 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.providers.IGasProvider;
 import net.minecraft.Util;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -23,10 +21,10 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class Gas extends Chemical<Gas> implements IGasProvider {
 
-    public static final Codec<Gas> CODEC = ExtraCodecs.lazyInitializedCodec(() -> MekanismAPI.gasRegistry().getCodec());
+    public static final Codec<Gas> CODEC = MekanismAPI.GAS_REGISTRY.byNameCodec();
 
     public Gas(GasBuilder builder) {
-        super(builder, ChemicalTags.GAS);
+        super(builder);
     }
 
     /**
@@ -41,7 +39,7 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
     }
 
     public static Gas getFromRegistry(@Nullable ResourceLocation name) {
-        return ChemicalUtils.readChemicalFromRegistry(name, MekanismAPI.EMPTY_GAS, MekanismAPI.gasRegistry());
+        return ChemicalUtils.readChemicalFromRegistry(name, MekanismAPI.EMPTY_GAS, MekanismAPI.GAS_REGISTRY);
     }
 
     @Override
@@ -61,11 +59,8 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
     }
 
     @Override
-    @SuppressWarnings("ConstantConditions")
-    public final ResourceLocation getRegistryName() {
-        //May be null if called before the object is registered
-        IForgeRegistry<Gas> registry = MekanismAPI.gasRegistry();
-        return registry == null ? null : registry.getKey(this);
+    protected final Registry<Gas> getRegistry() {
+        return MekanismAPI.GAS_REGISTRY;
     }
 
     @Override

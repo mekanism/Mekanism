@@ -10,6 +10,7 @@ import mekanism.additions.common.registries.AdditionsBiomeModifierSerializers;
 import mekanism.common.Mekanism;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -18,7 +19,7 @@ import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.MobSpawnSettingsBuilder;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo.BiomeInfo;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 public record BabyEntitySpawnBiomeModifier(BabyType babyType, AdditionsConfig.SpawnConfig spawnConfig) implements BiomeModifier {
 
@@ -31,7 +32,7 @@ public record BabyEntitySpawnBiomeModifier(BabyType babyType, AdditionsConfig.Sp
         if (phase == Phase.REMOVE && spawnConfig.shouldSpawn.get()) {
             //Note: We need to run after addition in case we ran after any mods added their skeletons,
             // but we run before after everything to make it easier for another mod to remove us
-            ResourceLocation biomeName = ForgeRegistries.BIOMES.getKey(biome.get());
+            ResourceLocation biomeName = ServerLifecycleHooks.getCurrentServer().registryAccess().registryOrThrow(Registries.BIOME).getKey(biome.value());
             if (!spawnConfig.biomeBlackList.get().contains(biomeName)) {
                 EntityType<?> parent = spawnConfig.parentTypeProvider.getEntityType();
                 MobSpawnSettingsBuilder mobSpawnSettings = builder.getMobSpawnSettings();

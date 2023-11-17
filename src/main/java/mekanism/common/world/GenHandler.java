@@ -86,13 +86,13 @@ public class GenHandler {
 
     private static boolean place(WorldGenLevel world, ChunkGenerator chunkGenerator, BlockPos blockPos, WorldgenRandom random,
           long decorationSeed, int decorationStep, ToIntFunction<PlacedFeature> featureIndex, MekFeature feature) {
-        PlacedFeature baseFeature = feature.feature().get();
+        PlacedFeature baseFeature = feature.feature().value();
         //Check the index of the source feature instead of the retrogen feature
         random.setFeatureSeed(decorationSeed, featureIndex.applyAsInt(baseFeature), decorationStep);
         world.setCurrentlyGenerating(feature::retrogenKey);
         //Note: We call placeWithContext directly to allow for doing a placeWithBiomeCheck, except by having the context pretend
         // it is the non retrogen feature which actually is added to the various biomes
-        return feature.retrogen().get().placeWithContext(new PlacementContext(world, chunkGenerator, Optional.of(baseFeature)), random, blockPos);
+        return feature.retrogen().value().placeWithContext(new PlacementContext(world, chunkGenerator, Optional.of(baseFeature)), random, blockPos);
     }
 
     private static List<MekFeature> getMekanismFeatures(RegistryAccess registryAccess) {

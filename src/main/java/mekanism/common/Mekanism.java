@@ -118,6 +118,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.slf4j.Logger;
 
@@ -211,15 +212,16 @@ public class Mekanism {
         MekanismRecipeSerializersInternal.RECIPE_SERIALIZERS.register(modEventBus);
         MekanismDataSerializers.DATA_SERIALIZERS.register(modEventBus);
         MekanismLootFunctions.REGISTER.register(modEventBus);
-        MekanismGases.GASES.createAndRegisterChemical(modEventBus);
-        MekanismInfuseTypes.INFUSE_TYPES.createAndRegisterChemical(modEventBus);
-        MekanismPigments.PIGMENTS.createAndRegisterChemical(modEventBus);
-        MekanismSlurries.SLURRIES.createAndRegisterChemical(modEventBus);
+        MekanismGases.GASES.register(modEventBus);
+        MekanismInfuseTypes.INFUSE_TYPES.register(modEventBus);
+        MekanismPigments.PIGMENTS.register(modEventBus);
+        MekanismSlurries.SLURRIES.register(modEventBus);
         MekanismRobitSkins.createAndRegisterDatapack(modEventBus);
-        MekanismModules.MODULES.createAndRegister(modEventBus);
+        MekanismModules.MODULES.register(modEventBus);
         MekanismRecipeConditions.CONDITION_CODECS.register(modEventBus);
         MekanismItemPredicates.PREDICATES.register(modEventBus);
         modEventBus.addListener(this::registerEventListener);
+        modEventBus.addListener(this::registerRegistries);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
         packetHandler = new PacketHandler();
@@ -233,6 +235,15 @@ public class Mekanism {
 
     public static PacketHandler packetHandler() {
         return instance.packetHandler;
+    }
+
+    private void registerRegistries(NewRegistryEvent event) {
+        event.register(MekanismAPI.GAS_REGISTRY);
+        event.register(MekanismAPI.INFUSE_TYPE_REGISTRY);
+        event.register(MekanismAPI.PIGMENT_REGISTRY);
+        event.register(MekanismAPI.SLURRY_REGISTRY);
+        event.register(MekanismAPI.MODULE_REGISTRY);
+        event.register(MekanismAPI.ROBIT_SKIN_SERIALIZER_REGISTRY);
     }
 
     private void registerEventListener(RegisterEvent event) {
@@ -326,8 +337,6 @@ public class Mekanism {
         setRecipeCacheManager(new ReloadListener());
 
         event.enqueueWork(() -> {
-            //Ensure our tags are all initialized
-            MekanismTags.init();
             //Collect annotation scan data
             MekAnnotationScanner.collectScanData();
             //Register advancement criteria

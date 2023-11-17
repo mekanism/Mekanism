@@ -27,7 +27,6 @@ import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
@@ -35,6 +34,7 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.Level;
 
 public class BoilerMultiblockData extends MultiblockData implements IValveHandler {
@@ -98,7 +98,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         //Default biome temp to the ambient temperature at the block we are at
         biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getTilePos());
         superheatedCoolantTank = MultiblockChemicalTankBuilder.GAS.input(this, () -> superheatedCoolantCapacity, gas -> gas.has(HeatedCoolant.class), this);
-        waterTank = VariableCapacityFluidTank.input(this, () -> waterTankCapacity, fluid -> MekanismTags.Fluids.WATER_LOOKUP.contains(fluid.getFluid()),
+        waterTank = VariableCapacityFluidTank.input(this, () -> waterTankCapacity, fluid -> fluid.getFluid().is(FluidTags.WATER),
               createSaveAndComparator());
         fluidTanks.add(waterTank);
         steamTank = MultiblockChemicalTankBuilder.GAS.output(this, () -> steamTankCapacity, gas -> gas == MekanismGases.STEAM.getChemical(), this);

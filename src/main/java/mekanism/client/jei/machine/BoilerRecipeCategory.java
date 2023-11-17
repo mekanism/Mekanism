@@ -114,7 +114,7 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
         recipes.add(new BoilerJEIRecipe(null, IngredientCreatorAccess.fluid().from(FluidTags.WATER, waterAmount),
               MekanismGases.STEAM.getStack(waterAmount), GasStack.EMPTY, temperature));
         //Go through all gases and add each coolant
-        for (Gas gas : MekanismAPI.gasRegistry()) {
+        for (Gas gas : MekanismAPI.GAS_REGISTRY) {
             gas.ifAttributePresent(HeatedCoolant.class, heatedCoolant -> {
                 //If it is a cooled coolant add a recipe for it
                 Gas cooledCoolant = heatedCoolant.getCooledGas();

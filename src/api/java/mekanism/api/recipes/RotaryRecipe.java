@@ -6,13 +6,14 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -30,7 +31,7 @@ import org.jetbrains.annotations.Contract;
 @NothingNullByDefault
 public abstract class RotaryRecipe extends MekanismRecipe {
 
-    private static final RegistryObject<Item> ROTARY_CONDENSENTRATOR = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "rotary_condensentrator"), ForgeRegistries.ITEMS);
+    private static final Holder<Item> ROTARY_CONDENSENTRATOR = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "rotary_condensentrator"));
 
     /**
      * @return {@code true} if this recipe knows how to convert a gas to a fluid.
@@ -129,7 +130,7 @@ public abstract class RotaryRecipe extends MekanismRecipe {
 
     @Override
     public final RecipeType<RotaryRecipe> getType() {
-        return MekanismRecipeTypes.TYPE_ROTARY.get();
+        return MekanismRecipeTypes.TYPE_ROTARY.value();
     }
 
     @Override
@@ -139,7 +140,7 @@ public abstract class RotaryRecipe extends MekanismRecipe {
 
     @Override
     public ItemStack getToastSymbol() {
-        return new ItemStack(ROTARY_CONDENSENTRATOR.get());
+        return new ItemStack(ROTARY_CONDENSENTRATOR);
     }
 
 }

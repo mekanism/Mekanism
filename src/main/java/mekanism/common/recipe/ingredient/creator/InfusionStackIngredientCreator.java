@@ -3,8 +3,8 @@ package mekanism.common.recipe.ingredient.creator;
 import com.mojang.serialization.Codec;
 import java.util.Objects;
 import java.util.stream.Stream;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
@@ -78,10 +78,10 @@ public class InfusionStackIngredientCreator extends ChemicalStackIngredientCreat
     public static class TaggedInfusionStackIngredient extends TaggedChemicalStackIngredient<InfuseType, InfusionStack> implements InfusionStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        static Codec<TaggedInfusionStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(ChemicalTags.INFUSE_TYPE, TaggedInfusionStackIngredient::new));
+        static Codec<TaggedInfusionStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, TaggedInfusionStackIngredient::new));
 
         private TaggedInfusionStackIngredient(TagKey<InfuseType> tag, long amount) {
-            super(ChemicalTags.INFUSE_TYPE, tag, amount);
+            super(MekanismAPI.INFUSE_TYPE_REGISTRY.getOrCreateTag(tag), amount);
         }
 
         @Override

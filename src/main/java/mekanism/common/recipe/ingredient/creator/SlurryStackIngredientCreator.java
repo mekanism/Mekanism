@@ -3,8 +3,8 @@ package mekanism.common.recipe.ingredient.creator;
 import com.mojang.serialization.Codec;
 import java.util.Objects;
 import java.util.stream.Stream;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
@@ -78,10 +78,10 @@ public class SlurryStackIngredientCreator extends ChemicalStackIngredientCreator
     public static class TaggedSlurryStackIngredient extends TaggedChemicalStackIngredient<Slurry, SlurryStack> implements SlurryStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        static Codec<TaggedSlurryStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(ChemicalTags.SLURRY, TaggedSlurryStackIngredient::new));
+        static Codec<TaggedSlurryStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(MekanismAPI.SLURRY_REGISTRY_NAME, TaggedSlurryStackIngredient::new));
 
         private TaggedSlurryStackIngredient(TagKey<Slurry> tag, long amount) {
-            super(ChemicalTags.SLURRY, tag, amount);
+            super(MekanismAPI.SLURRY_REGISTRY.getOrCreateTag(tag), amount);
         }
 
         @Override

@@ -5,9 +5,10 @@ import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.ISlurryProvider;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -28,13 +29,25 @@ public final class SlurryStack extends ChemicalStack<Slurry> {
         super(slurryProvider.getChemical(), amount);
     }
 
+    /**
+     * Creates a new SlurryStack with a defined slurry type and quantity.
+     *
+     * @param slurryHolder - provides the slurry type of the stack
+     * @param amount       - amount of the slurry to be referenced in this SlurryStack
+     *
+     * @since 10.5.0
+     */
+    public SlurryStack(Holder<Slurry> slurryHolder, long amount) {
+        this(slurryHolder.value(), amount);
+    }
+
     public SlurryStack(SlurryStack stack, long amount) {
         this(stack.getType(), amount);
     }
 
     @Override
-    protected IForgeRegistry<Slurry> getRegistry() {
-        return MekanismAPI.slurryRegistry();
+    protected Registry<Slurry> getRegistry() {
+        return MekanismAPI.SLURRY_REGISTRY;
     }
 
     @Override
@@ -65,8 +78,8 @@ public final class SlurryStack extends ChemicalStack<Slurry> {
     }
 
     public static SlurryStack readFromPacket(FriendlyByteBuf buf) {
-        Slurry slurry = buf.readRegistryIdSafe(Slurry.class);
-        if (slurry.isEmptyType()) {
+        Slurry slurry = buf.readById(MekanismAPI.SLURRY_REGISTRY);
+        if (slurry == null || slurry.isEmptyType()) {
             return EMPTY;
         }
         return new SlurryStack(slurry, buf.readVarLong());

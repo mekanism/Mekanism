@@ -6,12 +6,13 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -24,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class ItemStackToEnergyRecipe extends MekanismRecipe implements Predicate<@NotNull ItemStack> {
 
-    private static final RegistryObject<Item> ENERGY_TABLET = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "energy_tablet"), ForgeRegistries.ITEMS);
+    private static final Holder<Item> ENERGY_TABLET = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "energy_tablet"));
 
     @Override
     public abstract boolean test(ItemStack itemStack);
@@ -61,7 +62,7 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe implements 
 
     @Override
     public final RecipeType<ItemStackToEnergyRecipe> getType() {
-        return MekanismRecipeTypes.TYPE_ENERGY_CONVERSION.get();
+        return MekanismRecipeTypes.TYPE_ENERGY_CONVERSION.value();
     }
 
     @Override
@@ -71,6 +72,6 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe implements 
 
     @Override
     public ItemStack getToastSymbol() {
-        return new ItemStack(ENERGY_TABLET.get());
+        return new ItemStack(ENERGY_TABLET);
     }
 }

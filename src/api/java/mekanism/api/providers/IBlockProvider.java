@@ -1,9 +1,9 @@
 package mekanism.api.providers;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 @MethodsReturnNonnullByDefault
 public interface IBlockProvider extends IItemProvider {
@@ -13,7 +13,7 @@ public interface IBlockProvider extends IItemProvider {
     @Override
     default ResourceLocation getRegistryName() {
         //Make sure to use the block's registry name in case it somehow doesn't match
-        return ForgeRegistries.BLOCKS.getKey(getBlock());
+        return BuiltInRegistries.BLOCK.getKey(getBlock());
     }
 
     @Override
