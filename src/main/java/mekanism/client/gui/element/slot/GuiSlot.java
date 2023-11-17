@@ -14,6 +14,7 @@ import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -81,7 +82,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget, ISup
         return click(onClick, SoundEvents.UI_BUTTON_CLICK);
     }
 
-    public GuiSlot click(IClickable onClick, @Nullable Supplier<SoundEvent> clickSound) {
+    public GuiSlot click(IClickable onClick, @Nullable Holder<SoundEvent> clickSound) {
         this.clickSound = clickSound;
         this.onClick = onClick;
         return this;

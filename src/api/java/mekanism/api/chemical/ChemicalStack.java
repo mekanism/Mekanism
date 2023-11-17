@@ -1,12 +1,11 @@
 package mekanism.api.chemical;
 
-import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import mekanism.api.JsonConstants;
-import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -14,18 +13,18 @@ import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.attribute.IChemicalAttributeContainer;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
-import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> implements IHasTextComponent, IHasTranslationKey, IChemicalAttributeContainer<ChemicalStack<CHEMICAL>> {
 
-    protected static <STACK extends ChemicalStack<CHEMICAL>, CHEMICAL extends Chemical<CHEMICAL>> Codec<STACK> codec(Codec<CHEMICAL> chemicalCodec, String chemicalField, BiFunction<CHEMICAL, Long, STACK> constructor) {
+    protected static <STACK extends ChemicalStack<CHEMICAL>, CHEMICAL extends Chemical<CHEMICAL>> Codec<STACK> codec(Codec<CHEMICAL> chemicalCodec, String chemicalField,
+          BiFunction<CHEMICAL, Long, STACK> constructor) {
         return RecordCodecBuilder.create(i -> i.group(
               chemicalCodec.fieldOf(chemicalField).forGetter(ChemicalStack::getRaw),
               SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(JsonConstants.AMOUNT).forGetter(ChemicalStack::getAmount)
@@ -34,16 +33,14 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
 
     private boolean isEmpty;
     private long amount;
-    private final Holder.Reference<CHEMICAL> chemicalDelegate;
+    private final CHEMICAL chemical;
 
     protected ChemicalStack(CHEMICAL chemical, long amount) {
-        IForgeRegistry<CHEMICAL> registry = getRegistry();
-        if (registry.getKey(chemical) == null) {
-            MekanismAPI.logger.error(LogUtils.FATAL_MARKER, "Failed attempt to create a ChemicalStack for an unregistered Chemical {} (type {})",
-                  chemical.getRegistryName(), chemical.getClass().getName());
+        Objects.requireNonNull(chemical, "Cannot create a ChemicalStack from a null chemical");
+        if (!getRegistry().containsValue(chemical)) {
             throw new IllegalArgumentException("Cannot create a ChemicalStack from an unregistered Chemical");
         }
-        this.chemicalDelegate = registry.getDelegateOrThrow(chemical);
+        this.chemical = chemical;
         this.amount = amount;
         updateEmpty();
     }
@@ -51,7 +48,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     /**
      * Registry the chemical is a part of.
      */
-    protected abstract IForgeRegistry<CHEMICAL> getRegistry();
+    protected abstract Registry<CHEMICAL> getRegistry();
 
     /**
      * Helper ot get the empty version of this chemical.
@@ -126,8 +123,8 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         return getType().getColorRepresentation();
     }
 
-    public final CHEMICAL getRaw() {
-        return chemicalDelegate.get();
+    private CHEMICAL getRaw() {
+        return chemical;
     }
 
     /**
@@ -285,7 +282,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      * @param buffer - Buffer to write to.
      */
     public void writeToPacket(FriendlyByteBuf buffer) {
-        buffer.writeRegistryId(getRegistry(), getType());
+        buffer.writeId(getRegistry(), getType());
         if (!isEmpty()) {
             buffer.writeVarLong(getAmount());
         }

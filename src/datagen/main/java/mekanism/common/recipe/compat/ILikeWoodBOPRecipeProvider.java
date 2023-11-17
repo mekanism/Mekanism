@@ -2,13 +2,10 @@ package mekanism.common.recipe.compat;
 
 import static mekanism.common.recipe.compat.BiomesOPlentyRecipeProvider.getBOPBlock;
 
-import biomesoplenty.api.block.BOPBlocks;
-import java.util.function.Consumer;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.registries.RegistryObject;
 import yamahari.ilikewood.plugin.biomesoplenty.BiomesOPlentyWoodTypes;
 import yamahari.ilikewood.registry.woodtype.IWoodType;
 
@@ -33,8 +30,8 @@ public class ILikeWoodBOPRecipeProvider extends CompatRecipeProvider {
         addWoodType(consumer, basePath, getBOPBlock("WILLOW_PLANKS"), getBOPBlock("WILLOW_LOG"), getBOPBlock("WILLOW_FENCE"), BiomesOPlentyWoodTypes.WILLOW);
     }
 
-    private void addWoodType(RecipeOutput consumer, String basePath, RegistryObject<Block> planks, RegistryObject<Block> log, RegistryObject<Block> fences,
+    private void addWoodType(RecipeOutput consumer, String basePath, Holder<Block> planks, Holder<Block> log, Holder<Block> fences,
           IWoodType woodType) {
-        ILikeWoodRecipeProvider.addWoodType(consumer, allModsLoaded, basePath, planks.get(), log.get(), fences.get(), woodType);
+        ILikeWoodRecipeProvider.addWoodType(consumer, allModsLoaded, basePath, planks.value(), log.value(), fences.value(), woodType);
     }
 }

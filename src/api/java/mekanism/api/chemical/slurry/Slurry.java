@@ -5,16 +5,14 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.providers.ISlurryProvider;
 import net.minecraft.Util;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -23,13 +21,13 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
 
-    public static final Codec<Slurry> CODEC = ExtraCodecs.lazyInitializedCodec(() -> MekanismAPI.slurryRegistry().getCodec());
+    public static final Codec<Slurry> CODEC = MekanismAPI.SLURRY_REGISTRY.byNameCodec();
 
     @Nullable
     private final TagKey<Item> oreTag;
 
     public Slurry(SlurryBuilder builder) {
-        super(builder, ChemicalTags.SLURRY);
+        super(builder);
         this.oreTag = builder.getOreTag();
     }
 
@@ -38,7 +36,7 @@ public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
     }
 
     public static Slurry getFromRegistry(@Nullable ResourceLocation name) {
-        return ChemicalUtils.readChemicalFromRegistry(name, MekanismAPI.EMPTY_SLURRY, MekanismAPI.slurryRegistry());
+        return ChemicalUtils.readChemicalFromRegistry(name, MekanismAPI.EMPTY_SLURRY, MekanismAPI.SLURRY_REGISTRY);
     }
 
     @Override
@@ -58,11 +56,8 @@ public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
     }
 
     @Override
-    @SuppressWarnings("ConstantConditions")
-    public final ResourceLocation getRegistryName() {
-        //May be null if called before the object is registered
-        IForgeRegistry<Slurry> registry = MekanismAPI.slurryRegistry();
-        return registry == null ? null : registry.getKey(this);
+    protected final Registry<Slurry> getRegistry() {
+        return MekanismAPI.SLURRY_REGISTRY;
     }
 
     @Override

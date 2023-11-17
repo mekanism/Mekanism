@@ -51,7 +51,7 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import net.neoforged.neoforge.common.world.BiomeModifiers.AddFeaturesBiomeModifier;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvider {
 
@@ -115,7 +115,7 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
                     BiomeFilter.biome()
               ));
           })
-          .add(ForgeRegistries.Keys.BIOME_MODIFIERS, context -> {
+          .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, context -> {
               HolderSet.Named<Biome> isOverworldTag = context.lookup(Registries.BIOME).getOrThrow(MekanismTags.Biomes.SPAWN_ORES);
               HolderGetter<PlacedFeature> placedFeatures = context.lookup(Registries.PLACED_FEATURE);
               for (OreType type : EnumUtils.ORE_TYPES) {

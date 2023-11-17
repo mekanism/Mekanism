@@ -27,7 +27,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
         this.handler = handler;
         this.options = enumClass.getEnumConstants();
         this.active = true;
-        this.clickSound = MekanismSounds.BEEP;
+        this.clickSound = MekanismSounds.BEEP.holder();
     }
 
     @Override

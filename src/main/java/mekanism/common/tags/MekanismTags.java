@@ -5,7 +5,7 @@ import com.google.common.collect.Table;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import mekanism.api.chemical.ChemicalTags;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.slurry.Slurry;
@@ -29,33 +29,13 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 public class MekanismTags {
-
-    /**
-     * Call to force make sure this is all initialized
-     */
-    public static void init() {
-        Items.init();
-        Blocks.init();
-        Biomes.init();
-        DamageTypes.init();
-        Fluids.init();
-        Gases.init();
-        InfuseTypes.init();
-        MobEffects.init();
-        Slurries.init();
-        TileEntityTypes.init();
-    }
 
     private MekanismTags() {
     }
 
     public static class Items {
-
-        private static void init() {
-        }
 
         private Items() {
         }
@@ -202,9 +182,6 @@ public class MekanismTags {
 
     public static class Blocks {
 
-        private static void init() {
-        }
-
         private Blocks() {
         }
 
@@ -229,7 +206,6 @@ public class MekanismTags {
         public static final TagKey<Block> RELOCATION_NOT_SUPPORTED = forgeTag("relocation_not_supported");
         public static final TagKey<Block> CARDBOARD_BLACKLIST = tag("cardboard_blacklist");
         public static final TagKey<Block> MINER_BLACKLIST = tag("miner_blacklist");
-        public static final LazyTagLookup<Block> MINER_BLACKLIST_LOOKUP = LazyTagLookup.create(ForgeRegistries.BLOCKS, MINER_BLACKLIST);
         public static final TagKey<Block> ATOMIC_DISASSEMBLER_ORE = tag("atomic_disassembler_ore");
         /**
          * For use in the farming module to target blocks that should be effectively ignored when checking if the block below should be targeted.
@@ -259,23 +235,17 @@ public class MekanismTags {
 
     public static class Biomes {
 
-        private static void init() {
-        }
-
         private Biomes() {
         }
 
         public static final TagKey<Biome> SPAWN_ORES = tag("spawn_ores");
 
         private static TagKey<Biome> tag(String name) {
-            return TagUtils.createKey(Registries.BIOME, Mekanism.rl(name));
+            return TagKey.create(Registries.BIOME, Mekanism.rl(name));
         }
     }
 
     public static class DamageTypes {
-
-        private static void init() {
-        }
 
         private DamageTypes() {
         }
@@ -284,14 +254,11 @@ public class MekanismTags {
         public static final TagKey<DamageType> IS_PREVENTABLE_MAGIC = tag("is_preventable_magic");
 
         private static TagKey<DamageType> tag(String name) {
-            return TagUtils.createKey(Registries.DAMAGE_TYPE, Mekanism.rl(name));
+            return TagKey.create(Registries.DAMAGE_TYPE, Mekanism.rl(name));
         }
     }
 
     public static class Fluids {
-
-        private static void init() {
-        }
 
         private Fluids() {
         }
@@ -314,9 +281,6 @@ public class MekanismTags {
         public static final TagKey<Fluid> SULFURIC_ACID = forgeTag("sulfuric_acid");
         public static final TagKey<Fluid> HYDROFLUORIC_ACID = forgeTag("hydrofluoric_acid");
 
-        public static final LazyTagLookup<Fluid> WATER_LOOKUP = LazyTagLookup.create(ForgeRegistries.FLUIDS, FluidTags.WATER);
-        public static final LazyTagLookup<Fluid> LAVA_LOOKUP = LazyTagLookup.create(ForgeRegistries.FLUIDS, FluidTags.LAVA);
-
         private static TagKey<Fluid> forgeTag(String name) {
             return FluidTags.create(new ResourceLocation("forge", name));
         }
@@ -324,25 +288,18 @@ public class MekanismTags {
 
     public static class Gases {
 
-        private static void init() {
-        }
-
         private Gases() {
         }
 
         public static final TagKey<Gas> WATER_VAPOR = tag("water_vapor");
         public static final TagKey<Gas> WASTE_BARREL_DECAY_BLACKLIST = tag("waste_barrel_decay_blacklist");
-        public static final LazyTagLookup<Gas> WASTE_BARREL_DECAY_LOOKUP = LazyTagLookup.create(ChemicalTags.GAS, WASTE_BARREL_DECAY_BLACKLIST);
 
         private static TagKey<Gas> tag(String name) {
-            return ChemicalTags.GAS.tag(Mekanism.rl(name));
+            return TagKey.create(MekanismAPI.GAS_REGISTRY_NAME, Mekanism.rl(name));
         }
     }
 
     public static class InfuseTypes {
-
-        private static void init() {
-        }
 
         private InfuseTypes() {
         }
@@ -357,62 +314,50 @@ public class MekanismTags {
         public static final TagKey<InfuseType> TIN = tag("tin");
 
         private static TagKey<InfuseType> tag(String name) {
-            return ChemicalTags.INFUSE_TYPE.tag(Mekanism.rl(name));
+            return TagKey.create(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, Mekanism.rl(name));
         }
     }
 
     public static class Slurries {
 
-        private static void init() {
-        }
-
         private Slurries() {
         }
 
         public static final TagKey<Slurry> DIRTY = tag("dirty");
-        public static final LazyTagLookup<Slurry> DIRTY_LOOKUP = LazyTagLookup.create(ChemicalTags.SLURRY, DIRTY);
         public static final TagKey<Slurry> CLEAN = tag("clean");
 
         private static TagKey<Slurry> tag(String name) {
-            return ChemicalTags.SLURRY.tag(Mekanism.rl(name));
+            return TagKey.create(MekanismAPI.SLURRY_REGISTRY_NAME, Mekanism.rl(name));
         }
     }
 
     public static class MobEffects {
 
-        private static void init() {
-        }
-
         private MobEffects() {
         }
 
         public static final TagKey<MobEffect> SPEED_UP_BLACKLIST = tag("speed_up_blacklist");
-        public static final LazyTagLookup<MobEffect> SPEED_UP_BLACKLIST_LOOKUP = LazyTagLookup.create(ForgeRegistries.MOB_EFFECTS, SPEED_UP_BLACKLIST);
 
         private static TagKey<MobEffect> tag(String name) {
-            return TagUtils.createKey(ForgeRegistries.MOB_EFFECTS, Mekanism.rl(name));
+            return TagKey.create(Registries.MOB_EFFECT, Mekanism.rl(name));
         }
     }
 
     public static class TileEntityTypes {
 
-        private static void init() {
-        }
-
         private TileEntityTypes() {
         }
 
         public static final TagKey<BlockEntityType<?>> CARDBOARD_BLACKLIST = tag("cardboard_blacklist");
-        public static final LazyTagLookup<BlockEntityType<?>> CARDBOARD_BLACKLIST_LOOKUP = LazyTagLookup.create(ForgeRegistries.BLOCK_ENTITY_TYPES, CARDBOARD_BLACKLIST);
         public static final TagKey<BlockEntityType<?>> RELOCATION_NOT_SUPPORTED = forgeTag("relocation_not_supported");
         public static final TagKey<BlockEntityType<?>> IMMOVABLE = forgeTag("immovable");
 
         private static TagKey<BlockEntityType<?>> tag(String name) {
-            return TagUtils.createKey(ForgeRegistries.BLOCK_ENTITY_TYPES, Mekanism.rl(name));
+            return TagKey.create(Registries.BLOCK_ENTITY_TYPE, Mekanism.rl(name));
         }
 
         private static TagKey<BlockEntityType<?>> forgeTag(String name) {
-            return TagUtils.createKey(ForgeRegistries.BLOCK_ENTITY_TYPES, new ResourceLocation("forge", name));
+            return TagKey.create(Registries.BLOCK_ENTITY_TYPE, new ResourceLocation("forge", name));
         }
     }
 }

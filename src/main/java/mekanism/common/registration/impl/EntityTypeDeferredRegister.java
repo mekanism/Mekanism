@@ -5,20 +5,20 @@ import java.util.Map;
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.WrappedDeferredRegister;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder;
-import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 
 public class EntityTypeDeferredRegister extends WrappedDeferredRegister<EntityType<?>> {
 
     private Map<EntityTypeRegistryObject<? extends LivingEntity>, Supplier<Builder>> livingEntityAttributes = new HashMap<>();
 
     public EntityTypeDeferredRegister(String modid) {
-        super(modid, ForgeRegistries.ENTITY_TYPES);
+        super(modid, Registries.ENTITY_TYPE);
     }
 
     public <ENTITY extends LivingEntity> EntityTypeRegistryObject<ENTITY> register(String name, EntityType.Builder<ENTITY> builder, Supplier<Builder> attributes) {

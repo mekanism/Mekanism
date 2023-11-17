@@ -4,22 +4,22 @@ import mekanism.common.registration.WrappedRegistryObject;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityTypeRegistryObject<BE extends BlockEntity> extends WrappedRegistryObject<BlockEntityType<BE>> {
+public class TileEntityTypeRegistryObject<BE extends BlockEntity> extends WrappedRegistryObject<BlockEntityType<?>, BlockEntityType<BE>> {
 
     @Nullable
     private BlockEntityTicker<BE> clientTicker;
     @Nullable
     private BlockEntityTicker<BE> serverTicker;
 
-    public TileEntityTypeRegistryObject(RegistryObject<BlockEntityType<BE>> registryObject) {
+    public TileEntityTypeRegistryObject(DeferredHolder<BlockEntityType<?>, BlockEntityType<BE>> registryObject) {
         super(registryObject);
     }
 
     //Internal use only, overwrite the registry object
-    TileEntityTypeRegistryObject<BE> setRegistryObject(RegistryObject<BlockEntityType<BE>> registryObject) {
+    TileEntityTypeRegistryObject<BE> setRegistryObject(DeferredHolder<BlockEntityType<?>, BlockEntityType<BE>> registryObject) {
         this.registryObject = registryObject;
         return this;
     }

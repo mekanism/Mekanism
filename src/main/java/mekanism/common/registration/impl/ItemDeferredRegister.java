@@ -11,13 +11,13 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.WrappedDeferredRegister;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
@@ -25,7 +25,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
     private final List<IItemProvider> allItems = new ArrayList<>();
 
     public ItemDeferredRegister(String modid) {
-        super(modid, ForgeRegistries.ITEMS);
+        super(modid, Registries.ITEM);
     }
 
     public ItemRegistryObject<Item> register(String name) {

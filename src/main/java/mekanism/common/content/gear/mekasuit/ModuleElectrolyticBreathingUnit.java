@@ -52,7 +52,7 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
             //For the y range check a range of where the mask's breathing unit is based on where the eyes are
             return new AABB(centerX, Math.min(bb.minY + eyeHeight - 0.27, bb.maxY), centerZ, centerX, Math.min(bb.minY + eyeHeight - 0.14, bb.maxY), centerZ);
         });
-        if (fluidsIn.entrySet().stream().anyMatch(entry -> entry.getKey() == NeoForgeMod.WATER_TYPE.get() && entry.getValue().getMaxHeight() >= 0.11)) {
+        if (fluidsIn.entrySet().stream().anyMatch(entry -> entry.getKey() == NeoForgeMod.WATER_TYPE.value() && entry.getValue().getMaxHeight() >= 0.11)) {
             //If the position the bottom of the mask is almost entirely in water set the production rate to our max rate
             // if the mask is only partially in water treat it as not being in it enough to actually function
             productionRate = getMaxRate(module);

@@ -14,7 +14,6 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
-import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tags.MekanismTags;
@@ -52,7 +51,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
         builder.addTank(bioFuelTank = VariableCapacityFluidTank.input(MekanismGeneratorsConfig.generators.bioTankCapacity,
-                    fluidStack -> GeneratorTags.Fluids.BIOETHANOL_LOOKUP.contains(fluidStack.getFluid()), listener), RelativeSide.LEFT, RelativeSide.RIGHT,
+                    fluidStack -> fluidStack.getFluid().is(GeneratorTags.Fluids.BIOETHANOL), listener), RelativeSide.LEFT, RelativeSide.RIGHT,
               RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
     }

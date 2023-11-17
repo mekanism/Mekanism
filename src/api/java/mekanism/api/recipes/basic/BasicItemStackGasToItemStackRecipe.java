@@ -69,6 +69,7 @@ public abstract class BasicItemStackGasToItemStackRecipe extends ItemStackGasToI
         return Collections.singletonList(output);
     }
 
+    @Override
     public ItemStack getOutputRaw() {
         return output;
     }

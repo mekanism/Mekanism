@@ -3,8 +3,8 @@ package mekanism.common.recipe.ingredient.creator;
 import com.mojang.serialization.Codec;
 import java.util.Objects;
 import java.util.stream.Stream;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
@@ -78,10 +78,10 @@ public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreato
     public static class TaggedPigmentStackIngredient extends TaggedChemicalStackIngredient<Pigment, PigmentStack> implements PigmentStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        static Codec<TaggedPigmentStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(ChemicalTags.PIGMENT, TaggedPigmentStackIngredient::new));
+        static Codec<TaggedPigmentStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(MekanismAPI.PIGMENT_REGISTRY_NAME, TaggedPigmentStackIngredient::new));
 
         private TaggedPigmentStackIngredient(TagKey<Pigment> tag, long amount) {
-            super(ChemicalTags.PIGMENT, tag, amount);
+            super(MekanismAPI.PIGMENT_REGISTRY.getOrCreateTag(tag), amount);
         }
 
         @Override

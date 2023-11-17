@@ -3,16 +3,21 @@ package mekanism.common.registration;
 import java.util.Objects;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
-public class WrappedRegistryObject<T> implements Supplier<T>, INamedEntry {
+public class WrappedRegistryObject<R, T extends R> implements Supplier<T>, INamedEntry {
 
-    protected RegistryObject<T> registryObject;
+    protected DeferredHolder<R, T> registryObject;
 
-    protected WrappedRegistryObject(RegistryObject<T> registryObject) {
+    protected WrappedRegistryObject(DeferredHolder<R, T> registryObject) {
         this.registryObject = registryObject;
+    }
+
+    public Holder<R> holder() {
+        return registryObject;
     }
 
     @Override
@@ -25,7 +30,7 @@ public class WrappedRegistryObject<T> implements Supplier<T>, INamedEntry {
         return registryObject.getId().getPath();
     }
 
-    public ResourceKey<T> key() {
+    public ResourceKey<R> key() {
         return Objects.requireNonNull(registryObject.getKey(), "Resource key should not be null");
     }
 }

@@ -3,6 +3,7 @@ package mekanism.api.recipes.ingredients.creator;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -38,6 +39,20 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         // Note: Only bother making it an NBT ingredient if the stack has NBT, otherwise there is no point in doing the extra checks
         Ingredient ingredient = stack.hasTag() ? StrictNBTIngredient.of(stack) : Ingredient.of(stack);
         return from(ingredient, amount);
+    }
+
+    /**
+     * Creates an Item Stack Ingredient that matches a provided item.
+     *
+     * @param item Item provider that provides the item to match.
+     *
+     * @implNote This wraps via {@link #from(ItemStack)} so if there is any durability or default NBT it will be included in the ingredient. If this is not desired,
+     * manually create an ingredient and call {@link #from(Ingredient)}.
+     *
+     * @since 10.5.0
+     */
+    default ItemStackIngredient from(Holder<Item> item) {
+        return from(item, 1);
     }
 
     /**

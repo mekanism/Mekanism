@@ -1,18 +1,11 @@
 package mekanism.common.integration.projecte;
 
-import com.mojang.datafixers.util.Either;
-import java.util.Optional;
-import java.util.function.Function;
-import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.providers.IGasProvider;
-import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.core.HolderSet.Named;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.neoforged.neoforge.registries.tags.ITag;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -97,8 +90,8 @@ public final class NSSGas/* TODO - 1.20.2: ProjectE extends AbstractNSSTag<Gas>*
 
     @NotNull
     @Override
-    protected Optional<Either<Named<Gas>, ITag<Gas>>> getTag() {
-        return getTag(MekanismAPI.gasRegistry());
+    protected Optional<Either<Named<Gas>, HolderSet.Named<Gas>>> getTag() {
+        return getTag(MekanismAPI.GAS_REGISTRY);
     }
 
     @Override

@@ -5,12 +5,12 @@ import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.Registries;
 
 public class ParticleTypeDeferredRegister extends WrappedDeferredRegister<ParticleType<?>> {
 
     public ParticleTypeDeferredRegister(String modid) {
-        super(modid, ForgeRegistries.PARTICLE_TYPES);
+        super(modid, Registries.PARTICLE_TYPE);
     }
 
     public ParticleTypeRegistryObject<SimpleParticleType, SimpleParticleType> registerBasicParticle(String name) {

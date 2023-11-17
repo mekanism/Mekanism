@@ -5,6 +5,7 @@ import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.MultiFluidStackIngredient;
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.SingleFluidStackIngredient;
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.TaggedFluidStackIngredient;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -15,7 +16,7 @@ public class FluidInputCache<RECIPE extends MekanismRecipe> extends NBTSensitive
         if (inputIngredient instanceof SingleFluidStackIngredient single) {
             addNbtInputCache(single.getInputRaw(), recipe);
         } else if (inputIngredient instanceof TaggedFluidStackIngredient tagged) {
-            for (Fluid input : tagged.getRawInput()) {
+            for (Holder<Fluid> input : tagged.getRawInput()) {
                 addInputCache(input, recipe);
             }
         } else if (inputIngredient instanceof MultiFluidStackIngredient multi) {

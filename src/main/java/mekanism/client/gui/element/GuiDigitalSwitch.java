@@ -30,7 +30,7 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
         this.stateSupplier = stateSupplier;
         this.tooltip = tooltip;
         this.onToggle = onToggle;
-        this.clickSound = MekanismSounds.BEEP;
+        this.clickSound = MekanismSounds.BEEP.holder();
     }
 
     @Override

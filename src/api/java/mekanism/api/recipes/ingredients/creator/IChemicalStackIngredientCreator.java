@@ -6,6 +6,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
 
 @NothingNullByDefault
@@ -33,6 +34,21 @@ public interface IChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMI
      * @throws IllegalArgumentException if the given provider is empty or an amount smaller than one.
      */
     INGREDIENT from(IChemicalProvider<CHEMICAL> provider, long amount);
+
+    /**
+     * Creates a Chemical Stack Ingredient that matches a provided chemical and amount.
+     *
+     * @param instance Chemical to match.
+     * @param amount   Amount needed.
+     *
+     * @throws NullPointerException     if the given instance is null.
+     * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one.
+     *
+     * @since 10.5.0
+     */
+    default INGREDIENT from(Holder<CHEMICAL> instance, long amount) {
+        return from(instance.value(), amount);
+    }
 
     @Override
     default INGREDIENT from(TagKey<CHEMICAL> tag, int amount) {

@@ -20,13 +20,13 @@ import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.text.InputValidator;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,10 +67,7 @@ public class SpecialConverters {
         if (rawName instanceof String name) {
             ResourceLocation itemName = ResourceLocation.tryParse(name);
             if (itemName != null) {
-                Item item = ForgeRegistries.ITEMS.getValue(itemName);
-                if (item != null) {
-                    return item;
-                }
+                return BuiltInRegistries.ITEM.get(itemName);
             }
         }
         return Items.AIR;
@@ -160,7 +157,7 @@ public class SpecialConverters {
         if (oredictionificatorFilter instanceof OredictionificatorItemFilter itemFilter) {
             Item item = tryCreateItem(map.get("selected"));
             if (item != Items.AIR) {
-                itemFilter.setSelectedOutput(item);
+                itemFilter.setSelectedOutput(item.builtInRegistryHolder());
             }
         }
     }

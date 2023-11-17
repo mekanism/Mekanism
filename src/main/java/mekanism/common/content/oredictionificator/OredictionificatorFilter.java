@@ -12,13 +12,14 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.neoforged.neoforge.registries.IForgeRegistry;
-import net.neoforged.neoforge.registries.tags.ITag;
-import net.neoforged.neoforge.registries.tags.ITagManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,9 +28,9 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
     @Nullable
     private TagKey<TYPE> filterLocation;
     @Nullable
-    private ITag<TYPE> filterTag;
+    private HolderSet.Named<TYPE> filterTag;
     @NotNull
-    private TYPE selectedOutput = getFallbackElement();
+    private Holder<TYPE> selectedOutput = getFallbackElement();
     @Nullable
     private STACK cachedSelectedStack;
     private boolean isValid;
@@ -47,8 +48,8 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
 
     public void flushCachedTag() {
         //If the filter doesn't exist (because we loaded a tag that is no longer valid), then just set the filter to being empty
-        filterTag = filterLocation == null ? null : getTagManager().getTag(filterLocation);
-        if (filterTag == null || !filterTag.isBound()) {
+        filterTag = filterLocation == null ? null : getRegistry().getTag(filterLocation).orElse(null);
+        if (filterTag == null) {
             setSelectedOutput(getFallbackElement());
         } else if (!filterTag.contains(selectedOutput)) {
             filterTag.stream().findFirst().ifPresentOrElse(this::setSelectedOutput, () -> setSelectedOutput(getFallbackElement()));
@@ -64,7 +65,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
     }
 
     public void checkValidity() {
-        if (filterLocation != null && getTagManager().isKnownTagName(filterLocation)) {
+        if (filterLocation != null && getRegistry().getTag(filterLocation).isPresent()) {
             for (String filter : getValidValuesConfig().get().getOrDefault(filterLocation.location().getNamespace(), Collections.emptyList())) {
                 if (filterLocation.location().getPath().startsWith(filter)) {
                     isValid = true;
@@ -84,7 +85,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
      * This method should only be called if the filter is valid or if it isn't the validity should be rechecked afterwards
      */
     public final void setFilter(@Nullable ResourceLocation location) {
-        filterLocation = location == null ? null : getTagManager().createTagKey(location);
+        filterLocation = location == null ? null : TagKey.create(getRegistry().key(), location);
         flushCachedTag();
         isValid = true;
     }
@@ -100,7 +101,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
     /**
      * Only publicly exposed for creating via ComputerCraft
      */
-    public final void setSelectedOutput(@NotNull TYPE output) {
+    public final void setSelectedOutput(@NotNull Holder<TYPE> output) {
         this.selectedOutput = output;
         //Invalidate cached stack
         cachedSelectedStack = null;
@@ -135,7 +136,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
         //Realistically the filter location shouldn't be null except when the filter is first being created
         // but handle it being null just in case
         BasePacketHandler.writeOptional(buffer, filterLocation, (buf, location) -> buf.writeResourceLocation(location.location()));
-        buffer.writeResourceLocation(getRegistry().getKey(selectedOutput));
+        buffer.writeResourceKey(selectedOutput.unwrapKey().orElseThrow());
         buffer.writeBoolean(isValid);
     }
 
@@ -148,22 +149,22 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
     }
 
     private void setSelectedOrFallback(@NotNull ResourceLocation resourceLocation) {
-        TYPE output = getRegistry().getValue(resourceLocation);
-        setSelectedOutput(output == null ? getFallbackElement() : output);
+        Registry<TYPE> registry = getRegistry();
+        registry.getHolder(ResourceKey.create(registry.key(), resourceLocation))
+              .ifPresentOrElse(this::setSelectedOutput, () -> setSelectedOutput(getFallbackElement()));
     }
 
     public STACK getResult() {
         //If we don't currently have a result stack cached, calculate what the result stack is
         if (cachedSelectedStack == null) {
-            List<TYPE> matchingElements = matchingElements();
-            if (matchingElements.isEmpty()) {
+            if (filterTag == null || filterTag.size() == 0) {
                 cachedSelectedStack = getEmptyStack();
             } else {
-                if (selectedOutput == getFallbackElement() || !matchingElements.contains(selectedOutput)) {
+                if (selectedOutput == getFallbackElement() || !filterTag.contains(selectedOutput)) {
                     //Fallback to the first element if we don't have an output selected/it isn't in our possible outputs
-                    selectedOutput = matchingElements.get(0);
+                    selectedOutput = filterTag.get(0);
                 }
-                cachedSelectedStack = createResultStack(selectedOutput);
+                cachedSelectedStack = createResultStack(selectedOutput.value());
             }
         }
         return cachedSelectedStack;
@@ -189,22 +190,21 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
         });
     }
 
-    private List<TYPE> matchingElements() {
-        return filterTag == null || !filterTag.isBound() ? Collections.emptyList() : filterTag.stream().toList();
-    }
-
     private void adjustSelected(IntBinaryOperator calculateSelected) {
-        List<TYPE> matchingElements = matchingElements();
-        int size = matchingElements.size();
+        if (filterTag == null) {
+            return;
+        }
+        int size = filterTag.size();
         //Check if there is more than one element as the selected output does not need to change if there is only one element
         if (size > 1) {
             int selected;
             if (selectedOutput == getFallbackElement()) {
                 selected = size - 1;
             } else {
+                List<Holder<TYPE>> matchingElements = filterTag.stream().toList();
                 selected = calculateSelected.applyAsInt(matchingElements.indexOf(selectedOutput), size);
             }
-            setSelectedOutput(matchingElements.get(selected));
+            setSelectedOutput(filterTag.get(selected));
         }
     }
 
@@ -226,11 +226,9 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
 
     public abstract TYPE getResultElement();
 
-    protected abstract IForgeRegistry<TYPE> getRegistry();
+    protected abstract Registry<TYPE> getRegistry();
 
-    protected abstract ITagManager<TYPE> getTagManager();
-
-    protected abstract TYPE getFallbackElement();
+    protected abstract Holder<TYPE> getFallbackElement();
 
     protected abstract STACK getEmptyStack();
 

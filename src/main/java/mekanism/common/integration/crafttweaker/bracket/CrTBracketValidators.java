@@ -10,8 +10,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.registries.ForgeRegistry;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -28,7 +26,7 @@ public class CrTBracketValidators {
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_GAS)
     public static boolean validateGasStack(String tokens) {
-        return validate(CrTConstants.BRACKET_GAS, tokens, MekanismAPI.gasRegistry());
+        return validate(CrTConstants.BRACKET_GAS, tokens, MekanismAPI.GAS_REGISTRY);
     }
 
     /**
@@ -41,7 +39,7 @@ public class CrTBracketValidators {
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_INFUSE_TYPE)
     public static boolean validateInfusionStack(String tokens) {
-        return validate(CrTConstants.BRACKET_INFUSE_TYPE, tokens, MekanismAPI.infuseTypeRegistry());
+        return validate(CrTConstants.BRACKET_INFUSE_TYPE, tokens, MekanismAPI.INFUSE_TYPE_REGISTRY);
     }
 
     /**
@@ -54,7 +52,7 @@ public class CrTBracketValidators {
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_PIGMENT)
     public static boolean validatePigmentStack(String tokens) {
-        return validate(CrTConstants.BRACKET_PIGMENT, tokens, MekanismAPI.pigmentRegistry());
+        return validate(CrTConstants.BRACKET_PIGMENT, tokens, MekanismAPI.PIGMENT_REGISTRY);
     }
 
     /**
@@ -67,7 +65,7 @@ public class CrTBracketValidators {
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_SLURRY)
     public static boolean validateSlurryStack(String tokens) {
-        return validate(CrTConstants.BRACKET_SLURRY, tokens, MekanismAPI.slurryRegistry());
+        return validate(CrTConstants.BRACKET_SLURRY, tokens, MekanismAPI.SLURRY_REGISTRY);
     }
 
     /**
@@ -93,15 +91,11 @@ public class CrTBracketValidators {
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_MODULE_DATA)
     public static boolean validateModuleData(String tokens) {
-        return validate(CrTConstants.BRACKET_MODULE_DATA, tokens, MekanismAPI.moduleRegistry());
+        return validate(CrTConstants.BRACKET_MODULE_DATA, tokens, MekanismAPI.MODULE_REGISTRY);
     }
 
-    private static boolean validate(String bracket, String tokens, IForgeRegistry<?> registry) {
-        return validate(bracket, tokens, registryName -> isRegistryUnlocked(registry) || registry.containsKey(registryName));
-    }
-
-    private static boolean isRegistryUnlocked(IForgeRegistry<?> registry) {
-        return registry instanceof ForgeRegistry<?> forgeRegistry && !forgeRegistry.isLocked();
+    private static boolean validate(String bracket, String tokens, Registry<?> registry) {
+        return validate(bracket, tokens, registry::containsKey);
     }
 
     private static boolean validate(String bracket, String tokens, ResourceKey<? extends Registry<?>> registryKey) {

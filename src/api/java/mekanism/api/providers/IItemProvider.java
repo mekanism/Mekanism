@@ -1,10 +1,10 @@
 package mekanism.api.providers;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 @MethodsReturnNonnullByDefault
 public interface IItemProvider extends IBaseProvider, ItemLike {
@@ -27,7 +27,7 @@ public interface IItemProvider extends IBaseProvider, ItemLike {
 
     @Override
     default ResourceLocation getRegistryName() {
-        return ForgeRegistries.ITEMS.getKey(asItem());
+        return BuiltInRegistries.ITEM.getKey(asItem());
     }
 
     @Override

@@ -1,9 +1,7 @@
 package mekanism.common.recipe.ingredient.chemical;
 
-import mekanism.api.JsonConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.ChemicalUtils.ChemicalToStackCreator;
 import mekanism.api.chemical.ChemicalUtils.StackToStackCreator;
 import mekanism.api.chemical.IEmptyStackProvider;
@@ -24,31 +22,19 @@ import org.jetbrains.annotations.NotNull;
 //The types cannot properly be inferred
 public class ChemicalIngredientInfo<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IEmptyStackProvider<CHEMICAL, STACK> {
 
-    public static final ChemicalIngredientInfo<Gas, GasStack> GAS = new ChemicalIngredientInfo<Gas, GasStack>(GasStack.EMPTY, GasStack::new, GasStack::new, JsonConstants.GAS, ChemicalTags.GAS);
-    public static final ChemicalIngredientInfo<InfuseType, InfusionStack> INFUSION = new ChemicalIngredientInfo<InfuseType, InfusionStack>(InfusionStack.EMPTY, InfusionStack::new, InfusionStack::new, JsonConstants.INFUSE_TYPE, ChemicalTags.INFUSE_TYPE);
-    public static final ChemicalIngredientInfo<Pigment, PigmentStack> PIGMENT = new ChemicalIngredientInfo<Pigment, PigmentStack>(PigmentStack.EMPTY, PigmentStack::new, PigmentStack::new, JsonConstants.PIGMENT, ChemicalTags.PIGMENT);
-    public static final ChemicalIngredientInfo<Slurry, SlurryStack> SLURRY = new ChemicalIngredientInfo<Slurry, SlurryStack>(SlurryStack.EMPTY, SlurryStack::new, SlurryStack::new, JsonConstants.SLURRY, ChemicalTags.SLURRY);
+    public static final ChemicalIngredientInfo<Gas, GasStack> GAS = new ChemicalIngredientInfo<Gas, GasStack>(GasStack.EMPTY, GasStack::new, GasStack::new);
+    public static final ChemicalIngredientInfo<InfuseType, InfusionStack> INFUSION = new ChemicalIngredientInfo<InfuseType, InfusionStack>(InfusionStack.EMPTY, InfusionStack::new, InfusionStack::new);
+    public static final ChemicalIngredientInfo<Pigment, PigmentStack> PIGMENT = new ChemicalIngredientInfo<Pigment, PigmentStack>(PigmentStack.EMPTY, PigmentStack::new, PigmentStack::new);
+    public static final ChemicalIngredientInfo<Slurry, SlurryStack> SLURRY = new ChemicalIngredientInfo<Slurry, SlurryStack>(SlurryStack.EMPTY, SlurryStack::new, SlurryStack::new);
 
     private final ChemicalToStackCreator<CHEMICAL, STACK> chemicalToStackCreator;
     private final StackToStackCreator<STACK> stackToStackCreator;
-    private final ChemicalTags<CHEMICAL> tags;
-    private final String serializationKey;
     private final STACK emptyStack;
 
-    private ChemicalIngredientInfo(STACK emptyStack, ChemicalToStackCreator<CHEMICAL, STACK> chemicalToStackCreator, StackToStackCreator<STACK> stackToStackCreator,
-          String serializationKey, ChemicalTags<CHEMICAL> tags) {
+    private ChemicalIngredientInfo(STACK emptyStack, ChemicalToStackCreator<CHEMICAL, STACK> chemicalToStackCreator, StackToStackCreator<STACK> stackToStackCreator) {
         this.chemicalToStackCreator = chemicalToStackCreator;
         this.stackToStackCreator = stackToStackCreator;
-        this.serializationKey = serializationKey;
         this.emptyStack = emptyStack;
-        this.tags = tags;
-    }
-
-    /**
-     * Gets the constant that is used in serializing this chemical type to json.
-     */
-    public String getSerializationKey() {
-        return serializationKey;
     }
 
     @NotNull

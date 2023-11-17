@@ -1,18 +1,11 @@
 package mekanism.common.integration.projecte;
 
-import com.mojang.datafixers.util.Either;
-import java.util.Optional;
-import java.util.function.Function;
-import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.providers.IPigmentProvider;
-import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.core.HolderSet.Named;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.neoforged.neoforge.registries.tags.ITag;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -96,8 +89,8 @@ public final class NSSPigment/*TODO - 1.20.2: extends AbstractNSSTag<Pigment>*/ 
 
     @NotNull
     @Override
-    protected Optional<Either<Named<Pigment>, ITag<Pigment>>> getTag() {
-        return getTag(MekanismAPI.pigmentRegistry());
+    protected Optional<Either<Named<Pigment>, HolderSet.Named<Pigment>>> getTag() {
+        return getTag(MekanismAPI.PIGMENT_REGISTRY);
     }
 
     @Override

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.providers.IEntityTypeProvider;
 import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.IMekanismConfig;
@@ -18,7 +19,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.fml.config.ModConfig.Type;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 public class AdditionsConfig extends BaseMekanismConfig {
 
@@ -115,7 +115,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
                   .worldRestart()
                   .defineInRange("maxSpawnCostPercentage", 1D, 0, 100));
             this.biomeBlackList = CachedResourceLocationListValue.define(config, builder.comment("The list of biome ids that " + name + " will not spawn in even if the normal mob variant can spawn.")
-                  .worldRestart(), "biomeBlackList", ForgeRegistries.BIOMES::containsKey);
+                  .worldRestart(), "biomeBlackList", ConstantPredicates.alwaysTrue());
             this.structureBlackList = CachedResourceLocationListValue.define(config, builder.comment("The list of structure ids that " + name + " will not spawn in even if the normal mob variant can spawn.")
                   .worldRestart(), "structureBlackList", BuiltInRegistries.STRUCTURE_TYPE::containsKey);
             builder.pop();

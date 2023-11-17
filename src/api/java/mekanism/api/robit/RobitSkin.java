@@ -25,7 +25,7 @@ public interface RobitSkin {
     /**
      * @return the codec which serializes and deserializes this {@link RobitSkin}.
      *
-     * @implNote The returned codec should be registered in the {@link MekanismAPI#robitSkinSerializerRegistry() robit skin serializer registry}.
+     * @implNote The returned codec should be registered in the {@link MekanismAPI#ROBIT_SKIN_SERIALIZER_REGISTRY robit skin serializer registry}.
      * @since 10.4.0
      */
     Codec<? extends RobitSkin> codec();

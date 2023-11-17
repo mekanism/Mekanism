@@ -84,6 +84,7 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.capabilities.Capability;
@@ -91,7 +92,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.NotNull;
 
 @JeiPlugin
@@ -227,20 +227,20 @@ public class MekanismJEI implements IModPlugin {
     @SuppressWarnings("RedundantTypeArguments")
     public void registerIngredients(IModIngredientRegistration registry) {
         //The types cannot properly be inferred at runtime
-        this.<Gas, GasStack>registerIngredientType(registry, MekanismAPI.gasRegistry(), TYPE_GAS, GAS_STACK_HELPER);
-        this.<InfuseType, InfusionStack>registerIngredientType(registry, MekanismAPI.infuseTypeRegistry(), TYPE_INFUSION, INFUSION_STACK_HELPER);
-        this.<Pigment, PigmentStack>registerIngredientType(registry, MekanismAPI.pigmentRegistry(), TYPE_PIGMENT, PIGMENT_STACK_HELPER);
-        this.<Slurry, SlurryStack>registerIngredientType(registry, MekanismAPI.slurryRegistry(), TYPE_SLURRY, SLURRY_STACK_HELPER);
+        this.<Gas, GasStack>registerIngredientType(registry, MekanismAPI.GAS_REGISTRY, TYPE_GAS, GAS_STACK_HELPER);
+        this.<InfuseType, InfusionStack>registerIngredientType(registry, MekanismAPI.INFUSE_TYPE_REGISTRY, TYPE_INFUSION, INFUSION_STACK_HELPER);
+        this.<Pigment, PigmentStack>registerIngredientType(registry, MekanismAPI.PIGMENT_REGISTRY, TYPE_PIGMENT, PIGMENT_STACK_HELPER);
+        this.<Slurry, SlurryStack>registerIngredientType(registry, MekanismAPI.SLURRY_REGISTRY, TYPE_SLURRY, SLURRY_STACK_HELPER);
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void registerIngredientType(IModIngredientRegistration registry,
-          IForgeRegistry<CHEMICAL> forgeRegistry, IIngredientType<STACK> ingredientType, ChemicalStackHelper<CHEMICAL, STACK> stackHelper) {
-        List<STACK> types = forgeRegistry.getValues().stream()
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void registerIngredientType(IModIngredientRegistration registration,
+          Registry<CHEMICAL> registry, IIngredientType<STACK> ingredientType, ChemicalStackHelper<CHEMICAL, STACK> stackHelper) {
+        List<STACK> types = registry.stream()
               .filter(chemical -> !chemical.isEmptyType() && !chemical.isHidden())
               .map(chemical -> ChemicalUtil.<CHEMICAL, STACK>withAmount(chemical, FluidType.BUCKET_VOLUME))
               .toList();
-        stackHelper.setColorHelper(registry.getColorHelper());
-        registry.register(ingredientType, types, stackHelper, new ChemicalStackRenderer<>());
+        stackHelper.setColorHelper(registration.getColorHelper());
+        registration.register(ingredientType, types, stackHelper, new ChemicalStackRenderer<>());
     }
 
     @Override
@@ -337,7 +337,7 @@ public class MekanismJEI implements IModPlugin {
         //TODO - 1.20.2: remove uncheck cast: JEI update
         registry.addIngredientInfo(MekanismFluids.HEAVY_WATER.getFluidStack(FluidType.BUCKET_VOLUME), (IIngredientType)ForgeTypes.FLUID_STACK,
               MekanismLang.JEI_INFO_HEAVY_WATER.translate(MekanismConfig.general.pumpHeavyWaterAmount.get()));
-        registry.addIngredientInfo(MekanismAPI.moduleRegistry().getValues().stream().map(data -> data.getItemProvider().getItemStack()).toList(),
+        registry.addIngredientInfo(MekanismAPI.MODULE_REGISTRY.stream().map(data -> data.getItemProvider().getItemStack()).toList(),
               VanillaTypes.ITEM_STACK, MekanismLang.JEI_INFO_MODULE_INSTALLATION.translate());
     }
 

@@ -5,13 +5,13 @@ import java.util.function.UnaryOperator;
 import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public class DataSerializerDeferredRegister extends WrappedDeferredRegister<EntityDataSerializer<?>> {
 
     public DataSerializerDeferredRegister(String modid) {
-        super(modid, ForgeRegistries.Keys.ENTITY_DATA_SERIALIZERS);
+        super(modid, NeoForgeRegistries.Keys.ENTITY_DATA_SERIALIZERS);
     }
 
     public <T extends Enum<T>> DataSerializerRegistryObject<T> registerEnum(String name, Class<T> enumClass) {

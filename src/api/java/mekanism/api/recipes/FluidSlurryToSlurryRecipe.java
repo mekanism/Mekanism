@@ -8,13 +8,14 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.chemical.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -29,7 +30,7 @@ import org.jetbrains.annotations.Contract;
 @NothingNullByDefault
 public abstract class FluidSlurryToSlurryRecipe extends FluidChemicalToChemicalRecipe<Slurry, SlurryStack, SlurryStackIngredient> {
 
-    private static final RegistryObject<Item> CHEMICAL_WASHER = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "chemical_washer"), ForgeRegistries.ITEMS);
+    private static final Holder<Item> CHEMICAL_WASHER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "chemical_washer"));
 
     @Override
     public abstract boolean test(FluidStack fluidStack, SlurryStack chemicalStack);
@@ -49,7 +50,7 @@ public abstract class FluidSlurryToSlurryRecipe extends FluidChemicalToChemicalR
 
     @Override
     public final RecipeType<FluidSlurryToSlurryRecipe> getType() {
-        return MekanismRecipeTypes.TYPE_WASHING.get();
+        return MekanismRecipeTypes.TYPE_WASHING.value();
     }
 
     @Override
@@ -59,6 +60,6 @@ public abstract class FluidSlurryToSlurryRecipe extends FluidChemicalToChemicalR
 
     @Override
     public ItemStack getToastSymbol() {
-        return new ItemStack(CHEMICAL_WASHER.get());
+        return new ItemStack(CHEMICAL_WASHER);
     }
 }

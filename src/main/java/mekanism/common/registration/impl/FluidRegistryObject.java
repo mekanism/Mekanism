@@ -5,21 +5,23 @@ import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.providers.IFluidProvider;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 @ParametersAreNotNullByDefault
 @MethodsReturnNonnullByDefault
 public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FLOWING extends Fluid, BLOCK extends LiquidBlock, BUCKET extends BucketItem>
       implements IFluidProvider {
 
-    private RegistryObject<TYPE> fluidTypeRO;
-    private RegistryObject<STILL> stillRO;
-    private RegistryObject<FLOWING> flowingRO;
-    private RegistryObject<BLOCK> blockRO;
-    private RegistryObject<BUCKET> bucketRO;
+    private DeferredHolder<FluidType, TYPE> fluidTypeRO;
+    private DeferredHolder<Fluid, STILL> stillRO;
+    private DeferredHolder<Fluid, FLOWING> flowingRO;
+    private DeferredHolder<Block, BLOCK> blockRO;
+    private DeferredHolder<Item, BUCKET> bucketRO;
 
     public TYPE getFluidType() {
         return fluidTypeRO.get();
@@ -42,23 +44,23 @@ public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FL
     }
 
     //Make sure these update methods are package local as only the FluidDeferredRegister should be messing with them
-    void updateFluidType(RegistryObject<TYPE> fluidTypeRO) {
+    void updateFluidType(DeferredHolder<FluidType, TYPE> fluidTypeRO) {
         this.fluidTypeRO = Objects.requireNonNull(fluidTypeRO);
     }
 
-    void updateStill(RegistryObject<STILL> stillRO) {
+    void updateStill(DeferredHolder<Fluid, STILL> stillRO) {
         this.stillRO = Objects.requireNonNull(stillRO);
     }
 
-    void updateFlowing(RegistryObject<FLOWING> flowingRO) {
+    void updateFlowing(DeferredHolder<Fluid, FLOWING> flowingRO) {
         this.flowingRO = Objects.requireNonNull(flowingRO);
     }
 
-    void updateBlock(RegistryObject<BLOCK> blockRO) {
+    void updateBlock(DeferredHolder<Block, BLOCK> blockRO) {
         this.blockRO = Objects.requireNonNull(blockRO);
     }
 
-    void updateBucket(RegistryObject<BUCKET> bucketRO) {
+    void updateBucket(DeferredHolder<Item, BUCKET> bucketRO) {
         this.bucketRO = Objects.requireNonNull(bucketRO);
     }
 

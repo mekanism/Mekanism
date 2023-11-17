@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
+import net.minecraft.core.Holder;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -69,5 +70,15 @@ public abstract class BaseInputCache<KEY, INPUT, INGREDIENT extends InputIngredi
      */
     protected void addInputCache(KEY input, RECIPE recipe) {
         inputCache.computeIfAbsent(input, i -> new HashSet<>()).add(recipe);
+    }
+
+    /**
+     * Adds a given recipe to the input cache using the corresponding key.
+     *
+     * @param input  Key representing the input.
+     * @param recipe Recipe to add.
+     */
+    protected void addInputCache(Holder<KEY> input, RECIPE recipe) {
+        addInputCache(input.value(), recipe);
     }
 }

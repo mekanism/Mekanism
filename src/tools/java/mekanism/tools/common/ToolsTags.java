@@ -9,21 +9,10 @@ import net.minecraft.world.level.block.Block;
 
 public class ToolsTags {
 
-    /**
-     * Call to force make sure this is all initialized
-     */
-    public static void init() {
-        Blocks.init();
-        Items.init();
-    }
-
     private ToolsTags() {
     }
 
     public static class Blocks {
-
-        private static void init() {
-        }
 
         private Blocks() {
         }
@@ -46,9 +35,6 @@ public class ToolsTags {
     }
 
     public static class Items {
-
-        private static void init() {
-        }
 
         private Items() {
         }

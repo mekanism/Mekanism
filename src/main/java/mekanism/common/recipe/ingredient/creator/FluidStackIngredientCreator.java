@@ -19,16 +19,16 @@ import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
-import mekanism.common.tags.TagUtils;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.ForgeRegistries.Keys;
-import net.neoforged.neoforge.registries.tags.ITag;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
@@ -214,18 +214,18 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
         static final Codec<TaggedFluidStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> RecordCodecBuilder.create(instance->instance.group(
-              TagKey.codec(Keys.FLUIDS).fieldOf(JsonConstants.TAG).forGetter(TaggedFluidStackIngredient::getTag),
+              TagKey.codec(Registries.FLUID).fieldOf(JsonConstants.TAG).forGetter(TaggedFluidStackIngredient::getTag),
               ExtraCodecs.POSITIVE_INT.fieldOf(JsonConstants.AMOUNT).forGetter(TaggedFluidStackIngredient::getRawAmount)
         ).apply(instance, TaggedFluidStackIngredient::new)));
 
-        private final ITag<Fluid> tag;
+        private final HolderSet.Named<Fluid> tag;
         private final int amount;
 
         private TaggedFluidStackIngredient(TagKey<Fluid> tag, int amount) {
-            this(TagUtils.tag(ForgeRegistries.FLUIDS, tag), amount);
+            this(BuiltInRegistries.FLUID.getOrCreateTag(tag), amount);
         }
 
-        private TaggedFluidStackIngredient(ITag<Fluid> tag, int amount) {
+        private TaggedFluidStackIngredient(HolderSet.Named<Fluid> tag, int amount) {
             this.tag = tag;
             this.amount = amount;
         }
@@ -237,7 +237,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         @Override
         public boolean testType(FluidStack fluidStack) {
-            return tag.contains(Objects.requireNonNull(fluidStack).getFluid());
+            return Objects.requireNonNull(fluidStack).getFluid().builtInRegistryHolder().is(getTag());
         }
 
         @Override
@@ -256,15 +256,15 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         @Override
         public boolean hasNoMatchingInstances() {
-            return tag.isEmpty();
+            return tag.size() == 0;
         }
 
         @Override
         public List<@NotNull FluidStack> getRepresentations() {
             //TODO: Can this be cached somehow
             List<@NotNull FluidStack> representations = new ArrayList<>();
-            for (Fluid fluid : tag) {
-                representations.add(new FluidStack(fluid, amount));
+            for (Holder<Fluid> fluid : tag) {
+                representations.add(new FluidStack(fluid.value(), amount));
             }
             return representations;
         }
@@ -272,7 +272,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         /**
          * For use in recipe input caching.
          */
-        public Iterable<Fluid> getRawInput() {
+        public Iterable<Holder<Fluid>> getRawInput() {
             return tag;
         }
 
@@ -281,13 +281,13 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
         }
 
         public TagKey<Fluid> getTag() {
-            return tag.getKey();
+            return tag.key();
         }
 
         @Override
         public void write(FriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.TAGGED);
-            buffer.writeResourceLocation(tag.getKey().location());
+            buffer.writeResourceLocation(getTag().location());
             buffer.writeVarInt(amount);
         }
 

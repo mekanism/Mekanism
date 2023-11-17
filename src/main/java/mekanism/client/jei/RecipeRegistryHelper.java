@@ -17,10 +17,10 @@ import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 public class RecipeRegistryHelper {
 
@@ -53,7 +53,7 @@ public class RecipeRegistryHelper {
 
     public static void registerNutritionalLiquifier(IRecipeRegistration registry) {
         List<ItemStackToFluidRecipe> list = new ArrayList<>();
-        for (Item item : ForgeRegistries.ITEMS.getValues()) {
+        for (Item item : BuiltInRegistries.ITEM) {
             if (item.isEdible()) {
                 ItemStack stack = new ItemStack(item);
                 //TODO: If any mods adds presets to the creative menu we may want to consider gathering all

@@ -33,7 +33,7 @@ public record BabyEntitySpawnStructureModifier(BabyType babyType, AdditionsConfi
             StructureSettingsBuilder structureSettings = builder.getStructureSettings();
             StructureSpawnOverrideBuilder spawnOverrides = structureSettings.getSpawnOverrides(MobCategory.MONSTER);
             //Fail quick if there are no overrides for this structure, or it is blacklisted
-            ResourceLocation structureName = BuiltInRegistries.STRUCTURE_TYPE.getKey(structure.get().type());
+            ResourceLocation structureName = BuiltInRegistries.STRUCTURE_TYPE.getKey(structure.value().type());
             if (spawnOverrides != null && !spawnConfig.structureBlackList.get().contains(structureName)) {
                 for (MobSpawnSettings.SpawnerData spawner : spawnConfig.getSpawnersToAdd(spawnOverrides.getSpawns())) {
                     spawnOverrides.addSpawn(spawner);

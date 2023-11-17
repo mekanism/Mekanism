@@ -1,11 +1,9 @@
 package mekanism.common.tile.machine;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
@@ -28,7 +26,6 @@ import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tags.TagUtils;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.ISustainedData;
@@ -36,15 +33,15 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.tags.ITagManager;
 import org.jetbrains.annotations.NotNull;
 
 //TODO - V11: Make this support other tag types, such as fluids
@@ -118,37 +115,24 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
     private List<ResourceLocation> getFilterableTags(ItemStack stack) {
         //TODO: Cache this and hasFilterableTags?
-        Set<ResourceLocation> tags = TagUtils.tagNames(stack.getTags());
-        if (tags.isEmpty()) {
-            return Collections.emptyList();
-        }
         Map<String, List<String>> possibleFilters = MekanismConfig.general.validOredictionificatorFilters.get();
-        List<ResourceLocation> filterableTags = new ArrayList<>();
-        for (ResourceLocation resource : tags) {
-            if (possibleFilters.getOrDefault(resource.getNamespace(), Collections.emptyList()).stream().anyMatch(pre -> resource.getPath().startsWith(pre))) {
-                //For each tag that matches a tag that is filterable, add it to the resulting list
-                filterableTags.add(resource);
-            }
-        }
-        return filterableTags;
+        //For each tag that matches a tag that is filterable, add it to the resulting list
+        return stack.getTags()
+              .map(TagKey::location)
+              .filter(resource -> possibleFilters.getOrDefault(resource.getNamespace(), Collections.emptyList()).stream().anyMatch(pre -> resource.getPath().startsWith(pre)))
+              .toList();
     }
 
     private boolean hasFilterableTags(ItemStack stack) {
-        Set<ResourceLocation> tags = TagUtils.tagNames(stack.getTags());
-        if (!tags.isEmpty()) {
-            Map<String, List<String>> possibleFilters = MekanismConfig.general.validOredictionificatorFilters.get();
-            for (ResourceLocation resource : tags) {
-                if (possibleFilters.getOrDefault(resource.getNamespace(), Collections.emptyList()).stream().anyMatch(pre -> resource.getPath().startsWith(pre))) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        Map<String, List<String>> possibleFilters = MekanismConfig.general.validOredictionificatorFilters.get();
+        return stack.getTags().anyMatch(tag -> {
+            ResourceLocation resource = tag.location();
+            return possibleFilters.getOrDefault(resource.getNamespace(), Collections.emptyList()).stream().anyMatch(pre -> resource.getPath().startsWith(pre));
+        });
     }
 
     public static boolean isValidTarget(ResourceLocation tag) {
-        ITagManager<Item> manager = TagUtils.manager(ForgeRegistries.ITEMS);
-        if (manager.isKnownTagName(manager.createTagKey(tag))) {
+        if (BuiltInRegistries.ITEM.getTag(TagKey.create(Registries.ITEM, tag)).isPresent()) {
             for (String filter : MekanismConfig.general.validOredictionificatorFilters.get().getOrDefault(tag.getNamespace(), Collections.emptyList())) {
                 if (tag.getPath().startsWith(filter)) {
                     return true;

@@ -572,6 +572,8 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
             syncable.set(value);
         } else if (data instanceof SyncableItemStack syncable) {
             syncable.set(value);
+        } else if (data instanceof SyncableRegistryEntry<?> syncable) {
+            syncable.setFromId(value);
         }
     }
 
@@ -616,13 +618,6 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableBlockPos syncable) {
             syncable.set(value);
-        }
-    }
-
-    public <V> void handleWindowProperty(short property, @NotNull V value) {
-        ISyncableData data = getTrackedData(property);
-        if (data instanceof SyncableRegistryEntry) {
-            ((SyncableRegistryEntry<V>) data).set(value);
         }
     }
 

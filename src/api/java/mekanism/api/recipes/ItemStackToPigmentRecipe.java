@@ -7,12 +7,13 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.Contract;
 @NothingNullByDefault
 public abstract class ItemStackToPigmentRecipe extends ItemStackToChemicalRecipe<Pigment, PigmentStack> {
 
-    private static final RegistryObject<Item> PIGMENT_EXTRACTOR = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "pigment_extractor"), ForgeRegistries.ITEMS);
+    private static final Holder<Item> PIGMENT_EXTRACTOR = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "pigment_extractor"));
 
     @Override
     public abstract boolean test(ItemStack itemStack);
@@ -42,7 +43,7 @@ public abstract class ItemStackToPigmentRecipe extends ItemStackToChemicalRecipe
 
     @Override
     public final RecipeType<ItemStackToPigmentRecipe> getType() {
-        return MekanismRecipeTypes.TYPE_PIGMENT_EXTRACTING.get();
+        return MekanismRecipeTypes.TYPE_PIGMENT_EXTRACTING.value();
     }
 
     @Override
@@ -52,6 +53,6 @@ public abstract class ItemStackToPigmentRecipe extends ItemStackToChemicalRecipe
 
     @Override
     public ItemStack getToastSymbol() {
-        return new ItemStack(PIGMENT_EXTRACTOR.get());
+        return new ItemStack(PIGMENT_EXTRACTOR);
     }
 }

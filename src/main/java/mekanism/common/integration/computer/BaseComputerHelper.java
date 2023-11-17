@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.FloatingLong;
@@ -37,6 +39,7 @@ import mekanism.common.util.RegistryUtils;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
@@ -49,12 +52,8 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Provides methods to get parameters from a computer integration and return converted values back.
@@ -162,11 +161,7 @@ public abstract class BaseComputerHelper {
         if (itemName == null) {
             return Items.AIR;
         }
-        Item item = ForgeRegistries.ITEMS.getValue(itemName);
-        if (item != null) {
-            return item;
-        }
-        return Items.AIR;
+        return BuiltInRegistries.ITEM.get(itemName);
     }
 
     public ItemStack getItemStack(int param) throws ComputerException {

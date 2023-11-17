@@ -16,13 +16,14 @@ import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.conditions.ICondition;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -122,10 +123,9 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * @param output       Output to base the recipe name off of.
      */
     protected void build(RecipeOutput recipeOutput, ItemLike output) {
-        ResourceLocation registryName = ForgeRegistries.ITEMS.getKey(output.asItem());
-        if (registryName == null) {
-            throw new IllegalStateException("Could not retrieve registry name for output.");
-        }
+        ResourceLocation registryName = BuiltInRegistries.ITEM.getResourceKey(output.asItem())
+              .map(ResourceKey::location)
+              .orElseThrow(() -> new IllegalStateException("Could not retrieve registry name for output."));
         build(recipeOutput, registryName);
     }
 
@@ -160,7 +160,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
             //Note: This may be null if something is screwed up but this method isn't actually used, so it shouldn't matter
             // and in fact it will probably be null if only the API is included. But again, as we manually just use
             // the serializer's name this should not affect us
-            return Objects.requireNonNull(ForgeRegistries.RECIPE_SERIALIZERS.getValue(serializerName));
+            return Objects.requireNonNull(BuiltInRegistries.RECIPE_SERIALIZER.get(serializerName));
         }
 
         @NotNull

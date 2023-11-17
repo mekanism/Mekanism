@@ -12,7 +12,6 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -24,7 +23,7 @@ public class CrTBracketDumpers {
      */
     @BracketDumper(value = CrTConstants.BRACKET_GAS, subCommandName = "gases")
     public static Collection<String> getGasStackDump() {
-        return getChemicalStackDump(MekanismAPI.gasRegistry(), CrTUtils::stackFromGas);
+        return getChemicalStackDump(MekanismAPI.GAS_REGISTRY, CrTUtils::stackFromGas);
     }
 
     /**
@@ -32,7 +31,7 @@ public class CrTBracketDumpers {
      */
     @BracketDumper(value = CrTConstants.BRACKET_INFUSE_TYPE, subCommandName = "infuseTypes")
     public static Collection<String> getInfusionStackDump() {
-        return getChemicalStackDump(MekanismAPI.infuseTypeRegistry(), CrTUtils::stackFromInfuseType);
+        return getChemicalStackDump(MekanismAPI.INFUSE_TYPE_REGISTRY, CrTUtils::stackFromInfuseType);
     }
 
     /**
@@ -40,7 +39,7 @@ public class CrTBracketDumpers {
      */
     @BracketDumper(value = CrTConstants.BRACKET_PIGMENT, subCommandName = "pigments")
     public static Collection<String> getPigmentStackDump() {
-        return getChemicalStackDump(MekanismAPI.pigmentRegistry(), CrTUtils::stackFromPigment);
+        return getChemicalStackDump(MekanismAPI.PIGMENT_REGISTRY, CrTUtils::stackFromPigment);
     }
 
     /**
@@ -48,7 +47,7 @@ public class CrTBracketDumpers {
      */
     @BracketDumper(value = CrTConstants.BRACKET_SLURRY, subCommandName = "slurries")
     public static Collection<String> getSlurryStackDump() {
-        return getChemicalStackDump(MekanismAPI.slurryRegistry(), CrTUtils::stackFromSlurry);
+        return getChemicalStackDump(MekanismAPI.SLURRY_REGISTRY, CrTUtils::stackFromSlurry);
     }
 
     /**
@@ -64,20 +63,20 @@ public class CrTBracketDumpers {
      */
     @BracketDumper(value = CrTConstants.BRACKET_MODULE_DATA, subCommandName = "moduleData")
     public static Collection<String> getModuleDataDump() {
-        return getDump(MekanismAPI.moduleRegistry(), CrTConstants.BRACKET_MODULE_DATA);
+        return getDump(MekanismAPI.MODULE_REGISTRY, CrTConstants.BRACKET_MODULE_DATA);
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, ?, CRT_STACK>> Collection<String>
-    getChemicalStackDump(IForgeRegistry<CHEMICAL> registry, Function<CHEMICAL, CRT_STACK> getter) {
+    getChemicalStackDump(Registry<CHEMICAL> registry, Function<CHEMICAL, CRT_STACK> getter) {
         return getDump(registry, chemical -> getter.apply(chemical).getCommandString());
     }
 
-    private static <V> Collection<String> getDump(IForgeRegistry<V> registry, String bracket) {
+    private static <V> Collection<String> getDump(Registry<V> registry, String bracket) {
         return getDump(registry, v -> "<" + bracket + ":" + registry.getKey(v) + ">");
     }
 
-    private static <V> Collection<String> getDump(IForgeRegistry<V> registry, Function<V, String> getter) {
-        return registry.getValues().stream().map(getter).toList();
+    private static <V> Collection<String> getDump(Registry<V> registry, Function<V, String> getter) {
+        return registry.stream().map(getter).toList();
     }
 
     private static Collection<String> getDump(ResourceKey<? extends Registry<?>> registryKey, String bracket) {

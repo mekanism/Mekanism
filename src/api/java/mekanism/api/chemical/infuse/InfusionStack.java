@@ -5,9 +5,10 @@ import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IInfuseTypeProvider;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -28,13 +29,25 @@ public final class InfusionStack extends ChemicalStack<InfuseType> {
         super(infuseTypeProvider.getChemical(), amount);
     }
 
+    /**
+     * Creates a new InfusionStack with a defined infusion type and quantity.
+     *
+     * @param infuseTypeHolder - provides the infusion type of the stack
+     * @param amount           - amount of the infusion type to be referenced in this InfusionStack
+     *
+     * @since 10.5.0
+     */
+    public InfusionStack(Holder<InfuseType> infuseTypeHolder, long amount) {
+        this(infuseTypeHolder.value(), amount);
+    }
+
     public InfusionStack(InfusionStack stack, long amount) {
         this(stack.getType(), amount);
     }
 
     @Override
-    protected IForgeRegistry<InfuseType> getRegistry() {
-        return MekanismAPI.infuseTypeRegistry();
+    protected Registry<InfuseType> getRegistry() {
+        return MekanismAPI.INFUSE_TYPE_REGISTRY;
     }
 
     @Override
@@ -65,8 +78,8 @@ public final class InfusionStack extends ChemicalStack<InfuseType> {
     }
 
     public static InfusionStack readFromPacket(FriendlyByteBuf buf) {
-        InfuseType infuseType = buf.readRegistryIdSafe(InfuseType.class);
-        if (infuseType.isEmptyType()) {
+        InfuseType infuseType = buf.readById(MekanismAPI.INFUSE_TYPE_REGISTRY);
+        if (infuseType == null || infuseType.isEmptyType()) {
             return EMPTY;
         }
         return new InfusionStack(infuseType, buf.readVarLong());

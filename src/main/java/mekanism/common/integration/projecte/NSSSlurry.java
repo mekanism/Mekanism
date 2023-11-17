@@ -1,18 +1,11 @@
 package mekanism.common.integration.projecte;
 
-import com.mojang.datafixers.util.Either;
-import java.util.Optional;
-import java.util.function.Function;
-import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.providers.ISlurryProvider;
-import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.core.HolderSet.Named;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.neoforged.neoforge.registries.tags.ITag;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -96,8 +89,8 @@ public final class NSSSlurry/*TODO - 1.20.2: extends AbstractNSSTag<Slurry>*/ {
 
     @NotNull
     @Override
-    protected Optional<Either<Named<Slurry>, ITag<Slurry>>> getTag() {
-        return getTag(MekanismAPI.slurryRegistry());
+    protected Optional<Either<Named<Slurry>, HolderSet.Named<Slurry>>> getTag() {
+        return getTag(MekanismAPI.SLURRY_REGISTRY);
     }
 
     @Override

@@ -5,9 +5,10 @@ import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IGasProvider;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -33,13 +34,25 @@ public final class GasStack extends ChemicalStack<Gas> {
         super(gasProvider.getChemical(), amount);
     }
 
+    /**
+     * Creates a new GasStack with a defined Gas type and quantity.
+     *
+     * @param gasHolder - provides the gas type of the stack
+     * @param amount    - amount of gas to be referenced in this GasStack
+     *
+     * @since 10.5.0
+     */
+    public GasStack(Holder<Gas> gasHolder, long amount) {
+        this(gasHolder.value(), amount);
+    }
+
     public GasStack(GasStack stack, long amount) {
         this(stack.getType(), amount);
     }
 
     @Override
-    protected IForgeRegistry<Gas> getRegistry() {
-        return MekanismAPI.gasRegistry();
+    protected Registry<Gas> getRegistry() {
+        return MekanismAPI.GAS_REGISTRY;
     }
 
     @Override
@@ -70,8 +83,8 @@ public final class GasStack extends ChemicalStack<Gas> {
     }
 
     public static GasStack readFromPacket(FriendlyByteBuf buf) {
-        Gas gas = buf.readRegistryIdSafe(Gas.class);
-        if (gas.isEmptyType()) {
+        Gas gas = buf.readById(MekanismAPI.GAS_REGISTRY);
+        if (gas == null || gas.isEmptyType()) {
             return EMPTY;
         }
         return new GasStack(gas, buf.readVarLong());

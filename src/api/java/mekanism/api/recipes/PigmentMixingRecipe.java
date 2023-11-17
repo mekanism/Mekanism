@@ -7,12 +7,13 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.Contract;
 @NothingNullByDefault
 public abstract class PigmentMixingRecipe extends ChemicalChemicalToChemicalRecipe<Pigment, PigmentStack, PigmentStackIngredient> {
 
-    private static final RegistryObject<Item> PIGMENT_MIXER = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "pigment_mixer"), ForgeRegistries.ITEMS);
+    private static final Holder<Item> PIGMENT_MIXER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "pigment_mixer"));
 
     @Override
     public abstract boolean test(PigmentStack input1, PigmentStack input2);
@@ -45,7 +46,7 @@ public abstract class PigmentMixingRecipe extends ChemicalChemicalToChemicalReci
 
     @Override
     public final RecipeType<PigmentMixingRecipe> getType() {
-        return MekanismRecipeTypes.TYPE_PIGMENT_MIXING.get();
+        return MekanismRecipeTypes.TYPE_PIGMENT_MIXING.value();
     }
 
     @Override
@@ -55,6 +56,6 @@ public abstract class PigmentMixingRecipe extends ChemicalChemicalToChemicalReci
 
     @Override
     public ItemStack getToastSymbol() {
-        return new ItemStack(PIGMENT_MIXER.get());
+        return new ItemStack(PIGMENT_MIXER);
     }
 }

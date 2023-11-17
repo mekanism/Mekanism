@@ -30,7 +30,6 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
@@ -86,7 +85,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
         builder.addTank(lavaTank = VariableCapacityFluidTank.input(MekanismGeneratorsConfig.generators.heatTankCapacity,
-                    fluidStack -> MekanismTags.Fluids.LAVA_LOOKUP.contains(fluidStack.getFluid()), listener), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK,
+                    fluidStack -> fluidStack.getFluid().is(FluidTags.LAVA), listener), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK,
               RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
     }

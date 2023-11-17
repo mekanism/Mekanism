@@ -15,8 +15,8 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.robit.RobitSkin;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.neoforged.neoforge.registries.IForgeRegistry;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -31,7 +31,7 @@ public class CrTModExpansion {
     @ZenCodeType.Method
     @ZenCodeType.Getter("gases")
     public static Collection<Gas> getGases(Mod _this) {
-        return getModSpecific(_this, MekanismAPI.gasRegistry());
+        return getModSpecific(_this, MekanismAPI.GAS_REGISTRY);
     }
 
     /**
@@ -42,7 +42,7 @@ public class CrTModExpansion {
     @ZenCodeType.Method
     @ZenCodeType.Getter("infuseTypes")
     public static Collection<InfuseType> getInfuseTypes(Mod _this) {
-        return getModSpecific(_this, MekanismAPI.infuseTypeRegistry());
+        return getModSpecific(_this, MekanismAPI.INFUSE_TYPE_REGISTRY);
     }
 
     /**
@@ -53,7 +53,7 @@ public class CrTModExpansion {
     @ZenCodeType.Method
     @ZenCodeType.Getter("pigments")
     public static Collection<Pigment> getPigments(Mod _this) {
-        return getModSpecific(_this, MekanismAPI.pigmentRegistry());
+        return getModSpecific(_this, MekanismAPI.PIGMENT_REGISTRY);
     }
 
     /**
@@ -64,7 +64,7 @@ public class CrTModExpansion {
     @ZenCodeType.Method
     @ZenCodeType.Getter("slurries")
     public static Collection<Slurry> getSlurries(Mod _this) {
-        return getModSpecific(_this, MekanismAPI.slurryRegistry());
+        return getModSpecific(_this, MekanismAPI.SLURRY_REGISTRY);
     }
 
     /**
@@ -75,7 +75,7 @@ public class CrTModExpansion {
     @ZenCodeType.Method
     @ZenCodeType.Getter("modules")
     public static Collection<ModuleData<?>> getModules(Mod _this) {
-        return getModSpecific(_this, MekanismAPI.moduleRegistry());
+        return getModSpecific(_this, MekanismAPI.MODULE_REGISTRY);
     }
 
     /**
@@ -92,8 +92,8 @@ public class CrTModExpansion {
               .entrySet());
     }
 
-    private static <TYPE> Collection<TYPE> getModSpecific(Mod mod, IForgeRegistry<TYPE> registry) {
-        return getModSpecific(mod, registry.getEntries());
+    private static <TYPE> Collection<TYPE> getModSpecific(Mod mod, Registry<TYPE> registry) {
+        return getModSpecific(mod, registry.entrySet());
     }
 
     private static <TYPE> Collection<TYPE> getModSpecific(Mod mod, Set<Entry<ResourceKey<TYPE>, TYPE>> allElements) {

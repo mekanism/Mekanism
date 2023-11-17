@@ -24,6 +24,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -51,7 +52,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     private IGuiWrapper guiObj;
     @Nullable
-    protected Supplier<SoundEvent> clickSound;
+    protected Holder<SoundEvent> clickSound;
     protected int relativeX;
     protected int relativeY;
     public boolean isOverlay;
@@ -503,12 +504,12 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         }
     }
 
-    protected static void playClickSound(Supplier<SoundEvent> sound) {
+    protected static void playClickSound(Holder<SoundEvent> sound) {
         playClickSound(minecraft.getSoundManager(), sound);
     }
 
-    private static void playClickSound(@NotNull SoundManager soundHandler, @NotNull Supplier<SoundEvent> sound) {
-        soundHandler.play(SimpleSoundInstance.forUI(sound.get(), 1.0F));
+    private static void playClickSound(@NotNull SoundManager soundHandler, @NotNull Holder<SoundEvent> sound) {
+        soundHandler.play(SimpleSoundInstance.forUI(sound.value(), 1.0F));
     }
 
     protected void drawTiledSprite(GuiGraphics guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,

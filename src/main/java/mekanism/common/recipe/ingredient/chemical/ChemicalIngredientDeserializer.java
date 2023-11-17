@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -30,34 +30,35 @@ import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.M
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiInfusionStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiPigmentStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient.MultiSlurryStackIngredient;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 
 @NothingNullByDefault
 @SuppressWarnings("Convert2Diamond")//The types cannot properly be inferred
 public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> {
 
-    public static final ChemicalIngredientDeserializer<Gas, GasStack, GasStackIngredient> GAS = new ChemicalIngredientDeserializer<Gas, GasStack, GasStackIngredient>(ChemicalIngredientInfo.GAS, ChemicalTags.GAS, GasStack::readFromPacket, IngredientCreatorAccess.gas(),
-          MultiGasStackIngredient::new, GasStackIngredient[]::new);
-    public static final ChemicalIngredientDeserializer<InfuseType, InfusionStack, InfusionStackIngredient> INFUSION = new ChemicalIngredientDeserializer<InfuseType, InfusionStack, InfusionStackIngredient>(ChemicalIngredientInfo.INFUSION, ChemicalTags.INFUSE_TYPE, InfusionStack::readFromPacket, IngredientCreatorAccess.infusion(),
-                MultiInfusionStackIngredient::new, InfusionStackIngredient[]::new);
-    public static final ChemicalIngredientDeserializer<Pigment, PigmentStack, PigmentStackIngredient> PIGMENT = new ChemicalIngredientDeserializer<Pigment, PigmentStack, PigmentStackIngredient>(ChemicalIngredientInfo.PIGMENT, ChemicalTags.PIGMENT, PigmentStack::readFromPacket, IngredientCreatorAccess.pigment(), MultiPigmentStackIngredient::new,
-                PigmentStackIngredient[]::new);
-    public static final ChemicalIngredientDeserializer<Slurry, SlurryStack, SlurryStackIngredient> SLURRY = new ChemicalIngredientDeserializer<Slurry, SlurryStack, SlurryStackIngredient>(ChemicalIngredientInfo.SLURRY, ChemicalTags.SLURRY, SlurryStack::readFromPacket, IngredientCreatorAccess.slurry(), MultiSlurryStackIngredient::new,
-                SlurryStackIngredient[]::new);
+    public static final ChemicalIngredientDeserializer<Gas, GasStack, GasStackIngredient> GAS = new ChemicalIngredientDeserializer<Gas, GasStack, GasStackIngredient>(
+          MekanismAPI.GAS_REGISTRY_NAME, GasStack::readFromPacket, IngredientCreatorAccess.gas(), MultiGasStackIngredient::new, GasStackIngredient[]::new);
+    public static final ChemicalIngredientDeserializer<InfuseType, InfusionStack, InfusionStackIngredient> INFUSION = new ChemicalIngredientDeserializer<InfuseType, InfusionStack, InfusionStackIngredient>(
+          MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, InfusionStack::readFromPacket, IngredientCreatorAccess.infusion(), MultiInfusionStackIngredient::new, InfusionStackIngredient[]::new);
+    public static final ChemicalIngredientDeserializer<Pigment, PigmentStack, PigmentStackIngredient> PIGMENT = new ChemicalIngredientDeserializer<Pigment, PigmentStack, PigmentStackIngredient>(
+          MekanismAPI.PIGMENT_REGISTRY_NAME, PigmentStack::readFromPacket, IngredientCreatorAccess.pigment(), MultiPigmentStackIngredient::new, PigmentStackIngredient[]::new);
+    public static final ChemicalIngredientDeserializer<Slurry, SlurryStack, SlurryStackIngredient> SLURRY = new ChemicalIngredientDeserializer<Slurry, SlurryStack, SlurryStackIngredient>(
+          MekanismAPI.SLURRY_REGISTRY_NAME, SlurryStack::readFromPacket, IngredientCreatorAccess.slurry(), MultiSlurryStackIngredient::new, SlurryStackIngredient[]::new);
 
-    private final ChemicalTags<CHEMICAL> tags;
+    private final ResourceKey<? extends Registry<CHEMICAL>> registry;
     private final Function<FriendlyByteBuf, STACK> fromPacket;
-    private final ChemicalIngredientInfo<CHEMICAL, STACK> info;
     private final IChemicalStackIngredientCreator<CHEMICAL, STACK, INGREDIENT> ingredientCreator;
     private final IntFunction<INGREDIENT[]> arrayCreator;
     private final Function<INGREDIENT[], INGREDIENT> multiCreator;
 
-    private ChemicalIngredientDeserializer(ChemicalIngredientInfo<CHEMICAL, STACK> info, ChemicalTags<CHEMICAL> tags, Function<FriendlyByteBuf, STACK> fromPacket, IChemicalStackIngredientCreator<CHEMICAL, STACK, INGREDIENT> ingredientCreator,
-          Function<INGREDIENT[], INGREDIENT> multiCreator, IntFunction<INGREDIENT[]> arrayCreator) {
+    private ChemicalIngredientDeserializer(ResourceKey<? extends Registry<CHEMICAL>> registry, Function<FriendlyByteBuf, STACK> fromPacket,
+          IChemicalStackIngredientCreator<CHEMICAL, STACK, INGREDIENT> ingredientCreator, Function<INGREDIENT[], INGREDIENT> multiCreator, IntFunction<INGREDIENT[]> arrayCreator) {
         this.fromPacket = fromPacket;
-        this.tags = tags;
-        this.info = info;
+        this.registry = registry;
         this.ingredientCreator = ingredientCreator;
         this.arrayCreator = arrayCreator;
         this.multiCreator = multiCreator;
@@ -76,7 +77,7 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
         Objects.requireNonNull(buffer, "ChemicalStackIngredients cannot be read from a null packet buffer.");
         return switch (buffer.readEnum(IngredientType.class)) {
             case SINGLE -> ingredientCreator.from(fromPacket.apply(buffer));
-            case TAGGED -> ingredientCreator.from(tags.tag(buffer.readResourceLocation()), buffer.readVarLong());
+            case TAGGED -> ingredientCreator.from(TagKey.create(registry, buffer.readResourceLocation()), buffer.readVarLong());
             case MULTI -> createMulti(BasePacketHandler.readArray(buffer, arrayCreator, this::read));
         };
     }

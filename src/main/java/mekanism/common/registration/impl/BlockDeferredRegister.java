@@ -9,18 +9,18 @@ import java.util.function.Supplier;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.registration.DoubleDeferredRegister;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 
     private final List<IBlockProvider> allBlocks = new ArrayList<>();
 
     public BlockDeferredRegister(String modid) {
-        super(modid, ForgeRegistries.BLOCKS, ForgeRegistries.ITEMS);
+        super(modid, Registries.BLOCK, Registries.ITEM);
     }
 
     public BlockRegistryObject<Block, BlockItem> register(String name, BlockBehaviour.Properties properties) {

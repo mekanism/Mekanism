@@ -64,7 +64,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
             //If we are not on the same tick do stuff, otherwise ignore it (anti tick accelerator protection)
             lastProcessTick = level.getGameTime();
             if (MekanismConfig.general.radioactiveWasteBarrelDecayAmount.get() > 0 && !gasTank.isEmpty() &&
-                !MekanismTags.Gases.WASTE_BARREL_DECAY_LOOKUP.contains(gasTank.getType()) &&
+                !gasTank.getType().is(MekanismTags.Gases.WASTE_BARREL_DECAY_BLACKLIST) &&
                 ++processTicks >= MekanismConfig.general.radioactiveWasteBarrelProcessTicks.get()) {
                 processTicks = 0;
                 gasTank.shrinkStack(MekanismConfig.general.radioactiveWasteBarrelDecayAmount.get(), Action.EXECUTE);
@@ -97,7 +97,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
             setActive(!getActive());
             Level world = getLevel();
             if (world != null) {
-                world.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK.get(), SoundSource.BLOCKS, 0.3F, 1);
+                world.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 0.3F, 1);
             }
         }
         return InteractionResult.SUCCESS;

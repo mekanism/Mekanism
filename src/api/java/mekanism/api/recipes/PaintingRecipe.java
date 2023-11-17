@@ -8,13 +8,14 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public abstract class PaintingRecipe extends ItemStackChemicalToItemStackRecipe<Pigment, PigmentStack, PigmentStackIngredient> {
 
-    private static final RegistryObject<Item> PAINTING_MACHINE = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "painting_machine"), ForgeRegistries.ITEMS);
+    private static final Holder<Item> PAINTING_MACHINE = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "painting_machine"));
 
     @Override
     public abstract ItemStackIngredient getItemInput();
@@ -54,7 +55,7 @@ public abstract class PaintingRecipe extends ItemStackChemicalToItemStackRecipe<
 
     @Override
     public final RecipeType<PaintingRecipe> getType() {
-        return MekanismRecipeTypes.TYPE_PAINTING.get();
+        return MekanismRecipeTypes.TYPE_PAINTING.value();
     }
 
     @Override
@@ -64,6 +65,6 @@ public abstract class PaintingRecipe extends ItemStackChemicalToItemStackRecipe<
 
     @Override
     public ItemStack getToastSymbol() {
-        return new ItemStack(PAINTING_MACHINE.get());
+        return new ItemStack(PAINTING_MACHINE);
     }
 }

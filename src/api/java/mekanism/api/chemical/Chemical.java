@@ -3,25 +3,23 @@ package mekanism.api.chemical;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.chemical.attribute.IChemicalAttributeContainer;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.TextComponentUtil;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.neoforged.neoforge.registries.tags.IReverseTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements IChemicalProvider<CHEMICAL>, IChemicalAttributeContainer<CHEMICAL> {
 
-    private final ChemicalTags<CHEMICAL> chemicalTags;
     private final Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> attributeMap;
 
     private final ResourceLocation iconLocation;
@@ -31,8 +29,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
     @Nullable
     private String translationKey;
 
-    protected Chemical(ChemicalBuilder<CHEMICAL, ?> builder, ChemicalTags<CHEMICAL> chemicalTags) {
-        this.chemicalTags = chemicalTags;
+    protected Chemical(ChemicalBuilder<CHEMICAL, ?> builder) {
         //Copy the map to support addAttribute
         this.attributeMap = new HashMap<>(builder.getAttributeMap());
         this.iconLocation = builder.getTexture();
@@ -149,8 +146,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
      * @return {@code true} if the chemical is in the tag, {@code false} otherwise.
      */
     public boolean is(TagKey<CHEMICAL> tag) {
-        return getReverseTag().map(reverseTag -> reverseTag.containsTag(tag))
-              .orElse(false);
+        return getRegistry().wrapAsHolder((CHEMICAL) this).is(tag);
     }
 
     /**
@@ -159,16 +155,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
      * @return All the tags this chemical is a part of.
      */
     public Stream<TagKey<CHEMICAL>> getTags() {
-        return getReverseTag().map(IReverseTag::getTagKeys).orElseGet(Stream::empty);
-    }
-
-    /**
-     * Used to look-up the reverse tag that corresponds with this chemical.
-     *
-     * @return Corresponding reverse tag or empty.
-     */
-    protected Optional<IReverseTag<CHEMICAL>> getReverseTag() {
-        return chemicalTags.getManager().flatMap(manager -> manager.getReverseTag(getChemical()));
+        return getRegistry().wrapAsHolder((CHEMICAL) this).tags();
     }
 
     /**
@@ -179,5 +166,16 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> implements I
     public abstract boolean isEmptyType();
 
     @Override
-    public abstract ResourceLocation getRegistryName();
+    @SuppressWarnings({"ConstantConditions", "unchecked"})
+    public ResourceLocation getRegistryName() {
+        //May be null if called before the object is registered
+        return getRegistry().getKey((CHEMICAL) this);
+    }
+
+    /**
+     * Gets the registry that this chemical will be registered to. (For use in helpers that look up the registry name and interact with tags).
+     * @return Registry this chemical will be registered to.
+     * @since 10.5.0
+     */
+    protected abstract Registry<CHEMICAL> getRegistry();
 }

@@ -1,6 +1,5 @@
 package mekanism.additions.common;
 
-import mekanism.common.tags.TagUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -10,27 +9,13 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.registries.ForgeRegistries;
 
 public class AdditionsTags {
-
-    /**
-     * Call to force make sure this is all initialized
-     */
-    public static void init() {
-        Items.init();
-        Blocks.init();
-        DamageTypes.init();
-        Entities.init();
-    }
 
     private AdditionsTags() {
     }
 
     public static class Items {
-
-        private static void init() {
-        }
 
         private Items() {
         }
@@ -67,9 +52,6 @@ public class AdditionsTags {
 
     public static class Blocks {
 
-        private static void init() {
-        }
-
         private Blocks() {
         }
 
@@ -103,23 +85,17 @@ public class AdditionsTags {
 
     public static class DamageTypes {
 
-        private static void init() {
-        }
-
         private DamageTypes() {
         }
 
         public static final TagKey<DamageType> BALLOON_INVULNERABLE = tag("balloon_invulnerable");
 
         private static TagKey<DamageType> tag(String name) {
-            return TagUtils.createKey(Registries.DAMAGE_TYPE, MekanismAdditions.rl(name));
+            return TagKey.create(Registries.DAMAGE_TYPE, MekanismAdditions.rl(name));
         }
     }
 
     public static class Entities {
-
-        private static void init() {
-        }
 
         private Entities() {
         }
@@ -128,7 +104,7 @@ public class AdditionsTags {
         public static final TagKey<EntityType<?>> ENDERMEN = forgeTag("endermen");
 
         private static TagKey<EntityType<?>> forgeTag(String name) {
-            return TagUtils.createKey(ForgeRegistries.ENTITY_TYPES, new ResourceLocation("forge", name));
+            return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("forge", name));
         }
     }
 }

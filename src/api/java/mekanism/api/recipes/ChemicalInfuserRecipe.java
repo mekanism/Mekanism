@@ -7,12 +7,13 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.Contract;
 @NothingNullByDefault
 public abstract class ChemicalInfuserRecipe extends ChemicalChemicalToChemicalRecipe<Gas, GasStack, GasStackIngredient> {
 
-    private static final RegistryObject<Item> CHEMICAL_INFUSER = RegistryObject.create(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "chemical_infuser"), ForgeRegistries.ITEMS);
+    private static final Holder<Item> CHEMICAL_INFUSER = DeferredHolder.create(Registries.ITEM, new ResourceLocation(MekanismAPI.MEKANISM_MODID, "chemical_infuser"));
 
     @Override
     public abstract boolean test(GasStack input1, GasStack input2);
@@ -45,7 +46,7 @@ public abstract class ChemicalInfuserRecipe extends ChemicalChemicalToChemicalRe
 
     @Override
     public final RecipeType<ChemicalInfuserRecipe> getType() {
-        return MekanismRecipeTypes.TYPE_CHEMICAL_INFUSING.get();
+        return MekanismRecipeTypes.TYPE_CHEMICAL_INFUSING.value();
     }
 
     @Override
@@ -55,6 +56,6 @@ public abstract class ChemicalInfuserRecipe extends ChemicalChemicalToChemicalRe
 
     @Override
     public ItemStack getToastSymbol() {
-        return new ItemStack(CHEMICAL_INFUSER.get());
+        return new ItemStack(CHEMICAL_INFUSER);
     }
 }

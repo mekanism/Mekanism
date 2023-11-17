@@ -15,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FastColor;
@@ -32,16 +33,16 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.SoundActions;
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid.Flowing;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid.Source;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -83,10 +84,10 @@ public class FluidDeferredRegister {
 
     public FluidDeferredRegister(String modid) {
         this.modid = modid;
-        blockRegister = DeferredRegister.create(ForgeRegistries.BLOCKS, modid);
-        fluidRegister = DeferredRegister.create(ForgeRegistries.FLUIDS, modid);
-        fluidTypeRegister = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, modid);
-        itemRegister = DeferredRegister.create(ForgeRegistries.ITEMS, modid);
+        blockRegister = DeferredRegister.create(Registries.BLOCK, modid);
+        fluidRegister = DeferredRegister.create(Registries.FLUID, modid);
+        fluidTypeRegister = DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, modid);
+        itemRegister = DeferredRegister.create(Registries.ITEM, modid);
     }
 
     public FluidRegistryObject<MekanismFluidType, Source, Flowing, LiquidBlock, BucketItem> registerLiquidChemical(IChemicalConstant constants) {

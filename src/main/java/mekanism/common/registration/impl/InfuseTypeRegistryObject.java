@@ -3,12 +3,12 @@ package mekanism.common.registration.impl;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.providers.IInfuseTypeProvider;
 import mekanism.common.registration.WrappedRegistryObject;
-import net.neoforged.neoforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class InfuseTypeRegistryObject<INFUSE_TYPE extends InfuseType> extends WrappedRegistryObject<INFUSE_TYPE> implements IInfuseTypeProvider {
+public class InfuseTypeRegistryObject<INFUSE_TYPE extends InfuseType> extends WrappedRegistryObject<InfuseType, INFUSE_TYPE> implements IInfuseTypeProvider {
 
-    public InfuseTypeRegistryObject(RegistryObject<INFUSE_TYPE> registryObject) {
+    public InfuseTypeRegistryObject(DeferredHolder<InfuseType, INFUSE_TYPE> registryObject) {
         super(registryObject);
     }
 

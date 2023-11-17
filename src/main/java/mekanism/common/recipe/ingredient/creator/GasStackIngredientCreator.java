@@ -3,8 +3,8 @@ package mekanism.common.recipe.ingredient.creator;
 import com.mojang.serialization.Codec;
 import java.util.Objects;
 import java.util.stream.Stream;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -77,10 +77,10 @@ public class GasStackIngredientCreator extends ChemicalStackIngredientCreator<Ga
     public static class TaggedGasStackIngredient extends TaggedChemicalStackIngredient<Gas, GasStack> implements GasStackIngredient {
 
         //Note: This must be a lazily initialized so that this class can be loaded in tests
-        static Codec<TaggedGasStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(ChemicalTags.GAS, TaggedGasStackIngredient::new));
+        static Codec<TaggedGasStackIngredient> CODEC = ExtraCodecs.lazyInitializedCodec(() -> makeCodec(MekanismAPI.GAS_REGISTRY_NAME, TaggedGasStackIngredient::new));
 
         private TaggedGasStackIngredient(TagKey<Gas> tag, long amount) {
-            super(ChemicalTags.GAS, tag, amount);
+            super(MekanismAPI.GAS_REGISTRY.getOrCreateTag(tag), amount);
         }
 
         @Override

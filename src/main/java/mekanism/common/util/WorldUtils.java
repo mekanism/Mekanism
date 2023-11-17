@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 import mekanism.common.Mekanism;
-import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
@@ -18,7 +17,6 @@ import net.minecraft.server.level.ChunkHolder.ChunkLoadingFailure;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -448,10 +446,9 @@ public class WorldUtils {
 
     private static void playEmptySound(@Nullable Player player, LevelAccessor world, BlockPos pos, FluidType fluidType, @NotNull FluidStack fluidStack) {
         SoundEvent soundevent = fluidType.getSound(player, world, pos, SoundActions.BUCKET_EMPTY);
-        if (soundevent == null) {
-            soundevent = MekanismTags.Fluids.LAVA_LOOKUP.contains(fluidStack.getFluid()) ? SoundEvents.BUCKET_EMPTY_LAVA : SoundEvents.BUCKET_EMPTY;
+        if (soundevent != null) {
+            world.playSound(player, pos, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
-        world.playSound(player, pos, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
     public static void playFillSound(@Nullable Player player, LevelAccessor world, BlockPos pos, @NotNull FluidStack fluidStack, @Nullable SoundEvent soundEvent) {

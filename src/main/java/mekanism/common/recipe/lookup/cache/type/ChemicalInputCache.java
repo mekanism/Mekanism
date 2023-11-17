@@ -7,6 +7,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
 import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
+import net.minecraft.core.Holder;
 
 public class ChemicalInputCache<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe>
       extends BaseInputCache<CHEMICAL, STACK, ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE> {
@@ -16,7 +17,7 @@ public class ChemicalInputCache<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
         if (inputIngredient instanceof SingleChemicalStackIngredient<CHEMICAL, STACK> single) {
             addInputCache(single.getInputRaw(), recipe);
         } else if (inputIngredient instanceof TaggedChemicalStackIngredient<CHEMICAL, STACK> tagged) {
-            for (CHEMICAL input : tagged.getRawInput()) {
+            for (Holder<CHEMICAL> input : tagged.getRawInput()) {
                 addInputCache(input, recipe);
             }
         } else if (inputIngredient instanceof MultiChemicalStackIngredient<CHEMICAL, STACK, ?> multi) {
