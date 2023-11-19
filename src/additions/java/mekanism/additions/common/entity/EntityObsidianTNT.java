@@ -64,7 +64,7 @@ public class EntityObsidianTNT extends PrimedTnt {
     @NotNull
     @Override
     public EntityType<?> getType() {
-        return AdditionsEntityTypes.OBSIDIAN_TNT.getEntityType();
+        return AdditionsEntityTypes.OBSIDIAN_TNT.value();
     }
 
     @NotNull

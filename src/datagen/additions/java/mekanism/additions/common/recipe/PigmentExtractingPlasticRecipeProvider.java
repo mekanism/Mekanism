@@ -1,10 +1,8 @@
 package mekanism.additions.common.recipe;
 
 import java.util.Map;
-import java.util.function.Consumer;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
-import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.providers.IPigmentProvider;
@@ -12,9 +10,7 @@ import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
-import mekanism.common.registration.impl.PigmentRegistryObject;
 import mekanism.common.registries.MekanismPigments;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
 
 public class PigmentExtractingPlasticRecipeProvider implements ISubRecipeProvider {
@@ -35,7 +31,7 @@ public class PigmentExtractingPlasticRecipeProvider implements ISubRecipeProvide
     @Override
     public void addRecipes(RecipeOutput consumer) {
         String basePath = "pigment_extracting/plastic/";
-        for (Map.Entry<EnumColor, PigmentRegistryObject<Pigment>> entry : MekanismPigments.PIGMENT_COLOR_LOOKUP.entrySet()) {
+        for (Map.Entry<EnumColor, IPigmentProvider> entry : MekanismPigments.PIGMENT_COLOR_LOOKUP.entrySet()) {
             EnumColor color = entry.getKey();
             IPigmentProvider pigment = entry.getValue();
             addExtractionRecipe(consumer, color, AdditionsBlocks.PLASTIC_BLOCKS, pigment, PLASTIC_BLOCK_RATE, basePath + "block/");

@@ -1,11 +1,10 @@
 package mekanism.common.recipe.builder;
 
 import com.google.gson.JsonObject;
-import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.registration.impl.RecipeSerializerRegistryObject;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -21,8 +20,8 @@ public class SpecialRecipeBuilder implements FinishedRecipe {
         this.serializer = serializer;
     }
 
-    public static void build(RecipeOutput consumer, RecipeSerializerRegistryObject<?> serializer) {
-        build(consumer, serializer.get());
+    public static void build(RecipeOutput consumer, Holder<RecipeSerializer<?>> serializer) {
+        build(consumer, serializer.value());
     }
 
     public static void build(RecipeOutput consumer, RecipeSerializer<?> serializer) {

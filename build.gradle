@@ -419,7 +419,6 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://modmaven.dev/', 'appeng', 'mcjty.theoneprobe')
     exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil')
     exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
-    mavenLocal()
 }
 
 test {

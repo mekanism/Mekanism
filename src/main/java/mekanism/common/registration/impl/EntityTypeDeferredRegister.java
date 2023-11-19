@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
-import mekanism.common.registration.WrappedDeferredRegister;
+import mekanism.common.registration.MekanismDeferredRegister;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -12,13 +12,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import org.jetbrains.annotations.NotNull;
 
-public class EntityTypeDeferredRegister extends WrappedDeferredRegister<EntityType<?>> {
+public class EntityTypeDeferredRegister extends MekanismDeferredRegister<EntityType<?>> {
 
     private Map<EntityTypeRegistryObject<? extends LivingEntity>, Supplier<Builder>> livingEntityAttributes = new HashMap<>();
 
     public EntityTypeDeferredRegister(String modid) {
-        super(modid, Registries.ENTITY_TYPE);
+        super(Registries.ENTITY_TYPE, modid, EntityTypeRegistryObject::new);
     }
 
     public <ENTITY extends LivingEntity> EntityTypeRegistryObject<ENTITY> register(String name, EntityType.Builder<ENTITY> builder, Supplier<Builder> attributes) {
@@ -28,11 +29,11 @@ public class EntityTypeDeferredRegister extends WrappedDeferredRegister<EntityTy
     }
 
     public <ENTITY extends Entity> EntityTypeRegistryObject<ENTITY> register(String name, EntityType.Builder<ENTITY> builder) {
-        return register(name, () -> builder.build(name), EntityTypeRegistryObject::new);
+        return (EntityTypeRegistryObject<ENTITY>) register(name, () -> builder.build(name));
     }
 
     @Override
-    public void register(IEventBus bus) {
+    public void register(@NotNull IEventBus bus) {
         super.register(bus);
         bus.addListener(this::registerEntityAttributes);
     }

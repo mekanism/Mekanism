@@ -59,14 +59,14 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "mutton_chops"));
         //Ham
         SawmillRecipeBuilder.sawing(
-                    IngredientCreatorAccess.item().from(getFDItem("HAM")),
+                    IngredientCreatorAccess.item().from(getFDItem("HAM").value()),
                     new ItemStack(Items.PORKCHOP, 2),
                     new ItemStack(Items.BONE),
                     1
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "ham_processing"));
         SawmillRecipeBuilder.sawing(
-                    IngredientCreatorAccess.item().from(getFDItem("SMOKED_HAM")),
+                    IngredientCreatorAccess.item().from(getFDItem("SMOKED_HAM").value()),
                     new ItemStack(Items.COOKED_PORKCHOP, 2),
                     new ItemStack(Items.BONE),
                     1

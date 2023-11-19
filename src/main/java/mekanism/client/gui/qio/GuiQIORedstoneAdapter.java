@@ -51,9 +51,9 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
                 return true;
             }
             return false;
-        }, MekanismSounds.BEEP.holder()).setGhostHandler((IGhostItemConsumer) ingredient -> {
+        }, MekanismSounds.BEEP).setGhostHandler((IGhostItemConsumer) ingredient -> {
             updateStack((ItemStack) ingredient);
-            minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
+            minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP, 1.0F));
         });
         addRenderableWidget(new MekanismImageButton(this, 9, 80, 14, getButtonLocation("fuzzy"),
               () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.QIO_REDSTONE_ADAPTER_FUZZY, tile)), getOnHover(MekanismLang.FUZZY_MODE)));

@@ -151,7 +151,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               ).blankLine()
               .recipe(ChemicalCrystallizerRecipeManager.INSTANCE)
               .addExample("osmium_ingotification", IngredientCreatorAccess.gas().from(MekanismGases.OSMIUM, 200),
-                    new ItemStack(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)))
+                    MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM).getItemStack())
               .addExample("gold_infusion_to_gold", IngredientCreatorAccess.infusion().from(MekanismTags.InfuseTypes.GOLD, 9), new ItemStack(Items.GOLD_NUGGET))
               .end()
               .comment("Removes two Crystallizing Recipes:",

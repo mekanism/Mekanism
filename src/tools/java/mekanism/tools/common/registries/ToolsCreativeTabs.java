@@ -1,8 +1,8 @@
 package mekanism.tools.common.registries;
 
 import mekanism.api.providers.IItemProvider;
+import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister;
-import mekanism.common.registration.impl.CreativeTabRegistryObject;
 import mekanism.common.registries.MekanismCreativeTabs;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsLang;
@@ -20,10 +20,10 @@ public class ToolsCreativeTabs {
 
     public static final CreativeTabDeferredRegister CREATIVE_TABS = new CreativeTabDeferredRegister(MekanismTools.MODID, ToolsCreativeTabs::addToExistingTabs);
 
-    public static final CreativeTabRegistryObject TOOLS = CREATIVE_TABS.registerMain(ToolsLang.MEKANISM_TOOLS, ToolsItems.DIAMOND_PAXEL, builder ->
+    public static final MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> TOOLS = CREATIVE_TABS.registerMain(ToolsLang.MEKANISM_TOOLS, ToolsItems.DIAMOND_PAXEL, builder ->
           builder.withBackgroundLocation(MekanismTools.rl("textures/gui/creative_tab.png"))
                 .withSearchBar(80)//Allow our tabs to be searchable for convenience purposes
-                .withTabsBefore(MekanismCreativeTabs.MEKANISM.key())
+                .withTabsBefore(MekanismCreativeTabs.MEKANISM.getKey())
                 .displayItems((displayParameters, output) -> CreativeTabDeferredRegister.addToDisplay(ToolsItems.ITEMS, output))
     );
 

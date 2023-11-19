@@ -12,7 +12,6 @@ import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
@@ -34,12 +33,11 @@ public record BabyEntitySpawnBiomeModifier(BabyType babyType, AdditionsConfig.Sp
             // but we run before after everything to make it easier for another mod to remove us
             ResourceLocation biomeName = ServerLifecycleHooks.getCurrentServer().registryAccess().registryOrThrow(Registries.BIOME).getKey(biome.value());
             if (!spawnConfig.biomeBlackList.get().contains(biomeName)) {
-                EntityType<?> parent = spawnConfig.parentTypeProvider.getEntityType();
                 MobSpawnSettingsBuilder mobSpawnSettings = builder.getMobSpawnSettings();
                 List<MobSpawnSettings.SpawnerData> monsterSpawns = mobSpawnSettings.getSpawner(MobCategory.MONSTER);
                 for (MobSpawnSettings.SpawnerData spawner : spawnConfig.getSpawnersToAdd(monsterSpawns)) {
                     mobSpawnSettings.addSpawn(MobCategory.MONSTER, spawner);
-                    MobSpawnSettings.MobSpawnCost parentCost = mobSpawnSettings.getCost(parent);
+                    MobSpawnSettings.MobSpawnCost parentCost = mobSpawnSettings.getCost(spawnConfig.parentType);
                     if (parentCost == null) {
                         Mekanism.logger.debug("Adding spawn rate for '{}' in biome '{}', with weight: {}, minSize: {}, maxSize: {}",
                               RegistryUtils.getName(spawner.type), biomeName, spawner.getWeight(), spawner.minCount, spawner.maxCount);

@@ -139,7 +139,7 @@ public class ToolsItems {
         if (material.getVanillaTier() == Tiers.NETHERITE) {
             return ITEMS.registerUnburnable(material.getRegistryPrefix() + "_paxel", properties -> new ItemMekanismPaxel(material, properties));
         }
-        return ITEMS.register(material.getRegistryPrefix() + "_paxel", properties -> new ItemMekanismPaxel(material, properties));
+        return ITEMS.registerItem(material.getRegistryPrefix() + "_paxel", properties -> new ItemMekanismPaxel(material, properties));
     }
 
     private static ItemRegistryObject<ItemMekanismArmor> registerArmor(MaterialCreator material, ArmorItem.Type armorType) {

@@ -81,7 +81,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 select(index);
             }
             addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, slot.x - 1, slot.y - 1)
-                  .click((e, x, y) -> select(index), MekanismSounds.BEEP.holder())
+                  .click((e, x, y) -> select(index), MekanismSounds.BEEP)
                   .overlayColor(isValidItem(index) ? null : () -> 0xCC333333)
                   .with(() -> index == selected ? SlotOverlay.SELECT : null));
         }

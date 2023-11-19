@@ -5,9 +5,12 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.type.MekanismContainerType;
 import mekanism.common.inventory.container.type.MekanismItemContainerType;
-import mekanism.common.registration.WrappedRegistryObject;
+import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.util.RegistryUtils;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
@@ -16,19 +19,16 @@ import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.NetworkHooks;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
-public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu> extends WrappedRegistryObject<MenuType<?>, MenuType<CONTAINER>> {
+public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu> extends MekanismDeferredHolder<MenuType<?>, MenuType<CONTAINER>> {
 
-    public ContainerTypeRegistryObject(DeferredHolder<MenuType<?>, MenuType<CONTAINER>> registryObject) {
-        super(registryObject);
+    public ContainerTypeRegistryObject(ResourceLocation key) {
+        this(ResourceKey.create(Registries.MENU, key));
     }
 
-    //Internal use only overwrite the registry object
-    ContainerTypeRegistryObject<CONTAINER> setRegistryObject(DeferredHolder<MenuType<?>, MenuType<CONTAINER>> registryObject) {
-        this.registryObject = registryObject;
-        return this;
+    public ContainerTypeRegistryObject(ResourceKey<MenuType<?>> key) {
+        super(key);
     }
 
     @Nullable

@@ -9,8 +9,8 @@ import mekanism.api.robit.RobitSkin;
 import mekanism.api.robit.RobitSkinSerializationHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.RobitPrideSkinData;
-import mekanism.common.registration.impl.RobitSkinDeferredRegister;
-import mekanism.common.registration.impl.RobitSkinSerializerRegistryObject;
+import mekanism.common.registration.DatapackDeferredRegister;
+import mekanism.common.registration.DeferredCodecHolder;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -23,14 +23,14 @@ public class MekanismRobitSkins {
     private MekanismRobitSkins() {
     }
 
-    private static final RobitSkinDeferredRegister ROBIT_SKINS = new RobitSkinDeferredRegister(Mekanism.MODID);
+    private static final DatapackDeferredRegister<RobitSkin> ROBIT_SKINS = DatapackDeferredRegister.robitSkins(Mekanism.MODID);
 
     public static void createAndRegisterDatapack(IEventBus modEventBus) {
         ROBIT_SKINS.createAndRegisterDatapack(modEventBus, RobitSkinSerializationHelper.DIRECT_CODEC, RobitSkinSerializationHelper.NETWORK_CODEC);
     }
 
-    public static final RobitSkinSerializerRegistryObject<RobitSkin> BASIC_SERIALIZER = ROBIT_SKINS.registerSerializer("basic", () -> RobitSkinSerializationHelper.NETWORK_CODEC);
-    public static final RobitSkinSerializerRegistryObject<AdvancementBasedRobitSkin> ADVANCEMENT_BASED_SERIALIZER = ROBIT_SKINS.registerSerializer("advancement_based", () -> RobitSkinSerializationHelper.ADVANCEMENT_BASED_ROBIT_SKIN_CODEC);
+    public static final DeferredCodecHolder<RobitSkin, RobitSkin> BASIC_SERIALIZER = ROBIT_SKINS.registerCodec("basic", () -> RobitSkinSerializationHelper.NETWORK_CODEC);
+    public static final DeferredCodecHolder<RobitSkin, AdvancementBasedRobitSkin> ADVANCEMENT_BASED_SERIALIZER = ROBIT_SKINS.registerCodec("advancement_based", () -> RobitSkinSerializationHelper.ADVANCEMENT_BASED_ROBIT_SKIN_CODEC);
 
     public static final ResourceKey<RobitSkin> BASE = ROBIT_SKINS.dataKey("robit");
     public static final ResourceKey<RobitSkin> ALLAY = ROBIT_SKINS.dataKey("allay");

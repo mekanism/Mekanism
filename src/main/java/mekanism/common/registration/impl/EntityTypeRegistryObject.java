@@ -1,21 +1,21 @@
 package mekanism.common.registration.impl;
 
 import mekanism.api.providers.IEntityTypeProvider;
-import mekanism.common.registration.WrappedRegistryObject;
+import mekanism.common.registration.MekanismDeferredHolder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
-public class EntityTypeRegistryObject<ENTITY extends Entity> extends WrappedRegistryObject<EntityType<?>, EntityType<ENTITY>> implements IEntityTypeProvider {
+public class EntityTypeRegistryObject<ENTITY extends Entity> extends MekanismDeferredHolder<EntityType<?>, EntityType<ENTITY>> implements IEntityTypeProvider {
 
-    public EntityTypeRegistryObject(DeferredHolder<EntityType<?>, EntityType<ENTITY>> registryObject) {
-        super(registryObject);
+    public EntityTypeRegistryObject(ResourceKey<EntityType<?>> key) {
+        super(key);
     }
 
     @NotNull
     @Override
     public EntityType<ENTITY> getEntityType() {
-        return get();
+        return value();
     }
 }

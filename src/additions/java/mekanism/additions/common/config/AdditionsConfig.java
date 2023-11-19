@@ -6,7 +6,6 @@ import java.util.Map;
 import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.providers.IEntityTypeProvider;
 import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
@@ -14,11 +13,12 @@ import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedResourceLocationListValue;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.fml.config.ModConfig.Type;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class AdditionsConfig extends BaseMekanismConfig {
 
@@ -45,18 +45,18 @@ public class AdditionsConfig extends BaseMekanismConfig {
               .defineInRange("VoicePort", 36_123, 1, 65_535));
 
         builder.comment("Config options regarding spawning of entities.").push("spawning");
-        addBabyTypeConfig(BabyType.CREEPER, builder, AdditionsEntityTypes.BABY_CREEPER, () -> EntityType.CREEPER);
-        addBabyTypeConfig(BabyType.ENDERMAN, builder, AdditionsEntityTypes.BABY_ENDERMAN, () -> EntityType.ENDERMAN);
-        addBabyTypeConfig(BabyType.SKELETON, builder, AdditionsEntityTypes.BABY_SKELETON, () -> EntityType.SKELETON);
-        addBabyTypeConfig(BabyType.STRAY, builder, AdditionsEntityTypes.BABY_STRAY, () -> EntityType.STRAY);
-        addBabyTypeConfig(BabyType.WITHER_SKELETON, builder, AdditionsEntityTypes.BABY_WITHER_SKELETON, () -> EntityType.WITHER_SKELETON);
+        addBabyTypeConfig(BabyType.CREEPER, builder, AdditionsEntityTypes.BABY_CREEPER, EntityType.CREEPER);
+        addBabyTypeConfig(BabyType.ENDERMAN, builder, AdditionsEntityTypes.BABY_ENDERMAN, EntityType.ENDERMAN);
+        addBabyTypeConfig(BabyType.SKELETON, builder, AdditionsEntityTypes.BABY_SKELETON, EntityType.SKELETON);
+        addBabyTypeConfig(BabyType.STRAY, builder, AdditionsEntityTypes.BABY_STRAY, EntityType.STRAY);
+        addBabyTypeConfig(BabyType.WITHER_SKELETON, builder, AdditionsEntityTypes.BABY_WITHER_SKELETON, EntityType.WITHER_SKELETON);
         builder.pop(2);
         configSpec = builder.build();
     }
 
-    private void addBabyTypeConfig(BabyType type, ModConfigSpec.Builder builder, IEntityTypeProvider entityTypeProvider, IEntityTypeProvider parentTypeProvider) {
+    private void addBabyTypeConfig(BabyType type, ModConfigSpec.Builder builder, Holder<EntityType<?>> entityTypeProvider, EntityType<?> parentType) {
         spawnConfigs.put(type, new SpawnConfig(this, builder, "baby " + type.getSerializedName().replace('_', ' '),
-              entityTypeProvider, parentTypeProvider));
+              entityTypeProvider, parentType));
     }
 
     @Override
@@ -88,13 +88,12 @@ public class AdditionsConfig extends BaseMekanismConfig {
         public final CachedDoubleValue maxSpawnCostPercentage;
         public final CachedResourceLocationListValue biomeBlackList;
         public final CachedResourceLocationListValue structureBlackList;
-        public final IEntityTypeProvider entityTypeProvider;
-        public final IEntityTypeProvider parentTypeProvider;
+        public final Holder<EntityType<?>> entityType;
+        public final EntityType<?> parentType;
 
-        private SpawnConfig(IMekanismConfig config, ModConfigSpec.Builder builder, String name, IEntityTypeProvider entityTypeProvider,
-              IEntityTypeProvider parentTypeProvider) {
-            this.entityTypeProvider = entityTypeProvider;
-            this.parentTypeProvider = parentTypeProvider;
+        private SpawnConfig(IMekanismConfig config, ModConfigSpec.Builder builder, String name, Holder<EntityType<?>> entityType, EntityType<?> parentType) {
+            this.entityType = entityType;
+            this.parentType = parentType;
             builder.comment("Config options regarding " + name + ".").push(name.replace(" ", "-"));
             this.shouldSpawn = CachedBooleanValue.wrap(config, builder.comment("Enable the spawning of " + name + ". Think baby zombies.")
                   .worldRestart()
@@ -125,15 +124,14 @@ public class AdditionsConfig extends BaseMekanismConfig {
             int weight = (int) Math.ceil(parentEntry.getWeight().asInt() * weightPercentage.get());
             int minSize = (int) Math.ceil(parentEntry.minCount * minSizePercentage.get());
             int maxSize = (int) Math.ceil(parentEntry.maxCount * maxSizePercentage.get());
-            return new MobSpawnSettings.SpawnerData(entityTypeProvider.getEntityType(), weight, minSize, Math.max(minSize, maxSize));
+            return new MobSpawnSettings.SpawnerData(entityType.value(), weight, minSize, Math.max(minSize, maxSize));
         }
 
         public List<MobSpawnSettings.SpawnerData> getSpawnersToAdd(List<MobSpawnSettings.SpawnerData> monsterSpawns) {
-            EntityType<?> parent = parentTypeProvider.getEntityType();
             //If the adult mob can spawn let the baby mob spawn as well
             //Note: We adjust the mob's spawning based on the adult's spawn rates
             return monsterSpawns.stream()
-                  .filter(monsterSpawn -> monsterSpawn.type == parent)
+                  .filter(monsterSpawn -> monsterSpawn.type == parentType)
                   .map(this::getSpawner)
                   .toList();
         }

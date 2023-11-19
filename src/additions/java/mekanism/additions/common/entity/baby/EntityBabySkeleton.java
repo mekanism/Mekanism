@@ -73,7 +73,7 @@ public class EntityBabySkeleton extends Skeleton implements IBabyEntity {
 
     @Override
     protected void doFreezeConversion() {
-        convertTo(AdditionsEntityTypes.BABY_STRAY.getEntityType(), true);
+        convertTo(AdditionsEntityTypes.BABY_STRAY.value(), true);
         if (!this.isSilent()) {
             level().levelEvent(null, LevelEvent.SOUND_SKELETON_TO_STRAY, this.blockPosition(), 0);
         }

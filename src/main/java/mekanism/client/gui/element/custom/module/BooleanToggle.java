@@ -60,6 +60,6 @@ class BooleanToggle extends MiniElement {
 
     private void setDataFromClick(boolean value) {
         setData(data, value);
-        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP, 1.0F));
     }
 }

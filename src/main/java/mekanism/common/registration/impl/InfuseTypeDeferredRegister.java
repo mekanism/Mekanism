@@ -2,27 +2,32 @@ package mekanism.common.registration.impl;
 
 import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfuseTypeBuilder;
-import mekanism.common.registration.WrappedDeferredRegister;
+import mekanism.common.registration.MekanismDeferredRegister;
+import mekanism.common.registration.impl.DeferredChemical.DeferredInfuseType;
 import mekanism.common.util.ChemicalUtil;
 import net.minecraft.resources.ResourceLocation;
 
-public class InfuseTypeDeferredRegister extends WrappedDeferredRegister<InfuseType> {
+@NothingNullByDefault
+public class InfuseTypeDeferredRegister extends MekanismDeferredRegister<InfuseType> {
 
     public InfuseTypeDeferredRegister(String modid) {
-        super(modid, MekanismAPI.INFUSE_TYPE_REGISTRY_NAME);
+        super(MekanismAPI.INFUSE_TYPE_REGISTRY_NAME, modid, DeferredInfuseType::new);
     }
 
-    public InfuseTypeRegistryObject<InfuseType> register(String name, int tint) {
+    public DeferredInfuseType<InfuseType> register(String name, int tint) {
         return register(name, () -> new InfuseType(InfuseTypeBuilder.builder().tint(tint)));
     }
 
-    public InfuseTypeRegistryObject<InfuseType> register(String name, ResourceLocation texture, int barColor) {
+    public DeferredInfuseType<InfuseType> register(String name, ResourceLocation texture, int barColor) {
         return register(name, () -> ChemicalUtil.infuseType(InfuseTypeBuilder.builder(texture), barColor));
     }
 
-    public <INFUSE_TYPE extends InfuseType> InfuseTypeRegistryObject<INFUSE_TYPE> register(String name, Supplier<? extends INFUSE_TYPE> sup) {
-        return register(name, sup, InfuseTypeRegistryObject::new);
+    @Override
+    @SuppressWarnings("unchecked")
+    public <INFUSE_TYPE extends InfuseType> DeferredInfuseType<INFUSE_TYPE> register(String name, Supplier<? extends INFUSE_TYPE> sup) {
+        return (DeferredInfuseType<INFUSE_TYPE>) super.register(name, sup);
     }
 }
