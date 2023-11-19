@@ -1,5 +1,6 @@
 package mekanism.additions.common;
 
+import java.util.function.Supplier;
 import mekanism.additions.client.AdditionsClient;
 import mekanism.additions.common.block.BlockObsidianTNT;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
@@ -16,12 +17,12 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
-import mekanism.common.registration.impl.EntityTypeRegistryObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.animal.Parrot;
 import net.minecraft.world.entity.monster.Monster;
@@ -29,9 +30,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
@@ -39,6 +37,9 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import org.jetbrains.annotations.NotNull;
 
 @Mod(MekanismAdditions.MODID)
@@ -138,10 +139,9 @@ public class MekanismAdditions implements IModModule {
     }
 
     @SafeVarargs
-    private static void registerSpawnControls(EntityTypeRegistryObject<? extends Monster>... entityTypeROs) {
-        for (EntityTypeRegistryObject<? extends Monster> entityTypeRO : entityTypeROs) {
-            SpawnPlacements.register(entityTypeRO.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                  Monster::checkMonsterSpawnRules);
+    private static void registerSpawnControls(Supplier<? extends EntityType<? extends Monster>>... entityTypeROs) {
+        for (Supplier<? extends EntityType<? extends Monster>> entityTypeRO : entityTypeROs) {
+            SpawnPlacements.register(entityTypeRO.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkMonsterSpawnRules);
         }
     }
 

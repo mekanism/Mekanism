@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
+import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.MekanismDeferredRegister;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.Entity;
@@ -16,20 +17,20 @@ import org.jetbrains.annotations.NotNull;
 
 public class EntityTypeDeferredRegister extends MekanismDeferredRegister<EntityType<?>> {
 
-    private Map<EntityTypeRegistryObject<? extends LivingEntity>, Supplier<Builder>> livingEntityAttributes = new HashMap<>();
+    private Map<Supplier<? extends EntityType<? extends LivingEntity>>, Supplier<Builder>> livingEntityAttributes = new HashMap<>();
 
     public EntityTypeDeferredRegister(String modid) {
-        super(Registries.ENTITY_TYPE, modid, EntityTypeRegistryObject::new);
+        super(Registries.ENTITY_TYPE, modid);
     }
 
-    public <ENTITY extends LivingEntity> EntityTypeRegistryObject<ENTITY> register(String name, EntityType.Builder<ENTITY> builder, Supplier<Builder> attributes) {
-        EntityTypeRegistryObject<ENTITY> entityTypeRO = register(name, builder);
+    public <ENTITY extends LivingEntity> MekanismDeferredHolder<EntityType<?>, EntityType<ENTITY>> register(String name, EntityType.Builder<ENTITY> builder, Supplier<Builder> attributes) {
+        MekanismDeferredHolder<EntityType<?>, EntityType<ENTITY>> entityTypeRO = register(name, builder);
         livingEntityAttributes.put(entityTypeRO, attributes);
         return entityTypeRO;
     }
 
-    public <ENTITY extends Entity> EntityTypeRegistryObject<ENTITY> register(String name, EntityType.Builder<ENTITY> builder) {
-        return (EntityTypeRegistryObject<ENTITY>) register(name, () -> builder.build(name));
+    public <ENTITY extends Entity> MekanismDeferredHolder<EntityType<?>, EntityType<ENTITY>> register(String name, EntityType.Builder<ENTITY> builder) {
+        return register(name, () -> builder.build(name));
     }
 
     @Override
@@ -43,9 +44,7 @@ public class EntityTypeDeferredRegister extends MekanismDeferredRegister<EntityT
             Mekanism.logger.error("GlobalEntityTypeAttributes have already been set. This should not happen.");
         } else {
             //Register our living entity attributes
-            for (Map.Entry<EntityTypeRegistryObject<? extends LivingEntity>, Supplier<Builder>> entry : livingEntityAttributes.entrySet()) {
-                event.put(entry.getKey().get(), entry.getValue().get().build());
-            }
+            livingEntityAttributes.forEach((holder, builder) -> event.put(holder.get(), builder.get().build()));
             //And set the map to null to allow it to be garbage collected
             livingEntityAttributes = null;
         }

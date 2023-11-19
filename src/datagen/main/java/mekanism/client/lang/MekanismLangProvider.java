@@ -344,8 +344,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addEntities() {
-        add(MekanismEntityTypes.FLAME, "Flamethrower Flame");
-        add(MekanismEntityTypes.ROBIT, "Robit");
+        addEntity(MekanismEntityTypes.FLAME, "Flamethrower Flame");
+        addEntity(MekanismEntityTypes.ROBIT, "Robit");
     }
 
     private void addGases() {

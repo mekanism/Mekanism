@@ -15,8 +15,10 @@ import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.Util;
+import net.minecraft.core.Holder;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import org.jetbrains.annotations.NotNull;
@@ -57,6 +59,10 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     protected void addPackData(IHasTranslationKey name, IHasTranslationKey packDescription) {
         add(name, modName);
         add(packDescription, "Resources used for " + modName);
+    }
+
+    protected void addEntity(Holder<EntityType<?>> key, String value) {
+        add(key.value().getDescriptionId(), value);
     }
 
     protected void add(IHasTranslationKey key, String value) {

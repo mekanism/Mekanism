@@ -11,9 +11,11 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.item.ItemModule;
+import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.MekanismDeferredRegister;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -73,7 +75,7 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
         return registeredItem;
     }
 
-    public <ENTITY extends Mob> ItemRegistryObject<DeferredSpawnEggItem> registerSpawnEgg(EntityTypeRegistryObject<ENTITY> entityTypeProvider,
+    public ItemRegistryObject<DeferredSpawnEggItem> registerSpawnEgg(MekanismDeferredHolder<EntityType<?>, ? extends EntityType<? extends Mob>> entityTypeProvider,
           int primaryColor, int secondaryColor) {
         return registerItem(entityTypeProvider.getInternalRegistryName() + "_spawn_egg", props -> new DeferredSpawnEggItem(entityTypeProvider, primaryColor,
               secondaryColor, props));

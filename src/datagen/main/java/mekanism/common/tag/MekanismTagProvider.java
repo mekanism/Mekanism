@@ -136,10 +136,10 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addEntities() {
-        addToTag(EntityTypeTags.IMPACT_PROJECTILES, MekanismEntityTypes.FLAME);
-        addToTag(EntityTypeTags.POWDER_SNOW_WALKABLE_MOBS, MekanismEntityTypes.ROBIT);
-        addToTag(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES, MekanismEntityTypes.ROBIT);
-        addToTag(PVI_COMPAT, MekanismEntityTypes.ROBIT);
+        addEntitiesToTag(EntityTypeTags.IMPACT_PROJECTILES, MekanismEntityTypes.FLAME);
+        addEntitiesToTag(EntityTypeTags.POWDER_SNOW_WALKABLE_MOBS, MekanismEntityTypes.ROBIT);
+        addEntitiesToTag(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES, MekanismEntityTypes.ROBIT);
+        addEntitiesToTag(PVI_COMPAT, MekanismEntityTypes.ROBIT);
     }
 
     private void addProcessedResources() {
