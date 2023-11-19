@@ -6,6 +6,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
 
 @NothingNullByDefault
@@ -45,10 +46,9 @@ public interface IChemicalStackIngredientCreator<CHEMICAL extends Chemical<CHEMI
      *
      * @since 10.5.0
      */
-    //TODO - 1.20.2: Figure out about adding this given our deferred holders implement both the provider and this
-    /*default INGREDIENT from(Holder<CHEMICAL> instance, long amount) {
+    default INGREDIENT fromHolder(Holder<CHEMICAL> instance, long amount) {
         return from(instance.value(), amount);
-    }*/
+    }
 
     @Override
     default INGREDIENT from(TagKey<CHEMICAL> tag, int amount) {

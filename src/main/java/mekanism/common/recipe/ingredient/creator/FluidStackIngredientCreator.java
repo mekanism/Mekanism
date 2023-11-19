@@ -237,7 +237,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
 
         @Override
         public boolean testType(FluidStack fluidStack) {
-            return Objects.requireNonNull(fluidStack).getFluid().builtInRegistryHolder().is(getTag());
+            return Objects.requireNonNull(fluidStack).getFluid().is(getTag());
         }
 
         @Override
@@ -264,7 +264,7 @@ public class FluidStackIngredientCreator implements IFluidStackIngredientCreator
             //TODO: Can this be cached somehow
             List<@NotNull FluidStack> representations = new ArrayList<>();
             for (Holder<Fluid> fluid : tag) {
-                representations.add(new FluidStack(fluid.value(), amount));
+                representations.add(new FluidStack(fluid, amount));
             }
             return representations;
         }

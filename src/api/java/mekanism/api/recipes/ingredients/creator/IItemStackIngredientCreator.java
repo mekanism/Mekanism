@@ -3,6 +3,7 @@ package mekanism.api.recipes.ingredients.creator;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -50,10 +51,9 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      *
      * @since 10.5.0
      */
-    //TODO - 1.20.2: Figure out about adding this given our deferred holders implement both the provider and this
-    /*default ItemStackIngredient from(Holder<Item> item) {
-        return from(item, 1);
-    }*/
+    default ItemStackIngredient fromHolder(Holder<Item> item) {
+        return fromHolder(item, 1);
+    }
 
     /**
      * Creates an Item Stack Ingredient that matches a provided item.
