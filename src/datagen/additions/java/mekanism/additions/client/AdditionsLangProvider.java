@@ -63,13 +63,13 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
     }
 
     private void addEntities() {
-        add(AdditionsEntityTypes.BABY_CREEPER, "Baby Creeper");
-        add(AdditionsEntityTypes.BABY_ENDERMAN, "Baby Enderman");
-        add(AdditionsEntityTypes.BABY_SKELETON, "Baby Skeleton");
-        add(AdditionsEntityTypes.BABY_STRAY, "Baby Stray");
-        add(AdditionsEntityTypes.BABY_WITHER_SKELETON, "Baby Wither Skeleton");
-        add(AdditionsEntityTypes.BALLOON, "Balloon");
-        add(AdditionsEntityTypes.OBSIDIAN_TNT, "Obsidian TNT");
+        addEntity(AdditionsEntityTypes.BABY_CREEPER, "Baby Creeper");
+        addEntity(AdditionsEntityTypes.BABY_ENDERMAN, "Baby Enderman");
+        addEntity(AdditionsEntityTypes.BABY_SKELETON, "Baby Skeleton");
+        addEntity(AdditionsEntityTypes.BABY_STRAY, "Baby Stray");
+        addEntity(AdditionsEntityTypes.BABY_WITHER_SKELETON, "Baby Wither Skeleton");
+        addEntity(AdditionsEntityTypes.BALLOON, "Balloon");
+        addEntity(AdditionsEntityTypes.OBSIDIAN_TNT, "Obsidian TNT");
     }
 
     private void addSubtitles() {

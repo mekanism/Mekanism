@@ -17,7 +17,6 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IChemicalProvider;
-import mekanism.api.providers.IEntityTypeProvider;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.providers.IInfuseTypeProvider;
 import mekanism.api.providers.IPigmentProvider;
@@ -244,8 +243,9 @@ public abstract class BaseTagProvider implements DataProvider {
         getDamageTypeBuilder(tag).add(MekanismDamageType::registryName, damageTypes);
     }
 
-    protected void addToTag(TagKey<EntityType<?>> tag, IEntityTypeProvider... entityTypeProviders) {
-        getEntityTypeBuilder(tag).addTyped(IEntityTypeProvider::getEntityType, entityTypeProviders);
+    @SafeVarargs
+    protected final void addEntitiesToTag(TagKey<EntityType<?>> tag, Holder<EntityType<?>>... entityTypeProviders) {
+        getEntityTypeBuilder(tag).addTyped(Holder::value, entityTypeProviders);
     }
 
     protected void addToTag(TagKey<Fluid> tag, FluidRegistryObject<?, ?, ?, ?, ?>... fluidRegistryObjects) {

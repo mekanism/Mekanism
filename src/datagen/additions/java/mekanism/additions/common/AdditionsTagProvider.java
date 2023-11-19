@@ -52,12 +52,12 @@ public class AdditionsTagProvider extends BaseTagProvider {
     }
 
     private void addEntities() {
-        addToTag(EntityTypeTags.FALL_DAMAGE_IMMUNE, AdditionsEntityTypes.BALLOON);
-        addToTag(EntityTypeTags.SKELETONS, AdditionsEntityTypes.BABY_SKELETON, AdditionsEntityTypes.BABY_STRAY, AdditionsEntityTypes.BABY_WITHER_SKELETON);
-        getEntityTypeBuilder(AdditionsTags.Entities.CREEPERS).add(EntityType.CREEPER, AdditionsEntityTypes.BABY_CREEPER.getEntityType());
-        getEntityTypeBuilder(AdditionsTags.Entities.ENDERMEN).add(EntityType.ENDERMAN, AdditionsEntityTypes.BABY_ENDERMAN.getEntityType());
-        addToTag(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES, AdditionsEntityTypes.BABY_STRAY);
-        addToTag(MekanismTagProvider.PVI_COMPAT, AdditionsEntityTypes.BABY_CREEPER, AdditionsEntityTypes.BABY_ENDERMAN, AdditionsEntityTypes.BABY_SKELETON,
+        addEntitiesToTag(EntityTypeTags.FALL_DAMAGE_IMMUNE, AdditionsEntityTypes.BALLOON);
+        addEntitiesToTag(EntityTypeTags.SKELETONS, AdditionsEntityTypes.BABY_SKELETON, AdditionsEntityTypes.BABY_STRAY, AdditionsEntityTypes.BABY_WITHER_SKELETON);
+        getEntityTypeBuilder(AdditionsTags.Entities.CREEPERS).add(EntityType.CREEPER, AdditionsEntityTypes.BABY_CREEPER.value());
+        getEntityTypeBuilder(AdditionsTags.Entities.ENDERMEN).add(EntityType.ENDERMAN, AdditionsEntityTypes.BABY_ENDERMAN.value());
+        addEntitiesToTag(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES, AdditionsEntityTypes.BABY_STRAY);
+        addEntitiesToTag(MekanismTagProvider.PVI_COMPAT, AdditionsEntityTypes.BABY_CREEPER, AdditionsEntityTypes.BABY_ENDERMAN, AdditionsEntityTypes.BABY_SKELETON,
               AdditionsEntityTypes.BABY_STRAY, AdditionsEntityTypes.BABY_WITHER_SKELETON);
     }
 
