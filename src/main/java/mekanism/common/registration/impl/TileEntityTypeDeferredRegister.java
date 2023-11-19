@@ -1,18 +1,21 @@
 package mekanism.common.registration.impl;
 
-import mekanism.common.registration.WrappedDeferredRegister;
+import mekanism.common.registration.MekanismDeferredRegister;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BlockEntityType.BlockEntitySupplier;
 import org.jetbrains.annotations.Nullable;
 
-public class TileEntityTypeDeferredRegister extends WrappedDeferredRegister<BlockEntityType<?>> {
+public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<BlockEntityType<?>> {
 
     public TileEntityTypeDeferredRegister(String modid) {
-        super(modid, Registries.BLOCK_ENTITY_TYPE);
+        //Note: We intentionally don't pass a more restrictive type for holder creation as we ignore the holder that gets created
+        // in favor of one we create ourselves
+        super(Registries.BLOCK_ENTITY_TYPE, modid);
     }
 
     public <BE extends TileEntityMekanism> TileEntityTypeRegistryObject<BE> register(BlockRegistryObject<?, ?> block, BlockEntitySupplier<? extends BE> factory) {
@@ -59,10 +62,12 @@ public class TileEntityTypeDeferredRegister extends WrappedDeferredRegister<Bloc
 
         @SuppressWarnings("ConstantConditions")
         public TileEntityTypeRegistryObject<BE> build() {
-            TileEntityTypeRegistryObject<BE> registryObject = new TileEntityTypeRegistryObject<>(null);
+            String name = block.getInternalRegistryName();
+            TileEntityTypeRegistryObject<BE> registryObject = new TileEntityTypeRegistryObject<>(new ResourceLocation(getNamespace(), name));
             registryObject.clientTicker(clientTicker).serverTicker(serverTicker);
-            return register(block.getInternalRegistryName(), () -> BlockEntityType.Builder.<BE>of(factory, block.getBlock()).build(null),
-                  registryObject::setRegistryObject);
+            //Register the BE, but don't care about the returned holder as we already made the holder ourselves so that we could add extra data to it
+            register(name, () -> BlockEntityType.Builder.<BE>of(factory, block.getBlock()).build(null));
+            return registryObject;
         }
     }
 }

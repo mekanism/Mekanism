@@ -23,7 +23,7 @@ public class AdditionsItems {
     public static final ItemRegistryObject<DeferredSpawnEggItem> BABY_SKELETON_SPAWN_EGG = ITEMS.registerSpawnEgg(AdditionsEntityTypes.BABY_SKELETON, 0xFFFFFF, 0x800080);
     public static final ItemRegistryObject<DeferredSpawnEggItem> BABY_STRAY_SPAWN_EGG = ITEMS.registerSpawnEgg(AdditionsEntityTypes.BABY_STRAY, 0x7B9394, 0xF2FAFA);
     public static final ItemRegistryObject<DeferredSpawnEggItem> BABY_WITHER_SKELETON_SPAWN_EGG = ITEMS.registerSpawnEgg(AdditionsEntityTypes.BABY_WITHER_SKELETON, 0x303030, 0x525454);
-    public static final ItemRegistryObject<ItemWalkieTalkie> WALKIE_TALKIE = ITEMS.register("walkie_talkie", ItemWalkieTalkie::new);
+    public static final ItemRegistryObject<ItemWalkieTalkie> WALKIE_TALKIE = ITEMS.registerItem("walkie_talkie", ItemWalkieTalkie::new);
 
     public static final Map<EnumColor, ItemRegistryObject<ItemBalloon>> BALLOONS = new EnumMap<>(EnumColor.class);
 

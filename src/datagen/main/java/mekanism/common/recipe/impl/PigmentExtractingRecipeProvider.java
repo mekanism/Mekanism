@@ -2,17 +2,13 @@ package mekanism.common.recipe.impl;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.function.Consumer;
-import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.providers.IPigmentProvider;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
-import mekanism.common.registration.impl.PigmentRegistryObject;
 import mekanism.common.registries.MekanismPigments;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
@@ -221,7 +217,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
     }
 
     private static void addExtractionRecipes(RecipeOutput consumer, String basePath) {
-        for (Map.Entry<EnumColor, PigmentRegistryObject<Pigment>> entry : MekanismPigments.PIGMENT_COLOR_LOOKUP.entrySet()) {
+        for (Map.Entry<EnumColor, IPigmentProvider> entry : MekanismPigments.PIGMENT_COLOR_LOOKUP.entrySet()) {
             EnumColor color = entry.getKey();
             IPigmentProvider pigment = entry.getValue();
             DyeColor dye = color.getDyeColor();

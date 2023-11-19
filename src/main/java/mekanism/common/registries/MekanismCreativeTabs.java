@@ -15,8 +15,8 @@ import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.block.transmitter.BlockTransmitter;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.Machine;
+import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister;
-import mekanism.common.registration.impl.CreativeTabRegistryObject;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.tier.ChemicalTankTier;
@@ -37,7 +37,7 @@ public class MekanismCreativeTabs {
 
     public static final CreativeTabDeferredRegister CREATIVE_TABS = new CreativeTabDeferredRegister(Mekanism.MODID, MekanismCreativeTabs::addToExistingTabs);
 
-    public static final CreativeTabRegistryObject MEKANISM = CREATIVE_TABS.registerMain(MekanismLang.MEKANISM, MekanismBlocks.METALLURGIC_INFUSER, builder ->
+    public static final MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> MEKANISM = CREATIVE_TABS.registerMain(MekanismLang.MEKANISM, MekanismBlocks.METALLURGIC_INFUSER, builder ->
           builder.withSearchBar()//Allow our tabs to be searchable for convenience purposes
                 .displayItems((displayParameters, output) -> {
                     CreativeTabDeferredRegister.addToDisplay(MekanismItems.ITEMS, output);

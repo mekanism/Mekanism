@@ -130,7 +130,7 @@ public class MekanismRecipeType<RECIPE extends MekanismRecipe, INPUT_CACHE exten
         if (!Mekanism.MODID.equals(name.getNamespace())) {
             throw new IllegalStateException("Name must be in " + Mekanism.MODID + " namespace");
         }
-        return RECIPE_TYPES.register(name.getPath(), () -> new MekanismRecipeType<>(name, inputCacheCreator));
+        return RECIPE_TYPES.registerMek(name.getPath(), registryName -> new MekanismRecipeType<>(registryName, inputCacheCreator));
     }
 
     public static void clearCache() {

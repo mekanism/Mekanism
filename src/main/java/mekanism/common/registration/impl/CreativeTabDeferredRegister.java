@@ -7,14 +7,16 @@ import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.SpecialColors;
 import mekanism.common.block.BlockBounding;
-import mekanism.common.registration.WrappedDeferredRegister;
+import mekanism.common.registration.MekanismDeferredHolder;
+import mekanism.common.registration.MekanismDeferredRegister;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import org.jetbrains.annotations.NotNull;
 
-public class CreativeTabDeferredRegister extends WrappedDeferredRegister<CreativeModeTab> {
+public class CreativeTabDeferredRegister extends MekanismDeferredRegister<CreativeModeTab> {
 
     private final Consumer<BuildCreativeModeTabContentsEvent> addToExistingTabs;
     private final String modid;
@@ -25,13 +27,13 @@ public class CreativeTabDeferredRegister extends WrappedDeferredRegister<Creativ
     }
 
     public CreativeTabDeferredRegister(String modid, Consumer<BuildCreativeModeTabContentsEvent> addToExistingTabs) {
-        super(modid, Registries.CREATIVE_MODE_TAB);
+        super(Registries.CREATIVE_MODE_TAB, modid);
         this.modid = modid;
         this.addToExistingTabs = addToExistingTabs;
     }
 
     @Override
-    public void register(IEventBus bus) {
+    public void register(@NotNull IEventBus bus) {
         super.register(bus);
         bus.addListener(addToExistingTabs);
     }
@@ -39,21 +41,21 @@ public class CreativeTabDeferredRegister extends WrappedDeferredRegister<Creativ
     /**
      * @apiNote We manually require the title and icon to be passed so that we ensure all tabs have one.
      */
-    public CreativeTabRegistryObject registerMain(ILangEntry title, IItemProvider icon, UnaryOperator<CreativeModeTab.Builder> operator) {
+    public MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> registerMain(ILangEntry title, IItemProvider icon, UnaryOperator<CreativeModeTab.Builder> operator) {
         return register(modid, title, icon, operator);
     }
 
     /**
      * @apiNote We manually require the title and icon to be passed so that we ensure all tabs have one.
      */
-    public CreativeTabRegistryObject register(String name, ILangEntry title, IItemProvider icon, UnaryOperator<CreativeModeTab.Builder> operator) {
+    public MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> register(String name, ILangEntry title, IItemProvider icon, UnaryOperator<CreativeModeTab.Builder> operator) {
         return register(name, () -> {
             CreativeModeTab.Builder builder = CreativeModeTab.builder()
                   .title(title.translate())
                   .icon(icon::getItemStack)
                   .withTabFactory(MekanismCreativeTab::new);
             return operator.apply(builder).build();
-        }, CreativeTabRegistryObject::new);
+        });
     }
 
     public static void addToDisplay(CreativeModeTab.Output output, ItemLike... items) {

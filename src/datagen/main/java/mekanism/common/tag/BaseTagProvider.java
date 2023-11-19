@@ -23,10 +23,10 @@ import mekanism.api.providers.IInfuseTypeProvider;
 import mekanism.api.providers.IPigmentProvider;
 import mekanism.api.providers.ISlurryProvider;
 import mekanism.common.registration.impl.FluidRegistryObject;
-import mekanism.common.registration.impl.GameEventRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismDamageTypes.MekanismDamageType;
 import mekanism.common.util.RegistryUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -235,8 +235,9 @@ public abstract class BaseTagProvider implements DataProvider {
         }
     }
 
-    protected void addToTag(TagKey<GameEvent> tag, GameEventRegistryObject<?>... gameEventROs) {
-        getGameEventBuilder(tag).addTyped(GameEventRegistryObject::get, gameEventROs);
+    @SafeVarargs
+    protected final void addToTag(TagKey<GameEvent> tag, Holder<GameEvent>... gameEventROs) {
+        getGameEventBuilder(tag).addTyped(Holder::value, gameEventROs);
     }
 
     protected void addToTag(TagKey<DamageType> tag, MekanismDamageType... damageTypes) {

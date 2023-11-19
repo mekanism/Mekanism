@@ -19,11 +19,11 @@ import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.network.to_client.PacketResetPlayerClient;
 import mekanism.common.network.to_server.PacketGearStateUpdate;
 import mekanism.common.network.to_server.PacketGearStateUpdate.GearType;
-import mekanism.common.registration.impl.GameEventRegistryObject;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -284,7 +284,7 @@ public class PlayerState {
                 IModule<ModuleGravitationalModulatingUnit> module = IModuleHelper.INSTANCE.load(player.getItemBySlot(EquipmentSlot.CHEST), MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
                 if (module != null) {//Should not be null but double check
                     FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
-                    GameEventRegistryObject<GameEvent> gameEvent = MekanismGameEvents.GRAVITY_MODULATE;
+                    Holder<GameEvent> gameEvent = MekanismGameEvents.GRAVITY_MODULATE;
                     if (Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
                         FloatingLong boostUsage = usage.multiply(4);
                         if (module.canUseEnergy(player, boostUsage, false)) {
@@ -298,7 +298,7 @@ public class PlayerState {
                     }
                     module.useEnergy(player, usage);
                     if (MekanismConfig.gear.mekaSuitGravitationalVibrations.get() && player.level().getGameTime() % 10 == 0) {
-                        player.gameEvent(gameEvent.get());
+                        player.gameEvent(gameEvent.value());
                     }
                 }
             }

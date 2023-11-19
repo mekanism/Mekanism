@@ -3,9 +3,9 @@ package mekanism.client.lang;
 import com.google.common.collect.Table.Cell;
 import java.util.Map;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
+import mekanism.api.providers.IPigmentProvider;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
@@ -18,7 +18,6 @@ import mekanism.common.integration.lookingat.LookingAtUtils;
 import mekanism.common.integration.lookingat.jade.JadeConstants;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
-import mekanism.common.registration.impl.PigmentRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDamageTypes;
@@ -391,7 +390,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     private void addPigments() {
         add(MekanismAPI.EMPTY_PIGMENT, "Empty");
-        for (Map.Entry<EnumColor, PigmentRegistryObject<Pigment>> entry : MekanismPigments.PIGMENT_COLOR_LOOKUP.entrySet()) {
+        for (Map.Entry<EnumColor, IPigmentProvider> entry : MekanismPigments.PIGMENT_COLOR_LOOKUP.entrySet()) {
             add(entry.getValue(), entry.getKey().getEnglishName() + " Pigment");
         }
     }

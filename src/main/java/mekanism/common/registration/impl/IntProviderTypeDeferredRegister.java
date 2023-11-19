@@ -1,23 +1,19 @@
 package mekanism.common.registration.impl;
 
 import com.mojang.serialization.Codec;
-import java.util.function.Supplier;
-import mekanism.common.registration.WrappedDeferredRegister;
+import mekanism.common.registration.MekanismDeferredHolder;
+import mekanism.common.registration.MekanismDeferredRegister;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.IntProviderType;
 
-public class IntProviderTypeDeferredRegister extends WrappedDeferredRegister<IntProviderType<?>> {
+public class IntProviderTypeDeferredRegister extends MekanismDeferredRegister<IntProviderType<?>> {
 
     public IntProviderTypeDeferredRegister(String modid) {
-        super(modid, Registries.INT_PROVIDER_TYPE);
+        super(Registries.INT_PROVIDER_TYPE, modid);
     }
 
-    public <PROVIDER extends IntProvider> IntProviderTypeRegistryObject<PROVIDER> register(String name, Codec<PROVIDER> codec) {
+    public <PROVIDER extends IntProvider> MekanismDeferredHolder<IntProviderType<?>, IntProviderType<PROVIDER>> register(String name, Codec<PROVIDER> codec) {
         return register(name, () -> () -> codec);
-    }
-
-    public <PROVIDER extends IntProvider> IntProviderTypeRegistryObject<PROVIDER> register(String name, Supplier<? extends IntProviderType<PROVIDER>> sup) {
-        return register(name, sup, IntProviderTypeRegistryObject::new);
     }
 }

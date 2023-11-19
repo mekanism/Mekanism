@@ -5,8 +5,8 @@ import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
+import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister;
-import mekanism.common.registration.impl.CreativeTabRegistryObject;
 import mekanism.common.registries.MekanismCreativeTabs;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
@@ -17,11 +17,11 @@ public class AdditionsCreativeTabs {
 
     public static final CreativeTabDeferredRegister CREATIVE_TABS = new CreativeTabDeferredRegister(MekanismAdditions.MODID, AdditionsCreativeTabs::addToExistingTabs);
 
-    public static final CreativeTabRegistryObject ADDITIONS = CREATIVE_TABS.registerMain(AdditionsLang.MEKANISM_ADDITIONS,
+    public static final MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> ADDITIONS = CREATIVE_TABS.registerMain(AdditionsLang.MEKANISM_ADDITIONS,
           AdditionsItems.BALLOONS.get(EnumColor.BRIGHT_GREEN), builder ->
                 builder.withBackgroundLocation(MekanismAdditions.rl("textures/gui/creative_tab.png"))
                       .withSearchBar(65)//Allow our tabs to be searchable for convenience purposes
-                      .withTabsBefore(MekanismCreativeTabs.MEKANISM.key())
+                      .withTabsBefore(MekanismCreativeTabs.MEKANISM.getKey())
                       .displayItems((displayParameters, output) -> {
                           CreativeTabDeferredRegister.addToDisplay(AdditionsItems.ITEMS, output);
                           CreativeTabDeferredRegister.addToDisplay(AdditionsBlocks.BLOCKS, output);

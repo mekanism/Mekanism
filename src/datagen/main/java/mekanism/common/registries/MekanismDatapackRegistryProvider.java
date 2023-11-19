@@ -5,6 +5,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
 import mekanism.api.robit.AdvancementBasedRobitSkin;
 import mekanism.api.robit.BasicRobitSkin;
@@ -13,7 +14,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.WorldConfig.OreVeinConfig;
 import mekanism.common.entity.RobitPrideSkinData;
-import mekanism.common.registration.impl.FeatureRegistryObject;
 import mekanism.common.registries.MekanismDamageTypes.MekanismDamageType;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
@@ -64,7 +64,7 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
     private static final RuleTest DEEPSLATE_ORE_REPLACEABLES = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
 
     private static ConfiguredFeature<ResizableOreFeatureConfig, ResizableOreFeature> configureOreFeature(OreVeinType oreVeinType,
-          FeatureRegistryObject<ResizableOreFeatureConfig, ? extends ResizableOreFeature> featureRO) {
+          Supplier<? extends ResizableOreFeature> featureRO) {
         OreVeinConfig oreVeinConfig = MekanismConfig.world.getVeinConfig(oreVeinType);
         List<TargetBlockState> targetStates = ORE_STONE_TARGETS.computeIfAbsent(oreVeinType.type(), oreType -> {
             OreBlockType oreBlockType = MekanismBlocks.ORES.get(oreType);

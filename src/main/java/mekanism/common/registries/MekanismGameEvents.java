@@ -2,8 +2,8 @@ package mekanism.common.registries;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import mekanism.common.Mekanism;
+import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.GameEventDeferredRegister;
-import mekanism.common.registration.impl.GameEventRegistryObject;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
 
@@ -14,10 +14,10 @@ public class MekanismGameEvents {
 
     public static final GameEventDeferredRegister GAME_EVENTS = new GameEventDeferredRegister(Mekanism.MODID);
 
-    public static final GameEventRegistryObject<GameEvent> SEISMIC_VIBRATION = GAME_EVENTS.register("seismic_vibration", 64);
-    public static final GameEventRegistryObject<GameEvent> JETPACK_BURN = GAME_EVENTS.register("jetpack_burn");
-    public static final GameEventRegistryObject<GameEvent> GRAVITY_MODULATE = GAME_EVENTS.register("gravity_modulate");
-    public static final GameEventRegistryObject<GameEvent> GRAVITY_MODULATE_BOOSTED = GAME_EVENTS.register("gravity_modulate_boosted", 32);
+    public static final MekanismDeferredHolder<GameEvent, GameEvent> SEISMIC_VIBRATION = GAME_EVENTS.register("seismic_vibration", 64);
+    public static final MekanismDeferredHolder<GameEvent, GameEvent> JETPACK_BURN = GAME_EVENTS.register("jetpack_burn");
+    public static final MekanismDeferredHolder<GameEvent, GameEvent> GRAVITY_MODULATE = GAME_EVENTS.register("gravity_modulate");
+    public static final MekanismDeferredHolder<GameEvent, GameEvent> GRAVITY_MODULATE_BOOSTED = GAME_EVENTS.register("gravity_modulate_boosted", 32);
 
     public static void addFrequencies() {
         if (VibrationSystem.VIBRATION_FREQUENCY_FOR_EVENT instanceof Object2IntOpenHashMap<GameEvent> frequencyForEvent) {

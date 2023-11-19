@@ -7,15 +7,15 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.gear.ModuleData.ModuleDataBuilder;
 import mekanism.api.providers.IItemProvider;
-import mekanism.common.registration.WrappedDeferredRegister;
+import mekanism.common.registration.MekanismDeferredRegister;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.neoforged.neoforge.common.util.NonNullSupplier;
 import org.jetbrains.annotations.NotNull;
 
-public class ModuleDeferredRegister extends WrappedDeferredRegister<ModuleData<?>> {
+public class ModuleDeferredRegister extends MekanismDeferredRegister<ModuleData<?>> {
 
     public ModuleDeferredRegister(String modid) {
-        super(modid, MekanismAPI.MODULE_REGISTRY_NAME);
+        super(MekanismAPI.MODULE_REGISTRY_NAME, modid, ModuleRegistryObject::new);
     }
 
     public ModuleRegistryObject<?> registerMarker(String name, IItemProvider itemProvider, UnaryOperator<ModuleDataBuilder<?>> builderModifier) {
@@ -43,6 +43,6 @@ public class ModuleDeferredRegister extends WrappedDeferredRegister<ModuleData<?
     }
 
     public <MODULE extends ICustomModule<MODULE>> ModuleRegistryObject<MODULE> register(String name, ModuleDataBuilder<MODULE> builder) {
-        return register(name, () -> new ModuleData<>(builder), ModuleRegistryObject::new);
+        return (ModuleRegistryObject<MODULE>) register(name, () -> new ModuleData<>(builder));
     }
 }

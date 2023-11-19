@@ -509,7 +509,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     private static void playClickSound(@NotNull SoundManager soundHandler, @NotNull Holder<SoundEvent> sound) {
-        soundHandler.play(SimpleSoundInstance.forUI(sound.value(), 1.0F));
+        soundHandler.play(SimpleSoundInstance.forUI(sound, 1.0F));
     }
 
     protected void drawTiledSprite(GuiGraphics guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,

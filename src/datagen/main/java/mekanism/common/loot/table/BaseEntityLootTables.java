@@ -3,7 +3,7 @@ package mekanism.common.loot.table;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.Set;
 import java.util.stream.Stream;
-import mekanism.api.providers.IEntityTypeProvider;
+import net.minecraft.core.Holder;
 import net.minecraft.data.loot.EntityLootSubProvider;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
@@ -32,7 +32,7 @@ public abstract class BaseEntityLootTables extends EntityLootSubProvider {
         return knownEntityTypes.stream();
     }
 
-    protected void add(@NotNull IEntityTypeProvider typeProvider, @NotNull LootTable.Builder table) {
-        add(typeProvider.getEntityType(), table);
+    protected void add(@NotNull Holder<EntityType<?>> typeProvider, @NotNull LootTable.Builder table) {
+        add(typeProvider.value(), table);
     }
 }
