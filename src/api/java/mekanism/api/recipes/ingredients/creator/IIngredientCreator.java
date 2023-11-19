@@ -6,6 +6,7 @@ import com.mojang.serialization.JsonOps;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.InputIngredient;
+import net.minecraft.core.Holder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.NotNull;
@@ -46,10 +47,9 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      *
      * @since 10.5.0
      */
-    //TODO - 1.20.2: Figure out about adding this given our deferred holders implement both the provider and this
-    /*default INGREDIENT from(Holder<TYPE> instance, int amount) {
+    default INGREDIENT fromHolder(Holder<TYPE> instance, int amount) {
         return from(instance.value(), amount);
-    }*/
+    }
 
     /**
      * Creates an Ingredient that matches a given tag and amount.
