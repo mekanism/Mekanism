@@ -33,7 +33,7 @@ import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<BlockEntityType<?>> {
@@ -100,7 +100,7 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
     }
 
     @Override
-    public void register(IEventBus bus) {
+    public void register(@NotNull IEventBus bus) {
         super.register(bus);
         bus.addListener(this::registerCapabilities);
     }
@@ -120,7 +120,7 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
         BlockEntityTypeBuilder(BlockRegistryObject<?, ?> block, BlockEntityType.BlockEntitySupplier<? extends BE> factory) {
             this.block = block;
             this.factory = factory;
-            this.registryObject = new TileEntityTypeRegistryObject<>(null);
+            this.registryObject = new TileEntityTypeRegistryObject<>(new ResourceLocation(getNamespace(), block.getName()));
         }
 
         @SuppressWarnings("unchecked")
@@ -165,12 +165,9 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
 
         @SuppressWarnings("ConstantConditions")
         public TileEntityTypeRegistryObject<BE> build() {
-            String name = block.getName();
-            TileEntityTypeRegistryObject<BE> registryObject = new TileEntityTypeRegistryObject<>(new ResourceLocation(getNamespace(), name));
-            registryObject.clientTicker(clientTicker).serverTicker(serverTicker);
             //Register the BE, but don't care about the returned holder as we already made the holder ourselves so that we could add extra data to it
             //Note: There is no data fixer type as forge does not currently have a way exposing data fixers to mods yet
-            register(name, () -> BlockEntityType.Builder.<BE>of(factory, block.getBlock()).build(null));
+            register(block.getName(), () -> BlockEntityType.Builder.<BE>of(factory, block.getBlock()).build(null));
             allTiles.add(registryObject);
             return registryObject;
         }

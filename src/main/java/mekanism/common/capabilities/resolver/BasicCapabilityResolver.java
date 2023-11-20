@@ -6,6 +6,7 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.common.util.NonNullLazy;
 import net.neoforged.neoforge.common.util.NonNullSupplier;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 @NothingNullByDefault
 public class BasicCapabilityResolver<CAPABILITY, CONTEXT> implements ICapabilityResolver<CONTEXT> {
@@ -58,7 +59,7 @@ public class BasicCapabilityResolver<CAPABILITY, CONTEXT> implements ICapability
     }
 
     @Override
-    public void invalidate(BlockCapability<?, CONTEXT> capability, CONTEXT side) {
+    public void invalidate(BlockCapability<?, CONTEXT> capability, @UnknownNullability CONTEXT side) {
         //We only have one capability so just invalidate everything
         invalidateAll();
     }

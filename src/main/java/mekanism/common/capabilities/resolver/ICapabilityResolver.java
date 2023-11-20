@@ -4,6 +4,7 @@ import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 @NothingNullByDefault
 public interface ICapabilityResolver<CONTEXT> {
@@ -35,7 +36,7 @@ public interface ICapabilityResolver<CONTEXT> {
      * @param capability Capability
      * @param context    Context
      */
-    void invalidate(BlockCapability<?, CONTEXT> capability, CONTEXT context);
+    void invalidate(BlockCapability<?, CONTEXT> capability, @UnknownNullability CONTEXT context);
 
     /**
      * Invalidates all cached capabilities.
