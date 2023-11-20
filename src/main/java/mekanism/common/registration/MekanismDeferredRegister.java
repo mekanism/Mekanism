@@ -31,7 +31,7 @@ public class MekanismDeferredRegister<T> extends DeferredRegister<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <I extends T> MekanismDeferredHolder<T, I> register(final String name, final Supplier<? extends I> sup) {
+    public <I extends T> MekanismDeferredHolder<T, I> register(String name, Supplier<? extends I> sup) {
         return (MekanismDeferredHolder<T, I>) super.register(name, sup);
     }
 

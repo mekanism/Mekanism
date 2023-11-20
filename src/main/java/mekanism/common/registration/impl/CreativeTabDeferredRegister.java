@@ -19,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 public class CreativeTabDeferredRegister extends MekanismDeferredRegister<CreativeModeTab> {
 
     private final Consumer<BuildCreativeModeTabContentsEvent> addToExistingTabs;
-    private final String modid;
 
     public CreativeTabDeferredRegister(String modid) {
         this(modid, event -> {
@@ -28,7 +27,6 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
 
     public CreativeTabDeferredRegister(String modid, Consumer<BuildCreativeModeTabContentsEvent> addToExistingTabs) {
         super(Registries.CREATIVE_MODE_TAB, modid);
-        this.modid = modid;
         this.addToExistingTabs = addToExistingTabs;
     }
 
@@ -42,7 +40,7 @@ public class CreativeTabDeferredRegister extends MekanismDeferredRegister<Creati
      * @apiNote We manually require the title and icon to be passed so that we ensure all tabs have one.
      */
     public MekanismDeferredHolder<CreativeModeTab, CreativeModeTab> registerMain(ILangEntry title, IItemProvider icon, UnaryOperator<CreativeModeTab.Builder> operator) {
-        return register(modid, title, icon, operator);
+        return register(getNamespace(), title, icon, operator);
     }
 
     /**

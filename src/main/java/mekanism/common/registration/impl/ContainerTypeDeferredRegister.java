@@ -35,7 +35,7 @@ public class ContainerTypeDeferredRegister extends MekanismDeferredRegister<Menu
     }
 
     public <TILE extends TileEntityMekanism> ContainerTypeRegistryObject<MekanismTileContainer<TILE>> register(INamedEntry nameProvider, Class<TILE> tileClass) {
-        return register(nameProvider.getInternalRegistryName(), tileClass);
+        return register(nameProvider.getName(), tileClass);
     }
 
     public <TILE extends TileEntityMekanism> ContainerTypeRegistryObject<MekanismTileContainer<TILE>> register(String name, Class<TILE> tileClass) {
@@ -46,7 +46,7 @@ public class ContainerTypeDeferredRegister extends MekanismDeferredRegister<Menu
     }
 
     public <TILE extends TileEntityMekanism> ContainerTypeRegistryObject<EmptyTileContainer<TILE>> registerEmpty(INamedEntry nameProvider, Class<TILE> tileClass) {
-        return registerEmpty(nameProvider.getInternalRegistryName(), tileClass);
+        return registerEmpty(nameProvider.getName(), tileClass);
     }
 
     public <TILE extends TileEntityMekanism> ContainerTypeRegistryObject<EmptyTileContainer<TILE>> registerEmpty(String name, Class<TILE> tileClass) {
@@ -58,7 +58,7 @@ public class ContainerTypeDeferredRegister extends MekanismDeferredRegister<Menu
 
     public <TILE extends TileEntityMekanism, CONTAINER extends MekanismTileContainer<TILE>> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider,
           Class<TILE> tileClass, IMekanismContainerFactory<TILE, CONTAINER> factory) {
-        return register(nameProvider.getInternalRegistryName(), tileClass, factory);
+        return register(nameProvider.getName(), tileClass, factory);
     }
 
     public <TILE extends TileEntityMekanism, CONTAINER extends MekanismTileContainer<TILE>> ContainerTypeRegistryObject<CONTAINER> register(String name,
@@ -80,7 +80,7 @@ public class ContainerTypeDeferredRegister extends MekanismDeferredRegister<Menu
 
     public <ITEM extends Item, CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider, Class<ITEM> itemClass,
           IMekanismItemContainerFactory<ITEM, CONTAINER> factory) {
-        return register(nameProvider.getInternalRegistryName(), itemClass, factory);
+        return register(nameProvider.getName(), itemClass, factory);
     }
 
     public <ITEM extends Item, CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(String name, Class<ITEM> itemClass,
@@ -93,7 +93,7 @@ public class ContainerTypeDeferredRegister extends MekanismDeferredRegister<Menu
     }
 
     public <CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider, Supplier<MenuType<CONTAINER>> supplier) {
-        return registerMenu(nameProvider.getInternalRegistryName(), supplier);
+        return registerMenu(nameProvider.getName(), supplier);
     }
 
     public <CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> registerMenu(String name, Supplier<MenuType<CONTAINER>> supplier) {
@@ -101,7 +101,7 @@ public class ContainerTypeDeferredRegister extends MekanismDeferredRegister<Menu
     }
 
     public <TILE extends TileEntityMekanism> ContainerBuilder<TILE> custom(INamedEntry nameProvider, Class<TILE> tileClass) {
-        return custom(nameProvider.getInternalRegistryName(), tileClass);
+        return custom(nameProvider.getName(), tileClass);
     }
 
     public <TILE extends TileEntityMekanism> ContainerBuilder<TILE> custom(String name, Class<TILE> tileClass) {

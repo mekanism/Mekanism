@@ -1,27 +1,35 @@
 package mekanism.common.registration.impl;
 
-import java.util.Objects;
-import mekanism.api.annotations.ParametersAreNotNullByDefault;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.providers.IFluidProvider;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import mekanism.common.registration.MekanismDeferredHolder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-@ParametersAreNotNullByDefault
-@MethodsReturnNonnullByDefault
+@NothingNullByDefault
 public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FLOWING extends Fluid, BLOCK extends LiquidBlock, BUCKET extends BucketItem>
       implements IFluidProvider {
 
-    private DeferredHolder<FluidType, TYPE> fluidTypeRO;
-    private DeferredHolder<Fluid, STILL> stillRO;
-    private DeferredHolder<Fluid, FLOWING> flowingRO;
-    private DeferredHolder<Block, BLOCK> blockRO;
-    private DeferredHolder<Item, BUCKET> bucketRO;
+    final MekanismDeferredHolder<FluidType, TYPE> fluidTypeRO;
+    final MekanismDeferredHolder<Fluid, STILL> stillRO;
+    final MekanismDeferredHolder<Fluid, FLOWING> flowingRO;
+    final MekanismDeferredHolder<Block, BLOCK> blockRO;
+    final MekanismDeferredHolder<Item, BUCKET> bucketRO;
+
+    FluidRegistryObject(ResourceLocation key) {
+        this.fluidTypeRO = new MekanismDeferredHolder<>(NeoForgeRegistries.Keys.FLUID_TYPES, key);
+        this.stillRO = new MekanismDeferredHolder<>(Registries.FLUID, key);
+        this.flowingRO = new MekanismDeferredHolder<>(Registries.FLUID, key.withPrefix("flowing_"));
+        this.blockRO = new MekanismDeferredHolder<>(Registries.BLOCK, key);
+        this.bucketRO = new MekanismDeferredHolder<>(Registries.ITEM, key.withSuffix("_bucket"));
+    }
 
     public TYPE getFluidType() {
         return fluidTypeRO.get();
@@ -41,27 +49,6 @@ public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FL
 
     public BUCKET getBucket() {
         return bucketRO.get();
-    }
-
-    //Make sure these update methods are package local as only the FluidDeferredRegister should be messing with them
-    void updateFluidType(DeferredHolder<FluidType, TYPE> fluidTypeRO) {
-        this.fluidTypeRO = Objects.requireNonNull(fluidTypeRO);
-    }
-
-    void updateStill(DeferredHolder<Fluid, STILL> stillRO) {
-        this.stillRO = Objects.requireNonNull(stillRO);
-    }
-
-    void updateFlowing(DeferredHolder<Fluid, FLOWING> flowingRO) {
-        this.flowingRO = Objects.requireNonNull(flowingRO);
-    }
-
-    void updateBlock(DeferredHolder<Block, BLOCK> blockRO) {
-        this.blockRO = Objects.requireNonNull(blockRO);
-    }
-
-    void updateBucket(DeferredHolder<Item, BUCKET> bucketRO) {
-        this.bucketRO = Objects.requireNonNull(bucketRO);
     }
 
     @Override

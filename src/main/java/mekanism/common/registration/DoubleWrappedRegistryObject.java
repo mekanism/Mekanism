@@ -23,7 +23,7 @@ public class DoubleWrappedRegistryObject<PRIMARY_REGISTRY, PRIMARY extends PRIMA
     }
 
     @Override
-    public String getInternalRegistryName() {
+    public String getName() {
         return primaryRO.getId().getPath();
     }
 }
