@@ -62,7 +62,7 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
 
         @SuppressWarnings("ConstantConditions")
         public TileEntityTypeRegistryObject<BE> build() {
-            String name = block.getInternalRegistryName();
+            String name = block.getName();
             TileEntityTypeRegistryObject<BE> registryObject = new TileEntityTypeRegistryObject<>(new ResourceLocation(getNamespace(), name));
             registryObject.clientTicker(clientTicker).serverTicker(serverTicker);
             //Register the BE, but don't care about the returned holder as we already made the holder ourselves so that we could add extra data to it

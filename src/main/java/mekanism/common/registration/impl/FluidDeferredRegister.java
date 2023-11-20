@@ -80,10 +80,8 @@ public class FluidDeferredRegister {
     private final DeferredRegister<Fluid> fluidRegister;
     private final DeferredRegister<Block> blockRegister;
     private final DeferredRegister<Item> itemRegister;
-    private final String modid;
 
     public FluidDeferredRegister(String modid) {
-        this.modid = modid;
         blockRegister = DeferredRegister.create(Registries.BLOCK, modid);
         fluidRegister = DeferredRegister.create(Registries.FLUID, modid);
         fluidTypeRegister = DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, modid);
@@ -116,31 +114,30 @@ public class FluidDeferredRegister {
               MekanismFluidType::new);
     }
 
-    public <TYPE extends MekanismFluidType, BUCKET extends BucketItem> FluidRegistryObject<TYPE, Source, Flowing, LiquidBlock, BUCKET> register(String name,
+    public <BUCKET extends BucketItem> FluidRegistryObject<MekanismFluidType, Source, Flowing, LiquidBlock, BUCKET> register(String name,
           FluidType.Properties properties, FluidTypeRenderProperties renderProperties, BucketCreator<BUCKET> bucketCreator,
-          BiFunction<FluidType.Properties, FluidTypeRenderProperties, TYPE> fluidTypeCreator) {
-        String flowingName = "flowing_" + name;
-        String bucketName = name + "_bucket";
-        //Set the translation string to the same as the block
-        properties.descriptionId(Util.makeDescriptionId("block", new ResourceLocation(modid, name)));
-        //Create the registry object and let the values init to null as before we actually call get on them, we will update the backing values
-        FluidRegistryObject<TYPE, Source, Flowing, LiquidBlock, BUCKET> fluidRegistryObject = new FluidRegistryObject<>();
-        //Pass in suppliers that are wrapped instead of direct references to the registry objects, so that when we update the registry object to
-        // point to a new object it gets updated properly.
-        BaseFlowingFluid.Properties fluidProperties = new BaseFlowingFluid.Properties(fluidRegistryObject::getFluidType, fluidRegistryObject::getStillFluid,
-              fluidRegistryObject::getFlowingFluid).bucket(fluidRegistryObject::getBucket).block(fluidRegistryObject::getBlock);
-        //Update the references to objects that are retrieved from the deferred registers
-        fluidRegistryObject.updateFluidType(fluidTypeRegister.register(name, () -> fluidTypeCreator.apply(properties, renderProperties)));
-        fluidRegistryObject.updateStill(fluidRegister.register(name, () -> new Source(fluidProperties)));
-        fluidRegistryObject.updateFlowing(fluidRegister.register(flowingName, () -> new Flowing(fluidProperties)));
-        fluidRegistryObject.updateBucket(itemRegister.register(bucketName, () -> bucketCreator.create(fluidRegistryObject::getStillFluid,
-              new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET))));
+          BiFunction<FluidType.Properties, FluidTypeRenderProperties, MekanismFluidType> fluidTypeCreator) {
+        //Create a wrapper to hold the fluid object that we then will populate information using
+        FluidRegistryObject<MekanismFluidType, Source, Flowing, LiquidBlock, BUCKET> result =
+              new FluidRegistryObject<>(new ResourceLocation(fluidRegister.getNamespace(), name));
+        BaseFlowingFluid.Properties fluidProperties = new BaseFlowingFluid.Properties(result.fluidTypeRO, result.stillRO, result.flowingRO)
+              .bucket(result.bucketRO)
+              .block(result.blockRO);
+        //Note: We ignore the returned values as we already make our own holders in FluidRegistryObject's constructor
+        fluidTypeRegister.register(result.fluidTypeRO.getName(), rl -> {
+            //Set the translation string to the same as the block (we rely on the implementation detail that we make our fluid type's name is the same as the block's)
+            properties.descriptionId(Util.makeDescriptionId("block", rl));
+            return fluidTypeCreator.apply(properties, renderProperties);
+        });
+        fluidRegister.register(result.stillRO.getName(), () -> new Source(fluidProperties));
+        fluidRegister.register(result.flowingRO.getName(), () -> new Flowing(fluidProperties));
+        itemRegister.register(result.bucketRO.getName(), () -> bucketCreator.create(result.stillRO, new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET)));
         MapColor color = getClosestColor(renderProperties.color);
         //Note: The block properties used here is a copy of the ones for water
-        fluidRegistryObject.updateBlock(blockRegister.register(name, () -> new LiquidBlock(fluidRegistryObject::getStillFluid, BlockBehaviour.Properties.of()
-              .noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid().mapColor(color))));
-        allFluids.add(fluidRegistryObject);
-        return fluidRegistryObject;
+        blockRegister.register(result.blockRO.getName(), () -> new LiquidBlock(result.stillRO, BlockBehaviour.Properties.of()
+              .noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid().mapColor(color)));
+        allFluids.add(result);
+        return result;
     }
 
     private static MapColor getClosestColor(int tint) {

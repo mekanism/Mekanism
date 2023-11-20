@@ -56,7 +56,7 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
 
     public ItemRegistryObject<ItemModule> registerModule(ModuleRegistryObject<?> moduleDataSupplier) {
         //Note: We use the internal helper just in case we end up needing to know it is an ItemModule instead of just an Item somewhere
-        return register("module_" + moduleDataSupplier.getInternalRegistryName(), () -> ModuleHelper.get().createModuleItem(moduleDataSupplier, new Item.Properties()));
+        return register("module_" + moduleDataSupplier.getName(), () -> ModuleHelper.get().createModuleItem(moduleDataSupplier, new Item.Properties()));
     }
 
     public <ITEM extends Item> ItemRegistryObject<ITEM> registerItem(String name, Function<Item.Properties, ITEM> sup) {
@@ -77,8 +77,7 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
 
     public ItemRegistryObject<DeferredSpawnEggItem> registerSpawnEgg(MekanismDeferredHolder<EntityType<?>, ? extends EntityType<? extends Mob>> entityTypeProvider,
           int primaryColor, int secondaryColor) {
-        return registerItem(entityTypeProvider.getInternalRegistryName() + "_spawn_egg", props -> new DeferredSpawnEggItem(entityTypeProvider, primaryColor,
-              secondaryColor, props));
+        return registerItem(entityTypeProvider.getName() + "_spawn_egg", props -> new DeferredSpawnEggItem(entityTypeProvider, primaryColor, secondaryColor, props));
     }
 
     public List<IItemProvider> getAllItems() {
