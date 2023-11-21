@@ -1,4 +1,5 @@
-package mekanism.common.integration.projecte;
+//TODO - 1.20.2: Re-enable after ProjectE updates
+/*package mekanism.common.integration.projecte;
 
 import java.util.concurrent.CompletableFuture;
 import mekanism.common.Mekanism;
@@ -31,4 +32,4 @@ public class MekanismCustomConversions extends CustomConversionProvider {
     public String getName() {
         return super.getName() + ": " + Mekanism.MODID;
     }
-}
+}*/
