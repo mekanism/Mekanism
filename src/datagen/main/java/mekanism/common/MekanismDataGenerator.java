@@ -67,7 +67,7 @@ public class MekanismDataGenerator {
         gen.addProvider(event.includeServer(), recipeProvider);
         gen.addProvider(event.includeServer(), new MekanismAdvancementProvider(output, existingFileHelper));
         //TODO - 1.20: Re-enable after updating ProjectE
-        //addProvider(gen, event.includeServer(), MekanismCustomConversions::new);
+        //gen.addProvider(event.includeServer(), new MekanismCustomConversions(output, lookupProvider));
         //TODO - 1.20.2: Re-enable after CrT updates
         //gen.addProvider(event.includeServer(), new MekanismCrTExampleProvider(output, existingFileHelper));
         //TODO - 1.20.2: Re-enable after NG updates to support minecraftLibrary type stuff again
