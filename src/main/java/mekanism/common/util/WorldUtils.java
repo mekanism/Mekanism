@@ -1,20 +1,15 @@
 package mekanism.common.util;
 
-import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 import mekanism.common.Mekanism;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
-import net.minecraft.server.level.ChunkHolder;
-import net.minecraft.server.level.ChunkHolder.ChunkLoadingFailure;
-import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -79,9 +74,8 @@ public class WorldUtils {
     public static boolean isChunkLoaded(@Nullable LevelReader world, int chunkX, int chunkZ) {
         if (world == null) {
             return false;
-        } else if (world instanceof LevelAccessor accessor && accessor.getChunkSource() instanceof ServerChunkCache serverChunkCache) {
-            CompletableFuture<Either<ChunkAccess, ChunkLoadingFailure>> future = serverChunkCache.getChunkFuture(chunkX, chunkZ, ChunkStatus.FULL, false);
-            return future.isDone() && future.getNow(ChunkHolder.UNLOADED_CHUNK).left().isPresent();
+        } else if (world instanceof LevelAccessor accessor) {
+            return accessor.hasChunk(chunkX, chunkZ);
         }
         return world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false) != null;
     }

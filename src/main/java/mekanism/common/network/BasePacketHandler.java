@@ -132,7 +132,10 @@ public abstract class BasePacketHandler {
     }
 
     private <MSG extends IMekanismPacket> void registerMessage(Class<MSG> type, MessageDecoder<MSG> decoder, INetworkDirection<?> networkDirection) {
-        getChannel().registerMessage(index++, type, IMekanismPacket::encode, decoder, IMekanismPacket::handle, Optional.of(networkDirection));
+        getChannel().registerMessage(index++, type, IMekanismPacket::encode, decoder, (message, context) -> {
+            context.enqueueWork(() -> message.handle(context));
+            context.setPacketHandled(true);
+        }, Optional.of(networkDirection));
     }
 
     /**
