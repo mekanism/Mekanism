@@ -97,7 +97,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
                 if (tile instanceof TileEntityLogisticalTransporterBase transporter) {
                     response = transporter.getTransmitter().insert(this, request, transporter.getTransmitter().getColor(), true, 0);
                 } else {
-                    response = request.addToInventory(getLevel(), below, tile, Direction.DOWN, 0, false);
+                    response = request.addToInventory(getLevel(), below, tile, Direction.DOWN, 0);
                 }
                 if (!response.isEmpty() && tier != BinTier.CREATIVE) {
                     int sendingAmount = response.getSendingAmount();

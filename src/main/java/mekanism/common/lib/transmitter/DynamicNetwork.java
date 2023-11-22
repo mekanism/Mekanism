@@ -217,6 +217,10 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         return acceptorCache.hasAcceptor(acceptorPos);
     }
 
+    public ACCEPTOR getCachedAcceptor(BlockPos acceptorPos, Direction side) {
+        return acceptorCache.getCachedAcceptor(acceptorPos, side);
+    }
+
     public Set<Direction> getAcceptorDirections(BlockPos pos) {
         return acceptorCache.getAcceptorDirections(pos);
     }

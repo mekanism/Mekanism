@@ -274,7 +274,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                     if (ejectInv instanceof TileEntityLogisticalTransporterBase transporter) {
                         response = transporter.getTransmitter().insert(ejectPos, ejectMap, transporter.getTransmitter().getColor(), true, 0);
                     } else {
-                        response = ejectMap.addToInventory(level, ejectInvPos, ejectInv, oppositeDirection, 0, false);
+                        response = ejectMap.addToInventory(level, ejectInvPos, ejectInv, oppositeDirection, 0);
                     }
                     if (!response.isEmpty()) {
                         response.useAll();

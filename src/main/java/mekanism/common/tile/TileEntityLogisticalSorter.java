@@ -137,7 +137,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             }
             return transporter.insert(this, request, filterColor, true, min);
         }
-        return request.addToInventory(level, frontPos, front, getDirection(), min, false);
+        return request.addToInventory(level, frontPos, front, getDirection(), min);
     }
 
     @Override
@@ -222,8 +222,13 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @NotNull
     public TransitResponse sendHome(TransitRequest request) {
-        Direction oppositeDirection = getOppositeDirection();
-        return request.addToInventory(getLevel(), worldPosition.relative(oppositeDirection), oppositeDirection, 0, true);
+        Direction direction = getDirection();
+        BlockPos pos = worldPosition.relative(direction.getOpposite());
+        //TODO: Block cache for the source handler that we are pulling from and would be inserting
+        IItemHandler inventory = WorldUtils.getCapability(level, Capabilities.ITEM.block(), pos, direction);
+        //Note: We pass false as we have no reason to allow daisy-chaining sorters given a sorter can't send from a sorter to another
+        // and the only case would be if an inventory was replaced with another sorter connected to an inventory to proxy it back an extra spot
+        return request.addToInventory(getLevel(), pos, inventory, 0, false);
     }
 
     @Override

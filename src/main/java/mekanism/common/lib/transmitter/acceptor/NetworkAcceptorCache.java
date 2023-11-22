@@ -2,6 +2,7 @@ package mekanism.common.lib.transmitter.acceptor;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
@@ -11,6 +12,7 @@ import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import org.jetbrains.annotations.Nullable;
 
 public class NetworkAcceptorCache<ACCEPTOR> {
 
@@ -98,6 +100,11 @@ public class NetworkAcceptorCache<ACCEPTOR> {
 
     public boolean hasAcceptor(BlockPos acceptorPos) {
         return cachedAcceptors.containsKey(acceptorPos);
+    }
+
+    @Nullable
+    public ACCEPTOR getCachedAcceptor(BlockPos acceptorPos, Direction side) {
+        return cachedAcceptors.getOrDefault(acceptorPos, Collections.emptyMap()).get(side);
     }
 
     public Set<Direction> getAcceptorDirections(BlockPos pos) {

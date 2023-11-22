@@ -181,7 +181,9 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                     }
                                     prevSet = next;
                                 } else if (stack.getPathType() != Path.NONE) {
-                                    TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(getTileWorld(), next, stack.getSide(this), 0,
+                                    //Get the handler we are trying to insert into from the network's acceptor cache
+                                    IItemHandler acceptor = network.getCachedAcceptor(next, stack.getSide(this).getOpposite());
+                                    TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(getTileWorld(), next, acceptor, 0,
                                           stack.getPathType() == Path.HOME);
                                     if (!response.isEmpty()) {
                                         //We were able to add at least part of the stack to the inventory
