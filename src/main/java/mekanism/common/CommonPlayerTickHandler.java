@@ -317,7 +317,7 @@ public class CommonPlayerTickHandler {
         ItemStack feetStack = base.getItemBySlot(EquipmentSlot.FEET);
         if (!feetStack.isEmpty()) {
             if (feetStack.getItem() instanceof ItemFreeRunners boots) {
-                if (boots.getMode(feetStack) == FreeRunnerMode.NORMAL) {
+                if (boots.getMode(feetStack) != FreeRunnerMode.DISABLED) {
                     return new FallEnergyInfo(StorageUtils.getEnergyContainer(feetStack, 0), MekanismConfig.gear.freeRunnerFallDamageRatio,
                           MekanismConfig.gear.freeRunnerFallEnergyCost);
                 }

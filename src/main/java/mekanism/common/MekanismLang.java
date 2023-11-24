@@ -617,6 +617,7 @@ public enum MekanismLang implements ILangEntry {
     //Free runner modes
     FREE_RUNNER_MODE_CHANGE("free_runner", "mode_change"),
     FREE_RUNNER_NORMAL("free_runner", "normal"),
+    FREE_RUNNER_SAFETY("free_runner","safety"),
     FREE_RUNNER_DISABLED("free_runner", "disabled"),
     //Jetpack Modes
     JETPACK_MODE_CHANGE("jetpack", "mode_change"),
