@@ -63,8 +63,8 @@ public class QuadUtils {
         float uMin = texture.getU0(), uMax = texture.getU1();
         float vMin = texture.getV0(), vMax = texture.getV1();
         quad.vertexTransform(v -> {
-            float newU = (v.getTexU() - uMin) * 16F / (uMax - uMin);
-            float newV = (v.getTexV() - vMin) * 16F / (vMax - vMin);
+            float newU = (v.getTexU() - uMin) / (uMax - uMin);
+            float newV = (v.getTexV() - vMin) / (vMax - vMin);
             v.texRaw(newTexture.getU(newU), newTexture.getV(newV));
         });
     }
