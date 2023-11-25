@@ -115,37 +115,31 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
             this.side = side;
         }
 
-        //TODO: Document this is basically a "canRun" method
+        /**
+         * Used to check if this listener is still valid
+         *
+         * @return {@code true} if still valid.
+         */
         @Override
         public boolean getAsBoolean() {
-            //TODO: Do we actually want this here or just in our invalidation?? And here make sure the tile is not null
-            // Because if the GC actually cleans up the cache's when no longer in use... then we don't have to bother adding
-            // extra ones back if it has been removed. And we can get rid of the part in run that has to remove the cached acceptor
-            // (which causes us to have to recreate it anyway which is actually probably quite bad)...
             TileEntityTransmitter transmitterTile = tile.get();
-            //Check to make sure the transmitter is still valid and that the position we are going to check is actually still loaded
-            return transmitterTile != null && !transmitterTile.isRemoved() && transmitterTile.hasLevel() && transmitterTile.isLoaded() &&
-                   WorldUtils.isBlockLoaded(transmitterTile.getLevel(), transmitterTile.getBlockPos().relative(side));
+            //Check to make sure the transmitter is still valid
+            return transmitterTile != null && !transmitterTile.isRemoved() && transmitterTile.hasLevel() && transmitterTile.isLoaded();
         }
 
+        /**
+         * Called if this listener is still valid to run the cache invalidation logic.
+         */
         @Override
         public void run() {
-            //If it is, then refresh the connection
             TileEntityTransmitter transmitterTile = tile.get();
-            if (transmitterTile != null) {//Validate it didn't somehow become null between checking if it is valid and running the invalidation listener
-                //TODO: Evaluate this, we need to clear the cached acceptors as they are no longer necessarily valid
-                // I don't think this is right as it doesn't properly visually update when neighboring blocks are removed??
-                //TODO: FIX THIS, as removing when not invalid means that while yes we prevent the cache from erroring calling getCapability
-                // on it after it is invalid... it means even when the capability cache would still be valid that we remove it (and the listener stays around)
-                //TODO: Test if not having this actually causes problems when using markDirtyAcceptor instead of refreshConnections as if the error I had
-                // was before moving to markDirtyAcceptors which delays the check it could be related to BlockCapabilityCache errors when calling getCapability
-                // from the invalidation listener
-                transmitterTile.getTransmitter().getAcceptorCache().cachedAcceptors.remove(side);
-                //TODO: Evaluate if this is correct or should it be transmitter.markDirtyAcceptor(side)
-                // previously the refresh listener did refreshConnections, but isAcceptorAndListen used markDirtyAcceptor
-                //transmitterTile.getTransmitter().refreshConnections(side);
-                //Note: This is needed at the very least when it goes from nothing to having a side
-                // Though maybe we need to call both
+            //If we are still a valid listener, validate the tile didn't somehow become null between checking if it is valid and running the invalidation listener,
+            // then mark the acceptor as dirty
+            if (transmitterTile != null) {
+                //Note: Call markDirtyAcceptor so we don't evaluate the changed block until the server tick
+                // so that blocks hopefully had a chance to figure out their caps
+                // and if the chunk is now unloaded we will get null as the capability, and then when it loads again
+                // we will be updated and get the proper capability again
                 transmitterTile.getTransmitter().markDirtyAcceptor(side);
             }
         }
