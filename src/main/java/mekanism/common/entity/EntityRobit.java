@@ -115,7 +115,6 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
 import net.neoforged.neoforge.common.CommonHooks;
@@ -424,14 +423,14 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     private ItemStack getItemVariant() {
         ItemStack stack = MekanismItems.ROBIT.getItemStack();
-        IStrictEnergyHandler energyHandlerItem = stack.getCapability(Capabilities.STRICT_ENERGY.item());
+        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
         if (energyHandlerItem != null && energyHandlerItem.getEnergyContainerCount() > 0) {
             energyHandlerItem.setEnergy(0, energyContainer.getEnergy());
         }
         ItemRobit item = (ItemRobit) stack.getItem();
         item.setSustainedInventory(getSustainedInventory(), stack);
         item.setName(stack, getName());
-        ISecurityObject security = stack.getCapability(Capabilities.SECURITY_OBJECT.item());
+        ISecurityObject security = Capabilities.SECURITY_OBJECT.getCapability(stack);
         if (security != null) {
             security.setOwnerUUID(getOwnerUUID());
             security.setSecurityMode(getSecurityMode());

@@ -2,7 +2,6 @@ package mekanism.common.recipe.upgrade;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
@@ -18,7 +17,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -55,11 +54,10 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
             return true;
         }
         Item item = stack.getItem();
-        Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack);
+        IFluidHandlerItem fluidHandler = stack.getCapability(FluidHandler.ITEM);
         List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
-        if (capability.isPresent()) {
-            IFluidHandlerItem fluidHandler = capability.get();
-            for (int i = 0; i < fluidHandler.getTanks(); i++) {
+        if (fluidHandler != null) {
+            for (int i = 0, tanks = fluidHandler.getTanks(); i < tanks; i++) {
                 int tank = i;
                 fluidTanks.add(BasicFluidTank.create(fluidHandler.getTankCapacity(tank), fluid -> fluidHandler.isFluidValid(tank, fluid), null));
             }

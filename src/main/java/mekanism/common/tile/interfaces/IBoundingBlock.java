@@ -3,7 +3,7 @@ package mekanism.common.tile.interfaces;
 import java.util.Set;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IOffsetCapability;
-import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -48,7 +48,7 @@ public interface IBoundingBlock extends IComparatorSupport, IOffsetCapability, I
     default <T> T getOffsetCapabilityIfEnabled(@NotNull BlockCapability<T, @Nullable Direction> capability, Direction side, @NotNull Vec3i offset) {
         //And have it get the capability as if it was not offset
         if (this instanceof BlockEntity be) {//TODO: Implement this better
-            return CapabilityUtils.getCapability(be, capability, side);
+            return WorldUtils.getCapability(be.getLevel(), capability, be.getBlockPos(), null, be, side);
         }
         return null;
     }

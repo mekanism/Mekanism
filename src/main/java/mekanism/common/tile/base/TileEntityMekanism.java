@@ -109,7 +109,6 @@ import mekanism.common.tile.interfaces.chemical.IInfusionTile;
 import mekanism.common.tile.interfaces.chemical.IPigmentTile;
 import mekanism.common.tile.interfaces.chemical.ISlurryTile;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -522,10 +521,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 }
             }
             //Pass on this activation if the player is using a configuration card (and this tile supports the capability)
-            if (CapabilityUtils.getCapability(this, Capabilities.CONFIG_CARD, null) != null) {
-                if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurationCard) {
-                    return InteractionResult.PASS;
-                }
+            if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurationCard &&
+                WorldUtils.getCapability(level, Capabilities.CONFIG_CARD, worldPosition, null, this, null) != null) {
+                return InteractionResult.PASS;
             }
 
             NetworkHooks.openScreen((ServerPlayer) player, Attribute.get(getBlockType(), AttributeGui.class).getProvider(this), worldPosition);
@@ -1131,7 +1129,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public IHeatHandler getAdjacent(@NotNull Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0 && level != null) {
-            return WorldUtils.getCapability(level, Capabilities.HEAT_HANDLER.block(), getBlockPos().relative(side), side.getOpposite());
+            return Capabilities.HEAT_HANDLER.getCapabilityIfLoaded(level, getBlockPos().relative(side), side.getOpposite());
         }
         return null;
     }

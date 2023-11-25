@@ -2,7 +2,6 @@ package mekanism.generators.common.slot;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import mekanism.api.Action;
@@ -13,8 +12,8 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,10 +30,9 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
         Objects.requireNonNull(fuelCreator, "Fuel fluid stack creator cannot be null");
         Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
         return new FluidFuelInventorySlot(fluidTank, fuelValue, fuelCreator, stack -> {
-            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack);
-            if (cap.isPresent()) {
-                IFluidHandlerItem fluidHandlerItem = cap.get();
-                for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
+            IFluidHandlerItem fluidHandlerItem = stack.getCapability(FluidHandler.ITEM);
+            if (fluidHandlerItem != null) {
+                for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
                     if (fluidTank.isFluidValid(fluidHandlerItem.getFluidInTank(tank))) {
                         //False if the items contents are still valid
                         return false;
@@ -46,10 +44,9 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
             // This might happen after a reload for example
             return fuelValue.applyAsInt(stack) == 0;
         }, stack -> {
-            Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack);
-            if (cap.isPresent()) {
-                IFluidHandlerItem fluidHandlerItem = cap.get();
-                for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
+            IFluidHandlerItem fluidHandlerItem = stack.getCapability(FluidHandler.ITEM);
+            if (fluidHandlerItem != null) {
+                for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
                     FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
                     if (!fluidInTank.isEmpty() && fluidTank.insert(fluidInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < fluidInTank.getAmount()) {
                         //True if we can fill the tank with any of our contents

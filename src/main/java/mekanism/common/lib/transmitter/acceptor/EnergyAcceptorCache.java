@@ -30,6 +30,7 @@ public class EnergyAcceptorCache extends AbstractAcceptorCache<IStrictEnergyHand
     public boolean hasStrictEnergyHandlerAndListen(ServerLevel level, BlockPos pos, Direction side) {
         //TODO: Make sure we are removing it from cachedAcceptors when it becomes invalidated or the next call to this will error
         // Is this even correct??? The cache only actually gets removed if isValid is false
+        // This definitely needs more thought and handling related to when a position potentially changes which base energy cap it is providing
         AcceptorInfo<IStrictEnergyHandler> cachedAcceptor = cachedAcceptors.get(side);
         if (cachedAcceptor != null) {
             return cachedAcceptor.acceptor() != null;
@@ -40,19 +41,12 @@ public class EnergyAcceptorCache extends AbstractAcceptorCache<IStrictEnergyHand
             if (energyCompat.isUsable()) {
                 //TODO: Is there some way we can do this without having to effectively look it up twice
                 // as we don't want to use the BlockCapabilityCache which will add an invalidation listener, if there is no type present
-                if (level.getCapability(energyCompat.getCapability().block(), pos, opposite) != null) {
+                if (energyCompat.getCapability().getCapabilityIfLoaded(level, pos, opposite) != null) {
                     RefreshListener refreshListener = getRefreshListener(side);
                     if (energyCompat instanceof StrictEnergyCompat) {
                         //We don't need to perform any wrapping so can just use a direct implementation
                         //TODO: Do we want a helper to create the cache based info?
-                        cachedAcceptors.put(side, new CacheBasedInfo<>(BlockCapabilityCache.create(
-                              Capabilities.STRICT_ENERGY.block(),
-                              level,
-                              pos,
-                              opposite,
-                              refreshListener,
-                              refreshListener
-                        )));
+                        cachedAcceptors.put(side, new CacheBasedInfo<>(Capabilities.STRICT_ENERGY.createCache(level, pos, opposite, refreshListener, refreshListener)));
                     } else {
                         //TODO: Add some sort of comment
                         cachedAcceptors.put(side, new WrappingAcceptorInfo<>(energyCompat.getCacheAndConverter(level, pos, opposite, refreshListener, refreshListener)));

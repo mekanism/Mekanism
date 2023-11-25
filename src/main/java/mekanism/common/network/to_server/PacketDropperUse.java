@@ -1,7 +1,6 @@
 package mekanism.common.network.to_server;
 
 import java.util.List;
-import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.Coord4D;
@@ -35,8 +34,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.network.NetworkEvent;
 
@@ -124,7 +123,7 @@ public class PacketDropperUse implements IMekanismPacket {
                 MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.DUMP);
             }
         } else {
-            IChemicalHandler<CHEMICAL, STACK> handler = stack.getCapability(ChemicalUtil.getCapabilityForChemical(tank).item());
+            IChemicalHandler<CHEMICAL, STACK> handler = ChemicalUtil.getCapabilityForChemical(tank).getCapability(stack);
             if (handler instanceof IMekanismChemicalHandler<CHEMICAL, STACK, ?> chemicalHandler) {
                 IChemicalTank<CHEMICAL, STACK> itemTank = chemicalHandler.getChemicalTank(0, null);
                 //It is a chemical tank
@@ -151,21 +150,18 @@ public class PacketDropperUse implements IMekanismPacket {
             MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.DUMP);
             return;
         }
-        Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack);
-        if (capability.isPresent()) {
-            IFluidHandlerItem fluidHandlerItem = capability.get();
-            if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
-                IExtendedFluidTank itemFluidTank = fluidHandler.getFluidTank(0, null);
-                if (itemFluidTank != null) {
-                    if (action == DropperAction.FILL_DROPPER) {
-                        //Insert fluid into dropper
-                        transferBetweenTanks(fluidTank, itemFluidTank, player);
-                        MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.FILL);
-                    } else if (action == DropperAction.DRAIN_DROPPER) {
-                        //Extract fluid from dropper
-                        transferBetweenTanks(itemFluidTank, fluidTank, player);
-                        MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.DRAIN);
-                    }
+        IFluidHandlerItem fluidHandlerItem = stack.getCapability(FluidHandler.ITEM);
+        if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
+            IExtendedFluidTank itemFluidTank = fluidHandler.getFluidTank(0, null);
+            if (itemFluidTank != null) {
+                if (action == DropperAction.FILL_DROPPER) {
+                    //Insert fluid into dropper
+                    transferBetweenTanks(fluidTank, itemFluidTank, player);
+                    MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.FILL);
+                } else if (action == DropperAction.DRAIN_DROPPER) {
+                    //Extract fluid from dropper
+                    transferBetweenTanks(itemFluidTank, fluidTank, player);
+                    MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.DRAIN);
                 }
             }
         }

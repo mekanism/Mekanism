@@ -58,12 +58,12 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.IFluidBlock;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -230,12 +230,9 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
     }
 
     private static IExtendedFluidTank getExtendedFluidTank(@NotNull ItemStack stack) {
-        Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack);
-        if (capability.isPresent()) {
-            IFluidHandlerItem fluidHandlerItem = capability.get();
-            if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
-                return fluidHandler.getFluidTank(0, null);
-            }
+        IFluidHandlerItem fluidHandlerItem = stack.getCapability(FluidHandler.ITEM);
+        if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
+            return fluidHandler.getFluidTank(0, null);
         }
         return null;
     }

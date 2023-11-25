@@ -123,7 +123,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 //Attempt to pull
                 for (Direction side : getConnections(ConnectionType.PULL)) {
                     BlockPos inventoryPos = getTilePos().relative(side);
-                    IItemHandler inventory = WorldUtils.getCapability(getTileWorld(), Capabilities.ITEM.block(), inventoryPos, side.getOpposite());
+                    IItemHandler inventory = Capabilities.ITEM.getCapabilityIfLoaded(getTileWorld(), inventoryPos, side.getOpposite());
                     if (inventory != null) {
                         TransitRequest request = TransitRequest.anyItem(inventory, tier.getPullAmount());
                         //There's a stack available to insert into the network...

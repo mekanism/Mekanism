@@ -30,9 +30,11 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.TileEntityUpdateable;
-import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.WorldUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -82,7 +84,9 @@ public class LookingAtUtils {
 
     public static void addInfo(LookingAtHelper info, @NotNull BlockEntity tile, boolean displayTanks, boolean displayFluidTanks) {
         MultiblockData structure = getMultiblock(tile);
-        IStrictEnergyHandler energyCapability = CapabilityUtils.getCapability(tile, Capabilities.STRICT_ENERGY.block(), null);
+        Level level = tile.getLevel();
+        BlockPos pos = tile.getBlockPos();
+        IStrictEnergyHandler energyCapability = Capabilities.STRICT_ENERGY.getCapabilityIfLoaded(level, pos, null, tile, null);
         if (energyCapability != null) {
             displayEnergy(info, energyCapability);
         } else if (structure != null && structure.isFormed()) {
@@ -92,7 +96,7 @@ public class LookingAtUtils {
         if (displayTanks) {
             //Fluid - only add it to our own tiles in which we disable the default display for
             if (displayFluidTanks && tile instanceof TileEntityUpdateable) {
-                IFluidHandler fluidCapability = CapabilityUtils.getCapability(tile, FluidHandler.BLOCK, null);
+                IFluidHandler fluidCapability = WorldUtils.getCapability(level, FluidHandler.BLOCK, pos, null, tile, null);
                 if (fluidCapability != null) {
                     displayFluid(info, fluidCapability);
                 } else if (structure != null && structure.isFormed()) {
@@ -101,10 +105,10 @@ public class LookingAtUtils {
                 }
             }
             //Chemicals
-            addInfo(tile, structure, Capabilities.GAS_HANDLER, multiblock -> multiblock.getGasTanks(null), info, MekanismLang.GAS, Current.GAS, CurrentType.GAS);
-            addInfo(tile, structure, Capabilities.INFUSION_HANDLER, multiblock -> multiblock.getInfusionTanks(null), info, MekanismLang.INFUSE_TYPE, Current.INFUSION, CurrentType.INFUSION);
-            addInfo(tile, structure, Capabilities.PIGMENT_HANDLER, multiblock -> multiblock.getPigmentTanks(null), info, MekanismLang.PIGMENT, Current.PIGMENT, CurrentType.PIGMENT);
-            addInfo(tile, structure, Capabilities.SLURRY_HANDLER, multiblock -> multiblock.getSlurryTanks(null), info, MekanismLang.SLURRY, Current.SLURRY, CurrentType.SLURRY);
+            addInfo(level, pos, tile, structure, Capabilities.GAS_HANDLER, multiblock -> multiblock.getGasTanks(null), info, MekanismLang.GAS, Current.GAS, CurrentType.GAS);
+            addInfo(level, pos, tile, structure, Capabilities.INFUSION_HANDLER, multiblock -> multiblock.getInfusionTanks(null), info, MekanismLang.INFUSE_TYPE, Current.INFUSION, CurrentType.INFUSION);
+            addInfo(level, pos, tile, structure, Capabilities.PIGMENT_HANDLER, multiblock -> multiblock.getPigmentTanks(null), info, MekanismLang.PIGMENT, Current.PIGMENT, CurrentType.PIGMENT);
+            addInfo(level, pos, tile, structure, Capabilities.SLURRY_HANDLER, multiblock -> multiblock.getSlurryTanks(null), info, MekanismLang.SLURRY, Current.SLURRY, CurrentType.SLURRY);
         }
     }
 
@@ -145,9 +149,9 @@ public class LookingAtUtils {
 
     @SuppressWarnings("unchecked")
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>,
-          HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void addInfo(BlockEntity tile, @Nullable MultiblockData structure, MultiTypeCapability<HANDLER> capability,
+          HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void addInfo(Level level, BlockPos pos, BlockEntity tile, @Nullable MultiblockData structure, MultiTypeCapability<HANDLER> capability,
           Function<MultiblockData, List<TANK>> multiBlockToTanks, LookingAtHelper info, ILangEntry langEntry, Current matchingCurrent, CurrentType matchingCurrentType) {
-        HANDLER handler = CapabilityUtils.getCapability(tile, capability.block(), null);
+        HANDLER handler = capability.getCapabilityIfLoaded(level, pos, null, tile, null);
         if (handler != null) {
             if (handler instanceof ProxyChemicalHandler) {
                 List<TANK> tanks = ((ProxyChemicalHandler<CHEMICAL, STACK, ?>) handler).getTanksIfMekanism();

@@ -2,7 +2,6 @@ package mekanism.common.util;
 
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 import mekanism.api.Action;
@@ -23,7 +22,6 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -115,9 +113,8 @@ public final class FluidUtils {
 
     public static boolean handleTankInteraction(Player player, InteractionHand hand, ItemStack itemStack, IExtendedFluidTank fluidTank) {
         ItemStack copyStack = itemStack.copyWithCount(1);
-        Optional<IFluidHandlerItem> fluidHandlerItem = FluidUtil.getFluidHandler(copyStack);
-        if (fluidHandlerItem.isPresent()) {
-            IFluidHandlerItem handler = fluidHandlerItem.get();
+        IFluidHandlerItem handler = copyStack.getCapability(FluidHandler.ITEM);
+        if (handler != null) {
             FluidStack fluidInItem;
             if (fluidTank.isEmpty()) {
                 //If we don't have a fluid stored try draining in general

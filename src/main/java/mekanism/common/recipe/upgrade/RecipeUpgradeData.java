@@ -38,7 +38,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -74,34 +74,34 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 supportedTypes.add(RecipeUpgradeType.UPGRADE);
             }
         }
-        if (Capabilities.STRICT_ENERGY.getCapability(stack) != null || tile != null && tile.handles(SubstanceType.ENERGY)) {
+        if (Capabilities.STRICT_ENERGY.hasCapability(stack) || tile != null && tile.handles(SubstanceType.ENERGY)) {
             //If we are for a block that handles energy, or we have an energy handler capability
             supportedTypes.add(RecipeUpgradeType.ENERGY);
         }
-        if (FluidUtil.getFluidHandler(stack).isPresent() || tile != null && tile.handles(SubstanceType.FLUID)) {
+        if (stack.getCapability(FluidHandler.ITEM) != null || tile != null && tile.handles(SubstanceType.FLUID)) {
             //If we are for a block that handles fluid, or we have a fluid handler capability
             supportedTypes.add(RecipeUpgradeType.FLUID);
         }
-        if (Capabilities.GAS_HANDLER.getCapability(stack) != null || tile != null && tile.handles(SubstanceType.GAS)) {
+        if (Capabilities.GAS_HANDLER.hasCapability(stack) || tile != null && tile.handles(SubstanceType.GAS)) {
             //If we are for a block that handles gas, or we have a gas handler capability
             supportedTypes.add(RecipeUpgradeType.GAS);
         }
-        if (Capabilities.INFUSION_HANDLER.getCapability(stack) != null || tile != null && tile.handles(SubstanceType.INFUSION)) {
+        if (Capabilities.INFUSION_HANDLER.hasCapability(stack) || tile != null && tile.handles(SubstanceType.INFUSION)) {
             //If we are for a block that handles infusion, or we have an infusion handler capability
             supportedTypes.add(RecipeUpgradeType.INFUSION);
         }
-        if (Capabilities.PIGMENT_HANDLER.getCapability(stack) != null || tile != null && tile.handles(SubstanceType.PIGMENT)) {
+        if (Capabilities.PIGMENT_HANDLER.hasCapability(stack) || tile != null && tile.handles(SubstanceType.PIGMENT)) {
             //If we are for a block that handles pigment, or we have a pigment handler capability
             supportedTypes.add(RecipeUpgradeType.PIGMENT);
         }
-        if (Capabilities.SLURRY_HANDLER.getCapability(stack) != null || tile != null && tile.handles(SubstanceType.SLURRY)) {
+        if (Capabilities.SLURRY_HANDLER.hasCapability(stack) || tile != null && tile.handles(SubstanceType.SLURRY)) {
             //If we are for a block that handles slurry, or we have a slurry handler capability
             supportedTypes.add(RecipeUpgradeType.SLURRY);
         }
         if (item instanceof IItemSustainedInventory || tile != null && tile.persistInventory()) {
             supportedTypes.add(RecipeUpgradeType.ITEM);
         }
-        if (Capabilities.OWNER_OBJECT.getCapability(stack) != null || tile != null && tile.hasSecurity()) {
+        if (Capabilities.OWNER_OBJECT.hasCapability(stack) || tile != null && tile.hasSecurity()) {
             //Note: We only check if it has the owner capability as there is a contract that if there is a security capability
             // there will be an owner one so given our security upgrade supports owner or security we only have to check for owner
             supportedTypes.add(RecipeUpgradeType.SECURITY);

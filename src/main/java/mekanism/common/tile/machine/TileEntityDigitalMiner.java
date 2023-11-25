@@ -71,7 +71,6 @@ import mekanism.common.tile.interfaces.IHasVisualization;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -264,7 +263,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         if (doEject && delayTicks == 0) {
             Direction oppositeDirection = getOppositeDirection();
             BlockPos ejectPos = getBlockPos().above().relative(oppositeDirection);
-            IItemHandler ejectHandler = WorldUtils.getCapability(getLevel(), Capabilities.ITEM.block(), ejectPos, oppositeDirection);
+            IItemHandler ejectHandler = Capabilities.ITEM.getCapabilityIfLoaded(level, ejectPos, oppositeDirection);
             if (ejectHandler != null) {
                 TransitRequest ejectMap = InventoryUtils.getEjectItemMap(ejectHandler, mainSlots);
                 if (!ejectMap.isEmpty()) {
@@ -695,7 +694,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private IItemHandler getPullInv() {
-        return WorldUtils.getCapability(level, Capabilities.ITEM.block(), getBlockPos().above(2), Direction.DOWN);
+        return Capabilities.ITEM.getCapabilityIfLoaded(level, getBlockPos().above(2), Direction.DOWN);
     }
 
     private void add(List<ItemStack> stacks) {
@@ -1061,7 +1060,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             return itemHandlerManager.resolve(capability, side);
         }
         //Otherwise, we can just grab the capability from the tile normally
-        return CapabilityUtils.getCapability(this, capability, side);
+        return WorldUtils.getCapability(level, capability, worldPosition, null, this, side);
     }
 
     @Override

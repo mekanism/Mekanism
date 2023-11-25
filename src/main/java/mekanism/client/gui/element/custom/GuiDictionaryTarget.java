@@ -43,10 +43,10 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -162,14 +162,15 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                     ));
                 }
                 //Get tags of any contained fluids
-                FluidUtil.getFluidHandler(stack).ifPresent(fluidHandler -> {
+                IFluidHandlerItem fluidHandler = stack.getCapability(FluidHandler.ITEM);
+                if (fluidHandler != null) {
                     tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(IntStream.range(0, fluidHandler.getTanks())
                           .mapToObj(fluidHandler::getFluidInTank)
                           .filter(fluidInTank -> !fluidInTank.isEmpty())
                           .flatMap(fluidInTank -> fluidInTank.getFluid().builtInRegistryHolder().tags())
                           .distinct()
                     ));
-                });
+                }
                 //Get tags of any contained chemicals
                 addChemicalTags(DictionaryTagType.GAS, stack, Capabilities.GAS_HANDLER.item());
                 addChemicalTags(DictionaryTagType.INFUSE_TYPE, stack, Capabilities.INFUSION_HANDLER.item());

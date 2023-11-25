@@ -88,7 +88,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         if (delayTicks == 0) {
             if (getActive()) {
                 //Note: We can't just pass "this" and have to instead look up the capability to make sure we respect any sidedness
-                IItemHandler capability = WorldUtils.getCapability(level, Capabilities.ITEM.block(), worldPosition, null, this, Direction.DOWN);
+                IItemHandler capability = Capabilities.ITEM.getCapabilityIfLoaded(level, worldPosition, null, this, Direction.DOWN);
                 TileTransitRequest request = new TileTransitRequest(capability);
                 request.addItem(binSlot.getBottomStack(), 0);
                 TransitResponse response;

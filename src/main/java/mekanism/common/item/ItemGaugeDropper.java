@@ -1,7 +1,6 @@
 package mekanism.common.item;
 
 import java.util.List;
-import java.util.Optional;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
@@ -24,9 +23,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,13 +56,10 @@ public class ItemGaugeDropper extends Item implements ICapabilityAware {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide) {
-                Optional<IFluidHandlerItem> fluidCapability = FluidUtil.getFluidHandler(stack);
-                if (fluidCapability.isPresent()) {
-                    IFluidHandlerItem fluidHandler = fluidCapability.get();
-                    if (fluidHandler instanceof IExtendedFluidHandler fluidHandlerItem) {
-                        for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
-                            fluidHandlerItem.setFluidInTank(tank, FluidStack.EMPTY);
-                        }
+                IFluidHandlerItem fluidHandler = stack.getCapability(FluidHandler.ITEM);
+                if (fluidHandler instanceof IExtendedFluidHandler fluidHandlerItem) {
+                    for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
+                        fluidHandlerItem.setFluidInTank(tank, FluidStack.EMPTY);
                     }
                 }
                 clearChemicalTanks(stack, GasStack.EMPTY);
@@ -77,7 +73,7 @@ public class ItemGaugeDropper extends Item implements ICapabilityAware {
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void clearChemicalTanks(ItemStack stack, STACK empty) {
-        IChemicalHandler<CHEMICAL, STACK> handler = stack.getCapability(ChemicalUtil.getCapabilityForChemical(empty).item());
+        IChemicalHandler<CHEMICAL, STACK> handler = ChemicalUtil.getCapabilityForChemical(empty).getCapability(stack);
         if (handler != null) {
             for (int tank = 0; tank < handler.getTanks(); tank++) {
                 handler.setChemicalInTank(tank, empty);

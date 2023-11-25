@@ -114,8 +114,6 @@ import org.jetbrains.annotations.Nullable;
 public final class MekanismUtils {
 
     public static final float ONE_OVER_ROOT_TWO = (float) (1 / Math.sqrt(2));
-    //TODO - 1.20.2: Remove??
-    public static final Supplier<IllegalStateException> MISSING_CAP_ERROR = () -> new IllegalStateException("Capability is somehow not present after isPresent checks");
     private static final ItemStack MILK = new ItemStack(Items.MILK_BUCKET);
 
     private static final List<UUID> warnedFails = new ArrayList<>();

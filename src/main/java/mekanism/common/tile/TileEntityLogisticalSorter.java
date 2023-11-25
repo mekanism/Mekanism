@@ -87,12 +87,12 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         if (MekanismUtils.canFunction(this) && delayTicks == 0) {
             Direction direction = getDirection();
             BlockPos backPos = worldPosition.relative(direction.getOpposite());
-            IItemHandler back = WorldUtils.getCapability(getLevel(), Capabilities.ITEM.block(), backPos, direction);
+            IItemHandler back = Capabilities.ITEM.getCapabilityIfLoaded(level, backPos, direction);
             //If there is no tile to pull from or the push to, skip doing any checks
             if (back != null) {
                 BlockPos frontPos = worldPosition.relative(direction);
                 BlockEntity front = WorldUtils.getTileEntity(getLevel(), frontPos);
-                IItemHandler frontCap = WorldUtils.getCapability(level, Capabilities.ITEM.block(), frontPos, null, front, direction.getOpposite());
+                IItemHandler frontCap = Capabilities.ITEM.getCapabilityIfLoaded(level, frontPos, null, front, direction.getOpposite());
                 if (front != null || frontCap != null) {
                     //TODO: validate that front is a tile or has the handler
                     boolean sentItems = false;
@@ -225,7 +225,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         Direction direction = getDirection();
         BlockPos pos = worldPosition.relative(direction.getOpposite());
         //TODO: Block cache for the source handler that we are pulling from and would be inserting
-        IItemHandler inventory = WorldUtils.getCapability(level, Capabilities.ITEM.block(), pos, direction);
+        IItemHandler inventory = Capabilities.ITEM.getCapabilityIfLoaded(level, pos, direction);
         //Note: We pass false as we have no reason to allow daisy-chaining sorters given a sorter can't send from a sorter to another
         // and the only case would be if an inventory was replaced with another sorter connected to an inventory to proxy it back an extra spot
         return request.addToInventory(getLevel(), pos, inventory, 0, false);

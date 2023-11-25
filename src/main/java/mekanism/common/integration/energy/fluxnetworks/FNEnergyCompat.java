@@ -16,7 +16,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 import sonar.fluxnetworks.api.energy.IFNEnergyStorage;
@@ -71,20 +70,20 @@ public class FNEnergyCompat implements IEnergyCompat {
     @Nullable
     @Override
     public IStrictEnergyHandler getAsStrictEnergyHandler(Level level, BlockPos pos, @Nullable Direction context) {
-        IFNEnergyStorage capability = level.getCapability(getCapability().block(), pos, context);
+        IFNEnergyStorage capability = getCapability().getCapability(level, pos, context);
         return capability == null ? null : new FNStrictEnergyHandler(capability);
     }
 
     @Override
     public CacheConverter<?> getCacheAndConverter(ServerLevel level, BlockPos pos, @Nullable Direction context, BooleanSupplier isValid,
           Runnable invalidationListener) {
-        return new CacheConverter<>(BlockCapabilityCache.create(getCapability().block(), level, pos, context, isValid, invalidationListener), FNStrictEnergyHandler::new);
+        return new CacheConverter<>(getCapability().createCache(level, pos, context, isValid, invalidationListener), FNStrictEnergyHandler::new);
     }
 
     @Nullable
     @Override
     public IStrictEnergyHandler getStrictEnergyHandler(ItemStack stack) {
-        IFNEnergyStorage capability = stack.getCapability(getCapability().item());
+        IFNEnergyStorage capability = getCapability().getCapability(stack);
         return capability == null ? null : new FNStrictEnergyHandler(capability);
     }
 }

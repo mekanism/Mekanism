@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 import mekanism.api.Action;
@@ -89,7 +88,6 @@ import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -299,7 +297,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @NotNull
     public GasStack useGas(ItemStack stack, Gas type, long amount) {
-        IGasHandler gasHandlerItem = stack.getCapability(Capabilities.GAS_HANDLER.item());
+        IGasHandler gasHandlerItem = Capabilities.GAS_HANDLER.getCapability(stack);
         if (gasHandlerItem != null) {
             return gasHandlerItem.extractChemical(new GasStack(type, amount), Action.EXECUTE);
         }
@@ -307,7 +305,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     public GasStack getContainedGas(ItemStack stack, Gas type) {
-        IGasHandler gasHandlerItem = stack.getCapability(Capabilities.GAS_HANDLER.item());
+        IGasHandler gasHandlerItem = Capabilities.GAS_HANDLER.getCapability(stack);
         if (gasHandlerItem != null) {
             for (int i = 0; i < gasHandlerItem.getTanks(); i++) {
                 GasStack gasInTank = gasHandlerItem.getChemicalInTank(i);
@@ -320,10 +318,9 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     public FluidStack getContainedFluid(ItemStack stack, FluidStack type) {
-        Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack);
-        if (capability.isPresent()) {
-            IFluidHandlerItem fluidHandlerItem = capability.get();
-            for (int i = 0; i < fluidHandlerItem.getTanks(); i++) {
+        IFluidHandlerItem fluidHandlerItem = stack.getCapability(FluidHandler.ITEM);
+        if (fluidHandlerItem != null) {
+            for (int i = 0, tanks = fluidHandlerItem.getTanks(); i < tanks; i++) {
                 FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(i);
                 if (fluidInTank.isFluidEqual(type)) {
                     return fluidInTank;

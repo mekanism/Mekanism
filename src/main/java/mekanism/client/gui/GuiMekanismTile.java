@@ -58,7 +58,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
             addRenderableWidget(new GuiRedstoneControlTab(this, tile));
         }
         //Note: We check if the capability is present rather than calling hasSecurity so that we don't add the tab to the security desk
-        if (Capabilities.SECURITY_OBJECT.getCapability(tile) != null) {
+        if (Capabilities.SECURITY_OBJECT.getCapability(tile, null) != null) {
             addSecurityTab();
         }
     }

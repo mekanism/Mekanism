@@ -1,6 +1,5 @@
 package mekanism.client.render.item;
 
-import java.util.Optional;
 import java.util.function.Predicate;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
@@ -13,10 +12,10 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.client.IItemDecorator;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 
 public class ChemicalFluidBarDecorator implements IItemDecorator {
@@ -56,9 +55,8 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
         }
 
         if (showFluid) {
-            Optional<IFluidHandlerItem> capabilityInstance = FluidUtil.getFluidHandler(stack);
-            if (capabilityInstance.isPresent()) {
-                IFluidHandlerItem fluidHandler = capabilityInstance.get();
+            IFluidHandlerItem fluidHandler = stack.getCapability(FluidHandler.ITEM);
+            if (fluidHandler != null) {
                 int tank = getDisplayTank(fluidHandler.getTanks());
                 if (tank != -1) {
                     FluidStack fluidInTank = fluidHandler.getFluidInTank(tank);

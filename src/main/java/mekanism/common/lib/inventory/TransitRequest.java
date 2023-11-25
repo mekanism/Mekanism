@@ -75,7 +75,7 @@ public abstract class TransitRequest {
         if (isEmpty()) {//Short circuit if our request is empty
             return getEmptyResponse();
         }
-        IItemHandler inventory = WorldUtils.getCapability(level, Capabilities.ITEM.block(), pos, null, tile, side.getOpposite());
+        IItemHandler inventory = Capabilities.ITEM.getCapabilityIfLoaded(level, pos, null, tile, side.getOpposite());
         return addToInventory(inventory, min);
     }
 

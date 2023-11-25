@@ -124,6 +124,7 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
         public boolean getAsBoolean() {
             TileEntityTransmitter transmitterTile = tile.get();
             //Check to make sure the transmitter is still valid
+            //TODO: Is loaded check should potentially use onUnload so it runs before the onRemoved?
             return transmitterTile != null && !transmitterTile.isRemoved() && transmitterTile.hasLevel() && transmitterTile.isLoaded();
         }
 

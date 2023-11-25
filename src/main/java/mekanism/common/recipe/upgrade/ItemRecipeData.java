@@ -66,7 +66,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             return applyToStack(slots, stackSlots, (ListTag toWrite) -> PersonalStorageManager.createInventoryFor(stack, stackSlots));
         }
         boolean isBin = item instanceof ItemBlockBin;
-        IItemHandler itemHandler = stack.getCapability(Capabilities.ITEM.item());
+        IItemHandler itemHandler = Capabilities.ITEM.getCapability(stack);
         if (itemHandler != null) {
             for (int i = 0, slots = itemHandler.getSlots(); i < slots; i++) {
                 int slot = i;

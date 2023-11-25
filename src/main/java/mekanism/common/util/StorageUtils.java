@@ -2,7 +2,6 @@ package mekanism.common.util;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
@@ -35,9 +34,9 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -52,7 +51,7 @@ public class StorageUtils {
     }
 
     public static void addStoredEnergy(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, ILangEntry langEntry) {
-        IStrictEnergyHandler energyHandlerItem = stack.getCapability(Capabilities.STRICT_ENERGY.item());
+        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
         if (energyHandlerItem != null) {
             int energyContainerCount = energyHandlerItem.getEnergyContainerCount();
             for (int container = 0; container < energyContainerCount; container++) {
@@ -112,9 +111,8 @@ public class StorageUtils {
 
     public static void addStoredFluid(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, ILangEntry emptyLangEntry,
           Function<FluidStack, Component> storedFunction) {
-        Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack);
-        if (cap.isPresent()) {
-            IFluidHandlerItem handler = cap.get();
+        IFluidHandlerItem handler = stack.getCapability(FluidHandler.ITEM);
+        if (handler != null) {
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
                 tooltip.add(storedFunction.apply(handler.getFluidInTank(tank)));
             }
@@ -248,11 +246,9 @@ public class StorageUtils {
 
     @Nullable
     public static IEnergyContainer getEnergyContainer(ItemStack stack, int container) {
-        if (!stack.isEmpty()) {
-            IStrictEnergyHandler energyHandlerItem = stack.getCapability(Capabilities.STRICT_ENERGY.item());
-            if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
-                return energyHandler.getEnergyContainer(container, null);
-            }
+        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
+        if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
+            return energyHandler.getEnergyContainer(container, null);
         }
         return null;
     }
@@ -300,11 +296,9 @@ public class StorageUtils {
         bestRatio = calculateRatio(stack, bestRatio, Capabilities.INFUSION_HANDLER.item());
         bestRatio = calculateRatio(stack, bestRatio, Capabilities.PIGMENT_HANDLER.item());
         bestRatio = calculateRatio(stack, bestRatio, Capabilities.SLURRY_HANDLER.item());
-        Optional<IFluidHandlerItem> fluidCapability = FluidUtil.getFluidHandler(stack);
-        if (fluidCapability.isPresent()) {
-            IFluidHandlerItem fluidHandlerItem = fluidCapability.get();
-            int tanks = fluidHandlerItem.getTanks();
-            for (int tank = 0; tank < tanks; tank++) {
+        IFluidHandlerItem fluidHandlerItem = stack.getCapability(FluidHandler.ITEM);
+        if (fluidHandlerItem != null) {
+            for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
                 bestRatio = Math.max(bestRatio, getRatio(fluidHandlerItem.getFluidInTank(tank).getAmount(), fluidHandlerItem.getTankCapacity(tank)));
             }
         }
@@ -317,7 +311,7 @@ public class StorageUtils {
 
     private static double getEnergyDurabilityForDisplay(ItemStack stack) {
         double bestRatio = 0;
-        IStrictEnergyHandler energyHandlerItem = stack.getCapability(Capabilities.STRICT_ENERGY.item());
+        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
         if (energyHandlerItem != null) {
             int containers = energyHandlerItem.getEnergyContainerCount();
             for (int container = 0; container < containers; container++) {

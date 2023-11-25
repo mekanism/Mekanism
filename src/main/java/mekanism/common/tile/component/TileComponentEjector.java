@@ -240,7 +240,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     private IItemHandler getHandler(Direction side) {
         //Note: We can't just pass "tile" and have to instead look up the capability to make sure we respect any sidedness
-        return WorldUtils.getCapability(tile.getLevel(), Capabilities.ITEM.block(), tile.getBlockPos(), null, tile, side);
+        return Capabilities.ITEM.getCapabilityIfLoaded(tile.getLevel(), tile.getBlockPos(), null, tile, side);
     }
 
     @ComputerMethod

@@ -1,5 +1,6 @@
 package mekanism.common.capabilities;
 
+import java.util.function.BooleanSupplier;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IConfigurable;
@@ -20,10 +21,12 @@ import mekanism.common.Mekanism;
 import mekanism.common.lib.radiation.capability.RadiationEntity;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.tile.TileEntityBoundingBlock;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -33,6 +36,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
 import net.neoforged.neoforge.capabilities.EntityCapability;
@@ -41,6 +45,7 @@ import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class Capabilities {//TODO - 1.20.2: Figure out which of these types actually need to be multi type
@@ -52,7 +57,7 @@ public class Capabilities {//TODO - 1.20.2: Figure out which of these types actu
 
     //TODO - 1.20.2: Do we want to proxy NeoForge ones ones? I think so, at least for energy it seems useful
     public static final MultiTypeCapability<IEnergyStorage> ENERGY = new MultiTypeCapability<>(EnergyStorage.BLOCK, EnergyStorage.ITEM, EnergyStorage.ENTITY);
-    //TODO - 1.20.2: Should this proxy entity or entity automation?
+    //Note: We intentionally don't use the entity automation capability, as we want to be able to target player inventories and the like
     public static final MultiTypeCapability<IItemHandler> ITEM = new MultiTypeCapability<>(ItemHandler.BLOCK, ItemHandler.ITEM, ItemHandler.ENTITY);
 
     //TODO - 1.20.2: Remove handler from the field names? Or add it to the proxied ones
@@ -120,11 +125,11 @@ public class Capabilities {//TODO - 1.20.2: Figure out which of these types actu
 
     public record MultiTypeCapability<HANDLER>(BlockCapability<HANDLER, @Nullable Direction> block,
                                                ItemCapability<HANDLER, Void> item,
-                                               EntityCapability<HANDLER, Void> entity) {
+                                               EntityCapability<HANDLER, ?> entity) {
 
         public MultiTypeCapability(ResourceLocation name, Class<HANDLER> handlerClass) {
             this(
-                  BlockCapability.create(name, handlerClass, Direction.class),
+                  BlockCapability.createSided(name, handlerClass),
                   ItemCapability.createVoid(name, handlerClass),
                   EntityCapability.createVoid(name, handlerClass)
             );
@@ -146,34 +151,52 @@ public class Capabilities {//TODO - 1.20.2: Figure out which of these types actu
 
         @Nullable
         public HANDLER getCapability(ItemStack stack) {
-            return stack.isEmpty() ? null : stack.getCapability(item());
+            //Note: Safety handling of empty stack is done when looking up the provider inside getCapability's implementation
+            return stack.getCapability(item());
+        }
+
+        /**
+         * @apiNote Only use this helper if you don't actually need the capability, otherwise prefer using {@link #getCapability(ItemStack)} and null checking.
+         */
+        public boolean hasCapability(ItemStack stack) {
+            return getCapability(stack) != null;
         }
 
         @Nullable
         public HANDLER getCapability(@Nullable Entity entity) {
-            return entity == null ? null : entity.getCapability(entity());
+            return entity == null ? null : entity.getCapability(entity(), null);
         }
 
         @Nullable
-        public HANDLER getCapability(Level level, BlockPos pos, @Nullable Direction side) {
-            //TODO: Should this use the worldutils variant?
+        public HANDLER getCapability(@NotNull Level level, @NotNull BlockPos pos, @Nullable Direction side) {
+            //TODO: Should this use the ifLoaded variant?
             return level.getCapability(block(), pos, side);
         }
 
         @Nullable
-        public HANDLER getCapability(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity, @Nullable Direction side) {
-            //TODO: Should this use the worldutils variant?
-            return level.getCapability(block(), pos, state, blockEntity, side);
+        public HANDLER getCapabilityIfLoaded(@Nullable Level level, @NotNull BlockPos pos, @Nullable Direction side) {
+            return getCapabilityIfLoaded(level, pos, null, null, side);
+        }
+
+        @Nullable
+        public HANDLER getCapabilityIfLoaded(@Nullable Level level, @NotNull BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity,
+              @Nullable Direction side) {
+            return WorldUtils.getCapability(level, block(), pos, state, blockEntity, side);
         }
 
         @Nullable
         public HANDLER getCapability(@Nullable BlockEntity blockEntity, @Nullable Direction side) {
             //TODO - 1.20.2: Is there actually a use for this or do we only want block specific ones
-            if (blockEntity.hasLevel()) {
-                //Allow the getCapability impl to look up the state
-                return blockEntity.getLevel().getCapability(block(), blockEntity.getBlockPos(), null, blockEntity, side);
+            // There is a decent chance we should transition a good number of usages of this to not using it
+            if (blockEntity != null) {
+                return getCapabilityIfLoaded(blockEntity.getLevel(), blockEntity.getBlockPos(), null, blockEntity, side);
             }
             return null;
+        }
+
+        public BlockCapabilityCache<HANDLER, @Nullable Direction> createCache(ServerLevel level, BlockPos pos, @Nullable Direction context, BooleanSupplier isValid,
+              Runnable invalidationListener) {
+            return BlockCapabilityCache.create(block(), level, pos, context, isValid, invalidationListener);
         }
     }
 }

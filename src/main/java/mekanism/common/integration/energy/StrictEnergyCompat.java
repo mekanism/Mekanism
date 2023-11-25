@@ -11,7 +11,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,18 +40,18 @@ public class StrictEnergyCompat implements IEnergyCompat {
     @Nullable
     @Override
     public IStrictEnergyHandler getAsStrictEnergyHandler(Level level, BlockPos pos, @Nullable Direction context) {
-        return level.getCapability(getCapability().block(), pos, context);
+        return getCapability().getCapability(level, pos, context);
     }
 
     @Override
     public CacheConverter<IStrictEnergyHandler> getCacheAndConverter(ServerLevel level, BlockPos pos, @Nullable Direction context, BooleanSupplier isValid,
           Runnable invalidationListener) {
-        return new CacheConverter<>(BlockCapabilityCache.create(getCapability().block(), level, pos, context, isValid, invalidationListener), Function.identity());
+        return new CacheConverter<>(getCapability().createCache(level, pos, context, isValid, invalidationListener), Function.identity());
     }
 
     @Nullable
     @Override
     public IStrictEnergyHandler getStrictEnergyHandler(ItemStack stack) {
-        return stack.getCapability(getCapability().item());
+        return getCapability().getCapability(stack);
     }
 }

@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -87,10 +86,10 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 
@@ -153,9 +152,8 @@ public class MekanismJEI implements IModPlugin {
     }
 
     private static String getFluidComponent(ItemStack stack) {
-        Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack);
-        if (cap.isPresent()) {
-            IFluidHandlerItem handler = cap.get();
+        IFluidHandlerItem handler = stack.getCapability(FluidHandler.ITEM);
+        if (handler != null) {
             String component = "";
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
                 FluidStack fluidStack = handler.getFluidInTank(tank);
@@ -171,7 +169,7 @@ public class MekanismJEI implements IModPlugin {
     }
 
     private static String getEnergyComponent(ItemStack stack) {
-        IStrictEnergyHandler energyHandlerItem = stack.getCapability(Capabilities.STRICT_ENERGY.item());
+        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
         if (energyHandlerItem != null) {
             String component = "";
             int containers = energyHandlerItem.getEnergyContainerCount();
@@ -206,10 +204,10 @@ public class MekanismJEI implements IModPlugin {
     public static void registerItemSubtypes(ISubtypeRegistration registry, List<? extends IItemProvider> itemProviders) {
         for (IItemProvider itemProvider : itemProviders) {
             //Handle items
-            ItemStack itemStack = itemProvider.getItemStack();
-            if (itemStack.getCapability(Capabilities.STRICT_ENERGY.item()) != null || itemStack.getCapability(Capabilities.GAS_HANDLER.item()) != null ||
-                itemStack.getCapability(Capabilities.INFUSION_HANDLER.item()) != null || itemStack.getCapability(Capabilities.PIGMENT_HANDLER.item()) != null ||
-                itemStack.getCapability(Capabilities.SLURRY_HANDLER.item()) != null || FluidUtil.getFluidHandler(itemStack).isPresent()) {
+            ItemStack stack = itemProvider.getItemStack();
+            if (Capabilities.STRICT_ENERGY.hasCapability(stack) || Capabilities.GAS_HANDLER.hasCapability(stack) ||
+                Capabilities.INFUSION_HANDLER.hasCapability(stack) || Capabilities.PIGMENT_HANDLER.hasCapability(stack) ||
+                Capabilities.SLURRY_HANDLER.hasCapability(stack) || stack.getCapability(FluidHandler.ITEM) != null) {
                 registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, itemProvider.asItem(), MEKANISM_NBT_INTERPRETER);
             }
         }

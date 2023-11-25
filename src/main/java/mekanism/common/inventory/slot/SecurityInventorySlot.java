@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class SecurityInventorySlot extends BasicInventorySlot {
 
-    private static final Predicate<@NotNull ItemStack> validator = stack -> Capabilities.OWNER_OBJECT.getCapability(stack) != null;
+    private static final Predicate<@NotNull ItemStack> validator = Capabilities.OWNER_OBJECT::hasCapability;
 
     public static SecurityInventorySlot unlock(Supplier<UUID> ownerSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(ownerSupplier, "Owner supplier cannot be null");

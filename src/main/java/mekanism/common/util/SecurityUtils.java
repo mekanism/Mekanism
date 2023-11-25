@@ -227,7 +227,7 @@ public final class SecurityUtils implements ISecurityUtils {
     }
 
     public boolean tryClaimItem(Level level, Player player, ItemStack stack) {
-        IOwnerObject ownerObject = stack.getCapability(Capabilities.OWNER_OBJECT.item());
+        IOwnerObject ownerObject = Capabilities.OWNER_OBJECT.getCapability(stack);
         if (ownerObject != null && ownerObject.getOwnerUUID() == null) {
             if (!level.isClientSide) {
                 ownerObject.setOwnerUUID(player.getUUID());
@@ -246,7 +246,7 @@ public final class SecurityUtils implements ISecurityUtils {
     }
 
     public void addOwnerTooltip(ItemStack stack, List<Component> tooltip) {
-        IOwnerObject ownerObject = stack.getCapability(Capabilities.OWNER_OBJECT.item());
+        IOwnerObject ownerObject = Capabilities.OWNER_OBJECT.getCapability(stack);
         if (ownerObject != null) {
             tooltip.add(OwnerDisplay.of(MekanismUtils.tryGetClientPlayer(), ownerObject.getOwnerUUID()).getTextComponent());
         }
@@ -257,7 +257,7 @@ public final class SecurityUtils implements ISecurityUtils {
         Objects.requireNonNull(stack, "Stack to add tooltip for may not be null.");
         Objects.requireNonNull(tooltip, "List of tooltips to add to may not be null.");
         addOwnerTooltip(stack, tooltip);
-        ISecurityObject security = stack.getCapability(Capabilities.SECURITY_OBJECT.item());
+        ISecurityObject security = Capabilities.SECURITY_OBJECT.getCapability(stack);
         if (security != null) {
             SecurityData data = getFinalData(security, true);
             tooltip.add(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, data.mode()));

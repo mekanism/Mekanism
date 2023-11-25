@@ -8,12 +8,10 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.ISecurityUtils;
-import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.security.item.ItemStackOwnerObject;
 import mekanism.common.capabilities.security.item.ItemStackSecurityObject;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
@@ -28,7 +26,6 @@ import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -99,7 +96,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
                 }
                 robit.setSustainedInventory(getSustainedInventory(stack));
                 robit.setCustomName(getRobitName(stack));
-                ISecurityObject securityObject = stack.getCapability(Capabilities.SECURITY_OBJECT.item());
+                ISecurityObject securityObject = Capabilities.SECURITY_OBJECT.getCapability(stack);
                 //TODO - 1.20.2: Validate this but I don't think we need to set it as public when we can't get the cap
                 if (securityObject != null) {
                     robit.setSecurityMode(securityObject.getSecurityMode());

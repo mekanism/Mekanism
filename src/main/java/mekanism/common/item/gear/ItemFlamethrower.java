@@ -105,7 +105,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
     @Override
     public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
         boolean hasGas = false;
-        IGasHandler gasHandlerItem = stack.getCapability(Capabilities.GAS_HANDLER.item());
+        IGasHandler gasHandlerItem = Capabilities.GAS_HANDLER.getCapability(stack);
         if (gasHandlerItem != null && gasHandlerItem.getTanks() > 0) {
             //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
             GasStack storedGas = gasHandlerItem.getChemicalInTank(0);

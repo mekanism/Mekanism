@@ -97,7 +97,7 @@ public final class InventoryUtils {
     }
 
     public static boolean isItemHandler(Level level, BlockPos pos, Direction side) {
-        return WorldUtils.getCapability(level, Capabilities.ITEM.block(), pos, side) != null;
+        return Capabilities.ITEM.getCapabilityIfLoaded(level, pos, side) != null;
     }
 
     public static TileTransitRequest getEjectItemMap(IItemHandler handler, List<IInventorySlot> slots) {

@@ -66,8 +66,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
             } else if (entity instanceof EntityRobit robit) {
                 provideEnergy(robit);
             } else if (entity instanceof Player) {
-                //TODO - 1.20.2: Should this be using the entity_automation item cap?
-                IItemHandler itemHandler = entity.getCapability(Capabilities.ITEM.entity());
+                IItemHandler itemHandler = Capabilities.ITEM.getCapability(entity);
                 if (!chargeHandler(itemHandler) && Mekanism.hooks.CuriosLoaded) {
                     //If we didn't charge anything in the inventory and curios is loaded try charging things in the curios slots
                     chargeHandler(CuriosIntegration.getCuriosInventory(entity));

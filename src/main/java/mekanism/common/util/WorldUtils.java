@@ -298,11 +298,7 @@ public class WorldUtils {
     @Contract("null, _, _, _ -> null")
     public static <CAP, CONTEXT> CAP getCapability(@Nullable Level level, BlockCapability<CAP, CONTEXT> cap, BlockPos pos, CONTEXT context) {
         //TODO: USE THIS IN PLACES
-        if (!isBlockLoaded(level, pos)) {
-            //If the world is null, or it is a world reader and the block is not loaded, return null
-            return null;
-        }
-        return level.getCapability(cap, pos, context);
+        return getCapability(level, cap, pos, null, null, context);
     }
 
     @Nullable

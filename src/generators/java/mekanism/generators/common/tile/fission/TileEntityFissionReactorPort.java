@@ -62,7 +62,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
             BlockPos pos = getBlockPos().relative(side);
             return WorldUtils.getBlockState(level, pos)
                   .filter(state -> !state.isAir() && state.getBlock() != GeneratorsBlocks.FISSION_REACTOR_PORT.getBlock())
-                  .map(state -> WorldUtils.getCapability(level, Capabilities.HEAT_HANDLER.block(), pos, side.getOpposite()))
+                  .map(state -> Capabilities.HEAT_HANDLER.getCapabilityIfLoaded(level, pos, state, null, side.getOpposite()))
                   .orElse(null);
         }
         return null;

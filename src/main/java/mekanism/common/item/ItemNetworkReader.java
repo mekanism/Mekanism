@@ -18,7 +18,6 @@ import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -71,7 +70,7 @@ public class ItemNetworkReader extends ItemEnergized {
                 if (tile instanceof TileEntityTransmitter transmitterTile) {
                     displayTransmitterInfo(player, transmitterTile.getTransmitter(), tile, opposite);
                 } else {
-                    IHeatHandler transfer = WorldUtils.getCapability(world, Capabilities.HEAT_HANDLER.block(), pos, null, tile, opposite);
+                    IHeatHandler transfer = Capabilities.HEAT_HANDLER.getCapabilityIfLoaded(world, pos, null, tile, opposite);
                     if (transfer != null) {
                         displayBorder(player, MekanismLang.MEKANISM, true);
                         sendTemperature(player, transfer);
@@ -102,7 +101,7 @@ public class ItemNetworkReader extends ItemEnergized {
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_BUFFER, transmitterNetwork.getStoredInfo());
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_THROUGHPUT, transmitterNetwork.getFlowInfo());
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_CAPACITY, transmitterNetwork.getNetworkReaderCapacity());
-            IHeatHandler heatHandler = CapabilityUtils.getCapability(tile, Capabilities.HEAT_HANDLER.block(), opposite);
+            IHeatHandler heatHandler = Capabilities.HEAT_HANDLER.getCapability(tile, opposite);
             if (heatHandler != null) {
                 sendTemperature(player, heatHandler);
             }

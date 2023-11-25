@@ -2,7 +2,6 @@ package mekanism.common.inventory.slot;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -11,8 +10,8 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -41,11 +40,11 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                 //If we have more than one item in the input, check against a single item of it
                 // The fluid handler for buckets returns false about being able to accept fluids if they are stacked
                 // though we have special handling to only move one item at a time anyway
-                Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(stack.getCount() > 1 ? stack.copyWithCount(1) : stack);
-                if (cap.isPresent()) {
-                    IFluidHandlerItem fluidHandlerItem = cap.get();
+                ItemStack stackToCheck = stack.getCount() > 1 ? stack.copyWithCount(1) : stack;
+                IFluidHandlerItem fluidHandlerItem = stackToCheck.getCapability(FluidHandler.ITEM);
+                if (fluidHandlerItem != null) {
                     boolean hasEmpty = false;
-                    for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
+                    for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
                         FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
                         if (fluidInTank.isEmpty()) {
                             hasEmpty = true;
@@ -80,9 +79,8 @@ public interface IFluidHandlerSlot extends IInventorySlot {
     default void fillTank(IInventorySlot outputSlot) {
         if (!isEmpty()) {
             //Try filling from the tank's item
-            Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(getStack());
-            if (capability.isPresent()) {
-                IFluidHandlerItem itemFluidHandler = capability.get();
+            IFluidHandlerItem itemFluidHandler = getStack().getCapability(FluidHandler.ITEM);
+            if (itemFluidHandler != null) {
                 int itemTanks = itemFluidHandler.getTanks();
                 if (itemTanks == 1) {
                     //If we only have one tank just directly check against that fluid instead of performing extra calculations to properly handle multiple tanks
@@ -120,7 +118,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
      */
     default void drainTank(IInventorySlot outputSlot) {
         //Verify we have an item, we have tanks that may need to be drained, and that our item is a fluid handler
-        if (!isEmpty() && FluidUtil.getFluidHandler(getStack()).isPresent()) {
+        if (!isEmpty() && getStack().getCapability(FluidHandler.ITEM) != null) {
             FluidStack fluidInTank = getFluidTank().getFluid();
             if (!fluidInTank.isEmpty()) {
                 //If we have a fluid attempt to drain it into our item
@@ -130,16 +128,15 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                     return;
                 }
                 ItemStack inputCopy = getStack().copyWithCount(1);
-                Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(inputCopy);
-                if (cap.isPresent()) {
-                    //The capability should be present based on checks that happen before this method, but verify to make sure it is present
-                    IFluidHandlerItem fluidHandlerItem = cap.get();
+                IFluidHandlerItem fluidHandlerItem = inputCopy.getCapability(FluidHandler.ITEM);
+                //The capability should be present based on checks that happen before this method, but verify to make sure it is present
+                if (fluidHandlerItem != null) {
                     //Fill the stack, note our stack is a copy so this is how we simulate to get the proper "container" item,
                     // and it does not actually matter that we are directly executing on the item
                     int toDrain = fluidHandlerItem.fill(fluidInTank, FluidAction.EXECUTE);
                     if (getCount() == 1) {
-                        Optional<IFluidHandlerItem> containerCap = FluidUtil.getFluidHandler(fluidHandlerItem.getContainer());
-                        if (containerCap.isPresent() && containerCap.get().fill(fluidInTank, FluidAction.SIMULATE) > 0) {
+                        IFluidHandlerItem containerCap = fluidHandlerItem.getContainer().getCapability(FluidHandler.ITEM);
+                        if (containerCap != null && containerCap.fill(fluidInTank, FluidAction.SIMULATE) > 0) {
                             //If we have a single item in the input slot, and we can continue to fill it after
                             // our current fill, then mark that we don't want to move it to the output slot, yet
                             // Additionally we replace our input item with its container
@@ -182,12 +179,11 @@ public interface IFluidHandlerSlot extends IInventorySlot {
         }
 
         ItemStack input = getStack().copyWithCount(1);
-        Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(input);
-        if (cap.isEmpty()) {
+        IFluidHandlerItem fluidHandlerItem = input.getCapability(FluidHandler.ITEM);
+        if (fluidHandlerItem == null) {
             //The capability should be present based on checks that happen before this method, but if for some reason it isn't just exit
             return false;
         }
-        IFluidHandlerItem fluidHandlerItem = cap.get();
         //Drain the stack, note our stack is a copy so this is how we simulate to get the proper "container" item,
         // and it does not actually matter that we are directly executing on the item
         FluidStack drained = fluidHandlerItem.drain(new FluidStack(fluidToTransfer, toTransfer - remainder), FluidAction.EXECUTE);
@@ -196,8 +192,8 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             return false;
         }
         if (getCount() == 1) {
-            Optional<IFluidHandlerItem> containerCap = FluidUtil.getFluidHandler(fluidHandlerItem.getContainer());
-            if (containerCap.isPresent() && !containerCap.get().drain(Integer.MAX_VALUE, FluidAction.SIMULATE).isEmpty()) {
+            IFluidHandlerItem containerCap = fluidHandlerItem.getContainer().getCapability(FluidHandler.ITEM);
+            if (containerCap != null && !containerCap.drain(Integer.MAX_VALUE, FluidAction.SIMULATE).isEmpty()) {
                 //If we have a single item in the input slot, and we can continue to drain from it
                 // after our current drain, then we allow for draining and actually fill our handler
                 // Additionally we replace our input item with its container
@@ -247,9 +243,8 @@ public interface IFluidHandlerSlot extends IInventorySlot {
     default boolean fillTank() {
         if (getCount() == 1) {
             //Try filling from the tank's item
-            Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(getStack());
-            if (capability.isPresent()) {
-                IFluidHandlerItem itemFluidHandler = capability.get();
+            IFluidHandlerItem itemFluidHandler = getStack().getCapability(FluidHandler.ITEM);
+            if (itemFluidHandler != null) {
                 int tanks = itemFluidHandler.getTanks();
                 if (tanks == 1) {
                     //If we only have one tank just directly check against that fluid instead of performing extra calculations to properly handle multiple tanks

@@ -24,7 +24,7 @@ public class BoxedChemicalHandler {
     //TODO: Re-evaluate this
     public BoxedChemicalHandler(ServerLevel level, BlockPos pos, Direction side, AbstractAcceptorCache.RefreshListener refreshListener) {
         for (ChemicalType chemicalType : EnumUtils.CHEMICAL_TYPES) {
-            handlers.put(chemicalType, BlockCapabilityCache.create(ChemicalUtil.getCapabilityForChemical(chemicalType).block(), level, pos, side, refreshListener, refreshListener));
+            handlers.put(chemicalType, ChemicalUtil.getCapabilityForChemical(chemicalType).createCache(level, pos, side, refreshListener, refreshListener));
         }
     }
 

@@ -28,7 +28,6 @@ import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -71,7 +70,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
             return;
         }
         Direction direction = getDirection();
-        IItemHandler backHandler = WorldUtils.getCapability(level, Capabilities.ITEM.block(), worldPosition.relative(direction.getOpposite()), direction);
+        IItemHandler backHandler = Capabilities.ITEM.getCapabilityIfLoaded(level, worldPosition.relative(direction.getOpposite()), direction);
         if (backHandler == null) {
             return;
         }

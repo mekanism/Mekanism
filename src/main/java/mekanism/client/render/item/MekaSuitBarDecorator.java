@@ -3,7 +3,6 @@ package mekanism.client.render.item;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.List;
-import java.util.Optional;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
@@ -17,10 +16,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.client.IItemDecorator;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 
 public class MekaSuitBarDecorator implements IItemDecorator {
@@ -44,9 +43,8 @@ public class MekaSuitBarDecorator implements IItemDecorator {
 
         List<FluidTankSpec> fluidTankSpecs = armor.getFluidTankSpecs();
         if (!fluidTankSpecs.isEmpty()) {
-            Optional<IFluidHandlerItem> capabilityInstance = FluidUtil.getFluidHandler(stack);
-            if (capabilityInstance.isPresent()) {
-                IFluidHandlerItem fluidHandler = capabilityInstance.get();
+            IFluidHandlerItem fluidHandler = stack.getCapability(FluidHandler.ITEM);
+            if (fluidHandler != null) {
                 int tank = getDisplayTank(fluidTankSpecs, stack, fluidHandler.getTanks());
                 if (tank != -1) {
                     FluidStack fluidInTank = fluidHandler.getFluidInTank(tank);

@@ -1,7 +1,6 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
-import java.util.Optional;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.MekanismLang;
@@ -27,9 +26,9 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
@@ -73,8 +72,10 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents, ICa
             int needed = Math.min(20 - player.getFoodData().getFoodLevel(), getFluid(stack).getAmount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
             if (needed > 0) {
                 player.getFoodData().eat(needed, MekanismConfig.general.nutritionalPasteSaturation.get());
-                FluidUtil.getFluidHandler(stack).ifPresent(handler -> handler.drain(needed * MekanismConfig.general.nutritionalPasteMBPerFood.get(),
-                      FluidAction.EXECUTE));
+                IFluidHandlerItem handler = stack.getCapability(FluidHandler.ITEM);
+                if (handler != null) {
+                    handler.drain(needed * MekanismConfig.general.nutritionalPasteMBPerFood.get(), FluidAction.EXECUTE);
+                }
                 entityLiving.gameEvent(GameEvent.DRINK);
             }
         }
@@ -104,9 +105,8 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents, ICa
     }
 
     private FluidStack getFluid(ItemStack stack) {
-        Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack);
-        if (capability.isPresent()) {
-            IFluidHandlerItem fluidHandlerItem = capability.get();
+        IFluidHandlerItem fluidHandlerItem = stack.getCapability(FluidHandler.ITEM);
+        if (fluidHandlerItem != null) {
             if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
                 IExtendedFluidTank fluidTank = fluidHandler.getFluidTank(0, null);
                 if (fluidTank != null) {
