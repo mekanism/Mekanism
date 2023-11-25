@@ -29,7 +29,6 @@ public class ItemAlloy extends Item {
         if (player != null && MekanismConfig.general.transmitterAlloyUpgrade.get()) {
             Level world = context.getLevel();
             BlockPos pos = context.getClickedPos();
-            //TODO - 1.20.2: Do we need to check if the pos is loaded? (Would only maybe matter for fake players)
             IAlloyInteraction alloyInteraction = WorldUtils.getCapability(world, Capabilities.ALLOY_INTERACTION, pos, context.getClickedFace());
             if (alloyInteraction != null) {
                 if (!world.isClientSide) {

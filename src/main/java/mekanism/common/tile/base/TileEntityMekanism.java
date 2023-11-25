@@ -138,6 +138,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -1108,6 +1110,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     public final FloatingLong getInputRate() {
         return lastEnergyTracker.getLastEnergyReceived();
+    }
+
+    //TODO - 1.20.2: Re-evaluate this
+    public static <CAP> ICapabilityProvider<? super TileEntityMekanism, @Nullable Direction, CAP> getEnergyCapabilityProvider(BlockCapability<CAP, @Nullable Direction> capability) {
+        return (tile, side) -> tile.getCapability(capability, () -> tile.energyHandlerManager, side);
     }
     //End methods IMekanismStrictEnergyHandler
 

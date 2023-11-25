@@ -87,12 +87,8 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
     }
 
     private static <CAP> void addCapability(MekBlockEntityTypeBuilder<?> builder, BlockCapability<CAP, @Nullable Direction> capability) {
-        //TODO: Implement??
-        /*builder.with(capability, (tile, side) -> {
-            //TODO: Re-evaluate
-            return tile.getCapability(capability, () -> tile.energyHandlerManager, side);
-            //return energyCompat.getProviderAs(mekProvider);
-        });*/
+        //TODO: Test this and debate if we would be better off instead using something like EnergyCompatUtils#registerBlockCapabilities
+        builder.with(capability, TileEntityMekanism.getEnergyCapabilityProvider(capability));
     }
 
     public <BE extends BlockEntity> BlockEntityTypeBuilder<BE, ?> builder(BlockRegistryObject<?, ?> block, BlockEntitySupplier<? extends BE> factory) {
