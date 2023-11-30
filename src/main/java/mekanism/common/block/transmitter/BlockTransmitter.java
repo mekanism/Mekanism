@@ -30,7 +30,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -100,15 +99,6 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
         if (tile != null) {
             Direction side = Direction.getNearest(neighborPos.getX() - pos.getX(), neighborPos.getY() - pos.getY(), neighborPos.getZ() - pos.getZ());
             tile.onNeighborBlockChange(side);
-        }
-    }
-
-    @Override
-    public void onNeighborChange(BlockState state, LevelReader world, BlockPos pos, BlockPos neighbor) {
-        TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
-        if (tile != null) {
-            Direction side = Direction.getNearest(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
-            tile.onNeighborTileChange(side);
         }
     }
 

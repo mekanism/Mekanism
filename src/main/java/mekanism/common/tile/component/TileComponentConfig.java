@@ -3,7 +3,6 @@ package mekanism.common.tile.component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,7 +41,6 @@ import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.capabilities.BlockCapability;
@@ -77,8 +75,6 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         Direction direction = side.getDirection(tile.getDirection());
         sideChangedBasic(transmissionType, direction);
         tile.sendUpdatePacket();
-        //Notify the neighbor on that side our state changed
-        WorldUtils.notifyNeighborOfChange(tile.getLevel(), direction, tile.getBlockPos());
     }
 
     private void sideChangedBasic(TransmissionType transmissionType, Direction direction) {
@@ -278,7 +274,6 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     @Override
     public void read(CompoundTag nbtTags) {
         NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.COMPONENT_CONFIG, configNBT -> {
-            Set<Direction> directionsToUpdate = EnumSet.noneOf(Direction.class);
             configInfo.forEach((type, info) -> {
                 NBTUtils.setBooleanIfPresent(configNBT, NBTConstants.EJECT + type.ordinal(), info::setEjecting);
                 NBTUtils.setCompoundIfPresent(configNBT, NBTConstants.CONFIG + type.ordinal(), sideConfig -> {
@@ -289,14 +284,12 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
                                 if (tile.hasLevel()) {//If we aren't already loaded yet don't do any updates
                                     Direction direction = side.getDirection(tile.getDirection());
                                     sideChangedBasic(type, direction);
-                                    directionsToUpdate.add(direction);
                                 }
                             }
                         });
                     }
                 });
             });
-            WorldUtils.notifyNeighborsOfChange(tile.getLevel(), tile.getBlockPos(), directionsToUpdate);
         });
     }
 

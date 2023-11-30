@@ -123,10 +123,6 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         getTransmitter().write(nbtTags);
     }
 
-    public void onNeighborTileChange(Direction side) {
-        getTransmitter().onNeighborTileChange(side);
-    }
-
     public void onNeighborBlockChange(Direction side) {
         getTransmitter().onNeighborBlockChange(side);
     }

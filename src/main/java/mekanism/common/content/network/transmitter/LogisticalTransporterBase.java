@@ -364,6 +364,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     private boolean recalculate(int stackId, TransporterStack stack, BlockPos from) {
+        //TODO: ???? Why does this skip actually recalculating if it has no path. How does it get out of being idle
+        // Also figure out why changedAcceptors doesn't cause this to then recalculate
         boolean noPath = stack.getPathType() == Path.NONE || stack.recalculatePath(TransitRequest.simple(stack.itemStack), this, 0).isEmpty();
         if (noPath && !stack.calculateIdle(this)) {
             TransporterUtils.drop(this, stack);

@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
 import mekanism.common.Mekanism;
 import net.minecraft.core.BlockPos;
@@ -567,39 +566,20 @@ public class WorldUtils {
         for (Direction dir : EnumUtils.DIRECTIONS) {
             BlockPos offset = pos.relative(dir);
             if (isBlockLoaded(world, offset)) {
-                notifyNeighborOfChange(world, offset, pos);
-                if (world.getBlockState(offset).isRedstoneConductor(world, offset)) {
+                BlockState offsetState = world.getBlockState(offset);
+                offsetState.onNeighborChange(world, offset, pos);
+                offsetState.neighborChanged(world, offset, state.getBlock(), pos, false);
+                if (offsetState.isRedstoneConductor(world, offset)) {
+                    //If redstone can be conducted through it, forward the change along an extra spot
                     offset = offset.relative(dir);
                     if (isBlockLoaded(world, offset)) {
-                        Block block1 = world.getBlockState(offset).getBlock();
-                        //TODO: Make sure this is passing the correct state
-                        if (block1.getWeakChanges(state, world, offset)) {
-                            block1.onNeighborChange(state, world, offset, pos);
+                        offsetState = world.getBlockState(offset);
+                        if (offsetState.getWeakChanges(world, offset)) {
+                            offsetState.onNeighborChange(world, offset, pos);
                         }
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * Calls BOTH neighbour changed functions because nobody can decide on which one to implement, assuming that the neighboring positions are loaded.
-     *
-     * @param world     world the change exists in
-     * @param fromPos   pos of our block that updated
-     * @param neighbors Sides to notify the neighbors on.
-     */
-    public static void notifyNeighborsOfChange(@Nullable Level world, BlockPos fromPos, Set<Direction> neighbors) {
-        if (!neighbors.isEmpty()) {
-            getBlockState(world, fromPos).ifPresent(sourceState -> {
-                for (Direction neighbor : neighbors) {
-                    BlockPos pos = fromPos.relative(neighbor);
-                    getBlockState(world, pos).ifPresent(state -> {
-                        state.onNeighborChange(world, pos, fromPos);
-                        state.neighborChanged(world, pos, sourceState.getBlock(), fromPos, false);
-                    });
-                }
-            });
         }
     }
 
@@ -611,21 +591,11 @@ public class WorldUtils {
      * @param fromPos pos of our block that updated
      */
     public static void notifyNeighborOfChange(@Nullable Level world, BlockPos pos, BlockPos fromPos) {
+        //TODO - 1.20.2: Re-evaluate if this and notifyLoadedNeighborsOfTileChange
         getBlockState(world, pos).ifPresent(state -> {
             state.onNeighborChange(world, pos, fromPos);
             state.neighborChanged(world, pos, world.getBlockState(fromPos).getBlock(), fromPos, false);
         });
-    }
-
-    /**
-     * Calls BOTH neighbour changed functions because nobody can decide on which one to implement, assuming that the neighboring position is loaded.
-     *
-     * @param world        world the change exists in
-     * @param neighborSide The side the neighbor to notify is on
-     * @param fromPos      pos of our block that updated
-     */
-    public static void notifyNeighborOfChange(@Nullable Level world, Direction neighborSide, BlockPos fromPos) {
-        notifyNeighborOfChange(world, fromPos.relative(neighborSide), fromPos);
     }
 
     /**

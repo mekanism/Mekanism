@@ -69,13 +69,8 @@ public final class SecurityUtils implements ISecurityUtils {
     @Override
     public UUID getOwnerUUID(ItemStack stack) {
         Objects.requireNonNull(stack, "Capability provider may not be null.");
-        if (!stack.isEmpty()) {
-            IOwnerObject ownerObject = Capabilities.OWNER_OBJECT.getCapability(stack);
-            if (ownerObject != null) {
-                return ownerObject.getOwnerUUID();
-            }
-        }
-        return null;
+        IOwnerObject ownerObject = Capabilities.OWNER_OBJECT.getCapability(stack);
+        return ownerObject == null ? null : ownerObject.getOwnerUUID();
     }
 
     @Override

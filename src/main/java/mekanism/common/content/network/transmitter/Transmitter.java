@@ -290,7 +290,11 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             if (canConnectMutual(side, tile) && isValidAcceptor(level, pos, tile, side)) {
                 return true;
             }
-            acceptorCache.invalidateCachedAcceptor(side);
+            //TODO: Validate I am correct that this now can just be a markDirtAcceptor call
+            // and figure out if that is even correct??? As maybe it is only if it changed that we need to do that
+            // (Especially as we call getPossibleAcceptorConnection via actually committing the acceptor changes)
+            //acceptorCache.invalidateCachedAcceptor(side);
+            markDirtyAcceptor(side);
         }
         return false;
     }
@@ -329,7 +333,10 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
                         continue;
                     }
                 }
-                acceptorCache.invalidateCachedAcceptor(side);
+                //TODO: Validate I am correct that this now can just be a markDirtAcceptor call
+                // and figure out if that is even correct??? As maybe it is only if it changed that we need to do that
+                //acceptorCache.invalidateCachedAcceptor(side);
+                markDirtyAcceptor(side);
             }
         }
         return connections;
@@ -518,6 +525,23 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         }
     }
 
+    //TODO - 1.20.2: Re-evaluate??
+    public void refreshAcceptorConnections(Direction side) {
+        if (!isRemote()) {
+            boolean possibleAcceptor = getPossibleAcceptorConnection(side);
+            if (possibleAcceptor != connectionMapContainsSide(acceptorCache.currentAcceptorConnections, side)) {
+                acceptorCache.currentAcceptorConnections = setConnectionBit(acceptorCache.currentAcceptorConnections, possibleAcceptor, side);
+                //TODO: Validate I am pretty sure we don't need this but we may want to check validate this for heat networks??
+                // which may then cause issues due to when this method is actually called
+                /*if (transmitterChanged) {
+                    //If this side is now a valid transmitter, and it wasn't before recheck the connection
+                    recheckConnection(side);
+                }*/
+                getTransmitterTile().sendUpdatePacket();
+            }
+        }
+    }
+
     public void refreshConnections(Direction side) {
         if (!isRemote()) {
             boolean possibleTransmitter = getPossibleTransmitterConnection(side);
@@ -580,17 +604,13 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         getTransmitterTile().setChanged();
     }
 
-    public void onNeighborTileChange(Direction side) {
-        //TODO - 1.20.2: I think we can remove some of the checks like this because of how the block capability caches work?
-        refreshConnections(side);
-    }
-
     public void onNeighborBlockChange(Direction side) {
         if (handlesRedstone() && redstoneReactive) {
             //If our tile can handle redstone, and we are redstone reactive we need to recheck all connections
             // as the power might have changed, and we may have to update our own visuals
             refreshConnections();
         } else {
+            //TODO - 1.20.2: Do we actually need to do anything in this case?? Given connections likely are handled by caps and invalidation now
             //Otherwise, we can just get away with checking the single side
             refreshConnections(side);
         }
@@ -648,6 +668,8 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return InteractionResult.SUCCESS;
     }
 
+    //TODO: Re-evaluate this and if we need to be calling this. Odds are we need to at least in some spots for redstone related stuff
+    // but it is also possible we may need to also invalidate caps from some callsites
     public void notifyTileChange() {
         WorldUtils.notifyLoadedNeighborsOfTileChange(getTileWorld(), getTilePos());
     }

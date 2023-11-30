@@ -43,7 +43,6 @@ import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -198,13 +197,12 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
     public void sideChanged(@NotNull Direction side, @NotNull ConnectionType old, @NotNull ConnectionType type) {
         super.sideChanged(side, old, type);
         if (type == ConnectionType.NONE) {
+            //We no longer have a capability, invalidate it, which will also notify the level
             invalidateCapabilities(CAPABILITIES, side);
-            //Notify the neighbor on that side our state changed and we no longer have a capability
-            //TODO - 1.20.2: I believe we can remove this and other neighbor notify on capability invalidation?
-            WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         } else if (old == ConnectionType.NONE) {
-            //Notify the neighbor on that side our state changed, and we now do have a capability
-            WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
+            //Notify any listeners to our position that we now do have a capability
+            //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
+            invalidateCapabilities();
         }
     }
 
@@ -216,9 +214,11 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
             //Note: While at first glance the below invalidation may seem over aggressive, it is not actually that aggressive as
             // if a cap has not been initialized yet on a side then invalidating it will just NO-OP
             invalidateCapabilities(CAPABILITIES, EnumUtils.DIRECTIONS);
+        } else {
+            //Notify any listeners to our position that we now do have a capability
+            //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
+            invalidateCapabilities();
         }
-        //Note: We do not have to invalidate any caps if we are going from powered to unpowered as all the caps would already be "empty"
-        //TODO: Re-evaluate that ^ (I think we now should be doing so)
     }
 
     //Methods relating to IComputerTile

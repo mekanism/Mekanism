@@ -11,9 +11,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EmitUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,21 +29,11 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
         this.transmitterTile = transmitterTile;
     }
 
+    //TODO - 1.20.2: How much do we actually need to clear this vs can we just let GC handle it
+    // especially given then if it is removed and then gets added back in some ways we may as well be able to re-use things
     public void clear() {
         cachedListeners.clear();
         cachedAcceptors.clear();
-    }
-
-    public void invalidateCachedAcceptor(Direction side) {
-        if (cachedAcceptors.containsKey(side)) {
-            //Fully remove the cached acceptor, both the tile, and the value
-            cachedAcceptors.remove(side);
-            transmitter.markDirtyAcceptor(side);
-            //Note: as our listeners don't care about the actual implementation of the tile on a given side
-            // we don't bother invalidating and getting rid of the old listener when we remove the cached
-            // acceptor as we don't want to accidentally flood the acceptor with listeners if something
-            // breaks on our end.
-        }
     }
 
     /**
@@ -65,6 +53,8 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
     public List<ACCEPTOR> getConnectedAcceptors(Set<Direction> sides) {
         List<ACCEPTOR> acceptors = new ArrayList<>(sides.size());
         for (Direction side : sides) {
+            //TODO - 1.20.2: Validate that the fact this doesn't validate the thing is actually connected is fine??
+            // as this potentially should actually use getCachedAcceptor
             ACCEPTOR connectedAcceptor = getConnectedAcceptor(side);
             if (connectedAcceptor != null) {
                 acceptors.add(connectedAcceptor);
@@ -80,20 +70,6 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
     public ACCEPTOR getConnectedAcceptor(Direction side) {
         INFO acceptorInfo = cachedAcceptors.get(side);
         return acceptorInfo == null ? null : acceptorInfo.acceptor();
-    }
-
-    @Nullable
-    public BlockEntity getConnectedAcceptorTile(Direction side) {
-        return WorldUtils.getTileEntity(transmitterTile.getLevel(), transmitterTile.getBlockPos().relative(side));
-        //TODO: Figure out and potentially reimplement. If we don't then inline the above to the one caller
-        /*AcceptorInfo<ACCEPTOR> acceptorInfo = cachedAcceptors.get(side);
-        if (acceptorInfo != null) {
-            BlockEntity tile = acceptorInfo.getTile();
-            if (!tile.isRemoved()) {
-                return tile;
-            }
-        }
-        return null;*/
     }
 
     /**
@@ -142,6 +118,8 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
                 // and if the chunk is now unloaded we will get null as the capability, and then when it loads again
                 // we will be updated and get the proper capability again
                 transmitterTile.getTransmitter().markDirtyAcceptor(side);
+                //TODO: This used to do refreshConnections (at least under certain conditions) which updates more things than just markDirty acceptor
+                // so maybe some of the reasons that the idle path seems to stay broken is because we don't update enough stuff?
             }
         }
     }

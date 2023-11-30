@@ -59,11 +59,14 @@ public class DiversionTransporter extends LogisticalTransporterBase {
             TileEntityTransmitter transmitterTile = getTransmitterTile();
             for (Direction direction : EnumUtils.DIRECTIONS) {
                 if (super.exposesInsertCap(direction)) {
-                    if (!modeReqsMet(direction)) {
-                        //TODO - 1.20.2: I think we need to invalidate regardless of the state of modeReqsMet and don't need the notify neighbors anymore
+                    if (modeReqsMet(direction)) {
+                        //Notify any listeners to our position that we now do have a capability
+                        //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
+                        transmitterTile.invalidateCapabilities();
+                    } else {
+                        //We no longer have a capability, invalidate it, which will also notify the level
                         transmitterTile.invalidateCapability(Capabilities.ITEM.block(), direction);
                     }
-                    WorldUtils.notifyNeighborOfChange(transmitterTile.getLevel(), direction, transmitterTile.getTilePos());
                 }
             }
         }
@@ -119,11 +122,14 @@ public class DiversionTransporter extends LogisticalTransporterBase {
                 boolean nowExposes = modeReqsMet(mode);
                 if (nowExposes != modeReqsMet(oldMode)) {
                     //If the only thing that changed whether the cap should be exposed is the mode we need to invalidate the cap
-                    if (!nowExposes) {
-                        //TODO - 1.20.2: I think we need to invalidate regardless of the state of nowExposes and don't need the notify neighbors anymore
+                    if (nowExposes) {
+                        //Notify any listeners to our position that we now do have a capability
+                        //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
+                        transmitterTile.invalidateCapabilities();
+                    } else {
+                        //We no longer have a capability, invalidate it, which will also notify the level
                         transmitterTile.invalidateCapability(Capabilities.ITEM.block(), side);
                     }
-                    WorldUtils.notifyNeighborOfChange(transmitterTile.getLevel(), side, transmitterTile.getTilePos());
                 }
             }
             refreshConnections();

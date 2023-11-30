@@ -128,7 +128,7 @@ public interface ISecurityUtils {
     @Nullable
     UUID getOwnerUUID(Object provider);
 
-    //TODO - 1.20.2: Docs
+    //TODO - 1.20.2: Docs, and maybe remove the other method all together?
     @Nullable
     UUID getOwnerUUID(ItemStack stack);
 

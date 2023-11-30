@@ -1178,7 +1178,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         setChanged();
         invalidateCapabilities();
         sendUpdatePacket();
-        //TODO: I don't think the notify is necessarily needed anymore? At least not from a capability standpoint
         WorldUtils.notifyLoadedNeighborsOfTileChange(getLevel(), getTilePos());
     }
     //End methods IConfigCardAccess

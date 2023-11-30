@@ -22,16 +22,16 @@ public class NetworkAcceptorCache<ACCEPTOR> {
     public void updateTransmitterOnSide(Transmitter<ACCEPTOR, ?, ?> transmitter, Direction side) {
         ACCEPTOR acceptor = transmitter.canConnectToAcceptor(side) ? transmitter.getAcceptor(side) : null;
         BlockPos acceptorPos = transmitter.getTilePos().relative(side);
-        if (acceptor != null) {
-            cachedAcceptors.computeIfAbsent(acceptorPos, pos -> new EnumMap<>(Direction.class)).put(side.getOpposite(), acceptor);
-        } else if (cachedAcceptors.containsKey(acceptorPos)) {
+        if (acceptor == null) {
             Map<Direction, ACCEPTOR> cached = cachedAcceptors.get(acceptorPos);
-            cached.remove(side.getOpposite());
-            if (cached.isEmpty()) {
-                cachedAcceptors.remove(acceptorPos);
+            if (cached != null) {
+                cached.remove(side.getOpposite());
+                if (cached.isEmpty()) {
+                    cachedAcceptors.remove(acceptorPos);
+                }
             }
         } else {
-            cachedAcceptors.remove(acceptorPos);
+            cachedAcceptors.computeIfAbsent(acceptorPos, pos -> new EnumMap<>(Direction.class)).put(side.getOpposite(), acceptor);
         }
     }
 
@@ -66,6 +66,7 @@ public class NetworkAcceptorCache<ACCEPTOR> {
                 if (transmitter.isValid()) {
                     //Update all the changed directions
                     for (Direction side : entry.getValue()) {
+                        transmitter.refreshAcceptorConnections(side);
                         updateTransmitterOnSide(transmitter, side);
                     }
                 }

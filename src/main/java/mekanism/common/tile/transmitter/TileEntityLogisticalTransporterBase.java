@@ -13,7 +13,6 @@ import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.util.TransporterUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -70,16 +69,13 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
         super.sideChanged(side, old, type);
         //Note: We don't expose a cap for when the connection type is none or push and this method only gets called if type != old,
         // so we can check to ensure that if we are one of the two that the other isn't the other one we don't have a cap for
-        if (type == ConnectionType.NONE && old != ConnectionType.PUSH ||
-            type == ConnectionType.PUSH && old != ConnectionType.NONE) {
+        if (type == ConnectionType.NONE && old != ConnectionType.PUSH || type == ConnectionType.PUSH && old != ConnectionType.NONE) {
+            //We no longer have a capability, invalidate it, which will also notify the level
             invalidateCapability(Capabilities.ITEM.block(), side);
-            //Notify the neighbor on that side our state changed and we no longer have a capability
-            //TODO - 1.20.2: I believe we can remove this and other neighbor notify on capability invalidation?
-            WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
-        } else if (old == ConnectionType.NONE && type != ConnectionType.PUSH ||
-                   old == ConnectionType.PUSH && type != ConnectionType.NONE) {
-            //Notify the neighbor on that side our state changed, and we now do have a capability
-            WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
+        } else if (old == ConnectionType.NONE && type != ConnectionType.PUSH || old == ConnectionType.PUSH && type != ConnectionType.NONE) {
+            //Notify any listeners to our position that we now do have a capability
+            //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
+            invalidateCapabilities();
         }
     }
 
