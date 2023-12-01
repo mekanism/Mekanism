@@ -33,12 +33,10 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     }
 
     private static final Set<String> PATHS_TO_SKIP = Set.of(
-          "/computer_help/",//TODO - 1.20.2: Remove this as it should just work:tm: once NG updates to support minecraftLibrary type stuff again
           "/scripts/",//CraftTweaker script files
           "/pe_custom_conversions/"//ProjectE custom conversion files
     );
     private static final List<String> FAKE_PROVIDERS = List.of(
-          "ComputerHelp: mekanism",//TODO - 1.20.2: Remove this as it should just work:tm: once NG updates to support minecraftLibrary type stuff again
           "CraftTweaker Examples: mekanism",
           "Custom EMC Conversions: mekanism"
     );
