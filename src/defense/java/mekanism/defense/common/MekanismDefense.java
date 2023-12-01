@@ -12,15 +12,14 @@ import mekanism.defense.common.registries.DefenseCreativeTabs;
 import mekanism.defense.common.registries.DefenseItems;
 import mekanism.defense.common.registries.DefenseTileEntityTypes;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 
 @Mod(MekanismDefense.MODID)
 public class MekanismDefense implements IModModule {
@@ -38,12 +37,11 @@ public class MekanismDefense implements IModModule {
      */
     private final DefensePacketHandler packetHandler;
 
-    public MekanismDefense() {
+    public MekanismDefense(ModContainer modContainer, IEventBus modEventBus) {
         Mekanism.addModule(instance = this);
-        MekanismDefenseConfig.registerConfigs(ModLoadingContext.get());
+        MekanismDefenseConfig.registerConfigs(modContainer);
         NeoForge.EVENT_BUS.addListener(this::serverStopped);
 
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);
         DefenseItems.ITEMS.register(modEventBus);
@@ -53,7 +51,7 @@ public class MekanismDefense implements IModModule {
         DefenseTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
 
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
-        versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
+        versionNumber = new Version(modContainer);
         packetHandler = new DefensePacketHandler();
     }
 

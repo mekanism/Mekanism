@@ -16,15 +16,14 @@ import mekanism.tools.common.registries.ToolsRecipeSerializers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.TierSortingRegistry;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.TierSortingRegistry;
 
 @Mod(MekanismTools.MODID)
 public class MekanismTools implements IModModule {
@@ -38,20 +37,19 @@ public class MekanismTools implements IModModule {
      */
     public final Version versionNumber;
 
-    public MekanismTools() {
+    public MekanismTools(ModContainer modContainer, IEventBus modEventBus) {
         Mekanism.addModule(instance = this);
-        MekanismToolsConfig.registerConfigs(ModLoadingContext.get());
+        MekanismToolsConfig.registerConfigs(modContainer);
         //Register the listener for special mob spawning (mobs with Mekanism armor/tools)
         NeoForge.EVENT_BUS.addListener(MobEquipmentHelper::onLivingSpecialSpawn);
 
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);
         ToolsItems.ITEMS.register(modEventBus);
         ToolsCreativeTabs.CREATIVE_TABS.register(modEventBus);
         ToolsRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
-        versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
+        versionNumber = new Version(modContainer);
     }
 
     public static ResourceLocation rl(String path) {

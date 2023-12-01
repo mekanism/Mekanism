@@ -102,14 +102,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
@@ -174,9 +173,9 @@ public class Mekanism {
 
     private ReloadListener recipeCacheManager;
 
-    public Mekanism() {
+    public Mekanism(ModContainer modContainer, IEventBus modEventBus) {
         instance = this;
-        MekanismConfig.registerConfigs(ModLoadingContext.get());
+        MekanismConfig.registerConfigs(modContainer);
 
         NeoForge.EVENT_BUS.addListener(this::onEnergyTransferred);
         NeoForge.EVENT_BUS.addListener(this::onChemicalTransferred);
@@ -188,7 +187,6 @@ public class Mekanism {
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
         NeoForge.EVENT_BUS.addListener(this::onTagsReload);
         NeoForge.EVENT_BUS.addListener(MekanismPermissions::registerPermissionNodes);
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::registerChunkTicketControllers);
         modEventBus.addListener(this::onConfigLoad);
@@ -223,7 +221,7 @@ public class Mekanism {
         modEventBus.addListener(this::registerEventListener);
         modEventBus.addListener(this::registerRegistries);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
-        versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
+        versionNumber = new Version(modContainer);
         packetHandler = new PacketHandler();
         //Super early hooks, only reliable thing is for checking dependencies that we declare we are after
         hooks.hookConstructor(modEventBus);

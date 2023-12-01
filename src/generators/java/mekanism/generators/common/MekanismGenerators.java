@@ -37,13 +37,12 @@ import mekanism.generators.common.registries.GeneratorsSounds;
 import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MekanismGenerators.MODID)
 public class MekanismGenerators implements IModModule {
@@ -70,10 +69,9 @@ public class MekanismGenerators implements IModModule {
     public static final MultiblockManager<FissionReactorMultiblockData> fissionReactorManager = new MultiblockManager<>("fissionReactor", FissionReactorCache::new, FissionReactorValidator::new);
     public static final MultiblockManager<FusionReactorMultiblockData> fusionReactorManager = new MultiblockManager<>("fusionReactor", FusionReactorCache::new, FusionReactorValidator::new);
 
-    public MekanismGenerators() {
+    public MekanismGenerators(ModContainer modContainer, IEventBus modEventBus) {
         Mekanism.addModule(instance = this);
-        MekanismGeneratorsConfig.registerConfigs(ModLoadingContext.get());
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        MekanismGeneratorsConfig.registerConfigs(modContainer);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);
         modEventBus.addListener(this::imcQueue);
@@ -88,7 +86,7 @@ public class MekanismGenerators implements IModModule {
         GeneratorsGases.GASES.register(modEventBus);
         GeneratorsModules.MODULES.register(modEventBus);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
-        versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
+        versionNumber = new Version(modContainer);
         packetHandler = new GeneratorsPacketHandler();
     }
 

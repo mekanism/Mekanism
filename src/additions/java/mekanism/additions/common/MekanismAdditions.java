@@ -31,12 +31,11 @@ import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
@@ -59,13 +58,12 @@ public class MekanismAdditions implements IModModule {
      */
     public static VoiceServerManager voiceManager;
 
-    public MekanismAdditions() {
+    public MekanismAdditions(ModContainer modContainer, IEventBus modEventBus) {
         Mekanism.addModule(instance = this);
-        MekanismAdditionsConfig.registerConfigs(ModLoadingContext.get());
+        MekanismAdditionsConfig.registerConfigs(modContainer);
         NeoForge.EVENT_BUS.addListener(this::serverStarting);
         NeoForge.EVENT_BUS.addListener(this::serverStopping);
 
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);
         AdditionsItems.ITEMS.register(modEventBus);
@@ -77,7 +75,7 @@ public class MekanismAdditions implements IModModule {
         AdditionsStructureModifierSerializers.STRUCTURE_MODIFIER_SERIALIZERS.register(modEventBus);
 
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
-        versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
+        versionNumber = new Version(modContainer);
     }
 
     public static ResourceLocation rl(String path) {

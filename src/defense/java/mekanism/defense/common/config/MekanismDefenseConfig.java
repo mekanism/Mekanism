@@ -1,7 +1,7 @@
 package mekanism.defense.common.config;
 
 import mekanism.common.config.MekanismConfigHelper;
-import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.ModContainer;
 
 public class MekanismDefenseConfig {
 
@@ -10,7 +10,7 @@ public class MekanismDefenseConfig {
 
     public static final DefenseConfig defense = new DefenseConfig();
 
-    public static void registerConfigs(ModLoadingContext modLoadingContext) {
-        MekanismConfigHelper.registerConfig(modLoadingContext.getActiveContainer(), defense);
+    public static void registerConfigs(ModContainer modContainer) {
+        MekanismConfigHelper.registerConfig(modContainer, defense);
     }
 }

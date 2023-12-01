@@ -2,7 +2,6 @@ package mekanism.generators.common.config;
 
 import mekanism.common.config.MekanismConfigHelper;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModLoadingContext;
 
 public class MekanismGeneratorsConfig {
 
@@ -13,8 +12,7 @@ public class MekanismGeneratorsConfig {
     public static final GeneratorsGearConfig gear = new GeneratorsGearConfig();
     public static final GeneratorsStorageConfig storageConfig = new GeneratorsStorageConfig();
 
-    public static void registerConfigs(ModLoadingContext modLoadingContext) {
-        ModContainer modContainer = modLoadingContext.getActiveContainer();
+    public static void registerConfigs(ModContainer modContainer) {
         MekanismConfigHelper.registerConfig(modContainer, generators);
         MekanismConfigHelper.registerConfig(modContainer, gear);
         MekanismConfigHelper.registerConfig(modContainer, storageConfig);

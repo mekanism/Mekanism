@@ -1,7 +1,6 @@
 package mekanism.common.integration;
 
 import java.util.List;
-import java.util.Optional;
 import mekanism.common.integration.computer.FactoryRegistry;
 import mekanism.common.integration.computer.computercraft.CCCapabilityHelper;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
@@ -11,15 +10,14 @@ import mekanism.common.integration.jsonthings.JsonThingsIntegration;
 import mekanism.common.integration.lookingat.theoneprobe.TOPProvider;
 import mekanism.common.integration.projecte.NSSHelper;
 import mekanism.common.recipe.bin.BinInsertRecipe;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.data.loading.DatagenModLoader;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
-import net.neoforged.fml.javafmlmod.FMLModContainer;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.data.loading.DatagenModLoader;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.
@@ -70,14 +68,9 @@ public final class MekanismHooks {
             // to make it clearer which chemicals were added by CraftTweaker, and which are added by actual mods.
             // Gracefully fallback to our event bus if something goes wrong with getting CrT's and just then have the log have
             // warnings about us registering things in their namespace.
-            IEventBus crtModEventBus = bus;
-            Optional<? extends ModContainer> crtModContainer = ModList.get().getModContainerById(MekanismHooks.CRAFTTWEAKER_MOD_ID);
-            if (crtModContainer.isPresent()) {
-                ModContainer container = crtModContainer.get();
-                if (container instanceof FMLModContainer modContainer) {
-                    crtModEventBus = modContainer.getEventBus();
-                }
-            }
+            IEventBus crtModEventBus = ModList.get().getModContainerById(MekanismHooks.CRAFTTWEAKER_MOD_ID)
+                  .map(ModContainer::getEventBus)
+                  .orElse(bus);
             //Register our CrT listener at lowest priority to try and ensure they get later ids than our normal registries
             crtModEventBus.addListener(EventPriority.LOWEST, CrTContentUtils::registerCrTContent);
         }
