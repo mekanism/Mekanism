@@ -9,7 +9,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -32,21 +31,20 @@ public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<Fl
      */
     @ZenCodeType.Method
     public void addRecipe(String name, FluidStackIngredient input, IFluidStack output) {
-        addRecipe(makeRecipe(getAndValidateName(name), input, output));
+        addRecipe(name, makeRecipe(input, output));
     }
 
     /**
      * Creates a recipe that converts a fluid into another fluid.
      *
-     * @param id     Name of the new recipe.
      * @param input  {@link FluidStackIngredient} representing the input of the recipe.
      * @param output {@link IFluidStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final BasicFluidToFluidRecipe makeRecipe(ResourceLocation id, FluidStackIngredient input, IFluidStack output) {
-        return makeRecipe(id, input, getAndValidateNotEmpty(output));
+    public final BasicFluidToFluidRecipe makeRecipe(FluidStackIngredient input, IFluidStack output) {
+        return makeRecipe(input, getAndValidateNotEmpty(output));
     }
 
-    protected abstract BasicFluidToFluidRecipe makeRecipe(ResourceLocation id, FluidStackIngredient input, FluidStack output);
+    protected abstract BasicFluidToFluidRecipe makeRecipe(FluidStackIngredient input, FluidStack output);
 
     @Override
     protected String describeOutputs(FluidToFluidRecipe recipe) {
@@ -64,7 +62,7 @@ public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<Fl
         }
 
         @Override
-        protected BasicFluidToFluidRecipe makeRecipe(ResourceLocation id, FluidStackIngredient input, FluidStack output) {
+        protected BasicFluidToFluidRecipe makeRecipe(FluidStackIngredient input, FluidStack output) {
             return new BasicFluidToFluidRecipe(input, output);
         }
     }

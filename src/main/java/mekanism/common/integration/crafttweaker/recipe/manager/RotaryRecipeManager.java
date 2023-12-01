@@ -10,7 +10,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -35,7 +34,7 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipe> {
      */
     @ZenCodeType.Method
     public void addRecipe(String name, FluidStackIngredient fluidInput, ICrTGasStack gasOutput) {
-        addRecipe(makeRecipe(getAndValidateName(name), fluidInput, gasOutput));
+        addRecipe(name, makeRecipe(fluidInput, gasOutput));
     }
 
     /**
@@ -50,7 +49,7 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipe> {
      */
     @ZenCodeType.Method
     public void addRecipe(String name, GasStackIngredient gasInput, IFluidStack fluidOutput) {
-        addRecipe(makeRecipe(getAndValidateName(name), gasInput, fluidOutput));
+        addRecipe(name, makeRecipe(gasInput, fluidOutput));
     }
 
     /**
@@ -68,41 +67,38 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipe> {
      */
     @ZenCodeType.Method
     public void addRecipe(String name, FluidStackIngredient fluidInput, GasStackIngredient gasInput, ICrTGasStack gasOutput, IFluidStack fluidOutput) {
-        addRecipe(makeRecipe(getAndValidateName(name), fluidInput, gasInput, gasOutput, fluidOutput));
+        addRecipe(name, makeRecipe(fluidInput, gasInput, gasOutput, fluidOutput));
     }
 
     /**
      * Creates a rotary recipe that converts a fluid into a gas.
      *
-     * @param id         Name of the new recipe.
      * @param fluidInput {@link FluidStackIngredient} representing the input of the recipe.
      * @param gasOutput  {@link ICrTGasStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final RotaryRecipe makeRecipe(ResourceLocation id, FluidStackIngredient fluidInput, ICrTGasStack gasOutput) {
+    public final RotaryRecipe makeRecipe(FluidStackIngredient fluidInput, ICrTGasStack gasOutput) {
         return new BasicRotaryRecipe(fluidInput, getAndValidateNotEmpty(gasOutput));
     }
 
     /**
      * Creates a rotary recipe that converts a gas into a fluid.
      *
-     * @param id          Name of the new recipe.
      * @param gasInput    {@link GasStackIngredient} representing the input of the recipe.
      * @param fluidOutput {@link IFluidStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final RotaryRecipe makeRecipe(ResourceLocation id, GasStackIngredient gasInput, IFluidStack fluidOutput) {
+    public final RotaryRecipe makeRecipe(GasStackIngredient gasInput, IFluidStack fluidOutput) {
         return new BasicRotaryRecipe(gasInput, getAndValidateNotEmpty(fluidOutput));
     }
 
     /**
      * Creates a rotary recipe that is capable of converting a fluid into a gas and a gas into a fluid.
      *
-     * @param id          Name of the new recipe.
      * @param fluidInput  {@link FluidStackIngredient} representing the input of the recipe when converting from a fluid to a gas.
      * @param gasInput    {@link GasStackIngredient} representing the input of the recipe when converting from a gas to a fluid.
      * @param gasOutput   {@link ICrTGasStack} representing the output of the recipe when converting from a fluid to a gas. Will be validated as not empty.
      * @param fluidOutput {@link IFluidStack} representing the output of the recipe when converting from a gas to a fluid. Will be validated as not empty.
      */
-    public final RotaryRecipe makeRecipe(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, ICrTGasStack gasOutput, IFluidStack fluidOutput) {
+    public final RotaryRecipe makeRecipe(FluidStackIngredient fluidInput, GasStackIngredient gasInput, ICrTGasStack gasOutput, IFluidStack fluidOutput) {
         return new BasicRotaryRecipe(fluidInput, gasInput, getAndValidateNotEmpty(gasOutput), getAndValidateNotEmpty(fluidOutput));
     }
 

@@ -7,16 +7,17 @@ import java.util.Optional;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.recipe.manager.GasToGasRecipeManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 @IRecipeHandler.For(GasToGasRecipe.class)
 public class GasToGasRecipeHandler extends MekanismRecipeHandler<GasToGasRecipe> {
 
     @Override
-    public String dumpToCommandString(IRecipeManager<? super GasToGasRecipe> manager, GasToGasRecipe recipe) {
-        throw new IllegalStateException("Needs update");//TODO - 1.20.2: CraftTweaker update
-        //return buildCommandString(manager, recipe, recipe.getInput(), recipe.getOutputDefinition());
+    public String dumpToCommandString(IRecipeManager<? super GasToGasRecipe> manager, RegistryAccess registryAccess, RecipeHolder<GasToGasRecipe> recipeHolder) {
+        GasToGasRecipe recipe = recipeHolder.value();
+        return buildCommandString(manager, recipeHolder, recipe.getInput(), recipe.getOutputDefinition());
     }
 
     @Override
@@ -27,14 +28,14 @@ public class GasToGasRecipeHandler extends MekanismRecipeHandler<GasToGasRecipe>
     }
 
     @Override
-    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super GasToGasRecipe> manager, GasToGasRecipe recipe) {
+    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super GasToGasRecipe> manager, RegistryAccess registryAccess, GasToGasRecipe recipe) {
         return decompose(recipe.getInput(), recipe.getOutputDefinition());
     }
 
     @Override
-    public Optional<GasToGasRecipe> recompose(IRecipeManager<? super GasToGasRecipe> m, ResourceLocation name, IDecomposedRecipe recipe) {
+    public Optional<GasToGasRecipe> recompose(IRecipeManager<? super GasToGasRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof GasToGasRecipeManager manager) {
-            return Optional.of(manager.makeRecipe(name,
+            return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.GAS.input()),
                   recipe.getOrThrowSingle(CrTRecipeComponents.GAS.output())
             ));

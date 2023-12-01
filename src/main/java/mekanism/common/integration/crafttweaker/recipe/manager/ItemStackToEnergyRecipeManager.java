@@ -9,7 +9,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -32,24 +31,23 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
      */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient input, FloatingLong output) {
-        addRecipe(makeRecipe(getAndValidateName(name), input, output));
+        addRecipe(name, makeRecipe(input, output));
     }
 
     /**
      * Creates a recipe that an item into energy.
      *
-     * @param id     Name of the new recipe.
      * @param input  {@link ItemStackIngredient} representing the input of the recipe.
      * @param output Energy output. Will be validated as being greater than zero.
      */
-    public final ItemStackToEnergyRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, FloatingLong output) {
+    public final ItemStackToEnergyRecipe makeRecipe(ItemStackIngredient input, FloatingLong output) {
         if (output.isZero()) {
             throw new IllegalArgumentException("Output must be greater than zero.");
         }
-        return makeRecipeInternal(id, input, output.copyAsConst());
+        return makeRecipeInternal(input, output.copyAsConst());
     }
 
-    protected abstract ItemStackToEnergyRecipe makeRecipeInternal(ResourceLocation id, ItemStackIngredient input, FloatingLong output);
+    protected abstract ItemStackToEnergyRecipe makeRecipeInternal(ItemStackIngredient input, FloatingLong output);
 
     @Override
     protected String describeOutputs(ItemStackToEnergyRecipe recipe) {
@@ -67,7 +65,7 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
         }
 
         @Override
-        protected ItemStackToEnergyRecipe makeRecipeInternal(ResourceLocation id, ItemStackIngredient input, FloatingLong output) {
+        protected ItemStackToEnergyRecipe makeRecipeInternal(ItemStackIngredient input, FloatingLong output) {
             return new BasicItemStackToEnergyRecipe(input, output);
         }
     }

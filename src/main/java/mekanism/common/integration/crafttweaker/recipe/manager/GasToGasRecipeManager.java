@@ -11,7 +11,6 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -35,21 +34,20 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager<GasToG
      */
     @ZenCodeType.Method
     public void addRecipe(String name, GasStackIngredient input, ICrTGasStack output) {
-        addRecipe(makeRecipe(getAndValidateName(name), input, output));
+        addRecipe(name, makeRecipe(input, output));
     }
 
     /**
      * Creates a recipe that converts a gas into another gas.
      *
-     * @param id     Name of the new recipe.
      * @param input  {@link GasStackIngredient} representing the input of the recipe.
      * @param output {@link ICrTGasStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final GasToGasRecipe makeRecipe(ResourceLocation id, GasStackIngredient input, ICrTGasStack output) {
-        return makeRecipe(id, input, getAndValidateNotEmpty(output));
+    public final GasToGasRecipe makeRecipe(GasStackIngredient input, ICrTGasStack output) {
+        return makeRecipe(input, getAndValidateNotEmpty(output));
     }
 
-    protected abstract GasToGasRecipe makeRecipe(ResourceLocation id, GasStackIngredient ingredient, GasStack output);
+    protected abstract GasToGasRecipe makeRecipe(GasStackIngredient ingredient, GasStack output);
 
     @Override
     protected String describeOutputs(GasToGasRecipe recipe) {
@@ -67,7 +65,7 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager<GasToG
         }
 
         @Override
-        protected GasToGasRecipe makeRecipe(ResourceLocation id, GasStackIngredient ingredient, GasStack output) {
+        protected GasToGasRecipe makeRecipe(GasStackIngredient ingredient, GasStack output) {
             return new BasicActivatingRecipe(ingredient, output);
         }
     }
@@ -83,7 +81,7 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager<GasToG
         }
 
         @Override
-        protected GasToGasRecipe makeRecipe(ResourceLocation id, GasStackIngredient ingredient, GasStack output) {
+        protected GasToGasRecipe makeRecipe(GasStackIngredient ingredient, GasStack output) {
             return new BasicCentrifugingRecipe(ingredient, output);
         }
     }

@@ -10,16 +10,17 @@ import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.CrTUtils.UnaryTypePair;
 import mekanism.common.integration.crafttweaker.recipe.manager.CombinerRecipeManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 @IRecipeHandler.For(CombinerRecipe.class)
 public class CombinerRecipeHandler extends MekanismRecipeHandler<CombinerRecipe> {
 
     @Override
-    public String dumpToCommandString(IRecipeManager<? super CombinerRecipe> manager, CombinerRecipe recipe) {
-        throw new IllegalStateException("Needs update");//TODO - 1.20.2: CraftTweaker update
-        //return buildCommandString(manager, recipe, recipe.getMainInput(), recipe.getExtraInput(), recipe.getOutputDefinition());
+    public String dumpToCommandString(IRecipeManager<? super CombinerRecipe> manager, RegistryAccess registryAccess, RecipeHolder<CombinerRecipe> recipeHolder) {
+        CombinerRecipe recipe = recipeHolder.value();
+        return buildCommandString(manager, recipeHolder, recipe.getMainInput(), recipe.getExtraInput(), recipe.getOutputDefinition());
     }
 
     @Override
@@ -34,15 +35,15 @@ public class CombinerRecipeHandler extends MekanismRecipeHandler<CombinerRecipe>
     }
 
     @Override
-    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super CombinerRecipe> manager, CombinerRecipe recipe) {
+    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super CombinerRecipe> manager, RegistryAccess registryAccess, CombinerRecipe recipe) {
         return decompose(recipe.getMainInput(), recipe.getExtraInput(), recipe.getOutputDefinition());
     }
 
     @Override
-    public Optional<CombinerRecipe> recompose(IRecipeManager<? super CombinerRecipe> m, ResourceLocation name, IDecomposedRecipe recipe) {
+    public Optional<CombinerRecipe> recompose(IRecipeManager<? super CombinerRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof CombinerRecipeManager manager) {
             UnaryTypePair<ItemStackIngredient> inputs = CrTUtils.getPair(recipe, CrTRecipeComponents.ITEM.input());
-            return Optional.of(manager.makeRecipe(name,
+            return Optional.of(manager.makeRecipe(
                   inputs.a(),
                   inputs.b(),
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.output())

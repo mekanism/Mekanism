@@ -12,23 +12,24 @@ import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.integration.crafttweaker.recipe.manager.RotaryRecipeManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 @IRecipeHandler.For(RotaryRecipe.class)
 public class RotaryRecipeHandler extends MekanismRecipeHandler<RotaryRecipe> {
 
     @Override
-    public String dumpToCommandString(IRecipeManager<? super RotaryRecipe> manager, RotaryRecipe recipe) {
+    public String dumpToCommandString(IRecipeManager<? super RotaryRecipe> manager, RegistryAccess registryAccess, RecipeHolder<RotaryRecipe> recipeHolder) {
+        RotaryRecipe recipe = recipeHolder.value();
         //Note: We take advantage of the fact that if we have a recipe we have at least one direction and that we can skip parameters
         // as if they were optional as we will skip the later one as well and then end up with the proper method
-        throw new IllegalStateException("Needs update");//TODO - 1.20.2: CraftTweaker update
-        //return buildCommandString(manager, recipe,
-        //      recipe.hasFluidToGas() ? recipe.getFluidInput() : SKIP_OPTIONAL_PARAM,
-        //      recipe.hasGasToFluid() ? recipe.getGasInput() : SKIP_OPTIONAL_PARAM,
-        //      recipe.hasFluidToGas() ? recipe.getGasOutputDefinition() : SKIP_OPTIONAL_PARAM,
-        //      recipe.hasGasToFluid() ? recipe.getFluidOutputDefinition() : SKIP_OPTIONAL_PARAM
-        //);
+        return buildCommandString(manager, recipeHolder,
+              recipe.hasFluidToGas() ? recipe.getFluidInput() : SKIP_OPTIONAL_PARAM,
+              recipe.hasGasToFluid() ? recipe.getGasInput() : SKIP_OPTIONAL_PARAM,
+              recipe.hasFluidToGas() ? recipe.getGasOutputDefinition() : SKIP_OPTIONAL_PARAM,
+              recipe.hasGasToFluid() ? recipe.getFluidOutputDefinition() : SKIP_OPTIONAL_PARAM
+        );
     }
 
     @Override
@@ -43,7 +44,7 @@ public class RotaryRecipeHandler extends MekanismRecipeHandler<RotaryRecipe> {
     }
 
     @Override
-    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super RotaryRecipe> manager, RotaryRecipe recipe) {
+    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super RotaryRecipe> manager, RegistryAccess registryAccess, RotaryRecipe recipe) {
         if (recipe.hasFluidToGas()) {
             if (recipe.hasGasToFluid()) {
                 return decompose(recipe.getFluidInput(), recipe.getGasInput(), recipe.getGasOutputDefinition(), recipe.getFluidOutputDefinition());
@@ -54,7 +55,7 @@ public class RotaryRecipeHandler extends MekanismRecipeHandler<RotaryRecipe> {
     }
 
     @Override
-    public Optional<RotaryRecipe> recompose(IRecipeManager<? super RotaryRecipe> m, ResourceLocation name, IDecomposedRecipe recipe) {
+    public Optional<RotaryRecipe> recompose(IRecipeManager<? super RotaryRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof RotaryRecipeManager manager) {
             Optional<GasStackIngredient> gasInput = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.GAS.input());
             Optional<IFluidStack> fluidOutput = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.FLUID.output());
@@ -67,17 +68,17 @@ public class RotaryRecipeHandler extends MekanismRecipeHandler<RotaryRecipe> {
                 throw new IllegalArgumentException("Mismatched fluid input and gas output. Only one is present.");
             }
             if (gasInput.isPresent()) {
-                return fluidInput.map(fluidIngredient -> manager.makeRecipe(name,
+                return fluidInput.map(fluidIngredient -> manager.makeRecipe(
                       fluidIngredient,
                       gasInput.get(),
                       gasOutput.get(),
                       fluidOutput.get()
-                )).or(() -> Optional.of(manager.makeRecipe(name,
+                )).or(() -> Optional.of(manager.makeRecipe(
                       gasInput.get(),
                       fluidOutput.get()
                 )));
             } else if (fluidInput.isPresent()) {
-                return Optional.of(manager.makeRecipe(name,
+                return Optional.of(manager.makeRecipe(
                       fluidInput.get(),
                       gasOutput.get()
                 ));

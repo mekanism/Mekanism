@@ -11,7 +11,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -33,7 +32,7 @@ public abstract class ItemStackToGasRecipeManager extends ItemStackToChemicalRec
         }
 
         @Override
-        protected ItemStackToGasRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, GasStack output) {
+        protected ItemStackToGasRecipe makeRecipe(ItemStackIngredient input, GasStack output) {
             return new BasicGasConversionRecipe(input, output);
         }
     }
@@ -49,7 +48,7 @@ public abstract class ItemStackToGasRecipeManager extends ItemStackToChemicalRec
         }
 
         @Override
-        protected ItemStackToGasRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, GasStack output) {
+        protected ItemStackToGasRecipe makeRecipe(ItemStackIngredient input, GasStack output) {
             return new BasicChemicalOxidizerRecipe(input, output);
         }
     }

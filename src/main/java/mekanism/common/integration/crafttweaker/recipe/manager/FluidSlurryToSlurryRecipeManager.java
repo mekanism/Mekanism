@@ -11,7 +11,6 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -34,22 +33,21 @@ public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeMan
      */
     @ZenCodeType.Method
     public void addRecipe(String name, FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, ICrTSlurryStack output) {
-        addRecipe(makeRecipe(getAndValidateName(name), fluidInput, slurryInput, output));
+        addRecipe(name, makeRecipe(fluidInput, slurryInput, output));
     }
 
     /**
      * Creates a recipe that converts a fluid and slurry to another slurry.
      *
-     * @param id          Name of the new recipe.
      * @param fluidInput  {@link FluidStackIngredient} representing the fluid input of the recipe.
      * @param slurryInput {@link SlurryStackIngredient} representing the slurry input of the recipe.
      * @param output      {@link ICrTSlurryStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final FluidSlurryToSlurryRecipe makeRecipe(ResourceLocation id, FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, ICrTSlurryStack output) {
-        return makeRecipe(id, fluidInput, slurryInput, getAndValidateNotEmpty(output));
+    public final FluidSlurryToSlurryRecipe makeRecipe(FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, ICrTSlurryStack output) {
+        return makeRecipe(fluidInput, slurryInput, getAndValidateNotEmpty(output));
     }
 
-    protected abstract FluidSlurryToSlurryRecipe makeRecipe(ResourceLocation id, FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output);
+    protected abstract FluidSlurryToSlurryRecipe makeRecipe(FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output);
 
     @Override
     protected String describeOutputs(FluidSlurryToSlurryRecipe recipe) {
@@ -67,7 +65,7 @@ public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeMan
         }
 
         @Override
-        protected FluidSlurryToSlurryRecipe makeRecipe(ResourceLocation id, FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output) {
+        protected FluidSlurryToSlurryRecipe makeRecipe(FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output) {
             return new BasicFluidSlurryToSlurryRecipe(fluidInput, slurryInput, output);
         }
     }

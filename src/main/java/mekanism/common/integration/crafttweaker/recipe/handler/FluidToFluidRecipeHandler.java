@@ -7,16 +7,17 @@ import java.util.Optional;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.recipe.manager.FluidToFluidRecipeManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 @IRecipeHandler.For(FluidToFluidRecipe.class)
 public class FluidToFluidRecipeHandler extends MekanismRecipeHandler<FluidToFluidRecipe> {
 
     @Override
-    public String dumpToCommandString(IRecipeManager<? super FluidToFluidRecipe> manager, FluidToFluidRecipe recipe) {
-        throw new IllegalStateException("Needs update");//TODO - 1.20.2: CraftTweaker update
-        //return buildCommandString(manager, recipe, recipe.getInput(), recipe.getOutputDefinition());
+    public String dumpToCommandString(IRecipeManager<? super FluidToFluidRecipe> manager, RegistryAccess registryAccess, RecipeHolder<FluidToFluidRecipe> recipeHolder) {
+        FluidToFluidRecipe recipe = recipeHolder.value();
+        return buildCommandString(manager, recipeHolder, recipe.getInput(), recipe.getOutputDefinition());
     }
 
     @Override
@@ -27,14 +28,14 @@ public class FluidToFluidRecipeHandler extends MekanismRecipeHandler<FluidToFlui
     }
 
     @Override
-    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super FluidToFluidRecipe> manager, FluidToFluidRecipe recipe) {
+    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super FluidToFluidRecipe> manager, RegistryAccess registryAccess, FluidToFluidRecipe recipe) {
         return decompose(recipe.getInput(), recipe.getOutputDefinition());
     }
 
     @Override
-    public Optional<FluidToFluidRecipe> recompose(IRecipeManager<? super FluidToFluidRecipe> m, ResourceLocation name, IDecomposedRecipe recipe) {
+    public Optional<FluidToFluidRecipe> recompose(IRecipeManager<? super FluidToFluidRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof FluidToFluidRecipeManager manager) {
-            return Optional.of(manager.makeRecipe(name,
+            return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.FLUID.input()),
                   recipe.getOrThrowSingle(CrTRecipeComponents.FLUID.output())
             ));

@@ -17,6 +17,7 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.openzen.zencode.java.ZenCodeType;
@@ -33,8 +34,9 @@ public abstract class MekanismRecipeManager<RECIPE extends MekanismRecipe> imple
 
     protected abstract String describeOutputs(RECIPE recipe);
 
-    protected void addRecipe(RECIPE recipe) {
-        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe).outputDescriber(this::describeOutputs));
+    protected void addRecipe(String recipeName, RECIPE recipe) {
+        RecipeHolder<RECIPE> recipeHolder = createHolder(getAndValidateName(recipeName), recipe);
+        CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipeHolder).outputDescriber(holder -> describeOutputs(holder.value())));
     }
 
     @Override
@@ -50,7 +52,7 @@ public abstract class MekanismRecipeManager<RECIPE extends MekanismRecipe> imple
 
     @Override
     @Deprecated
-    public List<RECIPE> getRecipesByOutput(IIngredient output) {
+    public List<RecipeHolder<RECIPE>> getRecipesByOutput(IIngredient output) {
         throw new UnsupportedOperationException("Mekanism's recipe managers don't support reverse lookup by output, please lookup by recipe name.");
     }
 

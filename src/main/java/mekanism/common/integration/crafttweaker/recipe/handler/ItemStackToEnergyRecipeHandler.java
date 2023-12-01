@@ -7,16 +7,19 @@ import java.util.Optional;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToEnergyRecipeManager;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 @IRecipeHandler.For(ItemStackToEnergyRecipe.class)
 public class ItemStackToEnergyRecipeHandler extends MekanismRecipeHandler<ItemStackToEnergyRecipe> {
 
     @Override
-    public String dumpToCommandString(IRecipeManager<? super ItemStackToEnergyRecipe> manager, ItemStackToEnergyRecipe recipe) {
-        throw new IllegalStateException("Needs update");//TODO - 1.20.2: CraftTweaker update
-        //return buildCommandString(manager, recipe, recipe.getInput(), recipe.getOutputDefinition());
+    public String dumpToCommandString(IRecipeManager<? super ItemStackToEnergyRecipe> manager, RegistryAccess registryAccess,
+          RecipeHolder<ItemStackToEnergyRecipe> recipeHolder) {
+        ItemStackToEnergyRecipe recipe = recipeHolder.value();
+        return buildCommandString(manager, recipeHolder, recipe.getInput(), recipe.getOutputDefinition());
     }
 
     @Override
@@ -27,14 +30,14 @@ public class ItemStackToEnergyRecipeHandler extends MekanismRecipeHandler<ItemSt
     }
 
     @Override
-    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ItemStackToEnergyRecipe> manager, ItemStackToEnergyRecipe recipe) {
+    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ItemStackToEnergyRecipe> manager, RegistryAccess registryAccess, ItemStackToEnergyRecipe recipe) {
         return decompose(recipe.getInput(), recipe.getOutputDefinition());
     }
 
     @Override
-    public Optional<ItemStackToEnergyRecipe> recompose(IRecipeManager<? super ItemStackToEnergyRecipe> m, ResourceLocation name, IDecomposedRecipe recipe) {
+    public Optional<ItemStackToEnergyRecipe> recompose(IRecipeManager<? super ItemStackToEnergyRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof ItemStackToEnergyRecipeManager manager) {
-            return Optional.of(manager.makeRecipe(name,
+            return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.input()),
                   recipe.getOrThrowSingle(CrTRecipeComponents.ENERGY)
             ));

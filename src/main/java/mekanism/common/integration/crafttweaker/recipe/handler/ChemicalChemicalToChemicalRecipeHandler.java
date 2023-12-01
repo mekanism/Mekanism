@@ -24,17 +24,18 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalChemicalToChemicalRecipeManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 public abstract class ChemicalChemicalToChemicalRecipeHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>,
       RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>> extends MekanismRecipeHandler<RECIPE> {
 
     @Override
-    public String dumpToCommandString(IRecipeManager<? super RECIPE> manager, RECIPE recipe) {
-        throw new IllegalStateException("Needs update");//TODO - 1.20.2: CraftTweaker update
-        //return buildCommandString(manager, recipe, recipe.getLeftInput(), recipe.getRightInput(), recipe.getOutputDefinition());
+    public String dumpToCommandString(IRecipeManager<? super RECIPE> manager, RegistryAccess registryAccess, RecipeHolder<RECIPE> recipeHolder) {
+        RECIPE recipe = recipeHolder.value();
+        return buildCommandString(manager, recipeHolder, recipe.getLeftInput(), recipe.getRightInput(), recipe.getOutputDefinition());
     }
 
     @Override
@@ -52,17 +53,17 @@ public abstract class ChemicalChemicalToChemicalRecipeHandler<CHEMICAL extends C
     }
 
     @Override
-    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super RECIPE> manager, RECIPE recipe) {
+    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super RECIPE> manager, RegistryAccess registryAccess, RECIPE recipe) {
         return decompose(recipe.getLeftInput(), recipe.getRightInput(), recipe.getOutputDefinition());
     }
 
     @Override
-    public Optional<RECIPE> recompose(IRecipeManager<? super RECIPE> m, ResourceLocation name, IDecomposedRecipe recipe) {
+    public Optional<RECIPE> recompose(IRecipeManager<? super RECIPE> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof ChemicalChemicalToChemicalRecipeManager) {
             ChemicalChemicalToChemicalRecipeManager<CHEMICAL, STACK, INGREDIENT, CRT_STACK, RECIPE> manager =
                   (ChemicalChemicalToChemicalRecipeManager<CHEMICAL, STACK, INGREDIENT, CRT_STACK, RECIPE>) m;
             UnaryTypePair<INGREDIENT> inputs = CrTUtils.getPair(recipe, getChemicalComponent().input());
-            return Optional.of(manager.makeRecipe(name,
+            return Optional.of(manager.makeRecipe(
                   inputs.a(),
                   inputs.b(),
                   recipe.getOrThrowSingle(getChemicalComponent().output())

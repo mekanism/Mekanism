@@ -14,6 +14,7 @@ import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -61,11 +62,15 @@ import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.Sin
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.TaggedFluidStackIngredient;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.MultiItemStackIngredient;
 import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.SingleItemStackIngredient;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.common.crafting.StrictNBTIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -171,24 +176,30 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
 
     @Nullable
     public static String basicImplicitIngredient(Ingredient vanillaIngredient, int amount, JsonElement serialized, boolean handleTags) {
-        throw new IllegalStateException("CT not updated");//TODO - 1.20.2: CraftTweaker porting
-        /*if (serialized.isJsonObject()) {
+        //TODO - 1.20.2: Test this works fine and see if maybe we can remove some parts of this as no longer necessary
+        if (serialized.isJsonObject()) {
             JsonObject serializedIngredient = serialized.getAsJsonObject();
-            if (vanillaIngredient.isVanilla()) {
+            if (vanillaIngredient.getClass() == Ingredient.class) {
                 if (serializedIngredient.has(JsonConstants.ITEM)) {
-                    Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(serializedIngredient.get(JsonConstants.ITEM).getAsString()));
-                    return ItemStackUtil.getCommandString(new ItemStack(item, amount));
+                    Optional<Item> item = BuiltInRegistries.ITEM.getOptional(new ResourceLocation(serializedIngredient.get(JsonConstants.ITEM).getAsString()));
+                    if (item.isPresent()) {
+                        return ItemStackUtil.getCommandString(new ItemStack(item.get(), amount));
+                    }
                 } else if (handleTags && serializedIngredient.has(JsonConstants.TAG)) {
                     KnownTag<Item> tag = CrTUtils.itemTags().tag(serializedIngredient.get(JsonConstants.TAG).getAsString());
                     return amount == 1 ? tag.getCommandString() : tag.withAmount(amount).getCommandString();
                 }
             } else if (vanillaIngredient instanceof StrictNBTIngredient) {
-                ItemStack stack = CraftingHelper.getItemStack(serializedIngredient, true);
-                stack.setCount(amount);
-                return ItemStackUtil.getCommandString(stack);
+                Optional<StrictNBTIngredient> deserialized = StrictNBTIngredient.CODEC.parse(JsonOps.INSTANCE, serializedIngredient).result();
+                if (deserialized.isPresent()) {
+                    //Note: We don't have to copy the stack as we just deserialized it
+                    ItemStack stack = deserialized.get().getStack();
+                    stack.setCount(amount);
+                    return ItemStackUtil.getCommandString(stack);
+                }
             }
         }
-        return null;*/
+        return null;
     }
 
     private String convertIngredient(ItemStackIngredient ingredient) {

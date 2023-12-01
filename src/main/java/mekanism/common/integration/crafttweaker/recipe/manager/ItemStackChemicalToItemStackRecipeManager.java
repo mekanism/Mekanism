@@ -29,7 +29,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -70,23 +69,22 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
      */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient itemInput, INGREDIENT chemicalInput, IItemStack output) {
-        addRecipe(makeRecipe(getAndValidateName(name), itemInput, chemicalInput, output));
+        addRecipe(name, makeRecipe(itemInput, chemicalInput, output));
     }
 
     /**
      * Creates a recipe that converts an item and a chemical into an item.
      *
-     * @param id            Name of the new recipe.
      * @param itemInput     {@link ItemStackIngredient} representing the item input of the recipe.
      * @param chemicalInput {@link ChemicalStackIngredient} representing the chemical input of the recipe. The type of this chemical depends on the recipe manager it is
      *                      called from.
      * @param output        {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final RECIPE makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, INGREDIENT chemicalInput, IItemStack output) {
-        return makeRecipe(id, itemInput, chemicalInput, getAndValidateNotEmpty(output));
+    public final RECIPE makeRecipe(ItemStackIngredient itemInput, INGREDIENT chemicalInput, IItemStack output) {
+        return makeRecipe(itemInput, chemicalInput, getAndValidateNotEmpty(output));
     }
 
-    protected abstract RECIPE makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, INGREDIENT chemicalInput, ItemStack output);
+    protected abstract RECIPE makeRecipe(ItemStackIngredient itemInput, INGREDIENT chemicalInput, ItemStack output);
 
     @Override
     protected String describeOutputs(RECIPE recipe) {
@@ -104,7 +102,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
         }
 
         @Override
-        protected ItemStackGasToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
+        protected ItemStackGasToItemStackRecipe makeRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
             return new BasicCompressingRecipe(itemInput, gasInput, output);
         }
     }
@@ -120,7 +118,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
         }
 
         @Override
-        protected ItemStackGasToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
+        protected ItemStackGasToItemStackRecipe makeRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
             return new BasicInjectingRecipe(itemInput, gasInput, output);
         }
     }
@@ -136,7 +134,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
         }
 
         @Override
-        protected ItemStackGasToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
+        protected ItemStackGasToItemStackRecipe makeRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
             return new BasicPurifyingRecipe(itemInput, gasInput, output);
         }
     }
@@ -153,7 +151,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
         }
 
         @Override
-        protected MetallurgicInfuserRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output) {
+        protected MetallurgicInfuserRecipe makeRecipe(ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output) {
             return new BasicMetallurgicInfuserRecipe(itemInput, infusionInput, output);
         }
     }
@@ -169,7 +167,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
         }
 
         @Override
-        protected PaintingRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, PigmentStackIngredient pigmentInput, ItemStack output) {
+        protected PaintingRecipe makeRecipe(ItemStackIngredient itemInput, PigmentStackIngredient pigmentInput, ItemStack output) {
             return new BasicPaintingRecipe(itemInput, pigmentInput, output);
         }
     }

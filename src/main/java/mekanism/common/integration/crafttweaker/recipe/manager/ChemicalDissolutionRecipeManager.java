@@ -9,7 +9,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -32,18 +31,17 @@ public class ChemicalDissolutionRecipeManager extends MekanismRecipeManager<Chem
      */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient itemInput, GasStackIngredient gasInput, ICrTChemicalStack<?, ?, ?> output) {
-        addRecipe(makeRecipe(getAndValidateName(name), itemInput, gasInput, output));
+        addRecipe(name, makeRecipe(itemInput, gasInput, output));
     }
 
     /**
      * Makes a chemical dissolution recipe that converts an item and a gas into a chemical.
      *
-     * @param id        Name of the new recipe.
      * @param itemInput {@link ItemStackIngredient} representing the item input of the recipe.
      * @param gasInput  {@link GasStackIngredient} representing the gas input of the recipe.
      * @param output    {@link ICrTChemicalStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final BasicChemicalDissolutionRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ICrTChemicalStack<?, ?, ?> output) {
+    public final BasicChemicalDissolutionRecipe makeRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, ICrTChemicalStack<?, ?, ?> output) {
         return new BasicChemicalDissolutionRecipe(itemInput, gasInput, getAndValidateNotEmpty(output));
     }
 

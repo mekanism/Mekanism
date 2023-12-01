@@ -22,7 +22,6 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTG
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -51,22 +50,21 @@ public abstract class ChemicalChemicalToChemicalRecipeManager<CHEMICAL extends C
      */
     @ZenCodeType.Method
     public void addRecipe(String name, INGREDIENT leftInput, INGREDIENT rightInput, CRT_STACK output) {
-        addRecipe(makeRecipe(getAndValidateName(name), leftInput, rightInput, output));
+        addRecipe(name, makeRecipe(leftInput, rightInput, output));
     }
 
     /**
      * Creates a recipe that combines two chemicals of the same type into another chemical of the same type.
      *
-     * @param id         Name of the new recipe.
      * @param leftInput  Chemical stack ingredient representing the "left" chemical input of the recipe.
      * @param rightInput Chemical stack ingredient representing the "right" chemical input of the recipe.
      * @param output     Chemical stack representing the output of the recipe. Will be validated as not empty.
      */
-    public final RECIPE makeRecipe(ResourceLocation id, INGREDIENT leftInput, INGREDIENT rightInput, CRT_STACK output) {
-        return makeRecipe(id, leftInput, rightInput, getAndValidateNotEmpty(output));
+    public final RECIPE makeRecipe(INGREDIENT leftInput, INGREDIENT rightInput, CRT_STACK output) {
+        return makeRecipe(leftInput, rightInput, getAndValidateNotEmpty(output));
     }
 
-    protected abstract RECIPE makeRecipe(ResourceLocation id, INGREDIENT leftInput, INGREDIENT rightInput, STACK output);
+    protected abstract RECIPE makeRecipe(INGREDIENT leftInput, INGREDIENT rightInput, STACK output);
 
     @Override
     protected String describeOutputs(RECIPE recipe) {
@@ -84,7 +82,7 @@ public abstract class ChemicalChemicalToChemicalRecipeManager<CHEMICAL extends C
         }
 
         @Override
-        protected BasicChemicalInfuserRecipe makeRecipe(ResourceLocation id, GasStackIngredient left, GasStackIngredient right, GasStack output) {
+        protected BasicChemicalInfuserRecipe makeRecipe(GasStackIngredient left, GasStackIngredient right, GasStack output) {
             return new BasicChemicalInfuserRecipe(left, right, output);
         }
     }
@@ -100,7 +98,7 @@ public abstract class ChemicalChemicalToChemicalRecipeManager<CHEMICAL extends C
         }
 
         @Override
-        protected PigmentMixingRecipe makeRecipe(ResourceLocation id, PigmentStackIngredient left, PigmentStackIngredient right, PigmentStack output) {
+        protected PigmentMixingRecipe makeRecipe(PigmentStackIngredient left, PigmentStackIngredient right, PigmentStack output) {
             return new BasicPigmentMixingRecipe(left, right, output);
         }
     }

@@ -15,17 +15,20 @@ import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.integration.crafttweaker.recipe.manager.PressurizedReactionRecipeManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 @IRecipeHandler.For(PressurizedReactionRecipe.class)
 public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<PressurizedReactionRecipe> {
 
     @Override
-    public String dumpToCommandString(IRecipeManager<? super PressurizedReactionRecipe> manager, PressurizedReactionRecipe recipe) {
+    public String dumpToCommandString(IRecipeManager<? super PressurizedReactionRecipe> manager, RegistryAccess registryAccess,
+          RecipeHolder<PressurizedReactionRecipe> recipeHolder) {
         ItemStack itemOutput;
         GasStack gasOutput;
+        PressurizedReactionRecipe recipe = recipeHolder.value();
         List<PressurizedReactionRecipeOutput> outputs = recipe.getOutputDefinition();
         if (outputs.isEmpty()) {
             //Validate it isn't empty, which shouldn't be possible
@@ -40,11 +43,10 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
         }
         //Note: We can handle skipping optional params like this because only one output should be empty at a time
         // if there is only a single output, which means we can safely skip the other
-        throw new IllegalStateException("Needs update");//TODO - 1.20.2: CraftTweaker update
-        //return buildCommandString(manager, recipe, recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputGas(), recipe.getDuration(),
-        //      itemOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : itemOutput, gasOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : gasOutput,
-        //      recipe.getEnergyRequired().isZero() ? SKIP_OPTIONAL_PARAM : recipe.getEnergyRequired()
-        //);
+        return buildCommandString(manager, recipeHolder, recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputGas(), recipe.getDuration(),
+              itemOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : itemOutput, gasOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : gasOutput,
+              recipe.getEnergyRequired().isZero() ? SKIP_OPTIONAL_PARAM : recipe.getEnergyRequired()
+        );
     }
 
     @Override
@@ -60,13 +62,13 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
     }
 
     @Override
-    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super PressurizedReactionRecipe> manager, PressurizedReactionRecipe recipe) {
+    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super PressurizedReactionRecipe> manager, RegistryAccess registryAccess, PressurizedReactionRecipe recipe) {
         return decompose(recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputGas(), recipe.getDuration(), recipe.getOutputDefinition(),
               recipe.getEnergyRequired());
     }
 
     @Override
-    public Optional<PressurizedReactionRecipe> recompose(IRecipeManager<? super PressurizedReactionRecipe> m, ResourceLocation name, IDecomposedRecipe recipe) {
+    public Optional<PressurizedReactionRecipe> recompose(IRecipeManager<? super PressurizedReactionRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof PressurizedReactionRecipeManager manager) {
             Optional<IItemStack> optionalOutputItem = CrTUtils.getSingleIfPresent(recipe, CrTRecipeComponents.ITEM.output());
             ItemStack outputItem;
@@ -80,7 +82,7 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
                 outputItem = ItemStack.EMPTY;
                 outputGas = recipe.getOrThrowSingle(CrTRecipeComponents.GAS.output()).getImmutableInternal();
             }
-            return Optional.of(manager.makeRecipe(name,
+            return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.input()),
                   recipe.getOrThrowSingle(CrTRecipeComponents.FLUID.input()),
                   recipe.getOrThrowSingle(CrTRecipeComponents.GAS.input()),

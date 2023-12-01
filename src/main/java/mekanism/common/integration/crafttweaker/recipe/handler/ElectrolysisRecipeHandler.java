@@ -11,17 +11,18 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.CrTUtils.UnaryTypePair;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.integration.crafttweaker.recipe.manager.ElectrolysisRecipeManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 @IRecipeHandler.For(ElectrolysisRecipe.class)
 public class ElectrolysisRecipeHandler extends MekanismRecipeHandler<ElectrolysisRecipe> {
 
     @Override
-    public String dumpToCommandString(IRecipeManager<? super ElectrolysisRecipe> manager, ElectrolysisRecipe recipe) {
-        throw new IllegalStateException("Needs update");//TODO - 1.20.2: CraftTweaker update
-        //return buildCommandString(manager, recipe, recipe.getInput(), recipe.getOutputDefinition(),
-        //      recipe.getEnergyMultiplier().equals(FloatingLong.ONE) ? SKIP_OPTIONAL_PARAM : recipe.getEnergyMultiplier());
+    public String dumpToCommandString(IRecipeManager<? super ElectrolysisRecipe> manager, RegistryAccess registryAccess, RecipeHolder<ElectrolysisRecipe> recipeHolder) {
+        ElectrolysisRecipe recipe = recipeHolder.value();
+        return buildCommandString(manager, recipeHolder, recipe.getInput(), recipe.getOutputDefinition(),
+              recipe.getEnergyMultiplier().equals(FloatingLong.ONE) ? SKIP_OPTIONAL_PARAM : recipe.getEnergyMultiplier());
     }
 
     @Override
@@ -32,15 +33,15 @@ public class ElectrolysisRecipeHandler extends MekanismRecipeHandler<Electrolysi
     }
 
     @Override
-    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ElectrolysisRecipe> manager, ElectrolysisRecipe recipe) {
+    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ElectrolysisRecipe> manager, RegistryAccess registryAccess, ElectrolysisRecipe recipe) {
         return decompose(recipe.getInput(), recipe.getOutputDefinition(), recipe.getEnergyMultiplier());
     }
 
     @Override
-    public Optional<ElectrolysisRecipe> recompose(IRecipeManager<? super ElectrolysisRecipe> m, ResourceLocation name, IDecomposedRecipe recipe) {
+    public Optional<ElectrolysisRecipe> recompose(IRecipeManager<? super ElectrolysisRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof ElectrolysisRecipeManager manager) {
             UnaryTypePair<ICrTGasStack> output = CrTUtils.getPair(recipe, CrTRecipeComponents.GAS.output());
-            return Optional.of(manager.makeRecipe(name,
+            return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.FLUID.input()),
                   output.a(),
                   output.b(),

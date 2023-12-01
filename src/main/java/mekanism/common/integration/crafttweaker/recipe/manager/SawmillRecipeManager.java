@@ -12,7 +12,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -53,11 +52,11 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SawmillRecipe> {
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient input, IItemStack output, double chance) {
         if (chance < 1) {
-            addRecipe(makeRecipe(getAndValidateName(name), input, output, chance));
+            addRecipe(name, makeRecipe(input, output, chance));
         } else if (chance == 1) {
-            addRecipe(makeRecipe(getAndValidateName(name), input, output));
+            addRecipe(name, makeRecipe(input, output));
         } else if (chance < 2) {
-            addRecipe(makeRecipe(getAndValidateName(name), input, output, output.copy(), chance - 1));
+            addRecipe(name, makeRecipe(input, output, output.copy(), chance - 1));
         } else {
             //Fail as they should just increase the amount
             throw new IllegalArgumentException("This sawing recipe should just have the amount increased or explicitly use the two output method.");
@@ -90,42 +89,39 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SawmillRecipe> {
      */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient input, IItemStack mainOutput, IItemStack secondaryOutput, double secondaryChance) {
-        addRecipe(makeRecipe(getAndValidateName(name), input, mainOutput, secondaryOutput, secondaryChance));
+        addRecipe(name, makeRecipe(input, mainOutput, secondaryOutput, secondaryChance));
     }
 
     /**
      * Creates a sawing recipe that converts an item into another item.
      *
-     * @param id         Name of the new recipe.
      * @param input      {@link ItemStackIngredient} representing the input of the recipe.
      * @param mainOutput {@link IItemStack} representing the main output of the recipe. Will be validated as not empty.
      */
-    public final SawmillRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, IItemStack mainOutput) {
+    public final SawmillRecipe makeRecipe(ItemStackIngredient input, IItemStack mainOutput) {
         return new BasicSawmillRecipe(input, getAndValidateNotEmpty(mainOutput), ItemStack.EMPTY, 0);
     }
 
     /**
      * Creates a sawing recipe that converts an item into a chance based secondary item.
      *
-     * @param id              Name of the new recipe.
      * @param input           {@link ItemStackIngredient} representing the input of the recipe.
      * @param secondaryOutput {@link IItemStack} representing the secondary chance based output of the recipe. Will be validated as not empty.
      * @param secondaryChance Chance of the secondary output being produced. Will be validated to be a number greater than zero and at most one.
      */
-    public final SawmillRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, IItemStack secondaryOutput, double secondaryChance) {
+    public final SawmillRecipe makeRecipe(ItemStackIngredient input, IItemStack secondaryOutput, double secondaryChance) {
         return new BasicSawmillRecipe(input, ItemStack.EMPTY, getAndValidateNotEmpty(secondaryOutput), getAndValidateSecondaryChance(secondaryChance));
     }
 
     /**
      * Creates a sawing recipe that converts an item into another item and a chance based secondary item.
      *
-     * @param id              Name of the new recipe.
      * @param input           {@link ItemStackIngredient} representing the input of the recipe.
      * @param mainOutput      {@link IItemStack} representing the main output of the recipe. Will be validated as not empty.
      * @param secondaryOutput {@link IItemStack} representing the secondary chance based output of the recipe. Will be validated as not empty.
      * @param secondaryChance Chance of the secondary output being produced. Will be validated to be a number greater than zero and at most one.
      */
-    public final SawmillRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, IItemStack mainOutput, IItemStack secondaryOutput, double secondaryChance) {
+    public final SawmillRecipe makeRecipe(ItemStackIngredient input, IItemStack mainOutput, IItemStack secondaryOutput, double secondaryChance) {
         return new BasicSawmillRecipe(input, getAndValidateNotEmpty(mainOutput), getAndValidateNotEmpty(secondaryOutput), getAndValidateSecondaryChance(secondaryChance));
     }
 

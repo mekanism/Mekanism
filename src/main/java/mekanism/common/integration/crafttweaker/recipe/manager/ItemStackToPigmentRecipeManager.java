@@ -10,7 +10,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -32,7 +31,7 @@ public abstract class ItemStackToPigmentRecipeManager extends ItemStackToChemica
         }
 
         @Override
-        protected ItemStackToPigmentRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, PigmentStack output) {
+        protected ItemStackToPigmentRecipe makeRecipe(ItemStackIngredient input, PigmentStack output) {
             return new BasicItemStackToPigmentRecipe(input, output);
         }
     }

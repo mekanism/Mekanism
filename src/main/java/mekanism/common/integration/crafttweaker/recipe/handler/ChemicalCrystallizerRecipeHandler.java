@@ -9,16 +9,18 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalCrystallizerRecipeManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 @IRecipeHandler.For(ChemicalCrystallizerRecipe.class)
 public class ChemicalCrystallizerRecipeHandler extends MekanismRecipeHandler<ChemicalCrystallizerRecipe> {
 
     @Override
-    public String dumpToCommandString(IRecipeManager<? super ChemicalCrystallizerRecipe> manager, ChemicalCrystallizerRecipe recipe) {
-        throw new IllegalStateException("Needs update");//TODO - 1.20.2: CraftTweaker update
-        //return buildCommandString(manager, recipe, recipe.getInput(), recipe.getOutputDefinition());
+    public String dumpToCommandString(IRecipeManager<? super ChemicalCrystallizerRecipe> manager, RegistryAccess registryAccess,
+          RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder) {
+        ChemicalCrystallizerRecipe recipe = recipeHolder.value();
+        return buildCommandString(manager, recipeHolder, recipe.getInput(), recipe.getOutputDefinition());
     }
 
     @Override
@@ -29,12 +31,12 @@ public class ChemicalCrystallizerRecipeHandler extends MekanismRecipeHandler<Che
     }
 
     @Override
-    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ChemicalCrystallizerRecipe> manager, ChemicalCrystallizerRecipe recipe) {
+    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super ChemicalCrystallizerRecipe> manager, RegistryAccess registryAccess, ChemicalCrystallizerRecipe recipe) {
         return decompose(recipe.getInput(), recipe.getOutputDefinition());
     }
 
     @Override
-    public Optional<ChemicalCrystallizerRecipe> recompose(IRecipeManager<? super ChemicalCrystallizerRecipe> m, ResourceLocation name, IDecomposedRecipe recipe) {
+    public Optional<ChemicalCrystallizerRecipe> recompose(IRecipeManager<? super ChemicalCrystallizerRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof ChemicalCrystallizerRecipeManager manager) {
             ChemicalStackIngredient<?, ?> input = CrTRecipeComponents.CHEMICAL_COMPONENTS.stream()
                   .map(chemicalComponent -> CrTUtils.getSingleIfPresent(recipe, chemicalComponent.input()))
@@ -42,7 +44,7 @@ public class ChemicalCrystallizerRecipeHandler extends MekanismRecipeHandler<Che
                   .map(Optional::get)
                   .findFirst()
                   .orElseThrow(() -> new IllegalArgumentException("No chemical input ingredient provided."));
-            return Optional.of(manager.makeRecipe(name,
+            return Optional.of(manager.makeRecipe(
                   input,
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.output())
             ));

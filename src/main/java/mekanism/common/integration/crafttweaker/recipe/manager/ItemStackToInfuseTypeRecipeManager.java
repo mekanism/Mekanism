@@ -10,7 +10,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -32,7 +31,7 @@ public abstract class ItemStackToInfuseTypeRecipeManager extends ItemStackToChem
         }
 
         @Override
-        protected ItemStackToInfuseTypeRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, InfusionStack output) {
+        protected ItemStackToInfuseTypeRecipe makeRecipe(ItemStackIngredient input, InfusionStack output) {
             return new BasicItemStackToInfuseTypeRecipe(input, output);
         }
     }

@@ -9,7 +9,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
-import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -40,21 +39,20 @@ public abstract class ItemStackToChemicalRecipeManager<CHEMICAL extends Chemical
      */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient input, CRT_STACK output) {
-        addRecipe(makeRecipe(getAndValidateName(name), input, output));
+        addRecipe(name, makeRecipe(input, output));
     }
 
     /**
      * Creates a recipe that an item into a chemical.
      *
-     * @param id     Name of the new recipe.
      * @param input  {@link ItemStackIngredient} representing the input of the recipe.
      * @param output Chemical stack representing the output of the recipe. Will be validated as not empty.
      */
-    public final RECIPE makeRecipe(ResourceLocation id, ItemStackIngredient input, CRT_STACK output) {
-        return makeRecipe(id, input, getAndValidateNotEmpty(output));
+    public final RECIPE makeRecipe(ItemStackIngredient input, CRT_STACK output) {
+        return makeRecipe(input, getAndValidateNotEmpty(output));
     }
 
-    protected abstract RECIPE makeRecipe(ResourceLocation id, ItemStackIngredient input, STACK output);
+    protected abstract RECIPE makeRecipe(ItemStackIngredient input, STACK output);
 
     @Override
     protected String describeOutputs(RECIPE recipe) {

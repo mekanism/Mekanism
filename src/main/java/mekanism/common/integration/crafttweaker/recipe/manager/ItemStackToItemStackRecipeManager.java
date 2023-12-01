@@ -12,7 +12,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -40,21 +39,20 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
      */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient input, IItemStack output) {
-        addRecipe(makeRecipe(getAndValidateName(name), input, output));
+        addRecipe(name, makeRecipe(input, output));
     }
 
     /**
      * Creates a recipe that converts an item into another item.
      *
-     * @param id     Name of the new recipe.
      * @param input  {@link ItemStackIngredient} representing the input of the recipe.
      * @param output {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, IItemStack output) {
-        return makeRecipe(id, input, getAndValidateNotEmpty(output));
+    public final ItemStackToItemStackRecipe makeRecipe(ItemStackIngredient input, IItemStack output) {
+        return makeRecipe(input, getAndValidateNotEmpty(output));
     }
 
-    protected abstract ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output);
+    protected abstract ItemStackToItemStackRecipe makeRecipe(ItemStackIngredient input, ItemStack output);
 
     @Override
     protected String describeOutputs(ItemStackToItemStackRecipe recipe) {
@@ -72,7 +70,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
         }
 
         @Override
-        protected ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
+        protected ItemStackToItemStackRecipe makeRecipe(ItemStackIngredient input, ItemStack output) {
             return new BasicCrushingRecipe(input, output);
         }
     }
@@ -88,7 +86,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
         }
 
         @Override
-        protected ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
+        protected ItemStackToItemStackRecipe makeRecipe(ItemStackIngredient input, ItemStack output) {
             return new BasicEnrichingRecipe(input, output);
         }
     }
@@ -104,7 +102,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
         }
 
         @Override
-        protected ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output) {
+        protected ItemStackToItemStackRecipe makeRecipe(ItemStackIngredient input, ItemStack output) {
             return new BasicSmeltingRecipe(input, output);
         }
     }

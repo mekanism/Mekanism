@@ -15,7 +15,6 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -143,13 +142,12 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Pres
 
     private void addRecipe(String name, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, int duration, ItemStack outputItem,
           GasStack outputGas, FloatingLong energyRequired) {
-        addRecipe(makeRecipe(getAndValidateName(name), inputSolid, inputFluid, inputGas, duration, outputItem, outputGas, energyRequired));
+        addRecipe(name, makeRecipe(inputSolid, inputFluid, inputGas, duration, outputItem, outputGas, energyRequired));
     }
 
     /**
      * Creates a reaction recipe that converts an item, fluid, and gas into another item and gas. Pressurized Reaction Chambers can process this recipe type.
      *
-     * @param id             Name of the new recipe.
      * @param inputSolid     {@link ItemStackIngredient} representing the item input of the recipe.
      * @param inputFluid     {@link FluidStackIngredient} representing the fluid input of the recipe.
      * @param inputGas       {@link GasStackIngredient} representing the gas input of the recipe.
@@ -159,7 +157,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Pres
      * @param energyRequired Value representing how much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the
      *                       recipe.
      */
-    public PressurizedReactionRecipe makeRecipe(ResourceLocation id, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
+    public PressurizedReactionRecipe makeRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
           int duration, ItemStack outputItem, GasStack outputGas, FloatingLong energyRequired) {
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be positive! Duration: " + duration);

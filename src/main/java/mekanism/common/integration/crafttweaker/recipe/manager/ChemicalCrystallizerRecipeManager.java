@@ -9,7 +9,6 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -31,17 +30,16 @@ public class ChemicalCrystallizerRecipeManager extends MekanismRecipeManager<Che
      */
     @ZenCodeType.Method
     public void addRecipe(String name, ChemicalStackIngredient<?, ?> input, IItemStack output) {
-        addRecipe(makeRecipe(getAndValidateName(name), input, output));
+        addRecipe(name, makeRecipe(input, output));
     }
 
     /**
      * Creates a crystallizing recipe that converts a chemical into an item.
      *
-     * @param id     Name of the new recipe.
      * @param input  {@link ChemicalStackIngredient} representing the input of the recipe.
      * @param output {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
      */
-    public final BasicChemicalCrystallizerRecipe makeRecipe(ResourceLocation id, ChemicalStackIngredient<?, ?> input, IItemStack output) {
+    public final BasicChemicalCrystallizerRecipe makeRecipe(ChemicalStackIngredient<?, ?> input, IItemStack output) {
         return new BasicChemicalCrystallizerRecipe(input, getAndValidateNotEmpty(output));
     }
 

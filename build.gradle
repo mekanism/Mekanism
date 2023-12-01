@@ -437,11 +437,11 @@ dependencies {
     //    transitive = false
     //}
     compileOnly("curse.maven:jade-api-324717:${jade_api_id}")
-    //TODO - 1.20.2: runtimeOnly ("curse.maven:jade-324717:${jade_id}")
-    compileOnly("mcp.mobius.waila:wthit-api:forge-${wthit_version}")
+    runtimeOnly ("curse.maven:jade-324717:${jade_id}")
+    compileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
 
     //TODO - 1.20.2: move back to implementation
-    compileOnly("com.blamejared.crafttweaker:CraftTweaker-forge-${previous_minecraft_version}:${crafttweaker_version}")
+    compileOnly("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
     compileOnly("com.blamejared.jeitweaker:JeiTweaker-forge-${previous_minecraft_version}:${jeitweaker_version}")
 
     compileOnly("dev.gigaherz.jsonthings:JsonThings-${previous_minecraft_version}:${json_things_version}")
@@ -462,7 +462,7 @@ dependencies {
     datagenMainCompileOnly("appeng:appliedenergistics2-forge:${ae2_version}")
     datagenMainCompileOnly("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
     //datagenMainRuntimeOnly ("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
-    //datagenMainRuntimeOnly ("curse.maven:terrablender-563928:${terrablender_id}")
+    //datagenMainRuntimeOnly ("curse.maven:terrablender-940057:${terrablender_id}")
     //TODO - 1.20.2: Switch back to datagenMainImplementation
     datagenMainCompileOnly("curse.maven:biomes-youll-go-247560:${byg_id}")
     //TODO - 1.20.2: Switch back to datagenMainImplementation

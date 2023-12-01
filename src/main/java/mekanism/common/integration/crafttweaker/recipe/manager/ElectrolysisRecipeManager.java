@@ -10,7 +10,6 @@ import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -35,7 +34,7 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<Electrolysi
      */
     @ZenCodeType.Method
     public void addRecipe(String name, FluidStackIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput, FloatingLong energyMultiplier) {
-        addRecipe(makeRecipe(getAndValidateName(name), input, leftGasOutput, rightGasOutput, energyMultiplier));
+        addRecipe(name, makeRecipe(input, leftGasOutput, rightGasOutput, energyMultiplier));
     }
 
     /**
@@ -51,21 +50,19 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<Electrolysi
     @ZenCodeType.Method
     public void addRecipe(String name, FluidStackIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput) {
         //TODO: If https://github.com/ZenCodeLang/ZenCode/issues/31 gets fixed, merge this back with the other addRecipe method using a ZC Optional
-        addRecipe(makeRecipe(getAndValidateName(name), input, leftGasOutput, rightGasOutput, FloatingLong.ONE));
+        addRecipe(name, makeRecipe(input, leftGasOutput, rightGasOutput, FloatingLong.ONE));
     }
 
     /**
      * Creates a separating recipe that separates a fluid into two gases.
      *
-     * @param id               Name of the new recipe.
      * @param input            {@link FluidStackIngredient} representing the input of the recipe.
      * @param leftGasOutput    {@link ICrTGasStack} representing the left output of the recipe. Will be validated as not empty.
      * @param rightGasOutput   {@link ICrTGasStack} representing the right output of the recipe. Will be validated as not empty.
      * @param energyMultiplier Value representing the multiplier to the energy cost in relation to the configured hydrogen separating energy cost. Will be validated to be
      *                         greater than or equal to one.
      */
-    public final ElectrolysisRecipe makeRecipe(ResourceLocation id, FluidStackIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput,
-          FloatingLong energyMultiplier) {
+    public final ElectrolysisRecipe makeRecipe(FluidStackIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput, FloatingLong energyMultiplier) {
         if (energyMultiplier.smallerThan(FloatingLong.ONE)) {
             throw new IllegalArgumentException("Energy multiplier must be at least one! Multiplier: " + energyMultiplier);
         }

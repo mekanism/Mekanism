@@ -10,7 +10,6 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -35,19 +34,18 @@ public class NucleosynthesizingRecipeManager extends MekanismRecipeManager<Nucle
      */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient itemInput, GasStackIngredient gasInput, IItemStack output, int duration) {
-        addRecipe(makeRecipe(getAndValidateName(name), itemInput, gasInput, output, duration));
+        addRecipe(name, makeRecipe(itemInput, gasInput, output, duration));
     }
 
     /**
      * Creates a nucleosynthesizing recipe that uses a gas and massive amounts of energy to convert an item into another item.
      *
-     * @param id        Name of the new recipe.
      * @param itemInput {@link ItemStackIngredient} representing the item input of the recipe.
      * @param gasInput  {@link GasStackIngredient} representing the gas input of the recipe.
      * @param output    {@link IItemStack} representing the output of the recipe. Will be validated as not empty.
      * @param duration  Duration in ticks that it takes the recipe to complete. Will be validated as being greater than zero.
      */
-    public final NucleosynthesizingRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, IItemStack output, int duration) {
+    public final NucleosynthesizingRecipe makeRecipe(ItemStackIngredient itemInput, GasStackIngredient gasInput, IItemStack output, int duration) {
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be a number greater than zero! Duration: " + duration);
         }

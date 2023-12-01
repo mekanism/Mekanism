@@ -8,16 +8,18 @@ import java.util.Optional;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.recipe.manager.NucleosynthesizingRecipeManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 @IRecipeHandler.For(NucleosynthesizingRecipe.class)
 public class NucleosynthesizingRecipeHandler extends MekanismRecipeHandler<NucleosynthesizingRecipe> {
 
     @Override
-    public String dumpToCommandString(IRecipeManager<? super NucleosynthesizingRecipe> manager, NucleosynthesizingRecipe recipe) {
-        throw new IllegalStateException("Needs update");//TODO - 1.20.2: CraftTweaker update
-        //return buildCommandString(manager, recipe, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.getDuration());
+    public String dumpToCommandString(IRecipeManager<? super NucleosynthesizingRecipe> manager, RegistryAccess registryAccess,
+          RecipeHolder<NucleosynthesizingRecipe> recipeHolder) {
+        NucleosynthesizingRecipe recipe = recipeHolder.value();
+        return buildCommandString(manager, recipeHolder, recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.getDuration());
     }
 
     @Override
@@ -31,14 +33,14 @@ public class NucleosynthesizingRecipeHandler extends MekanismRecipeHandler<Nucle
     }
 
     @Override
-    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super NucleosynthesizingRecipe> manager, NucleosynthesizingRecipe recipe) {
+    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super NucleosynthesizingRecipe> manager, RegistryAccess registryAccess, NucleosynthesizingRecipe recipe) {
         return decompose(recipe.getItemInput(), recipe.getChemicalInput(), recipe.getOutputDefinition(), recipe.getDuration());
     }
 
     @Override
-    public Optional<NucleosynthesizingRecipe> recompose(IRecipeManager<? super NucleosynthesizingRecipe> m, ResourceLocation name, IDecomposedRecipe recipe) {
+    public Optional<NucleosynthesizingRecipe> recompose(IRecipeManager<? super NucleosynthesizingRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof NucleosynthesizingRecipeManager manager) {
-            return Optional.of(manager.makeRecipe(name,
+            return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.input()),
                   recipe.getOrThrowSingle(CrTRecipeComponents.GAS.input()),
                   recipe.getOrThrowSingle(CrTRecipeComponents.ITEM.output()),

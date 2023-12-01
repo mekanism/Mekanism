@@ -7,16 +7,18 @@ import java.util.Optional;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.common.integration.crafttweaker.CrTRecipeComponents;
 import mekanism.common.integration.crafttweaker.recipe.manager.FluidSlurryToSlurryRecipeManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 @IRecipeHandler.For(FluidSlurryToSlurryRecipe.class)
 public class FluidSlurryToSlurryRecipeHandler extends MekanismRecipeHandler<FluidSlurryToSlurryRecipe> {
 
     @Override
-    public String dumpToCommandString(IRecipeManager<? super FluidSlurryToSlurryRecipe> manager, FluidSlurryToSlurryRecipe recipe) {
-        throw new IllegalStateException("Needs update");//TODO - 1.20.2: CraftTweaker update
-        //return buildCommandString(manager, recipe, recipe.getFluidInput(), recipe.getChemicalInput(), recipe.getOutputDefinition());
+    public String dumpToCommandString(IRecipeManager<? super FluidSlurryToSlurryRecipe> manager, RegistryAccess registryAccess,
+          RecipeHolder<FluidSlurryToSlurryRecipe> recipeHolder) {
+        FluidSlurryToSlurryRecipe recipe = recipeHolder.value();
+        return buildCommandString(manager, recipeHolder, recipe.getFluidInput(), recipe.getChemicalInput(), recipe.getOutputDefinition());
     }
 
     @Override
@@ -31,14 +33,14 @@ public class FluidSlurryToSlurryRecipeHandler extends MekanismRecipeHandler<Flui
     }
 
     @Override
-    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super FluidSlurryToSlurryRecipe> manager, FluidSlurryToSlurryRecipe recipe) {
+    public Optional<IDecomposedRecipe> decompose(IRecipeManager<? super FluidSlurryToSlurryRecipe> manager, RegistryAccess registryAccess, FluidSlurryToSlurryRecipe recipe) {
         return decompose(recipe.getFluidInput(), recipe.getChemicalInput(), recipe.getOutputDefinition());
     }
 
     @Override
-    public Optional<FluidSlurryToSlurryRecipe> recompose(IRecipeManager<? super FluidSlurryToSlurryRecipe> m, ResourceLocation name, IDecomposedRecipe recipe) {
+    public Optional<FluidSlurryToSlurryRecipe> recompose(IRecipeManager<? super FluidSlurryToSlurryRecipe> m, RegistryAccess registryAccess, IDecomposedRecipe recipe) {
         if (m instanceof FluidSlurryToSlurryRecipeManager manager) {
-            return Optional.of(manager.makeRecipe(name,
+            return Optional.of(manager.makeRecipe(
                   recipe.getOrThrowSingle(CrTRecipeComponents.FLUID.input()),
                   recipe.getOrThrowSingle(CrTRecipeComponents.SLURRY.input()),
                   recipe.getOrThrowSingle(CrTRecipeComponents.SLURRY.output())
