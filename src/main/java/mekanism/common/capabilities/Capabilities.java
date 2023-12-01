@@ -135,6 +135,10 @@ public class Capabilities {//TODO - 1.20.2: Figure out which of these types actu
             );
         }
 
+        public boolean is(BlockCapability<?, ?> capability) {
+            return capability == block();
+        }
+
         @Nullable
         public HANDLER getCapability(@Nullable Object object) {
             if (object == null) {

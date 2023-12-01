@@ -3,12 +3,7 @@ package mekanism.common.registration.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
-import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.infuse.IInfusionHandler;
-import mekanism.api.chemical.pigment.IPigmentHandler;
-import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.heat.IHeatHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.Attributes.AttributeComputerIntegration;
@@ -16,12 +11,11 @@ import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.ComputerCapabilityHelper;
 import mekanism.common.integration.energy.EnergyCompatUtils;
-import mekanism.common.integration.energy.IEnergyCompat;
 import mekanism.common.registration.MekanismDeferredRegister;
+import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -31,21 +25,9 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<BlockEntityType<?>> {
-
-    //TODO: Do we want to use these for transmitters and then just add the handler in the constructor again?
-    private static final ICapabilityProvider<? super TileEntityMekanism, @Nullable Direction, IGasHandler> GAS_HANDLER_PROVIDER = (tile, side) -> tile.getCapability(Capabilities.GAS_HANDLER.block(), side);
-    private static final ICapabilityProvider<? super TileEntityMekanism, @Nullable Direction, IInfusionHandler> INFUSION_HANDLER_PROVIDER = (tile, side) -> tile.getCapability(Capabilities.INFUSION_HANDLER.block(), side);
-    private static final ICapabilityProvider<? super TileEntityMekanism, @Nullable Direction, IPigmentHandler> PIGMENT_HANDLER_PROVIDER = (tile, side) -> tile.getCapability(Capabilities.PIGMENT_HANDLER.block(), side);
-    private static final ICapabilityProvider<? super TileEntityMekanism, @Nullable Direction, ISlurryHandler> SLURRY_HANDLER_PROVIDER = (tile, side) -> tile.getCapability(Capabilities.SLURRY_HANDLER.block(), side);
-    private static final ICapabilityProvider<? super TileEntityMekanism, @Nullable Direction, IHeatHandler> HEAT_HANDLER_PROVIDER = (tile, side) -> tile.getCapability(Capabilities.HEAT_HANDLER.block(), side);
-    private static final ICapabilityProvider<? super TileEntityMekanism, @Nullable Direction, IItemHandler> ITEM_HANDLER_PROVIDER = (tile, side) -> tile.getCapability(Capabilities.ITEM.block(), side);
-    private static final ICapabilityProvider<? super TileEntityMekanism, @Nullable Direction, IFluidHandler> FLUID_HANDLER_PROVIDER = (tile, side) -> tile.getCapability(FluidHandler.BLOCK, side);
 
     private final List<TileEntityTypeRegistryObject<?>> allTiles = new ArrayList<>();
 
@@ -68,27 +50,18 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
               .withSimple(Capabilities.OWNER_OBJECT.block(), hasSecurity)
               .withSimple(Capabilities.SECURITY_OBJECT.block(), hasSecurity);
         //TODO: Evaluate if there is a better way to do this
-        builder.with(Capabilities.GAS_HANDLER.block(), GAS_HANDLER_PROVIDER);
-        builder.with(Capabilities.INFUSION_HANDLER.block(), INFUSION_HANDLER_PROVIDER);
-        builder.with(Capabilities.PIGMENT_HANDLER.block(), PIGMENT_HANDLER_PROVIDER);
-        builder.with(Capabilities.SLURRY_HANDLER.block(), SLURRY_HANDLER_PROVIDER);
-        builder.with(Capabilities.HEAT_HANDLER.block(), HEAT_HANDLER_PROVIDER);
-        builder.with(Capabilities.ITEM.block(), ITEM_HANDLER_PROVIDER);
-        builder.with(FluidHandler.BLOCK, FLUID_HANDLER_PROVIDER);
-        for (IEnergyCompat energyCompat : EnergyCompatUtils.getCompats()) {
-            if (energyCompat.capabilityExists()) {
-                addCapability(builder, energyCompat.getCapability().block());
-            }
-        }
+        builder.with(Capabilities.GAS_HANDLER.block(), CapabilityTileEntity.GAS_HANDLER_PROVIDER);
+        builder.with(Capabilities.INFUSION_HANDLER.block(), CapabilityTileEntity.INFUSION_HANDLER_PROVIDER);
+        builder.with(Capabilities.PIGMENT_HANDLER.block(), CapabilityTileEntity.PIGMENT_HANDLER_PROVIDER);
+        builder.with(Capabilities.SLURRY_HANDLER.block(), CapabilityTileEntity.SLURRY_HANDLER_PROVIDER);
+        builder.with(Capabilities.HEAT_HANDLER.block(), CapabilityTileEntity.HEAT_HANDLER_PROVIDER);
+        builder.with(Capabilities.ITEM.block(), CapabilityTileEntity.ITEM_HANDLER_PROVIDER);
+        builder.with(FluidHandler.BLOCK, CapabilityTileEntity.FLUID_HANDLER_PROVIDER);
+        EnergyCompatUtils.addBlockCapabilities(builder);
         if (Mekanism.hooks.computerCompatEnabled()) {
             ComputerCapabilityHelper.addComputerCapabilities(builder, () -> Attribute.has(block.getBlock(), AttributeComputerIntegration.class));
         }
         return builder;
-    }
-
-    private static <CAP> void addCapability(BlockEntityTypeBuilder<? extends TileEntityMekanism> builder, BlockCapability<CAP, @Nullable Direction> capability) {
-        //TODO: Test this and debate if we would be better off instead using something like EnergyCompatUtils#registerBlockCapabilities
-        builder.with(capability, TileEntityMekanism.getEnergyCapabilityProvider(capability));
     }
 
     public <BE extends BlockEntity> BlockEntityTypeBuilder<BE> builder(BlockRegistryObject<?, ?> block, BlockEntitySupplier<? extends BE> factory) {

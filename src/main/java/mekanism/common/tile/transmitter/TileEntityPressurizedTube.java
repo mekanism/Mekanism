@@ -9,14 +9,10 @@ import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
-import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.IInfusionTank;
-import mekanism.api.chemical.pigment.IPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentTank;
-import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
@@ -48,20 +44,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityPressurizedTube extends TileEntityTransmitter implements IComputerTile, ITileRadioactive {
-
-    public static final ICapabilityProvider<? super TileEntityPressurizedTube, @Nullable Direction, IGasHandler> GAS_HANDLER_PROVIDER =
-          (tile, side) -> tile.getCapability(Capabilities.GAS_HANDLER.block(), () -> tile.gasHandlerManager, side);
-    public static final ICapabilityProvider<? super TileEntityPressurizedTube, @Nullable Direction, IInfusionHandler> INFUSION_HANDLER_PROVIDER =
-          (tile, side) -> tile.getCapability(Capabilities.INFUSION_HANDLER.block(), () -> tile.infusionHandlerManager, side);
-    public static final ICapabilityProvider<? super TileEntityPressurizedTube, @Nullable Direction, IPigmentHandler> PIGMENT_HANDLER_PROVIDER =
-          (tile, side) -> tile.getCapability(Capabilities.PIGMENT_HANDLER.block(), () -> tile.pigmentHandlerManager, side);
-    public static final ICapabilityProvider<? super TileEntityPressurizedTube, @Nullable Direction, ISlurryHandler> SLURRY_HANDLER_PROVIDER =
-          (tile, side) -> tile.getCapability(Capabilities.SLURRY_HANDLER.block(), () -> tile.slurryHandlerManager, side);
 
     private static final Collection<BlockCapability<?, @Nullable Direction>> CAPABILITIES = Set.of(
           Capabilities.GAS_HANDLER.block(),
@@ -79,15 +65,14 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         super(blockProvider, pos, state);
         InteractPredicate canExtract = getExtractPredicate();
         InteractPredicate canInsert = getInsertPredicate();
-        //Resolvers registered via the providers
-        gasHandlerManager = new GasHandlerManager(getHolder(BoxedPressurizedTube::getGasTanks),
-              new DynamicGasHandler(this::getGasTanks, canExtract, canInsert, null));
-        infusionHandlerManager = new InfusionHandlerManager(getHolder(BoxedPressurizedTube::getInfusionTanks),
-              new DynamicInfusionHandler(this::getInfusionTanks, canExtract, canInsert, null));
-        pigmentHandlerManager = new PigmentHandlerManager(getHolder(BoxedPressurizedTube::getPigmentTanks),
-              new DynamicPigmentHandler(this::getPigmentTanks, canExtract, canInsert, null));
-        slurryHandlerManager = new SlurryHandlerManager(getHolder(BoxedPressurizedTube::getSlurryTanks),
-              new DynamicSlurryHandler(this::getSlurryTanks, canExtract, canInsert, null));
+        addCapabilityResolver(gasHandlerManager = new GasHandlerManager(getHolder(BoxedPressurizedTube::getGasTanks),
+              new DynamicGasHandler(this::getGasTanks, canExtract, canInsert, null)));
+        addCapabilityResolver(infusionHandlerManager = new InfusionHandlerManager(getHolder(BoxedPressurizedTube::getInfusionTanks),
+              new DynamicInfusionHandler(this::getInfusionTanks, canExtract, canInsert, null)));
+        addCapabilityResolver(pigmentHandlerManager = new PigmentHandlerManager(getHolder(BoxedPressurizedTube::getPigmentTanks),
+              new DynamicPigmentHandler(this::getPigmentTanks, canExtract, canInsert, null)));
+        addCapabilityResolver(slurryHandlerManager = new SlurryHandlerManager(getHolder(BoxedPressurizedTube::getSlurryTanks),
+              new DynamicSlurryHandler(this::getSlurryTanks, canExtract, canInsert, null)));
     }
 
     @Override

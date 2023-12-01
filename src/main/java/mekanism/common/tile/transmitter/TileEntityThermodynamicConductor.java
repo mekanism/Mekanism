@@ -3,7 +3,6 @@ package mekanism.common.tile.transmitter;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.api.heat.IHeatHandler;
 import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
@@ -18,21 +17,16 @@ import mekanism.common.util.EnumUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
 
-    public static final ICapabilityProvider<? super TileEntityThermodynamicConductor, @Nullable Direction, IHeatHandler> HEAT_HANDLER_PROVIDER =
-          (tile, side) -> tile.getCapability(Capabilities.HEAT_HANDLER.block(), () -> tile.heatHandlerManager, side);
-
     private final HeatHandlerManager heatHandlerManager;
 
     public TileEntityThermodynamicConductor(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
-        //Resolver registered via the provider
-        heatHandlerManager = new HeatHandlerManager(direction -> {
+        addCapabilityResolver(heatHandlerManager = new HeatHandlerManager(direction -> {
             ThermodynamicConductor conductor = getTransmitter();
             if (direction != null && (conductor.getConnectionTypeRaw(direction) == ConnectionType.NONE) || conductor.isRedstoneActivated()) {
                 //If we actually have a side, and our connection type on that side is none, or we are currently activated by redstone,
@@ -50,7 +44,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
             @Override
             public void onContentsChanged() {
             }
-        });
+        }));
     }
 
     @Override

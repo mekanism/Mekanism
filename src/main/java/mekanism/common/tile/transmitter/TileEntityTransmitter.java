@@ -54,8 +54,8 @@ import org.jetbrains.annotations.Nullable;
 public abstract class TileEntityTransmitter extends CapabilityTileEntity implements ISidedConfigurable, IAlloyInteraction {
 
     //TODO - 1.20: Test this confiurable capability and that the resolver behaves properly
-    public static final ICapabilityProvider<? super TileEntityTransmitter, @Nullable Direction, IConfigurable> CONFIGURABLE_PROVIDER = (tile, side) ->
-          tile.getCapability(Capabilities.CONFIGURABLE, () -> new BasicSidedCapabilityResolver<>(tile, Capabilities.CONFIGURABLE, ProxyConfigurable::new), side);
+    public static final ICapabilityProvider<TileEntityTransmitter, @Nullable Direction, IConfigurable> CONFIGURABLE_PROVIDER =
+          capabilityProvider(Capabilities.CONFIGURABLE, (tile, cap) -> new BasicSidedCapabilityResolver<>(tile, cap, ProxyConfigurable::new));
 
     public static final ModelProperty<TransmitterModelData> TRANSMITTER_PROPERTY = new ModelProperty<>();
 

@@ -22,23 +22,17 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
-import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityMechanicalPipe extends TileEntityTransmitter implements IComputerTile {
 
-    public static final ICapabilityProvider<? super TileEntityMechanicalPipe, @Nullable Direction, IFluidHandler> FLUID_HANDLER_PROVIDER =
-          (tile, side) -> tile.getCapability(FluidHandler.BLOCK, () -> tile.fluidHandlerManager, side);
-
     private final FluidHandlerManager fluidHandlerManager;
 
     public TileEntityMechanicalPipe(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
-        //Resolver registered via the provider
-        fluidHandlerManager = new FluidHandlerManager(direction -> {
+        addCapabilityResolver(fluidHandlerManager = new FluidHandlerManager(direction -> {
             MechanicalPipe pipe = getTransmitter();
             if (direction != null && (pipe.getConnectionTypeRaw(direction) == ConnectionType.NONE) || pipe.isRedstoneActivated()) {
                 //If we actually have a side, and our connection type on that side is none, or we are currently activated by redstone,
@@ -46,7 +40,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
                 return Collections.emptyList();
             }
             return pipe.getFluidTanks(direction);
-        }, new DynamicFluidHandler(this::getFluidTanks, getExtractPredicate(), getInsertPredicate(), null));
+        }, new DynamicFluidHandler(this::getFluidTanks, getExtractPredicate(), getInsertPredicate(), null)));
     }
 
     @Override

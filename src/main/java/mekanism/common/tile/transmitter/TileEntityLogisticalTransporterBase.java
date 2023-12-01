@@ -18,18 +18,15 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class TileEntityLogisticalTransporterBase extends TileEntityTransmitter {
 
-    public static final ICapabilityProvider<? super TileEntityLogisticalTransporterBase, @Nullable Direction, IItemHandler> ITEM_HANDLER_PROVIDER =
-          (tile, side) -> tile.getCapability(Capabilities.ITEM.block(), () -> tile.new TransporterCapabilityResolver(), side);
-
     protected TileEntityLogisticalTransporterBase(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
+        addCapabilityResolver(new TransporterCapabilityResolver());
     }
 
     @Override

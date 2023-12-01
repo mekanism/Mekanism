@@ -23,13 +23,13 @@ public class CCCapabilityHelper {
     private static final BlockCapability<IPeripheral, @Nullable Direction> CAPABILITY = BlockCapability.create(new ResourceLocation(MekanismHooks.CC_MOD_ID, "peripheral"), IPeripheral.class, Direction.class);
     private static final ICapabilityProvider<?, @Nullable Direction, IPeripheral> PROVIDER = getProvider();
 
-    private static <TILE extends CapabilityTileEntity & IComputerTile> ICapabilityProvider<? super TILE, @Nullable Direction, IPeripheral> getProvider() {
-        return (tile, context) -> tile.getCapability(CAPABILITY, () -> {
+    private static <TILE extends CapabilityTileEntity & IComputerTile> ICapabilityProvider<TILE, @Nullable Direction, IPeripheral> getProvider() {
+        return CapabilityTileEntity.capabilityProvider(CAPABILITY, (tile, cap) -> {
             if (tile.isComputerCapabilityPersistent()) {
-                return BasicCapabilityResolver.persistent(CAPABILITY, () -> MekanismPeripheral.create(tile));
+                return BasicCapabilityResolver.persistent(cap, () -> MekanismPeripheral.create(tile));
             }
-            return BasicCapabilityResolver.create(CAPABILITY, () -> MekanismPeripheral.create(tile));
-        }, context);
+            return BasicCapabilityResolver.create(cap, () -> MekanismPeripheral.create(tile));
+        });
     }
 
     @SuppressWarnings("unchecked")

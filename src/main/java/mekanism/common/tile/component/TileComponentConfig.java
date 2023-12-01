@@ -111,19 +111,19 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         }
     }
 
-    public boolean isCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, Direction side) {
+    public boolean isCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
         TransmissionType type = null;
-        if (capability == Capabilities.ITEM.block()) {
+        if (Capabilities.ITEM.is(capability)) {
             type = TransmissionType.ITEM;
-        } else if (capability == Capabilities.GAS_HANDLER.block()) {
+        } else if (Capabilities.GAS_HANDLER.is(capability)) {
             type = TransmissionType.GAS;
-        } else if (capability == Capabilities.INFUSION_HANDLER.block()) {
+        } else if (Capabilities.INFUSION_HANDLER.is(capability)) {
             type = TransmissionType.INFUSION;
-        } else if (capability == Capabilities.PIGMENT_HANDLER.block()) {
+        } else if (Capabilities.PIGMENT_HANDLER.is(capability)) {
             type = TransmissionType.PIGMENT;
-        } else if (capability == Capabilities.SLURRY_HANDLER.block()) {
+        } else if (Capabilities.SLURRY_HANDLER.is(capability)) {
             type = TransmissionType.SLURRY;
-        } else if (capability == Capabilities.HEAT_HANDLER.block()) {
+        } else if (Capabilities.HEAT_HANDLER.is(capability)) {
             type = TransmissionType.HEAT;
         } else if (capability == FluidHandler.BLOCK) {
             type = TransmissionType.FLUID;

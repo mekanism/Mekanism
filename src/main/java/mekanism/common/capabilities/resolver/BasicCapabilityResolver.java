@@ -49,7 +49,7 @@ public class BasicCapabilityResolver<CAPABILITY, CONTEXT> implements ICapability
 
     @Nullable
     @Override
-    public <T> T resolve(BlockCapability<T, CONTEXT> capability, CONTEXT context) {
+    public <T> T resolve(BlockCapability<T, CONTEXT> capability, @UnknownNullability CONTEXT context) {
         if (cachedCapability == null) {
             //If the capability has not been retrieved yet, or it is not valid then recreate it
             cachedCapability = supplier.get();

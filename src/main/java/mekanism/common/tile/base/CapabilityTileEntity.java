@@ -2,8 +2,14 @@ package mekanism.common.tile.base;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
+import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.infuse.IInfusionHandler;
+import mekanism.api.chemical.pigment.IPigmentHandler;
+import mekanism.api.chemical.slurry.ISlurryHandler;
+import mekanism.api.heat.IHeatHandler;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
@@ -13,10 +19,47 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class CapabilityTileEntity extends TileEntityUpdateable {
+
+    //Note: The below providers assume that the capability if supported has been added by either addCapabilityResolver or addCapabilityResolvers
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IGasHandler> GAS_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.GAS_HANDLER.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IInfusionHandler> INFUSION_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.INFUSION_HANDLER.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IPigmentHandler> PIGMENT_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.PIGMENT_HANDLER.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, ISlurryHandler> SLURRY_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.SLURRY_HANDLER.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IHeatHandler> HEAT_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.HEAT_HANDLER.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IItemHandler> ITEM_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.ITEM.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IFluidHandler> FLUID_HANDLER_PROVIDER = basicCapabilityProvider(FluidHandler.BLOCK);
+
+    public static <CAP> ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, CAP> basicCapabilityProvider(BlockCapability<CAP, @Nullable Direction> capability) {
+        return (tile, context) -> {
+            if (tile.capabilityCache.isCapabilityDisabled(capability, context)) {
+                //TODO: Test that this works??
+                return null;
+            }
+            ICapabilityResolver<@Nullable Direction> resolver = tile.capabilityCache.getResolver(capability);
+            return resolver == null ? null : resolver.resolve(capability, context);
+        };
+    }
+
+    public static <TILE extends CapabilityTileEntity, CAP> ICapabilityProvider<TILE, @Nullable Direction, CAP> capabilityProvider(
+          BlockCapability<CAP, @Nullable Direction> capability, BiFunction<TILE, BlockCapability<CAP, @Nullable Direction>, ICapabilityResolver<@Nullable Direction>> resolverGetter) {
+        return (tile, context) -> {
+            CapabilityCache capabilityCache = ((CapabilityTileEntity) tile).capabilityCache;
+            if (capabilityCache.isCapabilityDisabled(capability, context)) {
+                //TODO: Test that this works??
+                return null;
+            }
+            return capabilityCache.getResolver(capability, () -> resolverGetter.apply(tile, capability))
+                  .resolve(capability, context);
+        };
+    }
 
     private final CapabilityCache capabilityCache = new CapabilityCache();
 
@@ -31,6 +74,10 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
                 capabilityCache.addCapabilityResolver(capabilityHandlerManager);
             }
         }
+    }
+
+    protected final void addCapabilityResolver(ICapabilityResolver<@Nullable Direction> resolver) {
+        capabilityCache.addCapabilityResolver(resolver);
     }
 
     @SafeVarargs
@@ -48,37 +95,6 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
 
     protected final void addConfigComponent(TileComponentConfig config) {
         capabilityCache.addConfigComponent(config);
-    }
-
-    @Nullable
-    private ICapabilityResolver<@Nullable Direction> getResolver(BlockCapability<?, @Nullable Direction> capability) {
-        return capabilityCache.getResolver(capability);
-    }
-
-    private ICapabilityResolver<@Nullable Direction> getResolver(BlockCapability<?, @Nullable Direction> capability, Supplier<ICapabilityResolver<@Nullable Direction>> resolver) {
-        return capabilityCache.getResolver(capability, resolver);
-    }
-
-    //TODO: Document that this and getResolver should only be called from within capability providers?
-    @Nullable
-    public <CAP> CAP getCapability(BlockCapability<CAP, @Nullable Direction> capability, Supplier<ICapabilityResolver<@Nullable Direction>> resolver, @Nullable Direction context) {
-        if (capabilityCache.isCapabilityDisabled(capability, context)) {
-            //TODO: Test that this works??
-            return null;
-        }
-        return getResolver(capability, resolver)
-              .resolve(capability, context);
-    }
-
-    //TODO: Document that this and getResolver should only be called from within capability providers?
-    @Nullable
-    public <CAP> CAP getCapability(BlockCapability<CAP, @Nullable Direction> capability, @Nullable Direction context) {
-        if (capabilityCache.isCapabilityDisabled(capability, context)) {
-            //TODO: Test that this works??
-            return null;
-        }
-        ICapabilityResolver<@Nullable Direction> resolver = getResolver(capability);
-        return resolver == null ? null : resolver.resolve(capability, context);
     }
 
     //TODO: Rename this method to something better

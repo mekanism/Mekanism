@@ -16,43 +16,23 @@ import mekanism.common.content.network.transmitter.UniversalCable;
 import mekanism.common.integration.computer.IComputerTile;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.energy.EnergyCompatUtils;
-import mekanism.common.integration.energy.IEnergyCompat;
 import mekanism.common.lib.transmitter.ConnectionType;
-import mekanism.common.registration.impl.TileEntityTypeDeferredRegister.BlockEntityTypeBuilder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityUniversalCable extends TileEntityTransmitter implements IComputerTile {
 
-    public static void addEnergyCapabilities(BlockEntityTypeBuilder<TileEntityUniversalCable> builder) {
-        for (IEnergyCompat energyCompat : EnergyCompatUtils.getCompats()) {
-            if (energyCompat.capabilityExists()) {
-                addCapability(builder, energyCompat.getCapability().block());
-            }
-        }
-    }
-
-    private static <CAP> void addCapability(BlockEntityTypeBuilder<TileEntityUniversalCable> builder, BlockCapability<CAP, @Nullable Direction> capability) {
-        builder.with(capability, (tile, side) -> {
-            //TODO: Re-evaluate
-            return tile.getCapability(capability, () -> tile.energyHandlerManager, side);
-            //return energyCompat.getProviderAs(mekProvider);
-        });
-    }
-
     private final EnergyHandlerManager energyHandlerManager;
 
     public TileEntityUniversalCable(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
-        //Resolver registered via the provider
-        energyHandlerManager = new EnergyHandlerManager(direction -> {
+        addCapabilityResolver(energyHandlerManager = new EnergyHandlerManager(direction -> {
             UniversalCable cable = getTransmitter();
             if (direction != null && (cable.getConnectionTypeRaw(direction) == ConnectionType.NONE) || cable.isRedstoneActivated()) {
                 //If we actually have a side, and our connection type on that side is none, or we are currently activated by redstone,
@@ -60,7 +40,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
                 return Collections.emptyList();
             }
             return cable.getEnergyContainers(direction);
-        }, new DynamicStrictEnergyHandler(this::getEnergyContainers, getExtractPredicate(), getInsertPredicate(), null));
+        }, new DynamicStrictEnergyHandler(this::getEnergyContainers, getExtractPredicate(), getInsertPredicate(), null)));
     }
 
     @Override

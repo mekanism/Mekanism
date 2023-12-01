@@ -28,7 +28,7 @@ public interface ICapabilityResolver<CONTEXT> {
      * @implNote The result should be cached
      */
     @Nullable
-    <T> T resolve(BlockCapability<T, CONTEXT> capability, CONTEXT side);
+    <T> T resolve(BlockCapability<T, CONTEXT> capability, @UnknownNullability CONTEXT side);
 
     /**
      * Invalidates the given capability on the given side.

@@ -10,13 +10,13 @@ import mekanism.common.config.listener.ConfigBasedCachedSupplier;
 import mekanism.common.config.value.CachedValue;
 import mekanism.common.integration.energy.fluxnetworks.FNEnergyCompat;
 import mekanism.common.integration.energy.forgeenergy.ForgeEnergyCompat;
+import mekanism.common.registration.impl.TileEntityTypeDeferredRegister.BlockEntityTypeBuilder;
+import mekanism.common.tile.base.CapabilityTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;
@@ -98,20 +98,18 @@ public class EnergyCompatUtils {
 
     //TODO - 1.20.2: Should this use the block entity type or the block?
     //TODO: CALL THIS???? Though do we actually want to because we want to cache the wrapper object we provide... So we need to rethink this
-    public static <BE extends BlockEntity> void registerBlockCapabilities(RegisterCapabilitiesEvent event, BlockEntityType<BE> type,
-          ICapabilityProvider<BE, @Nullable Direction, IStrictEnergyHandler> mekProvider) {
+    public static void addBlockCapabilities(BlockEntityTypeBuilder<? extends CapabilityTileEntity> builder) {
         for (IEnergyCompat energyCompat : energyCompats) {
             if (energyCompat.capabilityExists()) {
-                register(event, energyCompat.getCapability().block(), type, energyCompat.getProviderAs(mekProvider));
+                //TODO: Figure out if we are better off using something like the below similar to what we do for items
+                //register(event, energyCompat.getCapability().block(), type, energyCompat.getProviderAs(mekProvider));
+                addCapability(builder, energyCompat.getCapability().block());
             }
         }
     }
 
-    //Note: This extra method is required so that the code can compile even though inlining without the cast doesn't display any errors until attempting to compile
-    @SuppressWarnings("unchecked")
-    private static <BE extends BlockEntity, CAP> void register(RegisterCapabilitiesEvent event, BlockCapability<CAP, @Nullable Direction> capability,
-          BlockEntityType<BE> type, ICapabilityProvider<BE, @Nullable Direction, ?> provider) {
-        event.registerBlockEntity(capability, type, (ICapabilityProvider<BE, @Nullable Direction, CAP>) provider);
+    private static <CAP> void addCapability(BlockEntityTypeBuilder<? extends CapabilityTileEntity> builder, BlockCapability<CAP, @Nullable Direction> capability) {
+        builder.with(capability, CapabilityTileEntity.basicCapabilityProvider(capability));
     }
 
     @Nullable

@@ -12,6 +12,7 @@ import mekanism.common.block.prefab.BlockFactoryMachine.BlockFactory;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.integration.computer.ComputerCapabilityHelper;
+import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockChemicalTank;
 import mekanism.common.item.block.ItemBlockEnergyCube;
@@ -39,6 +40,7 @@ import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.TileEntityTeleporter;
+import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.tile.factory.TileEntityCombiningFactory;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
@@ -396,12 +398,12 @@ public class MekanismTileEntityTypes {
     private static <BE extends TileEntityLogisticalTransporterBase> BlockEntityTypeBuilder<BE> transporterBuilder(BlockRegistryObject<?, ?> block, BlockEntityFactory<BE> factory) {
         return transmitterBuilder(block, factory)
               .clientTicker(TileEntityLogisticalTransporterBase::tickClient)
-              .with(Capabilities.ITEM.block(), TileEntityLogisticalTransporterBase.ITEM_HANDLER_PROVIDER);
+              .with(Capabilities.ITEM.block(), CapabilityTileEntity.ITEM_HANDLER_PROVIDER);
     }
 
     private static TileEntityTypeRegistryObject<TileEntityMechanicalPipe> registerPipe(BlockRegistryObject<?, ?> block) {
         BlockEntityTypeBuilder<TileEntityMechanicalPipe> builder = transmitterBuilder(block, TileEntityMechanicalPipe::new)
-              .with(FluidHandler.BLOCK, TileEntityMechanicalPipe.FLUID_HANDLER_PROVIDER);
+              .with(FluidHandler.BLOCK, CapabilityTileEntity.FLUID_HANDLER_PROVIDER);
         if (Mekanism.hooks.computerCompatEnabled()) {
             ComputerCapabilityHelper.addComputerCapabilities(builder, ConstantPredicates.ALWAYS_TRUE);
         }
@@ -410,10 +412,10 @@ public class MekanismTileEntityTypes {
 
     private static TileEntityTypeRegistryObject<TileEntityPressurizedTube> registerTube(BlockRegistryObject<?, ?> block) {
         BlockEntityTypeBuilder<TileEntityPressurizedTube> builder = transmitterBuilder(block, TileEntityPressurizedTube::new)
-              .with(Capabilities.GAS_HANDLER.block(), TileEntityPressurizedTube.GAS_HANDLER_PROVIDER)
-              .with(Capabilities.INFUSION_HANDLER.block(), TileEntityPressurizedTube.INFUSION_HANDLER_PROVIDER)
-              .with(Capabilities.PIGMENT_HANDLER.block(), TileEntityPressurizedTube.PIGMENT_HANDLER_PROVIDER)
-              .with(Capabilities.SLURRY_HANDLER.block(), TileEntityPressurizedTube.SLURRY_HANDLER_PROVIDER);
+              .with(Capabilities.GAS_HANDLER.block(), CapabilityTileEntity.GAS_HANDLER_PROVIDER)
+              .with(Capabilities.INFUSION_HANDLER.block(), CapabilityTileEntity.INFUSION_HANDLER_PROVIDER)
+              .with(Capabilities.PIGMENT_HANDLER.block(), CapabilityTileEntity.PIGMENT_HANDLER_PROVIDER)
+              .with(Capabilities.SLURRY_HANDLER.block(), CapabilityTileEntity.SLURRY_HANDLER_PROVIDER);
         if (Mekanism.hooks.computerCompatEnabled()) {
             ComputerCapabilityHelper.addComputerCapabilities(builder, ConstantPredicates.ALWAYS_TRUE);
         }
@@ -422,13 +424,13 @@ public class MekanismTileEntityTypes {
 
     private static TileEntityTypeRegistryObject<TileEntityThermodynamicConductor> registerConductor(BlockRegistryObject<?, ?> block) {
         return transmitterBuilder(block, TileEntityThermodynamicConductor::new)
-              .with(Capabilities.HEAT_HANDLER.block(), TileEntityThermodynamicConductor.HEAT_HANDLER_PROVIDER)
+              .with(Capabilities.HEAT_HANDLER.block(), CapabilityTileEntity.HEAT_HANDLER_PROVIDER)
               .build();
     }
 
     private static TileEntityTypeRegistryObject<TileEntityUniversalCable> registerCable(BlockRegistryObject<?, ?> block) {
         BlockEntityTypeBuilder<TileEntityUniversalCable> builder = transmitterBuilder(block, TileEntityUniversalCable::new);
-        TileEntityUniversalCable.addEnergyCapabilities(builder);
+        EnergyCompatUtils.addBlockCapabilities(builder);
         if (Mekanism.hooks.computerCompatEnabled()) {
             ComputerCapabilityHelper.addComputerCapabilities(builder, ConstantPredicates.ALWAYS_TRUE);
         }

@@ -11,13 +11,13 @@ public class OC2CapabilityHelper {
     /*private static final BlockCapability<Device, @Nullable Direction> CAPABILITY = BlockCapability.create(new ResourceLocation(MekanismHooks.OC2_MOD_ID, name), Device.class, Direction.class);
     private static final ICapabilityProvider<?, @Nullable Direction, Device> PROVIDER = getProvider();
 
-    private static <TILE extends CapabilityTileEntity & IComputerTile> ICapabilityProvider<? super TILE, @Nullable Direction, Device> getProvider() {
-        return (tile, context) -> tile.getCapability(CAPABILITY, () -> {
+    private static <TILE extends CapabilityTileEntity & IComputerTile> ICapabilityProvider<TILE, @Nullable Direction, Device> getProvider() {
+        return CapabilityTileEntity.capabilityProvider(CAPABILITY, (tile, cap) -> {
             if (tile.isComputerCapabilityPersistent()) {
                 return BasicCapabilityResolver.persistent(CAPABILITY, () -> MekanismDevice.create(tile));
             }
             return BasicCapabilityResolver.create(CAPABILITY, () -> MekanismDevice.create(tile));
-        }, context);
+        });
     }*/
 
     @SuppressWarnings("unchecked")
