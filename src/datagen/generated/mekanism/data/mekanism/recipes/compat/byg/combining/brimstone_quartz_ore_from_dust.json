@@ -1,6 +1,6 @@
 {
   "type": "mekanism:combining",
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:mod_loaded",
       "modid": "byg"

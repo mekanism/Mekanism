@@ -1,6 +1,6 @@
 {
   "type": "mekanism:enriching",
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:mod_loaded",
       "modid": "biomesoplenty"

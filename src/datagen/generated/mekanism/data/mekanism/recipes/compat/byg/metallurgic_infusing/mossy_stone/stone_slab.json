@@ -4,7 +4,7 @@
     "amount": 10,
     "tag": "mekanism:bio"
   },
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:mod_loaded",
       "modid": "byg"

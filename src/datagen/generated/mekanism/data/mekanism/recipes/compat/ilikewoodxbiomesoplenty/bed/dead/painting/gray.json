@@ -4,7 +4,7 @@
     "amount": 256,
     "pigment": "mekanism:gray"
   },
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:and",
       "values": [

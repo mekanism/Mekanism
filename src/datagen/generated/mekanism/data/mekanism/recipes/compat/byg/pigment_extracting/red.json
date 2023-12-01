@@ -1,6 +1,6 @@
 {
   "type": "mekanism:pigment_extracting",
-  "conditions": [
+  "neoforge:conditions": [
     {
       "type": "neoforge:mod_loaded",
       "modid": "byg"
