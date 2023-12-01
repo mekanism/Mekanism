@@ -33,7 +33,7 @@ public class CCCapabilityHelper {
     }
 
     @SuppressWarnings("unchecked")
-    public static <TILE extends CapabilityTileEntity & IComputerTile> void addCapability(BlockEntityTypeBuilder<TILE, ?> builder, BooleanSupplier supportsComputer) {
+    public static <TILE extends CapabilityTileEntity & IComputerTile> void addCapability(BlockEntityTypeBuilder<TILE> builder, BooleanSupplier supportsComputer) {
         builder.with(CAPABILITY, (ICapabilityProvider<? super TILE, @Nullable Direction, IPeripheral>) PROVIDER, supportsComputer);
     }
 

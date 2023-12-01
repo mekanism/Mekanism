@@ -143,7 +143,7 @@ public class MekanismTileEntityTypes {
     private static void registerFactory(FactoryTier tier, FactoryType type, BlockEntityFactory<? extends TileEntityFactory<?>> factoryConstructor) {
         BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> block = MekanismBlocks.getFactory(tier, type);
         TileEntityTypeRegistryObject<? extends TileEntityFactory<?>> tileRO = TILE_ENTITY_TYPES.mekBuilder(block, (pos, state) -> factoryConstructor.create(block, pos, state))
-              .withConfigCard()
+              .withSimple(Capabilities.CONFIG_CARD)
               .build();
         FACTORIES.put(tier, type, tileRO);
     }
@@ -161,15 +161,33 @@ public class MekanismTileEntityTypes {
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityCardboardBox> CARDBOARD_BOX = TILE_ENTITY_TYPES.builder(MekanismBlocks.CARDBOARD_BOX, TileEntityCardboardBox::new).build();
     public static final TileEntityTypeRegistryObject<TileEntityChargepad> CHARGEPAD = TILE_ENTITY_TYPES.register(MekanismBlocks.CHARGEPAD, TileEntityChargepad::new);
-    public static final TileEntityTypeRegistryObject<TileEntityChemicalCrystallizer> CHEMICAL_CRYSTALLIZER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.CHEMICAL_CRYSTALLIZER, TileEntityChemicalCrystallizer::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityChemicalDissolutionChamber> CHEMICAL_DISSOLUTION_CHAMBER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, TileEntityChemicalDissolutionChamber::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityChemicalInfuser> CHEMICAL_INFUSER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.CHEMICAL_INFUSER, TileEntityChemicalInfuser::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityChemicalInjectionChamber> CHEMICAL_INJECTION_CHAMBER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, TileEntityChemicalInjectionChamber::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityChemicalOxidizer> CHEMICAL_OXIDIZER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.CHEMICAL_OXIDIZER, TileEntityChemicalOxidizer::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityChemicalWasher> CHEMICAL_WASHER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.CHEMICAL_WASHER, TileEntityChemicalWasher::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityCombiner> COMBINER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.COMBINER, TileEntityCombiner::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityCrusher> CRUSHER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.CRUSHER, TileEntityCrusher::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityDigitalMiner> DIGITAL_MINER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.DIGITAL_MINER, TileEntityDigitalMiner::new).withConfigCard().build();
+    public static final TileEntityTypeRegistryObject<TileEntityChemicalCrystallizer> CHEMICAL_CRYSTALLIZER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.CHEMICAL_CRYSTALLIZER, TileEntityChemicalCrystallizer::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityChemicalDissolutionChamber> CHEMICAL_DISSOLUTION_CHAMBER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, TileEntityChemicalDissolutionChamber::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityChemicalInfuser> CHEMICAL_INFUSER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.CHEMICAL_INFUSER, TileEntityChemicalInfuser::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityChemicalInjectionChamber> CHEMICAL_INJECTION_CHAMBER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, TileEntityChemicalInjectionChamber::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityChemicalOxidizer> CHEMICAL_OXIDIZER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.CHEMICAL_OXIDIZER, TileEntityChemicalOxidizer::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityChemicalWasher> CHEMICAL_WASHER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.CHEMICAL_WASHER, TileEntityChemicalWasher::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityCombiner> COMBINER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.COMBINER, TileEntityCombiner::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityCrusher> CRUSHER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.CRUSHER, TileEntityCrusher::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityDigitalMiner> DIGITAL_MINER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.DIGITAL_MINER, TileEntityDigitalMiner::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
     public static final TileEntityTypeRegistryObject<TileEntityDynamicTank> DYNAMIC_TANK = TILE_ENTITY_TYPES
           .mekBuilder(MekanismBlocks.DYNAMIC_TANK, TileEntityDynamicTank::new)
           .withSimple(Capabilities.CONFIGURABLE)
@@ -180,18 +198,26 @@ public class MekanismTileEntityTypes {
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityElectricPump> ELECTRIC_PUMP = TILE_ENTITY_TYPES
           .mekBuilder(MekanismBlocks.ELECTRIC_PUMP, TileEntityElectricPump::new)
-          .withConfigCard()
+          .withSimple(Capabilities.CONFIG_CARD)
           .withSimple(Capabilities.LASER_RECEPTOR)
           .build();
-    public static final TileEntityTypeRegistryObject<TileEntityElectrolyticSeparator> ELECTROLYTIC_SEPARATOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.ELECTROLYTIC_SEPARATOR, TileEntityElectrolyticSeparator::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityEnergizedSmelter> ENERGIZED_SMELTER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.ENERGIZED_SMELTER, TileEntityEnergizedSmelter::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityEnrichmentChamber> ENRICHMENT_CHAMBER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.ENRICHMENT_CHAMBER, TileEntityEnrichmentChamber::new).withConfigCard().build();
+    public static final TileEntityTypeRegistryObject<TileEntityElectrolyticSeparator> ELECTROLYTIC_SEPARATOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.ELECTROLYTIC_SEPARATOR, TileEntityElectrolyticSeparator::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityEnergizedSmelter> ENERGIZED_SMELTER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.ENERGIZED_SMELTER, TileEntityEnergizedSmelter::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityEnrichmentChamber> ENRICHMENT_CHAMBER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.ENRICHMENT_CHAMBER, TileEntityEnrichmentChamber::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
     public static final TileEntityTypeRegistryObject<TileEntityFluidicPlenisher> FLUIDIC_PLENISHER = TILE_ENTITY_TYPES
           .mekBuilder(MekanismBlocks.FLUIDIC_PLENISHER, TileEntityFluidicPlenisher::new)
-          .withConfigCard()
+          .withSimple(Capabilities.CONFIG_CARD)
           .withSimple(Capabilities.LASER_RECEPTOR)
           .build();
-    public static final TileEntityTypeRegistryObject<TileEntityFormulaicAssemblicator> FORMULAIC_ASSEMBLICATOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.FORMULAIC_ASSEMBLICATOR, TileEntityFormulaicAssemblicator::new).withConfigCard().build();
+    public static final TileEntityTypeRegistryObject<TileEntityFormulaicAssemblicator> FORMULAIC_ASSEMBLICATOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.FORMULAIC_ASSEMBLICATOR, TileEntityFormulaicAssemblicator::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
     public static final TileEntityTypeRegistryObject<TileEntityFuelwoodHeater> FUELWOOD_HEATER = TILE_ENTITY_TYPES.register(MekanismBlocks.FUELWOOD_HEATER, TileEntityFuelwoodHeater::new);
     public static final TileEntityTypeRegistryObject<TileEntityInductionCasing> INDUCTION_CASING = TILE_ENTITY_TYPES
           .mekBuilder(MekanismBlocks.INDUCTION_CASING, TileEntityInductionCasing::new)
@@ -204,38 +230,70 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityLaser> LASER = TILE_ENTITY_TYPES.register(MekanismBlocks.LASER, TileEntityLaser::new);
     public static final TileEntityTypeRegistryObject<TileEntityLaserAmplifier> LASER_AMPLIFIER = TILE_ENTITY_TYPES
           .mekBuilder(MekanismBlocks.LASER_AMPLIFIER, TileEntityLaserAmplifier::new)
-          .withConfigCard()
+          .withSimple(Capabilities.CONFIG_CARD)
           .withSimple(Capabilities.LASER_RECEPTOR)
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityLaserTractorBeam> LASER_TRACTOR_BEAM = TILE_ENTITY_TYPES
           .mekBuilder(MekanismBlocks.LASER_TRACTOR_BEAM, TileEntityLaserTractorBeam::new)
           .withSimple(Capabilities.LASER_RECEPTOR)
           .build();
-    public static final TileEntityTypeRegistryObject<TileEntityLogisticalSorter> LOGISTICAL_SORTER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.LOGISTICAL_SORTER, TileEntityLogisticalSorter::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityMetallurgicInfuser> METALLURGIC_INFUSER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.METALLURGIC_INFUSER, TileEntityMetallurgicInfuser::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityOredictionificator> OREDICTIONIFICATOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.OREDICTIONIFICATOR, TileEntityOredictionificator::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityOsmiumCompressor> OSMIUM_COMPRESSOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.OSMIUM_COMPRESSOR, TileEntityOsmiumCompressor::new).withConfigCard().build();
+    public static final TileEntityTypeRegistryObject<TileEntityLogisticalSorter> LOGISTICAL_SORTER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.LOGISTICAL_SORTER, TileEntityLogisticalSorter::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityMetallurgicInfuser> METALLURGIC_INFUSER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.METALLURGIC_INFUSER, TileEntityMetallurgicInfuser::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityOredictionificator> OREDICTIONIFICATOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.OREDICTIONIFICATOR, TileEntityOredictionificator::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityOsmiumCompressor> OSMIUM_COMPRESSOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.OSMIUM_COMPRESSOR, TileEntityOsmiumCompressor::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
     public static final TileEntityTypeRegistryObject<TileEntityPersonalBarrel> PERSONAL_BARREL = TILE_ENTITY_TYPES.register(MekanismBlocks.PERSONAL_BARREL, TileEntityPersonalBarrel::new);
     public static final TileEntityTypeRegistryObject<TileEntityPersonalChest> PERSONAL_CHEST = TILE_ENTITY_TYPES.register(MekanismBlocks.PERSONAL_CHEST, TileEntityPersonalChest::new);
-    public static final TileEntityTypeRegistryObject<TileEntityPrecisionSawmill> PRECISION_SAWMILL = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.PRECISION_SAWMILL, TileEntityPrecisionSawmill::new).withConfigCard().build();
+    public static final TileEntityTypeRegistryObject<TileEntityPrecisionSawmill> PRECISION_SAWMILL = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.PRECISION_SAWMILL, TileEntityPrecisionSawmill::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
     public static final TileEntityTypeRegistryObject<TileEntityPressureDisperser> PRESSURE_DISPERSER = TILE_ENTITY_TYPES.register(MekanismBlocks.PRESSURE_DISPERSER, TileEntityPressureDisperser::new);
-    public static final TileEntityTypeRegistryObject<TileEntityPressurizedReactionChamber> PRESSURIZED_REACTION_CHAMBER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, TileEntityPressurizedReactionChamber::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityPurificationChamber> PURIFICATION_CHAMBER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.PURIFICATION_CHAMBER, TileEntityPurificationChamber::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityQuantumEntangloporter> QUANTUM_ENTANGLOPORTER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.QUANTUM_ENTANGLOPORTER, TileEntityQuantumEntangloporter::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityResistiveHeater> RESISTIVE_HEATER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.RESISTIVE_HEATER, TileEntityResistiveHeater::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityModificationStation> MODIFICATION_STATION = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.MODIFICATION_STATION, TileEntityModificationStation::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityIsotopicCentrifuge> ISOTOPIC_CENTRIFUGE = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.ISOTOPIC_CENTRIFUGE, TileEntityIsotopicCentrifuge::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityNutritionalLiquifier> NUTRITIONAL_LIQUIFIER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.NUTRITIONAL_LIQUIFIER, TileEntityNutritionalLiquifier::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityRotaryCondensentrator> ROTARY_CONDENSENTRATOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.ROTARY_CONDENSENTRATOR, TileEntityRotaryCondensentrator::new).withConfigCard().build();
+    public static final TileEntityTypeRegistryObject<TileEntityPressurizedReactionChamber> PRESSURIZED_REACTION_CHAMBER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, TileEntityPressurizedReactionChamber::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityPurificationChamber> PURIFICATION_CHAMBER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.PURIFICATION_CHAMBER, TileEntityPurificationChamber::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityQuantumEntangloporter> QUANTUM_ENTANGLOPORTER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.QUANTUM_ENTANGLOPORTER, TileEntityQuantumEntangloporter::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityResistiveHeater> RESISTIVE_HEATER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.RESISTIVE_HEATER, TileEntityResistiveHeater::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityModificationStation> MODIFICATION_STATION = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.MODIFICATION_STATION, TileEntityModificationStation::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityIsotopicCentrifuge> ISOTOPIC_CENTRIFUGE = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.ISOTOPIC_CENTRIFUGE, TileEntityIsotopicCentrifuge::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityNutritionalLiquifier> NUTRITIONAL_LIQUIFIER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.NUTRITIONAL_LIQUIFIER, TileEntityNutritionalLiquifier::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityRotaryCondensentrator> ROTARY_CONDENSENTRATOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.ROTARY_CONDENSENTRATOR, TileEntityRotaryCondensentrator::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
     public static final TileEntityTypeRegistryObject<TileEntitySecurityDesk> SECURITY_DESK = TILE_ENTITY_TYPES.register(MekanismBlocks.SECURITY_DESK, TileEntitySecurityDesk::new);
-    public static final TileEntityTypeRegistryObject<TileEntitySeismicVibrator> SEISMIC_VIBRATOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.SEISMIC_VIBRATOR, TileEntitySeismicVibrator::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntitySolarNeutronActivator> SOLAR_NEUTRON_ACTIVATOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR, TileEntitySolarNeutronActivator::new).withConfigCard().build();
+    public static final TileEntityTypeRegistryObject<TileEntitySeismicVibrator> SEISMIC_VIBRATOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.SEISMIC_VIBRATOR, TileEntitySeismicVibrator::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntitySolarNeutronActivator> SOLAR_NEUTRON_ACTIVATOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR, TileEntitySolarNeutronActivator::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
     public static final TileEntityTypeRegistryObject<TileEntityStructuralGlass> STRUCTURAL_GLASS = TILE_ENTITY_TYPES
           .mekBuilder(MekanismBlocks.STRUCTURAL_GLASS, TileEntityStructuralGlass::new)
           .withSimple(Capabilities.CONFIGURABLE)
           .build();
     public static final TileEntityTypeRegistryObject<TileEntitySuperheatingElement> SUPERHEATING_ELEMENT = TILE_ENTITY_TYPES.register(MekanismBlocks.SUPERHEATING_ELEMENT, TileEntitySuperheatingElement::new);
-    public static final TileEntityTypeRegistryObject<TileEntityTeleporter> TELEPORTER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.TELEPORTER, TileEntityTeleporter::new).withConfigCard().build();
+    public static final TileEntityTypeRegistryObject<TileEntityTeleporter> TELEPORTER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.TELEPORTER, TileEntityTeleporter::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
     public static final TileEntityTypeRegistryObject<TileEntityThermalEvaporationBlock> THERMAL_EVAPORATION_BLOCK = TILE_ENTITY_TYPES
           .mekBuilder(MekanismBlocks.THERMAL_EVAPORATION_BLOCK, TileEntityThermalEvaporationBlock::new)
           .withSimple(Capabilities.CONFIGURABLE)
@@ -253,10 +311,18 @@ public class MekanismTileEntityTypes {
           .withSimple(Capabilities.CONFIGURABLE)
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityIndustrialAlarm> INDUSTRIAL_ALARM = TILE_ENTITY_TYPES.register(MekanismBlocks.INDUSTRIAL_ALARM, TileEntityIndustrialAlarm::new);
-    public static final TileEntityTypeRegistryObject<TileEntityAntiprotonicNucleosynthesizer> ANTIPROTONIC_NUCLEOSYNTHESIZER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, TileEntityAntiprotonicNucleosynthesizer::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityPigmentExtractor> PIGMENT_EXTRACTOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.PIGMENT_EXTRACTOR, TileEntityPigmentExtractor::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityPigmentMixer> PIGMENT_MIXER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.PIGMENT_MIXER, TileEntityPigmentMixer::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityPaintingMachine> PAINTING_MACHINE = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.PAINTING_MACHINE, TileEntityPaintingMachine::new).withConfigCard().build();
+    public static final TileEntityTypeRegistryObject<TileEntityAntiprotonicNucleosynthesizer> ANTIPROTONIC_NUCLEOSYNTHESIZER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, TileEntityAntiprotonicNucleosynthesizer::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityPigmentExtractor> PIGMENT_EXTRACTOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.PIGMENT_EXTRACTOR, TileEntityPigmentExtractor::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityPigmentMixer> PIGMENT_MIXER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.PIGMENT_MIXER, TileEntityPigmentMixer::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityPaintingMachine> PAINTING_MACHINE = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.PAINTING_MACHINE, TileEntityPaintingMachine::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
     public static final TileEntityTypeRegistryObject<TileEntitySPSCasing> SPS_CASING = TILE_ENTITY_TYPES
           .mekBuilder(MekanismBlocks.SPS_CASING, TileEntitySPSCasing::new)
           .withSimple(Capabilities.CONFIGURABLE)
@@ -266,13 +332,25 @@ public class MekanismTileEntityTypes {
           .withSimple(Capabilities.CONFIGURABLE)
           .build();
     public static final TileEntityTypeRegistryObject<TileEntitySuperchargedCoil> SUPERCHARGED_COIL = TILE_ENTITY_TYPES.register(MekanismBlocks.SUPERCHARGED_COIL, TileEntitySuperchargedCoil::new);
-    public static final TileEntityTypeRegistryObject<TileEntityDimensionalStabilizer> DIMENSIONAL_STABILIZER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.DIMENSIONAL_STABILIZER, TileEntityDimensionalStabilizer::new).withConfigCard().build();
+    public static final TileEntityTypeRegistryObject<TileEntityDimensionalStabilizer> DIMENSIONAL_STABILIZER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.DIMENSIONAL_STABILIZER, TileEntityDimensionalStabilizer::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
 
-    public static final TileEntityTypeRegistryObject<TileEntityQIODriveArray> QIO_DRIVE_ARRAY = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.QIO_DRIVE_ARRAY, TileEntityQIODriveArray::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityQIODashboard> QIO_DASHBOARD = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.QIO_DASHBOARD, TileEntityQIODashboard::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityQIOImporter> QIO_IMPORTER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.QIO_IMPORTER, TileEntityQIOImporter::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityQIOExporter> QIO_EXPORTER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.QIO_EXPORTER, TileEntityQIOExporter::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityQIORedstoneAdapter> QIO_REDSTONE_ADAPTER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.QIO_REDSTONE_ADAPTER, TileEntityQIORedstoneAdapter::new).withConfigCard().build();
+    public static final TileEntityTypeRegistryObject<TileEntityQIODriveArray> QIO_DRIVE_ARRAY = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.QIO_DRIVE_ARRAY, TileEntityQIODriveArray::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityQIODashboard> QIO_DASHBOARD = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.QIO_DASHBOARD, TileEntityQIODashboard::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityQIOImporter> QIO_IMPORTER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.QIO_IMPORTER, TileEntityQIOImporter::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityQIOExporter> QIO_EXPORTER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.QIO_EXPORTER, TileEntityQIOExporter::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityQIORedstoneAdapter> QIO_REDSTONE_ADAPTER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.QIO_REDSTONE_ADAPTER, TileEntityQIORedstoneAdapter::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
 
     //Transmitters
     public static final TileEntityTypeRegistryObject<TileEntityDiversionTransporter> DIVERSION_TRANSPORTER = registerDiversionTransporter();
@@ -304,7 +382,7 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityUniversalCable> ULTIMATE_UNIVERSAL_CABLE = registerCable(MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE);
 
     private static TileEntityTypeRegistryObject<TileEntityDiversionTransporter> registerDiversionTransporter() {
-        BlockEntityTypeBuilder<TileEntityDiversionTransporter, ?> builder = transporterBuilder(MekanismBlocks.DIVERSION_TRANSPORTER, TileEntityDiversionTransporter::new);
+        BlockEntityTypeBuilder<TileEntityDiversionTransporter> builder = transporterBuilder(MekanismBlocks.DIVERSION_TRANSPORTER, TileEntityDiversionTransporter::new);
         if (Mekanism.hooks.computerCompatEnabled()) {
             ComputerCapabilityHelper.addComputerCapabilities(builder, ConstantPredicates.ALWAYS_TRUE);
         }
@@ -315,14 +393,14 @@ public class MekanismTileEntityTypes {
         return transporterBuilder(block, factory).build();
     }
 
-    private static <BE extends TileEntityLogisticalTransporterBase> BlockEntityTypeBuilder<BE, ?> transporterBuilder(BlockRegistryObject<?, ?> block, BlockEntityFactory<BE> factory) {
+    private static <BE extends TileEntityLogisticalTransporterBase> BlockEntityTypeBuilder<BE> transporterBuilder(BlockRegistryObject<?, ?> block, BlockEntityFactory<BE> factory) {
         return transmitterBuilder(block, factory)
               .clientTicker(TileEntityLogisticalTransporterBase::tickClient)
               .with(Capabilities.ITEM.block(), TileEntityLogisticalTransporterBase.ITEM_HANDLER_PROVIDER);
     }
 
     private static TileEntityTypeRegistryObject<TileEntityMechanicalPipe> registerPipe(BlockRegistryObject<?, ?> block) {
-        BlockEntityTypeBuilder<TileEntityMechanicalPipe, ?> builder = transmitterBuilder(block, TileEntityMechanicalPipe::new)
+        BlockEntityTypeBuilder<TileEntityMechanicalPipe> builder = transmitterBuilder(block, TileEntityMechanicalPipe::new)
               .with(FluidHandler.BLOCK, TileEntityMechanicalPipe.FLUID_HANDLER_PROVIDER);
         if (Mekanism.hooks.computerCompatEnabled()) {
             ComputerCapabilityHelper.addComputerCapabilities(builder, ConstantPredicates.ALWAYS_TRUE);
@@ -331,7 +409,7 @@ public class MekanismTileEntityTypes {
     }
 
     private static TileEntityTypeRegistryObject<TileEntityPressurizedTube> registerTube(BlockRegistryObject<?, ?> block) {
-        BlockEntityTypeBuilder<TileEntityPressurizedTube, ?> builder = transmitterBuilder(block, TileEntityPressurizedTube::new)
+        BlockEntityTypeBuilder<TileEntityPressurizedTube> builder = transmitterBuilder(block, TileEntityPressurizedTube::new)
               .with(Capabilities.GAS_HANDLER.block(), TileEntityPressurizedTube.GAS_HANDLER_PROVIDER)
               .with(Capabilities.INFUSION_HANDLER.block(), TileEntityPressurizedTube.INFUSION_HANDLER_PROVIDER)
               .with(Capabilities.PIGMENT_HANDLER.block(), TileEntityPressurizedTube.PIGMENT_HANDLER_PROVIDER)
@@ -349,7 +427,7 @@ public class MekanismTileEntityTypes {
     }
 
     private static TileEntityTypeRegistryObject<TileEntityUniversalCable> registerCable(BlockRegistryObject<?, ?> block) {
-        BlockEntityTypeBuilder<TileEntityUniversalCable, ?> builder = transmitterBuilder(block, TileEntityUniversalCable::new);
+        BlockEntityTypeBuilder<TileEntityUniversalCable> builder = transmitterBuilder(block, TileEntityUniversalCable::new);
         TileEntityUniversalCable.addEnergyCapabilities(builder);
         if (Mekanism.hooks.computerCompatEnabled()) {
             ComputerCapabilityHelper.addComputerCapabilities(builder, ConstantPredicates.ALWAYS_TRUE);
@@ -357,7 +435,7 @@ public class MekanismTileEntityTypes {
         return builder.build();
     }
 
-    private static <BE extends TileEntityTransmitter> BlockEntityTypeBuilder<BE, ?> transmitterBuilder(BlockRegistryObject<?, ?> block, BlockEntityFactory<BE> factory) {
+    private static <BE extends TileEntityTransmitter> BlockEntityTypeBuilder<BE> transmitterBuilder(BlockRegistryObject<?, ?> block, BlockEntityFactory<BE> factory) {
         return TILE_ENTITY_TYPES.builder(block, (pos, state) -> factory.create(block, pos, state))
               .serverTicker(TileEntityTransmitter::tickServer)
               .withSimple(Capabilities.ALLOY_INTERACTION)
@@ -374,7 +452,7 @@ public class MekanismTileEntityTypes {
 
     private static TileEntityTypeRegistryObject<TileEntityEnergyCube> registerEnergyCube(BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> block) {
         return TILE_ENTITY_TYPES.mekBuilder(block, (pos, state) -> new TileEntityEnergyCube(block, pos, state))
-              .withConfigCard()
+              .withSimple(Capabilities.CONFIG_CARD)
               .build();
     }
 
@@ -387,7 +465,7 @@ public class MekanismTileEntityTypes {
 
     private static TileEntityTypeRegistryObject<TileEntityChemicalTank> registerChemicalTank(BlockRegistryObject<?, ItemBlockChemicalTank> block) {
         return TILE_ENTITY_TYPES.mekBuilder(block, (pos, state) -> new TileEntityChemicalTank(block, pos, state))
-              .withConfigCard()
+              .withSimple(Capabilities.CONFIG_CARD)
               .build();
     }
 
@@ -400,7 +478,7 @@ public class MekanismTileEntityTypes {
 
     private static TileEntityTypeRegistryObject<TileEntityFluidTank> registerFluidTank(BlockRegistryObject<BlockFluidTank, ItemBlockFluidTank> block) {
         return TILE_ENTITY_TYPES.mekBuilder(block, (pos, state) -> new TileEntityFluidTank(block, pos, state))
-              .withConfigCard()
+              .withSimple(Capabilities.CONFIG_CARD)
               .withSimple(Capabilities.CONFIGURABLE)
               .build();
     }

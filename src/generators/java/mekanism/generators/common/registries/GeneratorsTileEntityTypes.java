@@ -39,14 +39,24 @@ public class GeneratorsTileEntityTypes {
     //Generators
     public static final TileEntityTypeRegistryObject<TileEntityAdvancedSolarGenerator> ADVANCED_SOLAR_GENERATOR = TILE_ENTITY_TYPES
           .mekBuilder(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, TileEntityAdvancedSolarGenerator::new)
-          .withConfigCard()
+          .withSimple(Capabilities.CONFIG_CARD)
           .withSimple(Capabilities.EVAPORATION_SOLAR)
           .build();
-    public static final TileEntityTypeRegistryObject<TileEntityBioGenerator> BIO_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.BIO_GENERATOR, TileEntityBioGenerator::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityGasGenerator> GAS_BURNING_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.GAS_BURNING_GENERATOR, TileEntityGasGenerator::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityHeatGenerator> HEAT_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.HEAT_GENERATOR, TileEntityHeatGenerator::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntitySolarGenerator> SOLAR_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.SOLAR_GENERATOR, TileEntitySolarGenerator::new).withConfigCard().build();
-    public static final TileEntityTypeRegistryObject<TileEntityWindGenerator> WIND_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.WIND_GENERATOR, TileEntityWindGenerator::new).withConfigCard().build();
+    public static final TileEntityTypeRegistryObject<TileEntityBioGenerator> BIO_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.BIO_GENERATOR, TileEntityBioGenerator::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityGasGenerator> GAS_BURNING_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.GAS_BURNING_GENERATOR, TileEntityGasGenerator::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityHeatGenerator> HEAT_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.HEAT_GENERATOR, TileEntityHeatGenerator::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntitySolarGenerator> SOLAR_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.SOLAR_GENERATOR, TileEntitySolarGenerator::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityWindGenerator> WIND_GENERATOR = TILE_ENTITY_TYPES.mekBuilder(GeneratorsBlocks.WIND_GENERATOR, TileEntityWindGenerator::new)
+          .withSimple(Capabilities.CONFIG_CARD)
+          .build();
     //Misc
     public static final TileEntityTypeRegistryObject<TileEntityReactorGlass> REACTOR_GLASS = TILE_ENTITY_TYPES
           .mekBuilder(GeneratorsBlocks.REACTOR_GLASS, TileEntityReactorGlass::new)

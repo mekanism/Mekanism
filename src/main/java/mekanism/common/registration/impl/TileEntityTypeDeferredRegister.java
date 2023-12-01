@@ -59,9 +59,9 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
         return mekBuilder(block, factory).build();
     }
 
-    public <BE extends TileEntityMekanism> MekBlockEntityTypeBuilder<BE> mekBuilder(BlockRegistryObject<?, ?> block, BlockEntitySupplier<? extends BE> factory) {
+    public <BE extends TileEntityMekanism> BlockEntityTypeBuilder<BE> mekBuilder(BlockRegistryObject<?, ?> block, BlockEntitySupplier<? extends BE> factory) {
         BooleanSupplier hasSecurity = () -> Attribute.has(block.getBlock(), AttributeSecurity.class);
-        MekBlockEntityTypeBuilder<BE> builder = new MekBlockEntityTypeBuilder<BE>(block, factory)
+        BlockEntityTypeBuilder<BE> builder = new BlockEntityTypeBuilder<BE>(block, factory)
               .clientTicker(TileEntityMekanism::tickClient)
               .serverTicker(TileEntityMekanism::tickServer)
               //Delay the attachment of these and only attach them if we know they should be exposed rather than filtering in the provider itself
@@ -86,12 +86,12 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
         return builder;
     }
 
-    private static <CAP> void addCapability(MekBlockEntityTypeBuilder<?> builder, BlockCapability<CAP, @Nullable Direction> capability) {
+    private static <CAP> void addCapability(BlockEntityTypeBuilder<? extends TileEntityMekanism> builder, BlockCapability<CAP, @Nullable Direction> capability) {
         //TODO: Test this and debate if we would be better off instead using something like EnergyCompatUtils#registerBlockCapabilities
         builder.with(capability, TileEntityMekanism.getEnergyCapabilityProvider(capability));
     }
 
-    public <BE extends BlockEntity> BlockEntityTypeBuilder<BE, ?> builder(BlockRegistryObject<?, ?> block, BlockEntitySupplier<? extends BE> factory) {
+    public <BE extends BlockEntity> BlockEntityTypeBuilder<BE> builder(BlockRegistryObject<?, ?> block, BlockEntitySupplier<? extends BE> factory) {
         return new BlockEntityTypeBuilder<>(block, factory);
     }
 
@@ -107,7 +107,7 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
         }
     }
 
-    public class BlockEntityTypeBuilder<BE extends BlockEntity, BUILDER extends BlockEntityTypeBuilder<BE, BUILDER>> {
+    public class BlockEntityTypeBuilder<BE extends BlockEntity> {
 
         private final BlockRegistryObject<?, ?> block;
         private final BlockEntityType.BlockEntitySupplier<? extends BE> factory;
@@ -119,42 +119,37 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
             this.registryObject = new TileEntityTypeRegistryObject<>(new ResourceLocation(getNamespace(), block.getName()));
         }
 
-        @SuppressWarnings("unchecked")
-        private BUILDER self() {
-            return (BUILDER) this;
-        }
-
-        public <CAP, CONTEXT> BUILDER withSimple(BlockCapability<CAP, CONTEXT> capability) {
+        public <CAP, CONTEXT> BlockEntityTypeBuilder<BE> withSimple(BlockCapability<CAP, CONTEXT> capability) {
             return withSimple(capability, ConstantPredicates.ALWAYS_TRUE);
         }
 
         @SuppressWarnings("unchecked")
-        public <CAP, CONTEXT> BUILDER withSimple(BlockCapability<CAP, CONTEXT> capability, BooleanSupplier shouldApply) {
+        public <CAP, CONTEXT> BlockEntityTypeBuilder<BE> withSimple(BlockCapability<CAP, CONTEXT> capability, BooleanSupplier shouldApply) {
             //TODO: Re-evaluate this method and the fact that it makes it so there isn't compile time validation of types??
             return with(capability, (ICapabilityProvider<? super BE, CONTEXT, CAP>) Capabilities.SIMPLE_PROVIDER, shouldApply);
         }
 
-        public <CAP, CONTEXT> BUILDER with(BlockCapability<CAP, CONTEXT> capability, ICapabilityProvider<? super BE, CONTEXT, CAP> provider) {
+        public <CAP, CONTEXT> BlockEntityTypeBuilder<BE> with(BlockCapability<CAP, CONTEXT> capability, ICapabilityProvider<? super BE, CONTEXT, CAP> provider) {
             return with(capability, provider, ConstantPredicates.ALWAYS_TRUE);
         }
 
-        public <CAP, CONTEXT> BUILDER with(BlockCapability<CAP, CONTEXT> capability, ICapabilityProvider<? super BE, CONTEXT, CAP> provider,
+        public <CAP, CONTEXT> BlockEntityTypeBuilder<BE> with(BlockCapability<CAP, CONTEXT> capability, ICapabilityProvider<? super BE, CONTEXT, CAP> provider,
               BooleanSupplier shouldApply) {
             registryObject.addCapability(capability, provider, shouldApply);
-            return self();
+            return this;
         }
 
-        public BUILDER clientTicker(BlockEntityTicker<BE> ticker) {
+        public BlockEntityTypeBuilder<BE> clientTicker(BlockEntityTicker<BE> ticker) {
             registryObject.clientTicker(ticker);
-            return self();
+            return this;
         }
 
-        public BUILDER serverTicker(BlockEntityTicker<BE> ticker) {
+        public BlockEntityTypeBuilder<BE> serverTicker(BlockEntityTicker<BE> ticker) {
             registryObject.serverTicker(ticker);
-            return self();
+            return this;
         }
 
-        public BUILDER commonTicker(BlockEntityTicker<BE> ticker) {
+        public BlockEntityTypeBuilder<BE> commonTicker(BlockEntityTicker<BE> ticker) {
             return clientTicker(ticker)
                   .serverTicker(ticker);
         }
@@ -167,25 +162,5 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
             allTiles.add(registryObject);
             return registryObject;
         }
-    }
-
-    public class MekBlockEntityTypeBuilder<BE extends TileEntityMekanism> extends BlockEntityTypeBuilder<BE, MekBlockEntityTypeBuilder<BE>> {
-
-        //private static ICapabilityProvider<TileEntityMekanism, @Nullable Direction, IConfigCardAccess> CONFIG_CARD_PROVIDER = (be, side) -> be;
-
-        MekBlockEntityTypeBuilder(BlockRegistryObject<?, ?> block, BlockEntitySupplier<? extends BE> factory) {
-            super(block, factory);
-        }
-
-        public MekBlockEntityTypeBuilder<BE> withConfigCard() {
-            return withSimple(Capabilities.CONFIG_CARD);
-            //TODO: Test the above works
-            //return with(Capabilities.CONFIG_CARD, CONFIG_CARD_PROVIDER);
-        }
-
-        //TODO:
-        /*public MekBlockEntityTypeBuilder<BE> configurable() {
-            return with(Capabilities.CONFIGURABLE, CONFIG_CARD_PROVIDER);
-        }*/
     }
 }

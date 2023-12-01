@@ -9,8 +9,7 @@ import mekanism.common.tile.base.CapabilityTileEntity;
 
 public class ComputerCapabilityHelper {
 
-    public static <TILE extends CapabilityTileEntity & IComputerTile> void addComputerCapabilities(BlockEntityTypeBuilder<TILE, ?> builder, BooleanSupplier supportsComputer) {
-        //TODO: Implement
+    public static <TILE extends CapabilityTileEntity & IComputerTile> void addComputerCapabilities(BlockEntityTypeBuilder<TILE> builder, BooleanSupplier supportsComputer) {
         if (Mekanism.hooks.CCLoaded) {
             //If ComputerCraft is loaded add the capability for it
             CCCapabilityHelper.addCapability(builder, supportsComputer);

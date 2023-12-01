@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityUniversalCable extends TileEntityTransmitter implements IComputerTile {
 
-    public static void addEnergyCapabilities(BlockEntityTypeBuilder<TileEntityUniversalCable, ?> builder) {
+    public static void addEnergyCapabilities(BlockEntityTypeBuilder<TileEntityUniversalCable> builder) {
         for (IEnergyCompat energyCompat : EnergyCompatUtils.getCompats()) {
             if (energyCompat.capabilityExists()) {
                 addCapability(builder, energyCompat.getCapability().block());
@@ -39,7 +39,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
         }
     }
 
-    private static <CAP> void addCapability(BlockEntityTypeBuilder<TileEntityUniversalCable, ?> builder, BlockCapability<CAP, @Nullable Direction> capability) {
+    private static <CAP> void addCapability(BlockEntityTypeBuilder<TileEntityUniversalCable> builder, BlockCapability<CAP, @Nullable Direction> capability) {
         builder.with(capability, (tile, side) -> {
             //TODO: Re-evaluate
             return tile.getCapability(capability, () -> tile.energyHandlerManager, side);
