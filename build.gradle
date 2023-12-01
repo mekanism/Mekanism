@@ -17,7 +17,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.41'//https://maven.neoforged.net/#/releases/net/neoforged/gradle/userdev
+    id 'net.neoforged.gradle.userdev' version '7.0.55'//https://maven.neoforged.net/#/releases/net/neoforged/gradle/userdev
     //id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
@@ -263,16 +263,6 @@ java {
     withSourcesJar()
 }
 
-//nb this exists here so that IDEA can resolve `project`
-def datagenExtraClasspath = {
-    def paths = new HashSet<String>()
-    project.configurations.datagenNonMod.copyRecursive().resolve()
-            .collect { it.absolutePath.toString() }
-            .findAll { (!it.contains("datafixerupper")) }//avoid adding datafixerupper twice as modlauncher will die
-            .each { path -> paths.add(path) }
-    return paths.join(File.pathSeparator)
-}
-
 minecraft {
     mappings {
         //if (mappings_channel == "parchment_previous") {
@@ -374,13 +364,8 @@ runs {
             programArguments.addAll('--mod', modName, '--existing', project.file("src/${name}/resources/").getAbsolutePath())
         }
 
-        classpath.from(project.configurations.datagenNonMod)//todo remove datafixerupper?
-
-        project.afterEvaluate {
-            //After the project has been evaluated so our dependencies has been populated,
-            // add all the extra non-mod files to runData's minecraft classpath so that they can be
-            // access from the game module layer at runtime
-            //lazyToken("minecraft_classpath", datagenExtraClasspath)
+        dependencies {
+            runtime configuration(project.configurations.datagenNonMod)
         }
     }
 }

@@ -355,7 +355,7 @@
       "methodName": "getBioFuel",
       "returns": {
         "type": "Table (FluidStack)",
-        "javaType": "net.minecraftforge.fluids.FluidStack"
+        "javaType": "net.neoforged.neoforge.fluids.FluidStack"
       }
     },
     {
@@ -549,7 +549,7 @@
       "methodName": "getWater",
       "returns": {
         "type": "Table (FluidStack)",
-        "javaType": "net.minecraftforge.fluids.FluidStack"
+        "javaType": "net.neoforged.neoforge.fluids.FluidStack"
       }
     },
     {
@@ -1084,7 +1084,7 @@
       "methodName": "getFluid",
       "returns": {
         "type": "Table (FluidStack)",
-        "javaType": "net.minecraftforge.fluids.FluidStack"
+        "javaType": "net.neoforged.neoforge.fluids.FluidStack"
       }
     },
     {
@@ -1893,7 +1893,7 @@
         "type": "Table (ChemicalStack) or Table (FluidStack)",
         "javaExtra": [
           "mekanism.api.chemical.ChemicalStack",
-          "net.minecraftforge.fluids.FluidStack"
+          "net.neoforged.neoforge.fluids.FluidStack"
         ],
         "javaType": "com.mojang.datafixers.util.Either"
       }
@@ -1967,7 +1967,7 @@
       "methodName": "getFluid",
       "returns": {
         "type": "Table (FluidStack)",
-        "javaType": "net.minecraftforge.fluids.FluidStack"
+        "javaType": "net.neoforged.neoforge.fluids.FluidStack"
       }
     },
     {
@@ -2045,7 +2045,7 @@
       "methodName": "getInput",
       "returns": {
         "type": "Table (FluidStack)",
-        "javaType": "net.minecraftforge.fluids.FluidStack"
+        "javaType": "net.neoforged.neoforge.fluids.FluidStack"
       }
     },
     {
@@ -2655,7 +2655,7 @@
         "type": "Table (ChemicalStack) or Table (FluidStack)",
         "javaExtra": [
           "mekanism.api.chemical.ChemicalStack",
-          "net.minecraftforge.fluids.FluidStack"
+          "net.neoforged.neoforge.fluids.FluidStack"
         ],
         "javaType": "com.mojang.datafixers.util.Either"
       }
@@ -2946,7 +2946,7 @@
       "methodName": "getStored",
       "returns": {
         "type": "Table (FluidStack)",
-        "javaType": "net.minecraftforge.fluids.FluidStack"
+        "javaType": "net.neoforged.neoforge.fluids.FluidStack"
       }
     },
     {
@@ -2979,7 +2979,7 @@
       "methodName": "getFluid",
       "returns": {
         "type": "Table (FluidStack)",
-        "javaType": "net.minecraftforge.fluids.FluidStack"
+        "javaType": "net.neoforged.neoforge.fluids.FluidStack"
       }
     },
     {
@@ -3532,7 +3532,7 @@
       "methodName": "getWater",
       "returns": {
         "type": "Table (FluidStack)",
-        "javaType": "net.minecraftforge.fluids.FluidStack"
+        "javaType": "net.neoforged.neoforge.fluids.FluidStack"
       }
     },
     {
@@ -3764,7 +3764,7 @@
       "methodName": "getLava",
       "returns": {
         "type": "Table (FluidStack)",
-        "javaType": "net.minecraftforge.fluids.FluidStack"
+        "javaType": "net.neoforged.neoforge.fluids.FluidStack"
       }
     },
     {
@@ -4672,7 +4672,7 @@
       "methodName": "getBuffer",
       "returns": {
         "type": "Table (FluidStack)",
-        "javaType": "net.minecraftforge.fluids.FluidStack"
+        "javaType": "net.neoforged.neoforge.fluids.FluidStack"
       }
     },
     {
@@ -4933,7 +4933,7 @@
       "methodName": "getOutput",
       "returns": {
         "type": "Table (FluidStack)",
-        "javaType": "net.minecraftforge.fluids.FluidStack"
+        "javaType": "net.neoforged.neoforge.fluids.FluidStack"
       }
     },
     {
@@ -5369,7 +5369,7 @@
       "methodName": "getInputFluid",
       "returns": {
         "type": "Table (FluidStack)",
-        "javaType": "net.minecraftforge.fluids.FluidStack"
+        "javaType": "net.neoforged.neoforge.fluids.FluidStack"
       }
     },
     {
@@ -5873,7 +5873,7 @@
       "methodName": "getBufferFluid",
       "returns": {
         "type": "Table (FluidStack)",
-        "javaType": "net.minecraftforge.fluids.FluidStack"
+        "javaType": "net.neoforged.neoforge.fluids.FluidStack"
       }
     },
     {
@@ -6212,7 +6212,7 @@
       "methodName": "getFluid",
       "returns": {
         "type": "Table (FluidStack)",
-        "javaType": "net.minecraftforge.fluids.FluidStack"
+        "javaType": "net.neoforged.neoforge.fluids.FluidStack"
       }
     },
     {
@@ -6752,7 +6752,7 @@
       "methodName": "getInput",
       "returns": {
         "type": "Table (FluidStack)",
-        "javaType": "net.minecraftforge.fluids.FluidStack"
+        "javaType": "net.neoforged.neoforge.fluids.FluidStack"
       }
     },
     {
@@ -6800,7 +6800,7 @@
       "methodName": "getOutput",
       "returns": {
         "type": "Table (FluidStack)",
-        "javaType": "net.minecraftforge.fluids.FluidStack"
+        "javaType": "net.neoforged.neoforge.fluids.FluidStack"
       }
     },
     {
