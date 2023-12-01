@@ -12,7 +12,7 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.IFluidTank;
 
 @NothingNullByDefault
-public class DataHandlerUtils {
+public class DataHandlerUtils {//TODO: Evaluate if we want to move any data from being stored here into a mekanism data attachment type
 
     private DataHandlerUtils() {
     }

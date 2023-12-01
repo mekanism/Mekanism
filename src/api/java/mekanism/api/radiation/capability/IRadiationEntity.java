@@ -2,6 +2,9 @@ package mekanism.api.radiation.capability;
 
 /**
  * Base capability definition for handling radiation for entities.
+ *
+ * @implNote Builtin Mekanism implementations of this are backed by an {@link net.neoforged.neoforge.attachment.AttachmentType AttachmentType< Double >} with the
+ * registry name {@code mekanism:radiation}, though it is recommended to interact with this via capabilities.
  */
 public interface IRadiationEntity {
 
