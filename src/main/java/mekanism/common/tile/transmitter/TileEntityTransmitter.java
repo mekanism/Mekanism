@@ -44,7 +44,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
@@ -281,13 +280,6 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         //Center position
         list.add(isSmall ? BlockSmallTransmitter.CENTER : BlockLargeTransmitter.CENTER);
         return list;
-    }
-
-    @NotNull
-    @Override
-    public AABB getRenderBoundingBox() {
-        //If any of the block is in view, then allow rendering the contents
-        return new AABB(worldPosition, worldPosition.offset(1, 1, 1));
     }
 
     @NotNull

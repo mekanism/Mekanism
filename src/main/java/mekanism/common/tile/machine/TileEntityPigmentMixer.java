@@ -52,7 +52,6 @@ import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -218,13 +217,6 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
         if (upgrade == Upgrade.SPEED) {
             baselineMaxOperations = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
         }
-    }
-
-    @NotNull
-    @Override
-    public AABB getRenderBoundingBox() {
-        //We only care about the position that is above because we only use the BER to render the shaft which is in the upper block
-        return new AABB(worldPosition.above(), worldPosition.offset(1, 2, 1));
     }
 
     public MachineEnergyContainer<TileEntityPigmentMixer> getEnergyContainer() {

@@ -501,7 +501,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
      * @return in what direction there is a frame, null if none.
      */
     @Nullable
-    private Direction getFrameDirection() {
+    public Direction getFrameDirection() {
         //Cache the chunks we are looking up to check the frames of
         // Note: We can use an array based map, because we check suck a small area, that if we do go across chunks
         // we will be in at most two in general due to the size of our teleporter. But given we need to check multiple
@@ -590,15 +590,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return frameRotated;
     }
 
-    @NotNull
-    @Override
-    public AABB getRenderBoundingBox() {
-        //Note: If the frame direction is "null" we instead just only mark the teleporter itself.
-        Direction frameDirection = getFrameDirection();
-        return frameDirection == null ? new AABB(worldPosition, worldPosition.offset(1, 1, 1)) : getTeleporterBoundingBox(frameDirection);
-    }
-
-    private AABB getTeleporterBoundingBox(@NotNull Direction frameDirection) {
+    public AABB getTeleporterBoundingBox(@NotNull Direction frameDirection) {
         //Note: We only include the area inside the frame, we don't bother including the teleporter's block itself
         return switch (frameDirection) {
             case UP -> new AABB(worldPosition.above(), worldPosition.offset(1, 3, 1));

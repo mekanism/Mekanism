@@ -102,7 +102,6 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.common.util.LazyOptional;
@@ -883,22 +882,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @Override
     public boolean isPowered() {
         return redstone || numPowering > 0;
-    }
-
-    @NotNull
-    @Override
-    public AABB getRenderBoundingBox() {
-        if (isClientRendering() && canDisplayVisuals()) {
-            return new AABB(
-                  worldPosition.getX() - radius,
-                  minY,
-                  worldPosition.getZ() - radius,
-                  worldPosition.getX() + radius + 1,
-                  maxY + 1,
-                  worldPosition.getZ() + radius + 1
-            );
-        }
-        return super.getRenderBoundingBox();
     }
 
     @Override

@@ -12,7 +12,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -153,6 +152,10 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
         radius = 1 + position / 4;
     }
 
+    public int getRadius() {
+        return radius;
+    }
+
     @Nullable
     private TileEntityTurbineRotor getRotor(BlockPos pos) {
         return WorldUtils.getTileEntity(TileEntityTurbineRotor.class, getLevel(), pos);
@@ -182,16 +185,6 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
         super.saveAdditional(nbtTags);
         nbtTags.putInt(NBTConstants.BLADES, getHousedBlades());
         nbtTags.putInt(NBTConstants.POSITION, getPosition());
-    }
-
-    @NotNull
-    @Override
-    public AABB getRenderBoundingBox() {
-        if (blades == 0 || radius == -1) {
-            //If there are no blades default to the collision box of the rotor
-            return super.getRenderBoundingBox();
-        }
-        return new AABB(worldPosition.offset(-radius, 0, -radius), worldPosition.offset(1 + radius, 1, 1 + radius));
     }
 
     @NotNull

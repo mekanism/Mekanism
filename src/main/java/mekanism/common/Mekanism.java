@@ -90,8 +90,7 @@ import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
-import mekanism.common.tags.MekanismTags;
-import mekanism.common.tile.component.TileComponentChunkLoader.ChunkValidationCallback;
+import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.machine.TileEntityOredictionificator.ODConfigValueInvalidationListener;
 import mekanism.common.world.GenHandler;
 import net.minecraft.core.cauldron.CauldronInteraction;
@@ -112,7 +111,7 @@ import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.world.ForcedChunkManager;
+import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
@@ -191,6 +190,7 @@ public class Mekanism {
         NeoForge.EVENT_BUS.addListener(MekanismPermissions::registerPermissionNodes);
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::registerChunkTicketControllers);
         modEventBus.addListener(this::onConfigLoad);
         modEventBus.addListener(this::imcQueue);
         modEventBus.addListener(this::imcHandle);
@@ -341,8 +341,6 @@ public class Mekanism {
             MekAnnotationScanner.collectScanData();
             //Register advancement criteria
             MekanismCriteriaTriggers.init();
-            //Add chunk loading callbacks
-            ForcedChunkManager.setForcedChunkLoadingCallback(Mekanism.MODID, ChunkValidationCallback.INSTANCE);
             //Register dispenser behaviors
             MekanismFluids.FLUIDS.registerBucketDispenserBehavior();
             registerFluidTankBehaviors(MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK,
@@ -386,6 +384,10 @@ public class Mekanism {
             CauldronInteraction.WATER.put(item, BasicDrainCauldronInteraction.WATER);
             CauldronInteraction.LAVA.put(item, BasicDrainCauldronInteraction.LAVA);
         }
+    }
+
+    private void registerChunkTicketControllers(RegisterTicketControllersEvent event) {
+        event.register(TileComponentChunkLoader.TICKET_CONTROLLER);
     }
 
     private void onEnergyTransferred(EnergyTransferEvent event) {

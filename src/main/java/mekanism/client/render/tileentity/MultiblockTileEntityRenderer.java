@@ -7,6 +7,7 @@ import mekanism.common.tile.prefab.TileEntityMultiblock;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 @NothingNullByDefault
@@ -39,5 +40,19 @@ public abstract class MultiblockTileEntityRenderer<MULTIBLOCK extends Multiblock
 
     protected boolean shouldRender(TILE tile, MULTIBLOCK multiblock, Vec3 camera) {
         return multiblock.renderLocation != null;
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(TILE tile) {
+        if (tile.isMaster()) {
+            MULTIBLOCK multiblock = tile.getMultiblock();
+            if (multiblock.isFormed() && multiblock.getBounds() != null) {
+                //TODO: Eventually we may want to look into caching this
+                //Note: We do basically the full dimensions as it still is a lot smaller than always rendering it, and makes sure no matter
+                // how the specific multiblock wants to render, that it is being viewed
+                return new AABB(multiblock.getMinPos(), multiblock.getMaxPos().offset(1, 1, 1));
+            }
+        }
+        return super.getRenderBoundingBox(tile);
     }
 }

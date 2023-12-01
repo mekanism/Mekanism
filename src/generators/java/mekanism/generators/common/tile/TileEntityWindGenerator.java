@@ -22,7 +22,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock {
@@ -141,13 +140,6 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         super.addContainerTrackers(container);
         container.track(SyncableFloatingLong.create(this::getCurrentMultiplier, value -> currentMultiplier = value));
         container.track(SyncableBoolean.create(this::isBlacklistDimension, value -> isBlacklistDimension = value));
-    }
-
-    @NotNull
-    @Override
-    public AABB getRenderBoundingBox() {
-        //Note: we just extend it to the max size it could be ignoring what direction it is actually facing
-        return new AABB(worldPosition.offset(-2, 0, -2), worldPosition.offset(3, 7, 3));
     }
 
     //Methods relating to IComputerTile

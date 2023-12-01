@@ -26,6 +26,7 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 @NothingNullByDefault
@@ -155,6 +156,32 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
     @Override
     public boolean shouldRender(TileEntityDimensionalStabilizer tile, Vec3 camera) {
         return tile.isClientRendering() && tile.canDisplayVisuals() && super.shouldRender(tile, camera);
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(TileEntityDimensionalStabilizer tile) {
+        Level level = tile.getLevel();
+        if (tile.isClientRendering() && tile.canDisplayVisuals() && level != null) {
+            int chunkX = SectionPos.blockToSectionCoord(tile.getBlockPos().getX());
+            int chunkZ = SectionPos.blockToSectionCoord(tile.getBlockPos().getZ());
+            ChunkPos minChunk = new ChunkPos(
+                  chunkX - TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS,
+                  chunkZ - TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS
+            );
+            ChunkPos maxChunk = new ChunkPos(
+                  chunkX + TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS,
+                  chunkZ + TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS
+            );
+            return new AABB(
+                  minChunk.getMinBlockX(),
+                  level.getMinBuildHeight(),
+                  minChunk.getMinBlockZ(),
+                  maxChunk.getMaxBlockX() + 1,
+                  level.getMaxBuildHeight(),
+                  maxChunk.getMaxBlockZ() + 1
+            );
+        }
+        return super.getRenderBoundingBox(tile);
     }
 
     /**

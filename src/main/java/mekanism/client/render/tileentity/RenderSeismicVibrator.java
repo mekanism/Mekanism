@@ -16,8 +16,10 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
 
 @NothingNullByDefault
 public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntitySeismicVibrator> implements IWireFrameRenderer {
@@ -71,5 +73,11 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
         matrix.translate(0, piston * 0.625, 0);
         renderer.accept(matrix);
         matrix.popPose();
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(TileEntitySeismicVibrator tile) {
+        BlockPos pos = tile.getBlockPos();
+        return new AABB(pos, pos.offset(1, 2, 1));
     }
 }

@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 @NothingNullByDefault
@@ -95,5 +96,11 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
         matrix.translate(-shift, 0, -shift);
         renderer.accept(matrix);
         matrix.popPose();
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(TileEntityPigmentMixer tile) {
+        //We only care about the position that is above because we only use the BER to render the shaft which is in the upper block
+        return new AABB(tile.getBlockPos().above());
     }
 }

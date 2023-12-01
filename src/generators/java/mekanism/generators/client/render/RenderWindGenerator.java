@@ -12,8 +12,10 @@ import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
 
 @NothingNullByDefault
 public class RenderWindGenerator extends ModelTileEntityRenderer<TileEntityWindGenerator, ModelWindGenerator> implements IWireFrameRenderer {
@@ -35,6 +37,13 @@ public class RenderWindGenerator extends ModelTileEntityRenderer<TileEntityWindG
     @Override
     public boolean shouldRenderOffScreen(TileEntityWindGenerator tile) {
         return true;
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(TileEntityWindGenerator tile) {
+        //Note: we just extend it to the max size (including blades) it could be ignoring what direction it is actually facing
+        BlockPos pos = tile.getBlockPos();
+        return new AABB(pos.offset(-2, 0, -2), pos.offset(3, 7, 3));
     }
 
     @Override

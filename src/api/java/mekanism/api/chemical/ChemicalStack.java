@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> implements IHasTextComponent, IHasTranslationKey, IChemicalAttributeContainer<ChemicalStack<CHEMICAL>> {
 
-    protected static <STACK extends ChemicalStack<CHEMICAL>, CHEMICAL extends Chemical<CHEMICAL>> Codec<STACK> codec(Codec<CHEMICAL> chemicalCodec, String chemicalField,
+    protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> Codec<STACK> codec(Codec<CHEMICAL> chemicalCodec, String chemicalField,
           BiFunction<CHEMICAL, Long, STACK> constructor) {
         return RecordCodecBuilder.create(i -> i.group(
               chemicalCodec.fieldOf(chemicalField).forGetter(ChemicalStack::getRaw),

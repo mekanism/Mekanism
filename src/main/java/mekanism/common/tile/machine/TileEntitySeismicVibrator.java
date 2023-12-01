@@ -29,7 +29,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBoundingBlock {
@@ -104,12 +103,6 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     public void setRemoved() {
         super.setRemoved();
         Mekanism.activeVibrators.remove(getTileCoord());
-    }
-
-    @NotNull
-    @Override
-    public AABB getRenderBoundingBox() {
-        return new AABB(worldPosition, worldPosition.offset(1, 2, 1));
     }
 
     public MachineEnergyContainer<TileEntitySeismicVibrator> getEnergyContainer() {

@@ -13,7 +13,9 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.computer.*;
+import mekanism.common.integration.computer.BoundMethodHolder;
+import mekanism.common.integration.computer.FactoryRegistry;
+import mekanism.common.integration.computer.MethodRestriction;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
@@ -39,7 +41,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -312,21 +313,6 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         SyncMapper.INSTANCE.setup(container, getMultiblock().getClass(), this::getMultiblock);
-    }
-
-    @NotNull
-    @Override
-    public AABB getRenderBoundingBox() {
-        if (isMaster()) {
-            T multiblock = getMultiblock();
-            if (multiblock.isFormed() && multiblock.getBounds() != null) {
-                //TODO: Eventually we may want to look into caching this
-                //Note: We do basically the full dimensions as it still is a lot smaller than always rendering it, and makes sure no matter
-                // how the specific multiblock wants to render, that it is being viewed
-                return new AABB(multiblock.getMinPos(), multiblock.getMaxPos().offset(1, 1, 1));
-            }
-        }
-        return super.getRenderBoundingBox();
     }
 
     @Override

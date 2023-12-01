@@ -13,8 +13,10 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 @NothingNullByDefault
@@ -74,5 +76,22 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
     @Override
     public boolean shouldRender(TileEntityDigitalMiner tile, Vec3 camera) {
         return tile.isClientRendering() && tile.canDisplayVisuals() && super.shouldRender(tile, camera);
+    }
+
+    @Override
+    public AABB getRenderBoundingBox(TileEntityDigitalMiner tile) {
+        if (tile.isClientRendering() && tile.canDisplayVisuals()) {
+            BlockPos pos = tile.getBlockPos();
+            int radius = tile.getRadius();
+            return new AABB(
+                  pos.getX() - radius,
+                  tile.getMinY(),
+                  pos.getZ() - radius,
+                  pos.getX() + radius + 1,
+                  tile.getMaxY() + 1,
+                  pos.getZ() + radius + 1
+            );
+        }
+        return super.getRenderBoundingBox(tile);
     }
 }
