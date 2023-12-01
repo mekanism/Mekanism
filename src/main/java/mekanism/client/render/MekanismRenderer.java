@@ -351,7 +351,7 @@ public class MekanismRenderer {
         public float minX, minY, minZ;
         public float maxX, maxY, maxZ;
 
-        private final SpriteInfo[] textures = new SpriteInfo[6];
+        private final TextureAtlasSprite[] textures = new TextureAtlasSprite[6];
         private final boolean[] renderSides = {true, true, true, true, true, true};
 
         public Model3D setSideRender(Predicate<Direction> shouldRender) {
@@ -374,7 +374,7 @@ public class MekanismRenderer {
         }
 
         @Nullable
-        public SpriteInfo getSpriteToRender(Direction side) {
+        public TextureAtlasSprite getSpriteToRender(Direction side) {
             int ordinal = side.ordinal();
             return renderSides[ordinal] ? textures[ordinal] : null;
         }
@@ -428,26 +428,23 @@ public class MekanismRenderer {
         }
 
         public Model3D prepFlowing(@NotNull FluidStack fluid) {
-            SpriteInfo still = new SpriteInfo(getFluidTexture(fluid, FluidTextureType.STILL), 16);
-            SpriteInfo flowing = new SpriteInfo(getFluidTexture(fluid, FluidTextureType.FLOWING), 8);
+            TextureAtlasSprite still = getFluidTexture(fluid, FluidTextureType.STILL);
+            TextureAtlasSprite flowing = getFluidTexture(fluid, FluidTextureType.FLOWING);
             return setTextures(still, still, flowing, flowing, flowing, flowing);
         }
 
-        public Model3D setTexture(Direction side, @Nullable SpriteInfo spriteInfo) {
-            textures[side.ordinal()] = spriteInfo;
+        public Model3D setTexture(Direction side, @Nullable TextureAtlasSprite sprite) {
+            textures[side.ordinal()] = sprite;
             return this;
         }
 
         public Model3D setTexture(TextureAtlasSprite tex) {
-            return setTexture(tex, 16);
-        }
-
-        public Model3D setTexture(TextureAtlasSprite tex, int size) {
-            Arrays.fill(textures, new SpriteInfo(tex, size));
+            Arrays.fill(textures, tex);
             return this;
         }
 
-        public Model3D setTextures(SpriteInfo down, SpriteInfo up, SpriteInfo north, SpriteInfo south, SpriteInfo west, SpriteInfo east) {
+        public Model3D setTextures(TextureAtlasSprite down, TextureAtlasSprite up, TextureAtlasSprite north, TextureAtlasSprite south, TextureAtlasSprite west,
+              TextureAtlasSprite east) {
             textures[0] = down;
             textures[1] = up;
             textures[2] = north;
@@ -455,17 +452,6 @@ public class MekanismRenderer {
             textures[4] = west;
             textures[5] = east;
             return this;
-        }
-
-        public record SpriteInfo(TextureAtlasSprite sprite, int size) {
-
-            public float getU(float u) {
-                return sprite.getU(u * size);
-            }
-
-            public float getV(float v) {
-                return sprite.getV(v * size);
-            }
         }
 
         public interface ModelBoundsSetter {

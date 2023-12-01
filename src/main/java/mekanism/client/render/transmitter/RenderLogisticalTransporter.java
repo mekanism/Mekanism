@@ -12,7 +12,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.client.render.MekanismRenderer.Model3D.SpriteInfo;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.config.MekanismConfig;
@@ -32,6 +31,7 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -52,11 +52,11 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     private static final Map<Direction, Model3D> cachedOverlays = new EnumMap<>(Direction.class);
     private static final int DIVERSION_OVERLAY_ARGB = MekanismRenderer.getColorARGB(255, 255, 255, 0.8F);
     @Nullable
-    private static SpriteInfo gunpowderIcon;
+    private static TextureAtlasSprite gunpowderIcon;
     @Nullable
-    private static SpriteInfo torchOffIcon;
+    private static TextureAtlasSprite torchOffIcon;
     @Nullable
-    private static SpriteInfo torchOnIcon;
+    private static TextureAtlasSprite torchOnIcon;
     private final ModelTransporterBox modelBox;
     private final LazyItemRenderer itemRenderer = new LazyItemRenderer();
 
@@ -67,9 +67,9 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 
     public static void onStitch(TextureAtlas map) {
         cachedOverlays.clear();
-        gunpowderIcon = new SpriteInfo(map.getSprite(new ResourceLocation("minecraft", "item/gunpowder")), 16);
-        torchOffIcon = new SpriteInfo(map.getSprite(new ResourceLocation("minecraft", "block/redstone_torch_off")), 16);
-        torchOnIcon = new SpriteInfo(map.getSprite(new ResourceLocation("minecraft", "block/redstone_torch")), 16);
+        gunpowderIcon = map.getSprite(new ResourceLocation("minecraft", "item/gunpowder"));
+        torchOffIcon = map.getSprite(new ResourceLocation("minecraft", "block/redstone_torch_off"));
+        torchOnIcon = map.getSprite(new ResourceLocation("minecraft", "block/redstone_torch"));
     }
 
     @Override

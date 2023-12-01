@@ -228,8 +228,6 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             float f2 = (float) Mth.lerp(partialTicks, this.zo, this.z);
             Quaternionf quaternion = Minecraft.getInstance().getEntityRenderDispatcher().camera.rotation();
 
-            //Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);
-            //quaternion.transform(vector3f1);
             Vector3f[] vectors = {new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F),
                                   new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
             for (int i = 0; i < 4; ++i) {
@@ -266,19 +264,19 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         }
 
         protected float getU0() {
-            return this.sprite.getU((this.uo + 1.0F) / 4.0F * 16.0F);
+            return this.sprite.getU((this.uo + 1.0F) / 4.0F);
         }
 
         protected float getU1() {
-            return this.sprite.getU(this.uo / 4.0F * 16.0F);
+            return this.sprite.getU(this.uo / 4.0F);
         }
 
         protected float getV0() {
-            return this.sprite.getV(this.vo / 4.0F * 16.0F);
+            return this.sprite.getV(this.vo / 4.0F);
         }
 
         protected float getV1() {
-            return this.sprite.getV((this.vo + 1.0F) / 4.0F * 16.0F);
+            return this.sprite.getV((this.vo + 1.0F) / 4.0F);
         }
 
         protected void setSize(float particleWidth, float particleHeight) {

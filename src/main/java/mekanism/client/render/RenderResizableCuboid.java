@@ -4,10 +4,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.Arrays;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.client.render.MekanismRenderer.Model3D.SpriteInfo;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
@@ -48,7 +48,7 @@ public class RenderResizableCuboid {
      */
     public static void renderCube(Model3D cube, PoseStack matrix, VertexConsumer buffer, int[] colors, int light, int overlay, FaceDisplay faceDisplay, Camera camera,
           @Nullable Vec3 renderPos) {
-        SpriteInfo[] sprites = new SpriteInfo[6];
+        TextureAtlasSprite[] sprites = new TextureAtlasSprite[6];
         int axisToRender = 0;
         //TODO: Eventually try not rendering faces that are covered by things? At the very least for things like multiblocks
         // when one face is entirely casing and not glass
@@ -59,7 +59,7 @@ public class RenderResizableCuboid {
             Vec3 minPos = renderPos.add(cube.minX, cube.minY, cube.minZ);
             Vec3 maxPos = renderPos.add(cube.maxX, cube.maxY, cube.maxZ);
             for (Direction direction : EnumUtils.DIRECTIONS) {
-                SpriteInfo sprite = cube.getSpriteToRender(direction);
+                TextureAtlasSprite sprite = cube.getSpriteToRender(direction);
                 if (sprite != null) {
                     Axis axis = direction.getAxis();
                     AxisDirection axisDirection = direction.getAxisDirection();
@@ -83,7 +83,7 @@ public class RenderResizableCuboid {
             }
         } else {
             for (Direction direction : EnumUtils.DIRECTIONS) {
-                SpriteInfo sprite = cube.getSpriteToRender(direction);
+                TextureAtlasSprite sprite = cube.getSpriteToRender(direction);
                 if (sprite != null) {
                     sprites[direction.ordinal()] = sprite;
                     axisToRender |= 1 << direction.getAxis().ordinal();
@@ -139,18 +139,18 @@ public class RenderResizableCuboid {
 
         // render each side
         for (int y = 0; y <= yDelta; y += yIncrement) {
-            SpriteInfo upSprite = y == yDelta ? sprites[Direction.UP.ordinal()] : null;
-            SpriteInfo downSprite = y == 0 ? sprites[Direction.DOWN.ordinal()] : null;
+            TextureAtlasSprite upSprite = y == yDelta ? sprites[Direction.UP.ordinal()] : null;
+            TextureAtlasSprite downSprite = y == 0 ? sprites[Direction.DOWN.ordinal()] : null;
             from.y = yBounds[y];
             to.y = yBounds[y + 1];
             for (int z = 0; z <= zDelta; z += zIncrement) {
-                SpriteInfo northSprite = z == 0 ? sprites[Direction.NORTH.ordinal()] : null;
-                SpriteInfo southSprite = z == zDelta ? sprites[Direction.SOUTH.ordinal()] : null;
+                TextureAtlasSprite northSprite = z == 0 ? sprites[Direction.NORTH.ordinal()] : null;
+                TextureAtlasSprite southSprite = z == zDelta ? sprites[Direction.SOUTH.ordinal()] : null;
                 from.z = zBounds[z];
                 to.z = zBounds[z + 1];
                 for (int x = 0; x <= xDelta; x += xIncrement) {
-                    SpriteInfo westSprite = x == 0 ? sprites[Direction.WEST.ordinal()] : null;
-                    SpriteInfo eastSprite = x == xDelta ? sprites[Direction.EAST.ordinal()] : null;
+                    TextureAtlasSprite westSprite = x == 0 ? sprites[Direction.WEST.ordinal()] : null;
+                    TextureAtlasSprite eastSprite = x == xDelta ? sprites[Direction.EAST.ordinal()] : null;
                     //Set bounds
                     from.x = xBounds[x];
                     to.x = xBounds[x + 1];
@@ -199,7 +199,7 @@ public class RenderResizableCuboid {
     /**
      * @implNote From Mantle with some adjustments
      */
-    private static void putTexturedQuad(VertexConsumer buffer, Matrix4f matrix, @Nullable SpriteInfo spriteInfo, Vector3f from, Vector3f to, Direction face, int[] colors,
+    private static void putTexturedQuad(VertexConsumer buffer, Matrix4f matrix, @Nullable TextureAtlasSprite spriteInfo, Vector3f from, Vector3f to, Direction face, int[] colors,
           int light, int overlay, FaceDisplay faceDisplay, NormalData normal) {
         if (spriteInfo == null) {
             return;

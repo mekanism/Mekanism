@@ -313,8 +313,8 @@ public interface QuadTransformation {
             float uMin = texture.getU0(), uMax = texture.getU1();
             float vMin = texture.getV0(), vMax = texture.getV1();
             //Calculate how much of a shift it is based on the texture's scale
-            float uShift = this.uShift * (uMax - uMin) / 16F;
-            float vShift = this.vShift * (vMax - vMin) / 16F;
+            float uShift = this.uShift * (uMax - uMin);
+            float vShift = this.vShift * (vMax - vMin);
             quad.vertexTransform(v -> v.texRaw(v.getTexU() + uShift, v.getTexV() + vShift));
             return true;
         }
