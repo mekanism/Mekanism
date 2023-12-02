@@ -1169,7 +1169,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public void configurationDataSet() {
         setChanged();
-        invalidateCapabilities();
+        invalidateCachedCapabilities();
         sendUpdatePacket();
         WorldUtils.notifyLoadedNeighborsOfTileChange(getLevel(), getTilePos());
     }

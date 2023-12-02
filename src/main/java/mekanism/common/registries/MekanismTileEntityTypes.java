@@ -201,7 +201,7 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityElectricPump> ELECTRIC_PUMP = TILE_ENTITY_TYPES
           .mekBuilder(MekanismBlocks.ELECTRIC_PUMP, TileEntityElectricPump::new)
           .withSimple(Capabilities.CONFIG_CARD)
-          .withSimple(Capabilities.LASER_RECEPTOR)
+          .withSimple(Capabilities.CONFIGURABLE)
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityElectrolyticSeparator> ELECTROLYTIC_SEPARATOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.ELECTROLYTIC_SEPARATOR, TileEntityElectrolyticSeparator::new)
           .withSimple(Capabilities.CONFIG_CARD)
@@ -215,7 +215,7 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityFluidicPlenisher> FLUIDIC_PLENISHER = TILE_ENTITY_TYPES
           .mekBuilder(MekanismBlocks.FLUIDIC_PLENISHER, TileEntityFluidicPlenisher::new)
           .withSimple(Capabilities.CONFIG_CARD)
-          .withSimple(Capabilities.LASER_RECEPTOR)
+          .withSimple(Capabilities.CONFIGURABLE)
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityFormulaicAssemblicator> FORMULAIC_ASSEMBLICATOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.FORMULAIC_ASSEMBLICATOR, TileEntityFormulaicAssemblicator::new)
           .withSimple(Capabilities.CONFIG_CARD)
