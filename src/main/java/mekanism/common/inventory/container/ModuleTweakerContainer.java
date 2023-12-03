@@ -83,7 +83,7 @@ public class ModuleTweakerContainer extends MekanismContainer {
 
     @Override
     public boolean canPlayerAccess(@NotNull Player player) {
-        return false;
+        return true;
     }
 
     @Override
