@@ -5,9 +5,12 @@ import mcp.mobius.waila.api.IDataWriter;
 import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.IServerAccessor;
 import mekanism.common.integration.lookingat.LookingAtUtils;
-import mekanism.common.tile.TileEntityBoundingBlock;
-import mekanism.common.util.WorldUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult.Type;
 
 public class WTHITDataProvider implements IDataProvider<BlockEntity> {
 
@@ -15,21 +18,14 @@ public class WTHITDataProvider implements IDataProvider<BlockEntity> {
 
     @Override
     public void appendData(IDataWriter dataWriter, IServerAccessor<BlockEntity> serverAccessor, IPluginConfig config) {
-        BlockEntity tile = serverAccessor.getTarget();
-        if (tile instanceof TileEntityBoundingBlock boundingBlock) {
-            //If we are a bounding block that has a position set, redirect the check to the main location
-            if (!boundingBlock.hasReceivedCoords() || tile.getBlockPos().equals(boundingBlock.getMainPos())) {
-                //If the coords haven't been received, exit
-                return;
-            }
-            tile = WorldUtils.getTileEntity(serverAccessor.getWorld(), boundingBlock.getMainPos());
-            if (tile == null) {
-                //If there is no tile where the bounding block thinks the main tile is, exit
-                return;
-            }
+        if (serverAccessor.getHitResult() instanceof BlockHitResult hitResult && hitResult.getType() != Type.MISS) {
+            Level level = serverAccessor.getWorld();
+            BlockEntity tile = serverAccessor.getTarget();
+            BlockPos pos = hitResult.getBlockPos();
+            BlockState state = tile == null ? level.getBlockState(pos) : tile.getBlockState();
+            WTHITLookingAtHelper helper = new WTHITLookingAtHelper();
+            LookingAtUtils.addInfoOrRedirect(helper, level, pos, state, tile, true, true);
+            dataWriter.add(WTHITLookingAtHelper.class, result -> result.add(helper));
         }
-        WTHITLookingAtHelper helper = new WTHITLookingAtHelper();
-        LookingAtUtils.addInfo(helper, tile, true, true);
-        dataWriter.add(WTHITLookingAtHelper.class, result -> result.add(helper));
     }
 }

@@ -29,6 +29,7 @@ import mekanism.common.lib.multiblock.IStructuralMultiblock;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
+import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -36,6 +37,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -58,7 +60,7 @@ public class LookingAtUtils {
     }
 
     @Nullable
-    private static MultiblockData getMultiblock(@NotNull BlockEntity tile) {
+    private static MultiblockData getMultiblock(@Nullable BlockEntity tile) {
         if (tile instanceof IMultiblock<?> multiblock) {
             return multiblock.getMultiblock();
         } else if (tile instanceof IStructuralMultiblock multiblock) {
@@ -82,11 +84,27 @@ public class LookingAtUtils {
         }
     }
 
-    public static void addInfo(LookingAtHelper info, @NotNull BlockEntity tile, boolean displayTanks, boolean displayFluidTanks) {
+    public static void addInfoOrRedirect(LookingAtHelper info, Level level, BlockPos pos, BlockState state, @Nullable BlockEntity tile, boolean displayTanks, boolean displayFluidTanks) {
+        if (tile instanceof TileEntityBoundingBlock boundingBlock) {
+            //If we are a bounding block that has a position set, redirect the check to the main location
+            if (!boundingBlock.hasReceivedCoords() || pos.equals(boundingBlock.getMainPos())) {
+                //If the coords haven't been received, exit
+                return;
+            }
+            pos = boundingBlock.getMainPos();
+            tile = WorldUtils.getTileEntity(level, pos);
+            if (tile == null) {
+                //If there is no tile where the bounding block thinks the main tile is, exit
+                return;
+            }
+            state = tile.getBlockState();
+        }
+        addInfo(info, level, pos, state, tile, displayTanks, displayFluidTanks);
+    }
+
+    private static void addInfo(LookingAtHelper info, Level level, BlockPos pos, BlockState state, @Nullable BlockEntity tile, boolean displayTanks, boolean displayFluidTanks) {
         MultiblockData structure = getMultiblock(tile);
-        Level level = tile.getLevel();
-        BlockPos pos = tile.getBlockPos();
-        IStrictEnergyHandler energyCapability = Capabilities.STRICT_ENERGY.getCapabilityIfLoaded(level, pos, null, tile, null);
+        IStrictEnergyHandler energyCapability = Capabilities.STRICT_ENERGY.getCapabilityIfLoaded(level, pos, state, tile, null);
         if (energyCapability != null) {
             displayEnergy(info, energyCapability);
         } else if (structure != null && structure.isFormed()) {
@@ -96,7 +114,7 @@ public class LookingAtUtils {
         if (displayTanks) {
             //Fluid - only add it to our own tiles in which we disable the default display for
             if (displayFluidTanks && tile instanceof TileEntityUpdateable) {
-                IFluidHandler fluidCapability = WorldUtils.getCapability(level, FluidHandler.BLOCK, pos, null, tile, null);
+                IFluidHandler fluidCapability = WorldUtils.getCapability(level, FluidHandler.BLOCK, pos, state, tile, null);
                 if (fluidCapability != null) {
                     displayFluid(info, fluidCapability);
                 } else if (structure != null && structure.isFormed()) {
@@ -105,10 +123,10 @@ public class LookingAtUtils {
                 }
             }
             //Chemicals
-            addInfo(level, pos, tile, structure, Capabilities.GAS_HANDLER, multiblock -> multiblock.getGasTanks(null), info, MekanismLang.GAS, Current.GAS, CurrentType.GAS);
-            addInfo(level, pos, tile, structure, Capabilities.INFUSION_HANDLER, multiblock -> multiblock.getInfusionTanks(null), info, MekanismLang.INFUSE_TYPE, Current.INFUSION, CurrentType.INFUSION);
-            addInfo(level, pos, tile, structure, Capabilities.PIGMENT_HANDLER, multiblock -> multiblock.getPigmentTanks(null), info, MekanismLang.PIGMENT, Current.PIGMENT, CurrentType.PIGMENT);
-            addInfo(level, pos, tile, structure, Capabilities.SLURRY_HANDLER, multiblock -> multiblock.getSlurryTanks(null), info, MekanismLang.SLURRY, Current.SLURRY, CurrentType.SLURRY);
+            addInfo(level, pos, state, tile, structure, Capabilities.GAS_HANDLER, multiblock -> multiblock.getGasTanks(null), info, MekanismLang.GAS, Current.GAS, CurrentType.GAS);
+            addInfo(level, pos, state, tile, structure, Capabilities.INFUSION_HANDLER, multiblock -> multiblock.getInfusionTanks(null), info, MekanismLang.INFUSE_TYPE, Current.INFUSION, CurrentType.INFUSION);
+            addInfo(level, pos, state, tile, structure, Capabilities.PIGMENT_HANDLER, multiblock -> multiblock.getPigmentTanks(null), info, MekanismLang.PIGMENT, Current.PIGMENT, CurrentType.PIGMENT);
+            addInfo(level, pos, state, tile, structure, Capabilities.SLURRY_HANDLER, multiblock -> multiblock.getSlurryTanks(null), info, MekanismLang.SLURRY, Current.SLURRY, CurrentType.SLURRY);
         }
     }
 
@@ -149,9 +167,10 @@ public class LookingAtUtils {
 
     @SuppressWarnings("unchecked")
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>,
-          HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void addInfo(Level level, BlockPos pos, BlockEntity tile, @Nullable MultiblockData structure, MultiTypeCapability<HANDLER> capability,
-          Function<MultiblockData, List<TANK>> multiBlockToTanks, LookingAtHelper info, ILangEntry langEntry, Current matchingCurrent, CurrentType matchingCurrentType) {
-        HANDLER handler = capability.getCapabilityIfLoaded(level, pos, null, tile, null);
+          HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void addInfo(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity tile,
+          @Nullable MultiblockData structure, MultiTypeCapability<HANDLER> capability, Function<MultiblockData, List<TANK>> multiBlockToTanks, LookingAtHelper info,
+          ILangEntry langEntry, Current matchingCurrent, CurrentType matchingCurrentType) {
+        HANDLER handler = capability.getCapabilityIfLoaded(level, pos, state, tile, null);
         if (handler != null) {
             if (handler instanceof ProxyChemicalHandler) {
                 List<TANK> tanks = ((ProxyChemicalHandler<CHEMICAL, STACK, ?>) handler).getTanksIfMekanism();
