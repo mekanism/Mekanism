@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.tile;
 
 import java.util.List;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
@@ -44,7 +44,7 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
         if (level == null) {
             return false;
         }
-        return ISecurityUtils.INSTANCE.canAccess(player, level, tile.getBlockPos(), tile);
+        return IBlockSecurityUtils.INSTANCE.canAccess(player, level, tile.getBlockPos(), tile);
     }
 
     @Override

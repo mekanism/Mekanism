@@ -1,7 +1,5 @@
 package mekanism.common.tile.interfaces;
 
-import java.util.Set;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IOffsetCapability;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -19,13 +17,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface IBoundingBlock extends IComparatorSupport, IOffsetCapability, IUpgradeTile {//TODO - 1.20.2: Figure this out
 
-    //Note: Being moved to Capabilities#registerCapabilities
-    Set<BlockCapability<?, @Nullable Direction>> ALWAYS_PROXY = Set.of(
-          Capabilities.CONFIG_CARD,
-          Capabilities.OWNER_OBJECT.block(),
-          Capabilities.SECURITY_OBJECT.block()
-    );
-
     default void onBoundingBlockPowerChange(BlockPos boundingPos, int oldLevel, int newLevel) {
     }
 
@@ -40,7 +31,7 @@ public interface IBoundingBlock extends IComparatorSupport, IOffsetCapability, I
     @Override
     default boolean isOffsetCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, Direction side, @NotNull Vec3i offset) {
         //By default, only allow proxying specific capabilities
-        return !ALWAYS_PROXY.contains(capability);
+        return true;
     }
 
     @Nullable

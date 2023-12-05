@@ -17,16 +17,12 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class TileEntitySecurityDesk extends TileEntityMekanism implements IBoundingBlock {
 
@@ -39,7 +35,8 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         // people unintentionally. We also disable the security object capability so that we only provide access to the security desk as an
         // "owner object" which means that all access checks will be handled as requiring the owner
         //TODO: Figure out and fix disabled caps as we don't have security added view the resolvers here?
-        addDisabledCapabilities(Capabilities.ITEM.block(), Capabilities.SECURITY_OBJECT.block());
+        //TODO: Is this ven necessary? As we don't actually expose caps on it to the world
+        addDisabledCapabilities(Capabilities.ITEM.block());
     }
 
     @NotNull
@@ -137,11 +134,5 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     public SecurityFrequency getFreq() {
         return getFrequency(FrequencyType.SECURITY);
-    }
-
-    @Override
-    public boolean isOffsetCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, Direction side, @NotNull Vec3i offset) {
-        //Don't allow proxying any capabilities by marking them all as disabled
-        return true;
     }
 }

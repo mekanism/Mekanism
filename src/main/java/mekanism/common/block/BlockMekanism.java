@@ -10,9 +10,9 @@ import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.radiation.IRadiationManager;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
-import mekanism.api.security.ISecurityUtils;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
@@ -118,10 +118,10 @@ public abstract class BlockMekanism extends Block {
             tile.getFrequencyComponent().write(lazyDataMap.get());
         }
         if (tile.hasSecurity()) {
-            IOwnerObject ownerObject = Capabilities.OWNER_OBJECT.getCapability(itemStack);
+            IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(itemStack);
             if (ownerObject != null) {
                 ownerObject.setOwnerUUID(tile.getOwnerUUID());
-                ISecurityObject securityObject = Capabilities.SECURITY_OBJECT.getCapability(itemStack);
+                ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(itemStack);
                 if (securityObject != null) {
                     securityObject.setSecurityMode(tile.getSecurityMode());
                 }
@@ -292,11 +292,11 @@ public abstract class BlockMekanism extends Block {
             tile.getFrequencyComponent().read(dataMap);
         }
         if (tile.hasSecurity()) {
-            ISecurityObject security = Capabilities.SECURITY_OBJECT.getCapability(stack);
+            ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(stack);
             if (security != null) {
                 tile.setSecurityMode(security.getSecurityMode());
             }
-            UUID ownerUUID = ISecurityUtils.INSTANCE.getOwnerUUID(stack);
+            UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
             if (ownerUUID != null) {
                 tile.setOwnerUUID(ownerUUID);
             } else if (placer != null) {

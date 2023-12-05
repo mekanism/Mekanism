@@ -9,8 +9,8 @@ import java.util.function.Function;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
-import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
@@ -101,7 +101,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         if (item instanceof IItemSustainedInventory || tile != null && tile.persistInventory()) {
             supportedTypes.add(RecipeUpgradeType.ITEM);
         }
-        if (Capabilities.OWNER_OBJECT.hasCapability(stack) || tile != null && tile.hasSecurity()) {
+        if (IItemSecurityUtils.INSTANCE.ownerCapability(stack) != null || tile != null && tile.hasSecurity()) {
             //Note: We only check if it has the owner capability as there is a contract that if there is a security capability
             // there will be an owner one so given our security upgrade supports owner or security we only have to check for owner
             supportedTypes.add(RecipeUpgradeType.SECURITY);
@@ -156,13 +156,13 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 yield inventory == null || !inventory.getBinSlot().isLocked() ? null : new LockRecipeData(inventory);
             }
             case SECURITY -> {
-                UUID ownerUUID = ISecurityUtils.INSTANCE.getOwnerUUID(stack);
+                UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
                 if (ownerUUID == null) {
                     yield null;
                 }
                 //Treat owner items as public even though they are private as we don't want to lower the output
                 // item's security just because it has one item that is owned
-                ISecurityObject securityObject = Capabilities.SECURITY_OBJECT.getCapability(stack);
+                ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(stack);
                 SecurityMode securityMode = securityObject == null ? SecurityMode.PUBLIC : securityObject.getSecurityMode();
                 yield new SecurityRecipeData(ownerUUID, securityMode);
             }

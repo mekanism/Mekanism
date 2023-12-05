@@ -3,7 +3,7 @@ package mekanism.common.item;
 import java.util.List;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.NBTConstants;
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
@@ -57,7 +57,7 @@ public class ItemConfigurationCard extends Item {
         Direction side = context.getClickedFace();
         IConfigCardAccess configCardAccess = WorldUtils.getCapability(world, Capabilities.CONFIG_CARD, pos, side);
         if (configCardAccess != null) {
-            if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, null)) {
+            if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, null)) {
                 return InteractionResult.FAIL;
             }
             ItemStack stack = context.getItemInHand();

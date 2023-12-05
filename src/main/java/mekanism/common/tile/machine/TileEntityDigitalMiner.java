@@ -1069,14 +1069,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             return notItemPort(side, offset);
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
             return notEnergyPort(side, offset);
-        } else if (IBoundingBlock.super.isOffsetCapabilityDisabled(capability, side, offset)) {
-            //If we are not an item handler or energy capability, and it is a capability that we can support,
-            // but it is one that normally should be disabled for offset capabilities, then expose it but only do so
-            // via our ports for things like computer integration capabilities, then we treat the capability as
-            // disabled if it is not against one of our ports
-            return notItemPort(side, offset) && notEnergyPort(side, offset);
         }
-        return false;
+        //If we are not an item handler or energy capability, and it is a capability that we can support,
+        // but it is one that normally should be disabled for offset capabilities, then expose it but only do so
+        // via our ports for things like computer integration capabilities, then we treat the capability as
+        // disabled if it is not against one of our ports
+        return notItemPort(side, offset) && notEnergyPort(side, offset);
     }
 
     private boolean notItemPort(Direction side, Vec3i offset) {

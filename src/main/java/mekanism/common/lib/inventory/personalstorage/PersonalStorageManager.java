@@ -14,11 +14,11 @@ import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.SecurityUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -48,7 +48,7 @@ public class PersonalStorageManager {
      * @return the existing or new inventory
      */
     public static Optional<AbstractPersonalStorageItemInventory> getInventoryFor(ItemStack stack) {
-        UUID owner = SecurityUtils.get().getOwnerUUID(stack);
+        UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
         if (owner == null) {
             Mekanism.logger.error("Storage inventory asked for but stack has no owner! {}", stack, new Exception());
             return Optional.empty();
@@ -68,7 +68,7 @@ public class PersonalStorageManager {
     }
 
     public static boolean createInventoryFor(ItemStack stack, List<IInventorySlot> contents) {
-        UUID owner = SecurityUtils.get().getOwnerUUID(stack);
+        UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
         if (owner == null || contents.size() != 54) {
             //No owner or wrong number of slots, something went wrong
             return false;
@@ -89,7 +89,7 @@ public class PersonalStorageManager {
      * @return the existing or converted inventory, or an empty optional if none exists in saved data nor legacy data
      */
     public static Optional<AbstractPersonalStorageItemInventory> getInventoryIfPresent(ItemStack stack) {
-        UUID owner = SecurityUtils.get().getOwnerUUID(stack);
+        UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
         UUID invId = getInventoryIdNullable(stack);
         //TODO - After 1.20: Remove legacy loading
         boolean hasLegacyData = ItemDataUtils.hasData(stack, NBTConstants.ITEMS, Tag.TAG_LIST);
@@ -97,7 +97,7 @@ public class PersonalStorageManager {
     }
 
     public static void deleteInventory(ItemStack stack) {
-        UUID owner = SecurityUtils.get().getOwnerUUID(stack);
+        UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
         UUID invId = getInventoryIdNullable(stack);
         if (owner != null && invId != null) {
             forOwner(owner).ifPresent(handler -> handler.removeInventory(invId));

@@ -2,9 +2,9 @@ package mekanism.common.capabilities.security.item;
 
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -18,8 +18,8 @@ import org.jetbrains.annotations.NotNull;
 public class ItemStackSecurityObject extends ItemStackOwnerObject implements ISecurityObject {
 
     public static void attachCapsToItem(RegisterCapabilitiesEvent event, Item item) {
-        event.registerItem(Capabilities.OWNER_OBJECT.item(), (stack, ctx) -> new ItemStackSecurityObject(stack), item);
-        event.registerItem(Capabilities.SECURITY_OBJECT.item(), (stack, ctx) -> new ItemStackSecurityObject(stack), item);
+        event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> new ItemStackSecurityObject(stack), item);
+        event.registerItem(IItemSecurityUtils.INSTANCE.securityCapability(), (stack, ctx) -> new ItemStackSecurityObject(stack), item);
     }
 
     private ItemStackSecurityObject(ItemStack stack) {

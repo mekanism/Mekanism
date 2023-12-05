@@ -1,6 +1,6 @@
 package mekanism.common.block.basic;
 
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.Machine;
@@ -70,7 +70,7 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
         //TODO: Make this be moved into the logistical sorter tile
         ItemStack stack = player.getItemInHand(hand);
         if (MekanismUtils.canUseAsWrench(stack)) {
-            if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
+            if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                 return InteractionResult.FAIL;
             }
             if (player.isShiftKeyDown()) {

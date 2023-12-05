@@ -1,10 +1,9 @@
 package mekanism.common.item;
 
 import java.util.List;
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.security.item.ItemStackOwnerObject;
 import mekanism.common.content.qio.QIOFrequency;
@@ -15,11 +14,11 @@ import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
+import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -49,7 +48,7 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        ISecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
+        IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
         MekanismUtils.addFrequencyItemTooltip(stack, tooltip);
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasSustainedInventory(stack))));
         super.appendHoverText(stack, world, tooltip, flag);
@@ -58,7 +57,7 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
     @NotNull
     @Override
     public InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
-        return SecurityUtils.get().claimOrOpenGui(world, player, hand, getContainerType()::tryOpenGui);
+        return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, getContainerType()::tryOpenGui);
     }
 
     @Override
@@ -91,6 +90,6 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(Capabilities.OWNER_OBJECT.item(), (stack, ctx) -> new ItemStackOwnerObject(stack), this);
+        event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> new ItemStackOwnerObject(stack), this);
     }
 }

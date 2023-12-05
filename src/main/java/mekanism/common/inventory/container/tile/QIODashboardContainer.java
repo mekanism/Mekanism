@@ -1,6 +1,6 @@
 package mekanism.common.inventory.container.tile;
 
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.qio.TileEntityQIODashboard;
@@ -56,6 +56,6 @@ public class QIODashboardContainer extends QIOItemViewerContainer {
         if (level == null) {
             return false;
         }
-        return ISecurityUtils.INSTANCE.canAccess(player, level, tile.getBlockPos(), tile);
+        return IBlockSecurityUtils.INSTANCE.canAccess(player, level, tile.getBlockPos(), tile);
     }
 }

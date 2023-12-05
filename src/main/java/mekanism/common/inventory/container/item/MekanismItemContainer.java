@@ -1,6 +1,6 @@
 package mekanism.common.inventory.container.item;
 
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import net.minecraft.world.InteractionHand;
@@ -33,7 +33,7 @@ public abstract class MekanismItemContainer extends MekanismContainer {
 
     @Override
     public boolean canPlayerAccess(@NotNull Player player) {
-        return ISecurityUtils.INSTANCE.canAccess(player, stack);
+        return IItemSecurityUtils.INSTANCE.canAccess(player, stack);
     }
 
     @Override

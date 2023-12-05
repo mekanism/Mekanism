@@ -2,7 +2,7 @@ package mekanism.common.item.block;
 
 import java.util.List;
 import mekanism.api.NBTConstants;
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.MekanismLang;
@@ -98,7 +98,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                         return InteractionResult.FAIL;
                     }
                 }
-                if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
+                if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                     //If the tile is in the tile entity type blacklist or the player cannot access the tile
                     // don't allow them to pick it up with a cardboard box
                     return InteractionResult.FAIL;

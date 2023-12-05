@@ -15,8 +15,8 @@ import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.radiation.capability.IRadiationShielding;
-import mekanism.api.security.IOwnerObject;
-import mekanism.api.security.ISecurityObject;
+import mekanism.api.security.IBlockSecurityUtils;
+import mekanism.api.security.IEntitySecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.radiation.capability.RadiationEntity;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -70,16 +70,16 @@ public class Capabilities {//TODO - 1.20.2: Figure out which of these types actu
 
     public static final MultiTypeCapability<IStrictEnergyHandler> STRICT_ENERGY = new MultiTypeCapability<>(Mekanism.rl("strict_energy_handler"), IStrictEnergyHandler.class);
 
-    public static final BlockCapability<IConfigurable, @Nullable Direction> CONFIGURABLE = BlockCapability.create(Mekanism.rl("configurable"), IConfigurable.class, Direction.class);
+    public static final BlockCapability<IConfigurable, @Nullable Direction> CONFIGURABLE = BlockCapability.createSided(Mekanism.rl("configurable"), IConfigurable.class);
 
-    public static final BlockCapability<IAlloyInteraction, @Nullable Direction> ALLOY_INTERACTION = BlockCapability.create(Mekanism.rl("alloy_interaction"), IAlloyInteraction.class, Direction.class);
+    public static final BlockCapability<IAlloyInteraction, @Nullable Direction> ALLOY_INTERACTION = BlockCapability.createSided(Mekanism.rl("alloy_interaction"), IAlloyInteraction.class);
 
     //TODO: Should some of these be a void context? Does that even play nicely with block capabilities?
-    public static final BlockCapability<IConfigCardAccess, @Nullable Direction> CONFIG_CARD = BlockCapability.create(Mekanism.rl("config_card"), IConfigCardAccess.class, Direction.class);
+    public static final BlockCapability<IConfigCardAccess, @Nullable Direction> CONFIG_CARD = BlockCapability.createSided(Mekanism.rl("config_card"), IConfigCardAccess.class);
 
-    public static final BlockCapability<IEvaporationSolar, @Nullable Direction> EVAPORATION_SOLAR = BlockCapability.create(Mekanism.rl("evaporation_solar"), IEvaporationSolar.class, Direction.class);
+    public static final BlockCapability<IEvaporationSolar, @Nullable Direction> EVAPORATION_SOLAR = BlockCapability.createSided(Mekanism.rl("evaporation_solar"), IEvaporationSolar.class);
 
-    public static final BlockCapability<ILaserReceptor, @Nullable Direction> LASER_RECEPTOR = BlockCapability.create(Mekanism.rl("laser_receptor"), ILaserReceptor.class, Direction.class);
+    public static final BlockCapability<ILaserReceptor, @Nullable Direction> LASER_RECEPTOR = BlockCapability.createSided(Mekanism.rl("laser_receptor"), ILaserReceptor.class);
 
     public static final ItemCapability<ILaserDissipation, Void> LASER_DISSIPATION = ItemCapability.createVoid(Mekanism.rl("laser_dissipation"), ILaserDissipation.class);
 
@@ -87,16 +87,16 @@ public class Capabilities {//TODO - 1.20.2: Figure out which of these types actu
 
     public static final EntityCapability<IRadiationEntity, Void> RADIATION_ENTITY = EntityCapability.createVoid(Mekanism.rl("radiation"), IRadiationEntity.class);
 
-    public static final MultiTypeCapability<IOwnerObject> OWNER_OBJECT = new MultiTypeCapability<>(Mekanism.rl("owner_object"), IOwnerObject.class);
-    public static final MultiTypeCapability<ISecurityObject> SECURITY_OBJECT = new MultiTypeCapability<>(Mekanism.rl("security_object"), ISecurityObject.class);
+    public static final ResourceLocation OWNER_OBJECT_NAME = Mekanism.rl("owner_object");
+    public static final ResourceLocation SECURITY_OBJECT_NAME = Mekanism.rl("security_object");
 
     //TODO - 1.20.2: Listen to this event
     // Also should this be in its own class?
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         Mekanism.hooks.hookCapabilityRegistration();
         //TODO - 1.20.2: Do we want robits to expose an energy cap
-        event.registerEntity(OWNER_OBJECT.entity(), MekanismEntityTypes.ROBIT.get(), (robit, ctx) -> robit);
-        event.registerEntity(SECURITY_OBJECT.entity(), MekanismEntityTypes.ROBIT.get(), (robit, ctx) -> robit);
+        event.registerEntity(IEntitySecurityUtils.INSTANCE.ownerCapability(), MekanismEntityTypes.ROBIT.get(), (robit, ctx) -> robit);
+        event.registerEntity(IEntitySecurityUtils.INSTANCE.securityCapability(), MekanismEntityTypes.ROBIT.get(), (robit, ctx) -> robit);
 
         for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
             //TODO - 1.20.2: Can this lambda be shared between entity types?
@@ -113,9 +113,9 @@ public class Capabilities {//TODO - 1.20.2: Figure out which of these types actu
             }
         }
         //TODO: Register bounding block proxies
-        TileEntityBoundingBlock.proxyCapability(event, CONFIG_CARD);
-        TileEntityBoundingBlock.proxyCapability(event, OWNER_OBJECT.block());
-        TileEntityBoundingBlock.proxyCapability(event, SECURITY_OBJECT.block());
+        TileEntityBoundingBlock.alwaysProxyCapability(event, CONFIG_CARD);
+        TileEntityBoundingBlock.alwaysProxyCapability(event, IBlockSecurityUtils.INSTANCE.ownerCapability());
+        TileEntityBoundingBlock.alwaysProxyCapability(event, IBlockSecurityUtils.INSTANCE.securityCapability());
         //Capabilities we need to proxy because some sub implementations use them
         //TODO: Figure out what other caps exist and are fine
         TileEntityBoundingBlock.proxyCapability(event, ITEM.block());

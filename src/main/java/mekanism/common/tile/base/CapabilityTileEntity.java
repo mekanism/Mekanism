@@ -80,6 +80,7 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
         capabilityCache.addCapabilityResolver(resolver);
     }
 
+    //TODO: Replace all these permanently disabled ones with just not attaching the capability in the first place
     @SafeVarargs
     protected final void addDisabledCapabilities(BlockCapability<?, @Nullable Direction>... capabilities) {
         capabilityCache.addDisabledCapabilities(capabilities);

@@ -2,7 +2,7 @@ package mekanism.common.tile.component;
 
 import java.util.UUID;
 import mekanism.api.NBTConstants;
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -121,7 +121,7 @@ public class TileComponentSecurity implements ITileComponent {
             //TODO - 1.20.2: Re-evaluate this?
             return tile.getSecurityMode();
         }
-        return ISecurityUtils.INSTANCE.getSecurityMode(tile.getLevel(), tile.getBlockPos(), tile);
+        return IBlockSecurityUtils.INSTANCE.getSecurityMode(tile.getLevel(), tile.getBlockPos(), tile);
     }
     //End computer related methods
 }

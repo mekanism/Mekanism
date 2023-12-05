@@ -1,17 +1,16 @@
 package mekanism.common.item;
 
 import java.util.List;
-import mekanism.api.security.ISecurityUtils;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.capabilities.security.item.ItemStackOwnerObject;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
+import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.SecurityUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -31,7 +30,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        ISecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
+        IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
         MekanismUtils.addFrequencyItemTooltip(stack, tooltip);
         super.appendHoverText(stack, world, tooltip, flag);
     }
@@ -44,7 +43,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
     @NotNull
     @Override
     public InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
-        return SecurityUtils.get().claimOrOpenGui(world, player, hand, getContainerType()::tryOpenGui);
+        return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, getContainerType()::tryOpenGui);
     }
 
     @Override
@@ -55,6 +54,6 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
         super.attachCapabilities(event);
-        event.registerItem(Capabilities.OWNER_OBJECT.item(), (stack, ctx) -> new ItemStackOwnerObject(stack), this);
+        event.registerItem(IItemSecurityUtils.INSTANCE.ownerCapability(), (stack, ctx) -> new ItemStackOwnerObject(stack), this);
     }
 }

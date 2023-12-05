@@ -1,6 +1,6 @@
 package mekanism.common.inventory.container.item;
 
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.PortableQIODashboardInventory;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
@@ -76,7 +76,7 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
 
     @Override
     public boolean canPlayerAccess(@NotNull Player player) {
-        return ISecurityUtils.INSTANCE.canAccess(player, stack);
+        return IItemSecurityUtils.INSTANCE.canAccess(player, stack);
     }
 
     @Override

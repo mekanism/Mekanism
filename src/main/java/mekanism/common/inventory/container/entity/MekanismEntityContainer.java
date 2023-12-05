@@ -1,6 +1,6 @@
 package mekanism.common.inventory.container.entity;
 
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IEntitySecurityUtils;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import net.minecraft.world.entity.Entity;
@@ -32,6 +32,6 @@ public abstract class MekanismEntityContainer<ENTITY extends Entity> extends Mek
 
     @Override
     public boolean canPlayerAccess(@NotNull Player player) {
-        return ISecurityUtils.INSTANCE.canAccess(player, entity);
+        return IEntitySecurityUtils.INSTANCE.canAccess(player, entity);
     }
 }

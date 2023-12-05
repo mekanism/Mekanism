@@ -30,7 +30,7 @@ import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.radiation.IRadiationManager;
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.sound.SoundHandler;
@@ -89,6 +89,7 @@ import mekanism.common.lib.LastEnergyTracker;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.TileComponentFrequency;
+import mekanism.common.lib.security.BlockSecurityUtils;
 import mekanism.common.lib.security.ISecurityTile;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -113,7 +114,6 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.RegistryUtils;
-import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -491,8 +491,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public WrenchResult tryWrench(BlockState state, Player player, InteractionHand hand, BlockHitResult rayTrace) {
         ItemStack stack = player.getItemInHand(hand);
         if (MekanismUtils.canUseAsWrench(stack)) {
-            //Note: We should always
-            if (hasSecurity() && !ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, getWorldNN(), worldPosition, this)) {
+            if (hasSecurity() && !IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, getWorldNN(), worldPosition, this)) {
                 return WrenchResult.NO_SECURITY;
             }
             if (player.isShiftKeyDown()) {
@@ -511,7 +510,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public InteractionResult openGui(Player player) {
         //Everything that calls this has isRemote being false but add the check just in case anyway
         if (hasGui() && !isRemote() && !player.isShiftKeyDown()) {
-            if (hasSecurity() && (level == null || !ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, level, worldPosition, this))) {
+            if (hasSecurity() && !IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, player.level(), worldPosition, this)) {
                 return InteractionResult.FAIL;
             }
             //Pass on this activation if the player is rotating with a configurator
@@ -1185,7 +1184,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public void onSecurityChanged(@NotNull SecurityMode old, @NotNull SecurityMode mode) {
         if (!isRemote() && hasGui() && level != null) {
-            SecurityUtils.get().securityChanged(playersUsing, level, worldPosition, this, old, mode);
+            BlockSecurityUtils.get().securityChanged(playersUsing, level, worldPosition, this, old, mode);
         }
     }
     //End methods ITileSecurity
@@ -1284,7 +1283,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     public void validateSecurityIsPublic() throws ComputerException {
-        if (hasSecurity() && ISecurityUtils.INSTANCE.getSecurityMode(getWorldNN(), worldPosition, this) != SecurityMode.PUBLIC) {
+        if (hasSecurity() && IBlockSecurityUtils.INSTANCE.getSecurityMode(getWorldNN(), worldPosition, this) != SecurityMode.PUBLIC) {
             throw new ComputerException("Setter not available due to machine security not being public.");
         }
     }

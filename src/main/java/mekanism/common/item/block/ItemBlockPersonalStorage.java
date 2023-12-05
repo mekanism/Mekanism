@@ -8,9 +8,9 @@ import mekanism.common.inventory.container.item.PersonalStorageItemContainer;
 import mekanism.common.item.interfaces.IDroppableContents;
 import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
+import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.util.SecurityUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -39,7 +39,7 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
     @NotNull
     @Override
     public InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
-        return SecurityUtils.get().claimOrOpenGui(world, player, hand, (p, h, s) -> {
+        return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, (p, h, s) -> {
             if (!world.isClientSide) {
                 PersonalStorageManager.getInventoryFor(s);
             }

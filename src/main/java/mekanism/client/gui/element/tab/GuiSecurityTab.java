@@ -2,9 +2,13 @@ package mekanism.client.gui.element.tab;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
+import mekanism.api.security.IBlockSecurityUtils;
+import mekanism.api.security.IEntitySecurityUtils;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.ITypedSecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SpecialColors;
@@ -14,7 +18,6 @@ import mekanism.client.gui.element.tab.GuiSecurityTab.SecurityInfoProvider;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
@@ -22,14 +25,13 @@ import mekanism.common.network.to_server.PacketGuiInteract.GuiInteractionEntity;
 import mekanism.common.network.to_server.PacketSecurityMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.SecurityUtils;
+import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,7 +55,7 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
     }
 
     public GuiSecurityTab(IGuiWrapper gui, Entity entity, int y) {
-        this(gui, SecurityInfoProvider.create(entity), y);
+        this(gui,  new SecurityInfoProvider<>(IEntitySecurityUtils.INSTANCE, () -> entity), y);
     }
 
     public GuiSecurityTab(IGuiWrapper gui, SecurityInfoProvider<?> provider, int y) {
@@ -61,7 +63,7 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
     }
 
     public GuiSecurityTab(IGuiWrapper gui, @NotNull InteractionHand hand) {
-        this(gui, SecurityInfoProvider.create(() -> minecraft.player.getItemInHand(hand)), 34, hand);
+        this(gui, new SecurityInfoProvider<>(IItemSecurityUtils.INSTANCE, () -> minecraft.player.getItemInHand(hand)), 34, hand);
     }
 
     private GuiSecurityTab(IGuiWrapper gui, SecurityInfoProvider<?> provider, int y, @Nullable InteractionHand hand) {
@@ -125,19 +127,25 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
     public record SecurityInfoProvider<OBJECT>(Supplier<OBJECT> objectSupplier, Function<OBJECT, @Nullable ISecurityObject> securityProvider,
                                                Function<OBJECT, @Nullable IOwnerObject> ownerProvider) {
 
-        public static SecurityInfoProvider<ItemStack> create(Supplier<ItemStack> stackSupplier) {
-            return new SecurityInfoProvider<>(stackSupplier, Capabilities.SECURITY_OBJECT::getCapability, Capabilities.OWNER_OBJECT::getCapability);
-        }
-
-        public static SecurityInfoProvider<Entity> create(Entity entity) {
-            return new SecurityInfoProvider<>(() -> entity, Capabilities.SECURITY_OBJECT::getCapability, Capabilities.OWNER_OBJECT::getCapability);
+        public SecurityInfoProvider(ITypedSecurityUtils<OBJECT> securityUtils, Supplier<OBJECT> objectSupplier) {
+            this(objectSupplier, securityUtils::securityCapability, securityUtils::ownerCapability);
         }
 
         public static SecurityInfoProvider<BlockEntity> create(BlockEntity tile) {
             return new SecurityInfoProvider<>(
                   () -> tile,
-                  t -> Capabilities.SECURITY_OBJECT.getCapability(t, null),
-                  t -> Capabilities.OWNER_OBJECT.getCapability(t, null)
+                  t -> {
+                      if (t.getLevel() == null) {
+                          return null;
+                      }
+                      return IBlockSecurityUtils.INSTANCE.securityCapability(t.getLevel(), t.getBlockPos(), t);
+                  },
+                  t -> {
+                      if (t.getLevel() == null) {
+                          return null;
+                      }
+                      return IBlockSecurityUtils.INSTANCE.ownerCapability(t.getLevel(), t.getBlockPos(), t);
+                  }
             );
         }
 

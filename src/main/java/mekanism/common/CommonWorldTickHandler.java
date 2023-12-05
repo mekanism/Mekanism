@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.function.Predicate;
 import mekanism.api.NBTConstants;
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.content.qio.QIOGlobalItemLookup;
@@ -107,7 +107,7 @@ public class CommonWorldTickHandler {
         if (state != null && !state.isAir() && event.getLevel() instanceof Level level && state.hasBlockEntity()) {
             //TODO - 1.20.2: Decide if we still want to check for BEs as addons may want to add security to non BE related blocks?
             //If the block might have a block entity, look it up from the world and see if the player has access to destroy it
-            if (!ISecurityUtils.INSTANCE.canAccess(event.getPlayer(), level, event.getPos(), null)) {
+            if (!IBlockSecurityUtils.INSTANCE.canAccess(event.getPlayer(), level, event.getPos(), null)) {
                 //If they don't because it is something that is locked, then cancel the event
                 event.setCanceled(true);
             }

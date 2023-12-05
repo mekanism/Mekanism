@@ -34,8 +34,9 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.robit.IRobit;
 import mekanism.api.robit.RobitSkin;
+import mekanism.api.security.IEntitySecurityUtils;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
-import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -55,6 +56,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemRobit;
+import mekanism.common.lib.security.EntitySecurityUtils;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
@@ -72,7 +74,7 @@ import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.SecurityUtils;
+import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -397,7 +399,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     @NotNull
     @Override
     public InteractionResult interactAt(@NotNull Player player, @NotNull Vec3 vec, @NotNull InteractionHand hand) {
-        if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, this)) {
+        if (!IEntitySecurityUtils.INSTANCE.canAccessOrDisplayError(player, this)) {
             return InteractionResult.FAIL;
         } else if (player.isShiftKeyDown()) {
             ItemStack stack = player.getItemInHand(hand);
@@ -430,7 +432,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         ItemRobit item = (ItemRobit) stack.getItem();
         item.setSustainedInventory(getSustainedInventory(), stack);
         item.setName(stack, getName());
-        ISecurityObject security = Capabilities.SECURITY_OBJECT.getCapability(stack);
+        ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(stack);
         if (security != null) {
             security.setOwnerUUID(getOwnerUUID());
             security.setSecurityMode(getSecurityMode());
@@ -558,7 +560,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     @Override
     public void onSecurityChanged(@NotNull SecurityMode old, @NotNull SecurityMode mode) {
         if (!level().isClientSide) {
-            SecurityUtils.get().securityChanged(playersUsing, this, old, mode);
+            EntitySecurityUtils.get().securityChanged(playersUsing, this, old, mode);
         }
     }
 
@@ -722,7 +724,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             return true;
         }
         if (player != null) {
-            if (!ISecurityUtils.INSTANCE.canAccess(player, this)) {
+            if (!IEntitySecurityUtils.INSTANCE.canAccess(player, this)) {
                 return false;
             }
             SkinLookup skinLookup = MekanismRobitSkins.lookup(level().registryAccess(), skinKey);

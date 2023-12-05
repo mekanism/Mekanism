@@ -1,6 +1,6 @@
 package mekanism.common.inventory.container.entity.robit;
 
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IEntitySecurityUtils;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ISecurityContainer;
 import mekanism.common.inventory.container.entity.IEntityContainer;
@@ -46,6 +46,6 @@ public class RepairRobitContainer extends AnvilMenu implements IEntityContainer<
 
     @Override
     public boolean canPlayerAccess(@NotNull Player player) {
-        return ISecurityUtils.INSTANCE.canAccess(player, entity);
+        return IEntitySecurityUtils.INSTANCE.canAccess(player, entity);
     }
 }

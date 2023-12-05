@@ -6,12 +6,11 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.robit.RobitSkin;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
-import mekanism.api.security.ISecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.security.item.ItemStackSecurityObject;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
@@ -59,7 +58,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
         super.appendHoverText(stack, world, tooltip, flag);
         tooltip.add(MekanismLang.ROBIT_NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getRobitName(stack)));
         tooltip.add(MekanismLang.ROBIT_SKIN.translateColored(EnumColor.INDIGO, EnumColor.GRAY, RobitSkin.getTranslatedName(getRobitSkin(stack))));
-        ISecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
+        IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasSustainedInventory(stack))));
     }
 
@@ -85,8 +84,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
                 if (energyContainer != null) {
                     robit.getEnergyContainer().setEnergy(energyContainer.getEnergy());
                 }
-                ISecurityUtils securityUtils = ISecurityUtils.INSTANCE;
-                UUID ownerUUID = securityUtils.getOwnerUUID(stack);
+                UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
                 if (ownerUUID == null) {
                     robit.setOwnerUUID(player.getUUID());
                     //If the robit doesn't already have an owner, make sure we portray this
@@ -96,7 +94,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
                 }
                 robit.setSustainedInventory(getSustainedInventory(stack));
                 robit.setCustomName(getRobitName(stack));
-                ISecurityObject securityObject = Capabilities.SECURITY_OBJECT.getCapability(stack);
+                ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(stack);
                 //TODO - 1.20.2: Validate this but I don't think we need to set it as public when we can't get the cap
                 if (securityObject != null) {
                     robit.setSecurityMode(securityObject.getSecurityMode());

@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.common.Mekanism;
+import mekanism.common.block.BlockBounding;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityUpdateable;
@@ -199,6 +200,13 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
                 }
             }
             return null;
+        }, MekanismBlocks.BOUNDING_BLOCK.getBlock());
+    }
+
+    public static <CAP, CONTEXT> void alwaysProxyCapability(RegisterCapabilitiesEvent event, BlockCapability<CAP, CONTEXT> capability) {
+        event.registerBlock(capability, (level, pos, state, blockEntity, context) -> {
+            BlockPos mainPos = BlockBounding.getMainBlockPos(level, pos);
+            return mainPos == null ? null : WorldUtils.getCapability(level, capability, mainPos, context);
         }, MekanismBlocks.BOUNDING_BLOCK.getBlock());
     }
 }

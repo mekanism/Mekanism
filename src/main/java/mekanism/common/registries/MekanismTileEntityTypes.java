@@ -281,7 +281,9 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityRotaryCondensentrator> ROTARY_CONDENSENTRATOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.ROTARY_CONDENSENTRATOR, TileEntityRotaryCondensentrator::new)
           .withSimple(Capabilities.CONFIG_CARD)
           .build();
-    public static final TileEntityTypeRegistryObject<TileEntitySecurityDesk> SECURITY_DESK = TILE_ENTITY_TYPES.register(MekanismBlocks.SECURITY_DESK, TileEntitySecurityDesk::new);
+    //Note: The security desk intentionally exposes no capabilities
+    public static final TileEntityTypeRegistryObject<TileEntitySecurityDesk> SECURITY_DESK = TILE_ENTITY_TYPES.caplessMekBuilder(MekanismBlocks.SECURITY_DESK, TileEntitySecurityDesk::new)
+          .build();
     public static final TileEntityTypeRegistryObject<TileEntitySeismicVibrator> SEISMIC_VIBRATOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.SEISMIC_VIBRATOR, TileEntitySeismicVibrator::new)
           .withSimple(Capabilities.CONFIG_CARD)
           .build();

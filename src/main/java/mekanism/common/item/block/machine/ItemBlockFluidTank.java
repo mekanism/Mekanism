@@ -8,7 +8,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
@@ -17,11 +17,11 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockFluidTank;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler;
 import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
-import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
@@ -122,9 +122,9 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
     public InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (getBucketMode(stack)) {
-            if (SecurityUtils.get().tryClaimItem(world, player, stack)) {
+            if (ItemSecurityUtils.get().tryClaimItem(world, player, stack)) {
                 return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
-            } else if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, stack)) {
+            } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, stack)) {
                 return InteractionResultHolder.fail(stack);
             }
             //TODO: At some point maybe try to reduce the duplicate code between this and the dispense behavior

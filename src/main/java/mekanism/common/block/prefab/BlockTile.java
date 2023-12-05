@@ -2,7 +2,7 @@ package mekanism.common.block.prefab;
 
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeParticleFX;
@@ -74,7 +74,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
         } else if (tile != null) {
             level = tile.getLevel();
         }
-        if (level == null || ISecurityUtils.INSTANCE.canAccess(player, level, pos, tile)) {
+        if (level == null || IBlockSecurityUtils.INSTANCE.canAccess(player, level, pos, tile)) {
             return super.getDestroyProgress(state, player, world, pos, tile);
         }
         return 0.0F;
