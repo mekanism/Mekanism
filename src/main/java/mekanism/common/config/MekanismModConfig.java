@@ -26,7 +26,7 @@ public class MekanismModConfig extends ModConfig {
         this.mekanismConfig = config;
     }
 
-    @Override
+    //@Override//TODO - 1.20.3: Uncomment annotation when https://github.com/neoforged/FancyModLoader/pull/46 is merged
     public ConfigFileTypeHandler getHandler() {
         return MEK_TOML;
     }

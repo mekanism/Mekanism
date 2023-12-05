@@ -303,11 +303,11 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerOverlays(RegisterGuiOverlaysEvent event) {
         //Note: We don't need to include our modid in the id as the active context is grabbed for making an RL inside the event
-        event.registerBelowAll("radiation_overlay", RadiationOverlay.INSTANCE);
-        event.registerAbove(VanillaGuiOverlay.ARMOR_LEVEL.id(), "energy_level", MekaSuitEnergyLevel.INSTANCE);
+        event.registerBelowAll(Mekanism.rl("radiation_overlay"), RadiationOverlay.INSTANCE);
+        event.registerAbove(VanillaGuiOverlay.ARMOR_LEVEL.id(), Mekanism.rl("energy_level"), MekaSuitEnergyLevel.INSTANCE);
         //Render status overlay after item name rather than action bar (record_overlay) so that things like the sleep fade will render in front of our overlay
-        event.registerAbove(VanillaGuiOverlay.ITEM_NAME.id(), "status_overlay", MekanismStatusOverlay.INSTANCE);
-        event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "hud", MekanismHUD.INSTANCE);
+        event.registerAbove(VanillaGuiOverlay.ITEM_NAME.id(), Mekanism.rl("status_overlay"), MekanismStatusOverlay.INSTANCE);
+        event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), Mekanism.rl("hud"), MekanismHUD.INSTANCE);
     }
 
     @SubscribeEvent
@@ -464,9 +464,9 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerModelLoaders(RegisterGeometryLoaders event) {
-        event.register("robit", RobitModel.Loader.INSTANCE);
-        event.register("energy_cube", EnergyCubeModelLoader.INSTANCE);
-        event.register("transmitter", TransmitterLoader.INSTANCE);
+        event.register(Mekanism.rl("robit"), RobitModel.Loader.INSTANCE);
+        event.register(Mekanism.rl("energy_cube"), EnergyCubeModelLoader.INSTANCE);
+        event.register(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
     }
 
     @SubscribeEvent
