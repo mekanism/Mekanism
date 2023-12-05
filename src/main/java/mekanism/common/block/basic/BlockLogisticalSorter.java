@@ -70,7 +70,7 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
         //TODO: Make this be moved into the logistical sorter tile
         ItemStack stack = player.getItemInHand(hand);
         if (MekanismUtils.canUseAsWrench(stack)) {
-            if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
+            if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                 return InteractionResult.FAIL;
             }
             if (player.isShiftKeyDown()) {

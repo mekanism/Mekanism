@@ -1,12 +1,16 @@
 package mekanism.client.gui.element.tab;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
+import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
+import mekanism.client.gui.element.tab.GuiSecurityTab.SecurityInfoProvider;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -25,12 +29,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable Object>> {
+public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
 
     private static final ResourceLocation PUBLIC = MekanismUtils.getResource(ResourceType.GUI, "public.png");
     private static final ResourceLocation PRIVATE = MekanismUtils.getResource(ResourceType.GUI, "private.png");
@@ -39,19 +44,27 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable Object>> 
     @Nullable
     private final InteractionHand currentHand;
 
-    public GuiSecurityTab(IGuiWrapper gui, Object provider) {
-        this(gui, provider, 34);
+    public GuiSecurityTab(IGuiWrapper gui, BlockEntity tile) {
+        this(gui, tile, 34);
     }
 
-    public GuiSecurityTab(IGuiWrapper gui, Object provider, int y) {//TODO - 1.20.2: Do we want to validate object is either Entity or BlockEntity?
-        this(gui, () -> provider, y, null);
+    public GuiSecurityTab(IGuiWrapper gui, BlockEntity tile, int y) {
+        this(gui, SecurityInfoProvider.create(tile), y, null);
+    }
+
+    public GuiSecurityTab(IGuiWrapper gui, Entity entity, int y) {
+        this(gui, SecurityInfoProvider.create(entity), y);
+    }
+
+    public GuiSecurityTab(IGuiWrapper gui, SecurityInfoProvider<?> provider, int y) {
+        this(gui, provider, y, null);
     }
 
     public GuiSecurityTab(IGuiWrapper gui, @NotNull InteractionHand hand) {
-        this(gui, () -> minecraft.player.getItemInHand(hand), 34, hand);
+        this(gui, SecurityInfoProvider.create(() -> minecraft.player.getItemInHand(hand)), 34, hand);
     }
 
-    private GuiSecurityTab(IGuiWrapper gui, Supplier<Object> provider, int y, @Nullable InteractionHand hand) {
+    private GuiSecurityTab(IGuiWrapper gui, SecurityInfoProvider<?> provider, int y, @Nullable InteractionHand hand) {
         super(PUBLIC, gui, provider, gui.getWidth(), y, 26, 18, false);
         this.currentHand = hand;
     }
@@ -63,7 +76,7 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable Object>> 
 
     @Override
     protected ResourceLocation getOverlay() {
-        return switch (ISecurityUtils.INSTANCE.getSecurityMode(dataSource.get(), true)) {
+        return switch (dataSource.securityMode()) {
             case PUBLIC -> super.getOverlay();
             case PRIVATE -> PRIVATE;
             case TRUSTED -> PROTECTED;
@@ -73,7 +86,7 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable Object>> 
     @Override
     public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderToolTip(guiGraphics, mouseX, mouseY);
-        ISecurityObject security = Capabilities.SECURITY_OBJECT.getCapability(dataSource.get());
+        ISecurityObject security = dataSource.securityObject();
         if (security != null) {
             SecurityData data = SecurityUtils.get().getFinalData(security, true);
             Component securityComponent = MekanismLang.SECURITY.translateColored(EnumColor.GRAY, data.mode());
@@ -88,9 +101,10 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable Object>> 
 
     @Override
     public void onClick(double mouseX, double mouseY, int button) {
-        Object provider = dataSource.get();
-        ISecurityObject security = Capabilities.SECURITY_OBJECT.getCapability(provider);
+        ISecurityObject security = dataSource.securityObject();
         if (security != null && security.ownerMatches(minecraft.player)) {
+            //TODO - 1.20.2: Can we reduce the duplicate call that happens in dataSource#securityObject?
+            Object provider = dataSource.objectSupplier.get();
             if (currentHand != null) {
                 Mekanism.packetHandler().sendToServer(new PacketSecurityMode(currentHand, button == GLFW.GLFW_MOUSE_BUTTON_LEFT));
             } else if (provider instanceof BlockEntity tile) {
@@ -106,5 +120,35 @@ public class GuiSecurityTab extends GuiInsetElement<Supplier<@Nullable Object>> 
     @Override
     public boolean isValidClickButton(int button) {
         return button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+    }
+
+    public record SecurityInfoProvider<OBJECT>(Supplier<OBJECT> objectSupplier, Function<OBJECT, @Nullable ISecurityObject> securityProvider,
+                                               Function<OBJECT, @Nullable IOwnerObject> ownerProvider) {
+
+        public static SecurityInfoProvider<ItemStack> create(Supplier<ItemStack> stackSupplier) {
+            return new SecurityInfoProvider<>(stackSupplier, Capabilities.SECURITY_OBJECT::getCapability, Capabilities.OWNER_OBJECT::getCapability);
+        }
+
+        public static SecurityInfoProvider<Entity> create(Entity entity) {
+            return new SecurityInfoProvider<>(() -> entity, Capabilities.SECURITY_OBJECT::getCapability, Capabilities.OWNER_OBJECT::getCapability);
+        }
+
+        public static SecurityInfoProvider<BlockEntity> create(BlockEntity tile) {
+            return new SecurityInfoProvider<>(
+                  () -> tile,
+                  t -> Capabilities.SECURITY_OBJECT.getCapability(t, null),
+                  t -> Capabilities.OWNER_OBJECT.getCapability(t, null)
+            );
+        }
+
+        @Nullable
+        public ISecurityObject securityObject() {
+            return securityProvider.apply(objectSupplier.get());
+        }
+
+        SecurityMode securityMode() {
+            OBJECT object = objectSupplier.get();
+            return ISecurityUtils.INSTANCE.getSecurityMode(() -> securityProvider.apply(object), () -> ownerProvider.apply(object), true);
+        }
     }
 }

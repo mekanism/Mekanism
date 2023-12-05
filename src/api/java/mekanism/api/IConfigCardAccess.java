@@ -25,7 +25,7 @@ public interface IConfigCardAccess {
      * @apiNote The reason this exists rather than being gotten directly from the tile the capability is accessed from is for purposes of if a block is proxying a
      * capability such as Mekanism's bounding blocks.
      */
-    BlockEntityType<?> getConfigurationDataType();
+    BlockEntityType<?> getConfigurationDataType();//TODO - 1.20.2: Expand to support non block entities?
 
     /**
      * Checks if this config card access can handle the configuration data from another type of tile. This is used in Mekanism for things like allowing factories to

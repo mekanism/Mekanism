@@ -55,7 +55,7 @@ public class Capabilities {//TODO - 1.20.2: Figure out which of these types actu
 
     public static ICapabilityProvider<?, ?, ?> SIMPLE_PROVIDER = (obj, context) -> obj;
 
-    //TODO - 1.20.2: Do we want to proxy NeoForge ones ones? I think so, at least for energy it seems useful
+    //TODO - 1.20.2: Do we want to somehow proxy the fluid ones? Would be more difficult given the different types
     public static final MultiTypeCapability<IEnergyStorage> ENERGY = new MultiTypeCapability<>(EnergyStorage.BLOCK, EnergyStorage.ITEM, EnergyStorage.ENTITY);
     //Note: We intentionally don't use the entity automation capability, as we want to be able to target player inventories and the like
     public static final MultiTypeCapability<IItemHandler> ITEM = new MultiTypeCapability<>(ItemHandler.BLOCK, ItemHandler.ITEM, ItemHandler.ENTITY);
@@ -137,20 +137,6 @@ public class Capabilities {//TODO - 1.20.2: Figure out which of these types actu
 
         public boolean is(BlockCapability<?, ?> capability) {
             return capability == block();
-        }
-
-        @Nullable
-        public HANDLER getCapability(@Nullable Object object) {
-            if (object == null) {
-                return null;
-            } else if (object instanceof ItemStack stack) {
-                return getCapability(stack);
-            } else if (object instanceof Entity e) {
-                return getCapability(e);
-            } else if (object instanceof BlockEntity tile) {
-                return getCapability(tile, null);
-            }
-            return null;
         }
 
         @Nullable

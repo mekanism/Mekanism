@@ -29,7 +29,6 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -58,9 +57,7 @@ public class ItemConfigurationCard extends Item {
         Direction side = context.getClickedFace();
         IConfigCardAccess configCardAccess = WorldUtils.getCapability(world, Capabilities.CONFIG_CARD, pos, side);
         if (configCardAccess != null) {
-            //TODO - 1.20.2: Replace with supporting non block entities as wel
-            BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-            if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
+            if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, null)) {
                 return InteractionResult.FAIL;
             }
             ItemStack stack = context.getItemInHand();

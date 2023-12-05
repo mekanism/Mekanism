@@ -1,5 +1,6 @@
 package mekanism.common.network.to_server;
 
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.network.FriendlyByteBuf;
@@ -24,9 +25,9 @@ public class PacketSecurityMode implements IMekanismPacket {
         if (player != null) {
             ItemStack stack = player.getItemInHand(currentHand);
             if (increment) {
-                SecurityUtils.get().incrementSecurityMode(player, stack);
+                SecurityUtils.get().incrementSecurityMode(player, Capabilities.SECURITY_OBJECT.getCapability(stack));
             } else {
-                SecurityUtils.get().decrementSecurityMode(player, stack);
+                SecurityUtils.get().decrementSecurityMode(player, Capabilities.SECURITY_OBJECT.getCapability(stack));
             }
         }
     }

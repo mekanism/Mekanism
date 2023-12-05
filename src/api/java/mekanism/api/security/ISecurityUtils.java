@@ -3,10 +3,16 @@ package mekanism.api.security;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,8 +48,26 @@ public interface ISecurityUtils {
      * @see #canAccessObject(UUID, ISecurityObject, boolean)
      * @see #canAccessOrDisplayError(Player, Object)
      */
-    @Contract("_, null -> true")//TODO - 1.20.2: List in docs the valid "types" for the provider
-    boolean canAccess(Player player, @Nullable Object provider);
+    boolean canAccess(Player player, Supplier<@Nullable ISecurityObject> securityProvider, Supplier<@Nullable IOwnerObject> ownerProvider);
+
+    @Contract("_, null, _, _ -> true")
+    default <OBJECT> boolean canAccess(Player player, @Nullable OBJECT provider, Function<OBJECT, @Nullable ISecurityObject> securityProvider,
+          Function<OBJECT, @Nullable IOwnerObject> ownerProvider) {
+        if (provider == null) {
+            return true;
+        }
+        return canAccess(player, () -> securityProvider.apply(provider), () -> ownerProvider.apply(provider));
+    }
+
+    @Contract("_, null -> true")
+    boolean canAccess(Player player, @Nullable Entity provider);
+
+    //TODO - 1.20.2: List in docs the valid "types" for the provider
+    boolean canAccess(Player player, ItemStack provider);
+
+    boolean canAccess(Player player, Level level, BlockPos pos, @Nullable BlockEntity tile);
+
+    boolean canAccess(@Nullable UUID player, Level level, BlockPos pos, @Nullable BlockEntity tile);
 
     /**
      * Checks if a player can access the given security object; validating that protection is enabled in the config. Additionally, this method also checks to see if
@@ -80,8 +104,17 @@ public interface ISecurityUtils {
      * @see #canAccessObject(UUID, ISecurityObject, boolean)
      * @see #canAccessOrDisplayError(Player, Object)
      */
-    @Contract("_, null, _ -> true")//TODO - 1.20.2: List in docs the valid "types" for the provider
-    boolean canAccess(@Nullable UUID player, @Nullable Object provider, boolean isClient);
+    boolean canAccess(@Nullable UUID player, ItemStack provider, boolean isClient);//TODO: helpers for other types?
+
+    boolean canAccess(@Nullable UUID player, Supplier<@Nullable ISecurityObject> securityProvider, Supplier<@Nullable IOwnerObject> ownerProvider, boolean isClient);
+
+    default <OBJECT> boolean canAccess(@Nullable UUID player, @Nullable OBJECT provider, Function<OBJECT, @Nullable ISecurityObject> securityProvider,
+          Function<OBJECT, @Nullable IOwnerObject> ownerProvider, boolean isClient) {
+        if (provider == null) {
+            return true;
+        }
+        return canAccess(player, () -> securityProvider.apply(provider), () -> ownerProvider.apply(provider), isClient);
+    }
 
     /**
      * Checks if a player can access the given security object; validating that protection is enabled in the config.
@@ -117,18 +150,14 @@ public interface ISecurityUtils {
     boolean moreRestrictive(SecurityMode base, SecurityMode overridden);
 
     /**
-     * Gets the owner of the given provider or {@code null} if there is no owner or the provider doesn't expose an {@link IOwnerObject}.
+     * Gets the owner of the given stack or {@code null} if there is no owner or the stack doesn't expose an {@link IOwnerObject}.
      *
-     * @param provider Capability provider.
+     * @param stack Capability provider.
      *
      * @return UUID of the provider or {@code null} if there is no owner.
      *
      * @see IOwnerObject#getOwnerUUID()
      */
-    @Nullable
-    UUID getOwnerUUID(Object provider);
-
-    //TODO - 1.20.2: Docs, and maybe remove the other method all together?
     @Nullable
     UUID getOwnerUUID(ItemStack stack);
 
@@ -149,7 +178,9 @@ public interface ISecurityUtils {
      * @implNote If the provider is {@code null} or doesn't expose a {@link ISecurityObject security object}, then
      * @see #getEffectiveSecurityMode(ISecurityObject, boolean)
      */
-    SecurityMode getSecurityMode(@Nullable Object provider, boolean isClient);
+    SecurityMode getSecurityMode(Supplier<@Nullable ISecurityObject> securityProvider, Supplier<@Nullable IOwnerObject> ownerProvider, boolean isClient);
+
+    SecurityMode getSecurityMode(Level level, BlockPos pos, @Nullable BlockEntity tile);
 
     /**
      * Gets the "effective" security mode for a given object. This is <em>different</em> from just querying {@link ISecurityObject#getSecurityMode()} as this method takes
@@ -178,8 +209,20 @@ public interface ISecurityUtils {
      * @see #canAccess(Player, Object)
      */
     @Contract("_, null -> true")
-    default boolean canAccessOrDisplayError(Player player, @Nullable Object provider) {
-        if (canAccess(player, provider)) {
+    default boolean canAccessOrDisplayError(Player player, @Nullable Entity provider) {
+        return canAccessOrDisplayError(player, canAccess(player, provider));
+    }
+
+    default boolean canAccessOrDisplayError(Player player, ItemStack provider) {
+        return canAccessOrDisplayError(player, canAccess(player, provider));
+    }
+
+    default boolean canAccessOrDisplayError(Player player, Level level, BlockPos pos, @Nullable BlockEntity tile) {
+        return canAccessOrDisplayError(player, canAccess(player, level, pos, tile));
+    }
+
+    private boolean canAccessOrDisplayError(Player player, boolean canAccess) {
+        if (canAccess) {
             return true;
         } else if (!player.level().isClientSide) {
             //Display no access from server side

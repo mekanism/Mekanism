@@ -38,6 +38,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         //Even though there are inventory slots make this return none as accessible by automation, as then people could lock items to other
         // people unintentionally. We also disable the security object capability so that we only provide access to the security desk as an
         // "owner object" which means that all access checks will be handled as requiring the owner
+        //TODO: Figure out and fix disabled caps as we don't have security added view the resolvers here?
         addDisabledCapabilities(Capabilities.ITEM.block(), Capabilities.SECURITY_OBJECT.block());
     }
 

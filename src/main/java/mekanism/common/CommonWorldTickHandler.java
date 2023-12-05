@@ -30,8 +30,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.TickEvent.LevelTickEvent;
 import net.neoforged.neoforge.event.TickEvent.Phase;
 import net.neoforged.neoforge.event.TickEvent.ServerTickEvent;
@@ -40,8 +41,6 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ChunkDataEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class CommonWorldTickHandler {
@@ -105,10 +104,10 @@ public class CommonWorldTickHandler {
         BlockState state = event.getState();
         //Skip empty block, shouldn't be a null state but the BreakEvent still handles that as the empty block,
         // so we need to skip handling it that way, AND skip and blocks that can never have a block entity
-        if (state != null && !state.isAir() && state.hasBlockEntity()) {
+        if (state != null && !state.isAir() && event.getLevel() instanceof Level level && state.hasBlockEntity()) {
+            //TODO - 1.20.2: Decide if we still want to check for BEs as addons may want to add security to non BE related blocks?
             //If the block might have a block entity, look it up from the world and see if the player has access to destroy it
-            BlockEntity blockEntity = WorldUtils.getTileEntity(event.getLevel(), event.getPos());
-            if (!ISecurityUtils.INSTANCE.canAccess(event.getPlayer(), blockEntity)) {
+            if (!ISecurityUtils.INSTANCE.canAccess(event.getPlayer(), level, event.getPos(), null)) {
                 //If they don't because it is something that is locked, then cancel the event
                 event.setCanceled(true);
             }

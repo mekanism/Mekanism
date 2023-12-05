@@ -12,6 +12,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +40,11 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
 
     @Override
     public boolean canPlayerAccess(@NotNull Player player) {
-        return ISecurityUtils.INSTANCE.canAccess(player, tile);
+        Level level = tile.getLevel();
+        if (level == null) {
+            return false;
+        }
+        return ISecurityUtils.INSTANCE.canAccess(player, level, tile.getBlockPos(), tile);
     }
 
     @Override

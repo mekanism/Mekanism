@@ -104,7 +104,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
                         if (!player.isShiftKeyDown()) {
                             player.displayClientMessage(MekanismLang.CONFIGURATOR_VIEW_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(),
                                   dataType, dataType.getColor().getColoredName()), true);
-                        } else if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
+                        } else if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                             return InteractionResult.FAIL;
                         } else {
                             if (!player.isCreative()) {
@@ -126,7 +126,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
                     }
                     return InteractionResult.SUCCESS;
                 }
-                if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
+                if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                     return InteractionResult.FAIL;
                 }
                 IConfigurable config = WorldUtils.getCapability(world, Capabilities.CONFIGURABLE, pos, null, tile, side);
@@ -138,7 +138,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
                 }
             } else if (mode == ConfiguratorMode.EMPTY) { //Empty
                 if (tile instanceof IMekanismInventory inv && inv.hasInventory()) {
-                    if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
+                    if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                         return InteractionResult.FAIL;
                     }
                     boolean creative = player.isCreative();
@@ -175,7 +175,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialEnumModeIt
                 if (tile instanceof TileEntityMekanism tileMekanism) {
                     if (!tileMekanism.isDirectional()) {
                         return InteractionResult.PASS;
-                    } else if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
+                    } else if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                         return InteractionResult.FAIL;
                     } else if (Attribute.matches(tileMekanism.getBlockType(), AttributeStateFacing.class, AttributeStateFacing::canRotate)) {
                         if (!player.isShiftKeyDown()) {

@@ -491,7 +491,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public WrenchResult tryWrench(BlockState state, Player player, InteractionHand hand, BlockHitResult rayTrace) {
         ItemStack stack = player.getItemInHand(hand);
         if (MekanismUtils.canUseAsWrench(stack)) {
-            if (hasSecurity() && !ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, this)) {
+            //Note: We should always
+            if (hasSecurity() && !ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, getWorldNN(), worldPosition, this)) {
                 return WrenchResult.NO_SECURITY;
             }
             if (player.isShiftKeyDown()) {
@@ -510,7 +511,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public InteractionResult openGui(Player player) {
         //Everything that calls this has isRemote being false but add the check just in case anyway
         if (hasGui() && !isRemote() && !player.isShiftKeyDown()) {
-            if (hasSecurity() && !ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, this)) {
+            if (hasSecurity() && (level == null || !ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, level, worldPosition, this))) {
                 return InteractionResult.FAIL;
             }
             //Pass on this activation if the player is rotating with a configurator
@@ -1183,8 +1184,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     public void onSecurityChanged(@NotNull SecurityMode old, @NotNull SecurityMode mode) {
-        if (!isRemote() && hasGui()) {
-            SecurityUtils.get().securityChanged(playersUsing, this, old, mode);
+        if (!isRemote() && hasGui() && level != null) {
+            SecurityUtils.get().securityChanged(playersUsing, level, worldPosition, this, old, mode);
         }
     }
     //End methods ITileSecurity
@@ -1283,7 +1284,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     public void validateSecurityIsPublic() throws ComputerException {
-        if (hasSecurity() && ISecurityUtils.INSTANCE.getSecurityMode(this, isRemote()) != SecurityMode.PUBLIC) {
+        if (hasSecurity() && ISecurityUtils.INSTANCE.getSecurityMode(getWorldNN(), worldPosition, this) != SecurityMode.PUBLIC) {
             throw new ComputerException("Setter not available due to machine security not being public.");
         }
     }

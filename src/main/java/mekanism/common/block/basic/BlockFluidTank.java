@@ -58,7 +58,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
         }
         //Handle filling fluid tank
         if (!player.isShiftKeyDown()) {
-            if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
+            if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                 return InteractionResult.FAIL;
             }
             ItemStack stack = player.getItemInHand(hand);

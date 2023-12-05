@@ -49,7 +49,7 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> implements IMekanismP
         }
         if (updateType.isTile()) {
             BlockEntity tile = WorldUtils.getTileEntity(player.level(), tilePosition);
-            if (tile instanceof IFrequencyHandler frequencyHandler && ISecurityUtils.INSTANCE.canAccess(player, tile)) {
+            if (tile instanceof IFrequencyHandler frequencyHandler && ISecurityUtils.INSTANCE.canAccess(player, player.level(), tilePosition, tile)) {
                 if (updateType == FrequencyUpdate.SET_TILE) {
                     frequencyHandler.setFrequency(type, data, player.getUUID());
                 } else if (updateType == FrequencyUpdate.REMOVE_TILE) {

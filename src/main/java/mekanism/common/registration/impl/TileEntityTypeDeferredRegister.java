@@ -42,6 +42,7 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
     }
 
     public <BE extends TileEntityMekanism> BlockEntityTypeBuilder<BE> mekBuilder(BlockRegistryObject<?, ?> block, BlockEntitySupplier<? extends BE> factory) {
+        //TODO: Fix this check for the security desk
         BooleanSupplier hasSecurity = () -> Attribute.has(block.getBlock(), AttributeSecurity.class);
         BlockEntityTypeBuilder<BE> builder = new BlockEntityTypeBuilder<BE>(block, factory)
               .clientTicker(TileEntityMekanism::tickClient)

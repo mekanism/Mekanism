@@ -68,7 +68,16 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     @Override
     protected float getDestroyProgress(@NotNull BlockState state, @NotNull Player player, @NotNull BlockGetter world, @NotNull BlockPos pos,
           @Nullable BlockEntity tile) {
-        return ISecurityUtils.INSTANCE.canAccess(player, tile) ? super.getDestroyProgress(state, player, world, pos, tile) : 0.0F;
+        Level level = null;
+        if (world instanceof Level) {
+            level = (Level) world;
+        } else if (tile != null) {
+            level = tile.getLevel();
+        }
+        if (level == null || ISecurityUtils.INSTANCE.canAccess(player, level, pos, tile)) {
+            return super.getDestroyProgress(state, player, world, pos, tile);
+        }
+        return 0.0F;
     }
 
     @Override
