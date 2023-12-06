@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author AidanBrady
  */
-public interface IBoundingBlock extends IComparatorSupport, IOffsetCapability, IUpgradeTile {//TODO - 1.20.2: Figure this out
+public interface IBoundingBlock extends IComparatorSupport, IOffsetCapability, IUpgradeTile {
 
     default void onBoundingBlockPowerChange(BlockPos boundingPos, int oldLevel, int newLevel) {
     }
@@ -30,7 +30,8 @@ public interface IBoundingBlock extends IComparatorSupport, IOffsetCapability, I
 
     @Override
     default boolean isOffsetCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, Direction side, @NotNull Vec3i offset) {
-        //By default, only allow proxying specific capabilities
+        //By default, don't allow proxying any capabilities and instead require this to be overridden
+        // Some will always be proxied such as owner and security caps bypassing this entirely
         return true;
     }
 
@@ -38,9 +39,6 @@ public interface IBoundingBlock extends IComparatorSupport, IOffsetCapability, I
     @Override
     default <T> T getOffsetCapabilityIfEnabled(@NotNull BlockCapability<T, @Nullable Direction> capability, Direction side, @NotNull Vec3i offset) {
         //And have it get the capability as if it was not offset
-        if (this instanceof BlockEntity be) {//TODO: Implement this better
-            return WorldUtils.getCapability(be.getLevel(), capability, be.getBlockPos(), null, be, side);
-        }
-        return null;
+        return this instanceof BlockEntity be ? WorldUtils.getCapability(be.getLevel(), capability, be.getBlockPos(), null, be, side) : null;
     }
 }

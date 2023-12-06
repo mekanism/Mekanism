@@ -18,6 +18,7 @@ import mekanism.api.radiation.capability.IRadiationShielding;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.IEntitySecurityUtils;
 import mekanism.common.Mekanism;
+import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.lib.radiation.capability.RadiationEntity;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.tile.TileEntityBoundingBlock;
@@ -117,10 +118,17 @@ public class Capabilities {//TODO - 1.20.2: Figure out which of these types actu
         TileEntityBoundingBlock.alwaysProxyCapability(event, IBlockSecurityUtils.INSTANCE.ownerCapability());
         TileEntityBoundingBlock.alwaysProxyCapability(event, IBlockSecurityUtils.INSTANCE.securityCapability());
         //Capabilities we need to proxy because some sub implementations use them
-        //TODO: Figure out what other caps exist and are fine
         TileEntityBoundingBlock.proxyCapability(event, ITEM.block());
-        //TODO: Energy caps
-
+        for (BlockCapability<?, @Nullable Direction> capability : EnergyCompatUtils.getLoadedEnergyCapabilities()) {
+            TileEntityBoundingBlock.proxyCapability(event, capability);
+        }
+        //Note: Common caps we may eventually want to proxy but currently have no use for doing so
+        /*TileEntityBoundingBlock.proxyCapability(event, FluidHandler.BLOCK);
+        TileEntityBoundingBlock.proxyCapability(event, GAS_HANDLER.block());
+        TileEntityBoundingBlock.proxyCapability(event, INFUSION_HANDLER.block());
+        TileEntityBoundingBlock.proxyCapability(event, PIGMENT_HANDLER.block());
+        TileEntityBoundingBlock.proxyCapability(event, SLURRY_HANDLER.block());
+        TileEntityBoundingBlock.proxyCapability(event, HEAT_HANDLER.block());*/
     }
 
     public record MultiTypeCapability<HANDLER>(BlockCapability<HANDLER, @Nullable Direction> block,

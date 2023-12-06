@@ -50,13 +50,12 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
     }
 
     public <BE extends TileEntityMekanism> BlockEntityTypeBuilder<BE> mekBuilder(BlockRegistryObject<?, ?> block, BlockEntitySupplier<? extends BE> factory) {
-        //TODO: Fix this check for the security desk
         BooleanSupplier hasSecurity = () -> Attribute.has(block.getBlock(), AttributeSecurity.class);
         BlockEntityTypeBuilder<BE> builder = this.<BE>caplessMekBuilder(block, factory)
               //Delay the attachment of these and only attach them if we know they should be exposed rather than filtering in the provider itself
               .withSimple(IBlockSecurityUtils.INSTANCE.ownerCapability(), hasSecurity)
               .withSimple(IBlockSecurityUtils.INSTANCE.securityCapability(), hasSecurity);
-        //TODO: Evaluate if there is a better way to do this
+        //TODO: Evaluate if there is a better way to do this (and if we can avoid attaching the providers for ones that never have the corresponding cap? probably not easily)
         builder.with(Capabilities.GAS_HANDLER.block(), CapabilityTileEntity.GAS_HANDLER_PROVIDER);
         builder.with(Capabilities.INFUSION_HANDLER.block(), CapabilityTileEntity.INFUSION_HANDLER_PROVIDER);
         builder.with(Capabilities.PIGMENT_HANDLER.block(), CapabilityTileEntity.PIGMENT_HANDLER_PROVIDER);

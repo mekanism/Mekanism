@@ -105,16 +105,17 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
     public void onClick(double mouseX, double mouseY, int button) {
         ISecurityObject security = dataSource.securityObject();
         if (security != null && security.ownerMatches(minecraft.player)) {
-            //TODO - 1.20.2: Can we reduce the duplicate call that happens in dataSource#securityObject?
-            Object provider = dataSource.objectSupplier.get();
             if (currentHand != null) {
                 Mekanism.packetHandler().sendToServer(new PacketSecurityMode(currentHand, button == GLFW.GLFW_MOUSE_BUTTON_LEFT));
-            } else if (provider instanceof BlockEntity tile) {
-                Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteraction.NEXT_SECURITY_MODE
-                                                                                                                  : GuiInteraction.PREVIOUS_SECURITY_MODE, tile));
-            } else if (provider instanceof Entity entity) {
-                Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteractionEntity.NEXT_SECURITY_MODE
-                                                                                                                  : GuiInteractionEntity.PREVIOUS_SECURITY_MODE, entity));
+            } else {
+                Object provider = dataSource.objectSupplier.get();
+                if (provider instanceof BlockEntity tile) {
+                    Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteraction.NEXT_SECURITY_MODE
+                                                                                                                      : GuiInteraction.PREVIOUS_SECURITY_MODE, tile));
+                } else if (provider instanceof Entity entity) {
+                    Mekanism.packetHandler().sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteractionEntity.NEXT_SECURITY_MODE
+                                                                                                                      : GuiInteractionEntity.PREVIOUS_SECURITY_MODE, entity));
+                }
             }
         }
     }
