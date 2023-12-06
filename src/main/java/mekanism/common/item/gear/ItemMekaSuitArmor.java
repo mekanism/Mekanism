@@ -264,19 +264,15 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             return RateLimitEnergyHandler.create(stack, () -> getChargeRate(stack), () -> getMaxEnergy(stack), BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue);
         });
         event.registerItem(Capabilities.RADIATION_SHIELDING, (stack, ctx) -> {
-            if (!MekanismConfig.gear.isLoaded()) {
+            if (!MekanismConfig.gear.isLoaded() || !isModuleEnabled(stack, MekanismModules.RADIATION_SHIELDING_UNIT)) {
                 return null;
             }
-            //TODO: Should the module check just make it return null if not present?
-            return RadiationShieldingHandler.create(() -> isModuleEnabled(stack, MekanismModules.RADIATION_SHIELDING_UNIT) ?
-                                                          ItemHazmatSuitArmor.getShieldingByArmor(getType()) : 0);
+            return RadiationShieldingHandler.create(ItemHazmatSuitArmor.getShieldingByArmor(getType()));
         }, this);
 
         event.registerItem(Capabilities.LASER_DISSIPATION, (stack, ctx) -> {
-            //TODO: Do we want to note that the gear check is not needed for this?
-            //TODO: Should the module check just make it return null if not present?
-            return LaserDissipationHandler.create(stack, item -> isModuleEnabled(item, MekanismModules.LASER_DISSIPATION_UNIT) ? laserDissipation : 0,
-                  item -> isModuleEnabled(item, MekanismModules.LASER_DISSIPATION_UNIT) ? laserRefraction : 0);
+            //Note: This doesn't rely on configs, so we can skip the gear loaded check
+            return isModuleEnabled(stack, MekanismModules.LASER_DISSIPATION_UNIT) ? LaserDissipationHandler.create(laserDissipation, laserRefraction) : null;
         }, this);
 
         if (!gasTankSpecs.isEmpty()) {
