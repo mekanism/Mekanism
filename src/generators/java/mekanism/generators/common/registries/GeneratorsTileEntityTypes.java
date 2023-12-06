@@ -1,6 +1,7 @@
 package mekanism.generators.common.registries;
 
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.generators.common.MekanismGenerators;
@@ -28,6 +29,7 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
+import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 
 public class GeneratorsTileEntityTypes {
 
@@ -81,6 +83,9 @@ public class GeneratorsTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityFusionReactorController> FUSION_REACTOR_CONTROLLER = TILE_ENTITY_TYPES
           .mekBuilder(GeneratorsBlocks.FUSION_REACTOR_CONTROLLER, TileEntityFusionReactorController::new)
           .withSimple(Capabilities.CONFIGURABLE)
+          //Never allow the gas handler, fluid handler, or energy cap to be enabled here even though internally we can handle both of them
+          .without(Capabilities.GAS_HANDLER.block(), FluidHandler.BLOCK, Capabilities.HEAT_HANDLER.block())
+          .without(EnergyCompatUtils.getLoadedEnergyCapabilities())
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityFusionReactorBlock> FUSION_REACTOR_FRAME = TILE_ENTITY_TYPES
           .mekBuilder(GeneratorsBlocks.FUSION_REACTOR_FRAME, TileEntityFusionReactorBlock::new)

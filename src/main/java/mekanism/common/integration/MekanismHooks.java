@@ -79,11 +79,12 @@ public final class MekanismHooks {
         }
     }
 
-    //TODO - 1.20.2: Re-evaluate this, but given the caps event fires before common setup I think it may be needed?
     public void hookCapabilityRegistration() {
+        //Note: Caps get registered before common setup, so we need to make sure these values have been set
         ModList modList = ModList.get();
         FluxNetworksLoaded = modList.isLoaded(FLUX_NETWORKS_MOD_ID);
         WildfireGenderModLoaded = modList.isLoaded(WILDFIRE_GENDER_MOD_ID);
+        EnergyCompatUtils.initLoadedCache();
     }
 
     public void hookCommonSetup() {
@@ -102,7 +103,6 @@ public final class MekanismHooks {
                 CCCapabilityHelper.registerApis();
             }
         }
-        EnergyCompatUtils.initLoadedCache();
 
         //TODO - 1.20: Move this out of here and back to always being registered whenever it gets fixed in Neo.
         // Modifying the result doesn't apply properly when "quick crafting"

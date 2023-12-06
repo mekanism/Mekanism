@@ -56,7 +56,8 @@ public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyCo
 
     @Override
     public List<BlockCapability<?, @Nullable Direction>> getSupportedCapabilities() {
-        return EnergyCompatUtils.getEnabledEnergyCapabilities();
+        //Return all loaded energy caps so that we get attached and then just handle config checks in the actual lookup
+        return EnergyCompatUtils.getLoadedEnergyCapabilities();
     }
 
     /**

@@ -1,6 +1,7 @@
 package mekanism.common.registration.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import mekanism.api.functions.ConstantPredicates;
@@ -115,6 +116,20 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
         public <CAP, CONTEXT> BlockEntityTypeBuilder<BE> with(BlockCapability<CAP, CONTEXT> capability, ICapabilityProvider<? super BE, CONTEXT, CAP> provider,
               BooleanSupplier shouldApply) {
             registryObject.addCapability(capability, provider, shouldApply);
+            return this;
+        }
+
+        public BlockEntityTypeBuilder<BE> without(BlockCapability<?, ?>... capabilities) {
+            for (BlockCapability<?, ?> capability : capabilities) {
+                registryObject.removeCapability(capability);
+            }
+            return this;
+        }
+
+        public BlockEntityTypeBuilder<BE> without(Collection<? extends BlockCapability<?, ?>> capabilities) {
+            for (BlockCapability<?, ?> capability : capabilities) {
+                registryObject.removeCapability(capability);
+            }
             return this;
         }
 

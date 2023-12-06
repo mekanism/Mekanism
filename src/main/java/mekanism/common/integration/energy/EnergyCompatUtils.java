@@ -1,13 +1,8 @@
 package mekanism.common.integration.energy;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Supplier;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.config.listener.ConfigBasedCachedSupplier;
-import mekanism.common.config.value.CachedValue;
 import mekanism.common.integration.energy.fluxnetworks.FNEnergyCompat;
 import mekanism.common.integration.energy.forgeenergy.ForgeEnergyCompat;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister.BlockEntityTypeBuilder;
@@ -37,22 +32,14 @@ public class EnergyCompatUtils {
           new ForgeEnergyCompat()
     );
 
-    //Default the list of enabled caps to our own energy capability
-    private static Supplier<List<BlockCapability<?, @Nullable Direction>>> ENABLED_ENERGY_CAPS = () -> List.of(Capabilities.STRICT_ENERGY.block());
+    //Default the list of enabled caps to our own energy capability and Neo's
+    private static List<BlockCapability<?, @Nullable Direction>> LOADED_ENERGY_CAPS = List.of(Capabilities.STRICT_ENERGY.block(), Capabilities.ENERGY.block());
 
     /**
-     * @apiNote For internal uses, only call this after mods have loaded so that we can properly assume all {@link IEnergyCompat#isUsable()} checks only depend on config
-     * settings.
+     * @apiNote For internal uses, only call this after mods have loaded so that we can properly assume all {@link IEnergyCompat#capabilityExists()} are present.
      */
     public static void initLoadedCache() {
-        Set<CachedValue<?>> configs = new HashSet<>();
-        for (IEnergyCompat energyCompat : energyCompats) {
-            configs.addAll(energyCompat.getBackingConfigs());
-        }
-        ENABLED_ENERGY_CAPS = new ConfigBasedCachedSupplier<>(
-              () -> energyCompats.stream().filter(IEnergyCompat::isUsable).<BlockCapability<?, @Nullable Direction>>map(compat -> compat.getCapability().block()).toList(),
-              configs.toArray(new CachedValue[0])
-        );
+        LOADED_ENERGY_CAPS = energyCompats.stream().filter(IEnergyCompat::capabilityExists).<BlockCapability<?, @Nullable Direction>>map(compat -> compat.getCapability().block()).toList();
     }
 
     public static List<IEnergyCompat> getCompats() {
@@ -64,22 +51,17 @@ public class EnergyCompatUtils {
      */
     public static boolean isEnergyCapability(@NotNull BlockCapability<?, @Nullable Direction> capability) {
         for (IEnergyCompat energyCompat : energyCompats) {
-            if (energyCompat.capabilityExists()) {
-                //TODO - 1.20.2: TEST THIS
-                if (energyCompat.getCapability().block() == capability) {
-                    //TODO - 1.20.2: Should we check this before comparing instead of checking capability exists
-                    return energyCompat.isUsable();
-                }
+            //TODO - 1.20.2: TEST THIS
+            if (energyCompat.capabilityExists() && energyCompat.getCapability().block() == capability) {
+                //TODO - 1.20.2: Should we check this before comparing instead of checking capability exists
+                return energyCompat.isUsable();
             }
         }
         return false;
     }
 
-    /**
-     * Gets all enabled energy capability integrations.
-     */
-    public static List<BlockCapability<?, @Nullable Direction>> getEnabledEnergyCapabilities() {
-        return ENABLED_ENERGY_CAPS.get();
+    public static List<BlockCapability<?, @Nullable Direction>> getLoadedEnergyCapabilities() {
+        return LOADED_ENERGY_CAPS;
     }
 
     public static void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, ICapabilityProvider<ItemStack, Void, IStrictEnergyHandler> mekProvider) {
@@ -115,11 +97,8 @@ public class EnergyCompatUtils {
     @Nullable
     public static Object wrapStrictEnergyHandler(BlockCapability<?, @Nullable Direction> capability, IStrictEnergyHandler handler) {
         for (IEnergyCompat energyCompat : energyCompats) {
-            //TODO: Should this just be capabilityExists and then the check for enabled happens further up in the call stack to not provide it at all there
-            if (energyCompat.isUsable()) {
-                if (energyCompat.getCapability().block() == capability) {
-                    return energyCompat.wrapStrictEnergyHandler(handler);
-                }
+            if (energyCompat.isUsable() && energyCompat.getCapability().block() == capability) {
+                return energyCompat.wrapStrictEnergyHandler(handler);
             }
         }
         return null;

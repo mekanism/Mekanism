@@ -2,7 +2,6 @@ package mekanism.common.tile.multiblock;
 
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
@@ -21,8 +20,6 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
 
     public TileEntityDynamicTank(BlockPos pos, BlockState state) {
         this(MekanismBlocks.DYNAMIC_TANK, pos, state);
-        //Disable item handler caps if we are the dynamic tank, don't disable it for the subclassed valve though
-        addDisabledCapabilities(Capabilities.ITEM.block());
     }
 
     public TileEntityDynamicTank(IBlockProvider blockProvider, BlockPos pos, BlockState state) {

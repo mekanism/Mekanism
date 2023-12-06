@@ -56,6 +56,12 @@ public class TileEntityTypeRegistryObject<BE extends BlockEntity> extends Mekani
         capabilityProviders.add(new CapabilityData<>(capability, provider, shouldApply));
     }
 
+    void removeCapability(BlockCapability<?, ?> capability) {
+        if (capabilityProviders != null) {
+            capabilityProviders.removeIf(data -> data.capability() == capability);
+        }
+    }
+
     @Nullable
     public BlockEntityTicker<BE> getTicker(boolean isClient) {
         return isClient ? clientTicker : serverTicker;

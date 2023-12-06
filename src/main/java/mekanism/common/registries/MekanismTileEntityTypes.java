@@ -4,6 +4,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.basic.BlockBin;
@@ -189,10 +190,14 @@ public class MekanismTileEntityTypes {
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityDigitalMiner> DIGITAL_MINER = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.DIGITAL_MINER, TileEntityDigitalMiner::new)
           .withSimple(Capabilities.CONFIG_CARD)
+          //Item capabilities are handled only via offset capabilities
+          .without(Capabilities.ITEM.block())
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityDynamicTank> DYNAMIC_TANK = TILE_ENTITY_TYPES
           .mekBuilder(MekanismBlocks.DYNAMIC_TANK, TileEntityDynamicTank::new)
           .withSimple(Capabilities.CONFIGURABLE)
+          //Disable item handler caps if we are the dynamic tank (but not the valve)
+          .without(Capabilities.ITEM.block())
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityDynamicValve> DYNAMIC_VALVE = TILE_ENTITY_TYPES
           .mekBuilder(MekanismBlocks.DYNAMIC_VALVE, TileEntityDynamicValve::new)
@@ -224,6 +229,8 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityInductionCasing> INDUCTION_CASING = TILE_ENTITY_TYPES
           .mekBuilder(MekanismBlocks.INDUCTION_CASING, TileEntityInductionCasing::new)
           .withSimple(Capabilities.CONFIGURABLE)
+          //Disable item handler caps if we are the induction casing (but not the port)
+          .without(Capabilities.ITEM.block())
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityInductionPort> INDUCTION_PORT = TILE_ENTITY_TYPES
           .mekBuilder(MekanismBlocks.INDUCTION_PORT, TileEntityInductionPort::new)
@@ -281,8 +288,10 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityRotaryCondensentrator> ROTARY_CONDENSENTRATOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.ROTARY_CONDENSENTRATOR, TileEntityRotaryCondensentrator::new)
           .withSimple(Capabilities.CONFIG_CARD)
           .build();
-    //Note: The security desk intentionally exposes no capabilities
     public static final TileEntityTypeRegistryObject<TileEntitySecurityDesk> SECURITY_DESK = TILE_ENTITY_TYPES.caplessMekBuilder(MekanismBlocks.SECURITY_DESK, TileEntitySecurityDesk::new)
+          //Even though there are inventory slots make this return none as accessible by automation, as then people could lock items to other
+          // people unintentionally. We only provide access to the security desk as an "owner object" which means that all access checks will be handled as requiring the owner
+          .withSimple(IBlockSecurityUtils.INSTANCE.ownerCapability())
           .build();
     public static final TileEntityTypeRegistryObject<TileEntitySeismicVibrator> SEISMIC_VIBRATOR = TILE_ENTITY_TYPES.mekBuilder(MekanismBlocks.SEISMIC_VIBRATOR, TileEntitySeismicVibrator::new)
           .withSimple(Capabilities.CONFIG_CARD)
@@ -500,10 +509,19 @@ public class MekanismTileEntityTypes {
               .build();
     }
     //Induction Cells
-    public static final TileEntityTypeRegistryObject<TileEntityInductionCell> BASIC_INDUCTION_CELL = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_INDUCTION_CELL, (pos, state) -> new TileEntityInductionCell(MekanismBlocks.BASIC_INDUCTION_CELL, pos, state));
-    public static final TileEntityTypeRegistryObject<TileEntityInductionCell> ADVANCED_INDUCTION_CELL = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_INDUCTION_CELL, (pos, state) -> new TileEntityInductionCell(MekanismBlocks.ADVANCED_INDUCTION_CELL, pos, state));
-    public static final TileEntityTypeRegistryObject<TileEntityInductionCell> ELITE_INDUCTION_CELL = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_INDUCTION_CELL, (pos, state) -> new TileEntityInductionCell(MekanismBlocks.ELITE_INDUCTION_CELL, pos, state));
-    public static final TileEntityTypeRegistryObject<TileEntityInductionCell> ULTIMATE_INDUCTION_CELL = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_INDUCTION_CELL, (pos, state) -> new TileEntityInductionCell(MekanismBlocks.ULTIMATE_INDUCTION_CELL, pos, state));
+    //Note: We never externally expose the energy capability for induction cells
+    public static final TileEntityTypeRegistryObject<TileEntityInductionCell> BASIC_INDUCTION_CELL = TILE_ENTITY_TYPES.builder(MekanismBlocks.BASIC_INDUCTION_CELL, (pos, state) -> new TileEntityInductionCell(MekanismBlocks.BASIC_INDUCTION_CELL, pos, state))
+          .without(EnergyCompatUtils.getLoadedEnergyCapabilities())
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityInductionCell> ADVANCED_INDUCTION_CELL = TILE_ENTITY_TYPES.builder(MekanismBlocks.ADVANCED_INDUCTION_CELL, (pos, state) -> new TileEntityInductionCell(MekanismBlocks.ADVANCED_INDUCTION_CELL, pos, state))
+          .without(EnergyCompatUtils.getLoadedEnergyCapabilities())
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityInductionCell> ELITE_INDUCTION_CELL = TILE_ENTITY_TYPES.builder(MekanismBlocks.ELITE_INDUCTION_CELL, (pos, state) -> new TileEntityInductionCell(MekanismBlocks.ELITE_INDUCTION_CELL, pos, state))
+          .without(EnergyCompatUtils.getLoadedEnergyCapabilities())
+          .build();
+    public static final TileEntityTypeRegistryObject<TileEntityInductionCell> ULTIMATE_INDUCTION_CELL = TILE_ENTITY_TYPES.builder(MekanismBlocks.ULTIMATE_INDUCTION_CELL, (pos, state) -> new TileEntityInductionCell(MekanismBlocks.ULTIMATE_INDUCTION_CELL, pos, state))
+          .without(EnergyCompatUtils.getLoadedEnergyCapabilities())
+          .build();
     //Induction Providers
     public static final TileEntityTypeRegistryObject<TileEntityInductionProvider> BASIC_INDUCTION_PROVIDER = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_INDUCTION_PROVIDER, (pos, state) -> new TileEntityInductionProvider(MekanismBlocks.BASIC_INDUCTION_PROVIDER, pos, state));
     public static final TileEntityTypeRegistryObject<TileEntityInductionProvider> ADVANCED_INDUCTION_PROVIDER = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, (pos, state) -> new TileEntityInductionProvider(MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, pos, state));

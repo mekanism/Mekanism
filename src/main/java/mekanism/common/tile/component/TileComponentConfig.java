@@ -79,7 +79,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
 
     private void sideChangedBasic(TransmissionType transmissionType, Direction direction) {
         switch (transmissionType) {
-            case ENERGY -> tile.invalidateCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities(), direction);
+            case ENERGY -> tile.invalidateCapabilities(EnergyCompatUtils.getLoadedEnergyCapabilities(), direction);
             case FLUID -> tile.invalidateCapability(FluidHandler.BLOCK, direction);
             case GAS -> tile.invalidateCapability(Capabilities.GAS_HANDLER.block(), direction);
             case INFUSION -> tile.invalidateCapability(Capabilities.INFUSION_HANDLER.block(), direction);

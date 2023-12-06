@@ -98,7 +98,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
         super.sideChanged(side, old, type);
         if (type == ConnectionType.NONE) {
             //We no longer have a capability, invalidate it, which will also notify the level
-            invalidateCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities(), side);
+            invalidateCapabilities(EnergyCompatUtils.getLoadedEnergyCapabilities(), side);
         } else if (old == ConnectionType.NONE) {
             //Notify any listeners to our position that we now do have a capability
             //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
@@ -113,7 +113,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
             //The transmitter now is powered by redstone and previously was not
             //Note: While at first glance the below invalidation may seem over aggressive, it is not actually that aggressive as
             // if a cap has not been initialized yet on a side then invalidating it will just NO-OP
-            invalidateCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities(), EnumUtils.DIRECTIONS);
+            invalidateCapabilities(EnergyCompatUtils.getLoadedEnergyCapabilities(), EnumUtils.DIRECTIONS);
         } else {
             //Notify any listeners to our position that we now do have a capability
             //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null

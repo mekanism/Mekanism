@@ -5,7 +5,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.ISecurityContainer;
@@ -31,12 +30,6 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     public TileEntitySecurityDesk(BlockPos pos, BlockState state) {
         super(MekanismBlocks.SECURITY_DESK, pos, state);
-        //Even though there are inventory slots make this return none as accessible by automation, as then people could lock items to other
-        // people unintentionally. We also disable the security object capability so that we only provide access to the security desk as an
-        // "owner object" which means that all access checks will be handled as requiring the owner
-        //TODO: Figure out and fix disabled caps as we don't have security added view the resolvers here?
-        //TODO: Is this ven necessary? As we don't actually expose caps on it to the world
-        addDisabledCapabilities(Capabilities.ITEM.block());
     }
 
     @NotNull

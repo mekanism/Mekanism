@@ -1,14 +1,9 @@
 package mekanism.common.capabilities;
 
-import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
@@ -19,15 +14,13 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class CapabilityCache {//TODO - 1.20.2: Is this fine for the identity and reference maps?
+public class CapabilityCache {
 
     private final Map<BlockCapability<?, @Nullable Direction>, ICapabilityResolver<@Nullable Direction>> capabilityResolvers = new IdentityHashMap<>();
     /**
      * List of unique resolvers to make invalidating all easier as some resolvers (energy) may support multiple capabilities.
      */
     private final List<ICapabilityResolver<?>> uniqueResolvers = new ArrayList<>();
-    private final Set<BlockCapability<?, @Nullable Direction>> alwaysDisabled = new ReferenceOpenHashSet<>();
-    private final Map<BlockCapability<?, @Nullable Direction>, List<BooleanSupplier>> semiDisabled = new IdentityHashMap<>();
     @Nullable
     private TileComponentConfig config;
 
@@ -48,31 +41,6 @@ public class CapabilityCache {//TODO - 1.20.2: Is this fine for the identity and
     }
 
     /**
-     * Marks all the given capabilities as always being disabled.
-     */
-    @SafeVarargs
-    public final void addDisabledCapabilities(BlockCapability<?, @Nullable Direction>... capabilities) {
-        Collections.addAll(alwaysDisabled, capabilities);
-    }
-
-    /**
-     * Marks all the given capabilities as always being disabled.
-     */
-    public void addDisabledCapabilities(Collection<BlockCapability<?, @Nullable Direction>> capabilities) {
-        alwaysDisabled.addAll(capabilities);
-    }
-
-    /**
-     * Marks the given capability as having a check for sometimes being disabled.
-     *
-     * @implNote These "semi disabled" checks are stored in a list so that children can define more cases a capability should be disabled than the ones the parent already
-     * wants them to be disabled in.
-     */
-    public void addSemiDisabledCapability(BlockCapability<?, @Nullable Direction> capability, BooleanSupplier checker) {
-        semiDisabled.computeIfAbsent(capability, cap -> new ArrayList<>()).add(checker);
-    }
-
-    /**
      * Adds the given config component for use in checking if capabilities are disabled on a specific side.
      */
     public void addConfigComponent(TileComponentConfig config) {
@@ -88,21 +56,7 @@ public class CapabilityCache {//TODO - 1.20.2: Is this fine for the identity and
      * @return {@code true} if the capability is disabled, {@code false} otherwise.
      */
     public boolean isCapabilityDisabled(BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
-        if (alwaysDisabled.contains(capability)) {
-            return true;
-        }
-        if (semiDisabled.containsKey(capability)) {
-            List<BooleanSupplier> predicates = semiDisabled.get(capability);
-            for (BooleanSupplier predicate : predicates) {
-                if (predicate.getAsBoolean()) {
-                    return true;
-                }
-            }
-        }
-        if (config == null) {
-            return false;
-        }
-        return config.isCapabilityDisabled(capability, side);
+        return config != null && config.isCapabilityDisabled(capability, side);
     }
 
     @Nullable

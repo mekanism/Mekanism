@@ -2,7 +2,6 @@ package mekanism.common.tile.multiblock;
 
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
@@ -18,8 +17,6 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<MatrixMultib
 
     public TileEntityInductionCasing(BlockPos pos, BlockState state) {
         this(MekanismBlocks.INDUCTION_CASING, pos, state);
-        //Disable item handler caps if we are the induction casing, don't disable it for the subclassed port though
-        addDisabledCapabilities(Capabilities.ITEM.block());
     }
 
     public TileEntityInductionCasing(IBlockProvider blockProvider, BlockPos pos, BlockState state) {

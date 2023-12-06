@@ -3,7 +3,6 @@ package mekanism.common.tile.base;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.BooleanSupplier;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.pigment.IPigmentHandler;
@@ -78,20 +77,6 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
 
     protected final void addCapabilityResolver(ICapabilityResolver<@Nullable Direction> resolver) {
         capabilityCache.addCapabilityResolver(resolver);
-    }
-
-    //TODO: Replace all these permanently disabled ones with just not attaching the capability in the first place
-    @SafeVarargs
-    protected final void addDisabledCapabilities(BlockCapability<?, @Nullable Direction>... capabilities) {
-        capabilityCache.addDisabledCapabilities(capabilities);
-    }
-
-    protected final void addDisabledCapabilities(Collection<BlockCapability<?, @Nullable Direction>> capabilities) {
-        capabilityCache.addDisabledCapabilities(capabilities);
-    }
-
-    protected final void addSemiDisabledCapability(BlockCapability<?, @Nullable Direction> capability, BooleanSupplier checker) {
-        capabilityCache.addSemiDisabledCapability(capability, checker);
     }
 
     protected final void addConfigComponent(TileComponentConfig config) {
