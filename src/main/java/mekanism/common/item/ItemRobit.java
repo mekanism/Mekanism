@@ -95,7 +95,6 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
                 robit.setSustainedInventory(getSustainedInventory(stack));
                 robit.setCustomName(getRobitName(stack));
                 ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(stack);
-                //TODO - 1.20.2: Validate this but I don't think we need to set it as public when we can't get the cap
                 if (securityObject != null) {
                     robit.setSecurityMode(securityObject.getSecurityMode());
                 }

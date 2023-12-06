@@ -7,8 +7,7 @@ import mekanism.common.tile.base.CapabilityTileEntity;
 
 public class OC2CapabilityHelper {
 
-    //TODO: Note this may need to be moved into another class after updating to avoid class loading issues without OC2 present
-    /*private static final BlockCapability<Device, @Nullable Direction> CAPABILITY = BlockCapability.create(new ResourceLocation(MekanismHooks.OC2_MOD_ID, name), Device.class, Direction.class);
+    /*private static final BlockCapability<Device, @Nullable Direction> CAPABILITY = BlockCapability.createSided(new ResourceLocation(MekanismHooks.OC2_MOD_ID, name), Device.class);
     private static final ICapabilityProvider<?, @Nullable Direction, Device> PROVIDER = getProvider();
 
     private static <TILE extends CapabilityTileEntity & IComputerTile> ICapabilityProvider<TILE, @Nullable Direction, Device> getProvider() {

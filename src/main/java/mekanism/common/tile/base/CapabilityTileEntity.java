@@ -39,7 +39,6 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
     public static <CAP> ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, CAP> basicCapabilityProvider(BlockCapability<CAP, @Nullable Direction> capability) {
         return (tile, context) -> {
             if (tile.capabilityCache.isCapabilityDisabled(capability, context)) {
-                //TODO: Test that this works??
                 return null;
             }
             ICapabilityResolver<@Nullable Direction> resolver = tile.capabilityCache.getResolver(capability);
@@ -52,7 +51,6 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
         return (tile, context) -> {
             CapabilityCache capabilityCache = ((CapabilityTileEntity) tile).capabilityCache;
             if (capabilityCache.isCapabilityDisabled(capability, context)) {
-                //TODO: Test that this works??
                 return null;
             }
             return capabilityCache.getResolver(capability, () -> resolverGetter.apply(tile, capability))

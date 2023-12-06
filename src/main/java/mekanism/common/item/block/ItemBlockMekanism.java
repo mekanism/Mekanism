@@ -21,6 +21,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -96,8 +97,11 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem implements
     }
 
     @Nullable
-    protected ItemStackEnergyHandler createEnergyCap(ItemStack stack) {//TODO - 1.20.2: Re-evaluate and also fix nullability warnings
+    protected ItemStackEnergyHandler createEnergyCap(ItemStack stack) {
         AttributeEnergy attributeEnergy = Attribute.get(block, AttributeEnergy.class);
+        if (attributeEnergy == null) {
+            throw new IllegalStateException("Block " + RegistryUtils.getName(block) + " expected to have energy attribute");
+        }
         FloatingLongSupplier maxEnergy;
         if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
             //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy

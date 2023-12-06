@@ -41,7 +41,7 @@ public interface IBlockSecurityUtils {
      */
     @Nullable
     default IOwnerObject ownerCapability(Level level, BlockPos pos) {
-        return ownerCapability(level, pos, null);
+        return ownerCapability(level, pos, null, null);
     }
 
     /**
@@ -82,7 +82,7 @@ public interface IBlockSecurityUtils {
      */
     @Nullable
     default ISecurityObject securityCapability(Level level, BlockPos pos) {
-        return securityCapability(level, pos, null);
+        return securityCapability(level, pos, null, null);
     }
 
     /**
@@ -136,7 +136,7 @@ public interface IBlockSecurityUtils {
      * @see #canAccessOrDisplayError(Player, Level, BlockPos, BlockState, BlockEntity)
      */
     default boolean canAccess(Player player, Level level, BlockPos pos) {
-        return canAccess(player, level, pos, null);
+        return canAccess(player, level, pos, null, null);
     }
 
     /**
@@ -196,12 +196,7 @@ public interface IBlockSecurityUtils {
      * @see #canAccessOrDisplayError(Player, Level, BlockPos, BlockEntity)
      * @see #canAccessOrDisplayError(Player, Level, BlockPos, BlockState, BlockEntity)
      */
-    default boolean canAccess(Player player, Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity) {
-        return ISecurityUtils.INSTANCE.canAccess(player,
-              () -> securityCapability(level, pos, state, blockEntity),
-              () -> ownerCapability(level, pos, state, blockEntity)
-        );
-    }
+    boolean canAccess(Player player, Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity);
 
     /**
      * Checks if a player can access the block at the given location; validating that protection is enabled in the config.
@@ -229,7 +224,7 @@ public interface IBlockSecurityUtils {
      * @see #canAccessOrDisplayError(Player, Level, BlockPos, BlockState, BlockEntity)
      */
     default boolean canAccess(@Nullable UUID player, Level level, BlockPos pos) {
-        return canAccess(player, level, pos, null);
+        return canAccess(player, level, pos, null, null);
     }
 
     /**
@@ -289,13 +284,7 @@ public interface IBlockSecurityUtils {
      * @see #canAccessOrDisplayError(Player, Level, BlockPos, BlockEntity)
      * @see #canAccessOrDisplayError(Player, Level, BlockPos, BlockState, BlockEntity)
      */
-    default boolean canAccess(@Nullable UUID player, Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity) {
-        return ISecurityUtils.INSTANCE.canAccess(player,
-              () -> securityCapability(level, pos, state, blockEntity),
-              () -> ownerCapability(level, pos, state, blockEntity),
-              level.isClientSide()
-        );
-    }
+    boolean canAccess(@Nullable UUID player, Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity);
 
     /**
      * Gets the owner of the block at the given location or {@code null} if there is no owner or the block doesn't expose an {@link IOwnerObject}.
@@ -311,7 +300,7 @@ public interface IBlockSecurityUtils {
      */
     @Nullable
     default UUID getOwnerUUID(Level level, BlockPos pos) {
-        return getOwnerUUID(level, pos, null);
+        return getOwnerUUID(level, pos, null, null);
     }
 
     /**
@@ -373,7 +362,7 @@ public interface IBlockSecurityUtils {
      * @see ISecurityUtils#getEffectiveSecurityMode(ISecurityObject, boolean)
      */
     default SecurityMode getSecurityMode(Level level, BlockPos pos) {
-        return getSecurityMode(level, pos, null);
+        return getSecurityMode(level, pos, null, null);
     }
 
     /**
@@ -423,13 +412,7 @@ public interface IBlockSecurityUtils {
      * @see ISecurityUtils#getSecurityMode(Supplier, Supplier, boolean)
      * @see ISecurityUtils#getEffectiveSecurityMode(ISecurityObject, boolean)
      */
-    default SecurityMode getSecurityMode(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity) {
-        return ISecurityUtils.INSTANCE.getSecurityMode(
-              () -> securityCapability(level, pos, state, blockEntity),
-              () -> ownerCapability(level, pos, state, blockEntity),
-              level.isClientSide()
-        );
-    }
+    SecurityMode getSecurityMode(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity);
 
     /**
      * Helper method to check if a given player can access the block at the given location; and if they can't display a server side access error to the player.
@@ -445,7 +428,7 @@ public interface IBlockSecurityUtils {
      * @see #canAccess(Player, Level, BlockPos)
      */
     default boolean canAccessOrDisplayError(Player player, Level level, BlockPos pos) {
-        return canAccessOrDisplayError(player, level, pos, null);
+        return canAccessOrDisplayError(player, level, pos, null, null);
     }
 
     /**
