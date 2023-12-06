@@ -1,14 +1,13 @@
 package mekanism.common.item;
 
 import mekanism.api.radiation.IRadiationManager;
-import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
 import mekanism.common.util.text.TextUtils;
@@ -58,11 +57,7 @@ public class ItemDosimeter extends Item {
     }
 
     private void sendDosimeterLevel(LivingEntity entity, Player player, ILangEntry doseLangEntry) {
-        IRadiationEntity cap = entity.getCapability(Capabilities.RADIATION_ENTITY);
-        if (cap == null) {
-            return;
-        }
-        double radiation = IRadiationManager.INSTANCE.isRadiationEnabled() ? cap.getRadiation() : 0;
+        double radiation = IRadiationManager.INSTANCE.isRadiationEnabled() ? entity.getData(MekanismAttachmentTypes.RADIATION) : 0;
         EnumColor severityColor = RadiationScale.getSeverityColor(radiation);
         player.sendSystemMessage(doseLangEntry.translateColored(EnumColor.GRAY, severityColor, UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 3)));
         if (MekanismConfig.common.enableDecayTimers.get() && radiation > RadiationManager.MIN_MAGNITUDE) {

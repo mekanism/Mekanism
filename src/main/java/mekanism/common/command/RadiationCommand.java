@@ -175,8 +175,9 @@ public class RadiationCommand {
                         double magnitude = DoubleArgumentType.getDouble(ctx, "magnitude");
                         IRadiationEntity cap = source.getPlayerOrException().getCapability(Capabilities.RADIATION_ENTITY);
                         if (cap != null) {
-                            double newValue = Math.max(RadiationManager.BASELINE, cap.getRadiation() - magnitude);
-                            double reduced = cap.getRadiation() - newValue;
+                            double radiation = cap.getRadiation();
+                            double newValue = Math.max(RadiationManager.BASELINE, radiation - magnitude);
+                            double reduced = radiation - newValue;
                             cap.set(newValue);
                             source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_REDUCE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(reduced),
                                   UnitDisplayUtils.getDisplayShort(reduced, RadiationUnit.SVH, 3)), true);
@@ -194,8 +195,9 @@ public class RadiationCommand {
                                   if (entity instanceof LivingEntity) {
                                       IRadiationEntity cap = entity.getCapability(Capabilities.RADIATION_ENTITY);
                                       if (cap != null) {
-                                          double newValue = Math.max(RadiationManager.BASELINE, cap.getRadiation() - magnitude);
-                                          double reduced = cap.getRadiation() - newValue;
+                                          double radiation = cap.getRadiation();
+                                          double newValue = Math.max(RadiationManager.BASELINE, radiation - magnitude);
+                                          double reduced = radiation - newValue;
                                           cap.set(newValue);
                                           source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_REDUCE_TARGET.translateColored(EnumColor.GRAY,
                                                 EnumColor.INDIGO, entity.getDisplayName(), RadiationScale.getSeverityColor(reduced),

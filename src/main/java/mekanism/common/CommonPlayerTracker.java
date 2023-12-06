@@ -1,12 +1,10 @@
 package mekanism.common;
 
-import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.text.EnumColor;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockMekanism;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.network.to_client.PacketPlayerData;
 import mekanism.common.network.to_client.PacketRadiationData;
@@ -64,11 +62,7 @@ public class CommonPlayerTracker {
         ServerPlayer player = (ServerPlayer) event.getEntity();
         Mekanism.playerState.clearPlayer(player.getUUID(), false);
         Mekanism.playerState.reapplyServerSideOnly(player);
-        IRadiationEntity radiationEntity = player.getCapability(Capabilities.RADIATION_ENTITY);
-        if (radiationEntity != null) {
-            //TODO - 1.20.2: Is this needed?
-            Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(radiationEntity.getRadiation()), player);
-        }
+        Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(player), player);
         RadiationManager.get().updateClientRadiation(player);
     }
 
@@ -82,16 +76,7 @@ public class CommonPlayerTracker {
     @SubscribeEvent
     public void respawnEvent(PlayerEvent.PlayerRespawnEvent event) {
         ServerPlayer player = (ServerPlayer) event.getEntity();
-        IRadiationEntity cap = player.getCapability(Capabilities.RADIATION_ENTITY);
-        if (cap != null) {
-            //TODO - 1.20.2: I believe this should be properly reset by the attachment type stuff?
-            // Though we likely still need to do the packet
-            if (!event.isEndConquered()) {
-                //If the player is returning from the end don't reset radiation
-                cap.set(RadiationManager.BASELINE);
-            }
-            Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(cap.getRadiation()), player);
-        }
+        Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(player), player);
         RadiationManager.get().updateClientRadiation(player);
         Mekanism.packetHandler().sendToAll(new PacketResetPlayerClient(player.getUUID()));
     }

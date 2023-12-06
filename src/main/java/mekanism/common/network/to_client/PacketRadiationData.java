@@ -1,13 +1,13 @@
 package mekanism.common.network.to_client;
 
-import mekanism.api.radiation.capability.IRadiationEntity;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.LevelAndMaxMagnitude;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.registries.MekanismAttachmentTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.NetworkEvent;
 
 public class PacketRadiationData implements IMekanismPacket {
@@ -26,6 +26,10 @@ public class PacketRadiationData implements IMekanismPacket {
         return new PacketRadiationData(RadiationPacketType.ENVIRONMENTAL, levelAndMaxMagnitude.level(), levelAndMaxMagnitude.maxMagnitude());
     }
 
+    public static PacketRadiationData createPlayer(Player player) {
+        return createPlayer(player.getData(MekanismAttachmentTypes.RADIATION));
+    }
+
     public static PacketRadiationData createPlayer(double radiation) {
         return new PacketRadiationData(RadiationPacketType.PLAYER, radiation, 0);
     }
@@ -37,10 +41,7 @@ public class PacketRadiationData implements IMekanismPacket {
         } else if (type == RadiationPacketType.PLAYER) {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player != null) {
-                IRadiationEntity cap = player.getCapability(Capabilities.RADIATION_ENTITY);
-                if (cap != null) {
-                    cap.set(radiation);
-                }
+                player.setData(MekanismAttachmentTypes.RADIATION, radiation);
             }
         }
     }
