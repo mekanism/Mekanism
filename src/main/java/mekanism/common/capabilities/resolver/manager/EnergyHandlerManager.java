@@ -67,30 +67,36 @@ public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyCo
      */
     @Nullable
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T resolve(BlockCapability<T, @Nullable Direction> capability, @Nullable Direction side) {
         if (getContainers(side).isEmpty()) {
             //If we don't have any containers accessible from that side, don't return a handler
-            //TODO: Evaluate moving this somehow into being done via the is disabled check
             return null;
         }
         if (side == null) {
-            if (readOnlyHandler == null) {
-                //Note: Only should enter this if statement, if we don't already have a cache,
-                // so we just check it beforehand as it is a quick check and simplifies the code
-                readOnlyHandler = new ProxyStrictEnergyHandler(baseHandler, null, holder);
-            }
-            return getCachedOrResolve(capability, cachedReadOnlyCapabilities, readOnlyHandler);
+            //If we already contain a cached object for this instance then just use it, otherwise wrap it
+            return (T) cachedReadOnlyCapabilities.computeIfAbsent(capability, cap -> {
+                if (readOnlyHandler == null) {
+                    //We haven't initiated the backing handler yet, so we need to calculate it
+                    readOnlyHandler = new ProxyStrictEnergyHandler(baseHandler, null, holder);
+                }
+                return EnergyCompatUtils.wrapStrictEnergyHandler(cap, readOnlyHandler);
+            });
         }
-        //Note: Only should enter this if statement, if we don't already have a cache,
-        // so we just check it beforehand as it is a quick check and simplifies the code
-        IStrictEnergyHandler handler = handlers.computeIfAbsent(side, s -> new ProxyStrictEnergyHandler(baseHandler, s, holder));
-        return getCachedOrResolve(capability, cachedCapabilities.computeIfAbsent(side, key -> new IdentityHashMap<>()), handler);
+        //If we already contain a cached object for this instance then just use it, otherwise calculate the base handler and wrap it
+        return (T) cachedCapabilities
+              .computeIfAbsent(side, key -> new IdentityHashMap<>())
+              .computeIfAbsent(capability, cap -> {
+                  //If we haven't initiated the backing handler yet, calculate it
+                  IStrictEnergyHandler handler = handlers.computeIfAbsent(side, s -> new ProxyStrictEnergyHandler(baseHandler, s, holder));
+                  return EnergyCompatUtils.wrapStrictEnergyHandler(cap, handler);
+              });
     }
 
     @Override
     public void invalidate(BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
-        //Note: We don't invalidate the base handlers as they are still valid regardless, and the holder just removes slots when they shouldn't be accessible
-        // we only bother invalidating the lazy optionals
+        //Note: We don't invalidate the base handlers as they are still valid regardless and are just wrappers with the holder
+        // removing slots when they shouldn't be accessible, so we only invalidate the cached exposed handlers
         if (side == null) {
             cachedReadOnlyCapabilities.remove(capability);
         } else {
@@ -103,17 +109,9 @@ public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyCo
 
     @Override
     public void invalidateAll() {
-        //Note: We don't invalidate the base handlers as they are still valid regardless, and the holder just removes slots when they shouldn't be accessible
-        // we only bother invalidating the lazy optionals
-        //TODO: Re-evaluate and probably remove the above comment
+        //Note: We don't invalidate the base handlers as they are still valid regardless and are just wrappers with the holder
+        // removing slots when they shouldn't be accessible, so we only invalidate the cached exposed handlers
         cachedCapabilities.clear();
         cachedReadOnlyCapabilities.clear();
-    }
-
-    @Nullable
-    public static <T> T getCachedOrResolve(BlockCapability<T, @Nullable Direction> capability, Map<BlockCapability<?, @Nullable Direction>, Object> cachedCapabilities,
-          IStrictEnergyHandler handler) {
-        //If we already contain a cached object for this instance then just use it, otherwise wrap it
-        return (T) cachedCapabilities.computeIfAbsent(capability, cap -> EnergyCompatUtils.wrapStrictEnergyHandler(capability, handler));
     }
 }

@@ -53,7 +53,6 @@ public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER
     public <T> T resolve(BlockCapability<T, @Nullable Direction> capability, @Nullable Direction side) {
         if (getContainers(side).isEmpty()) {
             //If we don't have any containers accessible from that side, don't return a handler
-            //TODO: Evaluate moving this somehow into being done via the is disabled check
             return null;
         }
         return super.resolve(capability, side);
