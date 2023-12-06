@@ -135,7 +135,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.network.NetworkHooks;
@@ -1143,11 +1142,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Methods for implementing IConfigCardAccess
     @Override
-    public String getConfigCardName() {
-        return getBlockType().getDescriptionId();
-    }
-
-    @Override
     public CompoundTag getConfigurationData(Player player) {
         CompoundTag data = new CompoundTag();
         addGeneralPersistentData(data);
@@ -1162,8 +1156,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public BlockEntityType<?> getConfigurationDataType() {
-        return getType();
+    public Block getConfigurationDataType() {
+        return getBlockType();
     }
 
     @Override

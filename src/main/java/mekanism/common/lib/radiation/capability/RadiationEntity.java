@@ -78,7 +78,6 @@ public class RadiationEntity implements IRadiationEntity {
 
     @Override
     public void set(double magnitude) {
-        //TODO - 1.20.2: Should some usages of this and things like getRadiation be replaced with direct attachment access?
         entity.setData(MekanismAttachmentTypes.RADIATION, Math.max(RadiationManager.BASELINE, magnitude));
     }
 

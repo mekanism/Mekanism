@@ -38,7 +38,7 @@ import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -148,9 +148,9 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     }
 
     @Override
-    public boolean isConfigurationDataCompatible(BlockEntityType<?> tileType) {
+    public boolean isConfigurationDataCompatible(Block blockType) {
         //Allow exact match or factories of the same type (as we will just ignore the extra data)
-        return super.isConfigurationDataCompatible(tileType) || MekanismUtils.isSameTypeFactory(getBlockType(), tileType);
+        return super.isConfigurationDataCompatible(blockType) || MekanismUtils.isSameTypeFactory(getBlockType(), blockType);
     }
 
     //Methods relating to IComputerTile
