@@ -44,11 +44,12 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         //Note: Check ItemHandler instead of acceptor as the back face cannot connect to transporters
-        if (!InventoryUtils.isItemHandler(level, pos.relative(oppositeDirection), oppositeDirection)) {
+        if (!InventoryUtils.isItemHandler(level, pos.relative(oppositeDirection), facing)) {
             for (Direction dir : EnumUtils.DIRECTIONS) {
                 //Skip the side we already know is not a valid acceptor
-                if (dir != oppositeDirection && InventoryUtils.isItemHandler(level, pos.relative(dir), dir)) {
-                    state = Attribute.setFacing(state, dir.getOpposite());
+                Direction opposite = dir.getOpposite();
+                if (dir != oppositeDirection && InventoryUtils.isItemHandler(level, pos.relative(dir), opposite)) {
+                    state = Attribute.setFacing(state, opposite);
                     break;
                 }
             }
@@ -80,8 +81,9 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
             Direction change = tile.getDirection().getClockWise();
             if (!tile.hasConnectedInventory()) {
                 for (Direction dir : EnumUtils.DIRECTIONS) {
-                    if (InventoryUtils.isItemHandler(world, pos.relative(dir), dir)) {
-                        change = dir.getOpposite();
+                    Direction opposite = dir.getOpposite();
+                    if (InventoryUtils.isItemHandler(world, pos.relative(dir), opposite)) {
+                        change = opposite;
                         break;
                     }
                 }
@@ -100,8 +102,9 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
           @NotNull BlockPos neighborPos) {
         if (!world.isClientSide()) {
             TileEntityLogisticalSorter sorter = WorldUtils.getTileEntity(TileEntityLogisticalSorter.class, world, pos);
-            if (sorter != null && !sorter.hasConnectedInventory() && InventoryUtils.isItemHandler(sorter.getLevel(), neighborPos, dir)) {
-                sorter.setFacing(dir.getOpposite());
+            Direction opposite = dir.getOpposite();
+            if (sorter != null && !sorter.hasConnectedInventory() && InventoryUtils.isItemHandler(sorter.getLevel(), neighborPos, opposite)) {
+                sorter.setFacing(opposite);
                 state = sorter.getBlockState();
             }
         }
