@@ -43,8 +43,6 @@ public class ItemStackOwnerObject implements IOwnerObject {
     @Override
     public void setOwnerUUID(@Nullable UUID owner) {
         if (!stack.isEmpty()) {
-            //TODO - 1.20.2: Experiment with using attachment types for persisting some of this information on the stack
-            // both for this and for other types of data
             if (stack.getItem() instanceof IFrequencyItem frequencyItem) {
                 //If the item happens to be a frequency item reset the frequency when the owner changes
                 frequencyItem.setFrequency(stack, null);
