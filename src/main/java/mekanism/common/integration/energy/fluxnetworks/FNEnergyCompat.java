@@ -13,6 +13,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 import sonar.fluxnetworks.api.energy.IFNEnergyStorage;
@@ -54,8 +56,8 @@ public class FNEnergyCompat implements IEnergyCompat {
 
     @Nullable
     @Override
-    public IStrictEnergyHandler getAsStrictEnergyHandler(Level level, BlockPos pos, @Nullable Direction context) {
-        IFNEnergyStorage capability = getCapability().getCapability(level, pos, context);
+    public IStrictEnergyHandler getAsStrictEnergyHandler(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity tile, @Nullable Direction context) {
+        IFNEnergyStorage capability = getCapability().getCapability(level, pos, state, tile, context);
         return capability == null ? null : new FNStrictEnergyHandler(capability);
     }
 

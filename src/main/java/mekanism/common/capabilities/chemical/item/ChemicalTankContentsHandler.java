@@ -26,7 +26,7 @@ public class ChemicalTankContentsHandler extends MergedTankContentsHandler<Merge
 
     //TODO - 1.20.2: Do we want to get the tier from the stack
     public static void attachCapsToItem(RegisterCapabilitiesEvent event, Item item) {
-        //TODO - 1.20.2: Figure out a better way to do this
+        //TODO - 1.20.2: Figure out a better way to do this (as this may actually have sync issues if interacting with multiple caps at once??)
         event.registerItem(Capabilities.GAS_HANDLER.item(), (stack, ctx) -> new ChemicalTankContentsHandler(stack).gasHandler, item);
         event.registerItem(Capabilities.INFUSION_HANDLER.item(), (stack, ctx) -> new ChemicalTankContentsHandler(stack).infusionHandler, item);
         event.registerItem(Capabilities.PIGMENT_HANDLER.item(), (stack, ctx) -> new ChemicalTankContentsHandler(stack).pigmentHandler, item);

@@ -12,6 +12,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.Nullable;
@@ -44,8 +46,8 @@ public class ForgeEnergyCompat implements IEnergyCompat {
 
     @Nullable
     @Override
-    public IStrictEnergyHandler getAsStrictEnergyHandler(Level level, BlockPos pos, @Nullable Direction context) {
-        IEnergyStorage capability = getCapability().getCapability(level, pos, context);
+    public IStrictEnergyHandler getAsStrictEnergyHandler(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity tile, @Nullable Direction context) {
+        IEnergyStorage capability = getCapability().getCapability(level, pos, state, tile, context);
         return capability == null ? null : new ForgeStrictEnergyHandler(capability);
     }
 

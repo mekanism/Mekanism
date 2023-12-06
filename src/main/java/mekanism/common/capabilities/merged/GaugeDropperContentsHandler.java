@@ -37,7 +37,7 @@ public class GaugeDropperContentsHandler extends MergedTankContentsHandler<Merge
     private static final int TRANSFER_RATE = 256;
 
     public static void attachCapsToItem(RegisterCapabilitiesEvent event, Item item) {
-        //TODO - 1.20.2: Figure out a better way to do this
+        //TODO - 1.20.2: Figure out a better way to do this (as this may actually have sync issues if interacting with multiple caps at once??)
         event.registerItem(Capabilities.GAS_HANDLER.item(), (stack, ctx) -> new GaugeDropperContentsHandler(stack).gasHandler, item);
         event.registerItem(Capabilities.INFUSION_HANDLER.item(), (stack, ctx) -> new GaugeDropperContentsHandler(stack).infusionHandler, item);
         event.registerItem(Capabilities.PIGMENT_HANDLER.item(), (stack, ctx) -> new GaugeDropperContentsHandler(stack).pigmentHandler, item);

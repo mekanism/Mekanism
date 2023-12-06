@@ -166,9 +166,9 @@ public class Capabilities {//TODO - 1.20.2: Figure out which of these types actu
         }
 
         @Nullable
-        public HANDLER getCapability(@NotNull Level level, @NotNull BlockPos pos, @Nullable Direction side) {
+        public HANDLER getCapability(@NotNull Level level, @NotNull BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity tile, @Nullable Direction side) {
             //TODO: Should this use the ifLoaded variant?
-            return level.getCapability(block(), pos, side);
+            return level.getCapability(block(), pos, state, tile, side);
         }
 
         @Nullable

@@ -47,7 +47,7 @@ public final class CableUtils {
         EnergyAcceptorTarget target = new EnergyAcceptorTarget(6);
         EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (level, pos, opposite) -> {
             //Insert to access side and collect the cap if it is present
-            IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(level, pos, opposite);
+            IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(level, pos, null, null, opposite);
             if (handler != null) {
                 target.addHandler(handler);
             }

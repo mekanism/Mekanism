@@ -12,6 +12,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;
@@ -126,12 +128,12 @@ public class EnergyCompatUtils {
     }
 
     @Nullable
-    public static IStrictEnergyHandler getStrictEnergyHandler(Level level, BlockPos pos, Direction side) {
+    public static IStrictEnergyHandler getStrictEnergyHandler(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity tile, Direction side) {
         //TODO: Eventually look into making it so that we cache the handler we get back. Maybe by passing a listener
         // to this that we can give to the capability as we wrap the result into
         for (IEnergyCompat energyCompat : energyCompats) {
             if (energyCompat.isUsable()) {
-                IStrictEnergyHandler handler = energyCompat.getAsStrictEnergyHandler(level, pos, side);
+                IStrictEnergyHandler handler = energyCompat.getAsStrictEnergyHandler(level, pos, state, tile, side);
                 if (handler != null) {
                     return handler;
                 }

@@ -314,16 +314,14 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         if (!toSend.isZero()) {
             EnergyAcceptorTarget target = new EnergyAcceptorTarget(expected);
             typesToEject.put(TransmissionType.ENERGY, (level, pos, state, blockEntity, side) -> {
-                IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(level, pos, side.getOpposite());
+                IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(level, pos, state, blockEntity, side.getOpposite());
                 if (handler != null) {
                     target.addHandler(handler);
                 }
             });
-            transferHandlers.add(() -> {
-                if (target.getHandlerCount() > 0) {
-                    storedEnergy.extract(EmitUtils.sendToAcceptors(target, toSend), Action.EXECUTE, AutomationType.INTERNAL);
-                }
-            });
+            if (target.getHandlerCount() > 0) {
+                transferHandlers.add(() -> storedEnergy.extract(EmitUtils.sendToAcceptors(target, toSend), Action.EXECUTE, AutomationType.INTERNAL));
+            }
         }
     }
 
@@ -337,11 +335,9 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
                     target.addHandler(handler);
                 }
             });
-            transferHandlers.add(() -> {
-                if (target.getHandlerCount() > 0) {
-                    storedFluid.extract(EmitUtils.sendToAcceptors(target, fluidToSend.getAmount(), fluidToSend), Action.EXECUTE, AutomationType.INTERNAL);
-                }
-            });
+            if (target.getHandlerCount() > 0) {
+                transferHandlers.add(() -> storedFluid.extract(EmitUtils.sendToAcceptors(target, fluidToSend.getAmount(), fluidToSend), Action.EXECUTE, AutomationType.INTERNAL));
+            }
         }
     }
 
@@ -357,15 +353,12 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
                     target.addHandler(handler);
                 }
             });
-            transferHandlers.add(() -> {
-                if (target.getHandlerCount() > 0) {
-                    tank.extract(EmitUtils.sendToAcceptors(target, toSend.getAmount(), toSend), Action.EXECUTE, AutomationType.INTERNAL);
-                }
-            });
+            if (target.getHandlerCount() > 0) {
+                transferHandlers.add(() -> tank.extract(EmitUtils.sendToAcceptors(target, toSend.getAmount(), toSend), Action.EXECUTE, AutomationType.INTERNAL));
+            }
         }
     }
 
-    //TODO - 1.20.2: Better name
     private interface CapabilityHandler {
 
         void handle(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Direction side);

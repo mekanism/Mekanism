@@ -24,14 +24,6 @@ public class BasicCapabilityResolver<CAPABILITY, CONTEXT> implements ICapability
         return create(supportedCapability, supplier instanceof NonNullLazy ? supplier : NonNullLazy.of(supplier));
     }
 
-    /**
-     * Creates a capability resolver of a constant value. Usually {@code this} for tiles.
-     */
-    public static <CAPABILITY, CONTEXT> BasicCapabilityResolver<CAPABILITY, CONTEXT> constant(BlockCapability<CAPABILITY, CONTEXT> supportedCapability,
-          CAPABILITY value) {//TODO: Do we want to remove this?
-        return create(supportedCapability, () -> value);
-    }
-
     private final List<BlockCapability<?, CONTEXT>> supportedCapabilities;
     private final NonNullSupplier<CAPABILITY> supplier;
     @Nullable
@@ -54,7 +46,6 @@ public class BasicCapabilityResolver<CAPABILITY, CONTEXT> implements ICapability
             //If the capability has not been retrieved yet, or it is not valid then recreate it
             cachedCapability = supplier.get();
         }
-        //TODO: Fix invalidating this
         return (T) cachedCapability;
     }
 
