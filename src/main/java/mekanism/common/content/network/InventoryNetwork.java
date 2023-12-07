@@ -1,12 +1,10 @@
 package mekanism.common.content.network;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,7 +12,6 @@ import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.PathfinderCache;
@@ -28,16 +25,12 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetwork, LogisticalTransporterBase> {
-
-    private final Map<BlockPos, LogisticalTransporterBase> positionedTransmitters = new Object2ObjectOpenHashMap<>();
 
     public InventoryNetwork(UUID networkID) {
         super(networkID);
@@ -98,72 +91,6 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
         return toReturn;
     }
 
-    @Nullable
-    public LogisticalTransporterBase getTransmitter(BlockPos pos) {
-        return positionedTransmitters.get(pos);
-    }
-
-    @Override
-    protected void addTransmitterFromCommit(LogisticalTransporterBase transmitter) {
-        super.addTransmitterFromCommit(transmitter);
-        positionedTransmitters.put(transmitter.getTilePos(), transmitter);
-    }
-
-    @Override
-    public void addTransmitter(LogisticalTransporterBase transmitter) {
-        super.addTransmitter(transmitter);
-        positionedTransmitters.put(transmitter.getTilePos(), transmitter);
-    }
-
-    @Override
-    public void removeTransmitter(LogisticalTransporterBase transmitter) {
-        removePositionedTransmitter(transmitter);
-        super.removeTransmitter(transmitter);
-    }
-
-    private void removePositionedTransmitter(LogisticalTransporterBase transmitter) {
-        BlockPos pos = transmitter.getTilePos();
-        LogisticalTransporterBase currentTransmitter = getTransmitter(pos);
-        if (currentTransmitter != null) {
-            //This shouldn't be null but if it is, don't bother attempting to remove
-            if (currentTransmitter != transmitter) {
-                Level world = this.world;
-                if (world == null) {
-                    //If the world is null, grab it from the transmitter
-                    world = transmitter.getTileWorld();
-                }
-                if (world != null && world.isClientSide()) {
-                    //On the client just exit instead of warning and then removing the unexpected transmitter.
-                    // When the client dies at spawn in single player the order of operations is:
-                    // - new tiles get added/loaded (so the positioned transmitter gets overridden with the correct one)
-                    // - The old one unloads which causes this removedPositionedTransmitter call to take place
-                    return;
-                }
-                Mekanism.logger.warn("Removed transmitter at position: {} in {} was different than expected.", pos, world == null ? null : world.dimension().location());
-            }
-            positionedTransmitters.remove(pos);
-        }
-    }
-
-    @Override
-    protected void removeInvalid(@Nullable LogisticalTransporterBase triggerTransmitter) {
-        //Remove invalid transmitters first for share calculations
-        Iterator<LogisticalTransporterBase> iterator = transmitters.iterator();
-        while (iterator.hasNext()) {
-            LogisticalTransporterBase transmitter = iterator.next();
-            if (!transmitter.isValid()) {
-                iterator.remove();
-                removePositionedTransmitter(transmitter);
-            }
-        }
-    }
-
-    @Override
-    public List<LogisticalTransporterBase> adoptTransmittersAndAcceptorsFrom(InventoryNetwork net) {
-        positionedTransmitters.putAll(net.positionedTransmitters);
-        return super.adoptTransmittersAndAcceptorsFrom(net);
-    }
-
     @Override
     public void commit() {
         super.commit();
@@ -174,7 +101,6 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
     @Override
     public void deregister() {
         super.deregister();
-        positionedTransmitters.clear();
         // update the cache when the network has been removed (when transmitters are removed)
         PathfinderCache.onChanged(this);
     }

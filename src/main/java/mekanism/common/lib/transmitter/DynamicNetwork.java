@@ -1,12 +1,15 @@
 package mekanism.common.lib.transmitter;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.common.Mekanism;
 import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.lib.transmitter.acceptor.NetworkAcceptorCache;
 import mekanism.common.util.EnumUtils;
@@ -20,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, TRANSMITTER>,
       TRANSMITTER extends Transmitter<ACCEPTOR, NETWORK, TRANSMITTER>> implements INetworkDataHandler, IHasTextComponent {
 
-    protected final Set<TRANSMITTER> transmitters = new ObjectOpenHashSet<>();
+    protected final Map<BlockPos, TRANSMITTER> positionedTransmitters = new Object2ObjectOpenHashMap<>();
     protected final Set<TRANSMITTER> transmittersToAdd = new ObjectOpenHashSet<>();
     protected final NetworkAcceptorCache<ACCEPTOR> acceptorCache = new NetworkAcceptorCache<>();
     @Nullable
@@ -87,8 +90,13 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         this.transmitterValidator = transmitterValidator;
     }
 
+    @Nullable
+    public TRANSMITTER getTransmitter(BlockPos pos) {
+        return positionedTransmitters.get(pos);
+    }
+
     protected void addTransmitterFromCommit(TRANSMITTER transmitter) {
-        transmitters.add(transmitter);
+        positionedTransmitters.put(transmitter.getTilePos(), transmitter);
     }
 
     protected void validTransmittersAdded() {
@@ -99,7 +107,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public void invalidate(@Nullable TRANSMITTER triggerTransmitter) {
-        if (transmitters.size() == 1 && triggerTransmitter != null && !triggerTransmitter.isValid()) {
+        if (transmittersSize() == 1 && triggerTransmitter != null && !triggerTransmitter.isValid()) {
             //We're destroying the last transmitter in the network
             //Note: We check it isn't valid to make sure we are destroying it and not just changing redstone sensitivity
             onLastTransmitterRemoved(triggerTransmitter);
@@ -107,7 +115,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         removeInvalid(triggerTransmitter);
         //Now invalidate the transmitters
         if (!isRemote()) {
-            for (TRANSMITTER transmitter : transmitters) {
+            for (TRANSMITTER transmitter : getTransmitters()) {
                 if (transmitter.isValid()) {
                     transmitter.takeShare();
                     transmitter.setTransmitterNetwork(null);
@@ -123,7 +131,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     protected void removeInvalid(@Nullable TRANSMITTER triggerTransmitter) {
         //Remove invalid transmitters first for share calculations
-        transmitters.removeIf(transmitter -> !transmitter.isValid());
+        getTransmitters().removeIf(transmitter -> !transmitter.isValid());
     }
 
     public void acceptorChanged(TRANSMITTER transmitter, Direction side) {
@@ -131,9 +139,11 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public List<TRANSMITTER> adoptTransmittersAndAcceptorsFrom(NETWORK net) {
+        positionedTransmitters.putAll(net.positionedTransmitters);
         List<TRANSMITTER> transmittersToUpdate = new ArrayList<>();
-        for (TRANSMITTER transmitter : net.transmitters) {
-            transmitters.add(transmitter);
+        for (Map.Entry<BlockPos, TRANSMITTER> entry : net.positionedTransmitters.entrySet()) {
+            TRANSMITTER transmitter = entry.getValue();
+            positionedTransmitters.put(entry.getKey(), transmitter);
             if (transmitter.setTransmitterNetwork(getNetwork(), false)) {
                 transmittersToUpdate.add(transmitter);
             }
@@ -164,7 +174,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public void deregister() {
-        transmitters.clear();
+        positionedTransmitters.clear();
         transmittersToAdd.clear();
         acceptorCache.deregister();
         transmitterValidator = null;
@@ -176,7 +186,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public boolean isEmpty() {
-        return transmitters.isEmpty();
+        return positionedTransmitters.isEmpty();
     }
 
     public int getAcceptorCount() {
@@ -194,23 +204,47 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     public void onUpdate() {
     }
 
-    public Set<TRANSMITTER> getTransmitters() {
-        return transmitters;
+    public Collection<TRANSMITTER> getTransmitters() {
+        return positionedTransmitters.values();
     }
 
     public void addTransmitter(TRANSMITTER transmitter) {
-        transmitters.add(transmitter);
+        positionedTransmitters.put(transmitter.getTilePos(), transmitter);
     }
 
     public void removeTransmitter(TRANSMITTER transmitter) {
-        transmitters.remove(transmitter);
-        if (transmitters.isEmpty()) {
+        removePositionedTransmitter(transmitter);
+        if (isEmpty()) {
             deregister();
         }
     }
 
+    private void removePositionedTransmitter(TRANSMITTER transmitter) {
+        BlockPos pos = transmitter.getTilePos();
+        TRANSMITTER currentTransmitter = getTransmitter(pos);
+        if (currentTransmitter != null) {
+            //This shouldn't be null but if it is, don't bother attempting to remove
+            if (currentTransmitter != transmitter) {
+                Level world = this.world;
+                if (world == null) {
+                    //If the world is null, grab it from the transmitter
+                    world = transmitter.getTileWorld();
+                }
+                if (world != null && world.isClientSide()) {
+                    //On the client just exit instead of warning and then removing the unexpected transmitter.
+                    // When the client dies at spawn in single player the order of operations is:
+                    // - new tiles get added/loaded (so the positioned transmitter gets overridden with the correct one)
+                    // - The old one unloads which causes this removedPositionedTransmitter call to take place
+                    return;
+                }
+                Mekanism.logger.warn("Removed transmitter at position: {} in {} was different than expected.", pos, world == null ? null : world.dimension().location());
+            }
+            positionedTransmitters.remove(pos);
+        }
+    }
+
     public int transmittersSize() {
-        return transmitters.size();
+        return positionedTransmitters.size();
     }
 
     public boolean hasAcceptor(BlockPos acceptorPos) {

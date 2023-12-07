@@ -24,7 +24,6 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.upgrade.transmitter.ThermodynamicConductorUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -167,8 +166,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     public IHeatHandler getAdjacent(@NotNull Direction side) {
         if (connectionMapContainsSide(getAllCurrentConnections(), side)) {
             //Note: We use the acceptor cache as the heat network is different and the transmitters count the other transmitters in the
-            // network as valid acceptors
-            //TODO - 1.20.2: Validate that the fact this doesn't validate the thing is actually connected is fine??
+            // network as valid acceptors, which means we don't have to differentiate between acceptors and other transmitters here
             return getAcceptorCache().getConnectedAcceptor(side);
         }
         return null;
@@ -176,11 +174,10 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
 
     @Override
     public double incrementAdjacentTransfer(double currentAdjacentTransfer, double tempToTransfer, @NotNull Direction side) {
-        if (tempToTransfer > 0) {
-            //Look up the adjacent tile from the acceptor cache and then do the type checking
-            //TODO: Evaluate doing something like we do for logistical transporter and InventoryNetworks that keep track of transmitters by position
-            BlockEntity sink = WorldUtils.getTileEntity(getTileWorld(), getTilePos().relative(side));
-            if (sink instanceof TileEntityTransmitter transmitter && TransmissionType.HEAT.checkTransmissionType(transmitter)) {
+        if (tempToTransfer > 0 && hasTransmitterNetwork()) {
+            HeatNetwork transmitterNetwork = getTransmitterNetwork();
+            ThermodynamicConductor adjacent = transmitterNetwork.getTransmitter(getTilePos().relative(side));
+            if (adjacent != null) {
                 //Heat transmitter to heat transmitter, don't count as "adjacent transfer"
                 return currentAdjacentTransfer;
             }

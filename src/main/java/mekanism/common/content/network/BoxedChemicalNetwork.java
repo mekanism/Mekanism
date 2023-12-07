@@ -220,7 +220,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void updateSaveShares(@Nullable BoxedPressurizedTube triggerTransmitter,
           STACK chemical) {
         STACK empty = ChemicalUtil.getEmptyStack(chemical);
-        BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK> saveTarget = new BoxedChemicalTransmitterSaveTarget<>(empty, chemical, transmitters);
+        BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK> saveTarget = new BoxedChemicalTransmitterSaveTarget<>(empty, chemical, getTransmitters());
         long sent = EmitUtils.sendToAcceptors(saveTarget, chemical.getAmount(), chemical);
         if (triggerTransmitter != null && sent < chemical.getAmount()) {
             disperse(triggerTransmitter, ChemicalUtil.copyWithAmount(chemical, chemical.getAmount() - sent));

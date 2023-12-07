@@ -102,7 +102,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     @Override
     public synchronized void updateCapacity() {
         FloatingLong sum = FloatingLong.ZERO;
-        for (UniversalCable transmitter : transmitters) {
+        for (UniversalCable transmitter : getTransmitters()) {
             sum = sum.plusEqual(transmitter.getCapacityAsFloatingLong());
         }
         if (!floatingLongCapacity.equals(sum)) {
@@ -120,7 +120,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     protected void updateSaveShares(@Nullable UniversalCable triggerTransmitter) {
         super.updateSaveShares(triggerTransmitter);
         if (!isEmpty()) {
-            EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget(transmitters);
+            EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget(getTransmitters());
             EmitUtils.sendToAcceptors(saveTarget, energyContainer.getEnergy().copy());
             saveTarget.saveShare();
         }

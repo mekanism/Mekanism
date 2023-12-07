@@ -128,7 +128,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
 
     public synchronized void updateCapacity() {
         long sum = 0;
-        for (TRANSMITTER transmitter : transmitters) {
+        for (TRANSMITTER transmitter : getTransmitters()) {
             long transmitterCapacity = transmitter.getCapacity();
             if (transmitterCapacity > Long.MAX_VALUE - capacity) {
                 //Ensure we don't overflow
@@ -191,7 +191,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
         int minZ = 0;
         int maxX = 0;
         int maxZ = 0;
-        for (TRANSMITTER transmitter : transmitters) {
+        for (TRANSMITTER transmitter : getTransmitters()) {
             BlockPos pos = transmitter.getTilePos();
             if (initialized) {
                 if (pos.getX() < minX) {
