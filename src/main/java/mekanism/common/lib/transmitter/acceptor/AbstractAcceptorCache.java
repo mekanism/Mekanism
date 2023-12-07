@@ -10,7 +10,10 @@ import java.util.function.BooleanSupplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.util.EnumUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,21 +21,34 @@ import org.jetbrains.annotations.Nullable;
 public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<ACCEPTOR>> {
 
     private final Map<Direction, RefreshListener> cachedListeners = new EnumMap<>(Direction.class);
-    protected final Map<Direction, INFO> cachedAcceptors = new EnumMap<>(Direction.class);
-    protected final Transmitter<ACCEPTOR, ?, ?> transmitter;
-    protected final TileEntityTransmitter transmitterTile;
+    private final Map<Direction, INFO> cachedAcceptors = new EnumMap<>(Direction.class);
+    private final TileEntityTransmitter transmitterTile;
     public byte currentAcceptorConnections = 0x00;
 
-    protected AbstractAcceptorCache(Transmitter<ACCEPTOR, ?, ?> transmitter, TileEntityTransmitter transmitterTile) {
-        this.transmitter = transmitter;
+    protected AbstractAcceptorCache(TileEntityTransmitter transmitterTile) {
         this.transmitterTile = transmitterTile;
     }
 
-    //TODO - 1.20.2: How much do we actually need to clear this vs can we just let GC handle it
-    // especially given then if it is removed and then gets added back in some ways we may as well be able to re-use things
-    public void clear() {
-        cachedListeners.clear();
-        cachedAcceptors.clear();
+    public void initializeCache(ServerLevel level) {
+        //Note: This doesn't exactly support if the level changes, but if there ever are actually bugs related to that
+        // we can handle figuring that out then as it will require invalidating the old caches
+        if (cachedAcceptors.isEmpty()) {
+            for (Direction side : EnumUtils.DIRECTIONS) {
+                BlockPos pos = transmitterTile.getBlockPos().relative(side);
+                cachedAcceptors.put(side, initializeCache(level, pos, side.getOpposite(), getRefreshListener(side)));
+            }
+        }
+    }
+
+    protected abstract INFO initializeCache(ServerLevel level, BlockPos pos, Direction opposite, RefreshListener refreshListener);
+
+    /**
+     * @apiNote Only call this from the server side
+     */
+    public boolean isAcceptor(Direction side) {
+        AcceptorInfo<ACCEPTOR> cache = cachedAcceptors.get(side);
+        //Note: Cache should never be null unless we haven't been initialized yet, but it is simple enough to handle that here with a null check
+        return cache != null && cache.acceptor() != null;
     }
 
     /**
@@ -100,6 +116,9 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
             TileEntityTransmitter transmitterTile = tile.get();
             //Check to make sure the transmitter is still valid
             //TODO: Is loaded check should potentially use onUnload so it runs before the onRemoved?
+            //TODO: I think this isLoaded check may actually break when chunks become loaded but inaccessible...
+            // so we may need to move the isLoaded check to run or maybe even just remove it all together??
+            // Can we maybe just have it always be true and let the GC handle nuking the listeners
             return transmitterTile != null && !transmitterTile.isRemoved() && transmitterTile.hasLevel() && transmitterTile.isLoaded();
         }
 

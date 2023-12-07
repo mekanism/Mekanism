@@ -21,6 +21,7 @@ import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.network.to_client.PacketTransporterUpdate;
 import mekanism.common.tier.TransporterTier;
@@ -33,7 +34,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -55,8 +55,13 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     @Override
+    protected AbstractAcceptorCache<IItemHandler, ?> createAcceptorCache() {
+        return new AcceptorCache<>(getTransmitterTile(), Capabilities.ITEM.block());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
     public AcceptorCache<IItemHandler> getAcceptorCache() {
-        //Cast it here to make things a bit easier, as we know createAcceptorCache by default returns an object of type AcceptorCache
         return (AcceptorCache<IItemHandler>) super.getAcceptorCache();
     }
 
@@ -98,11 +103,6 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
             }
         }
         return false;
-    }
-
-    @Override
-    public boolean isValidAcceptor(ServerLevel level, BlockPos pos, @Nullable BlockEntity tile, Direction side) {
-        return super.isValidAcceptor(level, pos, tile, side) && getAcceptorCache().isAcceptorAndListen(level, pos, side, Capabilities.ITEM.block());
     }
 
     public void onUpdateClient() {

@@ -100,7 +100,7 @@ public class Capabilities {//TODO - 1.20.2: Figure out which of these types actu
         event.registerEntity(IEntitySecurityUtils.INSTANCE.securityCapability(), MekanismEntityTypes.ROBIT.get(), (robit, ctx) -> robit);
 
         for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
-            //TODO - 1.20.2: Can this lambda be shared between entity types?
+            //Note: The jvm will reuse the lambda between types
             event.registerEntity(RADIATION_ENTITY, entityType, (entity, ctx) -> entity instanceof LivingEntity living ? new RadiationEntity(living) : null);
         }
         //TODO - 1.20.2: We could loop all mek items to allow for them to provide caps that way... but
@@ -113,7 +113,8 @@ public class Capabilities {//TODO - 1.20.2: Figure out which of these types actu
                 capabilityAware.attachCapabilities(event);
             }
         }
-        //TODO: Register bounding block proxies
+
+        //Register bounding block proxies
         TileEntityBoundingBlock.alwaysProxyCapability(event, CONFIG_CARD);
         TileEntityBoundingBlock.alwaysProxyCapability(event, IBlockSecurityUtils.INSTANCE.ownerCapability());
         TileEntityBoundingBlock.alwaysProxyCapability(event, IBlockSecurityUtils.INSTANCE.securityCapability());

@@ -17,6 +17,7 @@ import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.content.network.HeatNetwork;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -51,8 +52,13 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     }
 
     @Override
+    protected AbstractAcceptorCache<IHeatHandler, ?> createAcceptorCache() {
+        return new AcceptorCache<>(getTransmitterTile(), Capabilities.HEAT_HANDLER.block());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
     public AcceptorCache<IHeatHandler> getAcceptorCache() {
-        //Cast it here to make things a bit easier, as we know createAcceptorCache by default returns an object of type AcceptorCache
         return (AcceptorCache<IHeatHandler>) super.getAcceptorCache();
     }
 
@@ -77,8 +83,8 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
 
     @Override
     public boolean isValidAcceptor(ServerLevel level, BlockPos pos, @Nullable BlockEntity tile, Direction side) {
-        //Note: We intentionally do not call super here
-        return getAcceptorCache().isAcceptorAndListen(level, pos, side, Capabilities.HEAT_HANDLER.block());
+        //Note: We intentionally do not call super here as other elements in the network are intentionally acceptors
+        return getAcceptorCache().isAcceptor(side);
     }
 
     @Nullable

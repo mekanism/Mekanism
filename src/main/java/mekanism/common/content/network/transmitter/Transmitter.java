@@ -16,7 +16,6 @@ import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
-import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tile.interfaces.ITileWrapper;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
@@ -81,9 +80,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         Collections.addAll(supportedTransmissionTypes, transmissionTypes);
     }
 
-    protected AbstractAcceptorCache<ACCEPTOR, ?> createAcceptorCache() {
-        return new AcceptorCache<>(this, getTransmitterTile());
-    }
+    protected abstract AbstractAcceptorCache<ACCEPTOR, ?> createAcceptorCache();
 
     public AbstractAcceptorCache<ACCEPTOR, ?> getAcceptorCache() {
         return acceptorCache;
@@ -363,9 +360,11 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
      * @apiNote Only call this from the server side
      */
     public boolean isValidAcceptor(ServerLevel level, BlockPos pos, @Nullable BlockEntity tile, Direction side) {
-        //TODO: Rename this method better to make it more apparent that it caches and also listens to the acceptor
-        //If it isn't a transmitter or the transmission type is different than the one the transmitter has
-        return !(tile instanceof TileEntityTransmitter transmitter) || !supportsTransmissionType(transmitter);
+        //If it isn't a transmitter or the transmission type is different from the one the transmitter has
+        if (!(tile instanceof TileEntityTransmitter transmitter) || !supportsTransmissionType(transmitter)) {
+            return getAcceptorCache().isAcceptor(side);
+        }
+        return false;
     }
 
     public boolean canConnectMutual(Direction side, @Nullable BlockEntity cachedTile) {
@@ -631,8 +630,6 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     public void remove() {
-        //Clear our cached listeners
-        acceptorCache.clear();
     }
 
     public ConnectionType getConnectionType(Direction side) {

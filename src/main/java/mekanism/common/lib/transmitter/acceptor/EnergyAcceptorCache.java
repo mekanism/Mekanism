@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.integration.energy.IEnergyCompat;
 import mekanism.common.lib.transmitter.acceptor.EnergyAcceptorCache.EnergyAcceptorInfo;
@@ -18,30 +17,19 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class EnergyAcceptorCache extends AbstractAcceptorCache<IStrictEnergyHandler, EnergyAcceptorInfo> {
 
-    public EnergyAcceptorCache(Transmitter<IStrictEnergyHandler, ?, ?> transmitter, TileEntityTransmitter transmitterTile) {
-        super(transmitter, transmitterTile);
+    public EnergyAcceptorCache(TileEntityTransmitter transmitterTile) {
+        super(transmitterTile);
     }
 
-    /**
-     * @apiNote Only call this from the server side
-     */
-    public boolean hasStrictEnergyHandlerAndListen(ServerLevel level, BlockPos pos, Direction side) {
-        //TODO: Make sure we are removing it from cachedAcceptors when it becomes invalidated or the next call to this will error
-        // Is this even correct??? The cache only actually gets removed if isValid is false
-        // This definitely needs more thought and handling related to when a position potentially changes which base energy cap it is providing
-        EnergyAcceptorInfo cachedAcceptor = cachedAcceptors.get(side);
-        if (cachedAcceptor != null) {
-            return cachedAcceptor.acceptor() != null;
-        }
-        Direction opposite = side.getOpposite();
+    @Override
+    protected EnergyAcceptorInfo initializeCache(ServerLevel level, BlockPos pos, Direction opposite, RefreshListener refreshListener) {
         EnergyAcceptorInfo acceptorInfo = new EnergyAcceptorInfo();
-        cachedAcceptors.put(side, acceptorInfo);
         for (IEnergyCompat energyCompat : EnergyCompatUtils.getCompats()) {
             if (energyCompat.capabilityExists()) {
-                acceptorInfo.addCapability(energyCompat, level, pos, opposite, getRefreshListener(side));
+                acceptorInfo.addCapability(energyCompat, level, pos, opposite, refreshListener);
             }
         }
-        return acceptorInfo.acceptor() != null;
+        return acceptorInfo;
     }
 
     public static class EnergyAcceptorInfo implements AcceptorInfo<IStrictEnergyHandler> {
@@ -63,8 +51,7 @@ public class EnergyAcceptorCache extends AbstractAcceptorCache<IStrictEnergyHand
         public IStrictEnergyHandler acceptor() {
             for (CacheInfo cacheInfo : capabilities) {
                 IEnergyCompat energyCompat = cacheInfo.energyCompat();
-                //Validate that the energy compat is still usable
-                //TODO: Re-evaluate this
+                //Validate that the energy compat is actually usable
                 if (energyCompat.isUsable()) {
                     Object capability = cacheInfo.cache().getCapability();
                     if (capability != null) {

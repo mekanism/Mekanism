@@ -43,12 +43,9 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -81,7 +78,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
 
     @Override
     protected BoxedChemicalAcceptorCache createAcceptorCache() {
-        return new BoxedChemicalAcceptorCache(this, getTransmitterTile());
+        return new BoxedChemicalAcceptorCache(getTransmitterTile());
     }
 
     @Override
@@ -215,11 +212,6 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
             nbtTags.put(NBTConstants.BOXED_CHEMICAL, saveShare.write(new CompoundTag()));
         }
         return nbtTags;
-    }
-
-    @Override
-    public boolean isValidAcceptor(ServerLevel level, BlockPos pos, @Nullable BlockEntity tile, Direction side) {
-        return super.isValidAcceptor(level, pos, tile, side) && getAcceptorCache().isChemicalAcceptorAndListen(level, pos, side);
     }
 
     @Override
