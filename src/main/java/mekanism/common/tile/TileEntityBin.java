@@ -14,11 +14,10 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.BinInventorySlot;
-import mekanism.common.lib.inventory.TileTransitRequest;
+import mekanism.common.lib.inventory.HandlerTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.upgrade.BinUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
@@ -89,16 +88,11 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
             if (getActive()) {
                 //Note: We can't just pass "this" and have to instead look up the capability to make sure we respect any sidedness
                 IItemHandler capability = Capabilities.ITEM.getCapabilityIfLoaded(level, worldPosition, null, this, Direction.DOWN);
-                TileTransitRequest request = new TileTransitRequest(capability);
+                HandlerTransitRequest request = new HandlerTransitRequest(capability);
                 request.addItem(binSlot.getBottomStack(), 0);
-                TransitResponse response;
                 BlockPos below = getBlockPos().below();
                 BlockEntity tile = WorldUtils.getTileEntity(getLevel(), below);
-                if (tile instanceof TileEntityLogisticalTransporterBase transporter) {
-                    response = transporter.getTransmitter().insert(this, request, transporter.getTransmitter().getColor(), true, 0);
-                } else {
-                    response = request.addToInventory(getLevel(), below, tile, Direction.DOWN, 0);
-                }
+                TransitResponse response = request.eject(this, below, tile, Direction.DOWN, 0, transporter -> transporter.getTransmitter().getColor());
                 if (!response.isEmpty() && tier != BinTier.CREATIVE) {
                     int sendingAmount = response.getSendingAmount();
                     MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(sendingAmount, Action.EXECUTE), sendingAmount);

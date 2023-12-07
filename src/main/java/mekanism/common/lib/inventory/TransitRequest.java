@@ -4,10 +4,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.tile.TileEntityLogisticalSorter;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -36,7 +39,7 @@ public abstract class TransitRequest {
     }
 
     public static TransitRequest definedItem(IItemHandler inventory, int min, int max, Finder finder) {
-        TileTransitRequest ret = new TileTransitRequest(inventory);
+        HandlerTransitRequest ret = new HandlerTransitRequest(inventory);
         if (inventory == null) {
             return ret;
         }
@@ -59,6 +62,18 @@ public abstract class TransitRequest {
     }
 
     public abstract Collection<? extends ItemData> getItemData();
+
+    @NotNull
+    public TransitResponse eject(BlockEntity outputter, BlockPos targetPos, @Nullable BlockEntity target, Direction side, int min,
+          Function<TileEntityLogisticalTransporterBase, EnumColor> outputColor) {
+        if (isEmpty()) {//Short circuit if our request is empty
+            return getEmptyResponse();
+        }
+        if (target instanceof TileEntityLogisticalTransporterBase transporter) {
+            return transporter.getTransmitter().insert(outputter, this, outputColor.apply(transporter), true, min);
+        }
+        return addToInventory(outputter.getLevel(), targetPos, target, side, min);
+    }
 
     @NotNull
     public TransitResponse addToInventory(Level level, BlockPos pos, @Nullable IItemHandler inventory, int min, boolean force) {

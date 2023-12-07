@@ -21,7 +21,6 @@ public class BoxedChemicalHandler {
 
     private final Map<ChemicalType, BlockCapabilityCache<? extends IChemicalHandler<?, ?>, @Nullable Direction>> handlers = new EnumMap<>(ChemicalType.class);
 
-    //TODO: Re-evaluate this
     public BoxedChemicalHandler(ServerLevel level, BlockPos pos, Direction side, AbstractAcceptorCache.RefreshListener refreshListener) {
         for (ChemicalType chemicalType : EnumUtils.CHEMICAL_TYPES) {
             handlers.put(chemicalType, ChemicalUtil.getCapabilityForChemical(chemicalType).createCache(level, pos, side, refreshListener, refreshListener));

@@ -380,9 +380,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         return true;
     }
 
-    //TODO: Remove this? Probably not as we can then pass the tile just for checking connections
     public TransitResponse insert(BlockEntity outputter, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
-        return insert(outputter.getBlockPos(), request, color, doEmit, min);
+        return insert(outputter, outputter.getBlockPos(), request, color, doEmit, stack -> stack.recalculatePath(request, this, min, doEmit));
     }
 
     public TransitResponse insert(BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {

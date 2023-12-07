@@ -87,7 +87,6 @@ public class ItemEnergized extends Item implements ICustomCreativeTabContents, I
             }
             //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
             // Internal is used by the "null" side, which is what will get used for most items
-            //TODO - 1.20.2: Figure out if we can inline the calculating of charge rate and max energy from stack to here or if it is still good to have them be suppliers
             return RateLimitEnergyHandler.create(stack, () -> getChargeRate(stack), () -> getMaxEnergy(stack), canExtract, canInsert);
         });
     }

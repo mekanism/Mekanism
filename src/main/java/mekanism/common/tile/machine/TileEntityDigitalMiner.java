@@ -70,7 +70,6 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.interfaces.IHasVisualization;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -267,12 +266,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 if (!ejectMap.isEmpty()) {
                     BlockPos ejectInvPos = getBlockPos().above().relative(oppositeDirection, 2);
                     BlockEntity ejectInv = WorldUtils.getTileEntity(level, ejectInvPos);
-                    TransitResponse response;
-                    if (ejectInv instanceof TileEntityLogisticalTransporterBase transporter) {
-                        response = transporter.getTransmitter().insert(ejectPos, ejectMap, transporter.getTransmitter().getColor(), true, 0);
-                    } else {
-                        response = ejectMap.addToInventory(level, ejectInvPos, ejectInv, oppositeDirection, 0);
-                    }
+                    TransitResponse response = ejectMap.eject(this, ejectInvPos, ejectInv, oppositeDirection, 0, transporter -> transporter.getTransmitter().getColor());
                     if (!response.isEmpty()) {
                         response.useAll();
                     }

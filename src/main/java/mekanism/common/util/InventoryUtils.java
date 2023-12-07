@@ -11,7 +11,7 @@ import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.item.interfaces.IDroppableContents;
-import mekanism.common.lib.inventory.TileTransitRequest;
+import mekanism.common.lib.inventory.HandlerTransitRequest;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.damagesource.DamageSource;
@@ -100,12 +100,12 @@ public final class InventoryUtils {
         return Capabilities.ITEM.getCapabilityIfLoaded(level, pos, side) != null;
     }
 
-    public static TileTransitRequest getEjectItemMap(IItemHandler handler, List<IInventorySlot> slots) {
-        return getEjectItemMap(new TileTransitRequest(handler), slots);
+    public static HandlerTransitRequest getEjectItemMap(IItemHandler handler, List<IInventorySlot> slots) {
+        return getEjectItemMap(new HandlerTransitRequest(handler), slots);
     }
 
     @Contract("_, _ -> param1")
-    public static <REQUEST extends TileTransitRequest> REQUEST getEjectItemMap(REQUEST request, List<IInventorySlot> slots) {
+    public static <REQUEST extends HandlerTransitRequest> REQUEST getEjectItemMap(REQUEST request, List<IInventorySlot> slots) {
         // shuffle the order we look at our slots to avoid ejection patterns
         List<IInventorySlot> shuffled = new ArrayList<>(slots);
         Collections.shuffle(shuffled);

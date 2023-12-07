@@ -48,7 +48,10 @@ public class TileEntityTypeRegistryObject<BE extends BlockEntity> extends Mekani
         serverTicker = ticker;
     }
 
-    //TODO: Document use case of shouldApply
+    /**
+     * @param shouldApply Determines whether the provider actually be attached to this block entity type. Useful for cases when we want to conditionally apply it based on
+     *                    loaded mods or a block's attributes.
+     */
     <CAP, CONTEXT> void addCapability(BlockCapability<CAP, CONTEXT> capability, ICapabilityProvider<? super BE, CONTEXT, CAP> provider, BooleanSupplier shouldApply) {
         if (capabilityProviders == null) {
             capabilityProviders = new ArrayList<>();

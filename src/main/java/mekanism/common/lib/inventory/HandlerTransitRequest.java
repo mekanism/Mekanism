@@ -11,19 +11,18 @@ import mekanism.common.util.InventoryUtils;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 
-//TODO: Do we want to rename this to HandlerTransitRequest?
-public class TileTransitRequest extends TransitRequest {
+public class HandlerTransitRequest extends TransitRequest {
 
     private final IItemHandler handler;
-    private final Map<HashedItem, TileItemData> itemMap = new LinkedHashMap<>();
+    private final Map<HashedItem, HandlerItemData> itemMap = new LinkedHashMap<>();
 
-    public TileTransitRequest(IItemHandler handler) {
+    public HandlerTransitRequest(IItemHandler handler) {
         this.handler = handler;
     }
 
     public void addItem(ItemStack stack, int slot) {
         HashedItem hashed = HashedItem.create(stack);
-        itemMap.computeIfAbsent(hashed, TileItemData::new).addSlot(slot, stack);
+        itemMap.computeIfAbsent(hashed, HandlerItemData::new).addSlot(slot, stack);
     }
 
     public int getCount(HashedItem itemType) {
@@ -35,20 +34,20 @@ public class TileTransitRequest extends TransitRequest {
         return handler;
     }
 
-    public Map<HashedItem, TileItemData> getItemMap() {
+    public Map<HashedItem, HandlerItemData> getItemMap() {
         return itemMap;
     }
 
     @Override
-    public Collection<TileItemData> getItemData() {
+    public Collection<HandlerItemData> getItemData() {
         return itemMap.values();
     }
 
-    public class TileItemData extends ItemData {
+    public class HandlerItemData extends ItemData {
 
         private final Int2IntMap slotMap = new Int2IntOpenHashMap();
 
-        public TileItemData(HashedItem itemType) {
+        public HandlerItemData(HashedItem itemType) {
             super(itemType);
         }
 
@@ -72,9 +71,8 @@ public class TileTransitRequest extends TransitRequest {
                     ItemStack ret = handler.extractItem(slot, toUse, false);
                     boolean stackable = InventoryUtils.areItemsStackable(itemStack, ret);
                     if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
-                        Mekanism.logger.warn("An inventory's returned content {} does not line up with TileTransitRequest's prediction.", stackable ? "count" : "type");
-                        Mekanism.logger.warn("TileTransitRequest item: {}, toUse: {}, ret: {}, slot: {}", itemStack, toUse, ret, slot);
-                        //TODO: Do we want to keep track of the position and side so we can log it here like we used to?
+                        Mekanism.logger.warn("An inventory's returned content {} does not line up with HandlerTransitRequest's prediction.", stackable ? "count" : "type");
+                        Mekanism.logger.warn("HandlerTransitRequest item: {}, toUse: {}, ret: {}, slot: {}", itemStack, toUse, ret, slot);
                         Mekanism.logger.warn("ItemHandler: {}", handler.getClass().getName());
                     }
                     amount -= toUse;

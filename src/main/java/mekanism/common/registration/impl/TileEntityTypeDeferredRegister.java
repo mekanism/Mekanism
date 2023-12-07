@@ -105,7 +105,6 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
 
         @SuppressWarnings("unchecked")
         public <CAP, CONTEXT> BlockEntityTypeBuilder<BE> withSimple(BlockCapability<CAP, CONTEXT> capability, BooleanSupplier shouldApply) {
-            //TODO: Re-evaluate this method and the fact that it makes it so there isn't compile time validation of types??
             return with(capability, (ICapabilityProvider<? super BE, CONTEXT, CAP>) Capabilities.SIMPLE_PROVIDER, shouldApply);
         }
 
@@ -118,6 +117,10 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
             return with(capability, provider, ConstantPredicates.ALWAYS_TRUE);
         }
 
+        /**
+         * @param shouldApply Determines whether the provider actually be attached to this block entity type. Useful for cases when we want to conditionally apply it
+         *                    based on loaded mods or a block's attributes.
+         */
         public <CAP, CONTEXT> BlockEntityTypeBuilder<BE> with(BlockCapability<CAP, CONTEXT> capability, ICapabilityProvider<? super BE, CONTEXT, CAP> provider,
               BooleanSupplier shouldApply) {
             registryObject.addCapability(capability, provider, shouldApply);

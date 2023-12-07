@@ -25,7 +25,7 @@ import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerT
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
-import mekanism.common.lib.inventory.TileTransitRequest;
+import mekanism.common.lib.inventory.HandlerTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -36,7 +36,6 @@ import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
@@ -215,12 +214,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                             //Update the side so that if/when the response uses it, it makes sure it is grabbing from the correct side
                             ejectMap.handler = getHandler(side);
                             //If the spot is not loaded just skip trying to eject to it
-                            TransitResponse response;
-                            if (target instanceof TileEntityLogisticalTransporterBase transporter) {
-                                response = transporter.getTransmitter().insert(tile, ejectMap, outputColor, true, 0);
-                            } else {
-                                response = ejectMap.addToInventory(tile.getLevel(), relative, target, side, 0);
-                            }
+                            TransitResponse response = ejectMap.eject(tile, relative, target, side, 0, transporter -> outputColor);
                             if (!response.isEmpty()) {
                                 // use the items returned by the TransitResponse; will be visible next loop
                                 response.useAll();
@@ -404,7 +398,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
     //End computer related methods
 
-    private static class EjectTransitRequest extends TileTransitRequest {
+    private static class EjectTransitRequest extends HandlerTransitRequest {
 
         public IItemHandler handler;
 
