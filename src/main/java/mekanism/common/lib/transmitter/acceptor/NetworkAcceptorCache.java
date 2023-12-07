@@ -20,6 +20,7 @@ public class NetworkAcceptorCache<ACCEPTOR> {
     private final Map<Transmitter<ACCEPTOR, ?, ?>, Set<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
 
     public void updateTransmitterOnSide(Transmitter<ACCEPTOR, ?, ?> transmitter, Direction side) {
+        transmitter.refreshAcceptorConnections(side);
         ACCEPTOR acceptor = transmitter.canConnectToAcceptor(side) ? transmitter.getAcceptor(side) : null;
         BlockPos acceptorPos = transmitter.getTilePos().relative(side);
         if (acceptor == null) {
@@ -66,7 +67,6 @@ public class NetworkAcceptorCache<ACCEPTOR> {
                 if (transmitter.isValid()) {
                     //Update all the changed directions
                     for (Direction side : entry.getValue()) {
-                        transmitter.refreshAcceptorConnections(side);
                         updateTransmitterOnSide(transmitter, side);
                     }
                 }

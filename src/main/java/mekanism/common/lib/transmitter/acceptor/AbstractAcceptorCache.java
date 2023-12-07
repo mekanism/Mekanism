@@ -128,8 +128,6 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
                 // and if the chunk is now unloaded we will get null as the capability, and then when it loads again
                 // we will be updated and get the proper capability again
                 transmitterTile.getTransmitter().markDirtyAcceptor(side);
-                //TODO: This used to do refreshConnections (at least under certain conditions) which updates more things than just markDirty acceptor
-                // so maybe some of the reasons that the idle path seems to stay broken is because we don't update enough stuff?
             }
         }
     }
