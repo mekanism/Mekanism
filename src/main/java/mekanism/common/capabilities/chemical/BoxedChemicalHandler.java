@@ -27,6 +27,10 @@ public class BoxedChemicalHandler {
         }
     }
 
+    public boolean hasAnyAcceptors() {
+        return handlers.values().stream().anyMatch(cache -> cache.getCapability() != null);
+    }
+
     @Nullable
     @SuppressWarnings("unchecked")
     public <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> IChemicalHandler<CHEMICAL, STACK> getHandlerFor(ChemicalType chemicalType) {

@@ -29,6 +29,18 @@ public class BoxedChemicalAcceptorCache extends AbstractAcceptorCache<BoxedChemi
     }
 
     //TODO - 1.20: Make this be the boxed chemical handler maybe?
-    public record BoxedChemicalAcceptorInfo(@Nullable BoxedChemicalHandler acceptor) implements AcceptorInfo<BoxedChemicalHandler> {
+    public static final class BoxedChemicalAcceptorInfo implements AcceptorInfo<BoxedChemicalHandler> {
+
+        private final BoxedChemicalHandler acceptor;
+
+        BoxedChemicalAcceptorInfo(BoxedChemicalHandler acceptor) {
+            this.acceptor = acceptor;
+        }
+
+        @Nullable
+        @Override
+        public BoxedChemicalHandler acceptor() {
+            return acceptor.hasAnyAcceptors() ? acceptor : null;
+        }
     }
 }

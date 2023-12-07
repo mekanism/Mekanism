@@ -10,7 +10,6 @@ import java.util.function.BooleanSupplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import mekanism.common.util.EmitUtils;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -45,8 +44,7 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
     }
 
     /**
-     * Similar to {@link EmitUtils#forEachSide(net.minecraft.world.level.Level, net.minecraft.core.BlockPos, Iterable, mekanism.common.util.EmitUtils.SideAction)} except
-     * queries our cached acceptors.
+     * Gets all our cached acceptors for the given sides.
      *
      * @implNote Grabs the acceptors from cache
      */
