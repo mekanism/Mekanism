@@ -16,6 +16,8 @@ import mekanism.common.capabilities.chemical.item.ChemicalTankRateLimitChemicalT
 import mekanism.common.capabilities.chemical.item.ChemicalTankRateLimitChemicalTank.SlurryTankRateLimitChemicalTank;
 import mekanism.common.capabilities.merged.MergedTankContentsHandler;
 import mekanism.common.item.block.ItemBlockChemicalTank;
+import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.ChemicalTankTier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -25,13 +27,28 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 public class ChemicalTankContentsHandler extends MergedTankContentsHandler<MergedChemicalTank> {
 
     public static void attachCapsToItem(RegisterCapabilitiesEvent event, Item item) {
-        //TODO - 1.20.2: Figure out a better way to do this (as this may actually have sync issues if interacting with multiple caps at once??)
-        // Replace the actual thing from using normal NBT to using attachments and actually attaching the backing tanks to it.
-        // That way then each can have a merged tank, but then they can actually be updated on the backend?
-        event.registerItem(Capabilities.GAS_HANDLER.item(), (stack, ctx) -> new ChemicalTankContentsHandler(stack).gasHandler, item);
-        event.registerItem(Capabilities.INFUSION_HANDLER.item(), (stack, ctx) -> new ChemicalTankContentsHandler(stack).infusionHandler, item);
-        event.registerItem(Capabilities.PIGMENT_HANDLER.item(), (stack, ctx) -> new ChemicalTankContentsHandler(stack).pigmentHandler, item);
-        event.registerItem(Capabilities.SLURRY_HANDLER.item(), (stack, ctx) -> new ChemicalTankContentsHandler(stack).slurryHandler, item);
+        event.registerItem(Capabilities.GAS_HANDLER.item(), (stack, ctx) -> getOrAttachHandler(stack).gasHandler, item);
+        event.registerItem(Capabilities.INFUSION_HANDLER.item(), (stack, ctx) -> getOrAttachHandler(stack).infusionHandler, item);
+        event.registerItem(Capabilities.PIGMENT_HANDLER.item(), (stack, ctx) -> getOrAttachHandler(stack).pigmentHandler, item);
+        event.registerItem(Capabilities.SLURRY_HANDLER.item(), (stack, ctx) -> getOrAttachHandler(stack).slurryHandler, item);
+    }
+
+    /**
+     * Gets or attaches a new handler to the stack so that we can have a single instance reach across capabilities. That way if the gas and infusion capabilities are
+     * gotten, and we insert into gas and then try to insert into infusion we will properly not allow that.
+     */
+    private static ChemicalTankContentsHandler getOrAttachHandler(ItemStack stack) {
+        //TODO - 1.20.4: Remove the need for the .get as it will be fixed
+        if (stack.hasData(MekanismAttachmentTypes.CHEMICAL_TANK_CONTENTS_HANDLER.get())) {
+            return stack.getData(MekanismAttachmentTypes.CHEMICAL_TANK_CONTENTS_HANDLER);
+        }
+        ChemicalTankContentsHandler handler = new ChemicalTankContentsHandler(stack);
+        stack.setData(MekanismAttachmentTypes.CHEMICAL_TANK_CONTENTS_HANDLER, handler);
+        return handler;
+    }
+
+    public static ChemicalTankContentsHandler createDummy() {
+        return new ChemicalTankContentsHandler(MekanismBlocks.BASIC_CHEMICAL_TANK.getItemStack());
     }
 
     private ChemicalTankContentsHandler(ItemStack stack) {

@@ -18,6 +18,8 @@ import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.Rate
 import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.RateLimitPigmentTank;
 import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.RateLimitSlurryTank;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler.RateLimitFluidTank;
+import mekanism.common.registries.MekanismAttachmentTypes;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
@@ -37,12 +39,29 @@ public class GaugeDropperContentsHandler extends MergedTankContentsHandler<Merge
     private static final int TRANSFER_RATE = 256;
 
     public static void attachCapsToItem(RegisterCapabilitiesEvent event, Item item) {
-        //TODO - 1.20.2: Figure out a better way to do this (as this may actually have sync issues if interacting with multiple caps at once??)
-        event.registerItem(Capabilities.GAS_HANDLER.item(), (stack, ctx) -> new GaugeDropperContentsHandler(stack).gasHandler, item);
-        event.registerItem(Capabilities.INFUSION_HANDLER.item(), (stack, ctx) -> new GaugeDropperContentsHandler(stack).infusionHandler, item);
-        event.registerItem(Capabilities.PIGMENT_HANDLER.item(), (stack, ctx) -> new GaugeDropperContentsHandler(stack).pigmentHandler, item);
-        event.registerItem(Capabilities.SLURRY_HANDLER.item(), (stack, ctx) -> new GaugeDropperContentsHandler(stack).slurryHandler, item);
-        event.registerItem(FluidHandler.ITEM, (stack, ctx) -> new GaugeDropperContentsHandler(stack), item);
+        event.registerItem(Capabilities.GAS_HANDLER.item(), (stack, ctx) -> getOrAttachHandler(stack).gasHandler, item);
+        event.registerItem(Capabilities.INFUSION_HANDLER.item(), (stack, ctx) -> getOrAttachHandler(stack).infusionHandler, item);
+        event.registerItem(Capabilities.PIGMENT_HANDLER.item(), (stack, ctx) -> getOrAttachHandler(stack).pigmentHandler, item);
+        event.registerItem(Capabilities.SLURRY_HANDLER.item(), (stack, ctx) -> getOrAttachHandler(stack).slurryHandler, item);
+        event.registerItem(FluidHandler.ITEM, (stack, ctx) -> getOrAttachHandler(stack), item);
+    }
+
+    /**
+     * Gets or attaches a new handler to the stack so that we can have a single instance reach across capabilities. That way if the gas and infusion capabilities are
+     * gotten, and we insert into gas and then try to insert into infusion we will properly not allow that.
+     */
+    private static GaugeDropperContentsHandler getOrAttachHandler(ItemStack stack) {
+        //TODO - 1.20.4: Remove the need for the .get as it will be fixed
+        if (stack.hasData(MekanismAttachmentTypes.GAUGE_DROPPER_CONTENTS_HANDLER.get())) {
+            return stack.getData(MekanismAttachmentTypes.GAUGE_DROPPER_CONTENTS_HANDLER);
+        }
+        GaugeDropperContentsHandler handler = new GaugeDropperContentsHandler(stack);
+        stack.setData(MekanismAttachmentTypes.GAUGE_DROPPER_CONTENTS_HANDLER, handler);
+        return handler;
+    }
+
+    public static GaugeDropperContentsHandler createDummy() {
+        return new GaugeDropperContentsHandler(MekanismBlocks.BASIC_CHEMICAL_TANK.getItemStack());
     }
 
     protected final List<IExtendedFluidTank> fluidTanks;

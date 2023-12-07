@@ -94,7 +94,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 BlockEntity front = WorldUtils.getTileEntity(getLevel(), frontPos);
                 IItemHandler frontCap = Capabilities.ITEM.getCapabilityIfLoaded(level, frontPos, null, front, direction.getOpposite());
                 if (front != null || frontCap != null) {
-                    //TODO: validate that front is a tile or has the handler
                     boolean sentItems = false;
                     for (SorterFilter<?> filter : filterManager.getEnabledFilters()) {
                         TransitRequest request = filter.mapInventory(back, singleItem);
@@ -105,8 +104,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                         TransitResponse response = emitItemToTransporter(frontPos, front, request, filter.color, min);
                         if (!response.isEmpty()) {
                             response.useAll();
-                            //TODO: Is this necessary?
-                            WorldUtils.markChunkDirty(getLevel(), backPos);//WorldUtils.saveChunk(back);
                             setActive(true);
                             sentItems = true;
                             break;
@@ -118,8 +115,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                         TransitResponse response = emitItemToTransporter(frontPos, front, request, color, 0);
                         if (!response.isEmpty()) {
                             response.useAll();
-                            //TODO: Is this necessary?
-                            WorldUtils.markChunkDirty(getLevel(), backPos);//WorldUtils.saveChunk(back);
                             setActive(true);
                         }
                     }

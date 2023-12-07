@@ -3,6 +3,8 @@ package mekanism.common.registries;
 import com.mojang.serialization.Codec;
 import java.util.Objects;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.chemical.item.ChemicalTankContentsHandler;
+import mekanism.common.capabilities.merged.GaugeDropperContentsHandler;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.MekanismDeferredRegister;
@@ -25,4 +27,10 @@ public class MekanismAttachmentTypes {
                 .comparator(Objects::equals)
                 .build()
     );
+
+    //Non-serializable attachments for use in persisting a backing object between mutliple capabilities
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<ChemicalTankContentsHandler>> CHEMICAL_TANK_CONTENTS_HANDLER = ATTACHMENT_TYPES.register("chemical_tank_contents_handler",
+          () -> AttachmentType.builder(ChemicalTankContentsHandler::createDummy).build());
+    public static final MekanismDeferredHolder<AttachmentType<?>, AttachmentType<GaugeDropperContentsHandler>> GAUGE_DROPPER_CONTENTS_HANDLER = ATTACHMENT_TYPES.register("gauge_dropper_contents_handler",
+          () -> AttachmentType.builder(GaugeDropperContentsHandler::createDummy).build());
 }

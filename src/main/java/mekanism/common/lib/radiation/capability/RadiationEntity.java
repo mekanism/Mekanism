@@ -38,8 +38,7 @@ public class RadiationEntity implements IRadiationEntity {
 
     @Override
     public void update() {
-        //TODO - 1.20.2: Do we need to check both here and in other places that the entity is still alive/present?
-        if (entity instanceof Player player && !MekanismUtils.isPlayingMode(player)) {
+        if (!entity.isAlive() || entity instanceof Player player && !MekanismUtils.isPlayingMode(player)) {
             return;
         }
         entity.getData(MekanismAttachmentTypes.RADIATION);
