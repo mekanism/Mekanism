@@ -1,18 +1,14 @@
 package mekanism.common.integration.energy;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.capabilities.Capabilities.MultiTypeCapability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,6 +53,13 @@ public interface IEnergyCompat {
     Object wrapStrictEnergyHandler(IStrictEnergyHandler handler);
 
     /**
+     * Wraps this compat's capability in a strict energy handler.
+     *
+     * @param handler Handler to wrap. Can be assumed to be the same type as this energy compat.
+     */
+    IStrictEnergyHandler wrapAsStrictEnergyHandler(Object handler);
+
+    /**
      * Wraps the capability implemented in the provider into a lazy optional {@link IStrictEnergyHandler}, or returns {@code LazyOptional.empty()} if the capability is
      * not implemented.
      *
@@ -69,18 +72,10 @@ public interface IEnergyCompat {
      * @return The capability implemented in the provider into an {@link IStrictEnergyHandler}, or {@code null} if the capability is not implemented.
      */
     @Nullable
-    IStrictEnergyHandler getAsStrictEnergyHandler(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity tile, @Nullable Direction context);
-
-    /**
-     * Creates a {@link BlockCapabilityCache} and provides the required function to wrap the capability into a strict energy handler.
-     *
-     * @param level                Level to query.
-     * @param pos                  Position in level.
-     * @param context              Side
-     * @param isValid              A function to check if the listener still wants to receive notifications.
-     * @param invalidationListener The invalidation listener. Will be called whenever the capability of the cache might have changed.
-     */
-    CacheConverter<?> getCacheAndConverter(ServerLevel level, BlockPos pos, @Nullable Direction context, BooleanSupplier isValid, Runnable invalidationListener);
+    default IStrictEnergyHandler getAsStrictEnergyHandler(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity tile, @Nullable Direction context) {
+        Object capability = getCapability().getCapability(level, pos, state, tile, context);
+        return capability == null ? null : wrapAsStrictEnergyHandler(capability);
+    }
 
     /**
      * Gets an exposed capability of this compat's type from a stack and wraps it into a strict energy handler.
@@ -88,8 +83,8 @@ public interface IEnergyCompat {
      * @param stack ItemStack to check for the capability
      */
     @Nullable
-    IStrictEnergyHandler getStrictEnergyHandler(ItemStack stack);
-
-    record CacheConverter<CAPABILITY>(BlockCapabilityCache<CAPABILITY, @Nullable Direction> rawCache, Function<CAPABILITY, IStrictEnergyHandler> convertToStrict) {
+    default IStrictEnergyHandler getStrictEnergyHandler(ItemStack stack) {
+        Object capability = getCapability().getCapability(stack);
+        return capability == null ? null : wrapAsStrictEnergyHandler(capability);
     }
 }

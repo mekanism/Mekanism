@@ -1,22 +1,13 @@
 package mekanism.common.integration.energy.forgeenergy;
 
-import java.util.function.BooleanSupplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.Capabilities.MultiTypeCapability;
 import mekanism.common.integration.energy.IEnergyCompat;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.energy.IEnergyStorage;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ForgeEnergyCompat implements IEnergyCompat {
@@ -44,23 +35,8 @@ public class ForgeEnergyCompat implements IEnergyCompat {
         return new ForgeEnergyIntegration(handler);
     }
 
-    @Nullable
     @Override
-    public IStrictEnergyHandler getAsStrictEnergyHandler(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity tile, @Nullable Direction context) {
-        IEnergyStorage capability = getCapability().getCapability(level, pos, state, tile, context);
-        return capability == null ? null : new ForgeStrictEnergyHandler(capability);
-    }
-
-    @Override
-    public CacheConverter<IEnergyStorage> getCacheAndConverter(ServerLevel level, BlockPos pos, @Nullable Direction context, BooleanSupplier isValid,
-          Runnable invalidationListener) {
-        return new CacheConverter<>(getCapability().createCache(level, pos, context, isValid, invalidationListener), ForgeStrictEnergyHandler::new);
-    }
-
-    @Nullable
-    @Override
-    public IStrictEnergyHandler getStrictEnergyHandler(ItemStack stack) {
-        IEnergyStorage capability = getCapability().getCapability(stack);
-        return capability == null ? null : new ForgeStrictEnergyHandler(capability);
+    public IStrictEnergyHandler wrapAsStrictEnergyHandler(Object handler) {
+        return new ForgeStrictEnergyHandler((IEnergyStorage) handler);
     }
 }

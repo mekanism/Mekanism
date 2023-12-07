@@ -1,6 +1,5 @@
 package mekanism.common.integration.energy.fluxnetworks;
 
-import java.util.function.BooleanSupplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.Mekanism;
@@ -8,15 +7,7 @@ import mekanism.common.capabilities.Capabilities.MultiTypeCapability;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.energy.IEnergyCompat;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
-import org.jetbrains.annotations.Nullable;
 import sonar.fluxnetworks.api.energy.IFNEnergyStorage;
 
 @NothingNullByDefault
@@ -54,23 +45,8 @@ public class FNEnergyCompat implements IEnergyCompat {
         return new FNIntegration(handler);
     }
 
-    @Nullable
     @Override
-    public IStrictEnergyHandler getAsStrictEnergyHandler(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity tile, @Nullable Direction context) {
-        IFNEnergyStorage capability = getCapability().getCapability(level, pos, state, tile, context);
-        return capability == null ? null : new FNStrictEnergyHandler(capability);
-    }
-
-    @Override
-    public CacheConverter<IFNEnergyStorage> getCacheAndConverter(ServerLevel level, BlockPos pos, @Nullable Direction context, BooleanSupplier isValid,
-          Runnable invalidationListener) {
-        return new CacheConverter<>(getCapability().createCache(level, pos, context, isValid, invalidationListener), FNStrictEnergyHandler::new);
-    }
-
-    @Nullable
-    @Override
-    public IStrictEnergyHandler getStrictEnergyHandler(ItemStack stack) {
-        IFNEnergyStorage capability = getCapability().getCapability(stack);
-        return capability == null ? null : new FNStrictEnergyHandler(capability);
+    public IStrictEnergyHandler wrapAsStrictEnergyHandler(Object handler) {
+        return new FNStrictEnergyHandler((IFNEnergyStorage) handler);
     }
 }
