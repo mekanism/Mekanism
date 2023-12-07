@@ -293,18 +293,38 @@ public class WorldUtils {
         return world.getBlockEntity(pos);
     }
 
+    /**
+     * Gets the capability of a block at a given location if it is loaded
+     *
+     * @param level   Level
+     * @param cap     Capability to look up
+     * @param pos     position
+     * @param context Capability context
+     *
+     * @return capability if present, null if either not found or not loaded
+     */
     @Nullable
     @Contract("null, _, _, _ -> null")
     public static <CAP, CONTEXT> CAP getCapability(@Nullable Level level, BlockCapability<CAP, CONTEXT> cap, BlockPos pos, CONTEXT context) {
-        //TODO: USE THIS IN PLACES
         return getCapability(level, cap, pos, null, null, context);
     }
 
+    /**
+     * Gets the capability of a block at a given location if it is loaded
+     *
+     * @param level   Level
+     * @param cap     Capability to look up
+     * @param pos     position
+     * @param state   the block state, if known, or {@code null} if unknown
+     * @param tile    the block entity, if known, or {@code null} if unknown
+     * @param context Capability context
+     *
+     * @return capability if present, null if either not found or not loaded
+     */
     @Nullable
     @Contract("null, _, _, _, _, _ -> null")
     public static <CAP, CONTEXT> CAP getCapability(@Nullable Level level, BlockCapability<CAP, CONTEXT> cap, BlockPos pos, @Nullable BlockState state,
           @Nullable BlockEntity tile, CONTEXT context) {
-        //TODO: USE THIS IN PLACES
         if (!isBlockLoaded(level, pos)) {
             //If the world is null, or it is a world reader and the block is not loaded, return null
             return null;
@@ -591,7 +611,6 @@ public class WorldUtils {
      * @param fromPos pos of our block that updated
      */
     public static void notifyNeighborOfChange(@Nullable Level world, BlockPos pos, BlockPos fromPos) {
-        //TODO - 1.20.2: Re-evaluate if this and notifyLoadedNeighborsOfTileChange
         getBlockState(world, pos).ifPresent(state -> {
             state.onNeighborChange(world, pos, fromPos);
             state.neighborChanged(world, pos, world.getBlockState(fromPos).getBlock(), fromPos, false);

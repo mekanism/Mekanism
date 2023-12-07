@@ -118,8 +118,9 @@ public class TileComponentSecurity implements ITileComponent {
     SecurityMode getComputerSecurityMode() {
         //Get the effective security mode
         if (tile.getLevel() == null) {
-            //TODO - 1.20.2: Re-evaluate this?
-            return tile.getSecurityMode();
+            //If we don't have a level yet do our best effort to return a usable value
+            // though given this is just for computer access we should theoretically always have a level
+            return getMode();
         }
         return IBlockSecurityUtils.INSTANCE.getSecurityMode(tile.getLevel(), tile.getBlockPos(), tile);
     }

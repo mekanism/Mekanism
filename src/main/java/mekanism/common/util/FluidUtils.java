@@ -12,10 +12,12 @@ import mekanism.api.providers.IFluidProvider;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.content.network.distribution.FluidHandlerTarget;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -94,13 +96,15 @@ public final class FluidUtils {
         }
         FluidStack toSend = stack.copy();
         FluidHandlerTarget target = new FluidHandlerTarget(stack, 6);
-        EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (level, pos, opposite) -> {
+        Level level = from.getLevel();
+        BlockPos center = from.getBlockPos();
+        for (Direction side : sides) {
             //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
-            IFluidHandler handler = WorldUtils.getCapability(level, FluidHandler.BLOCK, pos, opposite);
+            IFluidHandler handler = WorldUtils.getCapability(level, FluidHandler.BLOCK, center.relative(side), side.getOpposite());
             if (handler != null && canFill(handler, toSend)) {
                 target.addHandler(handler);
             }
-        });
+        }
         if (target.getHandlerCount() > 0) {
             return EmitUtils.sendToAcceptors(target, stack.getAmount(), toSend);
         }

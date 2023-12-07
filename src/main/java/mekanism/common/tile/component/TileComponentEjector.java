@@ -202,16 +202,16 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                 Set<Direction> outputs = info.getSidesForData(dataType);
                 if (!outputs.isEmpty()) {
                     IItemHandler handler = getHandler(outputs.iterator().next());
+                    //NOTE: The below logic and the entire concept of EjectTransitRequest relies on the implementation detail that
+                    // per DataType all exposed slots are the same regardless of the actual side. If this ever changes or there are
+                    // cases discovered where this is not the case we will instead need to calculate the eject map for each output side
+                    // instead of only having to do it once per DataType
                     EjectTransitRequest ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(handler), inventorySlotInfo.getSlots());
                     if (!ejectMap.isEmpty()) {
-                        //TODO: Re-evaluate this as this seems potentially quite wrong in that what if there are different eject maps or something??
-                        // Also if it is fine because the handler doesn't overlap in terms of contents and slots... we could skip having to overwrite the handler
                         for (Direction side : outputs) {
                             BlockPos relative = tile.getBlockPos().relative(side);
                             BlockEntity target = WorldUtils.getTileEntity(tile.getLevel(), relative);
-                            //TODO: Do we want to validate we have a target OR an ItemHandler?
-                            //TODO: Re-evaluate this
-                            //Update the side so that if/when the response uses it, it makes sure it is grabbing from the correct side
+                            //Update the handler so that if/when the response uses it, it makes sure it is using the correct side's restrictions
                             ejectMap.handler = getHandler(side);
                             //If the spot is not loaded just skip trying to eject to it
                             TransitResponse response = ejectMap.eject(tile, relative, target, side, 0, transporter -> outputColor);

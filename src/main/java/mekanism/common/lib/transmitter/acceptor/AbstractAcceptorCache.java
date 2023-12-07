@@ -49,6 +49,7 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
      * @implNote Grabs the acceptors from cache
      */
     public List<ACCEPTOR> getConnectedAcceptors(Set<Direction> sides) {
+        //TODO: Figure out if this is including transmitters in it due to not checking acceptor connections
         List<ACCEPTOR> acceptors = new ArrayList<>(sides.size());
         for (Direction side : sides) {
             //TODO - 1.20.2: Validate that the fact this doesn't validate the thing is actually connected is fine??

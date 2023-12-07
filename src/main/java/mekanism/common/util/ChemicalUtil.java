@@ -45,9 +45,11 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.ChemicalTankTier;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.ItemCapability;
@@ -315,13 +317,15 @@ public class ChemicalUtil {
         }
         BlockCapability<IChemicalHandler<CHEMICAL, STACK>, @Nullable Direction> capability = getCapabilityForChemical(stack).block();
         ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>> target = new ChemicalHandlerTarget<>(stack, 6);
-        EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (level, pos, opposite) -> {
+        Level level = from.getLevel();
+        BlockPos center = from.getBlockPos();
+        for (Direction side : sides) {
             //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
-            IChemicalHandler<CHEMICAL, STACK> handler = WorldUtils.getCapability(level, capability, pos, opposite);
+            IChemicalHandler<CHEMICAL, STACK> handler = WorldUtils.getCapability(level, capability, center.relative(side), side.getOpposite());
             if (handler != null && canInsert(handler, stack)) {
                 target.addHandler(handler);
             }
-        });
+        }
         if (target.getHandlerCount() > 0) {
             return EmitUtils.sendToAcceptors(target, stack.getAmount(), ChemicalUtil.copy(stack));
         }

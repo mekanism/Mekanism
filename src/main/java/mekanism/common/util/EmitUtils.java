@@ -6,9 +6,6 @@ import mekanism.common.lib.distribution.IntegerSplitInfo;
 import mekanism.common.lib.distribution.LongSplitInfo;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.Level;
 
 public class EmitUtils {
 
@@ -86,28 +83,5 @@ public class EmitUtils {
      */
     public static <HANDLER, TARGET extends Target<HANDLER, FloatingLong, FloatingLong>> FloatingLong sendToAcceptors(TARGET availableTargets, FloatingLong amountToSplit) {
         return sendToAcceptors(availableTargets, new FloatingLongSplitInfo(amountToSplit, availableTargets.getHandlerCount()), amountToSplit);
-    }
-
-    /**
-     * Simple helper to loop over each side of the block and complete an action for each side
-     *
-     * @param world  - world to access
-     * @param center - location to center search on
-     * @param sides  - sides to search
-     * @param action - action to complete
-     */
-    public static void forEachSide(Level world, BlockPos center, Iterable<Direction> sides, SideAction action) {
-        //TODO - 1.20.2: I believe this method can be replaced with something in BlockPos or maybe we just want to inline it as it is so simple
-        if (sides != null) {
-            //Loop provided sides
-            for (Direction side : sides) {
-                action.act(world, center.relative(side), side.getOpposite());
-            }
-        }
-    }
-
-    public interface SideAction {
-
-        void act(Level level, BlockPos pos, Direction opposite);
     }
 }
