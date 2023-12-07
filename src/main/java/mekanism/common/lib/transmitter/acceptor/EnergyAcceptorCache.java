@@ -55,9 +55,8 @@ public class EnergyAcceptorCache extends AbstractAcceptorCache<IStrictEnergyHand
                 if (energyCompat.isUsable()) {
                     Object capability = cacheInfo.cache().getCapability();
                     if (capability != null) {
-                        //TODO - 1.20.2: CACHE THIS RESULT, the block capability cache is mostly re-usable
-                        // so we need to make our invalidation listener also nuke a cached result that we would be storing here
-                        // though we might want to be adjusting which one we return after invalidation
+                        //TODO: If creating these wrappers ends up showing as a performance hotspot/causing issues for the GC
+                        // we should look into seeing if we can somehow cache the wrapped object
                         return energyCompat.wrapAsStrictEnergyHandler(capability);
                     }
                 }

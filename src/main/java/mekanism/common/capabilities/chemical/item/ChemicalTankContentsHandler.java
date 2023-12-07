@@ -38,8 +38,7 @@ public class ChemicalTankContentsHandler extends MergedTankContentsHandler<Merge
      * gotten, and we insert into gas and then try to insert into infusion we will properly not allow that.
      */
     private static ChemicalTankContentsHandler getOrAttachHandler(ItemStack stack) {
-        //TODO - 1.20.4: Remove the need for the .get as it will be fixed
-        if (stack.hasData(MekanismAttachmentTypes.CHEMICAL_TANK_CONTENTS_HANDLER.get())) {
+        if (stack.hasData(MekanismAttachmentTypes.CHEMICAL_TANK_CONTENTS_HANDLER)) {
             return stack.getData(MekanismAttachmentTypes.CHEMICAL_TANK_CONTENTS_HANDLER);
         }
         ChemicalTankContentsHandler handler = new ChemicalTankContentsHandler(stack);

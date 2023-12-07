@@ -362,7 +362,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     public boolean isValidAcceptor(ServerLevel level, BlockPos pos, @Nullable BlockEntity tile, Direction side) {
         //If it isn't a transmitter or the transmission type is different from the one the transmitter has
         if (!(tile instanceof TileEntityTransmitter transmitter) || !supportsTransmissionType(transmitter)) {
-            return getAcceptorCache().isAcceptor(side);
+            return getAcceptorCache().getConnectedAcceptor(side) != null;
         }
         return false;
     }

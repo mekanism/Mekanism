@@ -84,7 +84,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     @Override
     public boolean isValidAcceptor(ServerLevel level, BlockPos pos, @Nullable BlockEntity tile, Direction side) {
         //Note: We intentionally do not call super here as other elements in the network are intentionally acceptors
-        return getAcceptorCache().isAcceptor(side);
+        return getAcceptorCache().getConnectedAcceptor(side) != null;
     }
 
     @Nullable

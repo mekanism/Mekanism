@@ -51,8 +51,7 @@ public class GaugeDropperContentsHandler extends MergedTankContentsHandler<Merge
      * gotten, and we insert into gas and then try to insert into infusion we will properly not allow that.
      */
     private static GaugeDropperContentsHandler getOrAttachHandler(ItemStack stack) {
-        //TODO - 1.20.4: Remove the need for the .get as it will be fixed
-        if (stack.hasData(MekanismAttachmentTypes.GAUGE_DROPPER_CONTENTS_HANDLER.get())) {
+        if (stack.hasData(MekanismAttachmentTypes.GAUGE_DROPPER_CONTENTS_HANDLER)) {
             return stack.getData(MekanismAttachmentTypes.GAUGE_DROPPER_CONTENTS_HANDLER);
         }
         GaugeDropperContentsHandler handler = new GaugeDropperContentsHandler(stack);

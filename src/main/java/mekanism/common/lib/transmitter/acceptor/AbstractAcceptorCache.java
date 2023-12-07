@@ -43,15 +43,6 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
     protected abstract INFO initializeCache(ServerLevel level, BlockPos pos, Direction opposite, RefreshListener refreshListener);
 
     /**
-     * @apiNote Only call this from the server side
-     */
-    public boolean isAcceptor(Direction side) {
-        AcceptorInfo<ACCEPTOR> cache = cachedAcceptors.get(side);
-        //Note: Cache should never be null unless we haven't been initialized yet, but it is simple enough to handle that here with a null check
-        return cache != null && cache.acceptor() != null;
-    }
-
-    /**
      * @implNote Grabs the acceptors from cache, ensuring that the connection map contains the side
      */
     @Nullable
@@ -62,14 +53,13 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
     /**
      * Gets all our cached acceptors for the given sides.
      *
+     * @param sides The sides of to look up, assumes that all the given sides are currently connected to acceptors and not other transmitters and is not set to none.
+     *
      * @implNote Grabs the acceptors from cache
      */
     public List<ACCEPTOR> getConnectedAcceptors(Set<Direction> sides) {
-        //TODO: Figure out if this is including transmitters in it due to not checking acceptor connections
         List<ACCEPTOR> acceptors = new ArrayList<>(sides.size());
         for (Direction side : sides) {
-            //TODO - 1.20.2: Validate that the fact this doesn't validate the thing is actually connected is fine??
-            // as this potentially should actually use getCachedAcceptor
             ACCEPTOR connectedAcceptor = getConnectedAcceptor(side);
             if (connectedAcceptor != null) {
                 acceptors.add(connectedAcceptor);
@@ -79,6 +69,8 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
     }
 
     /**
+     *
+     * @apiNote Only call this from the server side
      * @implNote Grabs the acceptors from cache
      */
     @Nullable

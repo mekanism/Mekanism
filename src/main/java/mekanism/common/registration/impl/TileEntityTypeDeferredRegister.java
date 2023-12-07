@@ -55,15 +55,15 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
         BlockEntityTypeBuilder<BE> builder = this.<BE>caplessMekBuilder(block, factory)
               //Delay the attachment of these and only attach them if we know they should be exposed rather than filtering in the provider itself
               .withSimple(IBlockSecurityUtils.INSTANCE.ownerCapability(), hasSecurity)
-              .withSimple(IBlockSecurityUtils.INSTANCE.securityCapability(), hasSecurity);
-        //TODO: Evaluate if there is a better way to do this (and if we can avoid attaching the providers for ones that never have the corresponding cap? probably not easily)
-        builder.with(Capabilities.GAS_HANDLER.block(), CapabilityTileEntity.GAS_HANDLER_PROVIDER);
-        builder.with(Capabilities.INFUSION_HANDLER.block(), CapabilityTileEntity.INFUSION_HANDLER_PROVIDER);
-        builder.with(Capabilities.PIGMENT_HANDLER.block(), CapabilityTileEntity.PIGMENT_HANDLER_PROVIDER);
-        builder.with(Capabilities.SLURRY_HANDLER.block(), CapabilityTileEntity.SLURRY_HANDLER_PROVIDER);
-        builder.with(Capabilities.HEAT_HANDLER.block(), CapabilityTileEntity.HEAT_HANDLER_PROVIDER);
-        builder.with(Capabilities.ITEM.block(), CapabilityTileEntity.ITEM_HANDLER_PROVIDER);
-        builder.with(FluidHandler.BLOCK, CapabilityTileEntity.FLUID_HANDLER_PROVIDER);
+              .withSimple(IBlockSecurityUtils.INSTANCE.securityCapability(), hasSecurity)
+              //TODO: Eventually see if we can come up with a way to avoid attaching providers to BEs that can never have one of the following types
+              .with(Capabilities.GAS_HANDLER.block(), CapabilityTileEntity.GAS_HANDLER_PROVIDER)
+              .with(Capabilities.INFUSION_HANDLER.block(), CapabilityTileEntity.INFUSION_HANDLER_PROVIDER)
+              .with(Capabilities.PIGMENT_HANDLER.block(), CapabilityTileEntity.PIGMENT_HANDLER_PROVIDER)
+              .with(Capabilities.SLURRY_HANDLER.block(), CapabilityTileEntity.SLURRY_HANDLER_PROVIDER)
+              .with(Capabilities.HEAT_HANDLER.block(), CapabilityTileEntity.HEAT_HANDLER_PROVIDER)
+              .with(Capabilities.ITEM.block(), CapabilityTileEntity.ITEM_HANDLER_PROVIDER)
+              .with(FluidHandler.BLOCK, CapabilityTileEntity.FLUID_HANDLER_PROVIDER);
         EnergyCompatUtils.addBlockCapabilities(builder);
         if (Mekanism.hooks.computerCompatEnabled()) {
             ComputerCapabilityHelper.addComputerCapabilities(builder, () -> Attribute.has(block.getBlock(), AttributeComputerIntegration.class));
