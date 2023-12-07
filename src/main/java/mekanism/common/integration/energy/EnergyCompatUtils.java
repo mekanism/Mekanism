@@ -53,9 +53,9 @@ public class EnergyCompatUtils {
      */
     public static boolean isEnergyCapability(@NotNull BlockCapability<?, @Nullable Direction> capability) {
         for (IEnergyCompat energyCompat : energyCompats) {
-            //TODO - 1.20.2: TEST THIS
+            //Note: We check the capability exists and usability states separately, given while it does duplicate
+            // the exists check it allows us to skip the more complex usability checks if the capability doesn't actually match
             if (energyCompat.capabilityExists() && energyCompat.getCapability().block() == capability) {
-                //TODO - 1.20.2: Should we check this before comparing instead of checking capability exists
                 return energyCompat.isUsable();
             }
         }
@@ -80,20 +80,12 @@ public class EnergyCompatUtils {
         event.registerItem(capability, (ICapabilityProvider<ItemStack, Void, CAP>) provider, item);
     }
 
-    //TODO - 1.20.2: Should this use the block entity type or the block?
-    //TODO: CALL THIS???? Though do we actually want to because we want to cache the wrapper object we provide... So we need to rethink this
     public static void addBlockCapabilities(BlockEntityTypeBuilder<? extends CapabilityTileEntity> builder) {
         for (IEnergyCompat energyCompat : energyCompats) {
             if (energyCompat.capabilityExists()) {
-                //TODO: Figure out if we are better off using something like the below similar to what we do for items
-                //register(event, energyCompat.getCapability().block(), type, energyCompat.getProviderAs(mekProvider));
-                addCapability(builder, energyCompat.getCapability().block());
+                builder.with(energyCompat.getCapability().block(), CapabilityTileEntity::basicCapabilityProvider);
             }
         }
-    }
-
-    private static <CAP> void addCapability(BlockEntityTypeBuilder<? extends CapabilityTileEntity> builder, BlockCapability<CAP, @Nullable Direction> capability) {
-        builder.with(capability, CapabilityTileEntity.basicCapabilityProvider(capability));
     }
 
     @Nullable
@@ -107,8 +99,6 @@ public class EnergyCompatUtils {
     }
 
     public static boolean hasStrictEnergyHandler(@NotNull ItemStack stack) {
-        //TODO - 1.20.2: Evaluate usages and see if any can just keep hold of the handler
-        // Also should we skip the wrapping to strict energy handler?
         return getStrictEnergyHandler(stack) != null;
     }
 

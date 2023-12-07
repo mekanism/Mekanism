@@ -1127,7 +1127,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Nullable
     @Override
     public IHeatHandler getAdjacent(@NotNull Direction side) {
-        if (canHandleHeat() && getHeatCapacitorCount(side) > 0 && level != null) {
+        if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
             return Capabilities.HEAT_HANDLER.getCapabilityIfLoaded(level, getBlockPos().relative(side), side.getOpposite());
         }
         return null;

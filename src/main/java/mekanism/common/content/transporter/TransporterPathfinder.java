@@ -464,7 +464,6 @@ public final class TransporterPathfinder {
             //Check to make sure that it is the destination
             if (startTransporter != null && neighbor.equals(finalNode)) {
                 BlockEntity neighborTile = WorldUtils.getTileEntity(world, chunkMap, neighbor);
-                //TODO: Evaluate even passing the tile through here (alternatively could make it so that we can query getCapability via the chunkMap)
                 if (destChecker.isValid(world, neighbor, neighborTile, transportStack, direction)) {
                     if (startTransporter.canEmitTo(direction) || (finalNode.equals(transportStack.homeLocation) && startTransporter.canConnect(direction))) {
                         //If it is, and we can emit to it (normal or push mode),

@@ -24,9 +24,10 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 @NothingNullByDefault
 public class ChemicalTankContentsHandler extends MergedTankContentsHandler<MergedChemicalTank> {
 
-    //TODO - 1.20.2: Do we want to get the tier from the stack
     public static void attachCapsToItem(RegisterCapabilitiesEvent event, Item item) {
         //TODO - 1.20.2: Figure out a better way to do this (as this may actually have sync issues if interacting with multiple caps at once??)
+        // Replace the actual thing from using normal NBT to using attachments and actually attaching the backing tanks to it.
+        // That way then each can have a merged tank, but then they can actually be updated on the backend?
         event.registerItem(Capabilities.GAS_HANDLER.item(), (stack, ctx) -> new ChemicalTankContentsHandler(stack).gasHandler, item);
         event.registerItem(Capabilities.INFUSION_HANDLER.item(), (stack, ctx) -> new ChemicalTankContentsHandler(stack).infusionHandler, item);
         event.registerItem(Capabilities.PIGMENT_HANDLER.item(), (stack, ctx) -> new ChemicalTankContentsHandler(stack).pigmentHandler, item);

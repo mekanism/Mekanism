@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BooleanSupplier;
+import java.util.function.Function;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.Mekanism;
@@ -106,6 +107,11 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
         public <CAP, CONTEXT> BlockEntityTypeBuilder<BE> withSimple(BlockCapability<CAP, CONTEXT> capability, BooleanSupplier shouldApply) {
             //TODO: Re-evaluate this method and the fact that it makes it so there isn't compile time validation of types??
             return with(capability, (ICapabilityProvider<? super BE, CONTEXT, CAP>) Capabilities.SIMPLE_PROVIDER, shouldApply);
+        }
+
+        public <CAP, CONTEXT> BlockEntityTypeBuilder<BE> with(BlockCapability<CAP, CONTEXT> capability,
+              Function<BlockCapability<CAP, CONTEXT>, ICapabilityProvider<? super BE, CONTEXT, CAP>> provider) {
+            return with(capability, provider.apply(capability));
         }
 
         public <CAP, CONTEXT> BlockEntityTypeBuilder<BE> with(BlockCapability<CAP, CONTEXT> capability, ICapabilityProvider<? super BE, CONTEXT, CAP> provider) {

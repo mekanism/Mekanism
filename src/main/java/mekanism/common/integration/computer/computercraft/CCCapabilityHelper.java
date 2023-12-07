@@ -18,8 +18,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class CCCapabilityHelper {
 
-    //TODO: Note this may need to be moved into another class after updating to avoid class loading issues without CC present
-    // We also will likely need to update the capabilities name as odds are I did not guess what they will choose correctly
     private static final BlockCapability<IPeripheral, @Nullable Direction> CAPABILITY = BlockCapability.createSided(new ResourceLocation(MekanismHooks.CC_MOD_ID, "peripheral"), IPeripheral.class);
     private static final ICapabilityProvider<?, @Nullable Direction, IPeripheral> PROVIDER = getProvider();
 

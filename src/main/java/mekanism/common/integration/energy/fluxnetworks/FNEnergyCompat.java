@@ -22,7 +22,7 @@ import sonar.fluxnetworks.api.energy.IFNEnergyStorage;
 @NothingNullByDefault
 public class FNEnergyCompat implements IEnergyCompat {
 
-    @Override//TODO - 1.20.2: Test to make sure this doesn't cause a crash without FN (it probably will, if it doesn't make more return types provide the generic)
+    @Override
     public MultiTypeCapability<IFNEnergyStorage> getCapability() {
         return FNCapability.ENERGY;
     }
@@ -62,7 +62,7 @@ public class FNEnergyCompat implements IEnergyCompat {
     }
 
     @Override
-    public CacheConverter<?> getCacheAndConverter(ServerLevel level, BlockPos pos, @Nullable Direction context, BooleanSupplier isValid,
+    public CacheConverter<IFNEnergyStorage> getCacheAndConverter(ServerLevel level, BlockPos pos, @Nullable Direction context, BooleanSupplier isValid,
           Runnable invalidationListener) {
         return new CacheConverter<>(getCapability().createCache(level, pos, context, isValid, invalidationListener), FNStrictEnergyHandler::new);
     }
