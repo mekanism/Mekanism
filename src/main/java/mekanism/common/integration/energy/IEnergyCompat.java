@@ -2,7 +2,7 @@ package mekanism.common.integration.energy;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.common.capabilities.Capabilities.MultiTypeCapability;
+import mekanism.common.capabilities.MultiTypeCapability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;

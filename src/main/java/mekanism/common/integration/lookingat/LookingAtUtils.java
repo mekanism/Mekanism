@@ -18,7 +18,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.Capabilities.MultiTypeCapability;
+import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.capabilities.fluid.FluidTankWrapper;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;

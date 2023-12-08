@@ -3,7 +3,7 @@ package mekanism.common.integration.energy;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.Capabilities.MultiTypeCapability;
+import mekanism.common.capabilities.MultiTypeCapability;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 
 @NothingNullByDefault

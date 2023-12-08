@@ -1,6 +1,6 @@
 package mekanism.common.integration.energy.fluxnetworks;
 
-import mekanism.common.capabilities.Capabilities.MultiTypeCapability;
+import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.integration.MekanismHooks;
 import net.minecraft.resources.ResourceLocation;
 import sonar.fluxnetworks.api.energy.IFNEnergyStorage;

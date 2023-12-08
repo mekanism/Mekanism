@@ -3,7 +3,7 @@ package mekanism.common.integration.energy.fluxnetworks;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.Capabilities.MultiTypeCapability;
+import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.energy.IEnergyCompat;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;

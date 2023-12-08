@@ -38,7 +38,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.Capabilities.MultiTypeCapability;
+import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.registries.MekanismBlocks;
