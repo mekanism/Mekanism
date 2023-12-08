@@ -10,8 +10,8 @@ import net.darkhax.curseforgegradle.UploadArtifact
 import java.util.function.Consumer
 
 plugins {
-    id 'org.ajoberstar.grgit.service' version '5.2.0'
-    id 'net.darkhax.curseforgegradle' version '1.1.16'
+    id 'org.ajoberstar.grgit.service' version '5.2.1'
+    id 'net.darkhax.curseforgegradle' version '1.1.17'
     id "com.modrinth.minotaur" version "2.+"
     id 'java'
     id 'eclipse'
@@ -399,7 +399,6 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://modmaven.dev/', 'appeng', 'mcjty.theoneprobe')
     exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil')
     exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
-    mavenLocal()
 }
 
 test {
@@ -438,7 +437,7 @@ dependencies {
     compileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
 
     //TODO - 1.20.2: move back to implementation
-    compileOnly("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
+    compileOnly("com.blamejared.crafttweaker:CraftTweaker-forge-${previous_minor_minecraft_version}:${crafttweaker_version}")
     compileOnly("com.blamejared.jeitweaker:JeiTweaker-forge-${previous_minecraft_version}:${jeitweaker_version}")
 
     compileOnly("dev.gigaherz.jsonthings:JsonThings-${previous_minecraft_version}:${json_things_version}")
@@ -446,7 +445,7 @@ dependencies {
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
     compileOnly("curse.maven:flux-networks-248020:${flux_networks_id}")
-    compileOnly("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+    compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     compileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     compileOnly("curse.maven:opencomputers2-437654:${oc2_id}")
     compileOnly("cc.tweaked:cc-tweaked-${previous_minecraft_version}-forge-api:${cc_tweaked_version}")
@@ -456,7 +455,7 @@ dependencies {
 
     //Dependencies for data generators for mod compat reference
     //TODO - 1.20.2: move back to Implementation
-    datagenMainCompileOnly("appeng:appliedenergistics2-forge:${ae2_version}")
+    datagenMainCompileOnly("appeng:appliedenergistics2-neoforge:${ae2_version}")
     datagenMainCompileOnly("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
     //datagenMainRuntimeOnly ("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
     //datagenMainRuntimeOnly ("curse.maven:terrablender-940057:${terrablender_id}")
