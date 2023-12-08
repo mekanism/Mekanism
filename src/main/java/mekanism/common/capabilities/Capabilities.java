@@ -72,10 +72,9 @@ public class Capabilities {
 
     public static final BlockCapability<IAlloyInteraction, @Nullable Direction> ALLOY_INTERACTION = BlockCapability.createSided(Mekanism.rl("alloy_interaction"), IAlloyInteraction.class);
 
-    //TODO: Should some of these be a void context? Does that even play nicely with block capabilities?
     public static final BlockCapability<IConfigCardAccess, @Nullable Direction> CONFIG_CARD = BlockCapability.createSided(Mekanism.rl("config_card"), IConfigCardAccess.class);
 
-    public static final BlockCapability<IEvaporationSolar, @Nullable Direction> EVAPORATION_SOLAR = BlockCapability.createSided(Mekanism.rl("evaporation_solar"), IEvaporationSolar.class);
+    public static final BlockCapability<IEvaporationSolar, Void> EVAPORATION_SOLAR = BlockCapability.createVoid(Mekanism.rl("evaporation_solar"), IEvaporationSolar.class);
 
     public static final BlockCapability<ILaserReceptor, @Nullable Direction> LASER_RECEPTOR = BlockCapability.createSided(Mekanism.rl("laser_receptor"), ILaserReceptor.class);
 

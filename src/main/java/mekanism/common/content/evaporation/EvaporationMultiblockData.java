@@ -42,7 +42,6 @@ import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -87,7 +86,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @ContainerSync
     private final boolean[] trackedErrors = new boolean[TRACKED_ERROR_TYPES.size()];
 
-    private final Int2ObjectMap<BlockCapabilityCache<IEvaporationSolar, @Nullable Direction>> cachedSolar = new Int2ObjectArrayMap<>(4);
+    private final Int2ObjectMap<BlockCapabilityCache<IEvaporationSolar, Void>> cachedSolar = new Int2ObjectArrayMap<>(4);
 
     private final IOutputHandler<@NotNull FluidStack> outputHandler;
     private final IInputHandler<@NotNull FluidStack> inputHandler;
@@ -266,7 +265,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @ComputerMethod
     int getActiveSolars() {
         int ret = 0;
-        for (BlockCapabilityCache<IEvaporationSolar, @Nullable Direction> capability : cachedSolar.values()) {
+        for (BlockCapabilityCache<IEvaporationSolar, Void> capability : cachedSolar.values()) {
             IEvaporationSolar solar = capability.getCapability();
             if (solar != null && solar.canSeeSun()) {
                 ret++;
@@ -278,7 +277,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     private void updateSolarSpot(Level world, BlockPos pos, int corner) {
         //Create a capability cache for the given corner. When we are unformed we will clear references to our caches
         // which allow them to be garbage collected
-        cachedSolar.put(corner, BlockCapabilityCache.create(Capabilities.EVAPORATION_SOLAR, (ServerLevel) world, pos, Direction.DOWN));
+        cachedSolar.put(corner, BlockCapabilityCache.create(Capabilities.EVAPORATION_SOLAR, (ServerLevel) world, pos, null));
     }
 
     private void updateSolars(Level world) {
