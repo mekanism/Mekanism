@@ -67,10 +67,10 @@ public class ChemicalUtil {
 
     public static MultiTypeCapability<? extends IChemicalHandler<?, ?>> getCapabilityForChemical(ChemicalType chemicalType) {
         return switch (chemicalType) {
-            case GAS -> Capabilities.GAS_HANDLER;
-            case INFUSION -> Capabilities.INFUSION_HANDLER;
-            case PIGMENT -> Capabilities.PIGMENT_HANDLER;
-            case SLURRY -> Capabilities.SLURRY_HANDLER;
+            case GAS -> Capabilities.GAS;
+            case INFUSION -> Capabilities.INFUSION;
+            case PIGMENT -> Capabilities.PIGMENT;
+            case SLURRY -> Capabilities.SLURRY;
         };
     }
 
@@ -249,7 +249,7 @@ public class ChemicalUtil {
     }
 
     public static boolean hasGas(ItemStack stack) {
-        return hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.GAS_HANDLER.item());
+        return hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.GAS.item());
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean hasChemical(ItemStack stack, CHEMICAL type) {

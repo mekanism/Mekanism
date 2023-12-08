@@ -49,9 +49,9 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
     public boolean isBarVisible(@NotNull ItemStack stack) {
         // No bar for empty containers as bars are drawn on top of stack count number
         return ChemicalUtil.hasGas(stack) ||
-               ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.INFUSION_HANDLER.item()) ||
-               ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.PIGMENT_HANDLER.item()) ||
-               ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.SLURRY_HANDLER.item());
+               ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.INFUSION.item()) ||
+               ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.PIGMENT.item()) ||
+               ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.SLURRY.item());
     }
 
     @Override

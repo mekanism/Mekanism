@@ -123,10 +123,10 @@ public class LookingAtUtils {
                 }
             }
             //Chemicals
-            addInfo(level, pos, state, tile, structure, Capabilities.GAS_HANDLER, multiblock -> multiblock.getGasTanks(null), info, MekanismLang.GAS, Current.GAS, CurrentType.GAS);
-            addInfo(level, pos, state, tile, structure, Capabilities.INFUSION_HANDLER, multiblock -> multiblock.getInfusionTanks(null), info, MekanismLang.INFUSE_TYPE, Current.INFUSION, CurrentType.INFUSION);
-            addInfo(level, pos, state, tile, structure, Capabilities.PIGMENT_HANDLER, multiblock -> multiblock.getPigmentTanks(null), info, MekanismLang.PIGMENT, Current.PIGMENT, CurrentType.PIGMENT);
-            addInfo(level, pos, state, tile, structure, Capabilities.SLURRY_HANDLER, multiblock -> multiblock.getSlurryTanks(null), info, MekanismLang.SLURRY, Current.SLURRY, CurrentType.SLURRY);
+            addInfo(level, pos, state, tile, structure, Capabilities.GAS, multiblock -> multiblock.getGasTanks(null), info, MekanismLang.GAS, Current.GAS, CurrentType.GAS);
+            addInfo(level, pos, state, tile, structure, Capabilities.INFUSION, multiblock -> multiblock.getInfusionTanks(null), info, MekanismLang.INFUSE_TYPE, Current.INFUSION, CurrentType.INFUSION);
+            addInfo(level, pos, state, tile, structure, Capabilities.PIGMENT, multiblock -> multiblock.getPigmentTanks(null), info, MekanismLang.PIGMENT, Current.PIGMENT, CurrentType.PIGMENT);
+            addInfo(level, pos, state, tile, structure, Capabilities.SLURRY, multiblock -> multiblock.getSlurryTanks(null), info, MekanismLang.SLURRY, Current.SLURRY, CurrentType.SLURRY);
         }
     }
 

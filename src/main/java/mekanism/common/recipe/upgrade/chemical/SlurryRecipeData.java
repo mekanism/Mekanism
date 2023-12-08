@@ -61,7 +61,7 @@ public class SlurryRecipeData extends ChemicalRecipeData<Slurry, SlurryStack, IS
 
     @Override
     protected ItemCapability<ISlurryHandler, Void> getCapability() {
-        return Capabilities.SLURRY_HANDLER.item();
+        return Capabilities.SLURRY.item();
     }
 
     @Override

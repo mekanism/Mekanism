@@ -81,7 +81,7 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
             ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
             list.add(MekanismLang.SCUBA_TANK_MODE.translateColored(EnumColor.DARK_GRAY, OnOff.of(scubaTank.getFlowing(stack), true)));
             GasStack stored = GasStack.EMPTY;
-            IGasHandler gasHandlerItem = Capabilities.GAS_HANDLER.getCapability(stack);
+            IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
             if (gasHandlerItem != null && gasHandlerItem.getTanks() > 0) {
                 stored = gasHandlerItem.getChemicalInTank(0);
             }

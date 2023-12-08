@@ -61,7 +61,7 @@ public class GasRecipeData extends ChemicalRecipeData<Gas, GasStack, IGasTank, I
 
     @Override
     protected ItemCapability<IGasHandler, Void> getCapability() {
-        return Capabilities.GAS_HANDLER.item();
+        return Capabilities.GAS.item();
     }
 
     @Override

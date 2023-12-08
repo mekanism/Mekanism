@@ -81,12 +81,12 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         switch (transmissionType) {
             case ENERGY -> tile.invalidateCapabilities(EnergyCompatUtils.getLoadedEnergyCapabilities(), direction);
             case FLUID -> tile.invalidateCapability(FluidHandler.BLOCK, direction);
-            case GAS -> tile.invalidateCapability(Capabilities.GAS_HANDLER.block(), direction);
-            case INFUSION -> tile.invalidateCapability(Capabilities.INFUSION_HANDLER.block(), direction);
-            case PIGMENT -> tile.invalidateCapability(Capabilities.PIGMENT_HANDLER.block(), direction);
-            case SLURRY -> tile.invalidateCapability(Capabilities.SLURRY_HANDLER.block(), direction);
+            case GAS -> tile.invalidateCapability(Capabilities.GAS.block(), direction);
+            case INFUSION -> tile.invalidateCapability(Capabilities.INFUSION.block(), direction);
+            case PIGMENT -> tile.invalidateCapability(Capabilities.PIGMENT.block(), direction);
+            case SLURRY -> tile.invalidateCapability(Capabilities.SLURRY.block(), direction);
             case ITEM -> tile.invalidateCapability(Capabilities.ITEM.block(), direction);
-            case HEAT -> tile.invalidateCapability(Capabilities.HEAT_HANDLER, direction);
+            case HEAT -> tile.invalidateCapability(Capabilities.HEAT, direction);
         }
         tile.markForSave();
         //And invalidate any "listeners" we may have that the side changed for a specific transmission type
@@ -115,15 +115,15 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         TransmissionType type = null;
         if (Capabilities.ITEM.is(capability)) {
             type = TransmissionType.ITEM;
-        } else if (Capabilities.GAS_HANDLER.is(capability)) {
+        } else if (Capabilities.GAS.is(capability)) {
             type = TransmissionType.GAS;
-        } else if (Capabilities.INFUSION_HANDLER.is(capability)) {
+        } else if (Capabilities.INFUSION.is(capability)) {
             type = TransmissionType.INFUSION;
-        } else if (Capabilities.PIGMENT_HANDLER.is(capability)) {
+        } else if (Capabilities.PIGMENT.is(capability)) {
             type = TransmissionType.PIGMENT;
-        } else if (Capabilities.SLURRY_HANDLER.is(capability)) {
+        } else if (Capabilities.SLURRY.is(capability)) {
             type = TransmissionType.SLURRY;
-        } else if (capability == Capabilities.HEAT_HANDLER) {
+        } else if (capability == Capabilities.HEAT) {
             type = TransmissionType.HEAT;
         } else if (capability == FluidHandler.BLOCK) {
             type = TransmissionType.FLUID;

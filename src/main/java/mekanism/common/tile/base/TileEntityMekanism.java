@@ -1128,7 +1128,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public IHeatHandler getAdjacent(@NotNull Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
-            return WorldUtils.getCapability(level, Capabilities.HEAT_HANDLER, getBlockPos().relative(side), side.getOpposite());
+            return WorldUtils.getCapability(level, Capabilities.HEAT, getBlockPos().relative(side), side.getOpposite());
         }
         return null;
     }

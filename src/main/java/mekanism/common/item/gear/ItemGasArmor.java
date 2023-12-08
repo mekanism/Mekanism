@@ -64,7 +64,7 @@ public abstract class ItemGasArmor extends ItemSpecialArmor implements IGasItem,
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
         super.attachCapabilities(event);
-        event.registerItem(Capabilities.GAS_HANDLER.item(), (stack, ctx) -> {
+        event.registerItem(Capabilities.GAS.item(), (stack, ctx) -> {
             if (!MekanismConfig.gear.isLoaded()) {//Only expose the capabilities if the required configs are loaded
                 return null;
             }

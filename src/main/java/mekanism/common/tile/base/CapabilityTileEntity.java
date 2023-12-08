@@ -28,11 +28,11 @@ import org.jetbrains.annotations.Nullable;
 public abstract class CapabilityTileEntity extends TileEntityUpdateable {
 
     //Note: The below providers assume that the capability if supported has been added by either addCapabilityResolver or addCapabilityResolvers
-    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IGasHandler> GAS_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.GAS_HANDLER.block());
-    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IInfusionHandler> INFUSION_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.INFUSION_HANDLER.block());
-    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IPigmentHandler> PIGMENT_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.PIGMENT_HANDLER.block());
-    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, ISlurryHandler> SLURRY_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.SLURRY_HANDLER.block());
-    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IHeatHandler> HEAT_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.HEAT_HANDLER);
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IGasHandler> GAS_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.GAS.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IInfusionHandler> INFUSION_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.INFUSION.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IPigmentHandler> PIGMENT_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.PIGMENT.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, ISlurryHandler> SLURRY_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.SLURRY.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IHeatHandler> HEAT_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.HEAT);
     public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IItemHandler> ITEM_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.ITEM.block());
     public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IFluidHandler> FLUID_HANDLER_PROVIDER = basicCapabilityProvider(FluidHandler.BLOCK);
 

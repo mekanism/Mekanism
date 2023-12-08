@@ -75,7 +75,7 @@ public class StorageUtils {
             }
             return MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY,
                   MekanismLang.GENERIC_MB.translate(TextUtils.format(stored.getAmount())));
-        }, Capabilities.GAS_HANDLER.item());
+        }, Capabilities.GAS.item());
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
@@ -292,10 +292,10 @@ public class StorageUtils {
 
     private static double getDurabilityForDisplay(ItemStack stack) {
         double bestRatio = 0;
-        bestRatio = calculateRatio(stack, bestRatio, Capabilities.GAS_HANDLER.item());
-        bestRatio = calculateRatio(stack, bestRatio, Capabilities.INFUSION_HANDLER.item());
-        bestRatio = calculateRatio(stack, bestRatio, Capabilities.PIGMENT_HANDLER.item());
-        bestRatio = calculateRatio(stack, bestRatio, Capabilities.SLURRY_HANDLER.item());
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.GAS.item());
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.INFUSION.item());
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.PIGMENT.item());
+        bestRatio = calculateRatio(stack, bestRatio, Capabilities.SLURRY.item());
         IFluidHandlerItem fluidHandlerItem = stack.getCapability(FluidHandler.ITEM);
         if (fluidHandlerItem != null) {
             for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {

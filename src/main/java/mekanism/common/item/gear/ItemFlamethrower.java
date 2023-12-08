@@ -93,7 +93,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(Capabilities.GAS_HANDLER.item(), (stack, ctx) -> {
+        event.registerItem(Capabilities.GAS.item(), (stack, ctx) -> {
             if (!MekanismConfig.gear.isLoaded()) {//Only expose the capabilities if the required configs are loaded
                 return null;
             }
@@ -105,7 +105,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
     @Override
     public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
         boolean hasGas = false;
-        IGasHandler gasHandlerItem = Capabilities.GAS_HANDLER.getCapability(stack);
+        IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
         if (gasHandlerItem != null && gasHandlerItem.getTanks() > 0) {
             //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
             GasStack storedGas = gasHandlerItem.getChemicalInTank(0);

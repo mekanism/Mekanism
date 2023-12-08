@@ -63,7 +63,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
             return WorldUtils.getBlockState(level, pos)
                   .filter(state -> !state.isAir() && state.getBlock() != GeneratorsBlocks.FISSION_REACTOR_PORT.getBlock())
                   //Note: We know the position is loaded already from the blockstate check
-                  .map(state -> level.getCapability(Capabilities.HEAT_HANDLER, pos, state, null, side.getOpposite()))
+                  .map(state -> level.getCapability(Capabilities.HEAT, pos, state, null, side.getOpposite()))
                   .orElse(null);
         }
         return null;

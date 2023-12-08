@@ -82,19 +82,19 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             //If we are for a block that handles fluid, or we have a fluid handler capability
             supportedTypes.add(RecipeUpgradeType.FLUID);
         }
-        if (Capabilities.GAS_HANDLER.hasCapability(stack) || tile != null && tile.handles(SubstanceType.GAS)) {
+        if (Capabilities.GAS.hasCapability(stack) || tile != null && tile.handles(SubstanceType.GAS)) {
             //If we are for a block that handles gas, or we have a gas handler capability
             supportedTypes.add(RecipeUpgradeType.GAS);
         }
-        if (Capabilities.INFUSION_HANDLER.hasCapability(stack) || tile != null && tile.handles(SubstanceType.INFUSION)) {
+        if (Capabilities.INFUSION.hasCapability(stack) || tile != null && tile.handles(SubstanceType.INFUSION)) {
             //If we are for a block that handles infusion, or we have an infusion handler capability
             supportedTypes.add(RecipeUpgradeType.INFUSION);
         }
-        if (Capabilities.PIGMENT_HANDLER.hasCapability(stack) || tile != null && tile.handles(SubstanceType.PIGMENT)) {
+        if (Capabilities.PIGMENT.hasCapability(stack) || tile != null && tile.handles(SubstanceType.PIGMENT)) {
             //If we are for a block that handles pigment, or we have a pigment handler capability
             supportedTypes.add(RecipeUpgradeType.PIGMENT);
         }
-        if (Capabilities.SLURRY_HANDLER.hasCapability(stack) || tile != null && tile.handles(SubstanceType.SLURRY)) {
+        if (Capabilities.SLURRY.hasCapability(stack) || tile != null && tile.handles(SubstanceType.SLURRY)) {
             //If we are for a block that handles slurry, or we have a slurry handler capability
             supportedTypes.add(RecipeUpgradeType.SLURRY);
         }

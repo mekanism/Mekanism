@@ -66,7 +66,7 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
             GasStack hydrogenStack = MekanismGases.HYDROGEN.getStack(maxRate * 2L);
             ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
             if (checkChestPlate(chestStack)) {
-                IGasHandler chestCapability = Capabilities.GAS_HANDLER.getCapability(chestStack);
+                IGasHandler chestCapability = Capabilities.GAS.getCapability(chestStack);
                 if (chestCapability != null) {
                     hydrogenUsed = maxRate * 2L - chestCapability.insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
                     hydrogenStack.shrink(hydrogenUsed);
@@ -74,7 +74,7 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
             }
             if (fillHeld.get()) {
                 ItemStack handStack = player.getItemBySlot(EquipmentSlot.MAINHAND);
-                IGasHandler handCapability = Capabilities.GAS_HANDLER.getCapability(handStack);
+                IGasHandler handCapability = Capabilities.GAS.getCapability(handStack);
                 if (handCapability != null) {
                     hydrogenUsed = maxRate * 2L - handCapability.insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
                 }

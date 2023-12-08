@@ -17,8 +17,8 @@ import org.jetbrains.annotations.Nullable;
 public class MergedChemicalInventorySlot<MERGED extends MergedChemicalTank> extends BasicInventorySlot {
 
     private static boolean hasCapability(@NotNull ItemStack stack) {
-        return Capabilities.GAS_HANDLER.hasCapability(stack) || Capabilities.INFUSION_HANDLER.hasCapability(stack) ||
-               Capabilities.PIGMENT_HANDLER.hasCapability(stack) || Capabilities.SLURRY_HANDLER.hasCapability(stack);
+        return Capabilities.GAS.hasCapability(stack) || Capabilities.INFUSION.hasCapability(stack) ||
+               Capabilities.PIGMENT.hasCapability(stack) || Capabilities.SLURRY.hasCapability(stack);
     }
 
     public static MergedChemicalInventorySlot<MergedChemicalTank> drain(MergedChemicalTank chemicalTank, @Nullable IContentsListener listener, int x, int y) {

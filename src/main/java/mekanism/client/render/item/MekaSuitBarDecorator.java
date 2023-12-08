@@ -36,7 +36,7 @@ public class MekaSuitBarDecorator implements IItemDecorator {
         }
         yOffset += 12;
 
-        if (tryRender(guiGraphics, stack, Capabilities.GAS_HANDLER.item(), xOffset, yOffset, armor.getGasTankSpecs())) {
+        if (tryRender(guiGraphics, stack, Capabilities.GAS.item(), xOffset, yOffset, armor.getGasTankSpecs())) {
             yOffset--;
         }
         //TODO: Other chemical types as they get added to different meka suit pieces

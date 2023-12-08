@@ -70,7 +70,7 @@ public class ItemNetworkReader extends ItemEnergized {
                 if (tile instanceof TileEntityTransmitter transmitterTile) {
                     displayTransmitterInfo(player, world, pos, transmitterTile, opposite);
                 } else {
-                    IHeatHandler transfer = WorldUtils.getCapability(world, Capabilities.HEAT_HANDLER, pos, null, tile, opposite);
+                    IHeatHandler transfer = WorldUtils.getCapability(world, Capabilities.HEAT, pos, null, tile, opposite);
                     if (transfer != null) {
                         displayBorder(player, MekanismLang.MEKANISM, true);
                         sendTemperature(player, transfer);
@@ -102,7 +102,7 @@ public class ItemNetworkReader extends ItemEnergized {
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_BUFFER, transmitterNetwork.getStoredInfo());
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_THROUGHPUT, transmitterNetwork.getFlowInfo());
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_CAPACITY, transmitterNetwork.getNetworkReaderCapacity());
-            IHeatHandler heatHandler = WorldUtils.getCapability(level, Capabilities.HEAT_HANDLER, pos, null, tile, opposite);
+            IHeatHandler heatHandler = WorldUtils.getCapability(level, Capabilities.HEAT, pos, null, tile, opposite);
             if (heatHandler != null) {
                 sendTemperature(player, heatHandler);
             }

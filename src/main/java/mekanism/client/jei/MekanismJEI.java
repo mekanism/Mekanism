@@ -119,10 +119,10 @@ public class MekanismJEI implements IModPlugin {
 
     private static final IIngredientSubtypeInterpreter<ItemStack> MEKANISM_NBT_INTERPRETER = (stack, context) -> {
         if (context == UidContext.Ingredient && stack.hasTag()) {
-            String nbtRepresentation = getChemicalComponent(stack, Capabilities.GAS_HANDLER.item());
-            nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.INFUSION_HANDLER.item()));
-            nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.PIGMENT_HANDLER.item()));
-            nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.SLURRY_HANDLER.item()));
+            String nbtRepresentation = getChemicalComponent(stack, Capabilities.GAS.item());
+            nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.INFUSION.item()));
+            nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.PIGMENT.item()));
+            nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.SLURRY.item()));
             nbtRepresentation = addInterpretation(nbtRepresentation, getFluidComponent(stack));
             nbtRepresentation = addInterpretation(nbtRepresentation, getEnergyComponent(stack));
             return nbtRepresentation;
@@ -205,9 +205,9 @@ public class MekanismJEI implements IModPlugin {
         for (IItemProvider itemProvider : itemProviders) {
             //Handle items
             ItemStack stack = itemProvider.getItemStack();
-            if (Capabilities.STRICT_ENERGY.hasCapability(stack) || Capabilities.GAS_HANDLER.hasCapability(stack) ||
-                Capabilities.INFUSION_HANDLER.hasCapability(stack) || Capabilities.PIGMENT_HANDLER.hasCapability(stack) ||
-                Capabilities.SLURRY_HANDLER.hasCapability(stack) || stack.getCapability(FluidHandler.ITEM) != null) {
+            if (Capabilities.STRICT_ENERGY.hasCapability(stack) || Capabilities.GAS.hasCapability(stack) ||
+                Capabilities.INFUSION.hasCapability(stack) || Capabilities.PIGMENT.hasCapability(stack) ||
+                Capabilities.SLURRY.hasCapability(stack) || stack.getCapability(FluidHandler.ITEM) != null) {
                 registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, itemProvider.asItem(), MEKANISM_NBT_INTERPRETER);
             }
         }

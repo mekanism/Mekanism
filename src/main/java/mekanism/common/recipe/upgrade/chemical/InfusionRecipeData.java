@@ -61,7 +61,7 @@ public class InfusionRecipeData extends ChemicalRecipeData<InfuseType, InfusionS
 
     @Override
     protected ItemCapability<IInfusionHandler, Void> getCapability() {
-        return Capabilities.INFUSION_HANDLER.item();
+        return Capabilities.INFUSION.item();
     }
 
     @Override

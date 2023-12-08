@@ -50,13 +50,12 @@ public class Capabilities {
     //Note: We intentionally don't use the entity automation capability, as we want to be able to target player inventories and the like
     public static final MultiTypeCapability<IItemHandler> ITEM = new MultiTypeCapability<>(ItemHandler.BLOCK, ItemHandler.ITEM, ItemHandler.ENTITY);
 
-    //TODO - 1.20.2: Remove handler from the field names? Or add it to the proxied ones
-    public static final MultiTypeCapability<IGasHandler> GAS_HANDLER = new MultiTypeCapability<>(Mekanism.rl("gas_handler"), IGasHandler.class);
-    public static final MultiTypeCapability<IInfusionHandler> INFUSION_HANDLER = new MultiTypeCapability<>(Mekanism.rl("infusion_handler"), IInfusionHandler.class);
-    public static final MultiTypeCapability<IPigmentHandler> PIGMENT_HANDLER = new MultiTypeCapability<>(Mekanism.rl("pigment_handler"), IPigmentHandler.class);
-    public static final MultiTypeCapability<ISlurryHandler> SLURRY_HANDLER = new MultiTypeCapability<>(Mekanism.rl("slurry_handler"), ISlurryHandler.class);
+    public static final MultiTypeCapability<IGasHandler> GAS = new MultiTypeCapability<>(Mekanism.rl("gas_handler"), IGasHandler.class);
+    public static final MultiTypeCapability<IInfusionHandler> INFUSION = new MultiTypeCapability<>(Mekanism.rl("infusion_handler"), IInfusionHandler.class);
+    public static final MultiTypeCapability<IPigmentHandler> PIGMENT = new MultiTypeCapability<>(Mekanism.rl("pigment_handler"), IPigmentHandler.class);
+    public static final MultiTypeCapability<ISlurryHandler> SLURRY = new MultiTypeCapability<>(Mekanism.rl("slurry_handler"), ISlurryHandler.class);
 
-    public static final BlockCapability<IHeatHandler, @Nullable Direction> HEAT_HANDLER = BlockCapability.createSided(Mekanism.rl("heat_handler"), IHeatHandler.class);
+    public static final BlockCapability<IHeatHandler, @Nullable Direction> HEAT = BlockCapability.createSided(Mekanism.rl("heat_handler"), IHeatHandler.class);
 
     public static final MultiTypeCapability<IStrictEnergyHandler> STRICT_ENERGY = new MultiTypeCapability<>(Mekanism.rl("strict_energy_handler"), IStrictEnergyHandler.class);
 

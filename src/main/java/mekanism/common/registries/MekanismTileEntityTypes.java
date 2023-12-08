@@ -423,10 +423,10 @@ public class MekanismTileEntityTypes {
 
     private static TileEntityTypeRegistryObject<TileEntityPressurizedTube> registerTube(BlockRegistryObject<?, ?> block) {
         BlockEntityTypeBuilder<TileEntityPressurizedTube> builder = transmitterBuilder(block, TileEntityPressurizedTube::new)
-              .with(Capabilities.GAS_HANDLER.block(), CapabilityTileEntity.GAS_HANDLER_PROVIDER)
-              .with(Capabilities.INFUSION_HANDLER.block(), CapabilityTileEntity.INFUSION_HANDLER_PROVIDER)
-              .with(Capabilities.PIGMENT_HANDLER.block(), CapabilityTileEntity.PIGMENT_HANDLER_PROVIDER)
-              .with(Capabilities.SLURRY_HANDLER.block(), CapabilityTileEntity.SLURRY_HANDLER_PROVIDER);
+              .with(Capabilities.GAS.block(), CapabilityTileEntity.GAS_HANDLER_PROVIDER)
+              .with(Capabilities.INFUSION.block(), CapabilityTileEntity.INFUSION_HANDLER_PROVIDER)
+              .with(Capabilities.PIGMENT.block(), CapabilityTileEntity.PIGMENT_HANDLER_PROVIDER)
+              .with(Capabilities.SLURRY.block(), CapabilityTileEntity.SLURRY_HANDLER_PROVIDER);
         if (Mekanism.hooks.computerCompatEnabled()) {
             ComputerCapabilityHelper.addComputerCapabilities(builder, ConstantPredicates.ALWAYS_TRUE);
         }
@@ -435,7 +435,7 @@ public class MekanismTileEntityTypes {
 
     private static TileEntityTypeRegistryObject<TileEntityThermodynamicConductor> registerConductor(BlockRegistryObject<?, ?> block) {
         return transmitterBuilder(block, TileEntityThermodynamicConductor::new)
-              .with(Capabilities.HEAT_HANDLER, CapabilityTileEntity.HEAT_HANDLER_PROVIDER)
+              .with(Capabilities.HEAT, CapabilityTileEntity.HEAT_HANDLER_PROVIDER)
               .build();
     }
 

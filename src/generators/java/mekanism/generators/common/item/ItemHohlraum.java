@@ -34,7 +34,7 @@ public class ItemHohlraum extends Item implements ICustomCreativeTabContents, IC
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        IGasHandler gasHandlerItem = Capabilities.GAS_HANDLER.getCapability(stack);
+        IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
         if (gasHandlerItem != null && gasHandlerItem.getTanks() > 0) {
             //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
             GasStack storedGas = gasHandlerItem.getChemicalInTank(0);
@@ -74,7 +74,7 @@ public class ItemHohlraum extends Item implements ICustomCreativeTabContents, IC
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(Capabilities.GAS_HANDLER.item(), (stack, ctx) -> {
+        event.registerItem(Capabilities.GAS.item(), (stack, ctx) -> {
             if (!MekanismGeneratorsConfig.generators.isLoaded()) {//Only expose the capabilities if the required configs are loaded
                 return null;
             }

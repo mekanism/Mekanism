@@ -274,7 +274,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         }, this);
 
         if (!gasTankSpecs.isEmpty()) {
-            event.registerItem(Capabilities.GAS_HANDLER.item(), (stack, ctx) -> MekanismConfig.gear.isLoaded() ? RateLimitMultiTankGasHandler.create(stack, gasTankSpecs) : null, this);
+            event.registerItem(Capabilities.GAS.item(), (stack, ctx) -> MekanismConfig.gear.isLoaded() ? RateLimitMultiTankGasHandler.create(stack, gasTankSpecs) : null, this);
         }
         if (!fluidTankSpecs.isEmpty()) {
             event.registerItem(FluidHandler.ITEM, (stack, ctx) -> MekanismConfig.gear.isLoaded() ? RateLimitMultiTankFluidHandler.create(stack, fluidTankSpecs) : null, this);
@@ -291,7 +291,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @NotNull
     public GasStack useGas(ItemStack stack, Gas type, long amount) {
-        IGasHandler gasHandlerItem = Capabilities.GAS_HANDLER.getCapability(stack);
+        IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
         if (gasHandlerItem != null) {
             return gasHandlerItem.extractChemical(new GasStack(type, amount), Action.EXECUTE);
         }
@@ -299,7 +299,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     public GasStack getContainedGas(ItemStack stack, Gas type) {
-        IGasHandler gasHandlerItem = Capabilities.GAS_HANDLER.getCapability(stack);
+        IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
         if (gasHandlerItem != null) {
             for (int i = 0; i < gasHandlerItem.getTanks(); i++) {
                 GasStack gasInTank = gasHandlerItem.getChemicalInTank(i);

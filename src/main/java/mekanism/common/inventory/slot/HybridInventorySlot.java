@@ -24,8 +24,8 @@ import org.jetbrains.annotations.Nullable;
 public class HybridInventorySlot extends MergedChemicalInventorySlot<MergedTank> implements IFluidHandlerSlot {
 
     private static boolean hasCapability(@NotNull ItemStack stack) {
-        return stack.getCapability(FluidHandler.ITEM) != null || Capabilities.GAS_HANDLER.hasCapability(stack) || Capabilities.INFUSION_HANDLER.hasCapability(stack) ||
-               Capabilities.PIGMENT_HANDLER.hasCapability(stack) || Capabilities.SLURRY_HANDLER.hasCapability(stack);
+        return stack.getCapability(FluidHandler.ITEM) != null || Capabilities.GAS.hasCapability(stack) || Capabilities.INFUSION.hasCapability(stack) ||
+               Capabilities.PIGMENT.hasCapability(stack) || Capabilities.SLURRY.hasCapability(stack);
     }
 
     public static HybridInventorySlot inputOrDrain(MergedTank mergedTank, @Nullable IContentsListener listener, int x, int y) {

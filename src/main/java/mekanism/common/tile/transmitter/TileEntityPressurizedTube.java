@@ -50,10 +50,10 @@ import org.jetbrains.annotations.Nullable;
 public class TileEntityPressurizedTube extends TileEntityTransmitter implements IComputerTile, ITileRadioactive {
 
     private static final Collection<BlockCapability<?, @Nullable Direction>> CAPABILITIES = Set.of(
-          Capabilities.GAS_HANDLER.block(),
-          Capabilities.INFUSION_HANDLER.block(),
-          Capabilities.PIGMENT_HANDLER.block(),
-          Capabilities.SLURRY_HANDLER.block()
+          Capabilities.GAS.block(),
+          Capabilities.INFUSION.block(),
+          Capabilities.PIGMENT.block(),
+          Capabilities.SLURRY.block()
     );
 
     private final GasHandlerManager gasHandlerManager;

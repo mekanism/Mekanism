@@ -39,10 +39,10 @@ public class GaugeDropperContentsHandler extends MergedTankContentsHandler<Merge
     private static final int TRANSFER_RATE = 256;
 
     public static void attachCapsToItem(RegisterCapabilitiesEvent event, Item item) {
-        event.registerItem(Capabilities.GAS_HANDLER.item(), (stack, ctx) -> getOrAttachHandler(stack).gasHandler, item);
-        event.registerItem(Capabilities.INFUSION_HANDLER.item(), (stack, ctx) -> getOrAttachHandler(stack).infusionHandler, item);
-        event.registerItem(Capabilities.PIGMENT_HANDLER.item(), (stack, ctx) -> getOrAttachHandler(stack).pigmentHandler, item);
-        event.registerItem(Capabilities.SLURRY_HANDLER.item(), (stack, ctx) -> getOrAttachHandler(stack).slurryHandler, item);
+        event.registerItem(Capabilities.GAS.item(), (stack, ctx) -> getOrAttachHandler(stack).gasHandler, item);
+        event.registerItem(Capabilities.INFUSION.item(), (stack, ctx) -> getOrAttachHandler(stack).infusionHandler, item);
+        event.registerItem(Capabilities.PIGMENT.item(), (stack, ctx) -> getOrAttachHandler(stack).pigmentHandler, item);
+        event.registerItem(Capabilities.SLURRY.item(), (stack, ctx) -> getOrAttachHandler(stack).slurryHandler, item);
         event.registerItem(FluidHandler.ITEM, (stack, ctx) -> getOrAttachHandler(stack), item);
     }
 
