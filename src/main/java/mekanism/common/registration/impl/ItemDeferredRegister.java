@@ -9,6 +9,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.MekanismDeferredHolder;
@@ -20,6 +21,8 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,6 +33,20 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
 
     public ItemDeferredRegister(String modid) {
         super(Registries.ITEM, modid, ItemRegistryObject::new);
+    }
+
+    @Override
+    public void register(@NotNull IEventBus bus) {
+        super.register(bus);
+        bus.addListener(this::registerCapabilities);
+    }
+
+    private void registerCapabilities(RegisterCapabilitiesEvent event) {
+        for (IItemProvider itemProvider : allItems) {
+            if (itemProvider.asItem() instanceof ICapabilityAware capabilityAware) {
+                capabilityAware.attachCapabilities(event);
+            }
+        }
     }
 
     public ItemRegistryObject<Item> register(String name) {

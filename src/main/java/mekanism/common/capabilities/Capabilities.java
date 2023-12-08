@@ -27,7 +27,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
@@ -98,16 +97,6 @@ public class Capabilities {
         for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
             //Note: The jvm will reuse the lambda between types
             event.registerEntity(RADIATION_ENTITY, entityType, (entity, ctx) -> entity instanceof LivingEntity living ? new RadiationEntity(living) : null);
-        }
-        //TODO - 1.20.2: We could loop all mek items to allow for them to provide caps that way... but
-        // then we need to make sure we do that for other modules as well
-        // (unless we have a custom interface and then loop all items and check for it, but that seems less efficient)
-        for (Item item : BuiltInRegistries.ITEM) {
-            //TODO - 1.20.2: Should we only loop our items and blocks and make each sub module also do theirs?
-            // If so look at how we are doing tiles via an event per register wrapper
-            if (item instanceof ICapabilityAware capabilityAware) {
-                capabilityAware.attachCapabilities(event);
-            }
         }
 
         //Register bounding block proxies
