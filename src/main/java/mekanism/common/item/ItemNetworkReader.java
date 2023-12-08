@@ -68,9 +68,9 @@ public class ItemNetworkReader extends ItemEnergized {
                 }
                 Direction opposite = context.getClickedFace().getOpposite();
                 if (tile instanceof TileEntityTransmitter transmitterTile) {
-                    displayTransmitterInfo(player, transmitterTile.getTransmitter(), tile, opposite);
+                    displayTransmitterInfo(player, world, pos, transmitterTile, opposite);
                 } else {
-                    IHeatHandler transfer = Capabilities.HEAT_HANDLER.getCapabilityIfLoaded(world, pos, null, tile, opposite);
+                    IHeatHandler transfer = WorldUtils.getCapability(world, Capabilities.HEAT_HANDLER, pos, null, tile, opposite);
                     if (transfer != null) {
                         displayBorder(player, MekanismLang.MEKANISM, true);
                         sendTemperature(player, transfer);
@@ -91,8 +91,9 @@ public class ItemNetworkReader extends ItemEnergized {
         return InteractionResult.PASS;
     }
 
-    private void displayTransmitterInfo(Player player, Transmitter<?, ?, ?> transmitter, BlockEntity tile, Direction opposite) {
+    private void displayTransmitterInfo(Player player, Level level, BlockPos pos, TileEntityTransmitter tile, Direction opposite) {
         displayBorder(player, MekanismLang.MEKANISM, true);
+        Transmitter<?, ?, ?> transmitter = tile.getTransmitter();
         if (transmitter.hasTransmitterNetwork()) {
             DynamicNetwork<?, ?, ?> transmitterNetwork = transmitter.getTransmitterNetwork();
             player.sendSystemMessage(MekanismLang.NETWORK_READER_TRANSMITTERS.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitterNetwork.transmittersSize()));
@@ -101,7 +102,7 @@ public class ItemNetworkReader extends ItemEnergized {
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_BUFFER, transmitterNetwork.getStoredInfo());
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_THROUGHPUT, transmitterNetwork.getFlowInfo());
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_CAPACITY, transmitterNetwork.getNetworkReaderCapacity());
-            IHeatHandler heatHandler = Capabilities.HEAT_HANDLER.getCapability(tile, opposite);
+            IHeatHandler heatHandler = WorldUtils.getCapability(level, Capabilities.HEAT_HANDLER, pos, null, tile, opposite);
             if (heatHandler != null) {
                 sendTemperature(player, heatHandler);
             }

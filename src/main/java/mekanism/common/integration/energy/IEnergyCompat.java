@@ -73,7 +73,7 @@ public interface IEnergyCompat {
      */
     @Nullable
     default IStrictEnergyHandler getAsStrictEnergyHandler(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity tile, @Nullable Direction context) {
-        Object capability = getCapability().getCapability(level, pos, state, tile, context);
+        Object capability = getCapability().getCapabilityIfLoaded(level, pos, state, tile, context);
         return capability == null ? null : wrapAsStrictEnergyHandler(capability);
     }
 

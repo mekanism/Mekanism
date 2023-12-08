@@ -435,7 +435,7 @@ public class MekanismTileEntityTypes {
 
     private static TileEntityTypeRegistryObject<TileEntityThermodynamicConductor> registerConductor(BlockRegistryObject<?, ?> block) {
         return transmitterBuilder(block, TileEntityThermodynamicConductor::new)
-              .with(Capabilities.HEAT_HANDLER.block(), CapabilityTileEntity.HEAT_HANDLER_PROVIDER)
+              .with(Capabilities.HEAT_HANDLER, CapabilityTileEntity.HEAT_HANDLER_PROVIDER)
               .build();
     }
 

@@ -32,7 +32,7 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
     public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IInfusionHandler> INFUSION_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.INFUSION_HANDLER.block());
     public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IPigmentHandler> PIGMENT_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.PIGMENT_HANDLER.block());
     public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, ISlurryHandler> SLURRY_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.SLURRY_HANDLER.block());
-    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IHeatHandler> HEAT_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.HEAT_HANDLER.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IHeatHandler> HEAT_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.HEAT_HANDLER);
     public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IItemHandler> ITEM_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.ITEM.block());
     public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IFluidHandler> FLUID_HANDLER_PROVIDER = basicCapabilityProvider(FluidHandler.BLOCK);
 

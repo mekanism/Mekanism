@@ -79,7 +79,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
         super.sideChanged(side, old, type);
         if (type == ConnectionType.NONE) {
             //We no longer have a capability, invalidate it, which will also notify the level
-            invalidateCapability(Capabilities.HEAT_HANDLER.block(), side);
+            invalidateCapability(Capabilities.HEAT_HANDLER, side);
         } else if (old == ConnectionType.NONE) {
             //Notify any listeners to our position that we now do have a capability
             //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
@@ -94,7 +94,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
             //The transmitter now is powered by redstone and previously was not
             //Note: While at first glance the below invalidation may seem over aggressive, it is not actually that aggressive as
             // if a cap has not been initialized yet on a side then invalidating it will just NO-OP
-            invalidateCapability(Capabilities.HEAT_HANDLER.block(), EnumUtils.DIRECTIONS);
+            invalidateCapability(Capabilities.HEAT_HANDLER, EnumUtils.DIRECTIONS);
         } else {
             //Notify any listeners to our position that we now do have a capability
             //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null

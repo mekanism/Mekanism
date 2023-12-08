@@ -49,7 +49,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Capabilities {//TODO - 1.20.2: Figure out which of these types actually need to be multi type
+public class Capabilities {
 
     private Capabilities() {
     }
@@ -67,7 +67,7 @@ public class Capabilities {//TODO - 1.20.2: Figure out which of these types actu
     public static final MultiTypeCapability<IPigmentHandler> PIGMENT_HANDLER = new MultiTypeCapability<>(Mekanism.rl("pigment_handler"), IPigmentHandler.class);
     public static final MultiTypeCapability<ISlurryHandler> SLURRY_HANDLER = new MultiTypeCapability<>(Mekanism.rl("slurry_handler"), ISlurryHandler.class);
 
-    public static final MultiTypeCapability<IHeatHandler> HEAT_HANDLER = new MultiTypeCapability<>(Mekanism.rl("heat_handler"), IHeatHandler.class);
+    public static final BlockCapability<IHeatHandler, @Nullable Direction> HEAT_HANDLER = BlockCapability.createSided(Mekanism.rl("heat_handler"), IHeatHandler.class);
 
     public static final MultiTypeCapability<IStrictEnergyHandler> STRICT_ENERGY = new MultiTypeCapability<>(Mekanism.rl("strict_energy_handler"), IStrictEnergyHandler.class);
 
@@ -91,8 +91,7 @@ public class Capabilities {//TODO - 1.20.2: Figure out which of these types actu
     public static final ResourceLocation OWNER_OBJECT_NAME = Mekanism.rl("owner_object");
     public static final ResourceLocation SECURITY_OBJECT_NAME = Mekanism.rl("security_object");
 
-    //TODO - 1.20.2: Listen to this event
-    // Also should this be in its own class?
+    //TODO - 1.20.2: Should this listener be in its own class?
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         Mekanism.hooks.hookCapabilityRegistration();
         //TODO - 1.20.2: Do we want robits to expose an energy cap
@@ -167,12 +166,6 @@ public class Capabilities {//TODO - 1.20.2: Figure out which of these types actu
         }
 
         @Nullable
-        public HANDLER getCapability(@NotNull Level level, @NotNull BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity tile, @Nullable Direction side) {
-            //TODO: Should this use the ifLoaded variant?
-            return level.getCapability(block(), pos, state, tile, side);
-        }
-
-        @Nullable
         public HANDLER getCapabilityIfLoaded(@Nullable Level level, @NotNull BlockPos pos, @Nullable Direction side) {
             return getCapabilityIfLoaded(level, pos, null, null, side);
         }
@@ -181,16 +174,6 @@ public class Capabilities {//TODO - 1.20.2: Figure out which of these types actu
         public HANDLER getCapabilityIfLoaded(@Nullable Level level, @NotNull BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity,
               @Nullable Direction side) {
             return WorldUtils.getCapability(level, block(), pos, state, blockEntity, side);
-        }
-
-        @Nullable
-        public HANDLER getCapability(@Nullable BlockEntity blockEntity, @Nullable Direction side) {
-            //TODO - 1.20.2: Is there actually a use for this or do we only want block specific ones
-            // There is a decent chance we should transition a good number of usages of this to not using it
-            if (blockEntity != null) {
-                return getCapabilityIfLoaded(blockEntity.getLevel(), blockEntity.getBlockPos(), null, blockEntity, side);
-            }
-            return null;
         }
 
         public BlockCapabilityCache<HANDLER, @Nullable Direction> createCache(ServerLevel level, BlockPos pos, @Nullable Direction context, BooleanSupplier isValid,

@@ -86,7 +86,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             case PIGMENT -> tile.invalidateCapability(Capabilities.PIGMENT_HANDLER.block(), direction);
             case SLURRY -> tile.invalidateCapability(Capabilities.SLURRY_HANDLER.block(), direction);
             case ITEM -> tile.invalidateCapability(Capabilities.ITEM.block(), direction);
-            case HEAT -> tile.invalidateCapability(Capabilities.HEAT_HANDLER.block(), direction);
+            case HEAT -> tile.invalidateCapability(Capabilities.HEAT_HANDLER, direction);
         }
         tile.markForSave();
         //And invalidate any "listeners" we may have that the side changed for a specific transmission type
@@ -123,7 +123,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             type = TransmissionType.PIGMENT;
         } else if (Capabilities.SLURRY_HANDLER.is(capability)) {
             type = TransmissionType.SLURRY;
-        } else if (Capabilities.HEAT_HANDLER.is(capability)) {
+        } else if (capability == Capabilities.HEAT_HANDLER) {
             type = TransmissionType.HEAT;
         } else if (capability == FluidHandler.BLOCK) {
             type = TransmissionType.FLUID;

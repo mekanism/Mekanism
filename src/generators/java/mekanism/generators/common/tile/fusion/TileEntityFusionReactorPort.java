@@ -103,7 +103,8 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
             BlockPos pos = getBlockPos().relative(side);
             return WorldUtils.getBlockState(level, pos)
                   .filter(state -> !state.isAir() && state.getBlock() != GeneratorsBlocks.FUSION_REACTOR_PORT.getBlock())
-                  .map(state -> Capabilities.HEAT_HANDLER.getCapabilityIfLoaded(level, pos, state, null, side.getOpposite()))
+                  //Note: We know the position is loaded already from the blockstate check
+                  .map(state -> level.getCapability(Capabilities.HEAT_HANDLER, pos, state, null, side.getOpposite()))
                   .orElse(null);
         }
         return null;

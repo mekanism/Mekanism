@@ -52,7 +52,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
 
     @Override
     protected AbstractAcceptorCache<IHeatHandler, ?> createAcceptorCache() {
-        return new AcceptorCache<>(getTransmitterTile(), Capabilities.HEAT_HANDLER.block());
+        return new AcceptorCache<>(getTransmitterTile(), Capabilities.HEAT_HANDLER);
     }
 
     @Override
