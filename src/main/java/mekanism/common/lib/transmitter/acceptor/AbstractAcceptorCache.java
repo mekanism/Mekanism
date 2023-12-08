@@ -82,7 +82,7 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
     /**
      * Gets the listener that will refresh connections on a given side.
      */
-    protected RefreshListener getRefreshListener(@NotNull Direction side) {
+    private RefreshListener getRefreshListener(@NotNull Direction side) {
         return cachedListeners.computeIfAbsent(side, s -> new RefreshListener(transmitterTile, s));
     }
 
@@ -105,13 +105,9 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
          */
         @Override
         public boolean getAsBoolean() {
-            TileEntityTransmitter transmitterTile = tile.get();
-            //Check to make sure the transmitter is still valid
-            //TODO: Is loaded check should potentially use onUnload so it runs before the onRemoved?
-            //TODO: I think this isLoaded check may actually break when chunks become loaded but inaccessible...
-            // so we may need to move the isLoaded check to run or maybe even just remove it all together??
-            // Can we maybe just have it always be true and let the GC handle nuking the listeners
-            return transmitterTile != null && !transmitterTile.isRemoved() && transmitterTile.hasLevel() && transmitterTile.isLoaded();
+            //Note: We could get away with just returning true here and letting GC fully handle removing this listener,
+            // but we allow it to clean it up earlier if our transmitter tile is GC'd
+            return tile.get() != null;
         }
 
         /**
@@ -123,11 +119,19 @@ public abstract class AbstractAcceptorCache<ACCEPTOR, INFO extends AcceptorInfo<
             //If we are still a valid listener, validate the tile didn't somehow become null between checking if it is valid and running the invalidation listener,
             // then mark the acceptor as dirty
             if (transmitterTile != null) {
-                //Note: Call markDirtyAcceptor so we don't evaluate the changed block until the server tick
-                // so that blocks hopefully had a chance to figure out their caps
-                // and if the chunk is now unloaded we will get null as the capability, and then when it loads again
-                // we will be updated and get the proper capability again
-                transmitterTile.getTransmitter().markDirtyAcceptor(side);
+                Transmitter<?, ?, ?> transmitter = transmitterTile.getTransmitter();
+                //Check that the transmitter is actually valid before marking parts of it as dirty
+                // this happens here instead of as part of the overall validation check so that if
+                // the transmitter later becomes valid again the BlockCapabilityCache's still usable.
+                // The most common case for this would be when the chunk the transmitter is in becomes inaccessible BUT is still loaded,
+                // and then something next to the transmitter fires a capability invalidation.
+                if (transmitter.isValid()) {
+                    //Note: Call markDirtyAcceptor so we don't evaluate the changed block until the server tick
+                    // so that blocks hopefully had a chance to figure out their caps
+                    // and if the chunk is now unloaded we will get null as the capability, and then when it loads again
+                    // we will be updated and get the proper capability again
+                    transmitter.markDirtyAcceptor(side);
+                }
             }
         }
     }
