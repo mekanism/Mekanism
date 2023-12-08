@@ -24,7 +24,6 @@ import mekanism.common.util.ItemDataUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -43,7 +42,7 @@ public class GaugeDropperContentsHandler extends MergedTankContentsHandler<Merge
         event.registerItem(Capabilities.INFUSION.item(), (stack, ctx) -> getOrAttachHandler(stack).infusionHandler, item);
         event.registerItem(Capabilities.PIGMENT.item(), (stack, ctx) -> getOrAttachHandler(stack).pigmentHandler, item);
         event.registerItem(Capabilities.SLURRY.item(), (stack, ctx) -> getOrAttachHandler(stack).slurryHandler, item);
-        event.registerItem(FluidHandler.ITEM, (stack, ctx) -> getOrAttachHandler(stack), item);
+        event.registerItem(Capabilities.FLUID.item(), (stack, ctx) -> getOrAttachHandler(stack), item);
     }
 
     /**

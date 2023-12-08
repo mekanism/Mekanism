@@ -16,7 +16,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.client.IItemDecorator;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -43,7 +42,7 @@ public class MekaSuitBarDecorator implements IItemDecorator {
 
         List<FluidTankSpec> fluidTankSpecs = armor.getFluidTankSpecs();
         if (!fluidTankSpecs.isEmpty()) {
-            IFluidHandlerItem fluidHandler = stack.getCapability(FluidHandler.ITEM);
+            IFluidHandlerItem fluidHandler = Capabilities.FLUID.getCapability(stack);
             if (fluidHandler != null) {
                 int tank = getDisplayTank(fluidTankSpecs, stack, fluidHandler.getTanks());
                 if (tank != -1) {

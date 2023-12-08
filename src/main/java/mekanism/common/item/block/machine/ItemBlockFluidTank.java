@@ -15,6 +15,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockFluidTank;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.lib.security.ItemSecurityUtils;
@@ -57,8 +58,6 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.SoundActions;
@@ -230,7 +229,7 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
     }
 
     private static IExtendedFluidTank getExtendedFluidTank(@NotNull ItemStack stack) {
-        IFluidHandlerItem fluidHandlerItem = stack.getCapability(FluidHandler.ITEM);
+        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stack);
         if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
             return fluidHandler.getFluidTank(0, null);
         }
@@ -248,7 +247,7 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
         super.attachCapabilities(event);
-        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> RateLimitFluidHandler.create(stack, getTier()), this);
+        event.registerItem(Capabilities.FLUID.item(), (stack, ctx) -> RateLimitFluidHandler.create(stack, getTier()), this);
     }
 
     @Override

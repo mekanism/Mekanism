@@ -84,7 +84,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -277,7 +276,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             event.registerItem(Capabilities.GAS.item(), (stack, ctx) -> MekanismConfig.gear.isLoaded() ? RateLimitMultiTankGasHandler.create(stack, gasTankSpecs) : null, this);
         }
         if (!fluidTankSpecs.isEmpty()) {
-            event.registerItem(FluidHandler.ITEM, (stack, ctx) -> MekanismConfig.gear.isLoaded() ? RateLimitMultiTankFluidHandler.create(stack, fluidTankSpecs) : null, this);
+            event.registerItem(Capabilities.FLUID.item(), (stack, ctx) -> MekanismConfig.gear.isLoaded() ? RateLimitMultiTankFluidHandler.create(stack, fluidTankSpecs) : null, this);
         }
     }
 
@@ -312,7 +311,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     public FluidStack getContainedFluid(ItemStack stack, FluidStack type) {
-        IFluidHandlerItem fluidHandlerItem = stack.getCapability(FluidHandler.ITEM);
+        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stack);
         if (fluidHandlerItem != null) {
             for (int i = 0, tanks = fluidHandlerItem.getTanks(); i < tanks; i++) {
                 FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(i);

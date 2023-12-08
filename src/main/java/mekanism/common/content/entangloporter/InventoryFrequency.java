@@ -32,6 +32,7 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
@@ -65,7 +66,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
@@ -330,7 +330,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         if (!fluidToSend.isEmpty()) {
             FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend, expected);
             typesToEject.put(TransmissionType.FLUID, (level, pos, state, blockEntity, side) -> {
-                IFluidHandler handler = WorldUtils.getCapability(level, FluidHandler.BLOCK, pos, state, blockEntity, side.getOpposite());
+                IFluidHandler handler = Capabilities.FLUID.getCapabilityIfLoaded(level, pos, state, blockEntity, side.getOpposite());
                 if (handler != null && FluidUtils.canFill(handler, fluidToSend)) {
                     target.addHandler(handler);
                 }

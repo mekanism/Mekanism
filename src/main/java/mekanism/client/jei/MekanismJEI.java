@@ -86,7 +86,6 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -152,7 +151,7 @@ public class MekanismJEI implements IModPlugin {
     }
 
     private static String getFluidComponent(ItemStack stack) {
-        IFluidHandlerItem handler = stack.getCapability(FluidHandler.ITEM);
+        IFluidHandlerItem handler = Capabilities.FLUID.getCapability(stack);
         if (handler != null) {
             String component = "";
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
@@ -207,7 +206,7 @@ public class MekanismJEI implements IModPlugin {
             ItemStack stack = itemProvider.getItemStack();
             if (Capabilities.STRICT_ENERGY.hasCapability(stack) || Capabilities.GAS.hasCapability(stack) ||
                 Capabilities.INFUSION.hasCapability(stack) || Capabilities.PIGMENT.hasCapability(stack) ||
-                Capabilities.SLURRY.hasCapability(stack) || stack.getCapability(FluidHandler.ITEM) != null) {
+                Capabilities.SLURRY.hasCapability(stack) || Capabilities.FLUID.hasCapability(stack)) {
                 registry.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, itemProvider.asItem(), MEKANISM_NBT_INTERPRETER);
             }
         }

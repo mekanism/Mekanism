@@ -43,7 +43,6 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -162,7 +161,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                     ));
                 }
                 //Get tags of any contained fluids
-                IFluidHandlerItem fluidHandler = stack.getCapability(FluidHandler.ITEM);
+                IFluidHandlerItem fluidHandler = Capabilities.FLUID.getCapability(stack);
                 if (fluidHandler != null) {
                     tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(IntStream.range(0, fluidHandler.getTanks())
                           .mapToObj(fluidHandler::getFluidInTank)

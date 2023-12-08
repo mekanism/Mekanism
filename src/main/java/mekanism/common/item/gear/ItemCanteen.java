@@ -4,6 +4,7 @@ import java.util.List;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler;
@@ -25,8 +26,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
@@ -72,7 +71,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents, ICa
             int needed = Math.min(20 - player.getFoodData().getFoodLevel(), getFluid(stack).getAmount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
             if (needed > 0) {
                 player.getFoodData().eat(needed, MekanismConfig.general.nutritionalPasteSaturation.get());
-                IFluidHandlerItem handler = stack.getCapability(FluidHandler.ITEM);
+                IFluidHandlerItem handler = mekanism.common.capabilities.Capabilities.FLUID.getCapability(stack);
                 if (handler != null) {
                     handler.drain(needed * MekanismConfig.general.nutritionalPasteMBPerFood.get(), FluidAction.EXECUTE);
                 }
@@ -95,7 +94,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents, ICa
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> {
+        event.registerItem(Capabilities.FLUID.item(), (stack, ctx) -> {
             if (!MekanismConfig.gear.isLoaded()) {//Only expose the capabilities if the required configs are loaded
                 return null;
             }
@@ -105,7 +104,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents, ICa
     }
 
     private FluidStack getFluid(ItemStack stack) {
-        IFluidHandlerItem fluidHandlerItem = stack.getCapability(FluidHandler.ITEM);
+        IFluidHandlerItem fluidHandlerItem = mekanism.common.capabilities.Capabilities.FLUID.getCapability(stack);
         if (fluidHandlerItem != null) {
             if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
                 IExtendedFluidTank fluidTank = fluidHandler.getFluidTank(0, null);

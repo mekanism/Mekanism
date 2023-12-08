@@ -13,6 +13,7 @@ import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.lib.transmitter.CompatibleTransmitterValidator;
@@ -30,7 +31,6 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
@@ -55,7 +55,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
 
     @Override
     protected AbstractAcceptorCache<IFluidHandler, ?> createAcceptorCache() {
-        return new AcceptorCache<>(getTransmitterTile(), FluidHandler.BLOCK);
+        return new AcceptorCache<>(getTransmitterTile(), Capabilities.FLUID.block());
     }
 
     @Override

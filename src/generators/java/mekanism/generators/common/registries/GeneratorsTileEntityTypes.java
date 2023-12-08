@@ -29,7 +29,6 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
-import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 
 public class GeneratorsTileEntityTypes {
 
@@ -84,7 +83,7 @@ public class GeneratorsTileEntityTypes {
           .mekBuilder(GeneratorsBlocks.FUSION_REACTOR_CONTROLLER, TileEntityFusionReactorController::new)
           .withSimple(Capabilities.CONFIGURABLE)
           //Never allow the gas handler, fluid handler, or energy cap to be enabled here even though internally we can handle both of them
-          .without(Capabilities.GAS.block(), FluidHandler.BLOCK, Capabilities.HEAT)
+          .without(Capabilities.GAS.block(), Capabilities.FLUID.block(), Capabilities.HEAT)
           .without(EnergyCompatUtils.getLoadedEnergyCapabilities())
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityFusionReactorBlock> FUSION_REACTOR_FRAME = TILE_ENTITY_TYPES

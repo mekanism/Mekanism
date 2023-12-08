@@ -7,6 +7,7 @@ import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.registries.MekanismFluids;
@@ -16,7 +17,6 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -38,7 +38,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
             int toFeed = Math.min(module.getContainerEnergy().divideToInt(usage), needed);
             if (toFeed > 0) {
                 module.useEnergy(player, usage.multiply(toFeed));
-                IFluidHandlerItem handler = container.getCapability(FluidHandler.ITEM);
+                IFluidHandlerItem handler = Capabilities.FLUID.getCapability(container);
                 if (handler != null) {
                     handler.drain(MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(toFeed * MekanismConfig.general.nutritionalPasteMBPerFood.get()), FluidAction.EXECUTE);
                 }
@@ -51,7 +51,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
     public void addHUDElements(IModule<ModuleNutritionalInjectionUnit> module, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
             ItemStack container = module.getContainer();
-            IFluidHandlerItem handler = container.getCapability(FluidHandler.ITEM);
+            IFluidHandlerItem handler = Capabilities.FLUID.getCapability(container);
             if (handler != null) {
                 int max = MekanismConfig.gear.mekaSuitNutritionalMaxStorage.getAsInt();
                 handler.drain(MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(max), FluidAction.SIMULATE);

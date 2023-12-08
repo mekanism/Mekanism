@@ -9,6 +9,7 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.fluid.IExtendedFluidHandler;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.merged.GaugeDropperContentsHandler;
 import mekanism.common.util.ChemicalUtil;
@@ -23,7 +24,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -56,7 +56,7 @@ public class ItemGaugeDropper extends Item implements ICapabilityAware {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide) {
-                IFluidHandlerItem fluidHandler = stack.getCapability(FluidHandler.ITEM);
+                IFluidHandlerItem fluidHandler = Capabilities.FLUID.getCapability(stack);
                 if (fluidHandler instanceof IExtendedFluidHandler fluidHandlerItem) {
                     for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
                         fluidHandlerItem.setFluidInTank(tank, FluidStack.EMPTY);

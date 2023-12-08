@@ -9,6 +9,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.providers.IFluidProvider;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.content.network.distribution.FluidHandlerTarget;
@@ -21,7 +22,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -100,7 +100,7 @@ public final class FluidUtils {
         BlockPos center = from.getBlockPos();
         for (Direction side : sides) {
             //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
-            IFluidHandler handler = WorldUtils.getCapability(level, FluidHandler.BLOCK, center.relative(side), side.getOpposite());
+            IFluidHandler handler = Capabilities.FLUID.getCapabilityIfLoaded(level, center.relative(side), side.getOpposite());
             if (handler != null && canFill(handler, toSend)) {
                 target.addHandler(handler);
             }
@@ -117,7 +117,7 @@ public final class FluidUtils {
 
     public static boolean handleTankInteraction(Player player, InteractionHand hand, ItemStack itemStack, IExtendedFluidTank fluidTank) {
         ItemStack copyStack = itemStack.copyWithCount(1);
-        IFluidHandlerItem handler = copyStack.getCapability(FluidHandler.ITEM);
+        IFluidHandlerItem handler = Capabilities.FLUID.getCapability(copyStack);
         if (handler != null) {
             FluidStack fluidInItem;
             if (fluidTank.isEmpty()) {

@@ -44,7 +44,6 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -80,7 +79,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     private void sideChangedBasic(TransmissionType transmissionType, Direction direction) {
         switch (transmissionType) {
             case ENERGY -> tile.invalidateCapabilities(EnergyCompatUtils.getLoadedEnergyCapabilities(), direction);
-            case FLUID -> tile.invalidateCapability(FluidHandler.BLOCK, direction);
+            case FLUID -> tile.invalidateCapability(Capabilities.FLUID.block(), direction);
             case GAS -> tile.invalidateCapability(Capabilities.GAS.block(), direction);
             case INFUSION -> tile.invalidateCapability(Capabilities.INFUSION.block(), direction);
             case PIGMENT -> tile.invalidateCapability(Capabilities.PIGMENT.block(), direction);
@@ -125,7 +124,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             type = TransmissionType.SLURRY;
         } else if (capability == Capabilities.HEAT) {
             type = TransmissionType.HEAT;
-        } else if (capability == FluidHandler.BLOCK) {
+        } else if (Capabilities.FLUID.is(capability)) {
             type = TransmissionType.FLUID;
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
             type = TransmissionType.ENERGY;

@@ -34,7 +34,6 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -111,7 +110,7 @@ public class StorageUtils {
 
     public static void addStoredFluid(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, ILangEntry emptyLangEntry,
           Function<FluidStack, Component> storedFunction) {
-        IFluidHandlerItem handler = stack.getCapability(FluidHandler.ITEM);
+        IFluidHandlerItem handler = Capabilities.FLUID.getCapability(stack);
         if (handler != null) {
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
                 tooltip.add(storedFunction.apply(handler.getFluidInTank(tank)));
@@ -296,7 +295,7 @@ public class StorageUtils {
         bestRatio = calculateRatio(stack, bestRatio, Capabilities.INFUSION.item());
         bestRatio = calculateRatio(stack, bestRatio, Capabilities.PIGMENT.item());
         bestRatio = calculateRatio(stack, bestRatio, Capabilities.SLURRY.item());
-        IFluidHandlerItem fluidHandlerItem = stack.getCapability(FluidHandler.ITEM);
+        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stack);
         if (fluidHandlerItem != null) {
             for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
                 bestRatio = Math.max(bestRatio, getRatio(fluidHandlerItem.getFluidInTank(tank).getAmount(), fluidHandlerItem.getTankCapacity(tank)));
