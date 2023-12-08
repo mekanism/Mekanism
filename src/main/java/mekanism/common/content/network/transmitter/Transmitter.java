@@ -275,7 +275,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     /**
      * @apiNote Only call this from the server side
      */
-    private boolean getPossibleAcceptorConnection(Direction side) {
+    private boolean getPossibleAcceptorConnection(Direction side, boolean markDirty) {
         if (isRedstoneActivated()) {
             return false;
         }
@@ -283,11 +283,11 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (canConnectMutual(side, tile) && isValidAcceptor(tile, side)) {
             return true;
         }
-        //TODO - 1.20.2: Validate I am correct that this now can just be a markDirtAcceptor call
-        // and figure out if that is even correct??? As maybe it is only if it changed that we need to do that
-        // (Especially as we call getPossibleAcceptorConnection via actually committing the acceptor changes)
-        //acceptorCache.invalidateCachedAcceptor(side);
-        markDirtyAcceptor(side);
+        if (markDirty) {
+            //TODO - 1.20.2: Re-evaluate if this is reasonable. Basically marks it as dirty if it isn't a valid acceptor
+            // and if we aren't actively refreshing the acceptors. It seems to work fine as is currently, but it could be we can improve on this some
+            markDirtyAcceptor(side);
+        }
         return false;
     }
 
@@ -324,9 +324,8 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
                     continue;
                 }
             }
-            //TODO - 1.20.2: Validate I am correct that this now can just be a markDirtAcceptor call
-            // and figure out if that is even correct??? As maybe it is only if it changed that we need to do that
-            //acceptorCache.invalidateCachedAcceptor(side);
+            //TODO - 1.20.2: Re-evaluate if this is reasonable. Basically marks it as dirty if it isn't a valid acceptor
+            // though realistically we may want to mark it as long as it changed? Though it seems to work fine as is
             markDirtyAcceptor(side);
         }
         return connections;
@@ -517,18 +516,15 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         }
     }
 
-    //TODO - 1.20.2: Re-evaluate??
+    /**
+     * Used by the network's acceptor cache to refresh and sync acceptor changes before actually querying what the acceptor on a given side is.
+     */
     public void refreshAcceptorConnections(Direction side) {
         if (!isRemote()) {
-            boolean possibleAcceptor = getPossibleAcceptorConnection(side);
+            //Note: We don't need to mark the acceptor as dirty here as it already is
+            boolean possibleAcceptor = getPossibleAcceptorConnection(side, false);
             if (possibleAcceptor != connectionMapContainsSide(acceptorCache.currentAcceptorConnections, side)) {
                 acceptorCache.currentAcceptorConnections = setConnectionBit(acceptorCache.currentAcceptorConnections, possibleAcceptor, side);
-                //TODO - 1.20.2: Validate I am pretty sure we don't need this but we may want to check validate this for heat networks??
-                // which may then cause issues due to when this method is actually called
-                /*if (transmitterChanged) {
-                    //If this side is now a valid transmitter, and it wasn't before recheck the connection
-                    recheckConnection(side);
-                }*/
                 getTransmitterTile().sendUpdatePacket();
             }
         }
@@ -537,7 +533,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     public void refreshConnections(Direction side) {
         if (!isRemote()) {
             boolean possibleTransmitter = getPossibleTransmitterConnection(side);
-            boolean possibleAcceptor = getPossibleAcceptorConnection(side);
+            boolean possibleAcceptor = getPossibleAcceptorConnection(side, true);
             boolean transmitterChanged = false;
             boolean sendDesc = false;
             if ((possibleTransmitter || possibleAcceptor) != connectionMapContainsSide(getAllCurrentConnections(), side)) {
@@ -602,8 +598,9 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             // as the power might have changed, and we may have to update our own visuals
             refreshConnections();
         } else {
-            //TODO - 1.20.2: Do we actually need to do anything in this case?? Given connections likely are handled by caps and invalidation now
-            //Otherwise, we can just get away with checking the single side
+            //If we can't handle redstone, just refresh the side the connection changed on so that if a transmitter is removed
+            // or is set to none then we stop trying to be connected to it
+            //TODO - 1.20.2: See if we can come up with a better way to handle this as there are definitely better ways
             refreshConnections(side);
         }
     }
@@ -658,9 +655,9 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return InteractionResult.SUCCESS;
     }
 
-    //TODO - 1.20.2: Re-evaluate this and if we need to be calling this. Odds are we need to at least in some spots for redstone related stuff
-    // but it is also possible we may need to also invalidate caps from some callsites
     public void notifyTileChange() {
+        //TODO: It is possible some of the places we are calling this method don't actually need to notify the loaded neighbors of changes and the capability invalidation is enough
+        // for now though it doesn't really seem to hurt anything to just keep it though
         WorldUtils.notifyLoadedNeighborsOfTileChange(getTileWorld(), getTilePos());
     }
 
