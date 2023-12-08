@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 import mekanism.api.Action;
@@ -29,7 +28,6 @@ import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.chemical.item.ChemicalTankSpec;
 import mekanism.common.capabilities.chemical.item.RateLimitMultiTankGasHandler;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -45,6 +43,7 @@ import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.mekasuit.ModuleElytraUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
+import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.lib.attribute.AttributeCache;
@@ -59,7 +58,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -86,9 +84,9 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -251,26 +249,34 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    protected boolean areCapabilityConfigsLoaded() {
-        return super.areCapabilityConfigsLoaded() && MekanismConfig.gear.isLoaded();
-    }
+    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+        super.attachCapabilities(event);
+        //Note: The all our providers only expose the capabilities if the required configs for initializing that capability are loaded
+        EnergyCompatUtils.registerItemCapabilities(event, this, (stack, ctx) -> {
+            if (!MekanismConfig.gear.isLoaded()) {
+                return null;
+            }
+            //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
+            // Internal is used by the "null" side, which is what will get used for most items
+            return RateLimitEnergyHandler.create(stack, () -> getChargeRate(stack), () -> getMaxEnergy(stack), BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue);
+        });
+        event.registerItem(Capabilities.RADIATION_SHIELDING, (stack, ctx) -> {
+            if (!MekanismConfig.gear.isLoaded() || !isModuleEnabled(stack, MekanismModules.RADIATION_SHIELDING_UNIT)) {
+                return null;
+            }
+            return RadiationShieldingHandler.create(ItemHazmatSuitArmor.getShieldingByArmor(getType()));
+        }, this);
 
-    @Override
-    protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
-        super.gatherCapabilities(capabilities, stack, nbt);
-        //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
-        // Internal is used by the "null" side, which is what will get used for most items
-        capabilities.add(RateLimitEnergyHandler.create(() -> getChargeRate(stack), () -> getMaxEnergy(stack), BasicEnergyContainer.manualOnly,
-              BasicEnergyContainer.alwaysTrue));
-        capabilities.add(RadiationShieldingHandler.create(item -> isModuleEnabled(item, MekanismModules.RADIATION_SHIELDING_UNIT) ?
-                                                                  ItemHazmatSuitArmor.getShieldingByArmor(getType()) : 0));
-        capabilities.add(LaserDissipationHandler.create(item -> isModuleEnabled(item, MekanismModules.LASER_DISSIPATION_UNIT) ? laserDissipation : 0,
-              item -> isModuleEnabled(item, MekanismModules.LASER_DISSIPATION_UNIT) ? laserRefraction : 0));
+        event.registerItem(Capabilities.LASER_DISSIPATION, (stack, ctx) -> {
+            //Note: This doesn't rely on configs, so we can skip the gear loaded check
+            return isModuleEnabled(stack, MekanismModules.LASER_DISSIPATION_UNIT) ? LaserDissipationHandler.create(laserDissipation, laserRefraction) : null;
+        }, this);
+
         if (!gasTankSpecs.isEmpty()) {
-            capabilities.add(RateLimitMultiTankGasHandler.create(gasTankSpecs));
+            event.registerItem(Capabilities.GAS.item(), (stack, ctx) -> MekanismConfig.gear.isLoaded() ? RateLimitMultiTankGasHandler.create(stack, gasTankSpecs) : null, this);
         }
         if (!fluidTankSpecs.isEmpty()) {
-            capabilities.add(RateLimitMultiTankFluidHandler.create(fluidTankSpecs));
+            event.registerItem(Capabilities.FLUID.item(), (stack, ctx) -> MekanismConfig.gear.isLoaded() ? RateLimitMultiTankFluidHandler.create(stack, fluidTankSpecs) : null, this);
         }
     }
 
@@ -284,18 +290,16 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @NotNull
     public GasStack useGas(ItemStack stack, Gas type, long amount) {
-        Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER).resolve();
-        if (capability.isPresent()) {
-            IGasHandler gasHandlerItem = capability.get();
+        IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
+        if (gasHandlerItem != null) {
             return gasHandlerItem.extractChemical(new GasStack(type, amount), Action.EXECUTE);
         }
         return GasStack.EMPTY;
     }
 
     public GasStack getContainedGas(ItemStack stack, Gas type) {
-        Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER).resolve();
-        if (capability.isPresent()) {
-            IGasHandler gasHandlerItem = capability.get();
+        IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
+        if (gasHandlerItem != null) {
             for (int i = 0; i < gasHandlerItem.getTanks(); i++) {
                 GasStack gasInTank = gasHandlerItem.getChemicalInTank(i);
                 if (gasInTank.getType() == type) {
@@ -307,10 +311,9 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     public FluidStack getContainedFluid(ItemStack stack, FluidStack type) {
-        Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack).resolve();
-        if (capability.isPresent()) {
-            IFluidHandlerItem fluidHandlerItem = capability.get();
-            for (int i = 0; i < fluidHandlerItem.getTanks(); i++) {
+        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stack);
+        if (fluidHandlerItem != null) {
+            for (int i = 0, tanks = fluidHandlerItem.getTanks(); i < tanks; i++) {
                 FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(i);
                 if (fluidInTank.isFluidEqual(type)) {
                     return fluidInTank;

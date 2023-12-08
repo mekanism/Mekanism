@@ -1,7 +1,8 @@
 package mekanism.common.network.to_server;
 
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.network.IMekanismPacket;
-import mekanism.common.util.SecurityUtils;
+import mekanism.common.lib.security.SecurityUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -24,9 +25,9 @@ public class PacketSecurityMode implements IMekanismPacket {
         if (player != null) {
             ItemStack stack = player.getItemInHand(currentHand);
             if (increment) {
-                SecurityUtils.get().incrementSecurityMode(player, stack);
+                SecurityUtils.get().incrementSecurityMode(player, IItemSecurityUtils.INSTANCE.securityCapability(stack));
             } else {
-                SecurityUtils.get().decrementSecurityMode(player, stack);
+                SecurityUtils.get().decrementSecurityMode(player, IItemSecurityUtils.INSTANCE.securityCapability(stack));
             }
         }
     }

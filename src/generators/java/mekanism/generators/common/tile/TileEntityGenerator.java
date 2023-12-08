@@ -7,12 +7,10 @@ import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
@@ -38,7 +36,6 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     public TileEntityGenerator(IBlockProvider blockProvider, BlockPos pos, BlockState state, @NotNull FloatingLongSupplier maxOutput) {
         super(blockProvider, pos, state);
         updateMaxOutputRaw(maxOutput.get());
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     protected RelativeSide[] getEnergySides() {

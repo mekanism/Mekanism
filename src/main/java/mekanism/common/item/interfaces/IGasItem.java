@@ -1,6 +1,5 @@
 package mekanism.common.item.interfaces;
 
-import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.chemical.gas.GasStack;
@@ -15,9 +14,8 @@ public interface IGasItem {
 
     @NotNull
     default GasStack useGas(ItemStack stack, long amount) {
-        Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER).resolve();
-        if (capability.isPresent()) {
-            IGasHandler gasHandlerItem = capability.get();
+        IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
+        if (gasHandlerItem != null) {
             if (gasHandlerItem instanceof IMekanismGasHandler gasHandler) {
                 //TODO: If we end up having more tanks than one in any IGasItem's just kill off this if branch
                 IGasTank gasTank = gasHandler.getChemicalTank(0, null);
@@ -32,14 +30,14 @@ public interface IGasItem {
     }
 
     default boolean hasGas(ItemStack stack) {
-        return stack.getCapability(Capabilities.GAS_HANDLER)
-              .map(handler -> {
-                  for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
-                      if (!handler.getChemicalInTank(tank).isEmpty()) {
-                          return true;
-                      }
-                  }
-                  return false;
-              }).orElse(false);
+        IGasHandler handler = Capabilities.GAS.getCapability(stack);
+        if (handler != null) {
+            for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
+                if (!handler.getChemicalInTank(tank).isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

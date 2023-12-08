@@ -33,29 +33,27 @@ import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.Pigm
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.SlurryHandlerManager;
 import mekanism.common.content.network.BoxedChemicalNetwork;
 import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
-import mekanism.common.integration.computer.ComputerCapabilityHelper;
 import mekanism.common.integration.computer.IComputerTile;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityPressurizedTube extends TileEntityTransmitter implements IComputerTile, ITileRadioactive {
 
-    private static final Collection<Capability<?>> CAPABILITIES = Set.of(
-          Capabilities.GAS_HANDLER,
-          Capabilities.INFUSION_HANDLER,
-          Capabilities.PIGMENT_HANDLER,
-          Capabilities.SLURRY_HANDLER
+    private static final Collection<BlockCapability<?, @Nullable Direction>> CAPABILITIES = Set.of(
+          Capabilities.GAS.block(),
+          Capabilities.INFUSION.block(),
+          Capabilities.PIGMENT.block(),
+          Capabilities.SLURRY.block()
     );
 
     private final GasHandlerManager gasHandlerManager;
@@ -75,7 +73,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
               new DynamicPigmentHandler(this::getPigmentTanks, canExtract, canInsert, null)));
         addCapabilityResolver(slurryHandlerManager = new SlurryHandlerManager(getHolder(BoxedPressurizedTube::getSlurryTanks),
               new DynamicSlurryHandler(this::getSlurryTanks, canExtract, canInsert, null)));
-        ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
     }
 
     @Override
@@ -185,12 +182,12 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
     public void sideChanged(@NotNull Direction side, @NotNull ConnectionType old, @NotNull ConnectionType type) {
         super.sideChanged(side, old, type);
         if (type == ConnectionType.NONE) {
+            //We no longer have a capability, invalidate it, which will also notify the level
             invalidateCapabilities(CAPABILITIES, side);
-            //Notify the neighbor on that side our state changed and we no longer have a capability
-            WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         } else if (old == ConnectionType.NONE) {
-            //Notify the neighbor on that side our state changed, and we now do have a capability
-            WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
+            //Notify any listeners to our position that we now do have a capability
+            //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
+            invalidateCapabilities();
         }
     }
 
@@ -202,8 +199,11 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
             //Note: While at first glance the below invalidation may seem over aggressive, it is not actually that aggressive as
             // if a cap has not been initialized yet on a side then invalidating it will just NO-OP
             invalidateCapabilities(CAPABILITIES, EnumUtils.DIRECTIONS);
+        } else {
+            //Notify any listeners to our position that we now do have a capability
+            //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
+            invalidateCapabilities();
         }
-        //Note: We do not have to invalidate any caps if we are going from powered to unpowered as all the caps would already be "empty"
     }
 
     //Methods relating to IComputerTile

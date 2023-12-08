@@ -17,6 +17,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.EnumColor;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -24,7 +25,7 @@ import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerT
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
-import mekanism.common.lib.inventory.TileTransitRequest;
+import mekanism.common.lib.inventory.HandlerTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -35,7 +36,6 @@ import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
@@ -44,9 +44,11 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -199,27 +201,26 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                 //Validate the slot info is of the correct type
                 Set<Direction> outputs = info.getSidesForData(dataType);
                 if (!outputs.isEmpty()) {
-                    EjectTransitRequest ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(tile, outputs.iterator().next()), inventorySlotInfo.getSlots());
+                    IItemHandler handler = getHandler(outputs.iterator().next());
+                    //NOTE: The below logic and the entire concept of EjectTransitRequest relies on the implementation detail that
+                    // per DataType all exposed slots are the same regardless of the actual side. If this ever changes or there are
+                    // cases discovered where this is not the case we will instead need to calculate the eject map for each output side
+                    // instead of only having to do it once per DataType
+                    EjectTransitRequest ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(handler), inventorySlotInfo.getSlots());
                     if (!ejectMap.isEmpty()) {
                         for (Direction side : outputs) {
-                            BlockEntity target = WorldUtils.getTileEntity(tile.getLevel(), tile.getBlockPos().relative(side));
-                            if (target != null) {
-                                //Update the side so that if/when the response uses it, it makes sure it is grabbing from the correct side
-                                ejectMap.side = side;
-                                //If the spot is not loaded just skip trying to eject to it
-                                TransitResponse response;
-                                if (target instanceof TileEntityLogisticalTransporterBase transporter) {
-                                    response = transporter.getTransmitter().insert(tile, ejectMap, outputColor, true, 0);
-                                } else {
-                                    response = ejectMap.addToInventory(target, side, 0, false);
-                                }
-                                if (!response.isEmpty()) {
-                                    // use the items returned by the TransitResponse; will be visible next loop
-                                    response.useAll();
-                                    if (ejectMap.isEmpty()) {
-                                        //If we are out of items to eject, break
-                                        break;
-                                    }
+                            BlockPos relative = tile.getBlockPos().relative(side);
+                            BlockEntity target = WorldUtils.getTileEntity(tile.getLevel(), relative);
+                            //Update the handler so that if/when the response uses it, it makes sure it is using the correct side's restrictions
+                            ejectMap.handler = getHandler(side);
+                            //If the spot is not loaded just skip trying to eject to it
+                            TransitResponse response = ejectMap.eject(tile, relative, target, side, 0, transporter -> outputColor);
+                            if (!response.isEmpty()) {
+                                // use the items returned by the TransitResponse; will be visible next loop
+                                response.useAll();
+                                if (ejectMap.isEmpty()) {
+                                    //If we are out of items to eject, break
+                                    break;
                                 }
                             }
                         }
@@ -229,6 +230,11 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         }
 
         tickDelay = 10;
+    }
+
+    private IItemHandler getHandler(Direction side) {
+        //Note: We can't just pass "tile" and have to instead look up the capability to make sure we respect any sidedness
+        return Capabilities.ITEM.getCapabilityIfLoaded(tile.getLevel(), tile.getBlockPos(), null, tile, side);
     }
 
     @ComputerMethod
@@ -392,18 +398,17 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
     //End computer related methods
 
-    private static class EjectTransitRequest extends TileTransitRequest {
+    private static class EjectTransitRequest extends HandlerTransitRequest {
 
-        public Direction side;
+        public IItemHandler handler;
 
-        public EjectTransitRequest(BlockEntity tile, Direction side) {
-            super(tile, side);
-            this.side = side;
+        public EjectTransitRequest(IItemHandler handler) {
+            super(handler);
         }
 
         @Override
-        public Direction getSide() {
-            return side;
+        protected IItemHandler getHandler() {
+            return handler;
         }
     }
 }

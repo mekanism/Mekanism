@@ -9,17 +9,17 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.ItemCapabilityWrapper;
+import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -38,11 +38,11 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvider, ICustomCreativeTabContents {
+public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvider, ICustomCreativeTabContents, ICapabilityAware {
 
     public ItemElectricBow(Properties properties) {
         super(properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1));
@@ -183,15 +183,16 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        if (!MekanismConfig.gear.isLoaded()) {
-            //Only expose the capabilities if the required configs are loaded
-            return super.initCapabilities(stack, nbt);
-        }
-        //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
-        // Internal is used by the "null" side, which is what will get used for most items
-        return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(MekanismConfig.gear.electricBowChargeRate, MekanismConfig.gear.electricBowMaxEnergy,
-              BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue));
+    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+        EnergyCompatUtils.registerItemCapabilities(event, this, (stack, ctx) -> {
+            if (!MekanismConfig.gear.isLoaded()) {//Only expose the capabilities if the required configs are loaded
+                return null;
+            }
+            //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
+            // Internal is used by the "null" side, which is what will get used for most items
+            return RateLimitEnergyHandler.create(stack, MekanismConfig.gear.electricBowChargeRate, MekanismConfig.gear.electricBowMaxEnergy,
+                  BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue);
+        });
     }
 
     @Override

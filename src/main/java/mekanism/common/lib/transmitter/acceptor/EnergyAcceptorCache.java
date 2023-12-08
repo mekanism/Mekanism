@@ -1,51 +1,67 @@
 package mekanism.common.lib.transmitter.acceptor;
 
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.integration.energy.IEnergyCompat;
-import mekanism.common.integration.energy.StrictEnergyCompat;
+import mekanism.common.lib.transmitter.acceptor.EnergyAcceptorCache.EnergyAcceptorInfo;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import mekanism.common.util.CapabilityUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.minecraft.server.level.ServerLevel;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class EnergyAcceptorCache extends AcceptorCache<IStrictEnergyHandler> {
+public class EnergyAcceptorCache extends AbstractAcceptorCache<IStrictEnergyHandler, EnergyAcceptorInfo> {
 
-    public EnergyAcceptorCache(Transmitter<IStrictEnergyHandler, ?, ?> transmitter, TileEntityTransmitter transmitterTile) {
-        super(transmitter, transmitterTile);
+    public EnergyAcceptorCache(TileEntityTransmitter transmitterTile) {
+        super(transmitterTile);
     }
 
-    /**
-     * @apiNote Only call this from the server side
-     */
-    public boolean hasStrictEnergyHandlerAndListen(@Nullable BlockEntity tile, Direction side) {
-        if (tile != null && !tile.isRemoved() && tile.hasLevel()) {
-            Direction opposite = side.getOpposite();
-            for (IEnergyCompat energyCompat : EnergyCompatUtils.getCompats()) {
+    @Override
+    protected EnergyAcceptorInfo initializeCache(ServerLevel level, BlockPos pos, Direction opposite, RefreshListener refreshListener) {
+        EnergyAcceptorInfo acceptorInfo = new EnergyAcceptorInfo();
+        for (IEnergyCompat energyCompat : EnergyCompatUtils.getCompats()) {
+            if (energyCompat.capabilityExists()) {
+                acceptorInfo.addCapability(energyCompat, level, pos, opposite, refreshListener);
+            }
+        }
+        return acceptorInfo;
+    }
+
+    public static class EnergyAcceptorInfo implements AcceptorInfo<IStrictEnergyHandler> {
+
+        private record CacheInfo(IEnergyCompat energyCompat, BlockCapabilityCache<?, @Nullable Direction> cache) {
+        }
+
+        private final List<CacheInfo> capabilities = new ArrayList<>();
+
+        EnergyAcceptorInfo() {
+        }
+
+        void addCapability(IEnergyCompat energyCompat, ServerLevel level, BlockPos pos, Direction opposite, RefreshListener refreshListener) {
+            capabilities.add(new CacheInfo(energyCompat, energyCompat.getCapability().createCache(level, pos, opposite, refreshListener, refreshListener)));
+        }
+
+        @Nullable
+        @Override
+        public IStrictEnergyHandler acceptor() {
+            for (CacheInfo cacheInfo : capabilities) {
+                IEnergyCompat energyCompat = cacheInfo.energyCompat();
+                //Validate that the energy compat is actually usable
                 if (energyCompat.isUsable()) {
-                    LazyOptional<?> acceptor = CapabilityUtils.getCapability(tile, energyCompat.getCapability(), opposite);
-                    if (acceptor.isPresent()) {
-                        if (energyCompat instanceof StrictEnergyCompat) {
-                            //Our lazy optional is already the proper type
-                            updateCachedAcceptorAndListen(side, tile, acceptor.cast());
-                        } else {
-                            //Update the cache with the strict energy lazy optional as that is the one we interact with
-                            LazyOptional<IStrictEnergyHandler> wrappedAcceptor = energyCompat.getLazyStrictEnergyHandler(tile, opposite);
-                            //Note: The wrapped acceptor should always be present, but double check just in case
-                            if (wrappedAcceptor.isPresent()) {
-                                updateCachedAcceptorAndListen(side, tile, wrappedAcceptor, acceptor, false);
-                            }
-                        }
-                        return true;
+                    Object capability = cacheInfo.cache().getCapability();
+                    if (capability != null) {
+                        //TODO: If creating these wrappers ends up showing as a performance hotspot/causing issues for the GC
+                        // we should look into seeing if we can somehow cache the wrapped object
+                        return energyCompat.wrapAsStrictEnergyHandler(capability);
                     }
                 }
             }
+            return null;
         }
-        return false;
     }
 }

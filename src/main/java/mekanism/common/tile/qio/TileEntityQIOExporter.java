@@ -12,6 +12,7 @@ import java.util.function.ToIntFunction;
 import mekanism.api.NBTConstants;
 import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.qio.QIOFrequency.QIOItemTypeData;
 import mekanism.common.content.qio.filter.QIOFilter;
@@ -25,19 +26,14 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.items.IItemHandler;
 
 public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
@@ -74,9 +70,8 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
             return;
         }
         Direction direction = getDirection();
-        BlockEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(direction.getOpposite()));
-        LazyOptional<IItemHandler> backHandler = CapabilityUtils.getCapability(back, Capabilities.ITEM_HANDLER, direction);
-        if (!backHandler.isPresent()) {
+        IItemHandler backHandler = Capabilities.ITEM.getCapabilityIfLoaded(level, worldPosition.relative(direction.getOpposite()), direction);
+        if (backHandler == null) {
             return;
         }
         EfficientEjector<?> ejector;
@@ -87,7 +82,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
         } else {
             return;
         }
-        ejector.eject(freq, backHandler.orElseThrow(MekanismUtils.MISSING_CAP_ERROR));
+        ejector.eject(freq, backHandler);
     }
 
     private Object2LongMap<HashedItem> getFilterEjectMap(QIOFrequency freq) {

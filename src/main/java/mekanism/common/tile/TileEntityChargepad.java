@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -10,6 +9,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
@@ -29,7 +29,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -64,14 +63,14 @@ public class TileEntityChargepad extends TileEntityMekanism {
             if (!active) {
                 //If we run out of energy, stop checking the remaining entities
                 break;
-            } else if (entity instanceof EntityRobit robit) {
-                provideEnergy(robit);
             } else if (entity instanceof Player) {
-                Optional<IItemHandler> itemHandlerCap = entity.getCapability(Capabilities.ITEM_HANDLER).resolve();
-                if (!chargeHandler(itemHandlerCap) && Mekanism.hooks.CuriosLoaded) {
+                IItemHandler itemHandler = Capabilities.ITEM.getCapability(entity);
+                if (!chargeHandler(itemHandler) && Mekanism.hooks.CuriosLoaded) {
                     //If we didn't charge anything in the inventory and curios is loaded try charging things in the curios slots
                     chargeHandler(CuriosIntegration.getCuriosInventory(entity));
                 }
+            } else {//Note: Robits are handled by this path
+                provideEnergy(EnergyCompatUtils.getStrictEnergyHandler(entity));
             }
         }
         if (active != getActive()) {
@@ -79,10 +78,9 @@ public class TileEntityChargepad extends TileEntityMekanism {
         }
     }
 
-    private boolean chargeHandler(Optional<? extends IItemHandler> itemHandlerCap) {
+    private boolean chargeHandler(@Nullable IItemHandler itemHandler) {
         //Ensure that we have an item handler capability, because if for example the player is dead we will not
-        if (itemHandlerCap.isPresent()) {
-            IItemHandler itemHandler = itemHandlerCap.get();
+        if (itemHandler != null) {
             int slots = itemHandler.getSlots();
             for (int slot = 0; slot < slots; slot++) {
                 ItemStack stack = itemHandler.getStackInSlot(slot);

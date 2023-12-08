@@ -3,12 +3,8 @@ package mekanism.common.integration.energy;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.util.CapabilityUtils;
-import net.minecraft.core.Direction;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import org.jetbrains.annotations.Nullable;
+import mekanism.common.capabilities.MultiTypeCapability;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 
 @NothingNullByDefault
 public class StrictEnergyCompat implements IEnergyCompat {
@@ -19,17 +15,22 @@ public class StrictEnergyCompat implements IEnergyCompat {
     }
 
     @Override
-    public Capability<IStrictEnergyHandler> getCapability() {
+    public MultiTypeCapability<IStrictEnergyHandler> getCapability() {
         return Capabilities.STRICT_ENERGY;
     }
 
     @Override
-    public LazyOptional<IStrictEnergyHandler> getHandlerAs(IStrictEnergyHandler handler) {
-        return LazyOptional.of(() -> handler);
+    public <OBJECT, CONTEXT> ICapabilityProvider<OBJECT, CONTEXT, IStrictEnergyHandler> getProviderAs(ICapabilityProvider<OBJECT, CONTEXT, IStrictEnergyHandler> provider) {
+        return provider;
     }
 
     @Override
-    public LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(ICapabilityProvider provider, @Nullable Direction side) {
-        return CapabilityUtils.getCapability(provider, getCapability(), side);
+    public IStrictEnergyHandler wrapStrictEnergyHandler(IStrictEnergyHandler handler) {
+        return handler;
+    }
+
+    @Override
+    public IStrictEnergyHandler wrapAsStrictEnergyHandler(Object handler) {
+        return (IStrictEnergyHandler) handler;
     }
 }

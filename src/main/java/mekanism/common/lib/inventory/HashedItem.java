@@ -50,12 +50,6 @@ public class HashedItem implements IHashedItem {
         this.hashCode = hashCode;
     }
 
-    //TODO: Deprecate in favor of getInternalStack?
-    @Deprecated(forRemoval = true, since = "10.3.6")
-    public ItemStack getStack() {
-        return itemStack;
-    }
-
     @Override
     public ItemStack getInternalStack() {
         return itemStack;
@@ -79,7 +73,9 @@ public class HashedItem implements IHashedItem {
      */
     @NotNull
     public CompoundTag internalToNBT() {
-        return itemStack.serializeNBT();
+        CompoundTag stackTag = new CompoundTag();
+        itemStack.save(stackTag);
+        return stackTag;
     }
 
     @Override
@@ -100,9 +96,10 @@ public class HashedItem implements IHashedItem {
         if (itemStack.hasTag()) {
             code = 31 * code + itemStack.getTag().hashCode();
         }
-        //TODO: Eventually it may be worth also hashing the capability NBT, but as there is no way to access it
-        // without reflection we don't do that for now as odds are grabbing it would have more of a performance
-        // impact than comparing the cap nbt in equals for the few items from mods that do make use of it
+        CompoundTag attachments = itemStack.serializeAttachments();
+        if (attachments != null) {
+            code = 31 * code + attachments.hashCode();
+        }
         return code;
     }
 

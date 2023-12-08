@@ -1,33 +1,29 @@
 package mekanism.tools.common.integration.gender;
 
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.gender.MekanismGenderArmor;
 import mekanism.tools.common.item.ItemMekanismArmor;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.world.item.ArmorItem;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 public class ToolsGenderCapabilityHelper {
 
-    public static void addGenderCapability(ItemMekanismArmor item, ItemCapabilityWrapper wrapper) {
+    public static void addGenderCapability(ItemMekanismArmor item, RegisterCapabilitiesEvent event) {
         //Validate the mod is loaded and that this is for the correct slot
         if (Mekanism.hooks.WildfireGenderModLoaded && item.getType() == ArmorItem.Type.CHESTPLATE) {
-            MekanismGenderArmor genderArmor = null;
             if (item == ToolsItems.BRONZE_CHESTPLATE.asItem()) {
-                genderArmor = ArmorSettings.BRONZE;
+                ArmorSettings.BRONZE.register(event, item);
             } else if (item == ToolsItems.LAPIS_LAZULI_CHESTPLATE.asItem()) {
-                genderArmor = ArmorSettings.LAPIS_LAZULI;
+                ArmorSettings.LAPIS_LAZULI.register(event, item);
             } else if (item == ToolsItems.OSMIUM_CHESTPLATE.asItem()) {
-                genderArmor = ArmorSettings.OSMIUM;
+                ArmorSettings.OSMIUM.register(event, item);
             } else if (item == ToolsItems.REFINED_GLOWSTONE_CHESTPLATE.asItem()) {
-                genderArmor = ArmorSettings.REFINED_GLOWSTONE;
+                ArmorSettings.REFINED_GLOWSTONE.register(event, item);
             } else if (item == ToolsItems.REFINED_OBSIDIAN_CHESTPLATE.asItem()) {
-                genderArmor = ArmorSettings.REFINED_OBSIDIAN;
+                ArmorSettings.REFINED_OBSIDIAN.register(event, item);
             } else if (item == ToolsItems.STEEL_CHESTPLATE.asItem()) {
-                genderArmor = ArmorSettings.STEEL;
-            }
-            if (genderArmor != null) {
-                wrapper.add(genderArmor);
+                ArmorSettings.STEEL.register(event, item);
             }
         }
     }

@@ -9,8 +9,8 @@ import java.util.function.Function;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
-import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
@@ -38,7 +38,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -74,34 +73,34 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 supportedTypes.add(RecipeUpgradeType.UPGRADE);
             }
         }
-        if (stack.getCapability(Capabilities.STRICT_ENERGY).isPresent() || tile != null && tile.handles(SubstanceType.ENERGY)) {
+        if (Capabilities.STRICT_ENERGY.hasCapability(stack) || tile != null && tile.handles(SubstanceType.ENERGY)) {
             //If we are for a block that handles energy, or we have an energy handler capability
             supportedTypes.add(RecipeUpgradeType.ENERGY);
         }
-        if (FluidUtil.getFluidHandler(stack).isPresent() || tile != null && tile.handles(SubstanceType.FLUID)) {
+        if (Capabilities.FLUID.hasCapability(stack) || tile != null && tile.handles(SubstanceType.FLUID)) {
             //If we are for a block that handles fluid, or we have a fluid handler capability
             supportedTypes.add(RecipeUpgradeType.FLUID);
         }
-        if (stack.getCapability(Capabilities.GAS_HANDLER).isPresent() || tile != null && tile.handles(SubstanceType.GAS)) {
+        if (Capabilities.GAS.hasCapability(stack) || tile != null && tile.handles(SubstanceType.GAS)) {
             //If we are for a block that handles gas, or we have a gas handler capability
             supportedTypes.add(RecipeUpgradeType.GAS);
         }
-        if (stack.getCapability(Capabilities.INFUSION_HANDLER).isPresent() || tile != null && tile.handles(SubstanceType.INFUSION)) {
+        if (Capabilities.INFUSION.hasCapability(stack) || tile != null && tile.handles(SubstanceType.INFUSION)) {
             //If we are for a block that handles infusion, or we have an infusion handler capability
             supportedTypes.add(RecipeUpgradeType.INFUSION);
         }
-        if (stack.getCapability(Capabilities.PIGMENT_HANDLER).isPresent() || tile != null && tile.handles(SubstanceType.PIGMENT)) {
+        if (Capabilities.PIGMENT.hasCapability(stack) || tile != null && tile.handles(SubstanceType.PIGMENT)) {
             //If we are for a block that handles pigment, or we have a pigment handler capability
             supportedTypes.add(RecipeUpgradeType.PIGMENT);
         }
-        if (stack.getCapability(Capabilities.SLURRY_HANDLER).isPresent() || tile != null && tile.handles(SubstanceType.SLURRY)) {
+        if (Capabilities.SLURRY.hasCapability(stack) || tile != null && tile.handles(SubstanceType.SLURRY)) {
             //If we are for a block that handles slurry, or we have a slurry handler capability
             supportedTypes.add(RecipeUpgradeType.SLURRY);
         }
         if (item instanceof IItemSustainedInventory || tile != null && tile.persistInventory()) {
             supportedTypes.add(RecipeUpgradeType.ITEM);
         }
-        if (stack.getCapability(Capabilities.OWNER_OBJECT).isPresent() || tile != null && tile.hasSecurity()) {
+        if (IItemSecurityUtils.INSTANCE.ownerCapability(stack) != null || tile != null && tile.hasSecurity()) {
             //Note: We only check if it has the owner capability as there is a contract that if there is a security capability
             // there will be an owner one so given our security upgrade supports owner or security we only have to check for owner
             supportedTypes.add(RecipeUpgradeType.SECURITY);
@@ -156,13 +155,14 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 yield inventory == null || !inventory.getBinSlot().isLocked() ? null : new LockRecipeData(inventory);
             }
             case SECURITY -> {
-                UUID ownerUUID = ISecurityUtils.INSTANCE.getOwnerUUID(stack);
+                UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
                 if (ownerUUID == null) {
                     yield null;
                 }
                 //Treat owner items as public even though they are private as we don't want to lower the output
                 // item's security just because it has one item that is owned
-                SecurityMode securityMode = stack.getCapability(Capabilities.SECURITY_OBJECT).map(ISecurityObject::getSecurityMode).orElse(SecurityMode.PUBLIC);
+                ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(stack);
+                SecurityMode securityMode = securityObject == null ? SecurityMode.PUBLIC : securityObject.getSecurityMode();
                 yield new SecurityRecipeData(ownerUUID, securityMode);
             }
             case SORTING -> {

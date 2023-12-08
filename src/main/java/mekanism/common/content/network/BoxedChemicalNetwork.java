@@ -40,7 +40,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -221,7 +220,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void updateSaveShares(@Nullable BoxedPressurizedTube triggerTransmitter,
           STACK chemical) {
         STACK empty = ChemicalUtil.getEmptyStack(chemical);
-        BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK> saveTarget = new BoxedChemicalTransmitterSaveTarget<>(empty, chemical, transmitters);
+        BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK> saveTarget = new BoxedChemicalTransmitterSaveTarget<>(empty, chemical, getTransmitters());
         long sent = EmitUtils.sendToAcceptors(saveTarget, chemical.getAmount(), chemical);
         if (triggerTransmitter != null && sent < chemical.getAmount()) {
             disperse(triggerTransmitter, ChemicalUtil.copyWithAmount(chemical, chemical.getAmount() - sent));
@@ -246,16 +245,14 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> long tickEmit(@NotNull STACK stack) {
         ChemicalType chemicalType = ChemicalType.getTypeFor(stack);
-        Collection<Map<Direction, LazyOptional<BoxedChemicalHandler>>> acceptorValues = acceptorCache.getAcceptorValues();
+        Collection<Map<Direction, BoxedChemicalHandler>> acceptorValues = acceptorCache.getAcceptorValues();
         ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>> target = new ChemicalHandlerTarget<>(stack, acceptorValues.size() * 2);
-        for (Map<Direction, LazyOptional<BoxedChemicalHandler>> acceptors : acceptorValues) {
-            for (LazyOptional<BoxedChemicalHandler> lazyAcceptor : acceptors.values()) {
-                lazyAcceptor.ifPresent(acceptor -> {
-                    IChemicalHandler<CHEMICAL, STACK> handler = acceptor.getHandlerFor(chemicalType);
-                    if (handler != null && ChemicalUtil.canInsert(handler, stack)) {
-                        target.addHandler(handler);
-                    }
-                });
+        for (Map<Direction, BoxedChemicalHandler> acceptors : acceptorValues) {
+            for (BoxedChemicalHandler acceptor : acceptors.values()) {
+                IChemicalHandler<CHEMICAL, STACK> handler = acceptor.getHandlerFor(chemicalType);
+                if (handler != null && ChemicalUtil.canInsert(handler, stack)) {
+                    target.addHandler(handler);
+                }
             }
         }
         return EmitUtils.sendToAcceptors(target, stack.getAmount(), stack);

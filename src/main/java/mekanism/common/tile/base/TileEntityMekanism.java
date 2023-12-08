@@ -30,7 +30,7 @@ import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.radiation.IRadiationManager;
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.sound.SoundHandler;
@@ -56,7 +56,6 @@ import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.GasHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.InfusionHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.PigmentHandlerManager;
@@ -67,7 +66,11 @@ import mekanism.common.capabilities.resolver.manager.HeatHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ItemHandlerManager;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.computer.*;
+import mekanism.common.integration.computer.BoundMethodHolder;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.FactoryRegistry;
+import mekanism.common.integration.computer.IComputerTile;
+import mekanism.common.integration.computer.MethodRestriction;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -86,6 +89,7 @@ import mekanism.common.lib.LastEnergyTracker;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.TileComponentFrequency;
+import mekanism.common.lib.security.BlockSecurityUtils;
 import mekanism.common.lib.security.ISecurityTile;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -106,12 +110,10 @@ import mekanism.common.tile.interfaces.chemical.IInfusionTile;
 import mekanism.common.tile.interfaces.chemical.IPigmentTile;
 import mekanism.common.tile.interfaces.chemical.ISlurryTile;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.RegistryUtils;
-import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -133,7 +135,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.network.NetworkHooks;
@@ -285,10 +286,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         if (hasSecurity()) {
             securityComponent = new TileComponentSecurity(this);
-            addCapabilityResolver(BasicCapabilityResolver.security(this));
         }
         soundEvent = hasSound() ? Attribute.get(block, AttributeSound.class).getSoundEvent() : null;
-        ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
     }
 
     private void setSupportedTypes(Block block) {
@@ -491,7 +490,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public WrenchResult tryWrench(BlockState state, Player player, InteractionHand hand, BlockHitResult rayTrace) {
         ItemStack stack = player.getItemInHand(hand);
         if (MekanismUtils.canUseAsWrench(stack)) {
-            if (hasSecurity() && !ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, this)) {
+            if (hasSecurity() && !IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, getWorldNN(), worldPosition, this)) {
                 return WrenchResult.NO_SECURITY;
             }
             if (player.isShiftKeyDown()) {
@@ -510,7 +509,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public InteractionResult openGui(Player player) {
         //Everything that calls this has isRemote being false but add the check just in case anyway
         if (hasGui() && !isRemote() && !player.isShiftKeyDown()) {
-            if (hasSecurity() && !ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, this)) {
+            if (hasSecurity() && !IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, player.level(), worldPosition, this)) {
                 return InteractionResult.FAIL;
             }
             //Pass on this activation if the player is rotating with a configurator
@@ -521,10 +520,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 }
             }
             //Pass on this activation if the player is using a configuration card (and this tile supports the capability)
-            if (getCapability(Capabilities.CONFIG_CARD, null).isPresent()) {
-                if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurationCard) {
-                    return InteractionResult.PASS;
-                }
+            if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurationCard &&
+                WorldUtils.getCapability(level, Capabilities.CONFIG_CARD, worldPosition, null, this, null) != null) {
+                return InteractionResult.PASS;
             }
 
             NetworkHooks.openScreen((ServerPlayer) player, Attribute.get(getBlockType(), AttributeGui.class).getProvider(this), worldPosition);
@@ -1130,8 +1128,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public IHeatHandler getAdjacent(@NotNull Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
-            BlockEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
-            return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER, side.getOpposite()).resolve().orElse(null);
+            return WorldUtils.getCapability(level, Capabilities.HEAT, getBlockPos().relative(side), side.getOpposite());
         }
         return null;
     }
@@ -1144,11 +1141,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End methods for IInWorldHeatHandler
 
     //Methods for implementing IConfigCardAccess
-    @Override
-    public String getConfigCardName() {
-        return getBlockType().getDescriptionId();
-    }
-
     @Override
     public CompoundTag getConfigurationData(Player player) {
         CompoundTag data = new CompoundTag();
@@ -1164,14 +1156,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public BlockEntityType<?> getConfigurationDataType() {
-        return getType();
+    public Block getConfigurationDataType() {
+        return getBlockType();
     }
 
     @Override
     public void configurationDataSet() {
         setChanged();
-        invalidateCachedCapabilities();
+        invalidateCapabilitiesFull();
         sendUpdatePacket();
         WorldUtils.notifyLoadedNeighborsOfTileChange(getLevel(), getTilePos());
     }
@@ -1185,8 +1177,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     public void onSecurityChanged(@NotNull SecurityMode old, @NotNull SecurityMode mode) {
-        if (!isRemote() && hasGui()) {
-            SecurityUtils.get().securityChanged(playersUsing, this, old, mode);
+        if (!isRemote() && hasGui() && level != null) {
+            BlockSecurityUtils.get().securityChanged(playersUsing, level, worldPosition, this, old, mode);
         }
     }
     //End methods ITileSecurity
@@ -1285,7 +1277,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     public void validateSecurityIsPublic() throws ComputerException {
-        if (hasSecurity() && ISecurityUtils.INSTANCE.getSecurityMode(this, isRemote()) != SecurityMode.PUBLIC) {
+        if (hasSecurity() && IBlockSecurityUtils.INSTANCE.getSecurityMode(getWorldNN(), worldPosition, this) != SecurityMode.PUBLIC) {
             throw new ComputerException("Setter not available due to machine security not being public.");
         }
     }

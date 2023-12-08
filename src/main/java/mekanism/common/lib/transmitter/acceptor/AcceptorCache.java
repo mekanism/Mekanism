@@ -1,130 +1,36 @@
 package mekanism.common.lib.transmitter.acceptor;
 
-import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.content.network.transmitter.Transmitter;
-import mekanism.common.lib.transmitter.acceptor.AcceptorCache.AcceptorInfo;
+import mekanism.common.lib.transmitter.acceptor.AcceptorCache.CacheBasedInfo;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import mekanism.common.util.CapabilityUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.common.util.NonNullConsumer;
+import net.minecraft.server.level.ServerLevel;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class AcceptorCache<ACCEPTOR> extends AbstractAcceptorCache<ACCEPTOR, AcceptorInfo<ACCEPTOR>> {
+public class AcceptorCache<ACCEPTOR> extends AbstractAcceptorCache<ACCEPTOR, CacheBasedInfo<ACCEPTOR>> {
 
-    public AcceptorCache(Transmitter<ACCEPTOR, ?, ?> transmitter, TileEntityTransmitter transmitterTile) {
-        super(transmitter, transmitterTile);
+    private final BlockCapability<ACCEPTOR, @Nullable Direction> capability;
+
+    public AcceptorCache(TileEntityTransmitter transmitterTile, BlockCapability<ACCEPTOR, @Nullable Direction> capability) {
+        super(transmitterTile);
+        this.capability = capability;
     }
 
-    protected void updateCachedAcceptorAndListen(Direction side, BlockEntity acceptorTile, LazyOptional<ACCEPTOR> acceptor) {
-        updateCachedAcceptorAndListen(side, acceptorTile, acceptor, acceptor, true);
-    }
-
-    protected void updateCachedAcceptorAndListen(Direction side, BlockEntity acceptorTile, LazyOptional<ACCEPTOR> acceptor, LazyOptional<?> sourceAcceptor,
-          boolean sourceIsSame) {
-        boolean dirtyAcceptor = false;
-        if (cachedAcceptors.containsKey(side)) {
-            AcceptorInfo<ACCEPTOR> acceptorInfo = cachedAcceptors.get(side);
-            if (acceptorTile != acceptorInfo.getTile()) {
-                //The tile changed, fully invalidate it
-                cachedAcceptors.put(side, new AcceptorInfo<>(acceptorTile, sourceAcceptor, acceptor));
-                dirtyAcceptor = true;
-            } else if (sourceAcceptor != acceptorInfo.sourceAcceptor) {
-                //The source acceptor is different, make sure we update it and the actual acceptor
-                // This allows us to make sure we only mark the acceptor as dirty if it actually changed
-                // Use case: Wrapped energy acceptors
-                acceptorInfo.updateAcceptor(sourceAcceptor, acceptor);
-                dirtyAcceptor = true;
-            }
-        } else {
-            cachedAcceptors.put(side, new AcceptorInfo<>(acceptorTile, sourceAcceptor, acceptor));
-            dirtyAcceptor = true;
-        }
-        if (dirtyAcceptor) {
-            transmitter.markDirtyAcceptor(side);
-            //If the capability is present, and we want to add the listener, add a listener so that once it gets invalidated
-            // we recheck that side assuming that the world and position is still loaded and our tile has not been removed
-            NonNullConsumer<LazyOptional<ACCEPTOR>> refreshListener = getRefreshListener(side);
-            if (sourceIsSame) {
-                //Add it to the actual acceptor as it is the same as the source, and we can do so without any unchecked warnings
-                acceptor.addListener(refreshListener);
-            } else {
-                //Otherwise, use unchecked generics to add the listener to the source acceptor
-                CapabilityUtils.addListener(sourceAcceptor, refreshListener);
-            }
-        }
-    }
-
-    /**
-     * @implNote Grabs the acceptors from cache
-     */
     @Override
-    public LazyOptional<ACCEPTOR> getConnectedAcceptor(Direction side) {
-        if (cachedAcceptors.containsKey(side)) {
-            AcceptorInfo<ACCEPTOR> acceptorInfo = cachedAcceptors.get(side);
-            if (!acceptorInfo.getTile().isRemoved()) {
-                return acceptorInfo.acceptor;
-            }
-            //TODO: If the tile has been removed should we force an invalidation/recheck?
-        }
-        return LazyOptional.empty();
+    protected CacheBasedInfo<ACCEPTOR> initializeCache(ServerLevel level, BlockPos pos, Direction opposite, RefreshListener refreshListener) {
+        return new CacheBasedInfo<>(BlockCapabilityCache.create(capability, level, pos, opposite, refreshListener, refreshListener));
     }
 
-    @Nullable
-    public BlockEntity getConnectedAcceptorTile(Direction side) {
-        if (cachedAcceptors.containsKey(side)) {
-            BlockEntity tile = cachedAcceptors.get(side).getTile();
-            if (!tile.isRemoved()) {
-                return tile;
-            }
-        }
-        return null;
-    }
+    public record CacheBasedInfo<ACCEPTOR>(BlockCapabilityCache<ACCEPTOR, @Nullable Direction> cache) implements AcceptorInfo<ACCEPTOR> {
 
-    /**
-     * @apiNote Only call this from the server side
-     */
-    public boolean isAcceptorAndListen(@Nullable BlockEntity tile, Direction side, Capability<ACCEPTOR> capability) {
-        LazyOptional<ACCEPTOR> acceptor = CapabilityUtils.getCapability(tile, capability, side.getOpposite());
-        if (acceptor.isPresent()) {
-            //Update the cached acceptor and if it changed, add a listener to it to listen for invalidation
-            updateCachedAcceptorAndListen(side, tile, acceptor);
-            return true;
-        }
-        return false;
-    }
-
-    public static class AcceptorInfo<ACCEPTOR> extends AbstractAcceptorInfo {
-
-        private LazyOptional<?> sourceAcceptor;
-        private LazyOptional<ACCEPTOR> acceptor;
-
-        private AcceptorInfo(BlockEntity tile, LazyOptional<?> sourceAcceptor, LazyOptional<ACCEPTOR> acceptor) {
-            super(tile);
-            this.acceptor = acceptor;
-            this.sourceAcceptor = sourceAcceptor;
-        }
-
-        private void updateAcceptor(LazyOptional<?> sourceAcceptor, LazyOptional<ACCEPTOR> acceptor) {
-            this.sourceAcceptor = sourceAcceptor;
-            this.acceptor = acceptor;
-        }
-
+        @Nullable
         @Override
-        public boolean equals(Object o) {
-            if (o == this) {
-                return true;
-            }
-            return o instanceof AcceptorInfo<?> other && getTile().equals(other.getTile()) && sourceAcceptor.equals(other.sourceAcceptor) && acceptor.equals(other.acceptor);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(getTile(), sourceAcceptor, acceptor);
+        public ACCEPTOR acceptor() {
+            return cache.getCapability();
         }
     }
 }

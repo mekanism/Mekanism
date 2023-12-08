@@ -7,8 +7,6 @@ import java.util.Objects;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
@@ -37,7 +35,6 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
 
     public TileEntityStructuralMultiblock(IBlockProvider provider, BlockPos pos, BlockState state) {
         super(provider, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE, this));
     }
 
     @Override

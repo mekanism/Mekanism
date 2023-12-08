@@ -27,7 +27,6 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,7 +48,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
 
     @Override
     protected EnergyAcceptorCache createAcceptorCache() {
-        return new EnergyAcceptorCache(this, getTransmitterTile());
+        return new EnergyAcceptorCache(getTransmitterTile());
     }
 
     @Override
@@ -149,11 +148,6 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     @Override
     public EnergyNetwork createNetworkByMerging(Collection<EnergyNetwork> networks) {
         return new EnergyNetwork(networks);
-    }
-
-    @Override
-    public boolean isValidAcceptor(BlockEntity tile, Direction side) {
-        return super.isValidAcceptor(tile, side) && getAcceptorCache().hasStrictEnergyHandlerAndListen(tile, side);
     }
 
     @Override

@@ -2,7 +2,6 @@ package mekanism.common.block.prefab;
 
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
-import mekanism.api.security.ISecurityUtils;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeParticleFX;
@@ -25,13 +24,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockBase<TYPE> implements IHasTileEntity<TILE> {
 
@@ -63,12 +60,6 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
             return InteractionResult.SUCCESS;
         }
         return type.has(AttributeGui.class) ? tile.openGui(player) : InteractionResult.PASS;
-    }
-
-    @Override
-    protected float getDestroyProgress(@NotNull BlockState state, @NotNull Player player, @NotNull BlockGetter world, @NotNull BlockPos pos,
-          @Nullable BlockEntity tile) {
-        return ISecurityUtils.INSTANCE.canAccess(player, tile) ? super.getDestroyProgress(state, player, world, pos, tile) : 0.0F;
     }
 
     @Override

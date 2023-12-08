@@ -35,16 +35,13 @@ import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
-import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
@@ -86,7 +83,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BubbleColumnBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
@@ -97,7 +93,6 @@ import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.UsernameCache;
-import net.neoforged.neoforge.common.util.NonNullSupplier;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.IFluidBlock;
@@ -115,7 +110,6 @@ import org.jetbrains.annotations.Nullable;
 public final class MekanismUtils {
 
     public static final float ONE_OVER_ROOT_TWO = (float) (1 / Math.sqrt(2));
-    public static final NonNullSupplier<IllegalStateException> MISSING_CAP_ERROR = () -> new IllegalStateException("Capability is somehow not present after isPresent checks");
     private static final ItemStack MILK = new ItemStack(Items.MILK_BUCKET);
 
     private static final List<UUID> warnedFails = new ArrayList<>();
@@ -621,16 +615,10 @@ public final class MekanismUtils {
         }
     }
 
-    public static boolean isSameTypeFactory(Block block, BlockEntityType<?> factoryTileType) {
+    public static boolean isSameTypeFactory(Block block, Block factoryBlockType) {
         return Attribute.matches(block, AttributeFactoryType.class, attribute -> {
-            FactoryType factoryType = attribute.getFactoryType();
-            //Check all factory types
-            for (FactoryTier factoryTier : EnumUtils.FACTORY_TIERS) {
-                if (MekanismTileEntityTypes.getFactoryTile(factoryTier, factoryType).get() == factoryTileType) {
-                    return true;
-                }
-            }
-            return false;
+            AttributeFactoryType otherType = Attribute.get(factoryBlockType, AttributeFactoryType.class);
+            return otherType != null && attribute.getFactoryType() == otherType.getFactoryType();
         });
     }
 

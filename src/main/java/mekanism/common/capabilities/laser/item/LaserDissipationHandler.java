@@ -1,43 +1,34 @@
 package mekanism.common.capabilities.laser.item;
 
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.ToDoubleFunction;
 import mekanism.api.lasers.ILaserDissipation;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
-import mekanism.common.capabilities.resolver.ICapabilityResolver;
-import net.minecraft.world.item.ItemStack;
 
-public class LaserDissipationHandler extends ItemCapability implements ILaserDissipation {
+public class LaserDissipationHandler implements ILaserDissipation {
 
-    public static LaserDissipationHandler create(ToDoubleFunction<ItemStack> dissipationFunction, ToDoubleFunction<ItemStack> refractionFunction) {
-        Objects.requireNonNull(dissipationFunction, "Dissipation function cannot be null");
-        Objects.requireNonNull(refractionFunction, "Refraction function cannot be null");
-        return new LaserDissipationHandler(dissipationFunction, refractionFunction);
+    public static LaserDissipationHandler create(double dissipationPercent, double refractionPercent) {
+        if (dissipationPercent < 0 || dissipationPercent > 1) {
+            throw new IllegalArgumentException("Dissipation percent must be between zero and one inclusive");
+        }
+        if (refractionPercent < 0 || refractionPercent > 1) {
+            throw new IllegalArgumentException("Refraction percent must be between zero and one inclusive");
+        }
+        return new LaserDissipationHandler(dissipationPercent, refractionPercent);
     }
 
-    private final ToDoubleFunction<ItemStack> dissipationFunction;
-    private final ToDoubleFunction<ItemStack> refractionFunction;
+    private final double dissipationPercent;
+    private final double refractionPercent;
 
-    private LaserDissipationHandler(ToDoubleFunction<ItemStack> dissipationFunction, ToDoubleFunction<ItemStack> refractionFunction) {
-        this.dissipationFunction = dissipationFunction;
-        this.refractionFunction = refractionFunction;
+    private LaserDissipationHandler(double dissipationPercent, double refractionPercent) {
+        this.dissipationPercent = dissipationPercent;
+        this.refractionPercent = refractionPercent;
     }
 
     @Override
     public double getDissipationPercent() {
-        return dissipationFunction.applyAsDouble(getStack());
+        return dissipationPercent;
     }
 
     @Override
     public double getRefractionPercent() {
-        return refractionFunction.applyAsDouble(getStack());
-    }
-
-    @Override
-    protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
-        consumer.accept(BasicCapabilityResolver.constant(Capabilities.LASER_DISSIPATION, this));
+        return refractionPercent;
     }
 }

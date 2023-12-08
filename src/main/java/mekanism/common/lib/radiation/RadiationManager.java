@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.function.IntSupplier;
@@ -41,7 +40,6 @@ import mekanism.common.network.to_client.PacketRadiationData;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismSounds;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
@@ -62,9 +60,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -246,7 +243,10 @@ public class RadiationManager implements IRadiationManager {
             return;
         }
         if (!(entity instanceof Player player) || MekanismUtils.isPlayingMode(player)) {
-            entity.getCapability(Capabilities.RADIATION_ENTITY).ifPresent(c -> c.radiate(magnitude * (1 - Math.min(1, getRadiationResistance(entity)))));
+            IRadiationEntity radiationEntity = entity.getCapability(Capabilities.RADIATION_ENTITY);
+            if (radiationEntity != null) {
+                radiationEntity.radiate(magnitude * (1 - Math.min(1, getRadiationResistance(entity))));
+            }
         }
     }
 
@@ -303,9 +303,11 @@ public class RadiationManager implements IRadiationManager {
         double resistance = 0;
         for (EquipmentSlot type : EnumUtils.ARMOR_SLOTS) {
             ItemStack stack = entity.getItemBySlot(type);
-            Optional<IRadiationShielding> shielding = CapabilityUtils.getCapability(stack, Capabilities.RADIATION_SHIELDING, null).resolve();
-            if (shielding.isPresent()) {
-                resistance += shielding.get().getRadiationShielding();
+            if (!stack.isEmpty()) {
+                IRadiationShielding shielding = stack.getCapability(Capabilities.RADIATION_SHIELDING);
+                if (shielding != null) {
+                    resistance += shielding.getRadiationShielding();
+                }
             }
         }
         return resistance;
@@ -382,7 +384,7 @@ public class RadiationManager implements IRadiationManager {
         if (!isRadiationEnabled()) {
             return;
         }
-        LazyOptional<IRadiationEntity> radiationCap = entity.getCapability(Capabilities.RADIATION_ENTITY);
+        IRadiationEntity radiationCap = entity.getCapability(Capabilities.RADIATION_ENTITY);
         // each tick, there is a 1/20 chance we will apply radiation to each player
         // this helps distribute the CPU load across ticks, and makes exposure slightly inconsistent
         if (entity.level().getRandom().nextInt(20) == 0) {
@@ -391,13 +393,15 @@ public class RadiationManager implements IRadiationManager {
                 // apply radiation to the player
                 radiate(entity, magnitude / 3_600D); // convert to Sv/s
             }
-            radiationCap.ifPresent(IRadiationEntity::decay);
+            if (radiationCap != null) {
+                radiationCap.decay();
+            }
         }
         // update the radiation capability (decay, sync, effects)
-        radiationCap.ifPresent(c -> {
-            c.update(entity);
+        if (radiationCap != null) {
+            radiationCap.update();
             if (entity instanceof ServerPlayer player) {
-                double radiation = c.getRadiation();
+                double radiation = radiationCap.getRadiation();
                 PreviousRadiationData previousRadiationData = playerExposureMap.get(player.getUUID());
                 PreviousRadiationData relevantData = PreviousRadiationData.compareTo(previousRadiationData, radiation);
                 if (relevantData != null) {
@@ -405,7 +409,7 @@ public class RadiationManager implements IRadiationManager {
                     Mekanism.packetHandler().sendTo(PacketRadiationData.createPlayer(radiation), player);
                 }
             }
-        });
+        }
     }
 
     public void tickServerWorld(Level world) {

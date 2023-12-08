@@ -2,7 +2,6 @@ package mekanism.common.util;
 
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 import mekanism.api.Action;
@@ -10,23 +9,24 @@ import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.providers.IFluidProvider;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.content.network.distribution.FluidHandlerTarget;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.NotNull;
 
 public final class FluidUtils {
@@ -96,14 +96,15 @@ public final class FluidUtils {
         }
         FluidStack toSend = stack.copy();
         FluidHandlerTarget target = new FluidHandlerTarget(stack, 6);
-        EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (acceptor, side) -> {
+        Level level = from.getLevel();
+        BlockPos center = from.getBlockPos();
+        for (Direction side : sides) {
             //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
-            CapabilityUtils.getCapability(acceptor, Capabilities.FLUID_HANDLER, side.getOpposite()).ifPresent(handler -> {
-                if (canFill(handler, toSend)) {
-                    target.addHandler(handler);
-                }
-            });
-        });
+            IFluidHandler handler = Capabilities.FLUID.getCapabilityIfLoaded(level, center.relative(side), side.getOpposite());
+            if (handler != null && canFill(handler, toSend)) {
+                target.addHandler(handler);
+            }
+        }
         if (target.getHandlerCount() > 0) {
             return EmitUtils.sendToAcceptors(target, stack.getAmount(), toSend);
         }
@@ -116,9 +117,8 @@ public final class FluidUtils {
 
     public static boolean handleTankInteraction(Player player, InteractionHand hand, ItemStack itemStack, IExtendedFluidTank fluidTank) {
         ItemStack copyStack = itemStack.copyWithCount(1);
-        Optional<IFluidHandlerItem> fluidHandlerItem = FluidUtil.getFluidHandler(copyStack).resolve();
-        if (fluidHandlerItem.isPresent()) {
-            IFluidHandlerItem handler = fluidHandlerItem.get();
+        IFluidHandlerItem handler = Capabilities.FLUID.getCapability(copyStack);
+        if (handler != null) {
             FluidStack fluidInItem;
             if (fluidTank.isEmpty()) {
                 //If we don't have a fluid stored try draining in general

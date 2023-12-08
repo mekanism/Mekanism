@@ -1,7 +1,6 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.LongSupplier;
 import mekanism.api.NBTConstants;
@@ -82,12 +81,9 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
             ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
             list.add(MekanismLang.SCUBA_TANK_MODE.translateColored(EnumColor.DARK_GRAY, OnOff.of(scubaTank.getFlowing(stack), true)));
             GasStack stored = GasStack.EMPTY;
-            Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER).resolve();
-            if (capability.isPresent()) {
-                IGasHandler gasHandlerItem = capability.get();
-                if (gasHandlerItem.getTanks() > 0) {
-                    stored = gasHandlerItem.getChemicalInTank(0);
-                }
+            IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
+            if (gasHandlerItem != null && gasHandlerItem.getTanks() > 0) {
+                stored = gasHandlerItem.getChemicalInTank(0);
             }
             list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, MekanismGases.OXYGEN, EnumColor.ORANGE, stored.getAmount()));
         }

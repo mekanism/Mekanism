@@ -8,12 +8,16 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.registration.DoubleDeferredRegister;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 
@@ -21,6 +25,20 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 
     public BlockDeferredRegister(String modid) {
         super(modid, Registries.BLOCK, Registries.ITEM);
+    }
+
+    @Override
+    public void register(@NotNull IEventBus bus) {
+        super.register(bus);
+        bus.addListener(this::registerCapabilities);
+    }
+
+    private void registerCapabilities(RegisterCapabilitiesEvent event) {
+        for (IBlockProvider blockProvider : allBlocks) {
+            if (blockProvider.asItem() instanceof ICapabilityAware capabilityAware) {
+                capabilityAware.attachCapabilities(event);
+            }
+        }
     }
 
     public BlockRegistryObject<Block, BlockItem> register(String name, BlockBehaviour.Properties properties) {

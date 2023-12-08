@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import mekanism.api.NBTConstants;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.computer.ComputerException;
@@ -15,19 +16,14 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.items.IItemHandler;
 
 public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
@@ -59,9 +55,9 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
             return;
         }
         Direction direction = getDirection();
-        BlockEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(direction.getOpposite()));
-        LazyOptional<IItemHandler> lazyCapability = CapabilityUtils.getCapability(back, Capabilities.ITEM_HANDLER, direction);
-        if (!lazyCapability.isPresent()) {//Not an IItemHandler
+        BlockPos pos = worldPosition.relative(direction.getOpposite());
+        IItemHandler inventory = Capabilities.ITEM.getCapabilityIfLoaded(level, pos, direction);
+        if (inventory == null) {//Not an IItemHandler
             return;
         }
 
@@ -75,8 +71,6 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
             //If we don't have any enabled filters installed, and we don't allow filterless importing
             return;
         }
-        //We know this is present from our earlier checks
-        IItemHandler inventory = lazyCapability.orElseThrow(MekanismUtils.MISSING_CAP_ERROR);
         int slots = inventory.getSlots();
         if (slots == 0) {
             //If the inventory has no slots just exit early
@@ -102,8 +96,8 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
             ItemStack used = TransporterManager.getToUse(stack, freq.addItem(stack));
             ItemStack ret = inventory.extractItem(i, used.getCount(), false);
             if (!InventoryUtils.areItemsStackable(used, ret) || used.getCount() != ret.getCount()) {
-                Mekanism.logger.error("QIO insertion error: item handler {} returned {} during simulated extraction, but returned {} during execution. This is wrong!",
-                      back, stack, ret);
+                Mekanism.logger.error("QIO insertion error: item handler at {} in {} returned {} during simulated extraction, but returned {} during execution. This is wrong!",
+                      pos, level.dimension().location(), stack, ret);
             }
             typesAdded.add(type);
             countAdded += used.getCount();

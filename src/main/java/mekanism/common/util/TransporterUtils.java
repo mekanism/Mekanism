@@ -1,9 +1,9 @@
 package mekanism.common.util;
 
 import java.util.List;
-import java.util.Optional;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.network.transmitter.LogisticalTransporter;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterManager;
@@ -16,9 +16,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,11 +39,15 @@ public final class TransporterUtils {
         return color == null ? -1 : TransporterUtils.colors.indexOf(color);
     }
 
-    public static boolean isValidAcceptorOnSide(BlockEntity tile, Direction side) {
+    public static boolean isValidAcceptorOnSide(Level level, BlockPos pos, Direction side) {
+        return isValidAcceptorOnSide(level, pos, WorldUtils.getTileEntity(level, pos), side);
+    }
+
+    public static boolean isValidAcceptorOnSide(Level level, BlockPos pos, @Nullable BlockEntity tile, Direction side) {
         if (tile instanceof TileEntityTransmitter transmitter && TransmissionType.ITEM.checkTransmissionType(transmitter)) {
             return false;
         }
-        return InventoryUtils.isItemHandler(tile, side.getOpposite());
+        return Capabilities.ITEM.getCapabilityIfLoaded(level, pos, null, tile, side) != null;
     }
 
     public static EnumColor increment(EnumColor color) {
@@ -92,7 +96,11 @@ public final class TransporterUtils {
         }
     }
 
-    public static boolean canInsert(BlockEntity tile, EnumColor color, ItemStack itemStack, Direction side, boolean force) {
+    public static boolean canInsert(Level level, BlockPos pos, EnumColor color, ItemStack itemStack, Direction side, boolean force) {
+        return canInsert(level, pos, WorldUtils.getTileEntity(level, pos), color, itemStack, side, force);
+    }
+
+    public static boolean canInsert(Level level, BlockPos pos, @Nullable BlockEntity tile, EnumColor color, ItemStack itemStack, Direction side, boolean force) {
         if (force && tile instanceof TileEntityLogisticalSorter sorter) {
             return sorter.canSendHome(itemStack);
         }
@@ -103,9 +111,8 @@ public final class TransporterUtils {
                 return false;
             }
         }
-        Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, Capabilities.ITEM_HANDLER, side.getOpposite()).resolve();
-        if (capability.isPresent()) {
-            IItemHandler inventory = capability.get();
+        IItemHandler inventory = Capabilities.ITEM.getCapabilityIfLoaded(level, pos, null, tile, side.getOpposite());
+        if (inventory != null) {
             for (int i = 0, slots = inventory.getSlots(); i < slots; i++) {
                 // Simulate insert, this will handle validating the item is valid for the inventory
                 ItemStack rejects = inventory.insertItem(i, itemStack, true);

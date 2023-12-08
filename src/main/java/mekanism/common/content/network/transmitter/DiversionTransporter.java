@@ -9,6 +9,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
@@ -19,7 +20,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,10 +59,14 @@ public class DiversionTransporter extends LogisticalTransporterBase {
             TileEntityTransmitter transmitterTile = getTransmitterTile();
             for (Direction direction : EnumUtils.DIRECTIONS) {
                 if (super.exposesInsertCap(direction)) {
-                    if (!modeReqsMet(direction)) {
-                        transmitterTile.invalidateCapability(Capabilities.ITEM_HANDLER, direction);
+                    if (modeReqsMet(direction)) {
+                        //Notify any listeners to our position that we now do have a capability
+                        //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
+                        transmitterTile.invalidateCapabilities();
+                    } else {
+                        //We no longer have a capability, invalidate it, which will also notify the level
+                        transmitterTile.invalidateCapability(Capabilities.ITEM.block(), direction);
                     }
-                    WorldUtils.notifyNeighborOfChange(transmitterTile.getLevel(), direction, transmitterTile.getTilePos());
                 }
             }
         }
@@ -118,10 +122,14 @@ public class DiversionTransporter extends LogisticalTransporterBase {
                 boolean nowExposes = modeReqsMet(mode);
                 if (nowExposes != modeReqsMet(oldMode)) {
                     //If the only thing that changed whether the cap should be exposed is the mode we need to invalidate the cap
-                    if (!nowExposes) {
-                        transmitterTile.invalidateCapability(Capabilities.ITEM_HANDLER, side);
+                    if (nowExposes) {
+                        //Notify any listeners to our position that we now do have a capability
+                        //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
+                        transmitterTile.invalidateCapabilities();
+                    } else {
+                        //We no longer have a capability, invalidate it, which will also notify the level
+                        transmitterTile.invalidateCapability(Capabilities.ITEM.block(), side);
                     }
-                    WorldUtils.notifyNeighborOfChange(transmitterTile.getLevel(), side, transmitterTile.getTilePos());
                 }
             }
             refreshConnections();

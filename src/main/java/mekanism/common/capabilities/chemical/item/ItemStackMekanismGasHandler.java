@@ -1,14 +1,13 @@
 package mekanism.common.capabilities.chemical.item;
 
-import java.util.function.Consumer;
+import java.util.function.Function;
+import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler.IMekanismGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
-import mekanism.common.capabilities.resolver.ICapabilityResolver;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -16,14 +15,14 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class ItemStackMekanismGasHandler extends ItemStackMekanismChemicalHandler<Gas, GasStack, IGasTank> implements IMekanismGasHandler {
 
+    @SafeVarargs
+    public ItemStackMekanismGasHandler(ItemStack stack, Function<IContentsListener, IGasTank>... tankProviders) {
+        super(stack, tankProviders);
+    }
+
     @NotNull
     @Override
     protected String getNbtKey() {
         return NBTConstants.GAS_TANKS;
-    }
-
-    @Override
-    protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
-        consumer.accept(BasicCapabilityResolver.constant(Capabilities.GAS_HANDLER, this));
     }
 }

@@ -14,7 +14,6 @@ import mcjty.theoneprobe.api.ProbeMode;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
-import mekanism.common.block.BlockBounding;
 import mekanism.common.integration.lookingat.LookingAtHelper;
 import mekanism.common.integration.lookingat.LookingAtUtils;
 import mekanism.common.integration.lookingat.theoneprobe.TOPChemicalElement.GasElementFactory;
@@ -63,20 +62,8 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
     @Override
     public void addProbeInfo(ProbeMode mode, IProbeInfo info, Player player, Level world, BlockState blockState, IProbeHitData data) {
         BlockPos pos = data.getPos();
-        if (blockState.getBlock() instanceof BlockBounding) {
-            //If we are a bounding block that has a position set, redirect the probe to the main location
-            BlockPos mainPos = BlockBounding.getMainBlockPos(world, pos);
-            if (mainPos != null) {
-                pos = mainPos;
-                //If we end up needing the blockstate at some point lower down, then uncomment this line
-                // until we do though there is no point in bothering to query the world to get it
-                //blockState = world.getBlockState(mainPos);
-            }
-        }
         BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-        if (tile != null) {
-            LookingAtUtils.addInfo(new TOPLookingAtHelper(info), tile, displayTanks(mode), displayFluidTanks.getAsBoolean());
-        }
+        LookingAtUtils.addInfoOrRedirect(new TOPLookingAtHelper(info), world, pos, blockState, tile, displayTanks(mode), displayFluidTanks.getAsBoolean());
     }
 
     private boolean displayTanks(ProbeMode mode) {

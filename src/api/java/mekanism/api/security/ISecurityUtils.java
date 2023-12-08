@@ -1,20 +1,18 @@
 package mekanism.api.security;
 
-import java.util.List;
 import java.util.ServiceLoader;
 import java.util.UUID;
+import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Utility class for interacting with Mekanism's security system.
  *
  * @see ISecurityUtils#INSTANCE
+ * @see ITypedSecurityUtils
+ * @see IBlockSecurityUtils
  * @since 10.2.1
  */
 @NothingNullByDefault
@@ -29,26 +27,26 @@ public interface ISecurityUtils {
 
     /**
      * Checks if a player can access the given capability provider; validating that protection is enabled in the config. Additionally, this method also checks to see if
-     * operators bypassing security is enabled in the config and if it is provides access to the player if they are an operator.
+     * operators bypassing security is enabled in the config and if it is, provides access to the player if they are an operator.
      *
-     * @param player   Player to check access for.
-     * @param provider Capability provider to check access of.
+     * @param player           Player to check access for.
+     * @param securityProvider Supplier to get the security capability to check. Can return {@code null} if there is no security.
+     * @param ownerProvider    Supplier to get the owner capability to check. Can return {@code null} if there is no owner.
      *
      * @return {@code true} if the player can access the given provider.
      *
      * @implNote This method assumes that if the security is {@link SecurityMode#TRUSTED} and there is a clientside player, then the player can access the
      * {@link ISecurityObject security object}. This is done because the list of trusted players is not currently synced to all clients.
-     * @see #canAccess(UUID, ICapabilityProvider, boolean)
+     * @see #canAccess(UUID, Supplier, Supplier, boolean)
      * @see #canAccessObject(Player, ISecurityObject)
      * @see #canAccessObject(UUID, ISecurityObject, boolean)
-     * @see #canAccessOrDisplayError(Player, ICapabilityProvider)
+     * @since 10.5.0
      */
-    @Contract("_, null -> true")
-    boolean canAccess(Player player, @Nullable ICapabilityProvider provider);
+    boolean canAccess(Player player, Supplier<@Nullable ISecurityObject> securityProvider, Supplier<@Nullable IOwnerObject> ownerProvider);
 
     /**
      * Checks if a player can access the given security object; validating that protection is enabled in the config. Additionally, this method also checks to see if
-     * operators bypassing security is enabled in the config and if it is provides access to the player if they are an operator.
+     * operators bypassing security is enabled in the config and if it is, provides access to the player if they are an operator.
      *
      * @param player         Player to check access for.
      * @param securityObject Security object to check access of.
@@ -57,32 +55,31 @@ public interface ISecurityUtils {
      *
      * @implNote This method assumes that if the security is {@link SecurityMode#TRUSTED} and there is a clientside player, then the player can access the
      * {@link ISecurityObject security object}. This is done because the list of trusted players is not currently synced to all clients.
-     * @see #canAccess(Player, ICapabilityProvider)
-     * @see #canAccess(UUID, ICapabilityProvider, boolean)
+     * @see #canAccess(Player, Supplier, Supplier)
+     * @see #canAccess(UUID, Supplier, Supplier, boolean)
      * @see #canAccessObject(UUID, ISecurityObject, boolean)
-     * @see #canAccessOrDisplayError(Player, ICapabilityProvider)
      */
     boolean canAccessObject(Player player, ISecurityObject securityObject);
 
     /**
      * Checks if a player can access the given capability provider; validating that protection is enabled in the config.
      *
-     * @param player   Player to check access for.
-     * @param provider Capability provider to check access of.
-     * @param isClient {@code true} if this method is being run clientside.
+     * @param player           Player to check access for.
+     * @param securityProvider Supplier to get the security capability to check. Can return {@code null} if there is no security.
+     * @param ownerProvider    Supplier to get the owner capability to check. Can return {@code null} if there is no owner.
+     * @param isClient         {@code true} if this method is being run clientside.
      *
      * @return {@code true} if the player can access the given provider. If the player is {@code null} this will return {@code true} if the provider's security is
      * {@link SecurityMode#PUBLIC}.
      *
      * @implNote This method assumes that if the security is {@link SecurityMode#TRUSTED} and there is a player and {@code isClient} is {@code true}, then the player can
      * access the {@link ISecurityObject security object}. This is done because the list of trusted players is not currently synced to all clients.
-     * @see #canAccess(Player, ICapabilityProvider)
+     * @see #canAccess(Player, Supplier, Supplier)
      * @see #canAccessObject(Player, ISecurityObject)
      * @see #canAccessObject(UUID, ISecurityObject, boolean)
-     * @see #canAccessOrDisplayError(Player, ICapabilityProvider)
+     * @since 10.5.0
      */
-    @Contract("_, null, _ -> true")
-    boolean canAccess(@Nullable UUID player, @Nullable ICapabilityProvider provider, boolean isClient);
+    boolean canAccess(@Nullable UUID player, Supplier<@Nullable ISecurityObject> securityProvider, Supplier<@Nullable IOwnerObject> ownerProvider, boolean isClient);
 
     /**
      * Checks if a player can access the given security object; validating that protection is enabled in the config.
@@ -96,10 +93,9 @@ public interface ISecurityUtils {
      *
      * @implNote This method assumes that if the security is {@link SecurityMode#TRUSTED} and there is a player and {@code isClient} is {@code true}, then the player can
      * access the {@link ISecurityObject security object}. This is done because the list of trusted players is not currently synced to all clients.
-     * @see #canAccess(Player, ICapabilityProvider)
-     * @see #canAccess(UUID, ICapabilityProvider, boolean)
+     * @see #canAccess(Player, Supplier, Supplier)
+     * @see #canAccess(UUID, Supplier, Supplier, boolean)
      * @see #canAccessObject(Player, ISecurityObject)
-     * @see #canAccessOrDisplayError(Player, ICapabilityProvider)
      */
     boolean canAccessObject(@Nullable UUID player, ISecurityObject securityObject, boolean isClient);
 
@@ -118,18 +114,6 @@ public interface ISecurityUtils {
     boolean moreRestrictive(SecurityMode base, SecurityMode overridden);
 
     /**
-     * Gets the owner of the given provider or {@code null} if there is no owner or the provider doesn't expose an {@link IOwnerObject}.
-     *
-     * @param provider Capability provider.
-     *
-     * @return UUID of the provider or {@code null} if there is no owner.
-     *
-     * @see IOwnerObject#getOwnerUUID()
-     */
-    @Nullable
-    UUID getOwnerUUID(ICapabilityProvider provider);
-
-    /**
      * Gets the "effective" security mode for a given provider. If no provider is given, or it does not expose a {@link ISecurityObject security object}, then the
      * security will be assumed to be {@link SecurityMode#PUBLIC} <em>unless</em> an {@link IOwnerObject} is exposed, in which case the security will be assumed
      * {@link SecurityMode#PRIVATE} if protection is enabled.
@@ -138,15 +122,17 @@ public interface ISecurityUtils {
      * method takes into account whether protection is disabled in the config and whether the owner of the {@link ISecurityObject} has their security frequency configured
      * to override the access level of less restrictive {@link ISecurityObject security objects}.
      *
-     * @param provider Capability provider to get the effective security mode of.
-     * @param isClient {@code true} if this method is being run clientside.
+     * @param securityProvider Supplier to get the security capability to check. Can return {@code null} if there is no security.
+     * @param ownerProvider    Supplier to get the owner capability to check. Can return {@code null} if there is no owner.
+     * @param isClient         {@code true} if this method is being run clientside.
      *
      * @return Effective security mode.
      *
-     * @implNote If the provider is {@code null} or doesn't expose a {@link ISecurityObject security object}, then
+     * @implNote If the provider is {@code null} or doesn't expose a {@link ISecurityObject security object}, then the returned mode is {@link SecurityMode#PUBLIC}
      * @see #getEffectiveSecurityMode(ISecurityObject, boolean)
+     * @since 10.5.0
      */
-    SecurityMode getSecurityMode(@Nullable ICapabilityProvider provider, boolean isClient);
+    SecurityMode getSecurityMode(Supplier<@Nullable ISecurityObject> securityProvider, Supplier<@Nullable IOwnerObject> ownerProvider, boolean isClient);
 
     /**
      * Gets the "effective" security mode for a given object. This is <em>different</em> from just querying {@link ISecurityObject#getSecurityMode()} as this method takes
@@ -158,32 +144,9 @@ public interface ISecurityUtils {
      *
      * @return Effective security mode.
      *
-     * @see #getSecurityMode(ICapabilityProvider, boolean)
+     * @see #getSecurityMode(Supplier, Supplier, boolean)
      */
     SecurityMode getEffectiveSecurityMode(ISecurityObject securityObject, boolean isClient);
-
-    /**
-     * Helper method to check if a given player can access the given capability provider; and if they can't display a server side access error to the player.
-     *
-     * @param player   Player to check access for.
-     * @param provider Capability provider to check access of.
-     *
-     * @return {@code true} if the player can access the given provider.
-     *
-     * @implNote This method assumes that if the security is {@link SecurityMode#TRUSTED} and there is a clientside player, then the player can access the
-     * {@link ISecurityObject security object}. This is done because the list of trusted players is not currently synced to all clients.
-     * @see #canAccess(Player, ICapabilityProvider)
-     */
-    @Contract("_, null -> true")
-    default boolean canAccessOrDisplayError(Player player, @Nullable ICapabilityProvider provider) {
-        if (canAccess(player, provider)) {
-            return true;
-        } else if (!player.level().isClientSide) {
-            //Display no access from server side
-            displayNoAccess(player);
-        }
-        return false;
-    }
 
     /**
      * Displays an error message to the given player indicating that the player does not have access to what they were trying to do.
@@ -191,16 +154,4 @@ public interface ISecurityUtils {
      * @param player Player to send the access error to.
      */
     void displayNoAccess(Player player);
-
-    /**
-     * Adds any owner and security data that the given stack has to the passed in list of tooltips. If the stack does not expose an owner or any security data then the
-     * corresponding data will not be added.
-     *
-     * @param stack   Stack to retrieve the owner and any security data from.
-     * @param tooltip List of components to add extra tooltips to.
-     *
-     * @apiNote While this method won't crash if called on the server it won't render quite right due to not having access to the player, so it is best to only call this
-     * on the client.
-     */
-    void addSecurityTooltip(ItemStack stack, List<Component> tooltip);
 }

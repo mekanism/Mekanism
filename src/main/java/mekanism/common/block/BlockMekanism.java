@@ -10,7 +10,10 @@ import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.radiation.IRadiationManager;
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IBlockSecurityUtils;
+import mekanism.api.security.IItemSecurityUtils;
+import mekanism.api.security.IOwnerObject;
+import mekanism.api.security.ISecurityObject;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
@@ -22,7 +25,6 @@ import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.lib.radiation.Meltdown.MeltdownExplosion;
@@ -116,10 +118,14 @@ public abstract class BlockMekanism extends Block {
             tile.getFrequencyComponent().write(lazyDataMap.get());
         }
         if (tile.hasSecurity()) {
-            itemStack.getCapability(Capabilities.OWNER_OBJECT).ifPresent(ownerObject -> {
+            IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(itemStack);
+            if (ownerObject != null) {
                 ownerObject.setOwnerUUID(tile.getOwnerUUID());
-                itemStack.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(securityObject -> securityObject.setSecurityMode(tile.getSecurityMode()));
-            });
+                ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(itemStack);
+                if (securityObject != null) {
+                    securityObject.setSecurityMode(tile.getSecurityMode());
+                }
+            }
         }
         if (tile.supportsUpgrades()) {
             tile.getComponent().write(lazyDataMap.get());
@@ -286,8 +292,11 @@ public abstract class BlockMekanism extends Block {
             tile.getFrequencyComponent().read(dataMap);
         }
         if (tile.hasSecurity()) {
-            stack.getCapability(Capabilities.SECURITY_OBJECT).ifPresent(security -> tile.setSecurityMode(security.getSecurityMode()));
-            UUID ownerUUID = ISecurityUtils.INSTANCE.getOwnerUUID(stack);
+            ISecurityObject security = IItemSecurityUtils.INSTANCE.securityCapability(stack);
+            if (security != null) {
+                tile.setSecurityMode(security.getSecurityMode());
+            }
+            UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
             if (ownerUUID != null) {
                 tile.setOwnerUUID(ownerUUID);
             } else if (placer != null) {
@@ -390,17 +399,26 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     @Deprecated
-    public float getDestroyProgress(@NotNull BlockState state, @NotNull Player player, @NotNull BlockGetter world, @NotNull BlockPos pos) {
-        return getDestroyProgress(state, player, world, pos, state.hasBlockEntity() ? WorldUtils.getTileEntity(world, pos) : null);
+    public float getDestroyProgress(@NotNull BlockState state, @NotNull Player player, @NotNull BlockGetter blockGetter, @NotNull BlockPos pos) {
+        return getDestroyProgress(state, player, blockGetter, pos, state.hasBlockEntity() ? WorldUtils.getTileEntity(blockGetter, pos) : null);
     }
 
     /**
      * Like {@link BlockBehaviour#getDestroyProgress(BlockState, Player, BlockGetter, BlockPos)} except also passes the tile to only have to get it once.
      */
-    protected float getDestroyProgress(@NotNull BlockState state, @NotNull Player player, @NotNull BlockGetter world, @NotNull BlockPos pos,
+    protected float getDestroyProgress(@NotNull BlockState state, @NotNull Player player, @NotNull BlockGetter blockGetter, @NotNull BlockPos pos,
           @Nullable BlockEntity tile) {
+        Level level = tile == null ? null : tile.getLevel();
+        //Do our best effort to see if we can figure out a corresponding level to look up the security from
+        if (level == null && blockGetter instanceof Level) {
+            level = (Level) blockGetter;
+        }
+        if (level != null && !IBlockSecurityUtils.INSTANCE.canAccess(player, level, pos, state, tile)) {
+            //If we have a level and the player cannot access the block, don't allow the player to break the block
+            return 0.0F;
+        }
         //Call super variant of player relative hardness to get default
-        float speed = super.getDestroyProgress(state, player, world, pos);
+        float speed = super.getDestroyProgress(state, player, blockGetter, pos);
         if (IRadiationManager.INSTANCE.isRadiationEnabled() && tile instanceof ITileRadioactive radioactiveTile && radioactiveTile.getRadiationScale() > 0) {
             //Our tile has some radioactive substance in it; slow down breaking it
             //Note: Technically our getRadiationScale impls validate that radiation is enabled, but we do so here as well

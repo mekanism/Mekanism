@@ -1,28 +1,21 @@
 package mekanism.common.tile.interfaces;
 
-import java.util.Set;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IOffsetCapability;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Internal interface.  A bounding block is not actually a 'bounding' block, it is really just a fake block that is used to mimic actual block bounds.
  *
  * @author AidanBrady
  */
-public interface IBoundingBlock extends ICapabilityProvider, IComparatorSupport, IOffsetCapability, IUpgradeTile {
-
-    Set<Capability<?>> ALWAYS_PROXY = Set.of(
-          Capabilities.CONFIG_CARD,
-          Capabilities.OWNER_OBJECT,
-          Capabilities.SECURITY_OBJECT
-    );
+public interface IBoundingBlock extends IComparatorSupport, IOffsetCapability, IUpgradeTile {
 
     default void onBoundingBlockPowerChange(BlockPos boundingPos, int oldLevel, int newLevel) {
     }
@@ -36,15 +29,16 @@ public interface IBoundingBlock extends ICapabilityProvider, IComparatorSupport,
     }
 
     @Override
-    default boolean isOffsetCapabilityDisabled(@NotNull Capability<?> capability, Direction side, @NotNull Vec3i offset) {
-        //By default, only allow proxying specific capabilities
-        return !ALWAYS_PROXY.contains(capability);
+    default boolean isOffsetCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, Direction side, @NotNull Vec3i offset) {
+        //By default, don't allow proxying any capabilities and instead require this to be overridden
+        // Some will always be proxied such as owner and security caps bypassing this entirely
+        return true;
     }
 
-    @NotNull
+    @Nullable
     @Override
-    default <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@NotNull Capability<T> capability, Direction side, @NotNull Vec3i offset) {
+    default <T> T getOffsetCapabilityIfEnabled(@NotNull BlockCapability<T, @Nullable Direction> capability, Direction side, @NotNull Vec3i offset) {
         //And have it get the capability as if it was not offset
-        return getCapability(capability, side);
+        return this instanceof BlockEntity be ? WorldUtils.getCapability(be.getLevel(), capability, be.getBlockPos(), null, be, side) : null;
     }
 }

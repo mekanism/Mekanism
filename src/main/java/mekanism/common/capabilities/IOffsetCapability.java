@@ -2,8 +2,7 @@ package mekanism.common.capabilities;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +17,7 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
      * Retrieves the handler for the capability requested on the specific side with a given offset.
      * <ul>
      * <li>The return value <strong>CAN</strong> be null if the object does not support the capability.</il>
-     * <li>The return value <strong>MUST</strong> be null if {@link #isOffsetCapabilityDisabled(Capability, Direction, Vec3i)} is true.</il>
+     * <li>The return value <strong>MUST</strong> be null if {@link #isOffsetCapabilityDisabled(BlockCapability, Direction, Vec3i)} is true.</il>
      * <li>The return value <strong>CAN</strong> be the same for multiple faces.</li>
      * </ul>
      *
@@ -30,11 +29,11 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
      * @return The requested capability.
      *
      * @implNote Do not override this method if you are implementing {@link IOffsetCapability}, instead override
-     * {@link #getOffsetCapabilityIfEnabled(Capability, Direction, Vec3i)}, calling this method is fine.
+     * {@link #getOffsetCapabilityIfEnabled(BlockCapability, Direction, Vec3i)}, calling this method is fine.
      */
-    @NotNull
-    default <T> LazyOptional<T> getOffsetCapability(@NotNull Capability<T> capability, @Nullable Direction side, @NotNull Vec3i offset) {
-        return isOffsetCapabilityDisabled(capability, side, offset) ? LazyOptional.empty() : getOffsetCapabilityIfEnabled(capability, side, offset);
+    @Nullable
+    default <T> T getOffsetCapability(@NotNull BlockCapability<T, @Nullable Direction> capability, @Nullable Direction side, @NotNull Vec3i offset) {
+        return isOffsetCapabilityDisabled(capability, side, offset) ? null : getOffsetCapabilityIfEnabled(capability, side, offset);
     }
 
     /**
@@ -45,20 +44,20 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
      * @param side       The Side to check from: CAN BE NULL. Null is defined to represent 'internal' or 'self'
      * @param offset     An offset position to figure out what block is actually the one that is being checked.
      *
-     * @return True if this given capability is disabled for the given side and offset. If true, then {@link #getOffsetCapability(Capability, Direction, Vec3i)} should
-     * return {@link LazyOptional#empty()}.
+     * @return True if this given capability is disabled for the given side and offset. If true, then {@link #getOffsetCapability(BlockCapability, Direction, Vec3i)} should
+     * return {@code null}.
      */
-    default boolean isOffsetCapabilityDisabled(@NotNull Capability<?> capability, @Nullable Direction side, @NotNull Vec3i offset) {
+    default boolean isOffsetCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side, @NotNull Vec3i offset) {
         return false;
     }
 
     /**
-     * Copy of {@link #getOffsetCapability(Capability, Direction, Vec3i)} but checks for if the capability is disabled before being called. Docs copied for convenience
+     * Copy of {@link #getOffsetCapability(BlockCapability, Direction, Vec3i)} but checks for if the capability is disabled before being called. Docs copied for convenience
      * <p>
      * Retrieves the handler for the capability requested on the specific side with a given offset.
      * <ul>
      * <li>The return value <strong>CAN</strong> be null if the object does not support the capability.</il>
-     * <li>The return value <strong>MUST</strong> be null if {@link #isOffsetCapabilityDisabled(Capability, Direction, Vec3i)} is true.</il>
+     * <li>The return value <strong>MUST</strong> be null if {@link #isOffsetCapabilityDisabled(BlockCapability, Direction, Vec3i)} is true.</il>
      * <li>The return value <strong>CAN</strong> be the same for multiple faces.</li>
      * </ul>
      *
@@ -69,5 +68,5 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
      *
      * @return The requested capability.
      */
-    @NotNull <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@NotNull Capability<T> capability, @Nullable Direction side, @NotNull Vec3i offset);
+    @Nullable <T> T getOffsetCapabilityIfEnabled(@NotNull BlockCapability<T, @Nullable Direction> capability, @Nullable Direction side, @NotNull Vec3i offset);
 }

@@ -7,7 +7,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.chemical.item.ChemicalTankContentsHandler;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
@@ -16,11 +15,11 @@ import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>>> implements IItemSustainedInventory {
@@ -50,9 +49,9 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
     public boolean isBarVisible(@NotNull ItemStack stack) {
         // No bar for empty containers as bars are drawn on top of stack count number
         return ChemicalUtil.hasGas(stack) ||
-               ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.INFUSION_HANDLER) ||
-               ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.PIGMENT_HANDLER) ||
-               ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.SLURRY_HANDLER);
+               ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.INFUSION.item()) ||
+               ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.PIGMENT.item()) ||
+               ChemicalUtil.hasChemical(stack, ConstantPredicates.alwaysTrue(), Capabilities.SLURRY.item());
     }
 
     @Override
@@ -66,8 +65,8 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
     }
 
     @Override
-    protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
-        super.gatherCapabilities(capabilities, stack, nbt);
-        capabilities.add(ChemicalTankContentsHandler.create(getTier()));
+    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+        super.attachCapabilities(event);
+        ChemicalTankContentsHandler.attachCapsToItem(event, this);
     }
 }

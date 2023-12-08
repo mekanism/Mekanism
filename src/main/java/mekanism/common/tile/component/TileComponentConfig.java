@@ -3,7 +3,6 @@ package mekanism.common.tile.component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,10 +41,9 @@ import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,20 +74,18 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         Direction direction = side.getDirection(tile.getDirection());
         sideChangedBasic(transmissionType, direction);
         tile.sendUpdatePacket();
-        //Notify the neighbor on that side our state changed
-        WorldUtils.notifyNeighborOfChange(tile.getLevel(), direction, tile.getBlockPos());
     }
 
     private void sideChangedBasic(TransmissionType transmissionType, Direction direction) {
         switch (transmissionType) {
-            case ENERGY -> tile.invalidateCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities(), direction);
-            case FLUID -> tile.invalidateCapability(net.neoforged.neoforge.common.capabilities.Capabilities.FLUID_HANDLER, direction);
-            case GAS -> tile.invalidateCapability(Capabilities.GAS_HANDLER, direction);
-            case INFUSION -> tile.invalidateCapability(Capabilities.INFUSION_HANDLER, direction);
-            case PIGMENT -> tile.invalidateCapability(Capabilities.PIGMENT_HANDLER, direction);
-            case SLURRY -> tile.invalidateCapability(Capabilities.SLURRY_HANDLER, direction);
-            case ITEM -> tile.invalidateCapability(net.neoforged.neoforge.common.capabilities.Capabilities.ITEM_HANDLER, direction);
-            case HEAT -> tile.invalidateCapability(Capabilities.HEAT_HANDLER, direction);
+            case ENERGY -> tile.invalidateCapabilities(EnergyCompatUtils.getLoadedEnergyCapabilities(), direction);
+            case FLUID -> tile.invalidateCapability(Capabilities.FLUID.block(), direction);
+            case GAS -> tile.invalidateCapability(Capabilities.GAS.block(), direction);
+            case INFUSION -> tile.invalidateCapability(Capabilities.INFUSION.block(), direction);
+            case PIGMENT -> tile.invalidateCapability(Capabilities.PIGMENT.block(), direction);
+            case SLURRY -> tile.invalidateCapability(Capabilities.SLURRY.block(), direction);
+            case ITEM -> tile.invalidateCapability(Capabilities.ITEM.block(), direction);
+            case HEAT -> tile.invalidateCapability(Capabilities.HEAT, direction);
         }
         tile.markForSave();
         //And invalidate any "listeners" we may have that the side changed for a specific transmission type
@@ -114,21 +110,21 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         }
     }
 
-    public boolean isCapabilityDisabled(@NotNull Capability<?> capability, Direction side) {
+    public boolean isCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
         TransmissionType type = null;
-        if (capability == net.neoforged.neoforge.common.capabilities.Capabilities.ITEM_HANDLER) {
+        if (Capabilities.ITEM.is(capability)) {
             type = TransmissionType.ITEM;
-        } else if (capability == Capabilities.GAS_HANDLER) {
+        } else if (Capabilities.GAS.is(capability)) {
             type = TransmissionType.GAS;
-        } else if (capability == Capabilities.INFUSION_HANDLER) {
+        } else if (Capabilities.INFUSION.is(capability)) {
             type = TransmissionType.INFUSION;
-        } else if (capability == Capabilities.PIGMENT_HANDLER) {
+        } else if (Capabilities.PIGMENT.is(capability)) {
             type = TransmissionType.PIGMENT;
-        } else if (capability == Capabilities.SLURRY_HANDLER) {
+        } else if (Capabilities.SLURRY.is(capability)) {
             type = TransmissionType.SLURRY;
-        } else if (capability == Capabilities.HEAT_HANDLER) {
+        } else if (capability == Capabilities.HEAT) {
             type = TransmissionType.HEAT;
-        } else if (capability == net.neoforged.neoforge.common.capabilities.Capabilities.FLUID_HANDLER) {
+        } else if (Capabilities.FLUID.is(capability)) {
             type = TransmissionType.FLUID;
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
             type = TransmissionType.ENERGY;
@@ -277,7 +273,6 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     @Override
     public void read(CompoundTag nbtTags) {
         NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.COMPONENT_CONFIG, configNBT -> {
-            Set<Direction> directionsToUpdate = EnumSet.noneOf(Direction.class);
             configInfo.forEach((type, info) -> {
                 NBTUtils.setBooleanIfPresent(configNBT, NBTConstants.EJECT + type.ordinal(), info::setEjecting);
                 NBTUtils.setCompoundIfPresent(configNBT, NBTConstants.CONFIG + type.ordinal(), sideConfig -> {
@@ -288,14 +283,12 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
                                 if (tile.hasLevel()) {//If we aren't already loaded yet don't do any updates
                                     Direction direction = side.getDirection(tile.getDirection());
                                     sideChangedBasic(type, direction);
-                                    directionsToUpdate.add(direction);
                                 }
                             }
                         });
                     }
                 });
             });
-            WorldUtils.notifyNeighborsOfChange(tile.getLevel(), tile.getBlockPos(), directionsToUpdate);
         });
     }
 

@@ -48,7 +48,7 @@ public class TileComponentFrequency implements ITileComponent {
             updateFrequency(entry.getKey(), entry.getValue());
         }
         if (needsNotify) {
-            tile.invalidateCachedCapabilities();
+            tile.invalidateCapabilitiesFull();
             WorldUtils.notifyLoadedNeighborsOfTileChange(tile.getLevel(), tile.getBlockPos());
             needsNotify = false;
         }

@@ -2,7 +2,13 @@ package mekanism.common.tile.base;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.function.BooleanSupplier;
+import java.util.function.BiFunction;
+import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.infuse.IInfusionHandler;
+import mekanism.api.chemical.pigment.IPigmentHandler;
+import mekanism.api.chemical.slurry.ISlurryHandler;
+import mekanism.api.heat.IHeatHandler;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
@@ -11,12 +17,45 @@ import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class CapabilityTileEntity extends TileEntityUpdateable {
+
+    //Note: The below providers assume that the capability if supported has been added by either addCapabilityResolver or addCapabilityResolvers
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IGasHandler> GAS_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.GAS.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IInfusionHandler> INFUSION_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.INFUSION.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IPigmentHandler> PIGMENT_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.PIGMENT.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, ISlurryHandler> SLURRY_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.SLURRY.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IHeatHandler> HEAT_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.HEAT);
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IItemHandler> ITEM_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.ITEM.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IFluidHandler> FLUID_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.FLUID.block());
+
+    public static <CAP> ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, CAP> basicCapabilityProvider(BlockCapability<CAP, @Nullable Direction> capability) {
+        return (tile, context) -> {
+            if (tile.capabilityCache.isCapabilityDisabled(capability, context)) {
+                return null;
+            }
+            ICapabilityResolver<@Nullable Direction> resolver = tile.capabilityCache.getResolver(capability);
+            return resolver == null ? null : resolver.resolve(capability, context);
+        };
+    }
+
+    public static <TILE extends CapabilityTileEntity, CAP> ICapabilityProvider<TILE, @Nullable Direction, CAP> capabilityProvider(
+          BlockCapability<CAP, @Nullable Direction> capability, BiFunction<TILE, BlockCapability<CAP, @Nullable Direction>, ICapabilityResolver<@Nullable Direction>> resolverGetter) {
+        return (tile, context) -> {
+            CapabilityCache capabilityCache = ((CapabilityTileEntity) tile).capabilityCache;
+            if (capabilityCache.isCapabilityDisabled(capability, context)) {
+                return null;
+            }
+            return capabilityCache.getResolver(capability, () -> resolverGetter.apply(tile, capability))
+                  .resolve(capability, context);
+        };
+    }
 
     private final CapabilityCache capabilityCache = new CapabilityCache();
 
@@ -28,75 +67,66 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
         for (ICapabilityHandlerManager<?> capabilityHandlerManager : capabilityHandlerManagers) {
             //Add all managers that we support in our tile, as capability resolvers
             if (capabilityHandlerManager.canHandle()) {
-                addCapabilityResolver(capabilityHandlerManager);
+                capabilityCache.addCapabilityResolver(capabilityHandlerManager);
             }
         }
     }
 
-    protected final void addCapabilityResolver(ICapabilityResolver resolver) {
+    protected final void addCapabilityResolver(ICapabilityResolver<@Nullable Direction> resolver) {
         capabilityCache.addCapabilityResolver(resolver);
-    }
-
-    protected final void addDisabledCapabilities(Capability<?>... capabilities) {
-        capabilityCache.addDisabledCapabilities(capabilities);
-    }
-
-    protected final void addDisabledCapabilities(Collection<Capability<?>> capabilities) {
-        capabilityCache.addDisabledCapabilities(capabilities);
-    }
-
-    protected final void addSemiDisabledCapability(Capability<?> capability, BooleanSupplier checker) {
-        capabilityCache.addSemiDisabledCapability(capability, checker);
     }
 
     protected final void addConfigComponent(TileComponentConfig config) {
         capabilityCache.addConfigComponent(config);
     }
 
-    protected <T> boolean canEverResolve(Capability<T> capability) {
-        return capabilityCache.canResolve(capability);
-    }
-
-    @NotNull
-    @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side) {
-        if (capabilityCache.isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        } else if (capabilityCache.canResolve(capability)) {
-            return capabilityCache.getCapabilityUnchecked(capability, side);
-        }
-        //Call to the TileEntity's Implementation of getCapability if we could not find a capability ourselves
-        return super.getCapability(capability, side);
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        //When the capabilities on our tile get invalidated, make sure to also invalidate all our cached ones
-        invalidateCachedCapabilities();
-    }
-
-    public void invalidateCachedCapabilities() {
+    /**
+     * Invalidates our backing internal representations for certain capabilities in addition to actually notifying the level of capability invalidation.
+     */
+    public void invalidateCapabilitiesFull() {
+        //Clear our internal cached capability instances and then invalidate the capabilities to the world
+        // that way when queried from the invalidation listener we will ensure we can provide the up to date instance
         capabilityCache.invalidateAll();
+        invalidateCapabilities();
     }
 
-    public void invalidateCapability(@NotNull Capability<?> capability, @Nullable Direction side) {
+    @Override
+    public void setRemoved() {
+        //Note: Clear the backing caps before letting super invalidate as then if anything somehow queries us in their invalidation listeners
+        // they will get the proper non cached data
+        capabilityCache.invalidateAll();
+        super.setRemoved();
+    }
+
+    @Override
+    public void clearRemoved() {
+        //Note: Clear the backing caps before letting super invalidate as then if anything somehow queries us in their invalidation listeners
+        // they will get the proper non cached data
+        capabilityCache.invalidateAll();
+        super.clearRemoved();
+    }
+
+    public final void invalidateCapability(@NotNull BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
         capabilityCache.invalidate(capability, side);
+        invalidateCapabilities();
     }
 
-    public void invalidateCapability(@NotNull Capability<?> capability, Direction... sides) {
+    public final void invalidateCapability(@NotNull BlockCapability<?, @Nullable Direction> capability, Direction... sides) {
         capabilityCache.invalidateSides(capability, sides);
+        invalidateCapabilities();
     }
 
-    public void invalidateCapabilities(@NotNull Collection<Capability<?>> capabilities, @Nullable Direction side) {
-        for (Capability<?> capability : capabilities) {
-            invalidateCapability(capability, side);
+    public final void invalidateCapabilities(@NotNull Collection<BlockCapability<?, @Nullable Direction>> capabilities, @Nullable Direction side) {
+        for (BlockCapability<?, @Nullable Direction> capability : capabilities) {
+            capabilityCache.invalidate(capability, side);
         }
+        invalidateCapabilities();
     }
 
-    public void invalidateCapabilities(@NotNull Collection<Capability<?>> capabilities, Direction... sides) {
-        for (Capability<?> capability : capabilities) {
-            invalidateCapability(capability, sides);
+    public final void invalidateCapabilities(@NotNull Collection<BlockCapability<?, @Nullable Direction>> capabilities, Direction... sides) {
+        for (BlockCapability<?, @Nullable Direction> capability : capabilities) {
+            capabilityCache.invalidateSides(capability, sides);
         }
+        invalidateCapabilities();
     }
 }

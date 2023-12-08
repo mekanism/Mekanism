@@ -2,7 +2,6 @@ package mekanism.common.item.block;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.IntStream;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
@@ -10,7 +9,6 @@ import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.energy.item.ItemStackEnergyHandler;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.config.MekanismConfig;
@@ -107,15 +105,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     }
 
     @Override
-    protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
-        super.gatherCapabilities(capabilities, stack, nbt);
-        ItemCapability capability = RateLimitEnergyHandler.create(getTier());
-        int index = IntStream.range(0, capabilities.size()).filter(i -> capabilities.get(i) instanceof ItemStackEnergyHandler).findFirst().orElse(-1);
-        if (index != -1) {
-            //This is likely always the path that will be taken
-            capabilities.set(index, capability);
-        } else {
-            capabilities.add(capability);
-        }
+    protected ItemStackEnergyHandler createEnergyCap(ItemStack stack) {
+        return RateLimitEnergyHandler.create(stack, getTier());
     }
 }

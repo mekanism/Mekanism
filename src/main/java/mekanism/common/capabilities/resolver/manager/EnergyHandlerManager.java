@@ -1,6 +1,5 @@
 package mekanism.common.capabilities.resolver.manager;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.IdentityHashMap;
@@ -12,18 +11,16 @@ import mekanism.api.energy.ISidedStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.proxy.ProxyStrictEnergyHandler;
-import mekanism.common.capabilities.resolver.EnergyCapabilityResolver;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import net.minecraft.core.Direction;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyContainer> {
 
-    private final Map<Direction, Map<Capability<?>, LazyOptional<?>>> cachedCapabilities;
-    private final Map<Capability<?>, LazyOptional<?>> cachedReadOnlyCapabilities;
+    private final Map<Direction, Map<BlockCapability<?, @Nullable Direction>, Object>> cachedCapabilities;
+    private final Map<BlockCapability<?, @Nullable Direction>, Object> cachedReadOnlyCapabilities;
     private final Map<Direction, IStrictEnergyHandler> handlers;
     private final ISidedStrictEnergyHandler baseHandler;
     private final boolean canHandle;
@@ -58,8 +55,9 @@ public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyCo
     }
 
     @Override
-    public List<Capability<?>> getSupportedCapabilities() {
-        return EnergyCompatUtils.getEnabledEnergyCapabilities();
+    public List<BlockCapability<?, @Nullable Direction>> getSupportedCapabilities() {
+        //Return all loaded energy caps so that we get attached and then just handle config checks in the actual lookup
+        return EnergyCompatUtils.getLoadedEnergyCapabilities();
     }
 
     /**
@@ -67,58 +65,53 @@ public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyCo
      *
      * @apiNote Assumes that {@link #canHandle} has been called before this and that it was {@code true}.
      */
+    @Nullable
     @Override
-    public <T> LazyOptional<T> resolve(Capability<T> capability, @Nullable Direction side) {
+    @SuppressWarnings("unchecked")
+    public <T> T resolve(BlockCapability<T, @Nullable Direction> capability, @Nullable Direction side) {
         if (getContainers(side).isEmpty()) {
             //If we don't have any containers accessible from that side, don't return a handler
-            //TODO: Evaluate moving this somehow into being done via the is disabled check
-            return LazyOptional.empty();
+            return null;
         }
         if (side == null) {
-            if (readOnlyHandler == null) {
-                //Note: Only should enter this if statement if we don't already have a cache,
-                // so we just check it beforehand as it is a quick check and simplifies the code
-                readOnlyHandler = new ProxyStrictEnergyHandler(baseHandler, null, holder);
-            }
-            return EnergyCapabilityResolver.getCachedOrResolve(capability, cachedReadOnlyCapabilities, readOnlyHandler);
+            //If we already contain a cached object for this instance then just use it, otherwise wrap it
+            return (T) cachedReadOnlyCapabilities.computeIfAbsent(capability, cap -> {
+                if (readOnlyHandler == null) {
+                    //We haven't initiated the backing handler yet, so we need to calculate it
+                    readOnlyHandler = new ProxyStrictEnergyHandler(baseHandler, null, holder);
+                }
+                return EnergyCompatUtils.wrapStrictEnergyHandler(cap, readOnlyHandler);
+            });
         }
-        //Note: Only should enter this if statement if we don't already have a cache,
-        // so we just check it beforehand as it is a quick check and simplifies the code
-        IStrictEnergyHandler handler = handlers.computeIfAbsent(side, s -> new ProxyStrictEnergyHandler(baseHandler, s, holder));
-        return EnergyCapabilityResolver.getCachedOrResolve(capability, cachedCapabilities.computeIfAbsent(side, key -> new IdentityHashMap<>()), handler);
+        //If we already contain a cached object for this instance then just use it, otherwise calculate the base handler and wrap it
+        return (T) cachedCapabilities
+              .computeIfAbsent(side, key -> new IdentityHashMap<>())
+              .computeIfAbsent(capability, cap -> {
+                  //If we haven't initiated the backing handler yet, calculate it
+                  IStrictEnergyHandler handler = handlers.computeIfAbsent(side, s -> new ProxyStrictEnergyHandler(baseHandler, s, holder));
+                  return EnergyCompatUtils.wrapStrictEnergyHandler(cap, handler);
+              });
     }
 
     @Override
-    public void invalidate(Capability<?> capability, @Nullable Direction side) {
-        //Note: We don't invalidate the base handlers as they are still valid regardless, and the holder just removes slots when they shouldn't be accessible
-        // we only bother invalidating the lazy optionals
+    public void invalidate(BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
+        //Note: We don't invalidate the base handlers as they are still valid regardless and are just wrappers with the holder
+        // removing slots when they shouldn't be accessible, so we only invalidate the cached exposed handlers
         if (side == null) {
-            invalidate(cachedReadOnlyCapabilities.get(capability));
+            cachedReadOnlyCapabilities.remove(capability);
         } else {
-            Map<Capability<?>, LazyOptional<?>> cachedSide = cachedCapabilities.get(side);
+            Map<BlockCapability<?, @Nullable Direction>, ?> cachedSide = cachedCapabilities.get(side);
             if (cachedSide != null) {
-                invalidate(cachedSide.get(capability));
+                cachedSide.remove(capability);
             }
         }
     }
 
     @Override
     public void invalidateAll() {
-        //Note: We don't invalidate the base handlers as they are still valid regardless, and the holder just removes slots when they shouldn't be accessible
-        // we only bother invalidating the lazy optionals
-        for (Map<Capability<?>, LazyOptional<?>> cachedSide : cachedCapabilities.values()) {
-            for (LazyOptional<?> lazyOptional : new ArrayList<>(cachedSide.values())) {
-                invalidate(lazyOptional);
-            }
-        }
-        for (LazyOptional<?> lazyOptional : new ArrayList<>(cachedReadOnlyCapabilities.values())) {
-            invalidate(lazyOptional);
-        }
-    }
-
-    protected void invalidate(@Nullable LazyOptional<?> cachedCapability) {
-        if (cachedCapability != null && cachedCapability.isPresent()) {
-            cachedCapability.invalidate();
-        }
+        //Note: We don't invalidate the base handlers as they are still valid regardless and are just wrappers with the holder
+        // removing slots when they shouldn't be accessible, so we only invalidate the cached exposed handlers
+        cachedCapabilities.clear();
+        cachedReadOnlyCapabilities.clear();
     }
 }

@@ -1,16 +1,14 @@
 package mekanism.common.item;
 
 import java.util.List;
-import java.util.Optional;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.NBTConstants;
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -31,8 +29,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,32 +55,29 @@ public class ItemConfigurationCard extends Item {
         Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Direction side = context.getClickedFace();
-        BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-        Optional<IConfigCardAccess> configCardSupport = CapabilityUtils.getCapability(tile, Capabilities.CONFIG_CARD, side).resolve();
-        if (configCardSupport.isPresent()) {
-            if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
+        IConfigCardAccess configCardAccess = WorldUtils.getCapability(world, Capabilities.CONFIG_CARD, pos, side);
+        if (configCardAccess != null) {
+            if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos)) {
                 return InteractionResult.FAIL;
             }
             ItemStack stack = context.getItemInHand();
             if (player.isShiftKeyDown()) {
                 if (!world.isClientSide) {
-                    IConfigCardAccess configCardAccess = configCardSupport.get();
                     String translationKey = configCardAccess.getConfigCardName();
                     CompoundTag data = configCardAccess.getConfigurationData(player);
                     data.putString(NBTConstants.DATA_NAME, translationKey);
-                    NBTUtils.writeRegistryEntry(data, NBTConstants.DATA_TYPE, BuiltInRegistries.BLOCK_ENTITY_TYPE, configCardAccess.getConfigurationDataType());
+                    NBTUtils.writeRegistryEntry(data, NBTConstants.DATA_TYPE, BuiltInRegistries.BLOCK, configCardAccess.getConfigurationDataType());
                     ItemDataUtils.setCompound(stack, NBTConstants.DATA, data);
                     player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey))));
                     MekanismCriteriaTriggers.CONFIGURATION_CARD.trigger((ServerPlayer) player, true);
                 }
             } else {
                 CompoundTag data = getData(stack);
-                BlockEntityType<?> storedType = getStoredTileType(data);
+                Block storedType = getStoredType(data);
                 if (storedType == null) {
                     return InteractionResult.PASS;
                 }
                 if (!world.isClientSide) {
-                    IConfigCardAccess configCardAccess = configCardSupport.get();
                     if (configCardAccess.isConfigurationDataCompatible(storedType)) {
                         configCardAccess.setConfigurationData(player, data);
                         configCardAccess.configurationDataSet();
@@ -107,12 +101,12 @@ public class ItemConfigurationCard extends Item {
 
     @Nullable
     @Contract("null -> null")
-    private BlockEntityType<?> getStoredTileType(@Nullable CompoundTag data) {
+    private Block getStoredType(@Nullable CompoundTag data) {
         if (data == null || !data.contains(NBTConstants.DATA_TYPE, Tag.TAG_STRING)) {
             return null;
         }
-        ResourceLocation tileRegistryName = ResourceLocation.tryParse(data.getString(NBTConstants.DATA_TYPE));
-        return tileRegistryName == null ? null : BuiltInRegistries.BLOCK_ENTITY_TYPE.get(tileRegistryName);
+        ResourceLocation blockRegistryName = ResourceLocation.tryParse(data.getString(NBTConstants.DATA_TYPE));
+        return blockRegistryName == null ? null : BuiltInRegistries.BLOCK.get(blockRegistryName);
     }
 
     private Component getConfigCardName(@Nullable CompoundTag data) {

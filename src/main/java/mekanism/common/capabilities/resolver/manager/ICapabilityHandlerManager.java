@@ -7,7 +7,7 @@ import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
 @MethodsReturnNonnullByDefault
-public interface ICapabilityHandlerManager<CONTAINER> extends ICapabilityResolver {
+public interface ICapabilityHandlerManager<CONTAINER> extends ICapabilityResolver<@Nullable Direction> {
 
     /**
      * Checks if the capability handler manager can handle this substance type.

@@ -20,18 +20,11 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends BasicInventorySlot {
-
-    @Nullable
-    protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
-    HANDLER getCapability(ItemStack stack, Capability<HANDLER> capability) {
-        return stack.isEmpty() ? null : stack.getCapability(capability).resolve().orElse(null);
-    }
 
     /**
      * Gets the ChemicalStack from ItemStack conversion, ignoring the size of the item stack.

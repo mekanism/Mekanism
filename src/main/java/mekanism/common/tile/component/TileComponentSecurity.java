@@ -2,7 +2,7 @@ package mekanism.common.tile.component;
 
 import java.util.UUID;
 import mekanism.api.NBTConstants;
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -117,7 +117,12 @@ public class TileComponentSecurity implements ITileComponent {
     @ComputerMethod(nameOverride = "getSecurityMode")
     SecurityMode getComputerSecurityMode() {
         //Get the effective security mode
-        return ISecurityUtils.INSTANCE.getSecurityMode(tile, tile.isRemote());
+        if (tile.getLevel() == null) {
+            //If we don't have a level yet do our best effort to return a usable value
+            // though given this is just for computer access we should theoretically always have a level
+            return getMode();
+        }
+        return IBlockSecurityUtils.INSTANCE.getSecurityMode(tile.getLevel(), tile.getBlockPos(), tile);
     }
     //End computer related methods
 }

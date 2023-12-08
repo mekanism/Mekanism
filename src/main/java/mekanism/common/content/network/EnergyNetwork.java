@@ -23,7 +23,6 @@ import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -103,7 +102,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     @Override
     public synchronized void updateCapacity() {
         FloatingLong sum = FloatingLong.ZERO;
-        for (UniversalCable transmitter : transmitters) {
+        for (UniversalCable transmitter : getTransmitters()) {
             sum = sum.plusEqual(transmitter.getCapacityAsFloatingLong());
         }
         if (!floatingLongCapacity.equals(sum)) {
@@ -121,22 +120,20 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     protected void updateSaveShares(@Nullable UniversalCable triggerTransmitter) {
         super.updateSaveShares(triggerTransmitter);
         if (!isEmpty()) {
-            EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget(transmitters);
+            EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget(getTransmitters());
             EmitUtils.sendToAcceptors(saveTarget, energyContainer.getEnergy().copy());
             saveTarget.saveShare();
         }
     }
 
     private FloatingLong tickEmit(FloatingLong energyToSend) {
-        Collection<Map<Direction, LazyOptional<IStrictEnergyHandler>>> acceptorValues = acceptorCache.getAcceptorValues();
+        Collection<Map<Direction, IStrictEnergyHandler>> acceptorValues = acceptorCache.getAcceptorValues();
         EnergyAcceptorTarget target = new EnergyAcceptorTarget(acceptorValues.size() * 2);
-        for (Map<Direction, LazyOptional<IStrictEnergyHandler>> acceptors : acceptorValues) {
-            for (LazyOptional<IStrictEnergyHandler> lazyAcceptor : acceptors.values()) {
-                lazyAcceptor.ifPresent(acceptor -> {
-                    if (acceptor.insertEnergy(energyToSend, Action.SIMULATE).smallerThan(energyToSend)) {
-                        target.addHandler(acceptor);
-                    }
-                });
+        for (Map<Direction, IStrictEnergyHandler> acceptors : acceptorValues) {
+            for (IStrictEnergyHandler acceptor : acceptors.values()) {
+                if (acceptor.insertEnergy(energyToSend, Action.SIMULATE).smallerThan(energyToSend)) {
+                    target.addHandler(acceptor);
+                }
             }
         }
         return EmitUtils.sendToAcceptors(target, energyToSend.copy());

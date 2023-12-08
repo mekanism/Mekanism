@@ -5,7 +5,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.ISecurityContainer;
@@ -17,13 +16,10 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.Capability;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,10 +30,6 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     public TileEntitySecurityDesk(BlockPos pos, BlockState state) {
         super(MekanismBlocks.SECURITY_DESK, pos, state);
-        //Even though there are inventory slots make this return none as accessible by automation, as then people could lock items to other
-        // people unintentionally. We also disable the security object capability so that we only provide access to the security desk as an
-        // "owner object" which means that all access checks will be handled as requiring the owner
-        addDisabledCapabilities(net.neoforged.neoforge.common.capabilities.Capabilities.ITEM_HANDLER, Capabilities.SECURITY_OBJECT);
     }
 
     @NotNull
@@ -82,7 +74,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             MinecraftServer server = getWorldNN().getServer();
             if (server != null) {
                 for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                    if (player.containerMenu instanceof ISecurityContainer container && !ISecurityUtils.INSTANCE.canAccess(player, container.getSecurityObject())) {
+                    if (player.containerMenu instanceof ISecurityContainer container && !container.canPlayerAccess(player)) {
                         //Boot any players out of the container if they no longer have access to viewing it
                         player.closeContainer();
                     }
@@ -100,8 +92,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
                 MinecraftServer server = getWorldNN().getServer();
                 if (server != null) {
                     Player player = server.getPlayerList().getPlayer(removed);
-                    if (player != null && player.containerMenu instanceof ISecurityContainer container &&
-                        ISecurityUtils.INSTANCE.canAccess(player, container.getSecurityObject())) {
+                    if (player != null && player.containerMenu instanceof ISecurityContainer container && container.canPlayerAccess(player)) {
                         //If the player that got removed from being trusted no longer has access to view the container they were viewing
                         // boot them out of it
                         player.closeContainer();
@@ -136,11 +127,5 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     public SecurityFrequency getFreq() {
         return getFrequency(FrequencyType.SECURITY);
-    }
-
-    @Override
-    public boolean isOffsetCapabilityDisabled(@NotNull Capability<?> capability, Direction side, @NotNull Vec3i offset) {
-        //Don't allow proxying any capabilities by marking them all as disabled
-        return true;
     }
 }

@@ -1,17 +1,16 @@
 package mekanism.common.capabilities.energy.item;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
-import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
-import mekanism.common.capabilities.resolver.EnergyCapabilityResolver;
-import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,22 +19,18 @@ import org.jetbrains.annotations.Nullable;
  */
 @ParametersAreNotNullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class ItemStackEnergyHandler extends ItemCapability implements IMekanismStrictEnergyHandler {
+public abstract class ItemStackEnergyHandler implements IMekanismStrictEnergyHandler {
 
-    protected List<IEnergyContainer> energyContainers;
+    protected final ItemStack stack;
+    protected final List<IEnergyContainer> energyContainers;
 
-    protected abstract List<IEnergyContainer> getInitialContainers();
-
-    @Override
-    protected void init() {
-        super.init();
-        this.energyContainers = getInitialContainers();
-    }
-
-    @Override
-    protected void load() {
-        super.load();
-        ItemDataUtils.readContainers(getStack(), NBTConstants.ENERGY_CONTAINERS, getEnergyContainers(null));
+    @SafeVarargs
+    protected ItemStackEnergyHandler(ItemStack stack, Function<IMekanismStrictEnergyHandler, IEnergyContainer>... energyContainerProvider) {
+        this.stack = stack;
+        this.energyContainers = Arrays.stream(energyContainerProvider)
+              .map(provider -> provider.apply(this))
+              .toList();
+        ItemDataUtils.readContainers(this.stack, NBTConstants.ENERGY_CONTAINERS, this.energyContainers);
     }
 
     @NotNull
@@ -46,11 +41,6 @@ public abstract class ItemStackEnergyHandler extends ItemCapability implements I
 
     @Override
     public void onContentsChanged() {
-        ItemDataUtils.writeContainers(getStack(), NBTConstants.ENERGY_CONTAINERS, getEnergyContainers(null));
-    }
-
-    @Override
-    protected void gatherCapabilityResolvers(Consumer<ICapabilityResolver> consumer) {
-        consumer.accept(new EnergyCapabilityResolver(this));
+        ItemDataUtils.writeContainers(stack, NBTConstants.ENERGY_CONTAINERS, getEnergyContainers(null));
     }
 }

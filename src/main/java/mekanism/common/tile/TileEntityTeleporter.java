@@ -22,13 +22,11 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.integration.computer.ComputerException;
@@ -108,7 +106,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         super(MekanismBlocks.TELEPORTER, pos, state);
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
         frequencyComponent.track(FrequencyType.TELEPORTER, true, true, false);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
         cacheCoord();
     }
 

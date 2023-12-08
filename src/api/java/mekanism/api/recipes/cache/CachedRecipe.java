@@ -13,6 +13,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongConsumer;
 import mekanism.api.math.FloatingLongSupplier;
@@ -43,7 +44,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
      *
      * @implNote Defaults to returning {@code true}.
      */
-    private BooleanSupplier canHolderFunction = () -> true;
+    private BooleanSupplier canHolderFunction = ConstantPredicates.ALWAYS_TRUE;
     /**
      * Called to set the active state of the holder.
      *

@@ -9,11 +9,9 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -42,7 +40,6 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     public TileEntityLaserAmplifier(BlockPos pos, BlockState state) {
         super(MekanismBlocks.LASER_AMPLIFIER, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
     }
 
     @Override

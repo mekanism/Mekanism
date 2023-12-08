@@ -16,7 +16,6 @@ import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
-import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tile.interfaces.ITileWrapper;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
@@ -30,7 +29,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -81,9 +79,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         Collections.addAll(supportedTransmissionTypes, transmissionTypes);
     }
 
-    protected AbstractAcceptorCache<ACCEPTOR, ?> createAcceptorCache() {
-        return new AcceptorCache<>(this, getTransmitterTile());
-    }
+    protected abstract AbstractAcceptorCache<ACCEPTOR, ?> createAcceptorCache();
 
     public AbstractAcceptorCache<ACCEPTOR, ?> getAcceptorCache() {
         return acceptorCache;
@@ -240,8 +236,8 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return supportsTransmissionType(transmitter.getTransmitter());
     }
 
-    @NotNull
-    public LazyOptional<ACCEPTOR> getAcceptor(Direction side) {
+    @Nullable
+    public ACCEPTOR getAcceptor(Direction side) {
         return acceptorCache.getCachedAcceptor(side);
     }
 
@@ -270,7 +266,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         for (Direction side : EnumUtils.DIRECTIONS) {
             TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), getTilePos().relative(side));
             if (tile != null && isValidTransmitter(tile, side)) {
-                connections |= 1 << side.ordinal();
+                connections |= (byte) (1 << side.ordinal());
             }
         }
         return connections;
@@ -279,7 +275,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     /**
      * @apiNote Only call this from the server side
      */
-    private boolean getPossibleAcceptorConnection(Direction side) {
+    private boolean getPossibleAcceptorConnection(Direction side, boolean markDirty) {
         if (isRedstoneActivated()) {
             return false;
         }
@@ -287,7 +283,11 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (canConnectMutual(side, tile) && isValidAcceptor(tile, side)) {
             return true;
         }
-        acceptorCache.invalidateCachedAcceptor(side);
+        if (markDirty) {
+            //TODO - 1.20.2: Re-evaluate if this is reasonable. Basically marks it as dirty if it isn't a valid acceptor
+            // and if we aren't actively refreshing the acceptors. It seems to work fine as is currently, but it could be we can improve on this some
+            markDirtyAcceptor(side);
+        }
         return false;
     }
 
@@ -310,20 +310,23 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (isRedstoneActivated()) {
             return connections;
         }
+        Level level = getTileWorld();
         for (Direction side : EnumUtils.DIRECTIONS) {
             BlockPos offset = getTilePos().relative(side);
-            BlockEntity tile = WorldUtils.getTileEntity(getTileWorld(), offset);
+            BlockEntity tile = WorldUtils.getTileEntity(level, offset);
             if (canConnectMutual(side, tile)) {
-                if (!isRemote() && !WorldUtils.isBlockLoaded(getTileWorld(), offset)) {
+                if (!isRemote() && !WorldUtils.isBlockLoaded(level, offset)) {
                     getTransmitterTile().setForceUpdate();
                     continue;
                 }
                 if (isValidAcceptor(tile, side)) {
-                    connections |= 1 << side.ordinal();
+                    connections |= (byte) (1 << side.ordinal());
                     continue;
                 }
             }
-            acceptorCache.invalidateCachedAcceptor(side);
+            //TODO - 1.20.2: Re-evaluate if this is reasonable. Basically marks it as dirty if it isn't a valid acceptor
+            // though realistically we may want to mark it as long as it changed? Though it seems to work fine as is
+            markDirtyAcceptor(side);
         }
         return connections;
     }
@@ -348,10 +351,12 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     /**
      * @apiNote Only call this from the server side
      */
-    public boolean isValidAcceptor(BlockEntity tile, Direction side) {
-        //TODO: Rename this method better to make it more apparent that it caches and also listens to the acceptor
-        //If it isn't a transmitter or the transmission type is different than the one the transmitter has
-        return !(tile instanceof TileEntityTransmitter transmitter) || !supportsTransmissionType(transmitter);
+    protected boolean isValidAcceptor(@Nullable BlockEntity tile, Direction side) {
+        //If it isn't a transmitter or the transmission type is different from the one the transmitter has
+        if (!(tile instanceof TileEntityTransmitter transmitter) || !supportsTransmissionType(transmitter)) {
+            return getAcceptorCache().getConnectedAcceptor(side) != null;
+        }
+        return false;
     }
 
     public boolean canConnectMutual(Direction side, @Nullable BlockEntity cachedTile) {
@@ -495,7 +500,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
                     //Now remove all bits that already where enabled, so we only have the
                     // ones that are newly enabled. There is no need to recheck for a
                     // network merge on two transmitters if one is no longer accessible
-                    newlyEnabledTransmitters &= ~currentTransmitterConnections;
+                    newlyEnabledTransmitters &= (byte) ~currentTransmitterConnections;
                 }
             }
 
@@ -511,10 +516,24 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         }
     }
 
+    /**
+     * Used by the network's acceptor cache to refresh and sync acceptor changes before actually querying what the acceptor on a given side is.
+     */
+    public void refreshAcceptorConnections(Direction side) {
+        if (!isRemote()) {
+            //Note: We don't need to mark the acceptor as dirty here as it already is
+            boolean possibleAcceptor = getPossibleAcceptorConnection(side, false);
+            if (possibleAcceptor != connectionMapContainsSide(acceptorCache.currentAcceptorConnections, side)) {
+                acceptorCache.currentAcceptorConnections = setConnectionBit(acceptorCache.currentAcceptorConnections, possibleAcceptor, side);
+                getTransmitterTile().sendUpdatePacket();
+            }
+        }
+    }
+
     public void refreshConnections(Direction side) {
         if (!isRemote()) {
             boolean possibleTransmitter = getPossibleTransmitterConnection(side);
-            boolean possibleAcceptor = getPossibleAcceptorConnection(side);
+            boolean possibleAcceptor = getPossibleAcceptorConnection(side, true);
             boolean transmitterChanged = false;
             boolean sendDesc = false;
             if ((possibleTransmitter || possibleAcceptor) != connectionMapContainsSide(getAllCurrentConnections(), side)) {
@@ -573,17 +592,15 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         getTransmitterTile().setChanged();
     }
 
-    public void onNeighborTileChange(Direction side) {
-        refreshConnections(side);
-    }
-
     public void onNeighborBlockChange(Direction side) {
         if (handlesRedstone() && redstoneReactive) {
             //If our tile can handle redstone, and we are redstone reactive we need to recheck all connections
             // as the power might have changed, and we may have to update our own visuals
             refreshConnections();
         } else {
-            //Otherwise, we can just get away with checking the single side
+            //If we can't handle redstone, just refresh the side the connection changed on so that if a transmitter is removed
+            // or is set to none then we stop trying to be connected to it
+            //TODO - 1.20.2: See if we can come up with a better way to handle this as there are definitely better ways
             refreshConnections(side);
         }
     }
@@ -603,8 +620,6 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     public void remove() {
-        //Clear our cached listeners
-        acceptorCache.clear();
     }
 
     public ConnectionType getConnectionType(Direction side) {
@@ -641,6 +656,8 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     public void notifyTileChange() {
+        //TODO: It is possible some of the places we are calling this method don't actually need to notify the loaded neighbors of changes and the capability invalidation is enough
+        // for now though it doesn't really seem to hurt anything to just keep it though
         WorldUtils.notifyLoadedNeighborsOfTileChange(getTileWorld(), getTilePos());
     }
 

@@ -1,63 +1,52 @@
 package mekanism.common.integration.energy.fluxnetworks;
 
-import java.util.Collection;
-import java.util.Set;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.config.value.CachedValue;
 import mekanism.common.integration.energy.IEnergyCompat;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
-import net.minecraft.core.Direction;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.CapabilityManager;
-import net.neoforged.neoforge.common.capabilities.CapabilityToken;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import sonar.fluxnetworks.api.energy.IFNEnergyStorage;
 
 @NothingNullByDefault
 public class FNEnergyCompat implements IEnergyCompat {
 
-    private static final Capability<IFNEnergyStorage> FN_ENERGY_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
-
     @Override
-    public Capability<?> getCapability() {
-        return FN_ENERGY_CAPABILITY;
-    }
-
-    @Override
-    public boolean isMatchingCapability(Capability<?> capability) {
-        return capability == FN_ENERGY_CAPABILITY;
+    public MultiTypeCapability<IFNEnergyStorage> getCapability() {
+        return FNCapability.ENERGY;
     }
 
     @Override
     public boolean isUsable() {
-        return Mekanism.hooks.FluxNetworksLoaded && EnergyUnit.FORGE_ENERGY.isEnabled() && !MekanismConfig.general.blacklistFluxNetworks.get();
+        return capabilityExists() && isConfigEnabled();
+    }
+
+    private boolean isConfigEnabled() {
+        return EnergyUnit.FORGE_ENERGY.isEnabled() && !MekanismConfig.general.blacklistFluxNetworks.getOrDefault();
     }
 
     @Override
-    public Collection<CachedValue<?>> getBackingConfigs() {
-        if (Mekanism.hooks.FluxNetworksLoaded) {
-            return Set.of(
-                  MekanismConfig.general.blacklistForge,
-                  MekanismConfig.general.blacklistFluxNetworks
-            );
-        }
-        //If flux networks isn't loaded don't include it in which configs need to be tracked
-        return Set.of();
+    public boolean capabilityExists() {
+        return Mekanism.hooks.FluxNetworksLoaded;
     }
 
     @Override
-    public LazyOptional<?> getHandlerAs(IStrictEnergyHandler handler) {
-        return LazyOptional.of(() -> new FNIntegration(handler));
+    public <OBJECT, CONTEXT> ICapabilityProvider<OBJECT, CONTEXT, ?> getProviderAs(ICapabilityProvider<OBJECT, CONTEXT, IStrictEnergyHandler> provider) {
+        return (obj, ctx) -> {
+            IStrictEnergyHandler handler = provider.getCapability(obj, ctx);
+            return handler != null && isConfigEnabled() ? wrapStrictEnergyHandler(handler) : null;
+        };
     }
 
     @Override
-    public LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(ICapabilityProvider provider, @Nullable Direction side) {
-        return CapabilityUtils.getCapability(provider, FN_ENERGY_CAPABILITY, side).lazyMap(FNStrictEnergyHandler::new);
+    public Object wrapStrictEnergyHandler(IStrictEnergyHandler handler) {
+        return new FNIntegration(handler);
+    }
+
+    @Override
+    public IStrictEnergyHandler wrapAsStrictEnergyHandler(Object handler) {
+        return new FNStrictEnergyHandler((IFNEnergyStorage) handler);
     }
 }

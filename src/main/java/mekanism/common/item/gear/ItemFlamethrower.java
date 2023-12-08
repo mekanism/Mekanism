@@ -1,7 +1,6 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
@@ -16,10 +15,9 @@ import mekanism.api.text.ILangEntry;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
+import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.chemical.item.RateLimitGasHandler;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.item.CapabilityItem;
 import mekanism.common.item.interfaces.IGasItem;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
@@ -28,21 +26,22 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemFlamethrower extends CapabilityItem implements IItemHUDProvider, IModeItem, IGasItem, ICustomCreativeTabContents {
+public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeItem, IGasItem, ICustomCreativeTabContents, ICapabilityAware {
 
     public ItemFlamethrower(Properties properties) {
         super(properties.stacksTo(1).rarity(Rarity.RARE).setNoRepair());
@@ -93,30 +92,26 @@ public class ItemFlamethrower extends CapabilityItem implements IItemHUDProvider
     }
 
     @Override
-    protected boolean areCapabilityConfigsLoaded() {
-        return super.areCapabilityConfigsLoaded() && MekanismConfig.gear.isLoaded();
-    }
-
-    @Override
-    protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
-        super.gatherCapabilities(capabilities, stack, nbt);
-        capabilities.add(RateLimitGasHandler.create(MekanismConfig.gear.flamethrowerFillRate, MekanismConfig.gear.flamethrowerMaxGas,
-              ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi, gas -> gas == MekanismGases.HYDROGEN.getChemical()));
+    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerItem(Capabilities.GAS.item(), (stack, ctx) -> {
+            if (!MekanismConfig.gear.isLoaded()) {//Only expose the capabilities if the required configs are loaded
+                return null;
+            }
+            return RateLimitGasHandler.create(stack, MekanismConfig.gear.flamethrowerFillRate, MekanismConfig.gear.flamethrowerMaxGas,
+                  ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi, gas -> gas == MekanismGases.HYDROGEN.getChemical());
+        }, this);
     }
 
     @Override
     public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
         boolean hasGas = false;
-        Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER).resolve();
-        if (capability.isPresent()) {
-            IGasHandler gasHandlerItem = capability.get();
-            if (gasHandlerItem.getTanks() > 0) {
-                //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
-                GasStack storedGas = gasHandlerItem.getChemicalInTank(0);
-                if (!storedGas.isEmpty()) {
-                    list.add(MekanismLang.FLAMETHROWER_STORED.translateColored(EnumColor.GRAY, EnumColor.ORANGE, storedGas.getAmount()));
-                    hasGas = true;
-                }
+        IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
+        if (gasHandlerItem != null && gasHandlerItem.getTanks() > 0) {
+            //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
+            GasStack storedGas = gasHandlerItem.getChemicalInTank(0);
+            if (!storedGas.isEmpty()) {
+                list.add(MekanismLang.FLAMETHROWER_STORED.translateColored(EnumColor.GRAY, EnumColor.ORANGE, storedGas.getAmount()));
+                hasGas = true;
             }
         }
         if (!hasGas) {

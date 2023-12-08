@@ -8,26 +8,21 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import mekanism.common.Mekanism;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.RegistryUtils;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.IItemHandler;
 
-public class TileTransitRequest extends TransitRequest {
+public class HandlerTransitRequest extends TransitRequest {
 
-    private final BlockEntity tile;
-    private final Direction side;
-    private final Map<HashedItem, TileItemData> itemMap = new LinkedHashMap<>();
+    private final IItemHandler handler;
+    private final Map<HashedItem, HandlerItemData> itemMap = new LinkedHashMap<>();
 
-    public TileTransitRequest(BlockEntity tile, Direction side) {
-        this.tile = tile;
-        this.side = side;
+    public HandlerTransitRequest(IItemHandler handler) {
+        this.handler = handler;
     }
 
     public void addItem(ItemStack stack, int slot) {
         HashedItem hashed = HashedItem.create(stack);
-        itemMap.computeIfAbsent(hashed, TileItemData::new).addSlot(slot, stack);
+        itemMap.computeIfAbsent(hashed, HandlerItemData::new).addSlot(slot, stack);
     }
 
     public int getCount(HashedItem itemType) {
@@ -35,24 +30,24 @@ public class TileTransitRequest extends TransitRequest {
         return data == null ? 0 : data.getTotalCount();
     }
 
-    protected Direction getSide() {
-        return side;
+    protected IItemHandler getHandler() {
+        return handler;
     }
 
-    public Map<HashedItem, TileItemData> getItemMap() {
+    public Map<HashedItem, HandlerItemData> getItemMap() {
         return itemMap;
     }
 
     @Override
-    public Collection<TileItemData> getItemData() {
+    public Collection<HandlerItemData> getItemData() {
         return itemMap.values();
     }
 
-    public class TileItemData extends ItemData {
+    public class HandlerItemData extends ItemData {
 
         private final Int2IntMap slotMap = new Int2IntOpenHashMap();
 
-        public TileItemData(HashedItem itemType) {
+        public HandlerItemData(HashedItem itemType) {
             super(itemType);
         }
 
@@ -63,8 +58,7 @@ public class TileTransitRequest extends TransitRequest {
 
         @Override
         public ItemStack use(int amount) {
-            Direction side = getSide();
-            IItemHandler handler = InventoryUtils.assertItemHandler("TileTransitRequest", tile, side);
+            IItemHandler handler = getHandler();
             if (handler != null && !slotMap.isEmpty()) {
                 HashedItem itemType = getItemType();
                 ItemStack itemStack = itemType.getInternalStack();
@@ -77,9 +71,9 @@ public class TileTransitRequest extends TransitRequest {
                     ItemStack ret = handler.extractItem(slot, toUse, false);
                     boolean stackable = InventoryUtils.areItemsStackable(itemStack, ret);
                     if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
-                        Mekanism.logger.warn("An inventory's returned content {} does not line up with TileTransitRequest's prediction.", stackable ? "count" : "type");
-                        Mekanism.logger.warn("TileTransitRequest item: {}, toUse: {}, ret: {}, slot: {}", itemStack, toUse, ret, slot);
-                        Mekanism.logger.warn("Tile: {} {} {}", RegistryUtils.getName(tile.getType()), tile.getBlockPos(), side);
+                        Mekanism.logger.warn("An inventory's returned content {} does not line up with HandlerTransitRequest's prediction.", stackable ? "count" : "type");
+                        Mekanism.logger.warn("HandlerTransitRequest item: {}, toUse: {}, ret: {}, slot: {}", itemStack, toUse, ret, slot);
+                        Mekanism.logger.warn("ItemHandler: {}", handler.getClass().getName());
                     }
                     amount -= toUse;
                     totalCount -= toUse;

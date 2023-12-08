@@ -1,16 +1,11 @@
 package mekanism.common.util;
 
-import java.util.function.BiConsumer;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.lib.distribution.FloatingLongSplitInfo;
 import mekanism.common.lib.distribution.IntegerSplitInfo;
 import mekanism.common.lib.distribution.LongSplitInfo;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class EmitUtils {
 
@@ -88,26 +83,5 @@ public class EmitUtils {
      */
     public static <HANDLER, TARGET extends Target<HANDLER, FloatingLong, FloatingLong>> FloatingLong sendToAcceptors(TARGET availableTargets, FloatingLong amountToSplit) {
         return sendToAcceptors(availableTargets, new FloatingLongSplitInfo(amountToSplit, availableTargets.getHandlerCount()), amountToSplit);
-    }
-
-    /**
-     * Simple helper to loop over each side of the block and complete an action for each tile found
-     *
-     * @param world  - world to access
-     * @param center - location to center search on
-     * @param sides  - sides to search
-     * @param action - action to complete
-     */
-    public static void forEachSide(Level world, BlockPos center, Iterable<Direction> sides, BiConsumer<BlockEntity, Direction> action) {
-        if (sides != null) {
-            //Loop provided sides
-            for (Direction side : sides) {
-                //Get tile and provide if not null and the block is loaded, prevents ghost chunk loading
-                BlockEntity tile = WorldUtils.getTileEntity(world, center.relative(side));
-                if (tile != null) {
-                    action.accept(tile, side);
-                }
-            }
-        }
     }
 }

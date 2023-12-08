@@ -1,10 +1,11 @@
 package mekanism.common.item;
 
 import java.util.function.Supplier;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -18,13 +19,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public class ItemNutritionalPasteBucket extends BucketItem {
+public class ItemNutritionalPasteBucket extends BucketItem implements ICapabilityAware {
 
     public ItemNutritionalPasteBucket(Supplier<? extends Fluid> supplier, Properties builder) {
         super(supplier, builder);
@@ -74,7 +74,7 @@ public class ItemNutritionalPasteBucket extends BucketItem {
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(@NotNull ItemStack stack, @Nullable CompoundTag nbt) {
-        return new FluidBucketWrapper(stack);
+    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerItem(Capabilities.FLUID.item(), (stack, ctx) -> new FluidBucketWrapper(stack), this);
     }
 }

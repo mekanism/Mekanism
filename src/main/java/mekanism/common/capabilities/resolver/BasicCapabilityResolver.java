@@ -2,76 +2,61 @@ package mekanism.common.capabilities.resolver;
 
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.security.ISecurityObject;
-import mekanism.common.capabilities.Capabilities;
-import net.minecraft.core.Direction;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.common.util.NonNullLazy;
 import net.neoforged.neoforge.common.util.NonNullSupplier;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 @NothingNullByDefault
-public class BasicCapabilityResolver implements ICapabilityResolver {
+public class BasicCapabilityResolver<CAPABILITY, CONTEXT> implements ICapabilityResolver<CONTEXT> {
 
-    public static <T> BasicCapabilityResolver create(Capability<T> supportedCapability, NonNullSupplier<T> supplier) {
-        return new BasicCapabilityResolver(supplier, supportedCapability);
+    public static <CAPABILITY, CONTEXT> BasicCapabilityResolver<CAPABILITY, CONTEXT> create(BlockCapability<CAPABILITY, CONTEXT> supportedCapability,
+          NonNullSupplier<CAPABILITY> supplier) {
+        return new BasicCapabilityResolver<>(supportedCapability, supplier);
     }
 
     /**
      * Creates a capability resolver that strongly caches the result of the supplier. Persisting the calculated value through capability invalidation.
      */
-    public static <T> BasicCapabilityResolver persistent(Capability<T> supportedCapability, NonNullSupplier<T> supplier) {
+    public static <CAPABILITY, CONTEXT> BasicCapabilityResolver<CAPABILITY, CONTEXT> persistent(BlockCapability<CAPABILITY, CONTEXT> supportedCapability,
+          NonNullSupplier<CAPABILITY> supplier) {
         return create(supportedCapability, supplier instanceof NonNullLazy ? supplier : NonNullLazy.of(supplier));
     }
 
-    /**
-     * Creates a capability resolver of a constant value. Usually {@code this} for tiles.
-     */
-    public static <T> BasicCapabilityResolver constant(Capability<T> supportedCapability, T value) {
-        return create(supportedCapability, () -> value);
-    }
-
-    public static BasicCapabilityResolver security(ISecurityObject value) {
-        return new BasicCapabilityResolver(() -> value, Capabilities.OWNER_OBJECT, Capabilities.SECURITY_OBJECT);
-    }
-
-    private final List<Capability<?>> supportedCapability;
-    private final NonNullSupplier<?> supplier;
+    private final List<BlockCapability<?, CONTEXT>> supportedCapabilities;
+    private final NonNullSupplier<CAPABILITY> supplier;
     @Nullable
-    private LazyOptional<?> cachedCapability;
+    private CAPABILITY cachedCapability;
 
-    @SafeVarargs
-    protected <T> BasicCapabilityResolver(NonNullSupplier<T> supplier, Capability<? super T>... supportedCapabilities) {
-        this.supportedCapability = List.of(supportedCapabilities);
+    protected BasicCapabilityResolver(BlockCapability<CAPABILITY, CONTEXT> capabilityType, NonNullSupplier<CAPABILITY> supplier) {
+        this.supportedCapabilities = List.of(capabilityType);
         this.supplier = supplier;
     }
 
     @Override
-    public List<Capability<?>> getSupportedCapabilities() {
-        return supportedCapability;
+    public List<BlockCapability<?, CONTEXT>> getSupportedCapabilities() {
+        return supportedCapabilities;
     }
 
+    @Nullable
     @Override
-    public <T> LazyOptional<T> resolve(Capability<T> capability, @Nullable Direction side) {
-        if (cachedCapability == null || !cachedCapability.isPresent()) {
+    public <T> T resolve(BlockCapability<T, CONTEXT> capability, @UnknownNullability CONTEXT context) {
+        if (cachedCapability == null) {
             //If the capability has not been retrieved yet, or it is not valid then recreate it
-            cachedCapability = LazyOptional.of(supplier);
+            cachedCapability = supplier.get();
         }
-        return cachedCapability.cast();
+        return (T) cachedCapability;
     }
 
     @Override
-    public void invalidate(Capability<?> capability, @Nullable Direction side) {
+    public void invalidate(BlockCapability<?, CONTEXT> capability, @UnknownNullability CONTEXT side) {
         //We only have one capability so just invalidate everything
         invalidateAll();
     }
 
     @Override
     public void invalidateAll() {
-        if (cachedCapability != null && cachedCapability.isPresent()) {
-            cachedCapability.invalidate();
-            cachedCapability = null;
-        }
+        cachedCapability = null;
     }
 }

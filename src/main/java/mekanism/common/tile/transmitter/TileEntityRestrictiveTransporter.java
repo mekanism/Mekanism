@@ -9,8 +9,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityRestrictiveTransporter extends TileEntityLogisticalTransporterBase {
 
-    public TileEntityRestrictiveTransporter(BlockPos pos, BlockState state) {
-        super(MekanismBlocks.RESTRICTIVE_TRANSPORTER, pos, state);
+    public TileEntityRestrictiveTransporter(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
     }
 
     @Override

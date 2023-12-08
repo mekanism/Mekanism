@@ -79,6 +79,14 @@ public final class MekanismHooks {
         }
     }
 
+    public void hookCapabilityRegistration() {
+        //Note: Caps get registered before common setup, so we need to make sure these values have been set
+        ModList modList = ModList.get();
+        FluxNetworksLoaded = modList.isLoaded(FLUX_NETWORKS_MOD_ID);
+        WildfireGenderModLoaded = modList.isLoaded(WILDFIRE_GENDER_MOD_ID);
+        EnergyCompatUtils.initLoadedCache();
+    }
+
     public void hookCommonSetup() {
         ModList modList = ModList.get();
         CCLoaded = modList.isLoaded(CC_MOD_ID);
@@ -89,15 +97,12 @@ public final class MekanismHooks {
         ProjectELoaded = modList.isLoaded(PROJECTE_MOD_ID);
         RecipeStagesLoaded = modList.isLoaded(RECIPE_STAGES_MOD_ID);
         TOPLoaded = modList.isLoaded(TOP_MOD_ID);
-        FluxNetworksLoaded = modList.isLoaded(FLUX_NETWORKS_MOD_ID);
-        WildfireGenderModLoaded = modList.isLoaded(WILDFIRE_GENDER_MOD_ID);
         if (computerCompatEnabled()) {
             FactoryRegistry.load();
             if (CCLoaded) {
                 CCCapabilityHelper.registerApis();
             }
         }
-        EnergyCompatUtils.initLoadedCache();
 
         //TODO - 1.20: Move this out of here and back to always being registered whenever it gets fixed in Neo.
         // Modifying the result doesn't apply properly when "quick crafting"

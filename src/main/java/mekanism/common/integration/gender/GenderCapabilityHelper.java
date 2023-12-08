@@ -1,26 +1,21 @@
 package mekanism.common.integration.gender;
 
-import java.util.function.Consumer;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.world.item.ArmorItem;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 public class GenderCapabilityHelper {
 
-    public static void addGenderCapability(ArmorItem item, Consumer<ItemCapability> addCapability) {
+    public static void addGenderCapability(RegisterCapabilitiesEvent event, ArmorItem item) {
         //Validate the mod is loaded and that this is for the correct slot
         if (Mekanism.hooks.WildfireGenderModLoaded && item.getType() == ArmorItem.Type.CHESTPLATE) {
-            MekanismGenderArmor genderArmor = null;
             if (item == MekanismItems.HAZMAT_GOWN.asItem()) {
-                genderArmor = MekanismGenderArmor.HAZMAT;
+                MekanismGenderArmor.HAZMAT.register(event, item);
             } else if (item == MekanismItems.JETPACK.asItem() || item == MekanismItems.SCUBA_TANK.asItem()) {
-                genderArmor = MekanismGenderArmor.OPEN_FRONT;
+                MekanismGenderArmor.OPEN_FRONT.register(event, item);
             } else if (item == MekanismItems.ARMORED_JETPACK.asItem() || item == MekanismItems.MEKASUIT_BODYARMOR.asItem()) {
-                genderArmor = MekanismGenderArmor.HIDES_BREASTS;
-            }
-            if (genderArmor != null) {
-                addCapability.accept(genderArmor);
+                MekanismGenderArmor.HIDES_BREASTS.register(event, item);
             }
         }
     }

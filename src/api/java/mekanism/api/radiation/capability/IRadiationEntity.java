@@ -1,16 +1,12 @@
 package mekanism.api.radiation.capability;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.common.capabilities.AutoRegisterCapability;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Base capability definition for handling radiation for entities.
+ *
+ * @implNote Builtin Mekanism implementations of this are backed by an {@link net.neoforged.neoforge.attachment.AttachmentType AttachmentType< Double >} with the
+ * registry name {@code mekanism:radiation}, though it is recommended to interact with this via capabilities.
  */
-@AutoRegisterCapability
-public interface IRadiationEntity extends INBTSerializable<CompoundTag> {
+public interface IRadiationEntity {
 
     /**
      * Gets the radiation dosage (Sv) of the entity.
@@ -34,7 +30,7 @@ public interface IRadiationEntity extends INBTSerializable<CompoundTag> {
     /**
      * Applies radiation effects to the entity, and syncs the capability if needed.
      */
-    void update(@NotNull LivingEntity entity);
+    void update();
 
     /**
      * Sets the radiation level of the entity to a new value.

@@ -3,6 +3,7 @@ package mekanism.common.tile.transmitter;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.IAlloyInteraction;
+import mekanism.api.IConfigurable;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.AlloyTier;
@@ -20,7 +21,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.DynamicHandler.InteractPredicate;
 import mekanism.common.capabilities.proxy.ProxyConfigurable;
 import mekanism.common.capabilities.proxy.ProxyConfigurable.ISidedConfigurable;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.capabilities.resolver.BasicSidedCapabilityResolver;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import mekanism.common.content.network.transmitter.IUpgradeableTransmitter;
@@ -38,6 +38,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -45,12 +46,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class TileEntityTransmitter extends CapabilityTileEntity implements ISidedConfigurable, IAlloyInteraction {
+
+    public static final ICapabilityProvider<TileEntityTransmitter, @Nullable Direction, IConfigurable> CONFIGURABLE_PROVIDER =
+          capabilityProvider(Capabilities.CONFIGURABLE, (tile, cap) -> new BasicSidedCapabilityResolver<>(tile, cap, ProxyConfigurable::new));
 
     public static final ModelProperty<TransmitterModelData> TRANSMITTER_PROPERTY = new ModelProperty<>();
 
@@ -62,14 +67,20 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         super(((IHasTileEntity<? extends TileEntityTransmitter>) blockProvider.getBlock()).getTileType(), pos, state);
         this.transmitter = createTransmitter(blockProvider);
         cacheCoord();
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.ALLOY_INTERACTION, this));
-        addCapabilityResolver(new BasicSidedCapabilityResolver<>(this, Capabilities.CONFIGURABLE, ProxyConfigurable::new));
     }
 
     protected abstract Transmitter<?, ?, ?> createTransmitter(IBlockProvider blockProvider);
 
     public Transmitter<?, ?, ?> getTransmitter() {
         return transmitter;
+    }
+
+    @Override
+    public void setLevel(@NotNull Level level) {
+        super.setLevel(level);
+        if (level instanceof ServerLevel serverLevel) {
+            getTransmitter().getAcceptorCache().initializeCache(serverLevel);
+        }
     }
 
     public void setForceUpdate() {
@@ -118,10 +129,6 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     public void saveAdditional(@NotNull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
         getTransmitter().write(nbtTags);
-    }
-
-    public void onNeighborTileChange(Direction side) {
-        getTransmitter().onNeighborTileChange(side);
     }
 
     public void onNeighborBlockChange(Direction side) {

@@ -399,6 +399,7 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://modmaven.dev/', 'appeng', 'mcjty.theoneprobe')
     exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil')
     exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
+    mavenLocal()
 }
 
 test {
@@ -432,7 +433,8 @@ dependencies {
     //    transitive = false
     //}
     compileOnly("curse.maven:jade-api-324717:${jade_api_id}")
-    runtimeOnly ("curse.maven:jade-324717:${jade_id}")
+    //TODO - 1.20.3: Reinstate
+    //runtimeOnly ("curse.maven:jade-324717:${jade_id}")
     compileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
 
     //TODO - 1.20.2: move back to implementation

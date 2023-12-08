@@ -8,31 +8,30 @@ import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockFluidTank;
-import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.item.RateLimitFluidHandler;
 import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
-import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -59,11 +58,11 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.IFluidBlock;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -122,9 +121,9 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
     public InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (getBucketMode(stack)) {
-            if (SecurityUtils.get().tryClaimItem(world, player, stack)) {
+            if (ItemSecurityUtils.get().tryClaimItem(world, player, stack)) {
                 return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
-            } else if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, stack)) {
+            } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, stack)) {
                 return InteractionResultHolder.fail(stack);
             }
             //TODO: At some point maybe try to reduce the duplicate code between this and the dispense behavior
@@ -230,12 +229,9 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
     }
 
     private static IExtendedFluidTank getExtendedFluidTank(@NotNull ItemStack stack) {
-        Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack).resolve();
-        if (capability.isPresent()) {
-            IFluidHandlerItem fluidHandlerItem = capability.get();
-            if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
-                return fluidHandler.getFluidTank(0, null);
-            }
+        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stack);
+        if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
+            return fluidHandler.getFluidTank(0, null);
         }
         return null;
     }
@@ -249,9 +245,9 @@ public class ItemBlockFluidTank extends ItemBlockMachine implements IModeItem {
     }
 
     @Override
-    protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
-        super.gatherCapabilities(capabilities, stack, nbt);
-        capabilities.add(RateLimitFluidHandler.create(getTier()));
+    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+        super.attachCapabilities(event);
+        event.registerItem(Capabilities.FLUID.item(), (stack, ctx) -> RateLimitFluidHandler.create(stack, getTier()), this);
     }
 
     @Override

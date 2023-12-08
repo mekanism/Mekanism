@@ -4,12 +4,10 @@ import mekanism.api.Action;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongTransferUtils;
-import net.neoforged.neoforge.common.capabilities.AutoRegisterCapability;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 @NothingNullByDefault
-@AutoRegisterCapability
 public interface IStrictEnergyHandler {
 
     /**

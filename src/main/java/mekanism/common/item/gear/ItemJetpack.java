@@ -1,7 +1,6 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.LongSupplier;
 import mekanism.api.NBTConstants;
@@ -97,12 +96,9 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
             ItemJetpack jetpack = (ItemJetpack) stack.getItem();
             list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getJetpackMode(stack)));
             GasStack stored = GasStack.EMPTY;
-            Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER).resolve();
-            if (capability.isPresent()) {
-                IGasHandler gasHandlerItem = capability.get();
-                if (gasHandlerItem.getTanks() > 0) {
-                    stored = gasHandlerItem.getChemicalInTank(0);
-                }
+            IGasHandler gasHandlerItem = Capabilities.GAS.getCapability(stack);
+            if (gasHandlerItem != null && gasHandlerItem.getTanks() > 0) {
+                stored = gasHandlerItem.getChemicalInTank(0);
             }
             list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored.getAmount()));
         }

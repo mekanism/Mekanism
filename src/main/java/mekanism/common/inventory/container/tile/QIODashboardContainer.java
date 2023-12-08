@@ -1,14 +1,14 @@
 package mekanism.common.inventory.container.tile;
 
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.qio.TileEntityQIODashboard;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class QIODashboardContainer extends QIOItemViewerContainer {
 
@@ -50,9 +50,12 @@ public class QIODashboardContainer extends QIOItemViewerContainer {
         return tile;
     }
 
-    @Nullable
     @Override
-    public ICapabilityProvider getSecurityObject() {
-        return tile;
+    public boolean canPlayerAccess(@NotNull Player player) {
+        Level level = tile.getLevel();
+        if (level == null) {
+            return false;
+        }
+        return IBlockSecurityUtils.INSTANCE.canAccess(player, level, tile.getBlockPos(), tile);
     }
 }

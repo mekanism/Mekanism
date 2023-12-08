@@ -17,16 +17,14 @@ import mekanism.common.inventory.slot.chemical.PigmentInventorySlot;
 import mekanism.common.inventory.slot.chemical.SlurryInventorySlot;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class HybridInventorySlot extends MergedChemicalInventorySlot<MergedTank> implements IFluidHandlerSlot {
 
     private static boolean hasCapability(@NotNull ItemStack stack) {
-        return FluidUtil.getFluidHandler(stack).isPresent() || stack.getCapability(Capabilities.GAS_HANDLER).isPresent() ||
-               stack.getCapability(Capabilities.INFUSION_HANDLER).isPresent() || stack.getCapability(Capabilities.PIGMENT_HANDLER).isPresent() ||
-               stack.getCapability(Capabilities.SLURRY_HANDLER).isPresent();
+        return Capabilities.FLUID.hasCapability(stack) || Capabilities.GAS.hasCapability(stack) || Capabilities.INFUSION.hasCapability(stack) ||
+               Capabilities.PIGMENT.hasCapability(stack) || Capabilities.SLURRY.hasCapability(stack);
     }
 
     public static HybridInventorySlot inputOrDrain(MergedTank mergedTank, @Nullable IContentsListener listener, int x, int y) {
@@ -86,7 +84,7 @@ public class HybridInventorySlot extends MergedChemicalInventorySlot<MergedTank>
             case SLURRY -> slurryInsertPredicate.test(stack);
             case EMPTY -> {
                 //Tank is empty, if the item is a fluid handler, and it is an internal check allow it
-                if (automationType == AutomationType.INTERNAL && FluidUtil.getFluidHandler(stack).isPresent()) {
+                if (automationType == AutomationType.INTERNAL && Capabilities.FLUID.hasCapability(stack)) {
                     yield true;
                 }
                 //otherwise, only allow it if one of the chemical insert predicates matches

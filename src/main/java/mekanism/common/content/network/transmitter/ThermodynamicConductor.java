@@ -17,6 +17,7 @@ import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.content.network.HeatNetwork;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -48,8 +49,13 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     }
 
     @Override
+    protected AbstractAcceptorCache<IHeatHandler, ?> createAcceptorCache() {
+        return new AcceptorCache<>(getTransmitterTile(), Capabilities.HEAT);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
     public AcceptorCache<IHeatHandler> getAcceptorCache() {
-        //Cast it here to make things a bit easier, as we know createAcceptorCache by default returns an object of type AcceptorCache
         return (AcceptorCache<IHeatHandler>) super.getAcceptorCache();
     }
 
@@ -73,8 +79,9 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     }
 
     @Override
-    public boolean isValidAcceptor(BlockEntity tile, Direction side) {
-        return getAcceptorCache().isAcceptorAndListen(tile, side, Capabilities.HEAT_HANDLER);
+    protected boolean isValidAcceptor(@Nullable BlockEntity tile, Direction side) {
+        //Note: We intentionally do not call super here as other elements in the network are intentionally acceptors
+        return getAcceptorCache().getConnectedAcceptor(side) != null;
     }
 
     @Nullable
@@ -157,18 +164,18 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     public IHeatHandler getAdjacent(@NotNull Direction side) {
         if (connectionMapContainsSide(getAllCurrentConnections(), side)) {
             //Note: We use the acceptor cache as the heat network is different and the transmitters count the other transmitters in the
-            // network as valid acceptors
-            return getAcceptorCache().getConnectedAcceptor(side).resolve().orElse(null);
+            // network as valid acceptors, which means we don't have to differentiate between acceptors and other transmitters here
+            return getAcceptorCache().getConnectedAcceptor(side);
         }
         return null;
     }
 
     @Override
     public double incrementAdjacentTransfer(double currentAdjacentTransfer, double tempToTransfer, @NotNull Direction side) {
-        if (tempToTransfer > 0) {
-            //Look up the adjacent tile from the acceptor cache and then do the type checking
-            BlockEntity sink = getAcceptorCache().getConnectedAcceptorTile(side);
-            if (sink instanceof TileEntityTransmitter transmitter && TransmissionType.HEAT.checkTransmissionType(transmitter)) {
+        if (tempToTransfer > 0 && hasTransmitterNetwork()) {
+            HeatNetwork transmitterNetwork = getTransmitterNetwork();
+            ThermodynamicConductor adjacent = transmitterNetwork.getTransmitter(getTilePos().relative(side));
+            if (adjacent != null) {
                 //Heat transmitter to heat transmitter, don't count as "adjacent transfer"
                 return currentAdjacentTransfer;
             }

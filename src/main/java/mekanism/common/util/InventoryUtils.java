@@ -3,28 +3,26 @@ package mekanism.common.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.security.ISecurityUtils;
-import mekanism.common.Mekanism;
+import mekanism.api.security.IItemSecurityUtils;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.item.interfaces.IDroppableContents;
-import mekanism.common.lib.inventory.TileTransitRequest;
+import mekanism.common.lib.inventory.HandlerTransitRequest;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public final class InventoryUtils {
 
@@ -40,10 +38,10 @@ public final class InventoryUtils {
             boolean shouldDrop;
             if (source.getEntity() instanceof Player player) {
                 //If the destroyer is a player use security utils to properly check for access
-                shouldDrop = ISecurityUtils.INSTANCE.canAccess(player, stack);
+                shouldDrop = IItemSecurityUtils.INSTANCE.canAccess(player, stack);
             } else {
                 // otherwise, just check against there being no known player
-                shouldDrop = ISecurityUtils.INSTANCE.canAccess(null, stack, false);
+                shouldDrop = IItemSecurityUtils.INSTANCE.canAccess(null, stack, false);
             }
             if (shouldDrop) {
                 for (IInventorySlot slot : inventory.getDroppedSlots(stack)) {
@@ -98,31 +96,16 @@ public final class InventoryUtils {
         return ItemHandlerHelper.canItemStacksStack(inSlot, toInsert);
     }
 
-    @Nullable
-    public static IItemHandler assertItemHandler(String desc, BlockEntity tile, Direction side) {
-        Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, Capabilities.ITEM_HANDLER, side).resolve();
-        if (capability.isPresent()) {
-            return capability.get();
-        }
-        Mekanism.logger.warn("'{}' was wrapped around a non-IItemHandler inventory. This should not happen!", desc, new Exception());
-        if (tile == null) {
-            Mekanism.logger.warn(" - null tile");
-        } else {
-            Mekanism.logger.warn(" - details: {} {}", tile, tile.getBlockPos());
-        }
-        return null;
+    public static boolean isItemHandler(Level level, BlockPos pos, Direction side) {
+        return Capabilities.ITEM.getCapabilityIfLoaded(level, pos, side) != null;
     }
 
-    public static boolean isItemHandler(BlockEntity tile, Direction side) {
-        return CapabilityUtils.getCapability(tile, Capabilities.ITEM_HANDLER, side).isPresent();
-    }
-
-    public static TileTransitRequest getEjectItemMap(BlockEntity tile, Direction side, List<IInventorySlot> slots) {
-        return getEjectItemMap(new TileTransitRequest(tile, side), slots);
+    public static HandlerTransitRequest getEjectItemMap(IItemHandler handler, List<IInventorySlot> slots) {
+        return getEjectItemMap(new HandlerTransitRequest(handler), slots);
     }
 
     @Contract("_, _ -> param1")
-    public static <REQUEST extends TileTransitRequest> REQUEST getEjectItemMap(REQUEST request, List<IInventorySlot> slots) {
+    public static <REQUEST extends HandlerTransitRequest> REQUEST getEjectItemMap(REQUEST request, List<IInventorySlot> slots) {
         // shuffle the order we look at our slots to avoid ejection patterns
         List<IInventorySlot> shuffled = new ArrayList<>(slots);
         Collections.shuffle(shuffled);

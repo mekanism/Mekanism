@@ -11,13 +11,11 @@ import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.FixedUsageEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -62,7 +60,6 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     public TileEntityDimensionalStabilizer(BlockPos pos, BlockState state) {
         super(MekanismBlocks.DIMENSIONAL_STABILIZER, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD, this));
 
         chunkLoaderComponent = new ChunkLoader(this);
         loadingChunks = new boolean[MAX_LOAD_DIAMETER][MAX_LOAD_DIAMETER];

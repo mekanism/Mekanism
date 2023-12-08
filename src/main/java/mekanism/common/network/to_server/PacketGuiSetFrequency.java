@@ -1,6 +1,7 @@
 package mekanism.common.network.to_server;
 
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IBlockSecurityUtils;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyManager;
@@ -49,7 +50,7 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> implements IMekanismP
         }
         if (updateType.isTile()) {
             BlockEntity tile = WorldUtils.getTileEntity(player.level(), tilePosition);
-            if (tile instanceof IFrequencyHandler frequencyHandler && ISecurityUtils.INSTANCE.canAccess(player, tile)) {
+            if (tile instanceof IFrequencyHandler frequencyHandler && IBlockSecurityUtils.INSTANCE.canAccess(player, player.level(), tilePosition, tile)) {
                 if (updateType == FrequencyUpdate.SET_TILE) {
                     frequencyHandler.setFrequency(type, data, player.getUUID());
                 } else if (updateType == FrequencyUpdate.REMOVE_TILE) {
@@ -58,7 +59,7 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> implements IMekanismP
             }
         } else {
             ItemStack stack = player.getItemInHand(currentHand);
-            if (ISecurityUtils.INSTANCE.canAccess(player, stack) && stack.getItem() instanceof IFrequencyItem item) {
+            if (IItemSecurityUtils.INSTANCE.canAccess(player, stack) && stack.getItem() instanceof IFrequencyItem item) {
                 FrequencyManager<FREQ> manager = type.getManager(data, player.getUUID());
                 if (updateType == FrequencyUpdate.SET_ITEM) {
                     //Note: We don't bother validating if the frequency is public or not here, as if it isn't then

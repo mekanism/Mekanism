@@ -3,7 +3,6 @@ package mekanism.common.recipe.upgrade;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import mekanism.api.DataHandlerUtils;
@@ -12,6 +11,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.item.ItemRobit;
@@ -26,7 +26,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
@@ -67,9 +66,8 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             return applyToStack(slots, stackSlots, (ListTag toWrite) -> PersonalStorageManager.createInventoryFor(stack, stackSlots));
         }
         boolean isBin = item instanceof ItemBlockBin;
-        Optional<IItemHandler> capability = stack.getCapability(Capabilities.ITEM_HANDLER).resolve();
-        if (capability.isPresent()) {
-            IItemHandler itemHandler = capability.get();
+        IItemHandler itemHandler = Capabilities.ITEM.getCapability(stack);
+        if (itemHandler != null) {
             for (int i = 0, slots = itemHandler.getSlots(); i < slots; i++) {
                 int slot = i;
                 stackSlots.add(new DummyInventorySlot(itemHandler.getSlotLimit(slot), itemStack -> itemHandler.isItemValid(slot, itemStack), isBin));

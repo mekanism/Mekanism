@@ -4,8 +4,6 @@ import mekanism.api.IAlloyInteraction;
 import mekanism.api.tier.AlloyTier;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
@@ -13,8 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemAlloy extends Item {
@@ -33,11 +29,10 @@ public class ItemAlloy extends Item {
         if (player != null && MekanismConfig.general.transmitterAlloyUpgrade.get()) {
             Level world = context.getLevel();
             BlockPos pos = context.getClickedPos();
-            BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-            LazyOptional<IAlloyInteraction> capability = CapabilityUtils.getCapability(tile, Capabilities.ALLOY_INTERACTION, context.getClickedFace());
-            if (capability.isPresent()) {
+            IAlloyInteraction alloyInteraction = WorldUtils.getCapability(world, Capabilities.ALLOY_INTERACTION, pos, context.getClickedFace());
+            if (alloyInteraction != null) {
                 if (!world.isClientSide) {
-                    capability.orElseThrow(MekanismUtils.MISSING_CAP_ERROR).onAlloyInteraction(player, context.getItemInHand(), tier);
+                    alloyInteraction.onAlloyInteraction(player, context.getItemInHand(), tier);
                 }
                 return InteractionResult.sidedSuccess(world.isClientSide);
             }

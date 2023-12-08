@@ -7,8 +7,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.capabilities.holder.IHolder;
 import mekanism.common.capabilities.resolver.BasicSidedCapabilityResolver;
 import net.minecraft.core.Direction;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -20,7 +19,7 @@ public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER
     @Nullable
     protected final HOLDER holder;
 
-    protected CapabilityHandlerManager(@Nullable HOLDER holder, SIDED_HANDLER baseHandler, Capability<HANDLER> supportedCapability,
+    protected CapabilityHandlerManager(@Nullable HOLDER holder, SIDED_HANDLER baseHandler, BlockCapability<HANDLER, @Nullable Direction> supportedCapability,
           ProxyCreator<HANDLER, SIDED_HANDLER> proxyCreator, BiFunction<HOLDER, Direction, List<CONTAINER>> containerGetter) {
         super(baseHandler, supportedCapability, proxyCreator, holder != null);
         this.holder = holder;
@@ -49,12 +48,12 @@ public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER
      *
      * @apiNote Assumes that {@link #canHandle} has been called before this and that it was {@code true}.
      */
+    @Nullable
     @Override
-    public <T> LazyOptional<T> resolve(Capability<T> capability, @Nullable Direction side) {
+    public <T> T resolve(BlockCapability<T, @Nullable Direction> capability, @Nullable Direction side) {
         if (getContainers(side).isEmpty()) {
             //If we don't have any containers accessible from that side, don't return a handler
-            //TODO: Evaluate moving this somehow into being done via the is disabled check
-            return LazyOptional.empty();
+            return null;
         }
         return super.resolve(capability, side);
     }

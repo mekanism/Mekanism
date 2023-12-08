@@ -23,7 +23,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
@@ -143,22 +142,20 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
         super.updateSaveShares(triggerTransmitter);
         if (!isEmpty()) {
             FluidStack fluidType = fluidTank.getFluid();
-            FluidTransmitterSaveTarget saveTarget = new FluidTransmitterSaveTarget(fluidType, transmitters);
+            FluidTransmitterSaveTarget saveTarget = new FluidTransmitterSaveTarget(fluidType, getTransmitters());
             EmitUtils.sendToAcceptors(saveTarget, fluidType.getAmount(), fluidType);
             saveTarget.saveShare();
         }
     }
 
     private int tickEmit(@NotNull FluidStack fluidToSend) {
-        Collection<Map<Direction, LazyOptional<IFluidHandler>>> acceptorValues = acceptorCache.getAcceptorValues();
+        Collection<Map<Direction, IFluidHandler>> acceptorValues = acceptorCache.getAcceptorValues();
         FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend, acceptorValues.size() * 2);
-        for (Map<Direction, LazyOptional<IFluidHandler>> acceptors : acceptorValues) {
-            for (LazyOptional<IFluidHandler> lazyAcceptor : acceptors.values()) {
-                lazyAcceptor.ifPresent(acceptor -> {
-                    if (FluidUtils.canFill(acceptor, fluidToSend)) {
-                        target.addHandler(acceptor);
-                    }
-                });
+        for (Map<Direction, IFluidHandler> acceptors : acceptorValues) {
+            for (IFluidHandler acceptor : acceptors.values()) {
+                if (FluidUtils.canFill(acceptor, fluidToSend)) {
+                    target.addHandler(acceptor);
+                }
             }
         }
         return EmitUtils.sendToAcceptors(target, fluidToSend.getAmount(), fluidToSend);

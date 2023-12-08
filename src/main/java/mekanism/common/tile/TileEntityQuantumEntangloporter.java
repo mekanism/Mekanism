@@ -66,14 +66,12 @@ import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.ProxySlotInfo
 import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.SlurryProxy;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -223,8 +221,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         if (hasFrequency()) {
             ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.HEAT, side);
             if (slotInfo != null && slotInfo.canInput()) {
-                BlockEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
-                return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER, side.getOpposite()).resolve().orElse(null);
+                return WorldUtils.getCapability(level, Capabilities.HEAT, getBlockPos().relative(side), side.getOpposite());
             }
         }
         return null;

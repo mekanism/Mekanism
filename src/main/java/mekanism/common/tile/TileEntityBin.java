@@ -9,17 +9,15 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.BinInventorySlot;
-import mekanism.common.lib.inventory.TileTransitRequest;
+import mekanism.common.lib.inventory.HandlerTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.upgrade.BinUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
@@ -36,6 +34,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
@@ -51,7 +50,6 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     public TileEntityBin(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE, this));
     }
 
     @Override
@@ -88,15 +86,13 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         delayTicks = Math.max(0, delayTicks - 1);
         if (delayTicks == 0) {
             if (getActive()) {
-                BlockEntity tile = WorldUtils.getTileEntity(getLevel(), getBlockPos().below());
-                TileTransitRequest request = new TileTransitRequest(this, Direction.DOWN);
+                //Note: We can't just pass "this" and have to instead look up the capability to make sure we respect any sidedness
+                IItemHandler capability = Capabilities.ITEM.getCapabilityIfLoaded(level, worldPosition, null, this, Direction.DOWN);
+                HandlerTransitRequest request = new HandlerTransitRequest(capability);
                 request.addItem(binSlot.getBottomStack(), 0);
-                TransitResponse response;
-                if (tile instanceof TileEntityLogisticalTransporterBase transporter) {
-                    response = transporter.getTransmitter().insert(this, request, transporter.getTransmitter().getColor(), true, 0);
-                } else {
-                    response = request.addToInventory(tile, Direction.DOWN, 0, false);
-                }
+                BlockPos below = getBlockPos().below();
+                BlockEntity tile = WorldUtils.getTileEntity(getLevel(), below);
+                TransitResponse response = request.eject(this, below, tile, Direction.DOWN, 0, transporter -> transporter.getTransmitter().getColor());
                 if (!response.isEmpty() && tier != BinTier.CREATIVE) {
                     int sendingAmount = response.getSendingAmount();
                     MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(sendingAmount, Action.EXECUTE), sendingAmount);

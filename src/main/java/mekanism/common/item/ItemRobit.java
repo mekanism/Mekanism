@@ -6,14 +6,11 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.robit.RobitSkin;
+import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
-import mekanism.api.security.ISecurityUtils;
-import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.capabilities.security.item.ItemStackSecurityObject;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
@@ -28,7 +25,6 @@ import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -43,6 +39,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemRobit extends ItemEnergized implements IItemSustainedInventory {
@@ -61,7 +58,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
         super.appendHoverText(stack, world, tooltip, flag);
         tooltip.add(MekanismLang.ROBIT_NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getRobitName(stack)));
         tooltip.add(MekanismLang.ROBIT_SKIN.translateColored(EnumColor.INDIGO, EnumColor.GRAY, RobitSkin.getTranslatedName(getRobitSkin(stack))));
-        ISecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
+        IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasSustainedInventory(stack))));
     }
 
@@ -87,8 +84,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
                 if (energyContainer != null) {
                     robit.getEnergyContainer().setEnergy(energyContainer.getEnergy());
                 }
-                ISecurityUtils securityUtils = ISecurityUtils.INSTANCE;
-                UUID ownerUUID = securityUtils.getOwnerUUID(stack);
+                UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
                 if (ownerUUID == null) {
                     robit.setOwnerUUID(player.getUUID());
                     //If the robit doesn't already have an owner, make sure we portray this
@@ -98,7 +94,10 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
                 }
                 robit.setSustainedInventory(getSustainedInventory(stack));
                 robit.setCustomName(getRobitName(stack));
-                robit.setSecurityMode(stack.getCapability(Capabilities.SECURITY_OBJECT).map(ISecurityObject::getSecurityMode).orElse(SecurityMode.PUBLIC));
+                ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(stack);
+                if (securityObject != null) {
+                    robit.setSecurityMode(securityObject.getSecurityMode());
+                }
                 robit.setSkin(getRobitSkin(stack), player);
                 world.addFreshEntity(robit);
                 world.gameEvent(player, GameEvent.ENTITY_PLACE, robit.blockPosition());
@@ -135,8 +134,8 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
     }
 
     @Override
-    protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
-        capabilities.add(new ItemStackSecurityObject());
-        super.gatherCapabilities(capabilities, stack, nbt);
+    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+        super.attachCapabilities(event);
+        ItemStackSecurityObject.attachCapsToItem(event, this);
     }
 }

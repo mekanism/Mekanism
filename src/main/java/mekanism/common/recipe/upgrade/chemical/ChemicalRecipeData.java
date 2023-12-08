@@ -2,7 +2,6 @@ package mekanism.common.recipe.upgrade.chemical;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
@@ -23,7 +22,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,7 +61,7 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
 
     protected abstract HANDLER getOutputHandler(List<TANK> tanks);
 
-    protected abstract Capability<HANDLER> getCapability();
+    protected abstract ItemCapability<HANDLER, Void> getCapability();
 
     protected abstract Predicate<@NotNull CHEMICAL> cloneValidator(HANDLER handler, int tank);
 
@@ -73,26 +72,25 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
         if (this.tanks.isEmpty()) {
             return true;
         }
-        HANDLER handler;
-        Optional<HANDLER> capability = stack.getCapability(getCapability()).resolve();
-        if (capability.isPresent()) {
-            handler = capability.get();
-        } else if (stack.getItem() instanceof BlockItem blockItem) {
-            TileEntityMekanism tile = null;
-            Block block = blockItem.getBlock();
-            if (block instanceof IHasTileEntity<?> hasTileEntity) {
-                BlockEntity tileEntity = hasTileEntity.createDummyBlockEntity();
-                if (tileEntity instanceof TileEntityMekanism) {
-                    tile = (TileEntityMekanism) tileEntity;
+        HANDLER handler = stack.getCapability(getCapability());
+        if (handler == null) {
+            if (stack.getItem() instanceof BlockItem blockItem) {
+                TileEntityMekanism tile = null;
+                Block block = blockItem.getBlock();
+                if (block instanceof IHasTileEntity<?> hasTileEntity) {
+                    BlockEntity tileEntity = hasTileEntity.createDummyBlockEntity();
+                    if (tileEntity instanceof TileEntityMekanism) {
+                        tile = (TileEntityMekanism) tileEntity;
+                    }
                 }
-            }
-            if (tile == null || !tile.handles(getSubstanceType())) {
-                //Something went wrong
+                if (tile == null || !tile.handles(getSubstanceType())) {
+                    //Something went wrong
+                    return false;
+                }
+                handler = getHandlerFromTile(tile);
+            } else {
                 return false;
             }
-            handler = getHandlerFromTile(tile);
-        } else {
-            return false;
         }
         int tankCount = handler.getTanks();
         if (tankCount == 0) {

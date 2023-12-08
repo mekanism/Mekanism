@@ -1,7 +1,5 @@
 package mekanism.generators.common.tile.fusion;
 
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -12,10 +10,6 @@ public class TileEntityFusionReactorController extends TileEntityFusionReactorBl
 
     public TileEntityFusionReactorController(BlockPos pos, BlockState state) {
         super(GeneratorsBlocks.FUSION_REACTOR_CONTROLLER, pos, state);
-        //Never allow the gas handler, fluid handler, or energy cap to be enabled here even though internally we can handle both of them
-        addDisabledCapabilities(Capabilities.GAS_HANDLER, net.neoforged.neoforge.common.capabilities.Capabilities.FLUID_HANDLER, Capabilities.HEAT_HANDLER);
-        addDisabledCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities());
-        addSemiDisabledCapability(net.neoforged.neoforge.common.capabilities.Capabilities.ITEM_HANDLER, () -> !getMultiblock().isFormed());
         delaySupplier = NO_DELAY;
     }
 

@@ -1,6 +1,6 @@
 package mekanism.common.block.basic;
 
-import mekanism.api.security.ISecurityUtils;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.resource.BlockResourceInfo;
@@ -58,7 +58,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
         }
         //Handle filling fluid tank
         if (!player.isShiftKeyDown()) {
-            if (!ISecurityUtils.INSTANCE.canAccessOrDisplayError(player, tile)) {
+            if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                 return InteractionResult.FAIL;
             }
             ItemStack stack = player.getItemInHand(hand);

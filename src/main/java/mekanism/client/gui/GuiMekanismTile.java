@@ -2,12 +2,12 @@ package mekanism.client.gui;
 
 import java.util.Set;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.window.GuiUpgradeWindowTab;
 import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.ItemConfigurator;
@@ -58,7 +58,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
             addRenderableWidget(new GuiRedstoneControlTab(this, tile));
         }
         //Note: We check if the capability is present rather than calling hasSecurity so that we don't add the tab to the security desk
-        if (tile.getCapability(Capabilities.SECURITY_OBJECT).isPresent()) {
+        if (tile.getLevel() != null && IBlockSecurityUtils.INSTANCE.securityCapability(tile.getLevel(), tile.getBlockPos(), tile) != null) {
             addSecurityTab();
         }
     }

@@ -1,24 +1,22 @@
 package mekanism.common.integration.computer;
 
-import java.util.function.Consumer;
+import java.util.function.BooleanSupplier;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.integration.computer.computercraft.CCCapabilityHelper;
 import mekanism.common.integration.computer.opencomputers2.OC2CapabilityHelper;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import mekanism.common.registration.impl.TileEntityTypeDeferredRegister.BlockEntityTypeBuilder;
+import mekanism.common.tile.base.CapabilityTileEntity;
 
 public class ComputerCapabilityHelper {
 
-    public static <TILE extends BlockEntity & IComputerTile> void addComputerCapabilities(TILE tile, Consumer<ICapabilityResolver> capabilityAdder) {
-        if (Mekanism.hooks.computerCompatEnabled() && tile.hasComputerSupport()) {
-            if (Mekanism.hooks.CCLoaded) {
-                //If ComputerCraft is loaded add the capability for it
-                capabilityAdder.accept(CCCapabilityHelper.getComputerCraftCapability(tile));
-            }
-            if (Mekanism.hooks.OC2Loaded) {
-                //If OpenComputers2 is loaded add the capability for it
-                capabilityAdder.accept(OC2CapabilityHelper.getOpenComputers2Capability(tile));
-            }
+    public static <TILE extends CapabilityTileEntity & IComputerTile> void addComputerCapabilities(BlockEntityTypeBuilder<TILE> builder, BooleanSupplier supportsComputer) {
+        if (Mekanism.hooks.CCLoaded) {
+            //If ComputerCraft is loaded add the capability for it
+            CCCapabilityHelper.addCapability(builder, supportsComputer);
+        }
+        if (Mekanism.hooks.OC2Loaded) {
+            //If OpenComputers2 is loaded add the capability for it
+            OC2CapabilityHelper.addCapability(builder, supportsComputer);
         }
     }
 }

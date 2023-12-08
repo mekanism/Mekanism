@@ -1,7 +1,5 @@
 package mekanism.common.item.block;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
@@ -14,14 +12,16 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
-import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
+import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
+import mekanism.common.capabilities.energy.item.ItemStackEnergyHandler;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.capabilities.security.item.ItemStackSecurityObject;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -30,11 +30,11 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
+public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem implements ICapabilityAware {
 
     @NotNull
     private final BLOCK block;
@@ -87,52 +87,46 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
         return super.shouldCauseBlockBreakReset(oldStack, newStack);
     }
 
-    protected void gatherCapabilities(List<ItemCapability> capabilities, ItemStack stack, CompoundTag nbt) {
-        if (Attribute.has(block, AttributeSecurity.class)) {
-            capabilities.add(new ItemStackSecurityObject());
-        }
-        if (exposesEnergyCap(stack)) {
-            AttributeEnergy attributeEnergy = Attribute.get(block, AttributeEnergy.class);
-            FloatingLongSupplier maxEnergy;
-            if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
-                //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
-                maxEnergy = new UpgradeBasedFloatingLongCache(stack, attributeEnergy::getStorage);
-            } else {
-                //Otherwise, just return that the max is what the base max is
-                maxEnergy = attributeEnergy::getStorage;
-            }
-            capabilities.add(RateLimitEnergyHandler.create(maxEnergy, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate()));
-        }
-    }
-
     protected Predicate<@NotNull AutomationType> getEnergyCapInsertPredicate() {
         return BasicEnergyContainer.alwaysTrue;
     }
 
-    protected boolean exposesEnergyCap(ItemStack stack) {
+    protected final boolean exposesEnergyCap(ItemStack stack) {
         //Only expose it if the block can't stack
         return Attribute.has(block, AttributeEnergy.class) && !stack.isStackable();
     }
 
-    protected boolean areCapabilityConfigsLoaded(ItemStack stack) {
-        if (exposesEnergyCap(stack)) {
-            return MekanismConfig.storage.isLoaded() && MekanismConfig.usage.isLoaded();
+    @Nullable
+    protected ItemStackEnergyHandler createEnergyCap(ItemStack stack) {
+        AttributeEnergy attributeEnergy = Attribute.get(block, AttributeEnergy.class);
+        if (attributeEnergy == null) {
+            throw new IllegalStateException("Block " + RegistryUtils.getName(block) + " expected to have energy attribute");
         }
-        return true;
+        FloatingLongSupplier maxEnergy;
+        if (Attribute.matches(block, AttributeUpgradeSupport.class, attribute -> attribute.supportedUpgrades().contains(Upgrade.ENERGY))) {
+            //If our block supports energy upgrades, make a more dynamically updating cache for our item's max energy
+            maxEnergy = new UpgradeBasedFloatingLongCache(stack, attributeEnergy::getStorage);
+        } else {
+            //Otherwise, just return that the max is what the base max is
+            maxEnergy = attributeEnergy::getStorage;
+        }
+        return RateLimitEnergyHandler.create(stack, maxEnergy, BasicEnergyContainer.manualOnly, getEnergyCapInsertPredicate());
     }
 
     @Override
-    public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        if (!areCapabilityConfigsLoaded(stack)) {
-            //Only expose the capabilities if the required configs are loaded
-            return super.initCapabilities(stack, nbt);
+    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+        if (Attribute.has(block, AttributeSecurity.class)) {
+            ItemStackSecurityObject.attachCapsToItem(event, this);
         }
-        List<ItemCapability> capabilities = new ArrayList<>();
-        gatherCapabilities(capabilities, stack, nbt);
-        if (capabilities.isEmpty()) {
-            return super.initCapabilities(stack, nbt);
+        if (Attribute.has(block, AttributeEnergy.class)) {
+            EnergyCompatUtils.registerItemCapabilities(event, this, (stack, ctx) -> {
+                if (stack.isStackable() || !MekanismConfig.storage.isLoaded() || !MekanismConfig.usage.isLoaded()) {
+                    //Only expose the capability if the stack can't stack and the required configs are loaded
+                    return null;
+                }
+                return createEnergyCap(stack);
+            });
         }
-        return new ItemCapabilityWrapper(stack, capabilities.toArray(ItemCapability[]::new));
     }
 
     private static class UpgradeBasedFloatingLongCache implements FloatingLongSupplier {

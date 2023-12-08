@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.common.Mekanism;
+import mekanism.common.block.BlockBounding;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityUpdateable;
@@ -20,8 +21,8 @@ import net.minecraft.world.Nameable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -74,16 +75,6 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
             return null;
         }
         return (IBoundingBlock) tile;
-    }
-
-    @NotNull
-    @Override
-    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side) {
-        IBoundingBlock main = getMain();
-        if (main == null) {
-            return super.getCapability(capability, side);
-        }
-        return main.getOffsetCapability(capability, side, worldPosition.subtract(getMainPos()));
     }
 
     @Override
@@ -198,5 +189,24 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     @Override
     public Component getCustomName() {
         return getMainTile() instanceof Nameable mainTile ? mainTile.getCustomName() : null;
+    }
+
+    public static <CAP> void proxyCapability(RegisterCapabilitiesEvent event, BlockCapability<CAP, @Nullable Direction> capability) {
+        event.registerBlock(capability, (level, pos, state, blockEntity, context) -> {
+            if (blockEntity instanceof TileEntityBoundingBlock bounding) {
+                IBoundingBlock main = bounding.getMain();
+                if (main != null) {
+                    return main.getOffsetCapability(capability, context, pos.subtract(bounding.getMainPos()));
+                }
+            }
+            return null;
+        }, MekanismBlocks.BOUNDING_BLOCK.getBlock());
+    }
+
+    public static <CAP, CONTEXT> void alwaysProxyCapability(RegisterCapabilitiesEvent event, BlockCapability<CAP, CONTEXT> capability) {
+        event.registerBlock(capability, (level, pos, state, blockEntity, context) -> {
+            BlockPos mainPos = BlockBounding.getMainBlockPos(level, pos);
+            return mainPos == null ? null : WorldUtils.getCapability(level, capability, mainPos, context);
+        }, MekanismBlocks.BOUNDING_BLOCK.getBlock());
     }
 }

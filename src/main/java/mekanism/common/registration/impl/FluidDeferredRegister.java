@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IChemicalConstant;
+import mekanism.common.capabilities.ICapabilityAware;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -34,6 +35,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
@@ -182,6 +184,15 @@ public class FluidDeferredRegister {
         fluidRegister.register(bus);
         fluidTypeRegister.register(bus);
         itemRegister.register(bus);
+        bus.addListener(this::registerCapabilities);
+    }
+
+    private void registerCapabilities(RegisterCapabilitiesEvent event) {
+        for (FluidRegistryObject<?, ?, ?, ?, ?> fluidRO : allFluids) {
+            if (fluidRO.getBucket() instanceof ICapabilityAware capabilityAware) {
+                capabilityAware.attachCapabilities(event);
+            }
+        }
     }
 
     public List<FluidRegistryObject<? extends MekanismFluidType, ?, ?, ?, ?>> getAllFluids() {

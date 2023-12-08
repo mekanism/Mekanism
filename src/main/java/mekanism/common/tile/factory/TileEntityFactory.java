@@ -47,7 +47,6 @@ import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 import mekanism.common.recipe.lookup.monitor.FactoryRecipeCacheLookupMonitor;
-import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -60,7 +59,6 @@ import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.MachineUpgradeData;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
@@ -70,7 +68,7 @@ import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -425,19 +423,9 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @Override
-    public boolean isConfigurationDataCompatible(BlockEntityType<?> tileType) {
-        if (super.isConfigurationDataCompatible(tileType)) {
-            //Check exact match first
-            return true;
-        }
-        //Then check other factory tiers
-        for (FactoryTier factoryTier : EnumUtils.FACTORY_TIERS) {
-            if (factoryTier != tier && MekanismTileEntityTypes.getFactoryTile(factoryTier, type).get() == tileType) {
-                return true;
-            }
-        }
-        //And finally check if it is the non factory version (it will be missing sorting data, but we can gracefully ignore that)
-        return type.getBaseMachine().getTileType().get() == tileType;
+    public boolean isConfigurationDataCompatible(Block blockType) {
+        //Allow exact match or factories of the same type (as we will just ignore the extra data)
+        return super.isConfigurationDataCompatible(blockType) || MekanismUtils.isSameTypeFactory(getBlockType(), blockType);
     }
 
     public boolean hasSecondaryResourceBar() {

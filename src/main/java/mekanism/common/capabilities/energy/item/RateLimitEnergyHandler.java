@@ -1,7 +1,5 @@
 package mekanism.common.capabilities.energy.item;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -16,39 +14,33 @@ import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.tier.EnergyCubeTier;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class RateLimitEnergyHandler extends ItemStackEnergyHandler {
 
-    public static RateLimitEnergyHandler create(EnergyCubeTier tier) {
+    public static RateLimitEnergyHandler create(ItemStack stack, EnergyCubeTier tier) {
         Objects.requireNonNull(tier, "Energy cube tier cannot be null");
-        return new RateLimitEnergyHandler(handler -> new EnergyCubeRateLimitEnergyContainer(tier, handler));
+        return new RateLimitEnergyHandler(stack, handler -> new EnergyCubeRateLimitEnergyContainer(tier, handler));
     }
 
-    public static RateLimitEnergyHandler create(FloatingLongSupplier capacity, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert) {
-        return create(() -> capacity.get().multiply(0.005), capacity, canExtract, canInsert);
+    public static RateLimitEnergyHandler create(ItemStack stack, FloatingLongSupplier capacity, Predicate<@NotNull AutomationType> canExtract, Predicate<@NotNull AutomationType> canInsert) {
+        return create(stack, () -> capacity.get().multiply(0.005), capacity, canExtract, canInsert);
     }
 
-    public static RateLimitEnergyHandler create(FloatingLongSupplier rate, FloatingLongSupplier capacity, Predicate<@NotNull AutomationType> canExtract,
+    public static RateLimitEnergyHandler create(ItemStack stack, FloatingLongSupplier rate, FloatingLongSupplier capacity, Predicate<@NotNull AutomationType> canExtract,
           Predicate<@NotNull AutomationType> canInsert) {
         Objects.requireNonNull(rate, "Rate supplier cannot be null");
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
-        return new RateLimitEnergyHandler(handler -> new RateLimitEnergyContainer(rate, capacity, canExtract, canInsert, handler));
+        return new RateLimitEnergyHandler(stack, handler -> new RateLimitEnergyContainer(rate, capacity, canExtract, canInsert, handler));
     }
 
-    private final IEnergyContainer energyContainer;
-
-    private RateLimitEnergyHandler(Function<IMekanismStrictEnergyHandler, IEnergyContainer> energyContainerProvider) {
-        this.energyContainer = energyContainerProvider.apply(this);
-    }
-
-    @Override
-    protected List<IEnergyContainer> getInitialContainers() {
-        return Collections.singletonList(energyContainer);
+    private RateLimitEnergyHandler(ItemStack stack, Function<IMekanismStrictEnergyHandler, IEnergyContainer> energyContainerProvider) {
+        super(stack, energyContainerProvider);
     }
 
     private static class RateLimitEnergyContainer extends VariableCapacityEnergyContainer {

@@ -18,7 +18,6 @@ import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.multiblock.IMultiblockEjector;
 import mekanism.common.tile.base.SubstanceType;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
@@ -29,7 +28,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -61,10 +59,12 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     @Override
     public IHeatHandler getAdjacent(@NotNull Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
-            BlockEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
-            if (!(adj instanceof TileEntityFissionReactorPort)) {
-                return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER, side.getOpposite()).resolve().orElse(null);
-            }
+            BlockPos pos = getBlockPos().relative(side);
+            return WorldUtils.getBlockState(level, pos)
+                  .filter(state -> !state.isAir() && state.getBlock() != GeneratorsBlocks.FISSION_REACTOR_PORT.getBlock())
+                  //Note: We know the position is loaded already from the blockstate check
+                  .map(state -> level.getCapability(Capabilities.HEAT, pos, state, null, side.getOpposite()))
+                  .orElse(null);
         }
         return null;
     }

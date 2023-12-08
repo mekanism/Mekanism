@@ -1,5 +1,6 @@
 package mekanism.common.inventory.container.entity.robit;
 
+import mekanism.api.security.IEntitySecurityUtils;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.ISecurityContainer;
 import mekanism.common.inventory.container.entity.IEntityContainer;
@@ -8,9 +9,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class CraftingRobitContainer extends CraftingMenu implements IEntityContainer<EntityRobit>, ISecurityContainer {
 
@@ -45,9 +44,8 @@ public class CraftingRobitContainer extends CraftingMenu implements IEntityConta
         entity.close(player);
     }
 
-    @Nullable
     @Override
-    public ICapabilityProvider getSecurityObject() {
-        return entity;
+    public boolean canPlayerAccess(@NotNull Player player) {
+        return IEntitySecurityUtils.INSTANCE.canAccess(player, entity);
     }
 }

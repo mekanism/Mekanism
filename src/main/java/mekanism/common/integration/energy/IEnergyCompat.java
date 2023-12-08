@@ -1,15 +1,16 @@
 package mekanism.common.integration.energy;
 
-import java.util.Collection;
-import java.util.Collections;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.common.config.value.CachedValue;
-import mekanism.common.util.CapabilityUtils;
+import mekanism.common.capabilities.MultiTypeCapability;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.capabilities.ICapabilityProvider;
-import net.neoforged.neoforge.common.util.LazyOptional;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -23,13 +24,10 @@ public interface IEnergyCompat {
     boolean isUsable();
 
     /**
-     * Gets the configs that back {@link #isUsable()} so that caching for usable and enabled energy types can be done.
-     *
-     * @implNote If this {@link IEnergyCompat} will never be usable due to missing required mods, this should just return an empty collection to allow the enabled caching
-     * to skip listening to the corresponding config settings.
+     * {@return true if the mods required for the capability this compat acts on are actually loaded}
      */
-    default Collection<CachedValue<?>> getBackingConfigs() {
-        return Collections.emptySet();
+    default boolean capabilityExists() {
+        return true;
     }
 
     /**
@@ -37,50 +35,68 @@ public interface IEnergyCompat {
      *
      * @return The capability this compat is integrating with.
      */
-    Capability<?> getCapability();
+    MultiTypeCapability<?> getCapability();
 
     /**
-     * Checks if a given capability matches the capability that this {@link IEnergyCompat} is for.
+     * Wraps a capability provider that provides an {@link IStrictEnergyHandler} as a one that provides the capability this energy compat is for.
      *
-     * @param capability Capability to check
+     * @param provider The capability provider to wrap
      *
-     * @return {@code true} if the capability matches, {@code false} if it doesn't.
+     * @return A capability provider that provides this energy compat's capability.
      */
-    default boolean isMatchingCapability(Capability<?> capability) {
-        return capability == getCapability();
-    }
+    <OBJECT, CONTEXT> ICapabilityProvider<OBJECT, CONTEXT, ?> getProviderAs(ICapabilityProvider<OBJECT, CONTEXT, IStrictEnergyHandler> provider);
 
     /**
-     * Checks if the given provider has this capability.
+     * Wraps a strict energy handler in a wrapper that matches this compat's capability.
      *
-     * @param provider Capability provider
-     * @param side     Side
-     *
-     * @return {@code true} if the provider has this {@link IEnergyCompat}'s capability, {@code false} otherwise
-     *
-     * @implNote The capabilities should be kept lazy so that they are not resolved if they are not needed yet.
+     * @param handler Handler to wrap.
      */
-    default boolean isCapabilityPresent(ICapabilityProvider provider, @Nullable Direction side) {
-        return CapabilityUtils.getCapability(provider, getCapability(), side).isPresent();
-    }
+    Object wrapStrictEnergyHandler(IStrictEnergyHandler handler);
 
     /**
-     * Gets the {@link IStrictEnergyHandler} as a lazy optional for the capability this energy compat is for.
+     * Wraps this compat's capability in a strict energy handler.
      *
-     * @param handler The handler to wrap
-     *
-     * @return A lazy optional for this capability
+     * @param handler Handler to wrap. Can be assumed to be the same type as this energy compat.
      */
-    LazyOptional<?> getHandlerAs(IStrictEnergyHandler handler);
+    IStrictEnergyHandler wrapAsStrictEnergyHandler(Object handler);
 
     /**
      * Wraps the capability implemented in the provider into a lazy optional {@link IStrictEnergyHandler}, or returns {@code LazyOptional.empty()} if the capability is
      * not implemented.
      *
-     * @param provider Capability provider
-     * @param side     Side
+     * @param level   Level to query.
+     * @param pos     Position in level.
+     * @param state   The block state, if known, or null if unknown.
+     * @param tile    The block entity, if known, or null if unknown.
+     * @param context Side
      *
      * @return The capability implemented in the provider into an {@link IStrictEnergyHandler}, or {@code null} if the capability is not implemented.
      */
-    LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(ICapabilityProvider provider, @Nullable Direction side);
+    @Nullable
+    default IStrictEnergyHandler getAsStrictEnergyHandler(Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity tile, @Nullable Direction context) {
+        Object capability = getCapability().getCapabilityIfLoaded(level, pos, state, tile, context);
+        return capability == null ? null : wrapAsStrictEnergyHandler(capability);
+    }
+
+    /**
+     * Gets an exposed capability of this compat's type from a stack and wraps it into a strict energy handler.
+     *
+     * @param stack ItemStack to check for the capability
+     */
+    @Nullable
+    default IStrictEnergyHandler getStrictEnergyHandler(ItemStack stack) {
+        Object capability = getCapability().getCapability(stack);
+        return capability == null ? null : wrapAsStrictEnergyHandler(capability);
+    }
+
+    /**
+     * Gets an exposed capability of this compat's type from an entity and wraps it into a strict energy handler.
+     *
+     * @param entity Entity to check for the capability
+     */
+    @Nullable
+    default IStrictEnergyHandler getStrictEnergyHandler(Entity entity) {
+        Object capability = getCapability().getCapability(entity);
+        return capability == null ? null : wrapAsStrictEnergyHandler(capability);
+    }
 }
