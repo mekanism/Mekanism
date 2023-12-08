@@ -25,7 +25,6 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -280,19 +279,15 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (isRedstoneActivated()) {
             return false;
         }
-        //TODO: Add a comment about this instance check
-        if (getTileWorld() instanceof ServerLevel level) {
-            BlockPos pos = getTilePos().relative(side);
-            BlockEntity tile = WorldUtils.getTileEntity(level, pos);
-            if (canConnectMutual(side, tile) && isValidAcceptor(level, pos, tile, side)) {
-                return true;
-            }
-            //TODO: Validate I am correct that this now can just be a markDirtAcceptor call
-            // and figure out if that is even correct??? As maybe it is only if it changed that we need to do that
-            // (Especially as we call getPossibleAcceptorConnection via actually committing the acceptor changes)
-            //acceptorCache.invalidateCachedAcceptor(side);
-            markDirtyAcceptor(side);
+        BlockEntity tile = WorldUtils.getTileEntity(getTileWorld(), getTilePos().relative(side));
+        if (canConnectMutual(side, tile) && isValidAcceptor(tile, side)) {
+            return true;
         }
+        //TODO - 1.20.2: Validate I am correct that this now can just be a markDirtAcceptor call
+        // and figure out if that is even correct??? As maybe it is only if it changed that we need to do that
+        // (Especially as we call getPossibleAcceptorConnection via actually committing the acceptor changes)
+        //acceptorCache.invalidateCachedAcceptor(side);
+        markDirtyAcceptor(side);
         return false;
     }
 
@@ -315,26 +310,24 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (isRedstoneActivated()) {
             return connections;
         }
-        //TODO: Add a comment about this instance check
-        if (getTileWorld() instanceof ServerLevel level) {
-            for (Direction side : EnumUtils.DIRECTIONS) {
-                BlockPos offset = getTilePos().relative(side);
-                BlockEntity tile = WorldUtils.getTileEntity(level, offset);
-                if (canConnectMutual(side, tile)) {
-                    if (!isRemote() && !WorldUtils.isBlockLoaded(level, offset)) {
-                        getTransmitterTile().setForceUpdate();
-                        continue;
-                    }
-                    if (isValidAcceptor(level, offset, tile, side)) {
-                        connections |= (byte) (1 << side.ordinal());
-                        continue;
-                    }
+        Level level = getTileWorld();
+        for (Direction side : EnumUtils.DIRECTIONS) {
+            BlockPos offset = getTilePos().relative(side);
+            BlockEntity tile = WorldUtils.getTileEntity(level, offset);
+            if (canConnectMutual(side, tile)) {
+                if (!isRemote() && !WorldUtils.isBlockLoaded(level, offset)) {
+                    getTransmitterTile().setForceUpdate();
+                    continue;
                 }
-                //TODO: Validate I am correct that this now can just be a markDirtAcceptor call
-                // and figure out if that is even correct??? As maybe it is only if it changed that we need to do that
-                //acceptorCache.invalidateCachedAcceptor(side);
-                markDirtyAcceptor(side);
+                if (isValidAcceptor(tile, side)) {
+                    connections |= (byte) (1 << side.ordinal());
+                    continue;
+                }
             }
+            //TODO - 1.20.2: Validate I am correct that this now can just be a markDirtAcceptor call
+            // and figure out if that is even correct??? As maybe it is only if it changed that we need to do that
+            //acceptorCache.invalidateCachedAcceptor(side);
+            markDirtyAcceptor(side);
         }
         return connections;
     }
@@ -359,7 +352,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     /**
      * @apiNote Only call this from the server side
      */
-    public boolean isValidAcceptor(ServerLevel level, BlockPos pos, @Nullable BlockEntity tile, Direction side) {
+    protected boolean isValidAcceptor(@Nullable BlockEntity tile, Direction side) {
         //If it isn't a transmitter or the transmission type is different from the one the transmitter has
         if (!(tile instanceof TileEntityTransmitter transmitter) || !supportsTransmissionType(transmitter)) {
             return getAcceptorCache().getConnectedAcceptor(side) != null;
@@ -530,7 +523,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             boolean possibleAcceptor = getPossibleAcceptorConnection(side);
             if (possibleAcceptor != connectionMapContainsSide(acceptorCache.currentAcceptorConnections, side)) {
                 acceptorCache.currentAcceptorConnections = setConnectionBit(acceptorCache.currentAcceptorConnections, possibleAcceptor, side);
-                //TODO: Validate I am pretty sure we don't need this but we may want to check validate this for heat networks??
+                //TODO - 1.20.2: Validate I am pretty sure we don't need this but we may want to check validate this for heat networks??
                 // which may then cause issues due to when this method is actually called
                 /*if (transmitterChanged) {
                     //If this side is now a valid transmitter, and it wasn't before recheck the connection
@@ -665,7 +658,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return InteractionResult.SUCCESS;
     }
 
-    //TODO: Re-evaluate this and if we need to be calling this. Odds are we need to at least in some spots for redstone related stuff
+    //TODO - 1.20.2: Re-evaluate this and if we need to be calling this. Odds are we need to at least in some spots for redstone related stuff
     // but it is also possible we may need to also invalidate caps from some callsites
     public void notifyTileChange() {
         WorldUtils.notifyLoadedNeighborsOfTileChange(getTileWorld(), getTilePos());

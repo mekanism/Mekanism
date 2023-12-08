@@ -24,11 +24,9 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.upgrade.transmitter.ThermodynamicConductorUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -81,7 +79,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     }
 
     @Override
-    public boolean isValidAcceptor(ServerLevel level, BlockPos pos, @Nullable BlockEntity tile, Direction side) {
+    protected boolean isValidAcceptor(@Nullable BlockEntity tile, Direction side) {
         //Note: We intentionally do not call super here as other elements in the network are intentionally acceptors
         return getAcceptorCache().getConnectedAcceptor(side) != null;
     }
