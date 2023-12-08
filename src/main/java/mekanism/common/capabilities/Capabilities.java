@@ -17,6 +17,7 @@ import mekanism.api.radiation.capability.IRadiationShielding;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.IEntitySecurityUtils;
 import mekanism.common.Mekanism;
+import mekanism.common.entity.EntityRobit;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.lib.radiation.capability.RadiationEntity;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -79,12 +80,13 @@ public class Capabilities {
     public static final ResourceLocation OWNER_OBJECT_NAME = Mekanism.rl("owner_object");
     public static final ResourceLocation SECURITY_OBJECT_NAME = Mekanism.rl("security_object");
 
-    //TODO - 1.20.2: Should this listener be in its own class?
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         Mekanism.hooks.hookCapabilityRegistration();
-        //TODO - 1.20.2: Do we want robits to expose an energy cap
-        event.registerEntity(IEntitySecurityUtils.INSTANCE.ownerCapability(), MekanismEntityTypes.ROBIT.get(), (robit, ctx) -> robit);
-        event.registerEntity(IEntitySecurityUtils.INSTANCE.securityCapability(), MekanismEntityTypes.ROBIT.get(), (robit, ctx) -> robit);
+
+        EntityType<EntityRobit> robitEntityType = MekanismEntityTypes.ROBIT.get();
+        event.registerEntity(IEntitySecurityUtils.INSTANCE.ownerCapability(), robitEntityType, (robit, ctx) -> robit);
+        event.registerEntity(IEntitySecurityUtils.INSTANCE.securityCapability(), robitEntityType, (robit, ctx) -> robit);
+        EnergyCompatUtils.registerEntityCapabilities(event, robitEntityType, (robit, ctx) -> robit);
 
         for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
             //Note: The jvm will reuse the lambda between types

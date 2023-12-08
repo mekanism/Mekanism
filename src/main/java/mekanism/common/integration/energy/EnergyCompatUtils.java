@@ -1,6 +1,7 @@
 package mekanism.common.integration.energy;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.energy.fluxnetworks.FNEnergyCompat;
@@ -9,12 +10,15 @@ import mekanism.common.registration.impl.TileEntityTypeDeferredRegister.BlockEnt
 import mekanism.common.tile.base.CapabilityTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -80,6 +84,21 @@ public class EnergyCompatUtils {
         event.registerItem(capability, (ICapabilityProvider<ItemStack, Void, CAP>) provider, item);
     }
 
+    public static <ENTITY extends Entity> void registerEntityCapabilities(RegisterCapabilitiesEvent event, EntityType<ENTITY> entity,
+          ICapabilityProvider<? super ENTITY, ?, IStrictEnergyHandler> mekProvider) {
+        for (IEnergyCompat energyCompat : energyCompats) {
+            if (energyCompat.capabilityExists()) {
+                register(event, energyCompat.getCapability().entity(), entity, energyCompat.getProviderAs(mekProvider));
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <ENTITY extends Entity, CAP, CONTEXT> void register(RegisterCapabilitiesEvent event, EntityCapability<CAP, CONTEXT> capability, EntityType<ENTITY> entity,
+          ICapabilityProvider<? super ENTITY, ?, ?> provider) {
+        event.registerEntity(capability, entity, (ICapabilityProvider<? super ENTITY, CONTEXT, CAP>) provider);
+    }
+
     public static void addBlockCapabilities(BlockEntityTypeBuilder<? extends CapabilityTileEntity> builder) {
         for (IEnergyCompat energyCompat : energyCompats) {
             if (energyCompat.capabilityExists()) {
@@ -105,12 +124,26 @@ public class EnergyCompatUtils {
     @Nullable
     public static IStrictEnergyHandler getStrictEnergyHandler(@NotNull ItemStack stack) {
         if (!stack.isEmpty()) {
-            for (IEnergyCompat energyCompat : energyCompats) {
-                if (energyCompat.isUsable()) {
-                    IStrictEnergyHandler handler = energyCompat.getStrictEnergyHandler(stack);
-                    if (handler != null) {
-                        return handler;
-                    }
+            return getStrictEnergyHandler(stack, IEnergyCompat::getStrictEnergyHandler);
+        }
+        return null;
+    }
+
+    @Nullable
+    public static IStrictEnergyHandler getStrictEnergyHandler(@Nullable Entity entity) {
+        if (entity != null) {
+            return getStrictEnergyHandler(entity, IEnergyCompat::getStrictEnergyHandler);
+        }
+        return null;
+    }
+
+    @Nullable
+    private static <OBJECT> IStrictEnergyHandler getStrictEnergyHandler(OBJECT object, BiFunction<IEnergyCompat, OBJECT, IStrictEnergyHandler> getter) {
+        for (IEnergyCompat energyCompat : energyCompats) {
+            if (energyCompat.isUsable()) {
+                IStrictEnergyHandler handler = getter.apply(energyCompat, object);
+                if (handler != null) {
+                    return handler;
                 }
             }
         }

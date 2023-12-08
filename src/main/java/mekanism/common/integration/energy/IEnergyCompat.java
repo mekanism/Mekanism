@@ -5,6 +5,7 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.capabilities.MultiTypeCapability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -85,6 +86,17 @@ public interface IEnergyCompat {
     @Nullable
     default IStrictEnergyHandler getStrictEnergyHandler(ItemStack stack) {
         Object capability = getCapability().getCapability(stack);
+        return capability == null ? null : wrapAsStrictEnergyHandler(capability);
+    }
+
+    /**
+     * Gets an exposed capability of this compat's type from an entity and wraps it into a strict energy handler.
+     *
+     * @param entity Entity to check for the capability
+     */
+    @Nullable
+    default IStrictEnergyHandler getStrictEnergyHandler(Entity entity) {
+        Object capability = getCapability().getCapability(entity);
         return capability == null ? null : wrapAsStrictEnergyHandler(capability);
     }
 }

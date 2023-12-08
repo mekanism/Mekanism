@@ -63,14 +63,14 @@ public class TileEntityChargepad extends TileEntityMekanism {
             if (!active) {
                 //If we run out of energy, stop checking the remaining entities
                 break;
-            } else if (entity instanceof EntityRobit robit) {
-                provideEnergy(robit);
             } else if (entity instanceof Player) {
                 IItemHandler itemHandler = Capabilities.ITEM.getCapability(entity);
                 if (!chargeHandler(itemHandler) && Mekanism.hooks.CuriosLoaded) {
                     //If we didn't charge anything in the inventory and curios is loaded try charging things in the curios slots
                     chargeHandler(CuriosIntegration.getCuriosInventory(entity));
                 }
+            } else {//Note: Robits are handled by this path
+                provideEnergy(EnergyCompatUtils.getStrictEnergyHandler(entity));
             }
         }
         if (active != getActive()) {
