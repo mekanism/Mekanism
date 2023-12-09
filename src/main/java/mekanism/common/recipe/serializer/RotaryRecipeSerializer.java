@@ -26,7 +26,7 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
     private final RecordCodecBuilder<BasicRotaryRecipe, FluidStackIngredient> FLUID_INPUT_FIELD = RecordCodecBuilder.of(RotaryRecipe::getFluidInput, JsonConstants.FLUID_INPUT, FluidStackIngredientCreator.INSTANCE.codec());
     private final RecordCodecBuilder<BasicRotaryRecipe, FluidStack> FLUID_OUTPUT_FIELD = RecordCodecBuilder.of(BasicRotaryRecipe::getFluidOutputRaw, JsonConstants.FLUID_OUTPUT, SerializerHelper.FLUIDSTACK_CODEC);
     private final RecordCodecBuilder<BasicRotaryRecipe, GasStackIngredient> GAS_INPUT_FIELD = RecordCodecBuilder.of(RotaryRecipe::getGasInput, JsonConstants.GAS_INPUT, GasStackIngredientCreator.INSTANCE.codec());
-    private final RecordCodecBuilder<BasicRotaryRecipe, GasStack> GAS_OUTPUT_FIELD = RecordCodecBuilder.of(BasicRotaryRecipe::getGasOutputRaw, JsonConstants.GAS_INPUT, ChemicalUtils.GAS_STACK_CODEC);
+    private final RecordCodecBuilder<BasicRotaryRecipe, GasStack> GAS_OUTPUT_FIELD = RecordCodecBuilder.of(BasicRotaryRecipe::getGasOutputRaw, JsonConstants.GAS_OUTPUT, ChemicalUtils.GAS_STACK_CODEC);
 
     private Codec<BasicRotaryRecipe> bothWaysCodec() {
         return RecordCodecBuilder.create(i -> i.group(
