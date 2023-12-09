@@ -9,7 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.Fluid;
@@ -58,10 +57,6 @@ public class RegistryUtils {
 
     public static ResourceLocation getName(EntityType<?> element) {
         return getName(BuiltInRegistries.ENTITY_TYPE, element);
-    }
-
-    public static ResourceLocation getName(RecipeSerializer<?> element) {
-        return getName(BuiltInRegistries.RECIPE_SERIALIZER, element);
     }
 
     private static <T> ResourceLocation getName(Registry<T> registry, T element) {

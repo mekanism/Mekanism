@@ -5,6 +5,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundEventListener;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.sounds.WeighedSoundEvents;
@@ -104,10 +105,14 @@ public abstract class PlayerSound extends AbstractTickableSoundInstance {
             }
             if (consecutiveTicks % subtitleFrequency == 0) {
                 SoundManager soundHandler = Minecraft.getInstance().getSoundManager();
-                for (SoundEventListener soundEventListener : soundHandler.soundEngine.listeners) {
-                    WeighedSoundEvents soundEventAccessor = resolve(soundHandler);
-                    if (soundEventAccessor != null) {
-                        soundEventListener.onPlaySound(this, soundEventAccessor);
+                if (!soundHandler.soundEngine.listeners.isEmpty()) {
+                    float scaledVolume = Math.max(volume, 1.0F) * (float) sound.getAttenuationDistance();
+                    float range = !relative && attenuation != SoundInstance.Attenuation.NONE ? scaledVolume : Float.POSITIVE_INFINITY;
+                    for (SoundEventListener soundEventListener : soundHandler.soundEngine.listeners) {
+                        WeighedSoundEvents soundEventAccessor = resolve(soundHandler);
+                        if (soundEventAccessor != null) {
+                            soundEventListener.onPlaySound(this, soundEventAccessor, range);
+                        }
                     }
                 }
                 consecutiveTicks = 1;

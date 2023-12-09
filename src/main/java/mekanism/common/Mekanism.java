@@ -382,9 +382,9 @@ public class Mekanism {
         registerDispenseBehavior(FluidTankItemDispenseBehavior.INSTANCE);
         for (IItemProvider itemProvider : itemProviders) {
             Item item = itemProvider.asItem();
-            CauldronInteraction.EMPTY.put(item, BasicCauldronInteraction.EMPTY);
-            CauldronInteraction.WATER.put(item, BasicDrainCauldronInteraction.WATER);
-            CauldronInteraction.LAVA.put(item, BasicDrainCauldronInteraction.LAVA);
+            CauldronInteraction.EMPTY.map().put(item, BasicCauldronInteraction.EMPTY);
+            CauldronInteraction.WATER.map().put(item, BasicDrainCauldronInteraction.WATER);
+            CauldronInteraction.LAVA.map().put(item, BasicDrainCauldronInteraction.LAVA);
         }
     }
 

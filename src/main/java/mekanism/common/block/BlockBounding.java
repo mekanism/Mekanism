@@ -24,6 +24,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -119,11 +120,11 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     /**
-     * {@inheritDoc} Delegate to main {@link Block#getCloneItemStack(BlockState, HitResult, BlockGetter, BlockPos, Player)}.
+     * {@inheritDoc} Delegate to main {@link Block#getCloneItemStack(BlockState, HitResult, LevelReader, BlockPos, Player)}.
      */
     @NotNull
     @Override
-    public ItemStack getCloneItemStack(@NotNull BlockState state, HitResult target, @NotNull BlockGetter world, @NotNull BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(@NotNull BlockState state, HitResult target, @NotNull LevelReader world, @NotNull BlockPos pos, Player player) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return ItemStack.EMPTY;
@@ -161,7 +162,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
                           .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(mainPos))
                           .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
                           .withOptionalParameter(LootContextParams.BLOCK_ENTITY, mainState.hasBlockEntity() ? WorldUtils.getTileEntity(serverLevel, mainPos) : null)
-                          .withOptionalParameter(LootContextParams.THIS_ENTITY, explosion.getExploder());
+                          .withOptionalParameter(LootContextParams.THIS_ENTITY, explosion.getDirectSourceEntity());
                     if (explosion.blockInteraction == Explosion.BlockInteraction.DESTROY_WITH_DECAY) {
                         lootContextBuilder.withParameter(LootContextParams.EXPLOSION_RADIUS, explosion.radius);
                     }

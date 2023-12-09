@@ -19,7 +19,7 @@ import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.recipe.ingredient.IMultiIngredient;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.contents.LiteralContents;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -157,7 +157,7 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
                 //Manually compare it as we want to make sure we don't initialize the capabilities on it
                 // to ensure we reduce any potential lag from this comparison
                 ItemStack item = items[0];
-                return item.getItem() == Items.BARRIER && item.getHoverName().getContents() instanceof LiteralContents contents && contents.text().startsWith("Empty Tag: ");
+                return item.getItem() == Items.BARRIER && item.getHoverName().getContents() instanceof PlainTextContents contents && contents.text().startsWith("Empty Tag: ");
             }
             return false;
         }

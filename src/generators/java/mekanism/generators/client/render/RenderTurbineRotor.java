@@ -97,6 +97,6 @@ public class RenderTurbineRotor extends ModelTileEntityRenderer<TileEntityTurbin
             return super.getRenderBoundingBox(tile);
         }
         BlockPos pos = tile.getBlockPos();
-        return new AABB(pos.offset(-radius, 0, -radius), pos.offset(1 + radius, 1, 1 + radius));
+        return AABB.encapsulatingFullBlocks(pos.offset(-radius, 0, -radius), pos.offset(radius, 0, radius));
     }
 }

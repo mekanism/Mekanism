@@ -43,7 +43,7 @@ public class RenderWindGenerator extends ModelTileEntityRenderer<TileEntityWindG
     public AABB getRenderBoundingBox(TileEntityWindGenerator tile) {
         //Note: we just extend it to the max size (including blades) it could be ignoring what direction it is actually facing
         BlockPos pos = tile.getBlockPos();
-        return new AABB(pos.offset(-2, 0, -2), pos.offset(3, 7, 3));
+        return AABB.encapsulatingFullBlocks(pos.offset(-2, 0, -2), pos.offset(2, 6, 2));
     }
 
     @Override

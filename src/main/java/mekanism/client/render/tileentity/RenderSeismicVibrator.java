@@ -78,6 +78,6 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
     @Override
     public AABB getRenderBoundingBox(TileEntitySeismicVibrator tile) {
         BlockPos pos = tile.getBlockPos();
-        return new AABB(pos, pos.offset(1, 2, 1));
+        return AABB.encapsulatingFullBlocks(pos, pos.above());
     }
 }

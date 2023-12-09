@@ -14,7 +14,6 @@ import com.blamejared.crafttweaker.api.tag.type.KnownTag;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.serialization.JsonOps;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -70,7 +69,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.neoforged.neoforge.common.crafting.StrictNBTIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -189,15 +187,17 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
                     KnownTag<Item> tag = CrTUtils.itemTags().tag(serializedIngredient.get(JsonConstants.TAG).getAsString());
                     return amount == 1 ? tag.getCommandString() : tag.withAmount(amount).getCommandString();
                 }
-            } else if (vanillaIngredient instanceof StrictNBTIngredient) {
-                Optional<StrictNBTIngredient> deserialized = StrictNBTIngredient.CODEC.parse(JsonOps.INSTANCE, serializedIngredient).result();
+            }
+            //TODO - 1.20.4: Re-evaluate this and if it even makes sense to have this attempted cleanup now or is it better to just fall back to whatever CrT does
+            /*else if (vanillaIngredient instanceof NBTIngredient nbtIngredient && nbtIngredient.isStrict()) {
+                Optional<NBTIngredient> deserialized = NBTIngredient.CODEC.parse(JsonOps.INSTANCE, serializedIngredient).result();
                 if (deserialized.isPresent()) {
                     //Note: We don't have to copy the stack as we just deserialized it
                     ItemStack stack = deserialized.get().getStack();
                     stack.setCount(amount);
                     return ItemStackUtil.getCommandString(stack);
                 }
-            }
+            }*/
         }
         return null;
     }

@@ -80,7 +80,7 @@ public class ItemBalloon extends Item {
         ItemStack stack = context.getItemInHand();
         if (player.isShiftKeyDown()) {
             BlockPos pos = context.getClickedPos();
-            AABB bound = new AABB(pos, pos.offset(1, 3, 1));
+            AABB bound = AABB.encapsulatingFullBlocks(pos, pos.above(2));
             List<EntityBalloon> balloonsNear = player.level().getEntitiesOfClass(EntityBalloon.class, bound);
             if (!balloonsNear.isEmpty()) {
                 return InteractionResult.FAIL;
@@ -149,7 +149,7 @@ public class ItemBalloon extends Item {
             Direction side = source.state().getValue(DispenserBlock.FACING);
             BlockPos sourcePos = source.pos();
             BlockPos offsetPos = sourcePos.relative(side);
-            List<LivingEntity> entities = source.level().getEntitiesOfClass(LivingEntity.class, new AABB(offsetPos, offsetPos.offset(1, 1, 1)));
+            List<LivingEntity> entities = source.level().getEntitiesOfClass(LivingEntity.class, new AABB(offsetPos));
             boolean latched = false;
 
             for (LivingEntity entity : entities) {

@@ -424,7 +424,7 @@ public class MekanismBlocks {
         String name = ore.getResource().getRegistrySuffix() + "_ore";
         BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> stoneOre = registerBlock(name, () -> new BlockOre(ore));
         BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> deepslateOre = BLOCKS.registerDefaultProperties("deepslate_" + name,
-              () -> new BlockOre(ore, BlockBehaviour.Properties.copy(stoneOre.getBlock()).mapColor(MapColor.DEEPSLATE)
+              () -> new BlockOre(ore, BlockBehaviour.Properties.ofLegacyCopy(stoneOre.getBlock()).mapColor(MapColor.DEEPSLATE)
                     .strength(4.5F, 3).sound(SoundType.DEEPSLATE)), ItemBlockTooltip::new);
         return new OreBlockType(stoneOre, deepslateOre);
     }

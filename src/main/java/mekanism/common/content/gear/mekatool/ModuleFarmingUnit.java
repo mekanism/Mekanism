@@ -331,7 +331,9 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
                 case UP, DOWN -> new Vec3i(radius, 0, radius);
                 case SOUTH, NORTH -> new Vec3i(radius, radius, 0);
             };
-            AABB box = new AABB(pos.subtract(adjustment), pos.offset(adjustment));
+            BlockPos first = pos.subtract(adjustment);
+            BlockPos second = pos.offset(adjustment);
+            AABB box = new AABB(first.getX(), first.getY(), first.getZ(), second.getX(), second.getY(), second.getZ());
             return BlockPos.betweenClosed(BlockPos.containing(box.minX, box.minY, box.minZ), BlockPos.containing(box.maxX, box.maxY, box.maxZ));
         }
 

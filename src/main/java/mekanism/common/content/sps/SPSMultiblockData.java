@@ -70,7 +70,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     @Override
     public void onCreated(Level world) {
         super.onCreated(world);
-        deathZone = new AABB(getMinPos().offset(1, 1, 1), getMaxPos());
+        deathZone = AABB.encapsulatingFullBlocks(getMinPos().offset(1, 1, 1), getMaxPos().offset(-1, -1, -1));
     }
 
     private long getMaxInputGas() {

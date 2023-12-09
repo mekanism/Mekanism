@@ -155,7 +155,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         biomeAmbientTemp = calculateAverageAmbientTemperature(world);
         // update the heat capacity now that we've read
         heatCapacitor.setHeatCapacity(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get() * locations.size(), true);
-        hotZone = new AABB(getMinPos().offset(1, 1, 1), getMaxPos());
+        hotZone = AABB.encapsulatingFullBlocks(getMinPos().offset(1, 1, 1), getMaxPos().offset(-1, -1, -1));
     }
 
     @Override

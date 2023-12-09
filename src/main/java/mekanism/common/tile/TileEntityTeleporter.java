@@ -589,14 +589,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     public AABB getTeleporterBoundingBox(@NotNull Direction frameDirection) {
         //Note: We only include the area inside the frame, we don't bother including the teleporter's block itself
-        return switch (frameDirection) {
-            case UP -> new AABB(worldPosition.above(), worldPosition.offset(1, 3, 1));
-            case DOWN -> new AABB(worldPosition, worldPosition.offset(1, -2, 1));
-            case EAST -> new AABB(worldPosition.east(), worldPosition.offset(3, 1, 1));
-            case WEST -> new AABB(worldPosition, worldPosition.offset(-2, 1, 1));
-            case NORTH -> new AABB(worldPosition, worldPosition.offset(1, 1, -2));
-            case SOUTH -> new AABB(worldPosition.south(), worldPosition.offset(1, 1, 3));
-        };
+        //TODO - 1.20.4: Test this
+        return AABB.encapsulatingFullBlocks(worldPosition.relative(frameDirection), worldPosition.relative(frameDirection, 2));
     }
 
     @Override

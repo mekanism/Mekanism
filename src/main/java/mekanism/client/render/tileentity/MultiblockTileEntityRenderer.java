@@ -50,7 +50,7 @@ public abstract class MultiblockTileEntityRenderer<MULTIBLOCK extends Multiblock
                 //TODO: Eventually we may want to look into caching this
                 //Note: We do basically the full dimensions as it still is a lot smaller than always rendering it, and makes sure no matter
                 // how the specific multiblock wants to render, that it is being viewed
-                return new AABB(multiblock.getMinPos(), multiblock.getMaxPos().offset(1, 1, 1));
+                return AABB.encapsulatingFullBlocks(multiblock.getMinPos(), multiblock.getMaxPos());
             }
         }
         return super.getRenderBoundingBox(tile);
