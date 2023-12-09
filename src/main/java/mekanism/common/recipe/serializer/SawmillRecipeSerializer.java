@@ -40,7 +40,10 @@ public class SawmillRecipeSerializer implements RecipeSerializer<BasicSawmillRec
                   IngredientCreatorAccess.item().codec().fieldOf(JsonConstants.INPUT).forGetter(SawmillRecipe::getInput),
                   SerializerHelper.oneRequired(secondaryOutputField, mainOutputFieldBase, BasicSawmillRecipe::getMainOutputRaw),
                   secondaryOutputField,
-                  SerializerHelper.dependentOptionality(secondaryOutputField, secondaryChanceFieldBase, sawmillRecipe -> Optional.of(sawmillRecipe.getSecondaryChance()))
+                  SerializerHelper.dependentOptionality(secondaryOutputField, secondaryChanceFieldBase, sawmillRecipe -> {
+                      double secondaryChance = sawmillRecipe.getSecondaryChance();
+                      return secondaryChance == 0 ? Optional.empty() : Optional.of(secondaryChance);
+                  })
             ).apply(instance,
                   (input, mainOutput, secondaryOutput, secondChance) -> factory.create(input, mainOutput.orElse(ItemStack.EMPTY), secondaryOutput.orElse(ItemStack.EMPTY), secondChance.orElse(0D))
             ));
