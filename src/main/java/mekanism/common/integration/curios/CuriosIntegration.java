@@ -17,8 +17,10 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 public class CuriosIntegration {
 
@@ -38,13 +40,15 @@ public class CuriosIntegration {
 
     @Nullable
     public static IItemHandler getCuriosInventory(LivingEntity entity) {
-        return null;//TODO - 1.20.2: Curios update
-        //return CuriosApi.getCuriosInventory(entity).map(ICuriosItemHandler::getEquippedCurios);
+        return entity.getCapability(CuriosCapability.ITEM_HANDLER);
     }
 
     public static Optional<SlotResult> findFirstCurioAsResult(@NotNull LivingEntity entity, Predicate<ItemStack> filter) {
-        return Optional.empty();//TODO - 1.20.2: Curios update
-        //return CuriosApi.getCuriosInventory(entity).map(handler -> handler.findFirstCurio(filter));
+        ICuriosItemHandler capability = entity.getCapability(CuriosCapability.INVENTORY);
+        if (capability == null) {
+            return Optional.empty();
+        }
+        return capability.findFirstCurio(filter);
     }
 
     public static ItemStack findFirstCurio(@NotNull LivingEntity entity, Predicate<ItemStack> filter) {
@@ -54,11 +58,13 @@ public class CuriosIntegration {
     }
 
     public static ItemStack getCurioStack(@NotNull LivingEntity entity, String slotType, int slot) {
-        return ItemStack.EMPTY;//TODO - 1.20.2: Curios update
-        //return CuriosApi.getCuriosInventory(entity)
-        //      .resolve()
-        //      .flatMap(handler -> handler.getStacksHandler(slotType))
-        //      .map(handler -> handler.getStacks().getStackInSlot(slot))
-        //      .orElse(ItemStack.EMPTY);
+        ICuriosItemHandler capability = entity.getCapability(CuriosCapability.INVENTORY);
+        if (capability == null) {
+            return ItemStack.EMPTY;
+        }
+        return capability
+              .getStacksHandler(slotType)
+              .map(handler -> handler.getStacks().getStackInSlot(slot))
+              .orElse(ItemStack.EMPTY);
     }
 }
