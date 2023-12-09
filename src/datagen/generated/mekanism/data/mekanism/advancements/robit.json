@@ -28,5 +28,10 @@
       "translate": "advancements.mekanism.robit.title"
     }
   },
+  "requirements": [
+    [
+      "summon"
+    ]
+  ],
   "sends_telemetry_event": true
 }

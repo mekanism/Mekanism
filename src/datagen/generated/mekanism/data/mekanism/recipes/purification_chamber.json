@@ -1,5 +1,6 @@
 {
   "type": "mekanism:mek_data",
+  "category": "misc",
   "key": {
     "A": {
       "tag": "mekanism:alloys/infused"

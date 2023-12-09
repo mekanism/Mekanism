@@ -8,11 +8,9 @@
   "itemInput": {
     "ingredient": {
       "type": "neoforge:nbt",
-      "Count": 1,
-      "id": "minecraft:bow",
-      "tag": {
-        "Damage": 0
-      }
+      "item": "minecraft:bow",
+      "strict": true,
+      "tag": "{Damage:0}"
     }
   },
   "output": {

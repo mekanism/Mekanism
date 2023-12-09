@@ -25,5 +25,10 @@
       "translate": "advancements.mekanism.steel_ingot.title"
     }
   },
+  "requirements": [
+    [
+      "ingot_steel"
+    ]
+  ],
   "sends_telemetry_event": true
 }

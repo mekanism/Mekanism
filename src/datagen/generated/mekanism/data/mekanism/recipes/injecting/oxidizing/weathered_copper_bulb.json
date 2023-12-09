@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:injecting",
+  "chemicalInput": {
+    "amount": 1,
+    "gas": "mekanism:oxygen"
+  },
+  "itemInput": {
+    "ingredient": {
+      "item": "minecraft:exposed_copper_bulb"
+    }
+  },
+  "output": {
+    "item": "minecraft:weathered_copper_bulb"
+  }
+}

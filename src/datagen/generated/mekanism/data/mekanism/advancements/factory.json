@@ -61,5 +61,10 @@
       "translate": "advancements.mekanism.factory.title"
     }
   },
+  "requirements": [
+    [
+      "factory"
+    ]
+  ],
   "sends_telemetry_event": true
 }

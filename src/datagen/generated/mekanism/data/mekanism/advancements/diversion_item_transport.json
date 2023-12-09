@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.diversion_item_transport.title"
     }
   },
+  "requirements": [
+    [
+      "diversion_transporter"
+    ]
+  ],
   "sends_telemetry_event": true
 }

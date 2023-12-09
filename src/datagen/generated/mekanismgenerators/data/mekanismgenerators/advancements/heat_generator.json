@@ -25,5 +25,10 @@
       "translate": "advancements.mekanismgenerators.heat_generator.title"
     }
   },
+  "requirements": [
+    [
+      "heat_generator"
+    ]
+  ],
   "sends_telemetry_event": true
 }

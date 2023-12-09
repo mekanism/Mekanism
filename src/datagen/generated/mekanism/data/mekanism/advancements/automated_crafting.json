@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.automated_crafting.title"
     }
   },
+  "requirements": [
+    [
+      "formulaic_assemblicator"
+    ]
+  ],
   "sends_telemetry_event": true
 }

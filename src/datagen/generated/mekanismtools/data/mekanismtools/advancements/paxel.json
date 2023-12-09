@@ -37,5 +37,10 @@
       "translate": "advancements.mekanismtools.paxel.title"
     }
   },
+  "requirements": [
+    [
+      "any_paxel"
+    ]
+  ],
   "sends_telemetry_event": true
 }

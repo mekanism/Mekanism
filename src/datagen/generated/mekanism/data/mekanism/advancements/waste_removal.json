@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.waste_removal.title"
     }
   },
+  "requirements": [
+    [
+      "radioactive_waste_barrel"
+    ]
+  ],
   "sends_telemetry_event": true
 }

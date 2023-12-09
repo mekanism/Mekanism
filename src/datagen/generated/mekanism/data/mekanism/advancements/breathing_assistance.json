@@ -31,5 +31,10 @@
       "translate": "advancements.mekanism.breathing_assistance.title"
     }
   },
+  "requirements": [
+    [
+      "scuba_gear"
+    ]
+  ],
   "sends_telemetry_event": true
 }

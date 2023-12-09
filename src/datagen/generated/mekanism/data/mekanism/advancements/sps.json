@@ -38,5 +38,13 @@
       "translate": "advancements.mekanism.sps.title"
     }
   },
+  "requirements": [
+    [
+      "sps_casing"
+    ],
+    [
+      "sps_port"
+    ]
+  ],
   "sends_telemetry_event": true
 }

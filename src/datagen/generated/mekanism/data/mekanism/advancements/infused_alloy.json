@@ -25,5 +25,10 @@
       "translate": "advancements.mekanism.infused_alloy.title"
     }
   },
+  "requirements": [
+    [
+      "alloy_infused"
+    ]
+  ],
   "sends_telemetry_event": true
 }

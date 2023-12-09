@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.sawmill.title"
     }
   },
+  "requirements": [
+    [
+      "precision_sawmill"
+    ]
+  ],
   "sends_telemetry_event": true
 }

@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.fluid_transport.title"
     }
   },
+  "requirements": [
+    [
+      "basic_mechanical_pipe"
+    ]
+  ],
   "sends_telemetry_event": true
 }

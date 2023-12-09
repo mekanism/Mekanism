@@ -30,5 +30,10 @@
       "translate": "advancements.mekanismadditions.pop_pop.title"
     }
   },
+  "requirements": [
+    [
+      "pop"
+    ]
+  ],
   "sends_telemetry_event": true
 }

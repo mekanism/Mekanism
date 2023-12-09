@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.digital_miner.title"
     }
   },
+  "requirements": [
+    [
+      "digital_miner"
+    ]
+  ],
   "sends_telemetry_event": true
 }

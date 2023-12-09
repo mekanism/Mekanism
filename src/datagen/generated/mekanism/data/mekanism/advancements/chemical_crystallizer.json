@@ -50,5 +50,16 @@
       "translate": "advancements.mekanism.chemical_crystallizer.title"
     }
   },
+  "requirements": [
+    [
+      "chemical_crystallizer"
+    ],
+    [
+      "chemical_washer"
+    ],
+    [
+      "chemical_dissolution_chamber"
+    ]
+  ],
   "sends_telemetry_event": true
 }

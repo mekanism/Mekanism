@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.teleportation_core.title"
     }
   },
+  "requirements": [
+    [
+      "teleportation_core"
+    ]
+  ],
   "sends_telemetry_event": true
 }

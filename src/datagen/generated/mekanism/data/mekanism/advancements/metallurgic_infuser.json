@@ -25,5 +25,10 @@
       "translate": "advancements.mekanism.metallurgic_infuser.title"
     }
   },
+  "requirements": [
+    [
+      "metallurgic_infuser"
+    ]
+  ],
   "sends_telemetry_event": true
 }

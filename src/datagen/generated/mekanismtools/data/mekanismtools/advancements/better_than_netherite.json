@@ -31,5 +31,10 @@
       "translate": "advancements.mekanismtools.better_than_netherite.title"
     }
   },
+  "requirements": [
+    [
+      "armor"
+    ]
+  ],
   "sends_telemetry_event": true
 }

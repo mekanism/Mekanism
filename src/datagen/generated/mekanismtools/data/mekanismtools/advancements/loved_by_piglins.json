@@ -31,5 +31,10 @@
       "translate": "advancements.mekanismtools.loved_by_piglins.title"
     }
   },
+  "requirements": [
+    [
+      "armor"
+    ]
+  ],
   "sends_telemetry_event": true
 }

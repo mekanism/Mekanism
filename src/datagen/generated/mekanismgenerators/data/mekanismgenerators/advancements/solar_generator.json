@@ -26,5 +26,10 @@
       "translate": "advancements.mekanismgenerators.solar_generator.title"
     }
   },
+  "requirements": [
+    [
+      "solar_generator"
+    ]
+  ],
   "sends_telemetry_event": true
 }

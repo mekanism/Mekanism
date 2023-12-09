@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.heat_transport.title"
     }
   },
+  "requirements": [
+    [
+      "basic_thermodynamic_conductor"
+    ]
+  ],
   "sends_telemetry_event": true
 }

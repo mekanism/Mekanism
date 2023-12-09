@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:injecting",
+  "chemicalInput": {
+    "amount": 1,
+    "gas": "mekanism:oxygen"
+  },
+  "itemInput": {
+    "ingredient": {
+      "item": "minecraft:copper_trapdoor"
+    }
+  },
+  "output": {
+    "item": "minecraft:exposed_copper_trapdoor"
+  }
+}

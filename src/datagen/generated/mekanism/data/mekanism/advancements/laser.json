@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.laser.title"
     }
   },
+  "requirements": [
+    [
+      "laser"
+    ]
+  ],
   "sends_telemetry_event": true
 }

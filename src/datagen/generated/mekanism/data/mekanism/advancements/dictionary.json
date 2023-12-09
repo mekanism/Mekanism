@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.dictionary.title"
     }
   },
+  "requirements": [
+    [
+      "dictionary"
+    ]
+  ],
   "sends_telemetry_event": true
 }

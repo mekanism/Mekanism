@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.qio_exporter.title"
     }
   },
+  "requirements": [
+    [
+      "qio_exporter"
+    ]
+  ],
   "sends_telemetry_event": true
 }

@@ -42,5 +42,10 @@
       "translate": "advancements.mekanism.upgraded_mekasuit.title"
     }
   },
+  "requirements": [
+    [
+      "maxed_gear"
+    ]
+  ],
   "sends_telemetry_event": true
 }

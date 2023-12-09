@@ -30,5 +30,10 @@
       "translate": "advancements.mekanism.installer.title"
     }
   },
+  "requirements": [
+    [
+      "installer"
+    ]
+  ],
   "sends_telemetry_event": true
 }

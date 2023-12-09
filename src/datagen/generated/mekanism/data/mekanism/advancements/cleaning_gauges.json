@@ -20,5 +20,10 @@
       "translate": "advancements.mekanism.cleaning_gauges.title"
     }
   },
+  "requirements": [
+    [
+      "use_dropper"
+    ]
+  ],
   "sends_telemetry_event": true
 }

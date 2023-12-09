@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:oxidized_copper_door"
+    }
+  },
+  "output": {
+    "item": "minecraft:weathered_copper_door"
+  }
+}

@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.alarm.title"
     }
   },
+  "requirements": [
+    [
+      "industrial_alarm"
+    ]
+  ],
   "sends_telemetry_event": true
 }

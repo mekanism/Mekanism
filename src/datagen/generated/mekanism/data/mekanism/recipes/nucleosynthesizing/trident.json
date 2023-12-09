@@ -8,11 +8,9 @@
   "itemInput": {
     "ingredient": {
       "type": "neoforge:nbt",
-      "Count": 1,
-      "id": "minecraft:diamond_sword",
-      "tag": {
-        "Damage": 0
-      }
+      "item": "minecraft:diamond_sword",
+      "strict": true,
+      "tag": "{Damage:0}"
     }
   },
   "output": {

@@ -27,5 +27,10 @@
       "translate": "advancements.mekanism.injection_chamber.title"
     }
   },
+  "requirements": [
+    [
+      "chemical_injection_chamber"
+    ]
+  ],
   "sends_telemetry_event": true
 }

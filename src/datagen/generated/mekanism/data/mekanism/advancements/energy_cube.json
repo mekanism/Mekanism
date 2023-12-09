@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.energy_cube.title"
     }
   },
+  "requirements": [
+    [
+      "basic_energy_cube"
+    ]
+  ],
   "sends_telemetry_event": true
 }

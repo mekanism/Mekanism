@@ -28,5 +28,13 @@
       "translate": "advancements.mekanism.teleporter.title"
     }
   },
+  "requirements": [
+    [
+      "teleporter"
+    ],
+    [
+      "teleport"
+    ]
+  ],
   "sends_telemetry_event": true
 }

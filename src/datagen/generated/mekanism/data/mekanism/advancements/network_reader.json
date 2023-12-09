@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.network_reader.title"
     }
   },
+  "requirements": [
+    [
+      "network_reader"
+    ]
+  ],
   "sends_telemetry_event": true
 }

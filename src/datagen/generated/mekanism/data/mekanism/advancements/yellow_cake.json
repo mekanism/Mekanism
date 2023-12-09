@@ -27,5 +27,10 @@
       "translate": "advancements.mekanism.yellow_cake.title"
     }
   },
+  "requirements": [
+    [
+      "yellow_cake_uranium"
+    ]
+  ],
   "sends_telemetry_event": true
 }

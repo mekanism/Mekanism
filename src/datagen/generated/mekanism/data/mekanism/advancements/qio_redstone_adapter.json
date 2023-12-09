@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.qio_redstone_adapter.title"
     }
   },
+  "requirements": [
+    [
+      "qio_redstone_adapter"
+    ]
+  ],
   "sends_telemetry_event": true
 }

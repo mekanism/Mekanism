@@ -24,5 +24,10 @@
       "translate": "advancements.mekanism.environmental_radiation.title"
     }
   },
+  "requirements": [
+    [
+      "use_geiger_counter"
+    ]
+  ],
   "sends_telemetry_event": true
 }

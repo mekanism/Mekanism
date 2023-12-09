@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.machine_security.title"
     }
   },
+  "requirements": [
+    [
+      "security_desk"
+    ]
+  ],
   "sends_telemetry_event": true
 }

@@ -27,5 +27,10 @@
       "translate": "advancements.mekanism.atomic_alloy.title"
     }
   },
+  "requirements": [
+    [
+      "alloy_atomic"
+    ]
+  ],
   "sends_telemetry_event": true
 }

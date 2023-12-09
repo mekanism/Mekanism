@@ -25,5 +25,10 @@
       "translate": "advancements.mekanism.quantum_entangloporter.title"
     }
   },
+  "requirements": [
+    [
+      "quantum_entangloporter"
+    ]
+  ],
   "sends_telemetry_event": true
 }

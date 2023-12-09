@@ -25,5 +25,10 @@
       "translate": "advancements.mekanism.qio_drive_array.title"
     }
   },
+  "requirements": [
+    [
+      "qio_drive_array"
+    ]
+  ],
   "sends_telemetry_event": true
 }

@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.advanced_qio_drive.title"
     }
   },
+  "requirements": [
+    [
+      "qio_drive_hyper_dense"
+    ]
+  ],
   "sends_telemetry_event": true
 }

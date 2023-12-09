@@ -26,5 +26,13 @@
       "translate": "advancements.mekanism.configuration_copying.title"
     }
   },
+  "requirements": [
+    [
+      "copy"
+    ],
+    [
+      "paste"
+    ]
+  ],
   "sends_telemetry_event": true
 }

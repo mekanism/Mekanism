@@ -1,3 +1,4 @@
 {
-  "type": "mekanism:bin_extract"
+  "type": "mekanism:bin_extract",
+  "category": "misc"
 }

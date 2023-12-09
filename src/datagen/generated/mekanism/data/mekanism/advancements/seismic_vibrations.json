@@ -41,5 +41,16 @@
       "translate": "advancements.mekanism.seismic_vibrations.title"
     }
   },
+  "requirements": [
+    [
+      "seismic_vibrator"
+    ],
+    [
+      "seismic_reader"
+    ],
+    [
+      "view_vibrations"
+    ]
+  ],
   "sends_telemetry_event": true
 }

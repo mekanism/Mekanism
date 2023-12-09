@@ -25,5 +25,10 @@
       "translate": "advancements.mekanism.running_free.title"
     }
   },
+  "requirements": [
+    [
+      "free_runners"
+    ]
+  ],
   "sends_telemetry_event": true
 }

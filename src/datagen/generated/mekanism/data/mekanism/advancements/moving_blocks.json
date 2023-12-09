@@ -28,5 +28,13 @@
       "translate": "advancements.mekanism.moving_blocks.title"
     }
   },
+  "requirements": [
+    [
+      "cardboard_box"
+    ],
+    [
+      "unbox"
+    ]
+  ],
   "sends_telemetry_event": true
 }

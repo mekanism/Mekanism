@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.sna.title"
     }
   },
+  "requirements": [
+    [
+      "solar_neutron_activator"
+    ]
+  ],
   "sends_telemetry_event": true
 }

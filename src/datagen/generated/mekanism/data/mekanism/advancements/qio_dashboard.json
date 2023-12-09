@@ -25,5 +25,10 @@
       "translate": "advancements.mekanism.qio_dashboard.title"
     }
   },
+  "requirements": [
+    [
+      "qio_dashboard"
+    ]
+  ],
   "sends_telemetry_event": true
 }

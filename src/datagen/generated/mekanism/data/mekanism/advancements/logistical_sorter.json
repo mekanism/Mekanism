@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.logistical_sorter.title"
     }
   },
+  "requirements": [
+    [
+      "logistical_sorter"
+    ]
+  ],
   "sends_telemetry_event": true
 }

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:weathered_chiseled_copper"
+    }
+  },
+  "output": {
+    "item": "minecraft:exposed_chiseled_copper"
+  }
+}

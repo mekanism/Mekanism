@@ -27,5 +27,10 @@
       "translate": "advancements.mekanism.ultimate_control_circuit.title"
     }
   },
+  "requirements": [
+    [
+      "ultimate_control_circuit"
+    ]
+  ],
   "sends_telemetry_event": true
 }

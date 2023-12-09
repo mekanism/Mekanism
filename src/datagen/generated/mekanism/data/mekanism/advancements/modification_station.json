@@ -25,5 +25,10 @@
       "translate": "advancements.mekanism.modification_station.title"
     }
   },
+  "requirements": [
+    [
+      "modification_station"
+    ]
+  ],
   "sends_telemetry_event": true
 }

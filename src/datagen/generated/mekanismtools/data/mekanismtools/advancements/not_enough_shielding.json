@@ -32,5 +32,10 @@
       "translate": "advancements.mekanismtools.not_enough_shielding.title"
     }
   },
+  "requirements": [
+    [
+      "shields"
+    ]
+  ],
   "sends_telemetry_event": true
 }

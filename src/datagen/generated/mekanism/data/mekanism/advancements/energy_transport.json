@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.energy_transport.title"
     }
   },
+  "requirements": [
+    [
+      "basic_universal_cable"
+    ]
+  ],
   "sends_telemetry_event": true
 }

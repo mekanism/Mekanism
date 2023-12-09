@@ -46,5 +46,10 @@
       "translate": "advancements.mekanism.mekasuit.title"
     }
   },
+  "requirements": [
+    [
+      "full_set"
+    ]
+  ],
   "sends_telemetry_event": true
 }

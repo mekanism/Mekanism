@@ -25,5 +25,10 @@
       "translate": "advancements.mekanism.stone_generator.title"
     }
   },
+  "requirements": [
+    [
+      "upgrade_stone_generator"
+    ]
+  ],
   "sends_telemetry_event": true
 }

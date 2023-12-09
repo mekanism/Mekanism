@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.nucleosynthesizer.title"
     }
   },
+  "requirements": [
+    [
+      "antiprotonic_nucleosynthesizer"
+    ]
+  ],
   "sends_telemetry_event": true
 }

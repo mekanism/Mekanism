@@ -30,5 +30,10 @@
       "translate": "advancements.mekanism.materials.title"
     }
   },
+  "requirements": [
+    [
+      "material"
+    ]
+  ],
   "sends_telemetry_event": true
 }

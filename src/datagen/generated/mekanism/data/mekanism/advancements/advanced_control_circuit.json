@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.advanced_control_circuit.title"
     }
   },
+  "requirements": [
+    [
+      "advanced_control_circuit"
+    ]
+  ],
   "sends_telemetry_event": true
 }

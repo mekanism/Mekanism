@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.painting_machine.title"
     }
   },
+  "requirements": [
+    [
+      "painting_machine"
+    ]
+  ],
   "sends_telemetry_event": true
 }

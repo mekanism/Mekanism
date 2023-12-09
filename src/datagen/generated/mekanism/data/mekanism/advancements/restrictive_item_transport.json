@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.restrictive_item_transport.title"
     }
   },
+  "requirements": [
+    [
+      "restrictive_transporter"
+    ]
+  ],
   "sends_telemetry_event": true
 }

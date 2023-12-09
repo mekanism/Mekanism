@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.simple_mass_storage.title"
     }
   },
+  "requirements": [
+    [
+      "basic_bin"
+    ]
+  ],
   "sends_telemetry_event": true
 }

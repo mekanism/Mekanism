@@ -25,5 +25,10 @@
       "translate": "advancements.mekanism.disassembler.title"
     }
   },
+  "requirements": [
+    [
+      "atomic_disassembler"
+    ]
+  ],
   "sends_telemetry_event": true
 }

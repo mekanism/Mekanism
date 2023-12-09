@@ -19,5 +19,10 @@
       "translate": "advancements.mekanism.robit_aesthetics.title"
     }
   },
+  "requirements": [
+    [
+      "change_skin"
+    ]
+  ],
   "sends_telemetry_event": true
 }

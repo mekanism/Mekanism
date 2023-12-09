@@ -20,5 +20,10 @@
       "translate": "advancements.mekanism.radiation_poisoning.title"
     }
   },
+  "requirements": [
+    [
+      "poisoned"
+    ]
+  ],
   "sends_telemetry_event": true
 }

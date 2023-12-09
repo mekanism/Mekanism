@@ -38,5 +38,13 @@
       "translate": "advancements.mekanism.stabilizing_chunks.title"
     }
   },
+  "requirements": [
+    [
+      "dimensional_stabilizer"
+    ],
+    [
+      "upgrade_anchor"
+    ]
+  ],
   "sends_telemetry_event": true
 }

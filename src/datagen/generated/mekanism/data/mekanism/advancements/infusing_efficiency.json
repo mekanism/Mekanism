@@ -23,5 +23,10 @@
       "translate": "advancements.mekanism.infusing_efficiency.title"
     }
   },
+  "requirements": [
+    [
+      "enriched_material"
+    ]
+  ],
   "sends_telemetry_event": true
 }

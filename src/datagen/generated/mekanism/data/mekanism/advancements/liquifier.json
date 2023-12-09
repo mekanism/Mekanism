@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.liquifier.title"
     }
   },
+  "requirements": [
+    [
+      "nutritional_liquifier"
+    ]
+  ],
   "sends_telemetry_event": true
 }

@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.pump.title"
     }
   },
+  "requirements": [
+    [
+      "electric_pump"
+    ]
+  ],
   "sends_telemetry_event": true
 }

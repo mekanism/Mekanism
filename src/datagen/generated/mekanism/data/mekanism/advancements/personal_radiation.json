@@ -24,5 +24,10 @@
       "translate": "advancements.mekanism.personal_radiation.title"
     }
   },
+  "requirements": [
+    [
+      "use_dosimeter"
+    ]
+  ],
   "sends_telemetry_event": true
 }

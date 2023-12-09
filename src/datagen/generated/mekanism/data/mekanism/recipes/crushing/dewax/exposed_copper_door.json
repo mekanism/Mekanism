@@ -2,11 +2,10 @@
   "type": "mekanism:crushing",
   "input": {
     "ingredient": {
-      "item": "minecraft:grass"
+      "item": "minecraft:waxed_exposed_copper_door"
     }
   },
   "output": {
-    "count": 2,
-    "item": "mekanism:bio_fuel"
+    "item": "minecraft:exposed_copper_door"
   }
 }

@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.item_transport.title"
     }
   },
+  "requirements": [
+    [
+      "basic_logistical_transporter"
+    ]
+  ],
   "sends_telemetry_event": true
 }

@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:combining",
+  "extraInput": {
+    "ingredient": {
+      "item": "minecraft:honeycomb"
+    }
+  },
+  "mainInput": {
+    "ingredient": {
+      "item": "minecraft:weathered_chiseled_copper"
+    }
+  },
+  "output": {
+    "item": "minecraft:waxed_weathered_chiseled_copper"
+  }
+}

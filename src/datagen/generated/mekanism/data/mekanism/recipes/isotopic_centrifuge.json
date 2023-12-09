@@ -1,5 +1,6 @@
 {
   "type": "mekanism:mek_data",
+  "category": "misc",
   "key": {
     "C": {
       "tag": "forge:circuits/ultimate"

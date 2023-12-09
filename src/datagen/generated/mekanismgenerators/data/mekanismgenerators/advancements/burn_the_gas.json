@@ -26,5 +26,10 @@
       "translate": "advancements.mekanismgenerators.burn_the_gas.title"
     }
   },
+  "requirements": [
+    [
+      "gas_burning_generator"
+    ]
+  ],
   "sends_telemetry_event": true
 }

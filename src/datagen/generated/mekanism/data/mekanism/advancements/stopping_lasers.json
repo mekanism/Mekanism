@@ -17,5 +17,10 @@
       "translate": "advancements.mekanism.stopping_lasers.title"
     }
   },
+  "requirements": [
+    [
+      "block"
+    ]
+  ],
   "sends_telemetry_event": true
 }

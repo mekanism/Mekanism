@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.auto_collection.title"
     }
   },
+  "requirements": [
+    [
+      "laser_tractor_beam"
+    ]
+  ],
   "sends_telemetry_event": true
 }

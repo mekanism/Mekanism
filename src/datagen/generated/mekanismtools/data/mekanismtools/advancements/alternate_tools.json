@@ -56,5 +56,10 @@
       "translate": "advancements.mekanismtools.alternate_tools.title"
     }
   },
+  "requirements": [
+    [
+      "tools"
+    ]
+  ],
   "sends_telemetry_event": true
 }

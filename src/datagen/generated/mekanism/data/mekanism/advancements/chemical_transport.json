@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.chemical_transport.title"
     }
   },
+  "requirements": [
+    [
+      "basic_pressurized_tube"
+    ]
+  ],
   "sends_telemetry_event": true
 }

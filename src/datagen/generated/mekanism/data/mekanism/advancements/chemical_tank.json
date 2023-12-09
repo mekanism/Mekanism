@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.chemical_tank.title"
     }
   },
+  "requirements": [
+    [
+      "basic_chemical_tank"
+    ]
+  ],
   "sends_telemetry_event": true
 }

@@ -24,5 +24,10 @@
       "translate": "advancements.mekanism.personal_storage.title"
     }
   },
+  "requirements": [
+    [
+      "storage"
+    ]
+  ],
   "sends_telemetry_event": true
 }

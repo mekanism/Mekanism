@@ -27,5 +27,10 @@
       "translate": "advancements.mekanism.purification_chamber.title"
     }
   },
+  "requirements": [
+    [
+      "purification_chamber"
+    ]
+  ],
   "sends_telemetry_event": true
 }

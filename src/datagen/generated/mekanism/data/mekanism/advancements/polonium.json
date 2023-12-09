@@ -25,5 +25,10 @@
       "translate": "advancements.mekanism.polonium.title"
     }
   },
+  "requirements": [
+    [
+      "pellet_polonium"
+    ]
+  ],
   "sends_telemetry_event": true
 }

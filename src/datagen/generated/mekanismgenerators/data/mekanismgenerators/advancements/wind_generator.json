@@ -26,5 +26,10 @@
       "translate": "advancements.mekanismgenerators.wind_generator.title"
     }
   },
+  "requirements": [
+    [
+      "wind_generator"
+    ]
+  ],
   "sends_telemetry_event": true
 }

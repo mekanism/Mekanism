@@ -26,5 +26,10 @@
       "translate": "advancements.mekanism.qio_importer.title"
     }
   },
+  "requirements": [
+    [
+      "qio_importer"
+    ]
+  ],
   "sends_telemetry_event": true
 }

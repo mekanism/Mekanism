@@ -70,5 +70,22 @@
       "translate": "advancements.mekanismadditions.hurt_by_babies.title"
     }
   },
+  "requirements": [
+    [
+      "baby_creeper"
+    ],
+    [
+      "baby_enderman"
+    ],
+    [
+      "baby_skeleton"
+    ],
+    [
+      "baby_stray"
+    ],
+    [
+      "baby_wither_skeleton"
+    ]
+  ],
   "sends_telemetry_event": true
 }
