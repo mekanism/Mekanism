@@ -201,6 +201,7 @@ public class Mekanism {
         MekanismAttachmentTypes.ATTACHMENT_TYPES.register(modEventBus);
         MekanismContainerTypes.CONTAINER_TYPES.register(modEventBus);
         MekanismCreativeTabs.CREATIVE_TABS.register(modEventBus);
+        MekanismCriteriaTriggers.CRITERIA_TRIGGERS.register(modEventBus);
         MekanismEntityTypes.ENTITY_TYPES.register(modEventBus);
         MekanismTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         MekanismGameEvents.GAME_EVENTS.register(modEventBus);
@@ -341,8 +342,6 @@ public class Mekanism {
         event.enqueueWork(() -> {
             //Collect annotation scan data
             MekAnnotationScanner.collectScanData();
-            //Register advancement criteria
-            MekanismCriteriaTriggers.init();
             //Register dispenser behaviors
             MekanismFluids.FLUIDS.registerBucketDispenserBehavior();
             registerFluidTankBehaviors(MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK,

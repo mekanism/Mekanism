@@ -50,8 +50,6 @@ public class MekanismDataGenerator {
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         MekanismDatapackRegistryProvider drProvider = new MekanismDatapackRegistryProvider(output, event.getLookupProvider());
         CompletableFuture<HolderLookup.Provider> lookupProvider = drProvider.getRegistryProvider();
-        //Bootstrap our advancement triggers as common setup doesn't run
-        MekanismCriteriaTriggers.init();
         gen.addProvider(true, new BasePackMetadataGenerator(output, MekanismLang.PACK_DESCRIPTION));
         //Client side data generators
         addProvider(gen, event.includeClient(), MekanismLangProvider::new);

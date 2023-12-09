@@ -65,7 +65,7 @@ public class ItemSeismicReader extends ItemEnergized {
                 energyContainer.extract(energyUsage, Action.EXECUTE, AutomationType.MANUAL);
             }
             ServerPlayer serverPlayer = (ServerPlayer) player;
-            MekanismCriteriaTriggers.VIEW_VIBRATIONS.trigger(serverPlayer);
+            MekanismCriteriaTriggers.VIEW_VIBRATIONS.value().trigger(serverPlayer);
             MekanismContainerTypes.SEISMIC_READER.tryOpenGui(serverPlayer, hand, stack);
         }
         return InteractionResultHolder.consume(stack);

@@ -736,7 +736,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             } else if (!skinLookup.skin().isUnlocked(player)) {
                 return false;
             } else if (player instanceof ServerPlayer serverPlayer) {
-                MekanismCriteriaTriggers.CHANGE_ROBIT_SKIN.trigger(serverPlayer, skinKey);
+                MekanismCriteriaTriggers.CHANGE_ROBIT_SKIN.value().trigger(serverPlayer, skinKey);
             }
         }
         entityData.set(SKIN, skinKey);

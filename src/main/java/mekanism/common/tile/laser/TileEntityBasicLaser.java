@@ -151,7 +151,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                                 if (damageBlocked > 0) {
                                     if (livingEntity instanceof ServerPlayer player) {
                                         //If the entity is a player trigger the advancement criteria for blocking a laser with a shield
-                                        MekanismCriteriaTriggers.BLOCK_LASER.trigger(player);
+                                        MekanismCriteriaTriggers.BLOCK_LASER.value().trigger(player);
                                     }
                                     //Remove however much energy we were able to block
                                     remainingEnergy = remainingEnergy.minusEqual(energyPerDamage.multiply(damageBlocked));
@@ -241,7 +241,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                                 if (entity instanceof ServerPlayer player) {
                                     //If the damage actually went through fire the trigger
                                     boolean hardcoreTotem = totemTimesUsed != -1 && totemTimesUsed < player.getStats().getValue(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
-                                    MekanismCriteriaTriggers.DAMAGE.trigger(player, MekanismDamageTypes.LASER, hardcoreTotem);
+                                    MekanismCriteriaTriggers.DAMAGE.value().trigger(player, MekanismDamageTypes.LASER, hardcoreTotem);
                                 }
                             }
                             remainingEnergy = remainingEnergy.minusEqual(energyPerDamage.multiply(damage));

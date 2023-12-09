@@ -63,7 +63,7 @@ public class RadiationEntity implements IRadiationEntity {
                     if (entity.hurt(MekanismDamageTypes.RADIATION.source(entity.level()), strength)) {
                         //If the damage actually went through fire the trigger
                         boolean hardcoreTotem = totemTimesUsed != -1 && totemTimesUsed < player.getStats().getValue(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
-                        MekanismCriteriaTriggers.DAMAGE.trigger(player, MekanismDamageTypes.RADIATION, hardcoreTotem);
+                        MekanismCriteriaTriggers.DAMAGE.value().trigger(player, MekanismDamageTypes.RADIATION, hardcoreTotem);
                     }
                 } else {
                     entity.hurt(MekanismDamageTypes.RADIATION.source(entity.level()), strength);

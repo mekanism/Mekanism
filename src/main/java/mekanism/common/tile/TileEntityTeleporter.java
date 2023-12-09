@@ -300,7 +300,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 Entity teleportedEntity = teleportEntityTo(entity, teleWorld, teleporterTargetPos);
                 if (teleportedEntity instanceof ServerPlayer player) {
                     alignPlayer(player, teleporterTargetPos, teleporter);
-                    MekanismCriteriaTriggers.TELEPORT.trigger(player);
+                    MekanismCriteriaTriggers.TELEPORT.value().trigger(player);
                 }
                 for (Coord4D coords : activeCoords) {
                     Level world = level.dimension() == coords.dimension ? level : currentServer.getLevel(coords.dimension);

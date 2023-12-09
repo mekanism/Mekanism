@@ -71,7 +71,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
                 //TODO: Do we need to call setPlacedBy or not bother given we are setting the blockstate to what it was AND setting any tile data
                 //adjustedState.getBlock().setPlacedBy(world, pos, data.blockState, player, new ItemStack(adjustedState.getBlock()));
                 popResource(world, pos, MekanismBlocks.CARDBOARD_BOX.getItemStack());
-                MekanismCriteriaTriggers.UNBOX_CARDBOARD_BOX.trigger((ServerPlayer) player);
+                MekanismCriteriaTriggers.UNBOX_CARDBOARD_BOX.value().trigger((ServerPlayer) player);
             }
         }
         return InteractionResult.sidedSuccess(world.isClientSide);

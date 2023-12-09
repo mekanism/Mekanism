@@ -120,7 +120,7 @@ public class PacketDropperUse implements IMekanismPacket {
                     IRadiationManager.INSTANCE.dumpRadiation(coord, gasTank.getStack());
                 }
                 tank.setEmpty();
-                MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.DUMP);
+                MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DUMP);
             }
         } else {
             IChemicalHandler<CHEMICAL, STACK> handler = ChemicalUtil.getCapabilityForChemical(tank).getCapability(stack);
@@ -132,11 +132,11 @@ public class PacketDropperUse implements IMekanismPacket {
                     if (action == DropperAction.FILL_DROPPER) {
                         //Insert chemical into dropper
                         transferBetweenTanks(tank, itemTank, player);
-                        MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.FILL);
+                        MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.FILL);
                     } else if (action == DropperAction.DRAIN_DROPPER) {
                         //Extract chemical from dropper
                         transferBetweenTanks(itemTank, tank, player);
-                        MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.DRAIN);
+                        MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DRAIN);
                     }
                 }
             }
@@ -147,7 +147,7 @@ public class PacketDropperUse implements IMekanismPacket {
         if (action == DropperAction.DUMP_TANK) {
             //Dump the tank
             fluidTank.setEmpty();
-            MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.DUMP);
+            MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DUMP);
             return;
         }
         IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stack);
@@ -157,11 +157,11 @@ public class PacketDropperUse implements IMekanismPacket {
                 if (action == DropperAction.FILL_DROPPER) {
                     //Insert fluid into dropper
                     transferBetweenTanks(fluidTank, itemFluidTank, player);
-                    MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.FILL);
+                    MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.FILL);
                 } else if (action == DropperAction.DRAIN_DROPPER) {
                     //Extract fluid from dropper
                     transferBetweenTanks(itemFluidTank, fluidTank, player);
-                    MekanismCriteriaTriggers.USE_GAUGE_DROPPER.trigger(player, UseDropperAction.DRAIN);
+                    MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DRAIN);
                 }
             }
         }

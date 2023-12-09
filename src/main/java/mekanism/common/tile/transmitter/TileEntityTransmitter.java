@@ -372,7 +372,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                     stack.shrink(1);
                 }
                 if (player instanceof ServerPlayer serverPlayer) {
-                    MekanismCriteriaTriggers.ALLOY_UPGRADE.trigger(serverPlayer);
+                    MekanismCriteriaTriggers.ALLOY_UPGRADE.value().trigger(serverPlayer);
                 }
             }
         }

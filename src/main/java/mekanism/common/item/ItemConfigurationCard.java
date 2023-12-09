@@ -69,7 +69,7 @@ public class ItemConfigurationCard extends Item {
                     NBTUtils.writeRegistryEntry(data, NBTConstants.DATA_TYPE, BuiltInRegistries.BLOCK, configCardAccess.getConfigurationDataType());
                     ItemDataUtils.setCompound(stack, NBTConstants.DATA, data);
                     player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey))));
-                    MekanismCriteriaTriggers.CONFIGURATION_CARD.trigger((ServerPlayer) player, true);
+                    MekanismCriteriaTriggers.CONFIGURATION_CARD.value().trigger((ServerPlayer) player, true);
                 }
             } else {
                 CompoundTag data = getData(stack);
@@ -83,7 +83,7 @@ public class ItemConfigurationCard extends Item {
                         configCardAccess.configurationDataSet();
                         player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.DARK_GREEN, MekanismLang.CONFIG_CARD_SET.translate(EnumColor.INDIGO,
                               getConfigCardName(data))));
-                        MekanismCriteriaTriggers.CONFIGURATION_CARD.trigger((ServerPlayer) player, false);
+                        MekanismCriteriaTriggers.CONFIGURATION_CARD.value().trigger((ServerPlayer) player, false);
                     } else {
                         player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.CONFIG_CARD_UNEQUAL));
                     }
