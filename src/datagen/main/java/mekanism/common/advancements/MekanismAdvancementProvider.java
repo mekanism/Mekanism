@@ -137,8 +137,8 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         advancement(MekanismAdvancements.CONFIGURATION_COPYING)
               .display(MekanismItems.CONFIGURATION_CARD, FrameType.TASK, false)
               .andCriteria(
-                    new RecipeCriterion("copy", ConfigurationCardTrigger.TriggerInstance.copy()),
-                    new RecipeCriterion("paste", ConfigurationCardTrigger.TriggerInstance.paste())
+                    new RecipeCriterion("copy", ConfigurationCardTrigger.TriggerInstance.copyTrigger()),
+                    new RecipeCriterion("paste", ConfigurationCardTrigger.TriggerInstance.pasteTrigger())
               ).save(consumer);
 
         advancement(MekanismAdvancements.RUNNING_FREE)

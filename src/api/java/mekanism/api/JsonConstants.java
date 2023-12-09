@@ -56,6 +56,10 @@ public class JsonConstants {
     public static final String ACTION = "action";
     public static final String COPY = "copy";
     /**
+     * @since 10.5.0
+     */
+    public static final String PLAYER = "player";
+    /**
      * @since 10.3.4
      */
     public static final String DAMAGE = "damage";

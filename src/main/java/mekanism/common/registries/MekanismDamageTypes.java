@@ -1,5 +1,8 @@
 package mekanism.common.registries;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,8 +19,16 @@ import org.jetbrains.annotations.NotNull;
 
 public class MekanismDamageTypes {
 
-    private static final Map<String, MekanismDamageType> INTERNAL_DAMAGE_TYPES = new HashMap<>();
-    public static final Map<String, MekanismDamageType> DAMAGE_TYPES = Collections.unmodifiableMap(INTERNAL_DAMAGE_TYPES);
+    private static final Map<ResourceLocation, MekanismDamageType> INTERNAL_DAMAGE_TYPES = new HashMap<>();
+
+    public static Collection<MekanismDamageType> damageTypes() {
+        return Collections.unmodifiableCollection(INTERNAL_DAMAGE_TYPES.values());
+    }
+
+    public static final Codec<MekanismDamageType> CODEC = ResourceLocation.CODEC.flatXmap(rl -> {
+        MekanismDamageType damageType = INTERNAL_DAMAGE_TYPES.get(rl);
+        return damageType == null ? DataResult.error(() -> "Expected " + rl + " to represent a Mekanism damage type") : DataResult.success(damageType);
+    }, damageType -> DataResult.success(damageType.registryName()));
 
     public static final MekanismDamageType LASER = new MekanismDamageType("laser", 0.1F);
     public static final MekanismDamageType RADIATION = new MekanismDamageType("radiation");
@@ -25,7 +36,7 @@ public class MekanismDamageTypes {
     public record MekanismDamageType(ResourceKey<DamageType> key, float exhaustion) implements IHasTranslationKey {
 
         public MekanismDamageType {
-            INTERNAL_DAMAGE_TYPES.put(key.location().toString(), this);
+            INTERNAL_DAMAGE_TYPES.put(key.location(), this);
         }
 
         private MekanismDamageType(String name) {
