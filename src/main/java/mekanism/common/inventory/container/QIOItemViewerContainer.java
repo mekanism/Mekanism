@@ -478,7 +478,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             List<IScrollableSlot> list = new ArrayList<>();
             ISearchQuery query = SearchQueryParser.parse(text);
             for (IScrollableSlot slot : itemList) {
-                if (query.matches(slot.item().getInternalStack())) {
+                if (query.test(slot.item().getInternalStack())) {
                     list.add(slot);
                 }
             }

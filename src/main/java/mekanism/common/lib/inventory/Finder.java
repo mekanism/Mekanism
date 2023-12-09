@@ -1,5 +1,6 @@
 package mekanism.common.lib.inventory;
 
+import java.util.function.Predicate;
 import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.Item;
@@ -7,7 +8,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
-public interface Finder {
+@FunctionalInterface
+public interface Finder extends Predicate<ItemStack> {
 
     Finder ANY = stack -> true;
 
@@ -30,6 +32,4 @@ public interface Finder {
     static Finder modID(String modID) {
         return stack -> !stack.isEmpty() && WildcardMatcher.matches(modID, MekanismUtils.getModId(stack));
     }
-
-    boolean modifies(ItemStack stack);
 }

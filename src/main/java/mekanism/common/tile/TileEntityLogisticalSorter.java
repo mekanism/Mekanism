@@ -51,7 +51,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private final SortableFilterManager<SorterFilter<?>> filterManager = new SortableFilterManager<SorterFilter<?>>((Class) SorterFilter.class, this::markForSave);
-    private final Finder strictFinder = stack -> filterManager.getEnabledFilters().stream().noneMatch(filter -> !filter.allowDefault && filter.getFinder().modifies(stack));
+    private final Finder strictFinder = stack -> filterManager.getEnabledFilters().stream().noneMatch(filter -> !filter.allowDefault && filter.getFinder().test(stack));
 
     @SyntheticComputerMethod(getter = "getDefaultColor")
     public EnumColor color;

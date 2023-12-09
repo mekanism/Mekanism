@@ -47,7 +47,7 @@ public abstract class TransitRequest {
         for (int i = inventory.getSlots() - 1; i >= 0; i--) {
             ItemStack stack = inventory.extractItem(i, max, true);
 
-            if (!stack.isEmpty() && finder.modifies(stack)) {
+            if (!stack.isEmpty() && finder.test(stack)) {
                 HashedItem hashed = HashedItem.raw(stack);
                 int toUse = Math.min(stack.getCount(), max - ret.getCount(hashed));
                 if (toUse == 0) {

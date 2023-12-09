@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 import mekanism.common.base.TagCache;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
@@ -221,7 +222,7 @@ public class SearchQueryParser {
         private final Map<QueryType, List<String>> queryStrings = new LinkedHashMap<>();
 
         @Override
-        public boolean matches(ItemStack stack) {
+        public boolean test(ItemStack stack) {
             return queryStrings.entrySet().stream().allMatch(entry -> entry.getValue().stream().anyMatch(key -> entry.getKey().matches(key, stack)));
         }
 
@@ -248,9 +249,9 @@ public class SearchQueryParser {
         }
 
         @Override
-        public boolean matches(ItemStack stack) {
+        public boolean test(ItemStack stack) {
             // allow empty query lists to match all stacks
-            return queries.isEmpty() || queries.stream().anyMatch(query -> query.matches(stack));
+            return queries.isEmpty() || queries.stream().anyMatch(query -> query.test(stack));
         }
 
         @Override
@@ -263,9 +264,8 @@ public class SearchQueryParser {
         }
     }
 
-    public interface ISearchQuery {
-
-        boolean matches(ItemStack stack);
+    @FunctionalInterface
+    public interface ISearchQuery extends Predicate<ItemStack> {
 
         default boolean isInvalid() {
             return this == INVALID;

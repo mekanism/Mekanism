@@ -63,7 +63,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
 
         Predicate<ItemStack> canFilter;
         if (getFilterManager().hasEnabledFilters()) {
-            canFilter = stack -> getFilterManager().anyEnabledMatch(filter -> filter.getFinder().modifies(stack));
+            canFilter = stack -> getFilterManager().anyEnabledMatch(filter -> filter.getFinder().test(stack));
         } else if (importWithoutFilter) {
             // return true if we don't have any enabled filters installed, and we allow for filterless importing
             canFilter = ConstantPredicates.alwaysTrue();
