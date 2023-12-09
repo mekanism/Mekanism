@@ -9,6 +9,7 @@ import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -65,7 +66,7 @@ public class ItemDictionary extends Item {
                 if (!world.isClientSide) {
                     BlockState blockState = world.getBlockState(pos);
                     FluidState fluidState = blockState.getFluidState();
-                    Stream<TagKey<BlockEntityType<?>>> tileTags = tile == null ? Stream.empty() : tile.getType().builtInRegistryHolder().tags();
+                    Stream<TagKey<BlockEntityType<?>>> tileTags = tile == null ? Stream.empty() : RegistryUtils.getBEHolder(tile.getType()).tags();
                     //Note: We handle checking they are not empty in sendTagsToPlayer, so that we only display one if one is empty
                     if (!sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_TAGS_FOUND, blockState.getTags()) &
                         !sendTagsToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, fluidState.getTags()) &

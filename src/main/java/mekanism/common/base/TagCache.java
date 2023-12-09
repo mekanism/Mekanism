@@ -20,6 +20,7 @@ import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
@@ -67,7 +68,7 @@ public final class TagCache {
         return tileEntityTypeTagCache.computeIfAbsent(block, b -> {
             if (b instanceof IHasTileEntity<?> hasTileEntity) {
                 //If it is one of our blocks, short circuit and just lookup the tile's type directly
-                return getTagsAsStrings(hasTileEntity.getTileType().get().builtInRegistryHolder());
+                return getTagsAsStrings(RegistryUtils.getBEHolder(hasTileEntity.getTileType().get()));
             }
             BlockState state = b.defaultBlockState();
             if (state.hasBlockEntity()) {
@@ -76,7 +77,7 @@ public final class TagCache {
                 // that we don't know about and don't handle properly
                 return getTagsAsStrings(StreamSupport.stream(BuiltInRegistries.BLOCK_ENTITY_TYPE.spliterator(), false)
                       .filter(type -> type.isValid(state))
-                      .flatMap(type -> type.builtInRegistryHolder().tags())
+                      .flatMap(type -> RegistryUtils.getBEHolder(type).tags())
                       .distinct()
                 );
             }

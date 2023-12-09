@@ -18,7 +18,6 @@ import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder.Reference;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -31,7 +30,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -91,12 +89,9 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                     return InteractionResult.FAIL;
                 }
                 BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-                if (tile != null) {
-                    Reference<BlockEntityType<?>> holder = tile.getType().builtInRegistryHolder();
-                    if (holder != null && holder.is(MekanismTags.TileEntityTypes.CARDBOARD_BLACKLIST)) {
-                        //If the tile is in the tile entity type blacklist don't allow them to pick it up with a cardboard box
-                        return InteractionResult.FAIL;
-                    }
+                if (tile != null && RegistryUtils.getBEHolder(tile.getType()).is(MekanismTags.TileEntityTypes.CARDBOARD_BLACKLIST)) {
+                    //If the tile is in the tile entity type blacklist don't allow them to pick it up with a cardboard box
+                    return InteractionResult.FAIL;
                 }
                 if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                     //If the tile is in the tile entity type blacklist or the player cannot access the tile

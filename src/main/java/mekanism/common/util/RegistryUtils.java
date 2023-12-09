@@ -1,6 +1,7 @@
 package mekanism.common.util;
 
 import java.util.Optional;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,6 +18,15 @@ import org.jetbrains.annotations.Nullable;
 public class RegistryUtils {
 
     private RegistryUtils() {
+    }
+
+    public static Holder<BlockEntityType<?>> getBEHolder(BlockEntityType<?> type) {
+        Holder<BlockEntityType<?>> holder = type.builtInRegistryHolder();
+        //I don't believe this can ever be null, but just in case the nullability annotation is valid... handle it
+        if (holder == null) {
+            return BuiltInRegistries.BLOCK_ENTITY_TYPE.wrapAsHolder(type);
+        }
+        return holder;
     }
 
     public static ResourceLocation getName(MenuType<?> element) {
