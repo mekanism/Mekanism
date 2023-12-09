@@ -76,7 +76,7 @@ public class FormationProtocol<T extends MultiblockData> {
      */
     public FormationResult doUpdate() {
         IStructureValidator<T> validator = manager.createValidator();
-        Level world = pointer.getTileWorld();
+        Level world = pointer.getLevel();
         validator.init(world, manager, structure);
         if (!validator.precheck()) {
             return FormationResult.FAIL;
@@ -84,7 +84,7 @@ public class FormationProtocol<T extends MultiblockData> {
         StructureResult<T> result = buildStructure(validator);
         T structureFound = result.structureFound;
 
-        BlockPos pointerPos = pointer.getTilePos();
+        BlockPos pointerPos = pointer.getBlockPos();
         if (structureFound != null && structureFound.locations.contains(pointerPos)) {
             pointer.setMultiblockData(manager, structureFound);
             structureFound.setFormedForce(true);

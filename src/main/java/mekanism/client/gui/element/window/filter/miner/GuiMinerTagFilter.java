@@ -14,11 +14,11 @@ import org.jetbrains.annotations.Nullable;
 public class GuiMinerTagFilter extends GuiTagFilter<MinerTagFilter, TileEntityDigitalMiner> implements GuiMinerFilterHelper {
 
     public static GuiMinerTagFilter create(IGuiWrapper gui, TileEntityDigitalMiner tile) {
-        return new GuiMinerTagFilter(gui, (gui.getWidth() - 173) / 2, 30, tile, null);
+        return new GuiMinerTagFilter(gui, (gui.getXSize() - 173) / 2, 30, tile, null);
     }
 
     public static GuiMinerTagFilter edit(IGuiWrapper gui, TileEntityDigitalMiner tile, MinerTagFilter filter) {
-        return new GuiMinerTagFilter(gui, (gui.getWidth() - 173) / 2, 30, tile, filter);
+        return new GuiMinerTagFilter(gui, (gui.getXSize() - 173) / 2, 30, tile, filter);
     }
 
     private GuiMinerTagFilter(IGuiWrapper gui, int x, int y, TileEntityDigitalMiner tile, @Nullable MinerTagFilter origFilter) {

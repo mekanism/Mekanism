@@ -14,7 +14,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class MaterialCreator extends BaseMekanismMaterial {
+public class MaterialCreator implements BaseMekanismMaterial {
 
     private final BaseMekanismMaterial fallBack;
 
@@ -113,7 +113,7 @@ public class MaterialCreator extends BaseMekanismMaterial {
         paxelMaxUses = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + name + " paxels.")
               .defineInRange(toolKey + "PaxelMaxUses", materialDefaults.getPaxelMaxUses(), 1, Integer.MAX_VALUE));
         enchantability = CachedIntValue.wrap(config, builder.comment("Natural enchantability factor of " + name + " items.")
-              .defineInRange(toolKey + "Enchantability", materialDefaults.getCommonEnchantability(), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "Enchantability", materialDefaults.getEnchantmentValue(), 0, Integer.MAX_VALUE));
         toughness = CachedFloatValue.wrap(config, builder.comment("Base armor toughness value of " + name + " armor.")
               .defineInRange(toolKey + "Toughness", materialDefaults.getToughness(), 0, Float.MAX_VALUE));
         knockbackResistance = CachedFloatValue.wrap(config, builder.comment("Base armor knockback resistance value of " + name + " armor.")
@@ -260,7 +260,7 @@ public class MaterialCreator extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getCommonEnchantability() {
+    public int getEnchantmentValue() {
         return enchantability.get();
     }
 
@@ -280,8 +280,8 @@ public class MaterialCreator extends BaseMekanismMaterial {
     }
 
     @Override
-    public Ingredient getCommonRepairMaterial() {
-        return fallBack.getCommonRepairMaterial();
+    public Ingredient getRepairIngredient() {
+        return fallBack.getRepairIngredient();
     }
 
     @Override

@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
+public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
 
     @Override
     public int getShieldDurability() {
@@ -52,7 +52,7 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getCommonEnchantability() {
+    public int getEnchantmentValue() {
         return 14;
     }
 
@@ -107,7 +107,7 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
 
     @NotNull
     @Override
-    public Ingredient getCommonRepairMaterial() {
+    public Ingredient getRepairIngredient() {
         return Ingredient.of(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM));
     }
 

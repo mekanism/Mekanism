@@ -39,33 +39,13 @@ public interface IGuiWrapper {
         return player == null ? ItemStack.EMPTY : player.containerMenu.getCarried();
     }
 
-    default int getLeft() {
-        if (this instanceof AbstractContainerScreen<?> screen) {
-            return screen.getGuiLeft();
-        }
-        return 0;
-    }
+    int getGuiLeft();
 
-    default int getTop() {
-        if (this instanceof AbstractContainerScreen<?> screen) {
-            return screen.getGuiTop();
-        }
-        return 0;
-    }
+    int getGuiTop();
 
-    default int getWidth() {
-        if (this instanceof AbstractContainerScreen<?> screen) {
-            return screen.getXSize();
-        }
-        return 0;
-    }
+    int getXSize();
 
-    default int getHeight() {
-        if (this instanceof AbstractContainerScreen<?> screen) {
-            return screen.getYSize();
-        }
-        return 0;
-    }
+    int getYSize();
 
     default void addWindow(GuiWindow window) {
         Mekanism.logger.error("Tried to call 'addWindow' but unsupported in {}", getClass().getName());

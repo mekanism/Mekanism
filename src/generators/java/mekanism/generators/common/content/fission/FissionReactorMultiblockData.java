@@ -130,7 +130,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     public FissionReactorMultiblockData(TileEntityFissionReactorCasing tile) {
         super(tile);
         //Default biome temp to the ambient temperature at the block we are at
-        biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getTilePos());
+        biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getBlockPos());
         LongSupplier fuelCapacitySupplier = () -> fuelCapacity;
         fluidCoolantTank = VariableCapacityFluidTank.input(this, () -> cooledCoolantCapacity,
               fluid -> fluid.getFluid().is(FluidTags.WATER) && gasCoolantTank.isEmpty(), this);
@@ -416,7 +416,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     private void radiateEntities(Level world) {
         IRadiationManager radiationManager = IRadiationManager.INSTANCE;
         if (radiationManager.isRadiationEnabled() && isBurning() && world.getRandom().nextInt() % 20 == 0) {
-            List<LivingEntity> entitiesToRadiate = getWorld().getEntitiesOfClass(LivingEntity.class, hotZone);
+            List<LivingEntity> entitiesToRadiate = getLevel().getEntitiesOfClass(LivingEntity.class, hotZone);
             if (!entitiesToRadiate.isEmpty()) {
                 double wasteRadiation = getWasteTankRadioactivity(false) / 3_600F; // divide down to Sv/s
                 double magnitude = lastBurnRate + wasteRadiation;

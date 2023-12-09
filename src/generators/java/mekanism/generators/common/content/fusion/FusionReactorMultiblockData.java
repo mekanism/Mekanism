@@ -130,7 +130,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public FusionReactorMultiblockData(TileEntityFusionReactorBlock tile) {
         super(tile);
         //Default biome temp to the ambient temperature at the block we are at
-        biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getTilePos());
+        biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getBlockPos());
         lastPlasmaTemperature = biomeAmbientTemp;
         lastCaseTemperature = biomeAmbientTemp;
         plasmaTemperature = biomeAmbientTemp;
@@ -250,7 +250,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         if (world.getRandom().nextInt() % 20 != 0) {
             return;
         }
-        List<Entity> entitiesToDie = getWorld().getEntitiesOfClass(Entity.class, deathZone);
+        List<Entity> entitiesToDie = getLevel().getEntitiesOfClass(Entity.class, deathZone);
 
         for (Entity entity : entitiesToDie) {
             entity.hurt(entity.damageSources().magic(), 50_000F);
@@ -367,7 +367,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             injectionRate = rate;
             maxWater = injectionRate * MekanismGeneratorsConfig.generators.fusionWaterPerInjection.get();
             maxSteam = injectionRate * MekanismGeneratorsConfig.generators.fusionSteamPerInjection.get();
-            if (getWorld() != null && !isRemote()) {
+            if (getLevel() != null && !isRemote()) {
                 if (!waterTank.isEmpty()) {
                     waterTank.setStackSize(Math.min(waterTank.getFluidAmount(), waterTank.getCapacity()), Action.EXECUTE);
                 }

@@ -29,7 +29,7 @@ public interface ISingleRecipeLookupHandler<INPUT, RECIPE extends MekanismRecipe
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
     default boolean containsRecipe(INPUT input) {
-        return getRecipeType().getInputCache().containsInput(getHandlerWorld(), input);
+        return getRecipeType().getInputCache().containsInput(getLevel(), input);
     }
 
     /**
@@ -41,7 +41,7 @@ public interface ISingleRecipeLookupHandler<INPUT, RECIPE extends MekanismRecipe
      */
     @Nullable
     default RECIPE findFirstRecipe(INPUT input) {
-        return getRecipeType().getInputCache().findFirstRecipe(getHandlerWorld(), input);
+        return getRecipeType().getInputCache().findFirstRecipe(getLevel(), input);
     }
 
     /**

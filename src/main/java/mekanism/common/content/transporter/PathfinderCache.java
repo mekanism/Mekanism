@@ -33,7 +33,7 @@ public class PathfinderCache {
         if (cachedPaths.containsKey(uuid)) {
             Map<PathData, CachedPath> pathMap = cachedPaths.get(uuid);
             for (Direction side : sides) {
-                CachedPath test = pathMap.get(new PathData(start.getTilePos(), end, side));
+                CachedPath test = pathMap.get(new PathData(start.getBlockPos(), end, side));
                 if (ret == null || (test != null && test.cost() < ret.cost())) {
                     ret = test;
                 }

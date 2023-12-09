@@ -23,7 +23,7 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     private static final ResourceLocation LOW = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_low.png");
 
     public GuiRedstoneControlTab(IGuiWrapper gui, TileEntityMekanism tile) {
-        super(DISABLED, gui, tile, gui.getWidth(), 137, 26, 18, false);
+        super(DISABLED, gui, tile, gui.getXSize(), 137, 26, 18, false);
     }
 
     @Override

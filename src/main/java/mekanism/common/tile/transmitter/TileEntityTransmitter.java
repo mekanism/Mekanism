@@ -316,7 +316,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             List<Transmitter<?, ?, ?>> list = new ArrayList<>(transmitterNetwork.getTransmitters());
             list.sort((o1, o2) -> {
                 if (o1 != null && o2 != null) {
-                    return Double.compare(o1.getTilePos().distSqr(worldPosition), o2.getTilePos().distSqr(worldPosition));
+                    return Double.compare(o1.getBlockPos().distSqr(worldPosition), o2.getBlockPos().distSqr(worldPosition));
                 }
                 return 0;
             });
@@ -340,8 +340,8 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                     }
                     transmitter.startUpgrading();
                     TransmitterUpgradeData upgradeData = upgradeableTransmitter.getUpgradeData();
-                    BlockPos transmitterPos = transmitter.getTilePos();
-                    Level transmitterWorld = transmitter.getTileWorld();
+                    BlockPos transmitterPos = transmitter.getBlockPos();
+                    Level transmitterWorld = transmitter.getLevel();
                     if (upgradeData == null) {
                         Mekanism.logger.warn("Got no upgrade data for transmitter at position: {} in {} but it said it would be able to provide some.",
                               transmitterPos, transmitterWorld);

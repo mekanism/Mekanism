@@ -22,7 +22,7 @@ public class NetworkAcceptorCache<ACCEPTOR> {
     public void updateTransmitterOnSide(Transmitter<ACCEPTOR, ?, ?> transmitter, Direction side) {
         transmitter.refreshAcceptorConnections(side);
         ACCEPTOR acceptor = transmitter.canConnectToAcceptor(side) ? transmitter.getAcceptor(side) : null;
-        BlockPos acceptorPos = transmitter.getTilePos().relative(side);
+        BlockPos acceptorPos = transmitter.getBlockPos().relative(side);
         if (acceptor == null) {
             Map<Direction, ACCEPTOR> cached = cachedAcceptors.get(acceptorPos);
             if (cached != null) {

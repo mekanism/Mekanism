@@ -7,12 +7,12 @@ import net.minecraft.world.level.Level;
 
 public interface ITileWrapper {
 
-    BlockPos getTilePos();
+    BlockPos getBlockPos();
 
-    Level getTileWorld();
+    Level getLevel();
 
     default Coord4D getTileCoord() {
-        return new Coord4D(getTilePos(), getTileWorld());
+        return new Coord4D(getBlockPos(), getLevel());
     }
 
     default Chunk3D getTileChunk() {

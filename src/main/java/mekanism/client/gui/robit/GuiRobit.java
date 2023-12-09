@@ -28,26 +28,26 @@ public abstract class GuiRobit<CONTAINER extends AbstractContainerMenu & IEntity
     protected void addGuiElements() {
         super.addGuiElements();
         addRenderableWidget(new GuiSecurityTab(this, robit, 120));
-        addRenderableWidget(GuiSideHolder.create(this, getWidth(), 6, 106, false, false, SpecialColors.TAB_ROBIT_MENU));
-        addRenderableWidget(new MekanismImageButton(this, getWidth() + 3, 10, 18, getButtonLocation("main"),
+        addRenderableWidget(GuiSideHolder.create(this, imageWidth, 6, 106, false, false, SpecialColors.TAB_ROBIT_MENU));
+        addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 10, 18, getButtonLocation("main"),
               () -> Mekanism.packetHandler().sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_MAIN, robit)),
               getOnHover(MekanismLang.ROBIT)));
-        addRenderableWidget(new MekanismImageButton(this, getWidth() + 3, 30, 18, getButtonLocation("crafting"), () -> {
+        addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 30, 18, getButtonLocation("crafting"), () -> {
             if (shouldOpenGui(RobitGuiType.CRAFTING)) {
                 Mekanism.packetHandler().sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_CRAFTING, robit));
             }
         }, getOnHover(MekanismLang.ROBIT_CRAFTING)));
-        addRenderableWidget(new MekanismImageButton(this, getWidth() + 3, 50, 18, getButtonLocation("inventory"), () -> {
+        addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 50, 18, getButtonLocation("inventory"), () -> {
             if (shouldOpenGui(RobitGuiType.INVENTORY)) {
                 Mekanism.packetHandler().sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_INVENTORY, robit));
             }
         }, getOnHover(MekanismLang.ROBIT_INVENTORY)));
-        addRenderableWidget(new MekanismImageButton(this, getWidth() + 3, 70, 18, getButtonLocation("smelting"), () -> {
+        addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 70, 18, getButtonLocation("smelting"), () -> {
             if (shouldOpenGui(RobitGuiType.SMELTING)) {
                 Mekanism.packetHandler().sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_SMELTING, robit));
             }
         }, getOnHover(MekanismLang.ROBIT_SMELTING)));
-        addRenderableWidget(new MekanismImageButton(this, getWidth() + 3, 90, 18, getButtonLocation("repair"), () -> {
+        addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 90, 18, getButtonLocation("repair"), () -> {
             if (shouldOpenGui(RobitGuiType.REPAIR)) {
                 Mekanism.packetHandler().sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_REPAIR, robit));
             }

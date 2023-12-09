@@ -22,6 +22,6 @@ public interface ITileSound extends ITileWrapper {
     }
 
     default BlockPos getSoundPos() {
-        return getTilePos();
+        return getBlockPos();
     }
 }

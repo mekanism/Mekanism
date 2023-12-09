@@ -12,7 +12,7 @@ import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
+public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
 
     @Override
     public int getShieldDurability() {
@@ -50,7 +50,7 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getCommonEnchantability() {
+    public int getEnchantmentValue() {
         return 32;
     }
 
@@ -105,7 +105,7 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
 
     @NotNull
     @Override
-    public Ingredient getCommonRepairMaterial() {
+    public Ingredient getRepairIngredient() {
         return Ingredient.of(Tags.Items.GEMS_LAPIS);
     }
 

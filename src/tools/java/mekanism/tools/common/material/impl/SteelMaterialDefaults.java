@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SteelMaterialDefaults extends BaseMekanismMaterial {
+public class SteelMaterialDefaults implements BaseMekanismMaterial {
 
     @Override
     public int getShieldDurability() {
@@ -50,7 +50,7 @@ public class SteelMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getCommonEnchantability() {
+    public int getEnchantmentValue() {
         return 16;
     }
 
@@ -105,7 +105,7 @@ public class SteelMaterialDefaults extends BaseMekanismMaterial {
 
     @NotNull
     @Override
-    public Ingredient getCommonRepairMaterial() {
+    public Ingredient getRepairIngredient() {
         return Ingredient.of(MekanismTags.Items.INGOTS_STEEL);
     }
 

@@ -9,11 +9,11 @@ import org.jetbrains.annotations.Nullable;
 public class GuiQIOModIDFilter extends GuiModIDFilter<QIOModIDFilter, TileEntityQIOFilterHandler> implements GuiQIOFilterHelper {
 
     public static GuiQIOModIDFilter create(IGuiWrapper gui, TileEntityQIOFilterHandler tile) {
-        return new GuiQIOModIDFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, null);
+        return new GuiQIOModIDFilter(gui, (gui.getXSize() - 152) / 2, 15, tile, null);
     }
 
     public static GuiQIOModIDFilter edit(IGuiWrapper gui, TileEntityQIOFilterHandler tile, QIOModIDFilter filter) {
-        return new GuiQIOModIDFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, filter);
+        return new GuiQIOModIDFilter(gui, (gui.getXSize() - 152) / 2, 15, tile, filter);
     }
 
     private GuiQIOModIDFilter(IGuiWrapper gui, int x, int y, TileEntityQIOFilterHandler tile, @Nullable QIOModIDFilter origFilter) {

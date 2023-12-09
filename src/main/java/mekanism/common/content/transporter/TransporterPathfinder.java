@@ -89,11 +89,11 @@ public final class TransporterPathfinder {
                 public boolean isValid(Level level, BlockPos pos, @Nullable BlockEntity tile, TransporterStack stack, Direction side) {
                     return TransporterUtils.canInsert(level, pos, tile, stack.color, response.getStack(), side, false);
                 }
-            }, network, start.getTileWorld(), dest, start.getTilePos(), stack);
+            }, network, start.getLevel(), dest, start.getBlockPos(), stack);
             p.find(chunkMap);
             List<BlockPos> path = p.getPath();
             if (path.size() >= 2) {
-                PathfinderCache.addCachedPath(start, new PathData(start.getTilePos(), dest, p.getSide()), path, p.finalScore);
+                PathfinderCache.addCachedPath(start, new PathData(start.getBlockPos(), dest, p.getSide()), path, p.finalScore);
                 return new Destination(path, false, response, p.finalScore);
             }
         }
@@ -179,7 +179,7 @@ public final class TransporterPathfinder {
                 public boolean isValid(Level level, BlockPos pos, @Nullable BlockEntity tile, TransporterStack stack, Direction side) {
                     return TransporterUtils.canInsert(level, pos, tile, stack.color, stack.itemStack, side, true);
                 }
-            }, network, start.getTileWorld(), stack.homeLocation, start.getTilePos(), stack);
+            }, network, start.getLevel(), stack.homeLocation, start.getBlockPos(), stack);
             p.find(chunkMap);
             List<BlockPos> path = p.getPath();
             if (path.size() >= 2) {
@@ -188,7 +188,7 @@ public final class TransporterPathfinder {
             stack.homeLocation = null;
         }
 
-        IdlePath d = new IdlePath(network, start.getTilePos(), stack);
+        IdlePath d = new IdlePath(network, start.getBlockPos(), stack);
         Destination dest = d.find();
         if (dest == null) {
             return null;

@@ -164,7 +164,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
     private void kill(Level world) {
         if (!lastReceivedEnergy.isZero() && couldOperate && world.getRandom().nextInt() % 20 == 0) {
-            List<Entity> entitiesToDie = getWorld().getEntitiesOfClass(Entity.class, deathZone);
+            List<Entity> entitiesToDie = getLevel().getEntitiesOfClass(Entity.class, deathZone);
             for (Entity entity : entitiesToDie) {
                 entity.hurt(entity.damageSources().magic(), lastReceivedEnergy.floatValue() / 1_000F);
             }

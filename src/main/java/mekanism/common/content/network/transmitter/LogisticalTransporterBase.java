@@ -122,8 +122,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 delay = 3;
                 //Attempt to pull
                 for (Direction side : getConnections(ConnectionType.PULL)) {
-                    BlockPos inventoryPos = getTilePos().relative(side);
-                    IItemHandler inventory = Capabilities.ITEM.getCapabilityIfLoaded(getTileWorld(), inventoryPos, side.getOpposite());
+                    BlockPos inventoryPos = getBlockPos().relative(side);
+                    IItemHandler inventory = Capabilities.ITEM.getCapabilityIfLoaded(getLevel(), inventoryPos, side.getOpposite());
                     if (inventory != null) {
                         TransitRequest request = TransitRequest.anyItem(inventory, tier.getPullAmount());
                         //There's a stack available to insert into the network...
@@ -165,7 +165,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                     if (stack.progress >= 100) {
                         BlockPos prevSet = null;
                         if (stack.hasPath()) {
-                            int currentIndex = stack.getPath().indexOf(getTilePos());
+                            int currentIndex = stack.getPath().indexOf(getBlockPos());
                             if (currentIndex == 0) { //Necessary for transition reasons, not sure why
                                 deletes.add(stackId);
                                 continue;
@@ -183,7 +183,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                 } else if (stack.getPathType() != Path.NONE) {
                                     //Get the handler we are trying to insert into from the network's acceptor cache
                                     IItemHandler acceptor = network.getCachedAcceptor(next, stack.getSide(this).getOpposite());
-                                    TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(getTileWorld(), next, acceptor, 0,
+                                    TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(getLevel(), next, acceptor, 0,
                                           stack.getPathType() == Path.HOME);
                                     if (!response.isEmpty()) {
                                         //We were able to add at least part of the stack to the inventory
@@ -191,7 +191,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                         if (rejected.isEmpty()) {
                                             //Nothing was rejected (it was all accepted); remove the stack from the prediction
                                             // tracker and schedule this stack for deletion. Continue the loop thereafter
-                                            TransporterManager.remove(getTileWorld(), stack);
+                                            TransporterManager.remove(getLevel(), stack);
                                             deletes.add(stackId);
                                             continue;
                                         }
@@ -218,7 +218,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                 Direction side = stack.getSide(this);
                                 ConnectionType connectionType = getConnectionType(side);
                                 tryRecalculate = connectionType != ConnectionType.NORMAL && connectionType != ConnectionType.PUSH ||
-                                                 !TransporterUtils.canInsert(getTileWorld(), stack.getDest(), stack.color, stack.itemStack, side, pathType == Path.HOME);
+                                                 !TransporterUtils.canInsert(getLevel(), stack.getDest(), stack.color, stack.itemStack, side, pathType == Path.HOME);
                             } else {
                                 tryRecalculate = pathType == Path.NONE;
                             }
@@ -261,7 +261,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         super.remove();
         if (!isRemote()) {
             for (TransporterStack stack : getTransit()) {
-                TransporterManager.remove(getTileWorld(), stack);
+                TransporterManager.remove(getLevel(), stack);
             }
         }
     }
@@ -393,7 +393,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     private TransitResponse insert(@Nullable BlockEntity outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit,
           Function<TransporterStack, TransitResponse> pathCalculator) {
-        Direction from = WorldUtils.sideDifference(getTilePos(), outputterPos);
+        Direction from = WorldUtils.sideDifference(getBlockPos(), outputterPos);
         if (from != null && canReceiveFrom(from.getOpposite())) {
             TransporterStack stack = createInsertStack(outputterPos, color);
             if (stack.canInsertToTransporterNN(this, from, outputter)) {

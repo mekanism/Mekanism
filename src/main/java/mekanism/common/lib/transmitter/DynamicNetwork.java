@@ -55,7 +55,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                 if (transmitter != null && transmitter.isValid()) {
                     addedValidTransmitters = true;
                     if (world == null) {
-                        world = transmitter.getTileWorld();
+                        world = transmitter.getLevel();
                     }
                     for (Direction side : EnumUtils.DIRECTIONS) {
                         acceptorCache.updateTransmitterOnSide(transmitter, side);
@@ -96,7 +96,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     protected void addTransmitterFromCommit(TRANSMITTER transmitter) {
-        positionedTransmitters.put(transmitter.getTilePos(), transmitter);
+        positionedTransmitters.put(transmitter.getBlockPos(), transmitter);
     }
 
     protected void validTransmittersAdded() {
@@ -209,7 +209,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public void addTransmitter(TRANSMITTER transmitter) {
-        positionedTransmitters.put(transmitter.getTilePos(), transmitter);
+        positionedTransmitters.put(transmitter.getBlockPos(), transmitter);
     }
 
     public void removeTransmitter(TRANSMITTER transmitter) {
@@ -220,7 +220,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     private void removePositionedTransmitter(TRANSMITTER transmitter) {
-        BlockPos pos = transmitter.getTilePos();
+        BlockPos pos = transmitter.getBlockPos();
         TRANSMITTER currentTransmitter = getTransmitter(pos);
         if (currentTransmitter != null) {
             //This shouldn't be null but if it is, don't bother attempting to remove
@@ -228,7 +228,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                 Level world = this.world;
                 if (world == null) {
                     //If the world is null, grab it from the transmitter
-                    world = transmitter.getTileWorld();
+                    world = transmitter.getLevel();
                 }
                 if (world != null && world.isClientSide()) {
                     //On the client just exit instead of warning and then removing the unexpected transmitter.

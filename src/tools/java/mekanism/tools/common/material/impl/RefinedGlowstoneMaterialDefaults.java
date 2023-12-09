@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
+public class RefinedGlowstoneMaterialDefaults implements BaseMekanismMaterial {
 
     @Override
     public int getShieldDurability() {
@@ -50,7 +50,7 @@ public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getCommonEnchantability() {
+    public int getEnchantmentValue() {
         return 20;
     }
 
@@ -105,7 +105,7 @@ public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
 
     @NotNull
     @Override
-    public Ingredient getCommonRepairMaterial() {
+    public Ingredient getRepairIngredient() {
         return Ingredient.of(MekanismTags.Items.INGOTS_REFINED_GLOWSTONE);
     }
 

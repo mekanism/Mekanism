@@ -28,7 +28,7 @@ public class GuiConfirmationDialog extends GuiWindow {
     public static void show(IGuiWrapper gui, Component title, Runnable onConfirm, DialogType type) {
         int width = 140;
         int height = 33 + WrappedTextRenderer.calculateHeightRequired(gui.getFont(), title, width, width - 10);
-        gui.addWindow(new GuiConfirmationDialog(gui, (gui.getWidth() - width) / 2, (gui.getHeight() - height) / 2, width, height, title, onConfirm, type));
+        gui.addWindow(new GuiConfirmationDialog(gui, (gui.getXSize() - width) / 2, (gui.getYSize() - height) / 2, width, height, title, onConfirm, type));
     }
 
     @Override

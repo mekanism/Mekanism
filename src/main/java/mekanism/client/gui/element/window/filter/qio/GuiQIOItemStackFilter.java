@@ -13,11 +13,11 @@ import org.jetbrains.annotations.Nullable;
 public class GuiQIOItemStackFilter extends GuiItemStackFilter<QIOItemStackFilter, TileEntityQIOFilterHandler> implements GuiQIOFilterHelper {
 
     public static GuiQIOItemStackFilter create(IGuiWrapper gui, TileEntityQIOFilterHandler tile) {
-        return new GuiQIOItemStackFilter(gui, (gui.getWidth() - 185) / 2, 15, tile, null);
+        return new GuiQIOItemStackFilter(gui, (gui.getXSize() - 185) / 2, 15, tile, null);
     }
 
     public static GuiQIOItemStackFilter edit(IGuiWrapper gui, TileEntityQIOFilterHandler tile, QIOItemStackFilter filter) {
-        return new GuiQIOItemStackFilter(gui, (gui.getWidth() - 185) / 2, 15, tile, filter);
+        return new GuiQIOItemStackFilter(gui, (gui.getXSize() - 185) / 2, 15, tile, filter);
     }
 
     private GuiQIOItemStackFilter(IGuiWrapper gui, int x, int y, TileEntityQIOFilterHandler tile, @Nullable QIOItemStackFilter origFilter) {

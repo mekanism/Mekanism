@@ -67,7 +67,7 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
     }
 
     private GuiSecurityTab(IGuiWrapper gui, SecurityInfoProvider<?> provider, int y, @Nullable InteractionHand hand) {
-        super(PUBLIC, gui, provider, gui.getWidth(), y, 26, 18, false);
+        super(PUBLIC, gui, provider, gui.getXSize(), y, 26, 18, false);
         this.currentHand = hand;
     }
 

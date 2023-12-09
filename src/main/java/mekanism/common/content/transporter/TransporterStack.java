@@ -74,7 +74,7 @@ public class TransporterStack {
         buf.writeVarInt(progress);
         buf.writeBlockPos(originalLocation);
         buf.writeEnum(pathType);
-        if (pathToTarget.indexOf(transporter.getTilePos()) > 0) {
+        if (pathToTarget.indexOf(transporter.getBlockPos()) > 0) {
             buf.writeBoolean(true);
             buf.writeBlockPos(getNext(transporter));
         } else {
@@ -101,7 +101,7 @@ public class TransporterStack {
         updateTag.putInt(NBTConstants.PROGRESS, progress);
         updateTag.put(NBTConstants.ORIGINAL_LOCATION, NbtUtils.writeBlockPos(originalLocation));
         NBTUtils.writeEnum(updateTag, NBTConstants.PATH_TYPE, pathType);
-        if (pathToTarget.indexOf(transporter.getTilePos()) > 0) {
+        if (pathToTarget.indexOf(transporter.getBlockPos()) > 0) {
             updateTag.put(NBTConstants.CLIENT_NEXT, NbtUtils.writeBlockPos(getNext(transporter)));
         }
         updateTag.put(NBTConstants.CLIENT_PREVIOUS, NbtUtils.writeBlockPos(getPrev(transporter)));
@@ -190,7 +190,7 @@ public class TransporterStack {
             return request.getEmptyResponse();
         }
         idleDir = null;
-        setPath(transporter.getTileWorld(), newPath.getPath(), Path.DEST, updateFlowing);
+        setPath(transporter.getLevel(), newPath.getPath(), Path.DEST, updateFlowing);
         initiatedPath = true;
         return newPath.getResponse();
     }
@@ -205,7 +205,7 @@ public class TransporterStack {
             return request.getEmptyResponse();
         }
         idleDir = null;
-        setPath(transporter.getTileWorld(), newPath.getPath(), Path.DEST, updateFlowing);
+        setPath(transporter.getLevel(), newPath.getPath(), Path.DEST, updateFlowing);
         initiatedPath = true;
         return newPath.getResponse();
     }
@@ -218,19 +218,19 @@ public class TransporterStack {
         if (newPath.type() == Path.HOME) {
             idleDir = null;
         }
-        setPath(transporter.getTileWorld(), newPath.path(), newPath.type(), true);
-        originalLocation = transporter.getTilePos();
+        setPath(transporter.getLevel(), newPath.path(), newPath.type(), true);
+        originalLocation = transporter.getBlockPos();
         initiatedPath = true;
         return true;
     }
 
     public boolean isFinal(LogisticalTransporterBase transporter) {
-        return pathToTarget.indexOf(transporter.getTilePos()) == (pathType == Path.NONE ? 0 : 1);
+        return pathToTarget.indexOf(transporter.getBlockPos()) == (pathType == Path.NONE ? 0 : 1);
     }
 
     public BlockPos getNext(LogisticalTransporterBase transporter) {
         if (!transporter.isRemote()) {
-            int index = pathToTarget.indexOf(transporter.getTilePos()) - 1;
+            int index = pathToTarget.indexOf(transporter.getBlockPos()) - 1;
             if (index < 0) {
                 return null;
             }
@@ -241,7 +241,7 @@ public class TransporterStack {
 
     public BlockPos getPrev(LogisticalTransporterBase transporter) {
         if (!transporter.isRemote()) {
-            int index = pathToTarget.indexOf(transporter.getTilePos()) + 1;
+            int index = pathToTarget.indexOf(transporter.getBlockPos()) + 1;
             if (index < pathToTarget.size()) {
                 return pathToTarget.get(index);
             }
@@ -255,12 +255,12 @@ public class TransporterStack {
         if (progress < 50) {
             BlockPos prev = getPrev(transporter);
             if (prev != null) {
-                side = WorldUtils.sideDifference(transporter.getTilePos(), prev);
+                side = WorldUtils.sideDifference(transporter.getBlockPos(), prev);
             }
         } else {
             BlockPos next = getNext(transporter);
             if (next != null) {
-                side = WorldUtils.sideDifference(next, transporter.getTilePos());
+                side = WorldUtils.sideDifference(next, transporter.getBlockPos());
             }
         }
         //sideDifference can return null

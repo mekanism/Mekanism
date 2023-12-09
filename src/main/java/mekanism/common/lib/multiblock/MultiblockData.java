@@ -130,7 +130,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return () -> {
             contentsListener.onContentsChanged();
             if (!isRemote()) {
-                markDirtyComparator(getWorld());
+                markDirtyComparator(getLevel());
             }
         };
     }
@@ -254,7 +254,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return remoteSupplier.getAsBoolean();
     }
 
-    protected Level getWorld() {
+    public Level getLevel() {
         return worldSupplier.get();
     }
 
@@ -340,7 +340,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
                 if (manager != null) {
                     IStructureValidator<T> validator = manager.createValidator();
                     if (validator instanceof CuboidStructureValidator<T> cuboidValidator) {
-                        validator.init(getWorld(), manager, structure);
+                        validator.init(getLevel(), manager, structure);
                         cuboidValidator.loadCuboid(getBounds());
                         return cuboidValidator.getStructureRequirement(pos) == StructureRequirement.INNER;
                     }

@@ -1165,7 +1165,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         setChanged();
         invalidateCapabilitiesFull();
         sendUpdatePacket();
-        WorldUtils.notifyLoadedNeighborsOfTileChange(getLevel(), getTilePos());
+        WorldUtils.notifyLoadedNeighborsOfTileChange(getLevel(), this.getBlockPos());
     }
     //End methods IConfigCardAccess
 

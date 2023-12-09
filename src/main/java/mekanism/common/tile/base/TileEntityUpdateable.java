@@ -165,16 +165,6 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     @Override
-    public Level getTileWorld() {
-        return level;
-    }
-
-    @Override
-    public BlockPos getTilePos() {
-        return worldPosition;
-    }
-
-    @Override
     public void load(@NotNull CompoundTag nbt) {
         super.load(nbt);
         updateCoord();
@@ -202,7 +192,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         if (cacheCoord && cachedCoord != null) {
             return new Chunk3D(cachedCoord);
         }
-        BlockPos pos = getTilePos();
-        return new Chunk3D(getTileWorld().dimension(), SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
+        BlockPos pos = this.getBlockPos();
+        return new Chunk3D(this.getLevel().dimension(), SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
     }
 }

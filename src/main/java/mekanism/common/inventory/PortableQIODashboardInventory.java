@@ -49,7 +49,7 @@ public class PortableQIODashboardInventory extends ItemStackMekanismInventory im
 
     @Nullable
     @Override
-    public Level getHolderWorld() {
+    public Level getLevel() {
         return world;
     }
 

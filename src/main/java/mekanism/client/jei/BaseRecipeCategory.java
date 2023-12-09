@@ -104,22 +104,22 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     @Override
-    public int getLeft() {
+    public int getGuiLeft() {
         return -xOffset;
     }
 
     @Override
-    public int getTop() {
+    public int getGuiTop() {
         return -yOffset;
     }
 
     @Override
-    public int getWidth() {
+    public int getXSize() {
         return background.getWidth();
     }
 
     @Override
-    public int getHeight() {
+    public int getYSize() {
         return background.getHeight();
     }
 

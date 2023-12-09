@@ -48,7 +48,7 @@ public class Structure {
     }
 
     private void init(IMultiblockBase node) {
-        BlockPos pos = node.getTilePos();
+        BlockPos pos = node.getBlockPos();
         nodes.put(pos, node);
         for (Axis axis : Axis.AXES) {
             getMinorAxisMap(axis).put(axis.getCoord(pos), new VoxelPlane(axis, pos, node instanceof IMultiblock));
@@ -233,11 +233,11 @@ public class Structure {
         } else if (node instanceof IStructuralMultiblock) {
             node.resetStructure(null);
         }
-        FormationProtocol.explore(node.getTilePos(), pos -> {
-            if (pos.equals(node.getTilePos())) {
+        FormationProtocol.explore(node.getBlockPos(), pos -> {
+            if (pos.equals(node.getBlockPos())) {
                 return true;
             }
-            BlockEntity tile = WorldUtils.getTileEntity(node.getTileWorld(), chunkMap, pos);
+            BlockEntity tile = WorldUtils.getTileEntity(node.getLevel(), chunkMap, pos);
             if (tile instanceof IMultiblockBase adj && isCompatible(node, adj)) {
                 boolean didMerge = false;
                 if (node instanceof IStructuralMultiblock && adj instanceof IStructuralMultiblock) {
@@ -306,7 +306,7 @@ public class Structure {
                 changed.add(nodeStructure);
             }
             // update the changed structure
-            changed.markForUpdate(node.getTileWorld(), false);
+            changed.markForUpdate(node.getLevel(), false);
             return true;
         }
         return false;

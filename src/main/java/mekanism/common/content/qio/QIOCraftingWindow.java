@@ -123,7 +123,7 @@ public class QIOCraftingWindow implements IContentsListener {
             changedWhileCrafting = true;
         } else {
             //If we are not currently crafting, recalculate the contents for the output slot
-            Level world = holder.getHolderWorld();
+            Level world = holder.getLevel();
             if (world != null && !world.isClientSide) {
                 updateOutputSlot(world);
             }
@@ -136,7 +136,7 @@ public class QIOCraftingWindow implements IContentsListener {
         if (!outputSlot.isEmpty()) {
             outputSlot.setEmpty();
         }
-        Level world = holder.getHolderWorld();
+        Level world = holder.getLevel();
         if (world != null && !world.isClientSide) {
             //And recheck the recipe
             updateOutputSlot(world);
@@ -328,7 +328,7 @@ public class QIOCraftingWindow implements IContentsListener {
             // Note: lastRecipe will always null on the client, so we can assume we are server side below
             return;
         }
-        Level world = holder.getHolderWorld();
+        Level world = holder.getLevel();
         if (!validateAndUnlockRecipe(world, player)) {
             //If the recipe isn't valid, fail
             return;
@@ -480,7 +480,7 @@ public class QIOCraftingWindow implements IContentsListener {
             // Note: lastRecipe will always null on the client, so we can assume we are server side below
             return ItemStack.EMPTY;
         }
-        Level world = holder.getHolderWorld();
+        Level world = holder.getLevel();
         if (!validateAndUnlockRecipe(world, player)) {
             //If the recipe isn't valid, fail
             return ItemStack.EMPTY;

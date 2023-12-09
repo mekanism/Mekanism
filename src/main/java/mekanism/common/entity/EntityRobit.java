@@ -74,7 +74,6 @@ import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -249,6 +248,12 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8));
         goalSelector.addGoal(3, new RandomLookAroundGoal(this));
         goalSelector.addGoal(4, new FloatGoal(this));
+    }
+
+    @Nullable
+    @Override
+    public Level getLevel() {
+        return level();
     }
 
     @Override

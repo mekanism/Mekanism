@@ -58,10 +58,10 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
 
     @Override
     public List<Rect2i> getGuiExtraAreas(GuiMekanism<?> gui) {
-        int parentX = gui.getLeft();
-        int parentY = gui.getTop();
-        int parentWidth = gui.getWidth();
-        int parentHeight = gui.getHeight();
+        int parentX = gui.getGuiLeft();
+        int parentY = gui.getGuiTop();
+        int parentWidth = gui.getXSize();
+        int parentHeight = gui.getYSize();
         //Add any children the gui has and any windows the gui has including all grandchildren that poke out of the main gui
         List<Rect2i> extraAreas = getAreasFor(parentX, parentY, parentWidth, parentHeight, gui.children());
         extraAreas.addAll(getAreasFor(parentX, parentY, parentWidth, parentHeight, gui.getWindows()));

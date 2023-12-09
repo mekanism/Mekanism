@@ -29,7 +29,7 @@ public interface IEitherSideRecipeLookupHandler<INPUT, RECIPE extends MekanismRe
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
     default boolean containsRecipe(INPUT input) {
-        return getRecipeType().getInputCache().containsInput(getHandlerWorld(), input);
+        return getRecipeType().getInputCache().containsInput(getLevel(), input);
     }
 
     /**
@@ -43,7 +43,7 @@ public interface IEitherSideRecipeLookupHandler<INPUT, RECIPE extends MekanismRe
      * @apiNote See {@link EitherSideInputRecipeCache#containsInput(Level, Object, Object)} for more details about what order to pass the inputs.
      */
     default boolean containsRecipe(INPUT inputA, INPUT inputB) {
-        return getRecipeType().getInputCache().containsInput(getHandlerWorld(), inputA, inputB);
+        return getRecipeType().getInputCache().containsInput(getLevel(), inputA, inputB);
     }
 
     /**
@@ -56,7 +56,7 @@ public interface IEitherSideRecipeLookupHandler<INPUT, RECIPE extends MekanismRe
      */
     @Nullable
     default RECIPE findFirstRecipe(INPUT inputA, INPUT inputB) {
-        return getRecipeType().getInputCache().findFirstRecipe(getHandlerWorld(), inputA, inputB);
+        return getRecipeType().getInputCache().findFirstRecipe(getLevel(), inputA, inputB);
     }
 
     /**

@@ -22,11 +22,11 @@ import org.jetbrains.annotations.Nullable;
 public class GuiOredictionificatorFilter extends GuiTextFilter<OredictionificatorItemFilter, TileEntityOredictionificator> {
 
     public static GuiOredictionificatorFilter create(IGuiWrapper gui, TileEntityOredictionificator tile) {
-        return new GuiOredictionificatorFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, null);
+        return new GuiOredictionificatorFilter(gui, (gui.getXSize() - 152) / 2, 15, tile, null);
     }
 
     public static GuiOredictionificatorFilter edit(IGuiWrapper gui, TileEntityOredictionificator tile, OredictionificatorItemFilter filter) {
-        return new GuiOredictionificatorFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, filter);
+        return new GuiOredictionificatorFilter(gui, (gui.getXSize() - 152) / 2, 15, tile, filter);
     }
 
     private GuiOredictionificatorFilter(IGuiWrapper gui, int x, int y, TileEntityOredictionificator tile, @Nullable OredictionificatorItemFilter origFilter) {

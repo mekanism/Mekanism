@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 public class GuiUpgradeWindowTab extends GuiWindowCreatorTab<TileEntityMekanism, GuiUpgradeWindowTab> {
 
     public GuiUpgradeWindowTab(IGuiWrapper gui, TileEntityMekanism tile, Supplier<GuiUpgradeWindowTab> elementSupplier) {
-        super(MekanismUtils.getResource(ResourceType.GUI, "upgrade.png"), gui, tile, gui.getWidth(), 6, 26, 18, false, elementSupplier);
+        super(MekanismUtils.getResource(ResourceType.GUI, "upgrade.png"), gui, tile, gui.getXSize(), 6, 26, 18, false, elementSupplier);
     }
 
     @Override

@@ -121,13 +121,13 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     @Override
-    public BlockPos getTilePos() {
-        return transmitterTile.getTilePos();
+    public BlockPos getBlockPos() {
+        return transmitterTile.getBlockPos();
     }
 
     @Override
-    public Level getTileWorld() {
-        return transmitterTile.getTileWorld();
+    public Level getLevel() {
+        return transmitterTile.getLevel();
     }
 
     @Override
@@ -264,7 +264,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             return connections;
         }
         for (Direction side : EnumUtils.DIRECTIONS) {
-            TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), getTilePos().relative(side));
+            TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getLevel(), getBlockPos().relative(side));
             if (tile != null && isValidTransmitter(tile, side)) {
                 connections |= (byte) (1 << side.ordinal());
             }
@@ -279,7 +279,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (isRedstoneActivated()) {
             return false;
         }
-        BlockEntity tile = WorldUtils.getTileEntity(getTileWorld(), getTilePos().relative(side));
+        BlockEntity tile = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
         if (canConnectMutual(side, tile) && isValidAcceptor(tile, side)) {
             return true;
         }
@@ -298,7 +298,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (isRedstoneActivated()) {
             return false;
         }
-        TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), getTilePos().relative(side));
+        TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getLevel(), getBlockPos().relative(side));
         return tile != null && isValidTransmitter(tile, side);
     }
 
@@ -310,9 +310,9 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (isRedstoneActivated()) {
             return connections;
         }
-        Level level = getTileWorld();
+        Level level = getLevel();
         for (Direction side : EnumUtils.DIRECTIONS) {
-            BlockPos offset = getTilePos().relative(side);
+            BlockPos offset = getBlockPos().relative(side);
             BlockEntity tile = WorldUtils.getTileEntity(level, offset);
             if (canConnectMutual(side, tile)) {
                 if (!isRemote() && !WorldUtils.isBlockLoaded(level, offset)) {
@@ -365,7 +365,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         }
         if (cachedTile == null) {
             //If we don't already have the tile that is on the side calculated, do so
-            cachedTile = WorldUtils.getTileEntity(getTileWorld(), getTilePos().relative(side));
+            cachedTile = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
         }
         return !(cachedTile instanceof TileEntityTransmitter transmitter) || transmitter.getTransmitter().canConnect(side.getOpposite());
     }
@@ -481,7 +481,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
      * Assumes that {@link #handlesRedstone()} is {@code true}.
      */
     private void setRedstoneState() {
-        redstonePowered = redstoneReactive && transmitterTile.hasLevel() && WorldUtils.isGettingPowered(getTileWorld(), getTilePos());
+        redstonePowered = redstoneReactive && transmitterTile.hasLevel() && WorldUtils.isGettingPowered(getLevel(), getBlockPos());
         redstoneSet = true;
     }
 
@@ -567,7 +567,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             //This fixes pipes not reconnecting cross chunk
             for (Direction side : EnumUtils.DIRECTIONS) {
                 if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
-                    TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), getTilePos().relative(side));
+                    TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getLevel(), getBlockPos().relative(side));
                     if (tile != null) {
                         tile.getTransmitter().refreshConnections(side.getOpposite());
                     }
@@ -658,7 +658,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     public void notifyTileChange() {
         //TODO: It is possible some of the places we are calling this method don't actually need to notify the loaded neighbors of changes and the capability invalidation is enough
         // for now though it doesn't really seem to hurt anything to just keep it though
-        WorldUtils.notifyLoadedNeighborsOfTileChange(getTileWorld(), getTilePos());
+        WorldUtils.notifyLoadedNeighborsOfTileChange(getLevel(), getBlockPos());
     }
 
     public abstract void takeShare();

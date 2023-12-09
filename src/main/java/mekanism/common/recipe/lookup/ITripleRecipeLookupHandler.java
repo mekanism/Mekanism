@@ -35,7 +35,7 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      * {@link #containsRecipeCAB(Object, Object, Object)} should be called.
      */
     default boolean containsRecipeABC(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
-        return getRecipeType().getInputCache().containsInputABC(getHandlerWorld(), inputA, inputB, inputC);
+        return getRecipeType().getInputCache().containsInputABC(getLevel(), inputA, inputB, inputC);
     }
 
     /**
@@ -53,7 +53,7 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      * {@link #containsRecipeCAB(Object, Object, Object)} should be called.
      */
     default boolean containsRecipeBAC(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
-        return getRecipeType().getInputCache().containsInputBAC(getHandlerWorld(), inputA, inputB, inputC);
+        return getRecipeType().getInputCache().containsInputBAC(getLevel(), inputA, inputB, inputC);
     }
 
     /**
@@ -71,7 +71,7 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      * {@link #containsRecipeBAC(Object, Object, Object)} should be called.
      */
     default boolean containsRecipeCAB(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
-        return getRecipeType().getInputCache().containsInputCAB(getHandlerWorld(), inputA, inputB, inputC);
+        return getRecipeType().getInputCache().containsInputCAB(getLevel(), inputA, inputB, inputC);
     }
 
     /**
@@ -82,7 +82,7 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
     default boolean containsRecipeA(INPUT_A input) {
-        return getRecipeType().getInputCache().containsInputA(getHandlerWorld(), input);
+        return getRecipeType().getInputCache().containsInputA(getLevel(), input);
     }
 
     /**
@@ -93,7 +93,7 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
     default boolean containsRecipeB(INPUT_B input) {
-        return getRecipeType().getInputCache().containsInputB(getHandlerWorld(), input);
+        return getRecipeType().getInputCache().containsInputB(getLevel(), input);
     }
 
     /**
@@ -104,7 +104,7 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
     default boolean containsRecipeC(INPUT_C input) {
-        return getRecipeType().getInputCache().containsInputC(getHandlerWorld(), input);
+        return getRecipeType().getInputCache().containsInputC(getLevel(), input);
     }
 
     /**
@@ -118,7 +118,7 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      */
     @Nullable
     default RECIPE findFirstRecipe(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
-        return getRecipeType().getInputCache().findFirstRecipe(getHandlerWorld(), inputA, inputB, inputC);
+        return getRecipeType().getInputCache().findFirstRecipe(getLevel(), inputA, inputB, inputC);
     }
 
     /**

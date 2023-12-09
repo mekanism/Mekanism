@@ -11,11 +11,11 @@ import org.jetbrains.annotations.Nullable;
 public class GuiSorterTagFilter extends GuiTagFilter<SorterTagFilter, TileEntityLogisticalSorter> implements GuiSorterFilterHelper {
 
     public static GuiSorterTagFilter create(IGuiWrapper gui, TileEntityLogisticalSorter tile) {
-        return new GuiSorterTagFilter(gui, (gui.getWidth() - 182) / 2, 30, tile, null);
+        return new GuiSorterTagFilter(gui, (gui.getXSize() - 182) / 2, 30, tile, null);
     }
 
     public static GuiSorterTagFilter edit(IGuiWrapper gui, TileEntityLogisticalSorter tile, SorterTagFilter filter) {
-        return new GuiSorterTagFilter(gui, (gui.getWidth() - 182) / 2, 30, tile, filter);
+        return new GuiSorterTagFilter(gui, (gui.getXSize() - 182) / 2, 30, tile, filter);
     }
 
     private GuiTextField minField;

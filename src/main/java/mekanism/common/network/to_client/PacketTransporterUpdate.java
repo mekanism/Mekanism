@@ -49,7 +49,7 @@ public class PacketTransporterUpdate implements IMekanismPacket {
 
     private PacketTransporterUpdate(LogisticalTransporterBase transporter, boolean isSync) {
         this.isSync = isSync;
-        this.pos = transporter.getTilePos();
+        this.pos = transporter.getBlockPos();
         this.isDiversion = transporter instanceof DiversionTransporter;
         if (this.isDiversion) {
             this.modes = ((DiversionTransporter) transporter).modes;

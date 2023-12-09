@@ -276,7 +276,7 @@ public class TransmitterNetworkRegistry {
 
         OrphanPathFinder(Transmitter<ACCEPTOR, NETWORK, TRANSMITTER> start) {
             startPoint = (TRANSMITTER) start;
-            world = startPoint.getTileWorld();
+            world = startPoint.getLevel();
             transmitterValidator = startPoint.getNewOrphanValidator();
         }
 
@@ -286,7 +286,7 @@ public class TransmitterNetworkRegistry {
                 Mekanism.logger.error("OrphanPathFinder queue was not empty?!");
                 queue.clear();
             }
-            queue.push(startPoint.getTilePos());
+            queue.push(startPoint.getBlockPos());
             while (queue.peek() != null) {
                 iterate(orphanTransmitters, queue.removeFirst());
             }

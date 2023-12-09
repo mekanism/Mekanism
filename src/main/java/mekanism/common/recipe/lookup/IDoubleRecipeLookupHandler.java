@@ -34,7 +34,7 @@ public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends Mek
      * more details about when this method should be called versus when {@link #containsRecipeBA(Object, Object)} should be called.
      */
     default boolean containsRecipeAB(INPUT_A inputA, INPUT_B inputB) {
-        return getRecipeType().getInputCache().containsInputAB(getHandlerWorld(), inputA, inputB);
+        return getRecipeType().getInputCache().containsInputAB(getLevel(), inputA, inputB);
     }
 
     /**
@@ -49,7 +49,7 @@ public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends Mek
      * more details about when this method should be called versus when {@link #containsRecipeAB(Object, Object)} should be called.
      */
     default boolean containsRecipeBA(INPUT_A inputA, INPUT_B inputB) {
-        return getRecipeType().getInputCache().containsInputBA(getHandlerWorld(), inputA, inputB);
+        return getRecipeType().getInputCache().containsInputBA(getLevel(), inputA, inputB);
     }
 
     /**
@@ -60,7 +60,7 @@ public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends Mek
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
     default boolean containsRecipeA(INPUT_A input) {
-        return getRecipeType().getInputCache().containsInputA(getHandlerWorld(), input);
+        return getRecipeType().getInputCache().containsInputA(getLevel(), input);
     }
 
     /**
@@ -71,7 +71,7 @@ public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends Mek
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
     default boolean containsRecipeB(INPUT_B input) {
-        return getRecipeType().getInputCache().containsInputB(getHandlerWorld(), input);
+        return getRecipeType().getInputCache().containsInputB(getLevel(), input);
     }
 
     /**
@@ -84,7 +84,7 @@ public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends Mek
      */
     @Nullable
     default RECIPE findFirstRecipe(INPUT_A inputA, INPUT_B inputB) {
-        return getRecipeType().getInputCache().findFirstRecipe(getHandlerWorld(), inputA, inputB);
+        return getRecipeType().getInputCache().findFirstRecipe(getLevel(), inputA, inputB);
     }
 
     /**

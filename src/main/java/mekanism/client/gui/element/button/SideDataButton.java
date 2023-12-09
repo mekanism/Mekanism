@@ -37,10 +37,10 @@ public class SideDataButton extends BasicColorButton {
               }, () -> Mekanism.packetHandler().sendToServer(new PacketConfigurationUpdate(packetType, tile.getBlockPos(), Screen.hasShiftDown() ? 2 : 0, slotPos, transmissionType.get())),
               () -> Mekanism.packetHandler().sendToServer(new PacketConfigurationUpdate(packetType, tile.getBlockPos(), 1, slotPos, transmissionType.get())), onHover);
         this.dataTypeSupplier = dataTypeSupplier;
-        Level tileWorld = tile.getTileWorld();
+        Level tileWorld = tile.getLevel();
         if (tileWorld != null) {
             Direction globalSide = slotPos.getDirection(tile.getDirection());
-            BlockPos otherBlockPos = tile.getTilePos().relative(globalSide);
+            BlockPos otherBlockPos = tile.getBlockPos().relative(globalSide);
             BlockState blockOnSide = tileWorld.getBlockState(otherBlockPos);
             if (!blockOnSide.isAir()) {
                 otherBlockItem = blockOnSide.getCloneItemStack(new BlockHitResult(Vec3.atCenterOf(otherBlockPos).relative(globalSide.getOpposite(), 0.5), globalSide.getOpposite(), otherBlockPos, false), tileWorld, otherBlockPos, Minecraft.getInstance().player);

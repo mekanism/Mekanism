@@ -172,7 +172,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     private boolean isGettingPowered() {
-        return WorldUtils.isGettingPowered(getTileWorld(), getTilePos());
+        return WorldUtils.isGettingPowered(getLevel(), getBlockPos());
     }
 
     @NothingNullByDefault

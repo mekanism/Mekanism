@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwork, ThermodynamicConductor> implements ITileHeatHandler,
       IUpgradeableTransmitter<ThermodynamicConductorUpgradeData> {
 
-    private final CachedAmbientTemperature ambientTemperature = new CachedAmbientTemperature(this::getTileWorld, this::getTilePos);
+    private final CachedAmbientTemperature ambientTemperature = new CachedAmbientTemperature(this::getLevel, this::getBlockPos);
     public final ConductorTier tier;
     //Default to negative one, so we know we need to calculate it when needed
     private double clientTemperature = -1;
@@ -174,7 +174,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     public double incrementAdjacentTransfer(double currentAdjacentTransfer, double tempToTransfer, @NotNull Direction side) {
         if (tempToTransfer > 0 && hasTransmitterNetwork()) {
             HeatNetwork transmitterNetwork = getTransmitterNetwork();
-            ThermodynamicConductor adjacent = transmitterNetwork.getTransmitter(getTilePos().relative(side));
+            ThermodynamicConductor adjacent = transmitterNetwork.getTransmitter(getBlockPos().relative(side));
             if (adjacent != null) {
                 //Heat transmitter to heat transmitter, don't count as "adjacent transfer"
                 return currentAdjacentTransfer;

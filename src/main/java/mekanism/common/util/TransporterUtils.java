@@ -67,13 +67,13 @@ public final class TransporterUtils {
     }
 
     public static void drop(LogisticalTransporterBase transporter, TransporterStack stack) {
-        BlockPos blockPos = transporter.getTilePos();
+        BlockPos blockPos = transporter.getBlockPos();
         if (stack.hasPath()) {
             float[] pos = TransporterUtils.getStackPosition(transporter, stack, 0);
             blockPos = blockPos.offset(Mth.floor(pos[0]), Mth.floor(pos[1]), Mth.floor(pos[2]));
         }
-        TransporterManager.remove(transporter.getTileWorld(), stack);
-        Block.popResource(transporter.getTileWorld(), blockPos, stack.itemStack);
+        TransporterManager.remove(transporter.getLevel(), stack);
+        Block.popResource(transporter.getLevel(), blockPos, stack.itemStack);
     }
 
     public static float[] getStackPosition(LogisticalTransporterBase transporter, TransporterStack stack, float partial) {

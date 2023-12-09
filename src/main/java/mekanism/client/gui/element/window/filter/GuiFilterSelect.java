@@ -18,7 +18,7 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism & ITileFil
     protected final TILE tile;
 
     protected GuiFilterSelect(IGuiWrapper gui, TILE tile, int filterCount) {
-        super(gui, (gui.getWidth() - 152) / 2, 20, 152, 30 + filterCount * FILTER_HEIGHT, SelectedWindowData.UNSPECIFIED);
+        super(gui, (gui.getXSize() - 152) / 2, 20, 152, 30 + filterCount * FILTER_HEIGHT, SelectedWindowData.UNSPECIFIED);
         this.tile = tile;
         addChild(new GuiElementHolder(gui, 23, relativeY + 18, 130, 2 + filterCount * FILTER_HEIGHT));
         int buttonY = relativeY + 19;

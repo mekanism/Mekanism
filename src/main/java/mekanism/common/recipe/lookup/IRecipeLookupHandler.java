@@ -5,9 +5,7 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,14 +15,7 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends ICo
      * @return The world for this {@link IRecipeLookupHandler}.
      */
     @Nullable
-    default Level getHandlerWorld() {
-        if (this instanceof BlockEntity tile) {
-            return tile.getLevel();
-        } else if (this instanceof Entity entity) {
-            return entity.level();
-        }
-        return null;
-    }
+    Level getLevel();
 
     /**
      * @return The recipe type this {@link IRecipeLookupHandler} handles.

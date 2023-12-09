@@ -41,7 +41,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         WindowPosition lastPosition = windowData.getLastPosition();
         int lastX = lastPosition.x();
         if (lastX != Integer.MAX_VALUE) {
-            int guiLeft = gui.getLeft();
+            int guiLeft = gui.getGuiLeft();
             if (guiLeft + lastX < 0) {
                 //If our x position would be off the screen, then we shift it to as close as we can go
                 lastX = -guiLeft;
@@ -52,7 +52,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         }
         int lastY = lastPosition.y();
         if (lastY != Integer.MAX_VALUE) {
-            int guiTop = gui.getTop();
+            int guiTop = gui.getGuiTop();
             if (guiTop + lastY < 0) {
                 //If our y position would be off the screen, then we shift it to as close as we can go
                 lastY = -guiTop;
