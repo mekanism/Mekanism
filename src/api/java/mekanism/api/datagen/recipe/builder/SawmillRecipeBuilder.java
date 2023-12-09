@@ -1,29 +1,21 @@
 package mekanism.api.datagen.recipe.builder;
 
-import com.google.gson.JsonObject;
-import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
+import mekanism.api.recipes.SawmillRecipe;
+import mekanism.api.recipes.basic.BasicSawmillRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBuilder> {
 
-    private final OutputType outputType;
     private final ItemStackIngredient input;
     private final ItemStack mainOutput;
     private final ItemStack secondaryOutput;
     private final double secondaryChance;
 
-    protected SawmillRecipeBuilder(ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance, OutputType outputType) {
-        super(mekSerializer("sawing"));
-        this.outputType = outputType;
+    protected SawmillRecipeBuilder(ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance) {
         this.input = input;
         this.mainOutput = mainOutput;
         this.secondaryOutput = secondaryOutput;
@@ -40,7 +32,7 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBui
         if (mainOutput.isEmpty()) {
             throw new IllegalArgumentException("This sawing recipe requires a non empty output.");
         }
-        return new SawmillRecipeBuilder(input, mainOutput, ItemStack.EMPTY, 0, OutputType.PRIMARY);
+        return new SawmillRecipeBuilder(input, mainOutput, ItemStack.EMPTY, 0);
     }
 
     /**
@@ -59,7 +51,7 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBui
         } else if (secondaryChance == 1) {
             throw new IllegalArgumentException("Sawing recipes with a single 100% change output should specify their output as the main output.");
         }
-        return new SawmillRecipeBuilder(input, ItemStack.EMPTY, secondaryOutput, secondaryChance, OutputType.SECONDARY);
+        return new SawmillRecipeBuilder(input, ItemStack.EMPTY, secondaryOutput, secondaryChance);
     }
 
     /**
@@ -77,44 +69,11 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBui
         if (secondaryChance <= 0 || secondaryChance > 1) {
             throw new IllegalArgumentException("This sawing recipe requires a secondary output chance greater than zero and at most one.");
         }
-        return new SawmillRecipeBuilder(input, mainOutput, secondaryOutput, secondaryChance, OutputType.BOTH);
+        return new SawmillRecipeBuilder(input, mainOutput, secondaryOutput, secondaryChance);
     }
 
     @Override
-    protected MekanismRecipeBuilder<SawmillRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-        return new SawmillRecipeResult(id, advancementHolder);
-    }
-
-    public class SawmillRecipeResult extends RecipeResult {
-
-        protected SawmillRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-            super(id, advancementHolder);
-        }
-
-        @Override
-        public void serializeRecipeData(@NotNull JsonObject json) {
-            json.add(JsonConstants.INPUT, input.serialize());
-            if (outputType.hasPrimary) {
-                json.add(JsonConstants.MAIN_OUTPUT, SerializerHelper.serializeItemStack(mainOutput));
-            }
-            if (outputType.hasSecondary) {
-                json.add(JsonConstants.SECONDARY_OUTPUT, SerializerHelper.serializeItemStack(secondaryOutput));
-                json.addProperty(JsonConstants.SECONDARY_CHANCE, secondaryChance);
-            }
-        }
-    }
-
-    private enum OutputType {
-        PRIMARY(true, false),
-        SECONDARY(false, true),
-        BOTH(true, true);
-
-        private final boolean hasPrimary;
-        private final boolean hasSecondary;
-
-        OutputType(boolean hasPrimary, boolean hasSecondary) {
-            this.hasPrimary = hasPrimary;
-            this.hasSecondary = hasSecondary;
-        }
+    protected SawmillRecipe asRecipe() {
+        return new BasicSawmillRecipe(input, mainOutput, secondaryOutput, secondaryChance);
     }
 }

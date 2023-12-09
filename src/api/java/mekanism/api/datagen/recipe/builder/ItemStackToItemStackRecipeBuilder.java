@@ -1,28 +1,26 @@
 package mekanism.api.datagen.recipe.builder;
 
-import com.google.gson.JsonObject;
-import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
+import mekanism.api.recipes.ItemStackToItemStackRecipe;
+import mekanism.api.recipes.basic.BasicCrushingRecipe;
+import mekanism.api.recipes.basic.BasicEnrichingRecipe;
+import mekanism.api.recipes.basic.BasicSmeltingRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<ItemStackToItemStackRecipeBuilder> {
 
+    private final ItemStackToItemStackRecipeBuilder.Factory factory;
     private final ItemStackIngredient input;
     private final ItemStack output;
 
-    protected ItemStackToItemStackRecipeBuilder(ItemStackIngredient input, ItemStack output, ResourceLocation serializerName) {
-        super(serializerName);
+    protected ItemStackToItemStackRecipeBuilder(ItemStackIngredient input, ItemStack output, ItemStackToItemStackRecipeBuilder.Factory factory) {
         this.input = input;
         this.output = output;
+        this.factory = factory;
     }
 
     /**
@@ -35,7 +33,7 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This crushing recipe requires a non empty item output.");
         }
-        return new ItemStackToItemStackRecipeBuilder(input, output, mekSerializer("crushing"));
+        return new ItemStackToItemStackRecipeBuilder(input, output, BasicCrushingRecipe::new);
     }
 
     /**
@@ -48,7 +46,7 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This enriching recipe requires a non empty item output.");
         }
-        return new ItemStackToItemStackRecipeBuilder(input, output, mekSerializer("enriching"));
+        return new ItemStackToItemStackRecipeBuilder(input, output, BasicEnrichingRecipe::new);
     }
 
     /**
@@ -61,12 +59,12 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This smelting recipe requires a non empty item output.");
         }
-        return new ItemStackToItemStackRecipeBuilder(input, output, mekSerializer("smelting"));
+        return new ItemStackToItemStackRecipeBuilder(input, output, BasicSmeltingRecipe::new);
     }
 
     @Override
-    protected MekanismRecipeBuilder<ItemStackToItemStackRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-        return new ItemStackToItemStackRecipeResult(id, advancementHolder);
+    protected ItemStackToItemStackRecipe asRecipe() {
+        return factory.create(input, output);
     }
 
     /**
@@ -78,16 +76,9 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
         build(recipeOutput, output.getItem());
     }
 
-    public class ItemStackToItemStackRecipeResult extends RecipeResult {
+    @FunctionalInterface
+    public interface Factory {
 
-        protected ItemStackToItemStackRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-            super(id, advancementHolder);
-        }
-
-        @Override
-        public void serializeRecipeData(@NotNull JsonObject json) {
-            json.add(JsonConstants.INPUT, input.serialize());
-            json.add(JsonConstants.OUTPUT, SerializerHelper.serializeItemStack(output));
-        }
+        ItemStackToItemStackRecipe create(ItemStackIngredient input, ItemStack output);
     }
 }

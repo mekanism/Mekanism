@@ -24,7 +24,6 @@ public class JsonConstants {
 
     //Recipes
     public static final String TYPE = "type";
-    public static final String CONDITIONS = "neoforge:conditions";
     public static final String CHEMICAL_TYPE = "chemicalType";
     public static final String ENERGY_MULTIPLIER = "energyMultiplier";
     public static final String ENERGY_REQUIRED = "energyRequired";

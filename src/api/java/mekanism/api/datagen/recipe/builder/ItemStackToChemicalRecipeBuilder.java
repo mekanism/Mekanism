@@ -1,10 +1,5 @@
 package mekanism.api.datagen.recipe.builder;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import java.util.function.Function;
-import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -15,25 +10,25 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
+import mekanism.api.recipes.basic.BasicChemicalOxidizerRecipe;
+import mekanism.api.recipes.basic.BasicGasConversionRecipe;
+import mekanism.api.recipes.basic.BasicItemStackToInfuseTypeRecipe;
+import mekanism.api.recipes.basic.BasicItemStackToPigmentRecipe;
+import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends
       MekanismRecipeBuilder<ItemStackToChemicalRecipeBuilder<CHEMICAL, STACK>> {
 
-    private final Function<STACK, JsonElement> outputSerializer;
+    private final ItemStackToChemicalRecipeBuilder.Factory<CHEMICAL, STACK> factory;
     private final ItemStackIngredient input;
     private final STACK output;
 
-    protected ItemStackToChemicalRecipeBuilder(ResourceLocation serializerName, ItemStackIngredient input, STACK output, Function<STACK, JsonElement> outputSerializer) {
-        super(serializerName);
+    protected ItemStackToChemicalRecipeBuilder(ItemStackIngredient input, STACK output, ItemStackToChemicalRecipeBuilder.Factory<CHEMICAL, STACK> factory) {
         this.input = input;
         this.output = output;
-        this.outputSerializer = outputSerializer;
+        this.factory = factory;
     }
 
     /**
@@ -46,7 +41,7 @@ public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This gas conversion recipe requires a non empty gas output.");
         }
-        return new ItemStackToChemicalRecipeBuilder<>(mekSerializer("gas_conversion"), input, output, SerializerHelper::serializeGasStack);
+        return new ItemStackToChemicalRecipeBuilder<>(input, output, BasicGasConversionRecipe::new);
     }
 
     /**
@@ -59,7 +54,7 @@ public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This oxidizing recipe requires a non empty gas output.");
         }
-        return new ItemStackToChemicalRecipeBuilder<>(mekSerializer("oxidizing"), input, output, SerializerHelper::serializeGasStack);
+        return new ItemStackToChemicalRecipeBuilder<>(input, output, BasicChemicalOxidizerRecipe::new);
     }
 
     /**
@@ -72,7 +67,7 @@ public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This infusion conversion recipe requires a non empty infusion output.");
         }
-        return new ItemStackToChemicalRecipeBuilder<>(mekSerializer("infusion_conversion"), input, output, SerializerHelper::serializeInfusionStack);
+        return new ItemStackToChemicalRecipeBuilder<>(input, output, BasicItemStackToInfuseTypeRecipe::new);
     }
 
     /**
@@ -85,24 +80,17 @@ public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This pigment extracting recipe requires a non empty pigment output.");
         }
-        return new ItemStackToChemicalRecipeBuilder<>(mekSerializer("pigment_extracting"), input, output, SerializerHelper::serializePigmentStack);
+        return new ItemStackToChemicalRecipeBuilder<>(input, output, BasicItemStackToPigmentRecipe::new);
     }
 
     @Override
-    protected MekanismRecipeBuilder<ItemStackToChemicalRecipeBuilder<CHEMICAL, STACK>>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-        return new ItemStackToChemicalRecipeResult(id, advancementHolder);
+    protected ItemStackToChemicalRecipe<CHEMICAL, STACK> asRecipe() {
+        return factory.create(input, output);
     }
 
-    public class ItemStackToChemicalRecipeResult extends RecipeResult {
+    @FunctionalInterface
+    public interface Factory<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> {
 
-        protected ItemStackToChemicalRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-            super(id, advancementHolder);
-        }
-
-        @Override
-        public void serializeRecipeData(@NotNull JsonObject json) {
-            json.add(JsonConstants.INPUT, input.serialize());
-            json.add(JsonConstants.OUTPUT, outputSerializer.apply(output));
-        }
+        ItemStackToChemicalRecipe<CHEMICAL, STACK> create(ItemStackIngredient input, STACK output);
     }
 }

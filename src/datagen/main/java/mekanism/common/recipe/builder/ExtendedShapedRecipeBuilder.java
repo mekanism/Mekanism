@@ -8,16 +8,20 @@ import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
 import it.unimi.dsi.fastutil.chars.CharSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.recipe.pattern.RecipePattern;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
@@ -99,8 +103,14 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
     }
 
     @Override
-    protected MekanismRecipeBuilder<ExtendedShapedRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-        return new Result(id, advancementHolder);
+    protected ShapedRecipe asRecipe() {
+        return new ShapedRecipe(
+              Objects.requireNonNullElse(this.group, ""),
+              RecipeBuilder.determineBookCategory(this.category),
+              shapedrecipepattern,
+              new ItemStack(this.result, this.count),
+              this.showNotification
+        );
     }
 
     public class Result extends BaseRecipeResult {

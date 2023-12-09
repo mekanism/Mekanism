@@ -1,20 +1,15 @@
 package mekanism.api.datagen.recipe.builder;
 
-import com.google.gson.JsonObject;
-import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.recipes.PressurizedReactionRecipe;
+import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<PressurizedReactionRecipeBuilder> {
@@ -29,7 +24,6 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
 
     protected PressurizedReactionRecipeBuilder(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, int duration,
           ItemStack outputItem, GasStack outputGas) {
-        super(mekSerializer("reaction"));
         this.inputSolid = inputSolid;
         this.inputFluid = inputFluid;
         this.inputGas = inputGas;
@@ -110,32 +104,7 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
     }
 
     @Override
-    protected MekanismRecipeBuilder<PressurizedReactionRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-        return new PressurizedReactionRecipeResult(id, advancementHolder);
-    }
-
-    public class PressurizedReactionRecipeResult extends RecipeResult {
-
-        protected PressurizedReactionRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-            super(id, advancementHolder);
-        }
-
-        @Override
-        public void serializeRecipeData(@NotNull JsonObject json) {
-            json.add(JsonConstants.ITEM_INPUT, inputSolid.serialize());
-            json.add(JsonConstants.FLUID_INPUT, inputFluid.serialize());
-            json.add(JsonConstants.GAS_INPUT, inputGas.serialize());
-            if (!energyRequired.isZero()) {
-                //Only add energy required if it is not zero, as otherwise it will default to zero
-                json.addProperty(JsonConstants.ENERGY_REQUIRED, energyRequired);
-            }
-            json.addProperty(JsonConstants.DURATION, duration);
-            if (!outputItem.isEmpty()) {
-                json.add(JsonConstants.ITEM_OUTPUT, SerializerHelper.serializeItemStack(outputItem));
-            }
-            if (!outputGas.isEmpty()) {
-                json.add(JsonConstants.GAS_OUTPUT, SerializerHelper.serializeGasStack(outputGas));
-            }
-        }
+    protected PressurizedReactionRecipe asRecipe() {
+        return new BasicPressurizedReactionRecipe(inputSolid, inputFluid, inputGas, energyRequired, duration, outputItem, outputGas);
     }
 }

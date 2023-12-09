@@ -1,27 +1,24 @@
 package mekanism.api.datagen.recipe.builder;
 
-import com.google.gson.JsonObject;
-import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
+import mekanism.api.recipes.GasToGasRecipe;
+import mekanism.api.recipes.basic.BasicActivatingRecipe;
+import mekanism.api.recipes.basic.BasicCentrifugingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipeBuilder> {
 
+    private final GasToGasRecipeBuilder.Factory factory;
     private final GasStackIngredient input;
     private final GasStack output;
 
-    protected GasToGasRecipeBuilder(GasStackIngredient input, GasStack output, ResourceLocation serializerName) {
-        super(serializerName);
+    protected GasToGasRecipeBuilder(GasStackIngredient input, GasStack output, GasToGasRecipeBuilder.Factory factory) {
         this.input = input;
         this.output = output;
+        this.factory = factory;
     }
 
     /**
@@ -34,7 +31,7 @@ public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipeB
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This solar neutron activator recipe requires a non empty gas output.");
         }
-        return new GasToGasRecipeBuilder(input, output, mekSerializer("activating"));
+        return new GasToGasRecipeBuilder(input, output, BasicActivatingRecipe::new);
     }
 
     /**
@@ -47,24 +44,17 @@ public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipeB
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This Isotopic Centrifuge recipe requires a non empty gas output.");
         }
-        return new GasToGasRecipeBuilder(input, output, mekSerializer("centrifuging"));
+        return new GasToGasRecipeBuilder(input, output, BasicCentrifugingRecipe::new);
     }
 
     @Override
-    protected MekanismRecipeBuilder<GasToGasRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-        return new GasToGasRecipeResult(id, advancementHolder);
+    protected GasToGasRecipe asRecipe() {
+        return factory.create(input, output);
     }
 
-    public class GasToGasRecipeResult extends RecipeResult {
+    @FunctionalInterface
+    public interface Factory {
 
-        protected GasToGasRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-            super(id, advancementHolder);
-        }
-
-        @Override
-        public void serializeRecipeData(@NotNull JsonObject json) {
-            json.add(JsonConstants.INPUT, input.serialize());
-            json.add(JsonConstants.OUTPUT, SerializerHelper.serializeGasStack(output));
-        }
+        GasToGasRecipe create(GasStackIngredient input, GasStack output);
     }
 }

@@ -1,23 +1,18 @@
 package mekanism.api.datagen.recipe.builder;
 
-import com.google.gson.JsonObject;
-import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
+import mekanism.api.recipes.RotaryRecipe;
+import mekanism.api.recipes.basic.BasicRotaryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuilder> {
 
-    private final RecipeDirection direction;
     @Nullable
     private final GasStackIngredient gasInput;
     @Nullable
@@ -25,9 +20,7 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
     private final FluidStack fluidOutput;
     private final GasStack gasOutput;
 
-    protected RotaryRecipeBuilder(@Nullable FluidStackIngredient fluidInput, @Nullable GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput, RecipeDirection direction) {
-        super(mekSerializer("rotary"));
-        this.direction = direction;
+    protected RotaryRecipeBuilder(@Nullable FluidStackIngredient fluidInput, @Nullable GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput) {
         this.gasInput = gasInput;
         this.fluidInput = fluidInput;
         this.gasOutput = gasOutput;
@@ -47,7 +40,7 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
         if (gasOutput.isEmpty()) {
             throw new IllegalArgumentException("This rotary condensentrator recipe requires a non empty gas output.");
         }
-        return new RotaryRecipeBuilder(fluidInput, null, gasOutput, FluidStack.EMPTY, RecipeDirection.FLUID_TO_GAS);
+        return new RotaryRecipeBuilder(fluidInput, null, gasOutput, FluidStack.EMPTY);
     }
 
     /**
@@ -63,7 +56,7 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
         if (fluidOutput.isEmpty()) {
             throw new IllegalArgumentException("This rotary condensentrator recipe requires a non empty fluid output.");
         }
-        return new RotaryRecipeBuilder(null, gasInput, GasStack.EMPTY, fluidOutput, RecipeDirection.GAS_TO_FLUID);
+        return new RotaryRecipeBuilder(null, gasInput, GasStack.EMPTY, fluidOutput);
     }
 
     /**
@@ -78,44 +71,19 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
         if (gasOutput.isEmpty() || fluidOutput.isEmpty()) {
             throw new IllegalArgumentException("This rotary condensentrator recipe requires non empty gas and fluid outputs.");
         }
-        return new RotaryRecipeBuilder(fluidInput, gasInput, gasOutput, fluidOutput, RecipeDirection.BOTH);
+        return new RotaryRecipeBuilder(fluidInput, gasInput, gasOutput, fluidOutput);
     }
 
     @Override
-    protected MekanismRecipeBuilder<RotaryRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-        return new RotaryRecipeResult(id, advancementHolder);
-    }
-
-    public class RotaryRecipeResult extends RecipeResult {
-
-        protected RotaryRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-            super(id, advancementHolder);
-        }
-
-        @Override
-        public void serializeRecipeData(@NotNull JsonObject json) {
-            if (direction.hasFluidToGas && fluidInput != null) {
-                json.add(JsonConstants.FLUID_INPUT, fluidInput.serialize());
-                json.add(JsonConstants.GAS_OUTPUT, SerializerHelper.serializeGasStack(gasOutput));
+    protected RotaryRecipe asRecipe() {
+        if (fluidInput != null) {
+            if (gasInput != null) {
+                return new BasicRotaryRecipe(fluidInput, gasInput, gasOutput, fluidOutput);
             }
-            if (direction.hasGasToFluid && gasInput != null) {
-                json.add(JsonConstants.GAS_INPUT, gasInput.serialize());
-                json.add(JsonConstants.FLUID_OUTPUT, SerializerHelper.serializeFluidStack(fluidOutput));
-            }
+            return new BasicRotaryRecipe(fluidInput, gasOutput);
+        } else if (gasInput != null) {
+            return new BasicRotaryRecipe(gasInput, fluidOutput);
         }
-    }
-
-    private enum RecipeDirection {
-        FLUID_TO_GAS(true, false),
-        GAS_TO_FLUID(false, true),
-        BOTH(true, true);
-
-        private final boolean hasFluidToGas;
-        private final boolean hasGasToFluid;
-
-        RecipeDirection(boolean hasFluidToGas, boolean hasGasToFluid) {
-            this.hasFluidToGas = hasFluidToGas;
-            this.hasGasToFluid = hasGasToFluid;
-        }
+        throw new IllegalStateException("Invalid rotary recipe");
     }
 }

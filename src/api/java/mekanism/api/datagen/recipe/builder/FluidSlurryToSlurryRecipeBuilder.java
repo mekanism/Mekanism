@@ -1,17 +1,12 @@
 package mekanism.api.datagen.recipe.builder;
 
-import com.google.gson.JsonObject;
-import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
+import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
+import mekanism.api.recipes.basic.BasicFluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class FluidSlurryToSlurryRecipeBuilder extends MekanismRecipeBuilder<FluidSlurryToSlurryRecipeBuilder> {
@@ -21,7 +16,6 @@ public class FluidSlurryToSlurryRecipeBuilder extends MekanismRecipeBuilder<Flui
     private final SlurryStack output;
 
     protected FluidSlurryToSlurryRecipeBuilder(FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output) {
-        super(mekSerializer("washing"));
         this.fluidInput = fluidInput;
         this.slurryInput = slurryInput;
         this.output = output;
@@ -42,21 +36,7 @@ public class FluidSlurryToSlurryRecipeBuilder extends MekanismRecipeBuilder<Flui
     }
 
     @Override
-    protected MekanismRecipeBuilder<FluidSlurryToSlurryRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-        return new FluidSlurryToSlurryRecipeResult(id, advancementHolder);
-    }
-
-    public class FluidSlurryToSlurryRecipeResult extends RecipeResult {
-
-        protected FluidSlurryToSlurryRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-            super(id, advancementHolder);
-        }
-
-        @Override
-        public void serializeRecipeData(@NotNull JsonObject json) {
-            json.add(JsonConstants.FLUID_INPUT, fluidInput.serialize());
-            json.add(JsonConstants.SLURRY_INPUT, slurryInput.serialize());
-            json.add(JsonConstants.OUTPUT, SerializerHelper.serializeSlurryStack(output));
-        }
+    protected FluidSlurryToSlurryRecipe asRecipe() {
+        return new BasicFluidSlurryToSlurryRecipe(fluidInput, slurryInput, output);
     }
 }

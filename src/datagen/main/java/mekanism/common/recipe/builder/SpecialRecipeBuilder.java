@@ -5,6 +5,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -40,7 +41,7 @@ public class SpecialRecipeBuilder implements FinishedRecipe {
 
     @Override
     public ResourceLocation id() {
-        return RegistryUtils.getName(type());
+        return BuiltInRegistries.RECIPE_SERIALIZER.getKey(type());
     }
 
     @Nullable

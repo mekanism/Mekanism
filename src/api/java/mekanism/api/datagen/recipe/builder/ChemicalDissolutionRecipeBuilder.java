@@ -1,32 +1,24 @@
 package mekanism.api.datagen.recipe.builder;
 
-import com.google.gson.JsonObject;
-import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
+import mekanism.api.recipes.ChemicalDissolutionRecipe;
+import mekanism.api.recipes.basic.BasicChemicalDissolutionRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ChemicalDissolutionRecipeBuilder extends MekanismRecipeBuilder<ChemicalDissolutionRecipeBuilder> {
 
     private final ItemStackIngredient itemInput;
     private final GasStackIngredient gasInput;
-    private final BoxedChemicalStack output;
+    private final ChemicalStack<?> output;
 
-    protected ChemicalDissolutionRecipeBuilder(ResourceLocation serializerName, ItemStackIngredient itemInput, GasStackIngredient gasInput,
-          ChemicalStack<?> output) {
-        super(serializerName);
+    protected ChemicalDissolutionRecipeBuilder(ItemStackIngredient itemInput, GasStackIngredient gasInput, ChemicalStack<?> output) {
         this.itemInput = itemInput;
         this.gasInput = gasInput;
-        this.output = BoxedChemicalStack.box(output);
+        this.output = output;
     }
 
     /**
@@ -40,25 +32,11 @@ public class ChemicalDissolutionRecipeBuilder extends MekanismRecipeBuilder<Chem
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This dissolution chamber recipe requires a non empty chemical output.");
         }
-        return new ChemicalDissolutionRecipeBuilder(mekSerializer("dissolution"), itemInput, gasInput, output);
+        return new ChemicalDissolutionRecipeBuilder(itemInput, gasInput, output);
     }
 
     @Override
-    protected MekanismRecipeBuilder<ChemicalDissolutionRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-        return new ChemicalDissolutionRecipeResult(id, advancementHolder);
-    }
-
-    public class ChemicalDissolutionRecipeResult extends RecipeResult {
-
-        protected ChemicalDissolutionRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-            super(id, advancementHolder);
-        }
-
-        @Override
-        public void serializeRecipeData(@NotNull JsonObject json) {
-            json.add(JsonConstants.ITEM_INPUT, itemInput.serialize());
-            json.add(JsonConstants.GAS_INPUT, gasInput.serialize());
-            json.add(JsonConstants.OUTPUT, SerializerHelper.serializeBoxedChemicalStack(output));
-        }
+    protected ChemicalDissolutionRecipe asRecipe() {
+        return new BasicChemicalDissolutionRecipe(itemInput, gasInput, output);
     }
 }

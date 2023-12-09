@@ -23,12 +23,11 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
 
     protected final Item result;
     protected final int count;
-    private RecipeCategory category = RecipeCategory.MISC;
+    protected RecipeCategory category = RecipeCategory.MISC;
     @Nullable
-    private String group;
+    protected String group;
 
-    protected BaseRecipeBuilder(RecipeSerializer<?> serializer, ItemLike result, int count) {
-        super(RegistryUtils.getName(serializer));
+    protected BaseRecipeBuilder(ItemLike result, int count) {
         this.result = result.asItem();
         this.count = count;
     }
@@ -50,16 +49,6 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
 
     public void build(RecipeOutput recipeOutput) {
         build(recipeOutput, result);
-    }
-
-    //Copied from CraftingRecipeBuilder#determineBookCategory
-    protected StringRepresentable determineBookCategory() {
-        return switch (category) {
-            case BUILDING_BLOCKS -> CraftingBookCategory.BUILDING;
-            case TOOLS, COMBAT -> CraftingBookCategory.EQUIPMENT;
-            case REDSTONE -> CraftingBookCategory.REDSTONE;
-            default -> CraftingBookCategory.MISC;
-        };
     }
 
     protected abstract class BaseRecipeResult extends RecipeResult {

@@ -1,18 +1,13 @@
 package mekanism.api.datagen.recipe.builder;
 
-import com.google.gson.JsonObject;
-import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
+import mekanism.api.recipes.NucleosynthesizingRecipe;
+import mekanism.api.recipes.basic.BasicNucleosynthesizingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<NucleosynthesizingRecipeBuilder> {
@@ -23,7 +18,6 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
     private final int duration;
 
     protected NucleosynthesizingRecipeBuilder(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output, int duration) {
-        super(mekSerializer("nucleosynthesizing"));
         this.itemInput = itemInput;
         this.gasInput = gasInput;
         this.output = output;
@@ -41,16 +35,15 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
     public static NucleosynthesizingRecipeBuilder nucleosynthesizing(ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output, int duration) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This nucleosynthesizing recipe requires a non empty item output.");
-        }
-        if (duration <= 0) {
+        } else if (duration <= 0) {
             throw new IllegalArgumentException("This nucleosynthesizing recipe must have a positive duration.");
         }
         return new NucleosynthesizingRecipeBuilder(itemInput, gasInput, output, duration);
     }
 
     @Override
-    protected MekanismRecipeBuilder<NucleosynthesizingRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-        return new NucleosynthesizingRecipeResult(id, advancementHolder);
+    protected NucleosynthesizingRecipe asRecipe() {
+        return new BasicNucleosynthesizingRecipe(itemInput, gasInput, output, duration);
     }
 
     /**
@@ -60,20 +53,5 @@ public class NucleosynthesizingRecipeBuilder extends MekanismRecipeBuilder<Nucle
      */
     public void build(RecipeOutput recipeOutput) {
         build(recipeOutput, output.getItem());
-    }
-
-    public class NucleosynthesizingRecipeResult extends RecipeResult {
-
-        protected NucleosynthesizingRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-            super(id, advancementHolder);
-        }
-
-        @Override
-        public void serializeRecipeData(@NotNull JsonObject json) {
-            json.add(JsonConstants.ITEM_INPUT, itemInput.serialize());
-            json.add(JsonConstants.GAS_INPUT, gasInput.serialize());
-            json.add(JsonConstants.OUTPUT, SerializerHelper.serializeItemStack(output));
-            json.addProperty(JsonConstants.DURATION, duration);
-        }
     }
 }

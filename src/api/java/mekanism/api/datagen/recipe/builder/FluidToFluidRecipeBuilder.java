@@ -1,16 +1,11 @@
 package mekanism.api.datagen.recipe.builder;
 
-import com.google.gson.JsonObject;
-import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
+import mekanism.api.recipes.FluidToFluidRecipe;
+import mekanism.api.recipes.basic.BasicFluidToFluidRecipe;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class FluidToFluidRecipeBuilder extends MekanismRecipeBuilder<FluidToFluidRecipeBuilder> {
@@ -19,7 +14,6 @@ public class FluidToFluidRecipeBuilder extends MekanismRecipeBuilder<FluidToFlui
     private final FluidStack output;
 
     protected FluidToFluidRecipeBuilder(FluidStackIngredient input, FluidStack output) {
-        super(mekSerializer("evaporating"));
         this.input = input;
         this.output = output;
     }
@@ -38,20 +32,7 @@ public class FluidToFluidRecipeBuilder extends MekanismRecipeBuilder<FluidToFlui
     }
 
     @Override
-    protected MekanismRecipeBuilder<FluidToFluidRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-        return new FluidToFluidRecipeResult(id, advancementHolder);
-    }
-
-    public class FluidToFluidRecipeResult extends RecipeResult {
-
-        protected FluidToFluidRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-            super(id, advancementHolder);
-        }
-
-        @Override
-        public void serializeRecipeData(@NotNull JsonObject json) {
-            json.add(JsonConstants.INPUT, input.serialize());
-            json.add(JsonConstants.OUTPUT, SerializerHelper.serializeFluidStack(output));
-        }
+    protected FluidToFluidRecipe asRecipe() {
+        return new BasicFluidToFluidRecipe(input, output);
     }
 }

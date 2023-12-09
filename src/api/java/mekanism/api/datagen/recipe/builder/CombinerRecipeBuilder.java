@@ -1,17 +1,12 @@
 package mekanism.api.datagen.recipe.builder;
 
-import com.google.gson.JsonObject;
-import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
+import mekanism.api.recipes.CombinerRecipe;
+import mekanism.api.recipes.basic.BasicCombinerRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeBuilder> {
@@ -21,7 +16,6 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeB
     private final ItemStack output;
 
     protected CombinerRecipeBuilder(ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack output) {
-        super(mekSerializer("combining"));
         this.mainInput = mainInput;
         this.extraInput = extraInput;
         this.output = output;
@@ -42,8 +36,8 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeB
     }
 
     @Override
-    protected MekanismRecipeBuilder<CombinerRecipeBuilder>.RecipeResult getResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-        return new CombinerRecipeResult(id, advancementHolder);
+    protected CombinerRecipe asRecipe() {
+        return new BasicCombinerRecipe(mainInput, extraInput, output);
     }
 
     /**
@@ -53,19 +47,5 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeB
      */
     public void build(RecipeOutput recipeOutput) {
         build(recipeOutput, output.getItem());
-    }
-
-    public class CombinerRecipeResult extends RecipeResult {
-
-        protected CombinerRecipeResult(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-            super(id, advancementHolder);
-        }
-
-        @Override
-        public void serializeRecipeData(@NotNull JsonObject json) {
-            json.add(JsonConstants.MAIN_INPUT, mainInput.serialize());
-            json.add(JsonConstants.EXTRA_INPUT, extraInput.serialize());
-            json.add(JsonConstants.OUTPUT, SerializerHelper.serializeItemStack(output));
-        }
     }
 }

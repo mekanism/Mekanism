@@ -53,11 +53,6 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
         if (outputItem.isEmpty() && outputGas.isEmpty()) {
             throw new IllegalArgumentException("At least one output must not be empty.");
         }
-        Objects.requireNonNull(outputItem, "Item output cannot be null.");
-        Objects.requireNonNull(outputGas, "Gas output cannot be null.");
-        if (outputItem.isEmpty() && outputGas.isEmpty()) {
-            throw new IllegalArgumentException("At least one output must not be empty.");
-        }
         this.outputItem = outputItem.copy();
         this.outputGas = outputGas.copy();
     }
