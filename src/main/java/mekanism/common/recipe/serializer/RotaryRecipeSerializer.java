@@ -1,7 +1,13 @@
 package mekanism.common.recipe.serializer;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.MapLike;
+import com.mojang.serialization.RecordBuilder;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.stream.Stream;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalUtils;
@@ -17,7 +23,6 @@ import mekanism.common.recipe.ingredient.creator.GasStackIngredientCreator;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,7 +65,7 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
     }
 
     private Codec<BasicRotaryRecipe> makeCodec() {
-        return NeoForgeExtraCodecs.withAlternative(bothWaysCodec(), NeoForgeExtraCodecs.withAlternative(fluidToGasCodec(), gasToFluidCodec()));
+        return new AlternativeMapCodec<>(bothWaysCodec(), new AlternativeMapCodec<>(fluidToGasCodec(), gasToFluidCodec()).codec()).codec();
     }
 
     @NotNull
@@ -128,5 +133,55 @@ public class RotaryRecipeSerializer implements RecipeSerializer<BasicRotaryRecip
         RECIPE create(GasStackIngredient gasInput, FluidStack fluidOutput);
 
         RECIPE create(FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput);
+    }
+
+    /**
+     * Like a cross between {@link net.neoforged.neoforge.common.util.NeoForgeExtraCodecs#withAlternative(Codec, Codec)} and
+     * {@link net.neoforged.neoforge.common.util.NeoForgeExtraCodecs#mapWithAlternative(MapCodec, MapCodec)} so that the recipe dispatch codec can inline our stuff.
+     */
+    private static class AlternativeMapCodec<TYPE> extends MapCodec<TYPE> {
+
+        private final MapCodec<TYPE> codec;
+        private final MapCodec<TYPE> alternative;
+
+        public AlternativeMapCodec(Codec<TYPE> codec, Codec<TYPE> alternative) {
+            this.codec = ((MapCodecCodec<TYPE>) codec).codec();
+            this.alternative = ((MapCodecCodec<TYPE>) alternative).codec();
+        }
+
+        @Override
+        public <T> Stream<T> keys(DynamicOps<T> ops) {
+            return Stream.concat(codec.keys(ops), alternative.keys(ops));
+        }
+
+        @Override
+        public <T> DataResult<TYPE> decode(DynamicOps<T> ops, MapLike<T> input) {
+            DataResult<TYPE> result = codec.decode(ops, input);
+            if (result.error().isEmpty()) {
+                return result;
+            }
+            return alternative.decode(ops, input);
+        }
+
+        @Override
+        public <T> RecordBuilder<T> encode(TYPE input, DynamicOps<T> ops, RecordBuilder<T> prefix) {
+            try {
+                //Note: This encode call causes an error when just a single one is taking place
+                RecordBuilder<T> encoded = codec.encode(input, ops, prefix);
+                //Build it to see if there is an error
+                DataResult<T> result = encoded.build((T) null);
+                if (result.error().isEmpty()) {
+                    //But then we even if there isn't we have to encode it again so that we can actually allow the building to apply
+                    return codec.encode(input, ops, prefix);
+                }
+            } catch (Exception ignored) {
+            }
+            return alternative.encode(input, ops, prefix);
+        }
+
+        @Override
+        public String toString() {
+            return "AlternativeMapCodec[" + codec + ", " + alternative + "]";
+        }
     }
 }

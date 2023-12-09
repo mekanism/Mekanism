@@ -60,9 +60,7 @@ public class ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL extends Chemical<C
             throw new IllegalArgumentException("This pigment mixing recipe requires a non empty gas output.");
         }
         return new ChemicalChemicalToChemicalRecipeBuilder<>(leftInput, rightInput, output, BasicPigmentMixingRecipe::new);
-
     }
-    //PigmentStackIngredient leftInput, PigmentStackIngredient rightInput, PigmentStack output
 
     @Override
     protected ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT> asRecipe() {
