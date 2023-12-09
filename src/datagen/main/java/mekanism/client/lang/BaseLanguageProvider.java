@@ -50,12 +50,6 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         };
     }
 
-    @NotNull
-    @Override
-    public String getName() {
-        return super.getName() + ": " + modid;
-    }
-
     protected void addPackData(IHasTranslationKey name, IHasTranslationKey packDescription) {
         add(name, modName);
         add(packDescription, "Resources used for " + modName);
