@@ -263,13 +263,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
                 return childResult;
             }
         }
-        //Vanilla Copy of super.mouseClicked modified to make the click keep track of the button used and return a GuiElement instead of a boolean
-        if (this.active && this.visible && isValidClickButton(button) && clicked(mouseX, mouseY)) {
-            playDownSound(minecraft.getSoundManager());
-            onClick(mouseX, mouseY, button);
-            return this;
-        }
-        return null;
+        return super.mouseClicked(mouseX, mouseY, button) ? this : null;
     }
 
     @Override
@@ -278,14 +272,11 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
+    @Deprecated
     public final void onClick(double mouseX, double mouseY) {
+        //TODO - 1.20.4: Decide if we actually want to be overriding this
         //Redirect any calls of the vanilla on click methods mods may do for some reason to act as if clicked with the left mouse button
         onClick(mouseX, mouseY, GLFW.GLFW_MOUSE_BUTTON_LEFT);
-    }
-
-    public void onClick(double mouseX, double mouseY, int button) {
-        //Pass on to basic super click call, which just happens to be a no-op
-        super.onClick(mouseX, mouseY);
     }
 
     @Override
