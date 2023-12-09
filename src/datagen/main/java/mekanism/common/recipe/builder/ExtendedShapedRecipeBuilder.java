@@ -1,7 +1,5 @@
 package mekanism.common.recipe.builder;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
@@ -10,33 +8,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
-import mekanism.common.DataGenJsonConstants;
 import mekanism.common.recipe.pattern.RecipePattern;
-import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.ItemLike;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShapedRecipeBuilder> {
 
     private final Char2ObjectMap<Ingredient> key = new Char2ObjectArrayMap<>(9);
     private final List<String> pattern = new ArrayList<>();
+    private boolean showNotification = true;
 
-    protected ExtendedShapedRecipeBuilder(RecipeSerializer<?> serializer, ItemLike result, int count) {
-        super(serializer, result, count);
-    }
-
-    private ExtendedShapedRecipeBuilder(ItemLike result, int count) {
-        this(RecipeSerializer.SHAPED_RECIPE, result, count);
+    protected ExtendedShapedRecipeBuilder(ItemLike result, int count) {
+        super(result, count);
     }
 
     public static ExtendedShapedRecipeBuilder shapedRecipe(ItemLike result) {
@@ -79,6 +71,11 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
         return this;
     }
 
+    public ExtendedShapedRecipeBuilder showNotification(boolean show) {
+        this.showNotification = show;
+        return this;
+    }
+
     @Override
     protected void validate(ResourceLocation id) {
         if (pattern.isEmpty()) {
@@ -103,35 +100,17 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
     }
 
     @Override
-    protected ShapedRecipe asRecipe() {
-        return new ShapedRecipe(
+    protected Recipe<?> asRecipe() {
+        return wrapRecipe(new ShapedRecipe(
               Objects.requireNonNullElse(this.group, ""),
               RecipeBuilder.determineBookCategory(this.category),
-              shapedrecipepattern,
+              ShapedRecipePattern.of(this.key, this.pattern),
               new ItemStack(this.result, this.count),
               this.showNotification
-        );
+        ));
     }
 
-    public class Result extends BaseRecipeResult {
-
-        protected Result(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-            super(id, advancementHolder);
-        }
-
-        @Override
-        public void serializeRecipeData(JsonObject json) {
-            super.serializeRecipeData(json);
-            JsonArray jsonPattern = new JsonArray();
-            for (String s : pattern) {
-                jsonPattern.add(s);
-            }
-            json.add(DataGenJsonConstants.PATTERN, jsonPattern);
-            JsonObject jsonobject = new JsonObject();
-            for (Char2ObjectMap.Entry<Ingredient> entry : key.char2ObjectEntrySet()) {
-                jsonobject.add(String.valueOf(entry.getCharKey()), entry.getValue().toJson(false));
-            }
-            json.add(DataGenJsonConstants.KEY, jsonobject);
-        }
+    protected Recipe<?> wrapRecipe(ShapedRecipe recipe) {
+        return recipe;
     }
 }

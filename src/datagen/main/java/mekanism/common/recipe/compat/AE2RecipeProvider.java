@@ -2,12 +2,10 @@ package mekanism.common.recipe.compat;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
-import java.util.function.Consumer;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;

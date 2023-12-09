@@ -12,7 +12,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 public class DefenseRecipeProvider extends BaseRecipeProvider {
 
     public DefenseRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper, CompletableFuture<Provider> lookupProvider) {
-        super(output, existingFileHelper, MekanismDefense.MODID, lookupProvider);
+        super(output, existingFileHelper, lookupProvider);
     }
 
     @Override

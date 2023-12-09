@@ -1,7 +1,6 @@
 package mekanism.common.recipe.impl;
 
 import java.util.List;
-import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -11,7 +10,6 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;

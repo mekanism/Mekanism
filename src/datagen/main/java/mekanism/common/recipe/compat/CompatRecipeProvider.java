@@ -2,10 +2,8 @@ package mekanism.common.recipe.compat;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.ISubRecipeProvider;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;

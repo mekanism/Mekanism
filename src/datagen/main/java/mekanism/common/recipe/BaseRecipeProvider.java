@@ -6,18 +6,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
+import javax.annotation.Nullable;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.advancements.Advancement.Builder;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
@@ -28,7 +31,7 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
 
     private final ExistingFileHelper existingFileHelper;
 
-    protected BaseRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper, String modid, CompletableFuture<Provider> lookupProvider) {
+    protected BaseRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper, CompletableFuture<Provider> lookupProvider) {
         super(output, lookupProvider);
         this.existingFileHelper = existingFileHelper;
     }
@@ -36,9 +39,9 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
     private record WrapperRecipeOutput(RecipeOutput parent, ExistingFileHelper existingFileHelper) implements RecipeOutput {
 
         @Override
-        public void accept(FinishedRecipe finishedRecipe, ICondition... conditions) {
-            parent.accept(finishedRecipe);
-            existingFileHelper.trackGenerated(finishedRecipe.id(), PackType.SERVER_DATA, ".json", "recipes");
+        public void accept(ResourceLocation recipeId, Recipe<?> recipe, @Nullable AdvancementHolder advancementHolder, ICondition... conditions) {
+            parent.accept(recipeId, recipe, advancementHolder, conditions);
+            existingFileHelper.trackGenerated(recipeId, PackType.SERVER_DATA, ".json", "recipes");
         }
 
         @Override

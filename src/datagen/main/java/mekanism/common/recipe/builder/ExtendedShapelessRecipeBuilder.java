@@ -1,32 +1,24 @@
 package mekanism.common.recipe.builder;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
-import mekanism.common.DataGenJsonConstants;
-import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.ItemLike;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedShapelessRecipeBuilder> {
 
-    private final List<Ingredient> ingredients = new ArrayList<>();
+    private final NonNullList<Ingredient> ingredients = NonNullList.create();
 
     private ExtendedShapelessRecipeBuilder(ItemLike result, int count) {
-        super(RecipeSerializer.SHAPELESS_RECIPE, result, count);
+        super(result, count);
     }
 
     public static ExtendedShapelessRecipeBuilder shapelessRecipe(ItemLike result) {
@@ -79,22 +71,5 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
               new ItemStack(this.result, this.count),
               this.ingredients
         );
-    }
-
-    public class Result extends BaseRecipeResult {
-
-        public Result(ResourceLocation id, @Nullable AdvancementHolder advancementHolder) {
-            super(id, advancementHolder);
-        }
-
-        @Override
-        public void serializeRecipeData(JsonObject json) {
-            super.serializeRecipeData(json);
-            JsonArray jsonIngredients = new JsonArray();
-            for (Ingredient ingredient : ingredients) {
-                jsonIngredients.add(ingredient.toJson(false));
-            }
-            json.add(DataGenJsonConstants.INGREDIENTS, jsonIngredients);
-        }
     }
 }

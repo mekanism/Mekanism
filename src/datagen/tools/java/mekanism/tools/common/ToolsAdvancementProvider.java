@@ -14,7 +14,7 @@ import mekanism.tools.common.item.ItemMekanismShovel;
 import mekanism.tools.common.item.ItemMekanismSword;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.advancements.FrameType;
+import net.minecraft.advancements.AdvancementType;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
@@ -30,32 +30,32 @@ public class ToolsAdvancementProvider extends BaseAdvancementProvider {
     @Override
     protected void registerAdvancements(@NotNull Consumer<AdvancementHolder> consumer) {
         advancement(ToolsAdvancements.PAXEL)
-              .display(ToolsItems.DIAMOND_PAXEL, FrameType.TASK, true)
+              .display(ToolsItems.DIAMOND_PAXEL, AdvancementType.TASK, true)
               .orCriteria("any_paxel", getItems(item -> item instanceof ItemMekanismPaxel))
               .save(consumer);
         advancement(ToolsAdvancements.ALTERNATE_ARMOR)
-              .display(ToolsItems.OSMIUM_CHESTPLATE, FrameType.TASK, false)
+              .display(ToolsItems.OSMIUM_CHESTPLATE, AdvancementType.TASK, false)
               .orCriteria("armor", getItems(item -> item instanceof ItemMekanismArmor))
               .save(consumer);
         advancement(ToolsAdvancements.ALTERNATE_TOOLS)
-              .display(ToolsItems.OSMIUM_PICKAXE, FrameType.TASK, false)
+              .display(ToolsItems.OSMIUM_PICKAXE, AdvancementType.TASK, false)
               .orCriteria("tools", getItems(item -> item instanceof ItemMekanismAxe || item instanceof ItemMekanismHoe || item instanceof ItemMekanismPickaxe ||
                                                     item instanceof ItemMekanismShovel || item instanceof ItemMekanismSword))
               .save(consumer);
         advancement(ToolsAdvancements.NOT_ENOUGH_SHIELDING)
-              .display(ToolsItems.OSMIUM_SHIELD, FrameType.TASK, false)
+              .display(ToolsItems.OSMIUM_SHIELD, AdvancementType.TASK, false)
               .orCriteria("shields", getItems(item -> item instanceof ItemMekanismShield))
               .save(consumer);
 
         advancement(ToolsAdvancements.BETTER_THAN_NETHERITE)
-              .display(ToolsItems.REFINED_OBSIDIAN_CHESTPLATE, FrameType.GOAL, false)
+              .display(ToolsItems.REFINED_OBSIDIAN_CHESTPLATE, AdvancementType.GOAL, false)
               .orCriteria("armor", ToolsItems.REFINED_OBSIDIAN_HELMET,
                     ToolsItems.REFINED_OBSIDIAN_CHESTPLATE,
                     ToolsItems.REFINED_OBSIDIAN_LEGGINGS,
                     ToolsItems.REFINED_OBSIDIAN_BOOTS
               ).save(consumer);
         advancement(ToolsAdvancements.LOVED_BY_PIGLINS)
-              .display(ToolsItems.REFINED_GLOWSTONE_CHESTPLATE, FrameType.GOAL, false)
+              .display(ToolsItems.REFINED_GLOWSTONE_CHESTPLATE, AdvancementType.GOAL, false)
               .orCriteria("armor", ToolsItems.REFINED_GLOWSTONE_HELMET,
                     ToolsItems.REFINED_GLOWSTONE_CHESTPLATE,
                     ToolsItems.REFINED_GLOWSTONE_LEGGINGS,

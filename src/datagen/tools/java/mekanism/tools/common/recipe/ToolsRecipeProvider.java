@@ -1,14 +1,12 @@
 package mekanism.tools.common.recipe;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedSmithingRecipeBuilder;
-import mekanism.common.recipe.builder.SpecialRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.DoubleLine;
@@ -23,9 +21,9 @@ import mekanism.tools.common.registries.ToolsItems;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -84,7 +82,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(Pattern.EMPTY, ROD_CHAR, Pattern.EMPTY));
 
     public ToolsRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper, CompletableFuture<Provider> lookupProvider) {
-        super(output, existingFileHelper, MekanismTools.MODID, lookupProvider);
+        super(output, existingFileHelper, lookupProvider);
     }
 
     @Override
@@ -111,7 +109,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               ToolsItems.STEEL_SWORD, ToolsItems.STEEL_PICKAXE, ToolsItems.STEEL_AXE, ToolsItems.STEEL_SHOVEL, ToolsItems.STEEL_HOE, ToolsItems.STEEL_PAXEL,
               ToolsItems.STEEL_SHIELD, MekanismTags.Items.INGOTS_STEEL, Tags.Items.INGOTS_IRON, MekanismItems.STEEL_NUGGET);
         registerVanillaPaxels(consumer);
-        SpecialRecipeBuilder.build(consumer, ToolsRecipeSerializers.BANNER_SHIELD);
+        SpecialRecipeBuilder.special(MekBannerShieldRecipe::new).save(consumer, ToolsRecipeSerializers.BANNER_SHIELD.getId());
     }
 
     private void registerRecipeSet(RecipeOutput consumer, String name, IItemProvider helmet, IItemProvider chestplate, IItemProvider leggings,

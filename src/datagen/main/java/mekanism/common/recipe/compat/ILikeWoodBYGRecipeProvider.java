@@ -1,8 +1,6 @@
 package mekanism.common.recipe.compat;
 
-import java.util.function.Consumer;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
 import potionstudios.byg.common.block.BYGWoodTypes;
 import yamahari.ilikewood.plugin.byg.OhTheBiomesYoullGoWoodTypes;

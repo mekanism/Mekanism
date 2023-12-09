@@ -1,5 +1,6 @@
 package mekanism.common.advancements;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.common.util.RegistryUtils;
@@ -10,7 +11,7 @@ import net.minecraft.advancements.AdvancementRequirements.Strategy;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.DisplayInfo;
-import net.minecraft.advancements.FrameType;
+import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.resources.ResourceLocation;
@@ -37,22 +38,22 @@ public class ExtendedAdvancementBuilder {
         return new ExtendedAdvancementBuilder(advancement, existingFileHelper);
     }
 
-    public ExtendedAdvancementBuilder display(ItemStack stack, @Nullable ResourceLocation background, FrameType frame, boolean showToast, boolean announceToChat,
+    public ExtendedAdvancementBuilder display(ItemStack stack, @Nullable ResourceLocation background, AdvancementType type, boolean showToast, boolean announceToChat,
           boolean hidden) {
-        return display(new MinimizingDisplayInfo(stack, advancement.translateTitle(), advancement.translateDescription(), background, frame, showToast, announceToChat, hidden));
+        return display(new DisplayInfo(stack, advancement.translateTitle(), advancement.translateDescription(), Optional.ofNullable(background), type, showToast, announceToChat, hidden));
     }
 
-    public ExtendedAdvancementBuilder display(ItemLike item, @Nullable ResourceLocation background, FrameType frame, boolean showToast, boolean announceToChat,
+    public ExtendedAdvancementBuilder display(ItemLike item, @Nullable ResourceLocation background, AdvancementType type, boolean showToast, boolean announceToChat,
           boolean hidden) {
-        return display(new ItemStack(item), background, frame, showToast, announceToChat, hidden);
+        return display(new ItemStack(item), background, type, showToast, announceToChat, hidden);
     }
 
-    public ExtendedAdvancementBuilder display(ItemLike item, FrameType frame, boolean announceToChat) {
-        return display(item, null, frame, true, announceToChat, false);
+    public ExtendedAdvancementBuilder display(ItemLike item, AdvancementType type, boolean announceToChat) {
+        return display(item, null, type, true, announceToChat, false);
     }
 
-    public ExtendedAdvancementBuilder displayAndCriterion(ItemLike item, FrameType frame, boolean announceToChat) {
-        display(item, frame, announceToChat);
+    public ExtendedAdvancementBuilder displayAndCriterion(ItemLike item, AdvancementType type, boolean announceToChat) {
+        display(item, type, announceToChat);
         return addCriterion(item);
     }
 

@@ -1,7 +1,6 @@
 package mekanism.generators.common;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
@@ -32,7 +31,6 @@ import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -54,7 +52,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
     private static final char FURNACE_CHAR = 'F';
 
     public GeneratorsRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper, CompletableFuture<Provider> lookupProvider) {
-        super(output, existingFileHelper, MekanismGenerators.MODID, lookupProvider);
+        super(output, existingFileHelper, lookupProvider);
     }
 
     @Override

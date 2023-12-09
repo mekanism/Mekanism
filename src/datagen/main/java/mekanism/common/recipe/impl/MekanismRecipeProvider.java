@@ -40,7 +40,6 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
@@ -83,7 +82,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     private final Set<String> disabledCompats = new HashSet<>();
 
     public MekanismRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-        super(output, existingFileHelper, Mekanism.MODID, lookupProvider);
+        super(output, existingFileHelper, lookupProvider);
 
         //Mod Compat Recipe providers
         checkCompat("ae2", AE2RecipeProvider::new);

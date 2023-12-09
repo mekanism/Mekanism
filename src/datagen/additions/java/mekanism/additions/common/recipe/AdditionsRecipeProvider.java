@@ -57,7 +57,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(Pattern.GLOWSTONE, PLASTIC_SHEET_CHAR, Pattern.GLOWSTONE));
 
     public AdditionsRecipeProvider(PackOutput output, ExistingFileHelper existingFileHelper, CompletableFuture<Provider> lookupProvider) {
-        super(output, existingFileHelper, MekanismAdditions.MODID, lookupProvider);
+        super(output, existingFileHelper, lookupProvider);
     }
 
     @Override

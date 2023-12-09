@@ -1,7 +1,5 @@
 package mekanism.common.advancements;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,10 +9,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import mekanism.api.providers.IItemProvider;
-import mekanism.common.DataGenJsonConstants;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance;
 import net.minecraft.advancements.critereon.ItemPredicate;
@@ -24,7 +21,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -58,25 +54,10 @@ public abstract class BaseAdvancementProvider implements DataProvider {
                 throw new IllegalStateException("Duplicate advancement " + id);
             }
             Path path = this.pathProvider.json(id);
-            JsonObject json = advancement.value().serializeToJson();
-            cleanAdvancementJson(json);
             existingFileHelper.trackGenerated(id, PackType.SERVER_DATA, ".json", "advancements");
-            futures.add(DataProvider.saveStable(cache, json, path));
+            futures.add(DataProvider.saveStable(cache, Advancement.CODEC, advancement.value(), path));
         });
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
-    }
-
-    private void cleanAdvancementJson(JsonObject json) {
-        //Remove requirements if they are default
-        JsonArray requirementArray = GsonHelper.getAsJsonArray(json, DataGenJsonConstants.REQUIREMENTS, new JsonArray());
-        for (int i = 0; i < requirementArray.size(); ++i) {
-            JsonArray subRequirements = GsonHelper.convertToJsonArray(requirementArray.get(i), "requirements[" + i + "]");
-            if (subRequirements.size() > 1) {
-                //If there is more than one sub requirement there is some or logic going on, so we can't just let reading default it
-                return;
-            }
-        }
-        json.remove(DataGenJsonConstants.REQUIREMENTS);
     }
 
     protected abstract void registerAdvancements(@NotNull Consumer<AdvancementHolder> consumer);
