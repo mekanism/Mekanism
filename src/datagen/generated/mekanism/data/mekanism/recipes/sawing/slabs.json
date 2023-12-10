@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "ingredient": {
-      "tag": "mekanism:wooden_slabs"
+      "tag": "minecraft:wooden_slabs"
     }
   },
   "mainOutput": {
