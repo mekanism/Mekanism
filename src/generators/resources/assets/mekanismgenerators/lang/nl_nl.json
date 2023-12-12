@@ -65,6 +65,9 @@
   "turbine.mekanismgenerators.stats.production": "Productie",
   "turbine.mekanismgenerators.stats.steam_flow": "Stoom Doorstroom",
   "turbine.mekanismgenerators.steam_input": "Stoom Ingang: %1$s mB/t",
+  "turbine.mekanismgenerators.tooltip.steamdump": "Stoom aan het dumpen",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "Water zal NIET worden gerecycled",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "Overtollig stroom aan het dumpen",
   "wind_generator.mekanismgenerators.no_wind": "Geen wind",
   "wind_generator.mekanismgenerators.sky_blocked": "Lucht geblokkeerd"
 }
