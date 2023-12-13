@@ -35,8 +35,8 @@
   "block.mekanismgenerators.turbine_valve": "渦輪閥門",
   "block.mekanismgenerators.turbine_vent": "渦輪排氣口",
   "block.mekanismgenerators.wind_generator": "風力發電機",
-  "constants.mekanismgenerators.mod_name": "通用機械：發電機",
-  "constants.mekanismgenerators.pack_description": "通用機械使用的資源：發電機",
+  "constants.mekanismgenerators.mod_name": "通用機械: 發電機",
+  "constants.mekanismgenerators.pack_description": "給通用機械: 發電機用的資源",
   "container.mekanismgenerators.advanced_solar_generator": "高級太陽能發電機",
   "container.mekanismgenerators.bio_generator": "生物能發電機",
   "container.mekanismgenerators.fission_reactor_logic_adapter": "核分裂反應爐邏輯適配器",
@@ -196,6 +196,9 @@
   "turbine.mekanismgenerators.stats.tank_volume": "液體槽容量：%1$s",
   "turbine.mekanismgenerators.stats.vents": "渦輪排氣口數量：%1$s%2$s",
   "turbine.mekanismgenerators.steam_input": "蒸汽輸入：%1$s mB/t",
+  "turbine.mekanismgenerators.tooltip.steamdump": "排出蒸汽",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "水不會被重複使用",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "排出過量蒸汽",
   "wind_generator.mekanismgenerators.no_wind": "沒有風",
   "wind_generator.mekanismgenerators.sky_blocked": "上方被遮擋"
 }
