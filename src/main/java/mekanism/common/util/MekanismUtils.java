@@ -91,6 +91,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.EffectCures;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.UsernameCache;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -596,7 +597,7 @@ public final class MekanismUtils {
 
     public static boolean shouldSpeedUpEffect(MobEffectInstance effectInstance) {
         //Only allow speeding up effects that can be sped up by milk. Also validate it isn't blacklisted by the modpack
-        return effectInstance.isCurativeItem(MILK) && !effectInstance.getEffect().builtInRegistryHolder().is(MekanismTags.MobEffects.SPEED_UP_BLACKLIST);
+        return effectInstance.getCures().contains(EffectCures.MILK) && !effectInstance.getEffect().builtInRegistryHolder().is(MekanismTags.MobEffects.SPEED_UP_BLACKLIST);
     }
 
     /**

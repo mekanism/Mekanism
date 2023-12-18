@@ -46,11 +46,11 @@ public class MaxedModuleContainerItemPredicate<ITEM extends Item & IModuleContai
     }
 
     static Codec<MaxedModuleContainerItemPredicate<?>> makeCodec() {
-        return BuiltInRegistries.ITEM.byNameCodec().fieldOf(JsonConstants.ITEM).codec().comapFlatMap(item->{
+        return BuiltInRegistries.ITEM.byNameCodec().comapFlatMap(item -> {
             if (item instanceof IModuleContainerItem) {
-                return DataResult.success(new MaxedModuleContainerItemPredicate<>((Item & IModuleContainerItem) item));
+                return DataResult.<MaxedModuleContainerItemPredicate<?>>success(new MaxedModuleContainerItemPredicate<>((Item & IModuleContainerItem) item));
             }
-            return DataResult.error(()->"Specified item is not a module container item.");
-        }, pred->pred.item);
+            return DataResult.error(() -> "Specified item is not a module container item.");
+        }, pred -> pred.item).fieldOf(JsonConstants.ITEM).codec();
     }
 }

@@ -15,29 +15,29 @@ license="MIT"
 
 [[dependencies.mekanism]]
     modId="minecraft"
-    mandatory=true
+    type="required"
     versionRange="${mc_version}"
     side="BOTH"
 [[dependencies.mekanism]]
     modId="neoforge"
-    mandatory=true
+    type="required"
     versionRange="${forge_version}"
     side="BOTH"
 [[dependencies.mekanism]]
     modId="crafttweaker"
-    mandatory=false
+    type="optional"
     versionRange="${crafttweaker_version}"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.mekanism]]
     modId="curios"
-    mandatory=false
+    type="optional"
     versionRange="${curios_version}"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.mekanism]]
     modId="jei"
-    mandatory=false
+    type="optional"
     versionRange="${jei_version}"
     ordering="AFTER"
     side="BOTH"
