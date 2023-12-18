@@ -166,6 +166,9 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.TURBINE_MAX_PRODUCTION, "Max Production: %1$s");
         add(GeneratorsLang.TURBINE_STATS, "Turbine Statistics");
         add(GeneratorsLang.TURBINE_VENTS, "Vents: %1$s %2$s");
+        add(GeneratorsLang.TURBINE_DUMPING_STEAM, "Dumping Steam");
+        add(GeneratorsLang.TURBINE_DUMPING_EXCESS_STEAM, "Dumping excess Steam");
+        add(GeneratorsLang.TURBINE_DUMPING_STEAM_WARNING, "Water will NOT be recycled");
         //Fission Reactor
         add(GeneratorsLang.FISSION_INVALID_BAD_CONTROL_ROD, "Couldn't form, improper placement for Control Rod Assembly at %1$s.");
         add(GeneratorsLang.FISSION_INVALID_MISSING_CONTROL_ROD, "Couldn't form, missing control rod for fuel assembly at %1$s.");

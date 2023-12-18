@@ -80,6 +80,9 @@ public enum GeneratorsLang implements ILangEntry {
     TURBINE_MAX_FLOW("turbine", "stats.max_flow"),
     TURBINE_MAX_PRODUCTION("turbine", "stats.max_production"),
     TURBINE_PRODUCTION("turbine", "stats.production"),
+    TURBINE_DUMPING_STEAM("turbine", "tooltip.steamdump"),
+    TURBINE_DUMPING_EXCESS_STEAM("turbine", "tooltip.steamdump_excess"),
+    TURBINE_DUMPING_STEAM_WARNING("turbine", "tooltip.steamdump.warning"),
 
     FISSION_INVALID_BAD_CONTROL_ROD("fission", "invalid_bad_control_rod"),
     FISSION_INVALID_MISSING_CONTROL_ROD("fission", "missing_control_rod"),
