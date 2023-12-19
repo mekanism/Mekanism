@@ -11,19 +11,19 @@ import java.util.function.Consumer
 
 plugins {
     id 'org.ajoberstar.grgit.service' version '5.2.1'
-    id 'net.darkhax.curseforgegradle' version '1.1.17'
+    id 'net.darkhax.curseforgegradle' version '1.1.18'
     id "com.modrinth.minotaur" version "2.+"
     id 'java'
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.60'//https://maven.neoforged.net/#/releases/net/neoforged/gradle/userdev
+    id 'net.neoforged.gradle.userdev' version '7.0.71'//https://maven.neoforged.net/#/releases/net/neoforged/gradle/userdev
     //id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
 tasks.named('wrapper', Wrapper).configure {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '8.4'
+    gradleVersion = '8.5'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -360,7 +360,7 @@ runs {
         }
 
         dependencies {
-            runtime configuration(project.configurations.datagenNonMod)
+            runtime project.configurations.datagenNonMod
         }
     }
 }
