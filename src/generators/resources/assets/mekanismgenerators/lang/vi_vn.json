@@ -17,6 +17,8 @@
   "block.mekanismgenerators.turbine_valve": "Van tuốc bin",
   "block.mekanismgenerators.turbine_vent": "Cửa thông hơi cho tuốc bin",
   "block.mekanismgenerators.wind_generator": "Máy phát điện gió",
+  "constants.mekanismgenerators.mod_name": "Mekanism: Generators",
+  "constants.mekanismgenerators.pack_description": "Tài nguyên sử dụng cho Mekanism: Generators",
   "container.mekanismgenerators.advanced_solar_generator": "Pin mặt trời cải tiến",
   "container.mekanismgenerators.gas_burning_generator": "Máy phát điện khí đốt",
   "container.mekanismgenerators.heat_generator": "Máy phát điện nhiệt",
@@ -58,5 +60,8 @@
   "turbine.mekanismgenerators.industrial_turbine": "Tuốc bin công nghiệp",
   "turbine.mekanismgenerators.stats": "Hiện trạng tuốc bin",
   "turbine.mekanismgenerators.stats.limiting": "(Giới hạn)",
-  "turbine.mekanismgenerators.stats.production": "Công suất"
+  "turbine.mekanismgenerators.stats.production": "Công suất",
+  "turbine.mekanismgenerators.tooltip.steamdump": "Thải bỏ Hơi",
+  "turbine.mekanismgenerators.tooltip.steamdump.warning": "Nước sẽ KHÔNG thể tái sử dụng",
+  "turbine.mekanismgenerators.tooltip.steamdump_excess": "Thải bỏ Hơi dư thừa"
 }
