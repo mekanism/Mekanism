@@ -1,4 +1,18 @@
 {
+  "advancements.mekanism.alarm.title": "Woop Woop Woop!",
+  "advancements.mekanism.basic_control_circuit.title": "Megtrükközni egy követ hogy gondolkodjon",
+  "advancements.mekanism.basic_qio_drive.description": "Készítsd egy KTR meghajtót hogy eltárold a tárgyaidat",
+  "advancements.mekanism.basic_qio_drive.title": "Tömörített valóság",
+  "advancements.mekanism.chemical_transport.title": "Nyomás alatt",
+  "advancements.mekanism.diversion_item_transport.title": "Zöld lámpa, Piros lámpa",
+  "advancements.mekanism.elite_qio_drive.title": "Ez mind relatív",
+  "advancements.mekanism.energy_cube.description": "Építs egy Energia Kockát hogy eltárold az energiádat",
+  "advancements.mekanism.environmental_radiation.title": "Upsz, ezt én csináltam?",
+  "advancements.mekanism.fluid_transport.title": "Pont, mint egy szívószál",
+  "advancements.mekanism.logistical_sorter.title": "Felvesz és lerak",
+  "advancements.mekanism.machine_security.title": "Az asztali munka",
+  "advancements.mekanism.moving_blocks.title": "Költöztetés!",
+  "advancements.mekanism.teleportation_core.title": "Gondolkodás Portállal",
   "assemblicator.mekanism.auto_mode_toggle": "Auto-Mód: %1$s",
   "assemblicator.mekanism.craft_available": "Elérhető Tárgyak Barkácsolása",
   "assemblicator.mekanism.craft_single": "Egyetlen Tárgy Barkácsolása",
@@ -423,5 +437,10 @@
   "description.mekanism.chemical_injection_chamber": "Egy elit gép ami képes érceket négy szilánkká alakítani, ami a 400%-os ércfeldolgozás kezdeti szakaszaként szolgál.",
   "description.mekanism.chemical_oxidizer": "Egy gép ami képes szilárd anyagokat oxidációval gázfázisúvá változtatni.",
   "key.mekanism.description": "Show description",
-  "key.mekanism.details": "Show details"
+  "key.mekanism.details": "Show details",
+  "radial.mekanism.blasting_power.extreme": "Extrém",
+  "radial.mekanism.blasting_power.high": "Magas",
+  "radial.mekanism.blasting_power.low": "Alacsony",
+  "radial.mekanism.blasting_power.med": "Közepes",
+  "radial.mekanism.blasting_power.off": "Ki"
 }
