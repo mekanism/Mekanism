@@ -1,8 +1,14 @@
 {
   "type": "mekanism:disk",
   "config": {
-    "state": {
-      "Name": "mekanism:block_salt"
+    "state_provider": {
+      "fallback": {
+        "type": "minecraft:simple_state_provider",
+        "state": {
+          "Name": "mekanism:block_salt"
+        }
+      },
+      "rules": []
     }
   }
 }
