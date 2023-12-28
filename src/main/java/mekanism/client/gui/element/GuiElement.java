@@ -31,7 +31,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 public abstract class GuiElement extends AbstractWidget implements IFancyFontRenderer {
 
@@ -269,14 +268,6 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     @Override
     public final boolean mouseClicked(double mouseX, double mouseY, int button) {
         return mouseClickedNested(mouseX, mouseY, button) != null;
-    }
-
-    @Override
-    @Deprecated
-    public final void onClick(double mouseX, double mouseY) {
-        //TODO - 1.20.4: Decide if we actually want to be overriding this
-        //Redirect any calls of the vanilla on click methods mods may do for some reason to act as if clicked with the left mouse button
-        onClick(mouseX, mouseY, GLFW.GLFW_MOUSE_BUTTON_LEFT);
     }
 
     @Override
