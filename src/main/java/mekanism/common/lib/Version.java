@@ -6,37 +6,13 @@ import org.apache.maven.artifact.versioning.ArtifactVersion;
 /**
  * Version v2.0.0. Simple version handling for Mekanism.
  *
+ * @param major Major number for version
+ * @param minor Minor number for version
+ * @param build Build number for version
+ *
  * @author AidanBrady
  */
-public class Version {
-
-    /**
-     * Major number for version
-     */
-    public int major;
-
-    /**
-     * Minor number for version
-     */
-    public int minor;
-
-    /**
-     * Build number for version
-     */
-    public int build;
-
-    /**
-     * Creates a version number with 3 digits.
-     *
-     * @param majorNum - major version
-     * @param minorNum - minor version
-     * @param buildNum - build version
-     */
-    public Version(int majorNum, int minorNum, int buildNum) {
-        major = majorNum;
-        minor = minorNum;
-        build = buildNum;
-    }
+public record Version(int major, int minor, int build) implements Comparable<Version> {
 
     /**
      * Builds a Version object from an Artifact Version
@@ -78,57 +54,22 @@ public class Version {
         return new Version(digits[0], digits[1], digits[2]);
     }
 
-    /**
-     * Resets the version number to "0.0.0."
-     */
-    public void reset() {
-        major = 0;
-        minor = 0;
-        build = 0;
-    }
-
-    /**
-     * @param version Version to check against
-     *
-     * @return 1: greater than, 0: equal to, -1: less than
-     */
-    public byte comparedState(Version version) {
+    @Override
+    public int compareTo(Version version) {
         if (version.major > major) {
             return -1;
         } else if (version.major == major) {
             if (version.minor > minor) {
                 return -1;
             } else if (version.minor == minor) {
-                return (byte) Integer.compare(build, version.build);
+                return Integer.compare(build, version.build);
             }
-            return 1;
         }
         return 1;
     }
 
     @Override
     public String toString() {
-        if (major == 0 && minor == 0 && build == 0) {
-            return "";
-        }
         return major + "." + minor + "." + build;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = 1;
-        result = 31 * result + build;
-        result = 31 * result + major;
-        result = 31 * result + minor;
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        Version other = (Version) obj;
-        return build == other.build && major == other.major && minor == other.minor;
     }
 }
