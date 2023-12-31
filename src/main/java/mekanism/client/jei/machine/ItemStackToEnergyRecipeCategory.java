@@ -69,7 +69,7 @@ public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStac
                 Component energyOutput = EnergyDisplay.of(energy).getTextComponent();
                 if (Minecraft.getInstance().options.advancedItemTooltips || Screen.hasShiftDown()) {
                     //TODO - 1.20.2: JEI update
-                    //return List.of(energyOutput, TextComponentUtil.build(ChatFormatting.DARK_GRAY, MekanismLang.JEI_RECIPE_ID.translate(recipe.getId())));
+                    //return List.of(energyOutput, TextComponentUtil.build(ChatFormatting.DARK_GRAY, MekanismLang.JEI_RECIPE_ID.translate(recipe.id())));
                 }
                 return Collections.singletonList(energyOutput);
             }

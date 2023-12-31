@@ -36,6 +36,8 @@ import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
+import mekanism.common.network.PacketUtils;
+import mekanism.common.network.to_server.qio.PacketQIOFillCraftingWindow;
 import mekanism.common.util.MekanismUtils;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
@@ -54,10 +56,11 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer> implements IRecipeTransferHandler<CONTAINER, CraftingRecipe> {
+public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer> implements IRecipeTransferHandler<CONTAINER, RecipeHolder<CraftingRecipe>> {
 
     private final IRecipeTransferHandlerHelper handlerHelper;
     private final Class<CONTAINER> containerClass;
@@ -80,14 +83,14 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
     }
 
     @Override
-    public RecipeType<CraftingRecipe> getRecipeType() {
+    public RecipeType<RecipeHolder<CraftingRecipe>> getRecipeType() {
         return RecipeTypes.CRAFTING;
     }
 
     @Nullable
     @Override
-    public IRecipeTransferError transferRecipe(CONTAINER container, CraftingRecipe recipe, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer,
-          boolean doTransfer) {
+    public IRecipeTransferError transferRecipe(CONTAINER container, RecipeHolder<CraftingRecipe> recipeHolder, IRecipeSlotsView recipeSlots, Player player,
+          boolean maxTransfer, boolean doTransfer) {
         byte selectedCraftingGrid = container.getSelectedCraftingGrid();
         if (selectedCraftingGrid == -1) {
             //Note: While the java docs recommend logging a message to the console when returning an internal error,
@@ -109,7 +112,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                     nonEmptyCraftingSlots++;
                 }
             }
-            if (recipe.matches(dummy, player.level())) {
+            if (recipeHolder.value().matches(dummy, player.level())) {
                 //If we are not transferring things, and the crafting window's contents already matches the given recipe,
                 // then we can just early exit knowing that we have something that will work. If we are transferring items
                 // then we need to actually do all the checks as we may be transferring more items if maxTransfer is true,
@@ -129,7 +132,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
             //I don't believe this ever will happen with a normal crafting recipe but just in case it does, error
             // if we have more than nine inputs, as there should never be
             // a case where this actually happens except potentially with some really obscure modded recipe
-            Mekanism.logger.warn("Error evaluating recipe transfer handler for recipe: {}, had more than 9 inputs: {}", recipe/*.getId() TODO - 1.20.2: when JEI updates maybe restore Id*/, maxInputCount);
+            Mekanism.logger.warn("Error evaluating recipe transfer handler for recipe: {}, had more than 9 inputs: {}", recipeHolder.id(), maxInputCount);
             return handlerHelper.createInternalError();
         }
         int inputCount = 0;
@@ -333,8 +336,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                 // things may not fully be accurate on the client side with the stacks that JEI lets us know match the recipe, as
                 // they may require extra NBT that is server side only.
                 //TODO: If the sources are all from the crafting window and are already in the correct spots, there is no need to send this packet
-                throw new IllegalStateException("old jei code, needs RecipeHolder");//todo JEI update
-                //Mekanism.packetHandler().sendToServer(new PacketQIOFillCraftingWindow(recipe.getId(), maxTransfer, sources));
+                PacketUtils.sendToServer(new PacketQIOFillCraftingWindow(recipeHolder.id(), maxTransfer, sources));
             }
         }
         return null;
