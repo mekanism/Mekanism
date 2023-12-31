@@ -17,8 +17,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.71'//https://maven.neoforged.net/#/releases/net/neoforged/gradle/userdev
-    //id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'net.neoforged.gradle.userdev' version '7.0.76'//https://projects.neoforged.net/neoforged/neogradle
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -264,15 +263,6 @@ java {
 }
 
 minecraft {
-    mappings {
-        //if (mappings_channel == "parchment_previous") {
-        //    mappings channel: 'parchment', version: "${previous_minecraft_version}-${mappings_version}"
-        //} else {
-        //    mappings channel: "${mappings_channel}", version: "${mappings_version}"
-        //}
-        channel = official()
-        version.put("minecraft", "${minecraft_version}")
-    }
     accessTransformers {
         files(
                 file('src/main/resources/META-INF/accesstransformer.cfg'),
