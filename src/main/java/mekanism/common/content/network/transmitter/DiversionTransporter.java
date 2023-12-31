@@ -69,6 +69,11 @@ public class DiversionTransporter extends LogisticalTransporterBase {
                     }
                 }
             }
+        } else {
+            //If we can't handle redstone, just refresh the side the connection changed on so that if a transmitter is removed
+            // or is set to none then we stop trying to be connected to it
+            //TODO - 1.20.2: See if we can come up with a better way to handle this as there are definitely better ways
+            refreshConnections(side);
         }
     }
 
